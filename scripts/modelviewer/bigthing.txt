@@ -1,0 +1,2 @@
+33x10.flz/gb066-d.lod
+33x10.flz/gb066_lod1-d_col.pfx

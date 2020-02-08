@@ -1,0 +1,2 @@
+vegetation_2.blz/Desert_G03_RockPillarS-whole.lod
+vegetation_2.blz/Desert_G03_RockPillarS_lod1-whole_col.pfx

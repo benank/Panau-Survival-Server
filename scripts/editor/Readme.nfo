@@ -1,0 +1,55 @@
+Script for saving/loading/moving/rotating StaticObjects to and from a file....
+
+on Line 3 in server.lua is the Admin list, put your steam Id in or nothing will work.
+
+
+04.03.14
+
+- Added GUI to Save & Reload Objects from file, Array tool, Movespeed adjustment.
+- Movement speed and Rotation speed are now separate( Mousewheel controls Movespeed ,Left CTRL + Mousewheel controls Rotation speed
+- Added 'Sets' of objects, you Can Select & Move Multiple objects at the same time ,
+-Added Array tool to GUI to multiply Staticobjects by the 100's , the Offset texboxes take "r" as a random number
+-Included a second script, its a modified version of spawnatron script , includes staticobjects + a few meshes,, feel free to edit it and add new ones in spn/shared/spawnatron.lua
+ 
+
+
+Controls.  
+Left click                                 selects an object
+Right Click                                Duplicates an object
+Middle Click                              Deletes it
+LeftShift + Left Click                  starts a set of objects , hold shift down and click to add other objects
+LeftShift + Right Click             	 clears the selection
+U                                         Moves objects forward
+J                                          Moves Object Backward
+H                                         Moves Object Left
+K                                         Moves Object Right
+Numpad 1,2,3,4,6,8                 		Rotates an Object
+Mousewheel                                    Controls Movement speed
+Mousewheel + Left CTRL                    Controls Rotation Speed 90/45/22.5/11.25...etc...
+ 
+the rest is in The GUI.... 
+ The array Tool takes "r" as a value and generates a random number based on 
+
+
+
+
+
+
+
+28.02.14
+
+- Updated the Objects movement, it is now dependent on the Camera Angle instead of player...
+- MouseScroll is now used to control Movement/Rotation speed from 0.005 to  327.68  -- anything bigger or smaller doesn't make much sense... 
+- Right Click On an Object Duplicates it at its current position
+- Middle Click Deletes Object 
+- Included an example objects file,,  it spawns a bunch of stuff on the airport ,, 
+
+
+
+
+                                           Direction is always dependent on the Cameras anlge....         
+
+                      
+Commands :                        
+  /saveall             will save all staticobjects to a file
+          /removeall           deletes all staticobjects from the server

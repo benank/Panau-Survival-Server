@@ -1,0 +1,12 @@
+{
+  "info": {
+    "author": "",
+    "author_url": "",
+    "description": "Auto-generated",
+    "name": "load" 
+  },
+    "resources": {
+      "bg_image_grayscale": "http://paradigm.mp/resources/ps/icons/load/bg_image_grayscale.jpg",
+      "bg_image_color": "http://paradigm.mp/resources/ps/icons/load/bg_image_color.jpg"
+    }
+}

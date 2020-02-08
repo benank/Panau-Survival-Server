@@ -1,0 +1,2 @@
+general.blz/wea33-wea33.lod
+general.blz/wea33_lod1-wea33_col.pfx

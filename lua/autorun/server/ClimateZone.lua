@@ -1,0 +1,9 @@
+ClimateZone = {}
+ClimateZone.Arctic = 1
+ClimateZone.City = 5
+ClimateZone.Default = 7
+ClimateZone.Desert = 2
+ClimateZone.Grass = 6
+ClimateZone.Jungle = 3
+ClimateZone.None = 0
+ClimateZone.Sea = 4

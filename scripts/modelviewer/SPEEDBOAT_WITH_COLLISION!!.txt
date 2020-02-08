@@ -1,0 +1,2 @@
+seve.v087_catamaran_speedboat.eez/v087-body.lod
+seve.v087_catamaran_speedboat.eez/v087_lod1-body_col.pfx

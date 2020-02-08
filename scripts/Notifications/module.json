@@ -1,0 +1,17 @@
+{
+  "info": {
+    "author": "",
+    "author_url": "",
+    "description": "A script that renders notifications when they are called",
+    "name": "Notifications"
+  },
+
+  "resources": {
+	   
+	"Upgrade"		: 		"http://i.imgur.com/0bl2iLl.png",
+	"Information"	: 		"http://i.imgur.com/UR2nloH.png",
+	"Warning"		: 		"http://i.imgur.com/l5M53jp.png"
+	
+	
+	}
+}

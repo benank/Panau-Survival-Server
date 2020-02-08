@@ -1,0 +1,2 @@
+general.blz/wea05-wea05.lod
+general.blz/wea05_lod1-wea05_col.pfx

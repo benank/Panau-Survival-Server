@@ -1,0 +1,2 @@
+22x19.flz/wea34-f.lod
+22x19.flz/wea34_lod1-f_col.pfx

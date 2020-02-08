@@ -1,0 +1,2 @@
+cutscenetv2.eez/cutscene_prop_tv-a.lod
+cutscenetv2.eez/cutscene_prop_tv_lod1-a_col.pfx

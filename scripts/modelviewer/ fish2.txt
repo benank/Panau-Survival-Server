@@ -1,0 +1,2 @@
+general.blz/critfish02-body.lod
+general.blz/critfish02_lod1-body_col.pfx

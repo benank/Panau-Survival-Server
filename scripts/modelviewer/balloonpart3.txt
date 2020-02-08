@@ -1,0 +1,2 @@
+ballonfighter.eez/gb400-c.lod
+ballonfighter.eez/gb400_lod1-c_col.pfx

@@ -1,0 +1,1 @@
+Used to prevent people from grappling onto a helicopter and glitching into certain buildings.

@@ -1,0 +1,173 @@
+class 'sItemGenerator'
+
+function sItemGenerator:__init()
+
+    self.computed_rarity_sums = {}
+
+    self:ComputeRaritySums()
+
+    Console:Subscribe("loot", function()
+    
+        local tier = math.random(6)
+
+        local loot = ItemGenerator:GetLoot(tier)
+        print("Level " .. tostring(tier) .. " Loot")
+    
+
+        for k,v in pairs(loot) do
+
+            print(v:GetProperty("name") .. " [x" .. tostring(v:GetAmount()) .. "]")
+
+        end
+    
+    end)
+
+    Events:Subscribe("PlayerChat", function(args)
+    
+        local split = splitstr2(args.text, " ")
+
+        if split[1] == "/loot" and tonumber(split[2]) then
+
+            local tier = tonumber(split[2])
+
+            local loot = ItemGenerator:GetLoot(tier)
+            print("Level " .. tostring(tier) .. " Loot")
+        
+            CreateLootbox({
+                position = args.player:GetPosition(),
+                angle = args.player:GetAngle(),
+                tier = tier,
+                contents = loot
+            })
+
+        end
+    
+    end)
+
+end
+
+-- Returns a table of contents yummy
+function sItemGenerator:GetLoot(tier)
+
+    local contents = {}
+
+    -- Always have credits in there
+    local item = CreateItem({name = "Credits", amount = self:GetRandomNumberOfCredits(tier)})
+    local stack = shStack({contents = {item}})
+    table.insert(contents, stack)
+
+    local num_items = math.ceil(Lootbox.GeneratorConfig.box[tier].min_items + 
+        math.random() * (Lootbox.GeneratorConfig.box[tier].max_items - Lootbox.GeneratorConfig.box[tier].min_items))
+
+    for i = 1, num_items do
+        table.insert(contents, self:GetStack(tier))
+    end
+
+    return contents
+
+end
+
+function sItemGenerator:GetRandomNumberOfCredits(tier)
+    return math.random(Lootbox.GeneratorConfig.box[tier].min_credits, Lootbox.GeneratorConfig.box[tier].max_credits)
+end
+
+function sItemGenerator:GetStack(tier)
+
+    if tier < Lootbox.Types.Level1 or tier > Lootbox.Types.SupplyCrate then
+        error("sItemGenerator:GetItem failed: invalid tier specified")
+    end
+
+    local target = self.computed_rarity_sums[tier] * math.random()
+    
+    local item_data = self:FindTargetItem(target, tier)
+    item_data.amount = 1
+
+    if item_data then
+
+        local item = CreateItem(item_data)
+        
+        local stack = shStack({contents = {item}})
+        
+        local amount = self:GetItemAmount(item, item_data.max_loot)
+
+        -- Add items to stack like this so it handles all the dirty work for us
+        for i = 1, amount - 1 do
+
+            stack:AddItem(CreateItem(item_data))
+
+        end
+
+        return stack
+
+    else
+        -- I don't really know why it wouldn't find an item, but hey try again if it happens
+        return sItemGenerator:GetStack(tier)
+
+    end
+
+end
+
+function sItemGenerator:GetItemAmount(item, max_loot)
+
+    -- Get random amount
+    local amount = math.ceil(item.stacklimit * 
+        (math.random() * (Lootbox.GeneratorConfig.stack.max_percent - Lootbox.GeneratorConfig.stack.min_percent)
+        + Lootbox.GeneratorConfig.stack.min_percent)
+        )
+
+    -- Clamp it
+    amount = math.clamp(
+        amount, 
+        Lootbox.GeneratorConfig.stack.min,
+        math.min(math.random(Lootbox.GeneratorConfig.stack.max), max_loot or 999))
+
+    return amount
+
+end
+
+function sItemGenerator:FindTargetItem(target, tier)
+
+    local sum = 0
+
+    for _, item in pairs(Items_indexed) do
+
+        for index, _tier in pairs(item.loot) do
+
+            if tier == _tier then
+
+                sum = sum + item.rarity * item.rarity_mod[index]
+
+                if target <= sum then
+                    return item
+                end
+
+            end
+
+        end
+
+    end
+
+end
+
+function sItemGenerator:ComputeRaritySums()
+
+    for _, item in pairs(Items_indexed) do
+
+        for index, tier in pairs(item.loot) do
+
+            if not self.computed_rarity_sums[tier] then
+                self.computed_rarity_sums[tier] = 0
+            end
+
+            -- Sum up all the rarities per tier
+            self.computed_rarity_sums[tier] = self.computed_rarity_sums[tier] + 
+                item.rarity * item.rarity_mod[index] 
+
+        end
+
+    end
+
+
+end
+
+ItemGenerator = sItemGenerator()
