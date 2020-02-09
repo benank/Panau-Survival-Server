@@ -172,10 +172,6 @@ function Spawnatron:Render()
 	
 	if go_up_timer:GetMilliseconds() > 20 then
 		go_up_timer:Restart()
-		
-		if LocalPlayer:GetPosition().y < 200 then
-			LocalPlayer:SetLinearVelocity(LocalPlayer:GetLinearVelocity() + Vector3(0, 1, 0))
-		end
 	end
 
     if self.window:GetVisible() ~= is_visible then

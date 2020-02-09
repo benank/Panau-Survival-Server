@@ -1,1 +1,0 @@
-outpost_cell_size = 1024

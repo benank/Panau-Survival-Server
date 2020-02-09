@@ -8,8 +8,8 @@ function Notifications:__init()
 	
 	self.icons = 
 	{
-		Upgrade		= 	Image.Create(AssetLocation.Resource, "Upgrade")
-		Information	= 	Image.Create(AssetLocation.Resource, "Information")
+		Upgrade		= 	Image.Create(AssetLocation.Resource, "Upgrade"),
+		Information	= 	Image.Create(AssetLocation.Resource, "Information"),
 		Warning		= 	Image.Create(AssetLocation.Resource, "Warning")
 	}
 
@@ -29,23 +29,23 @@ function Notifications:__init()
 	{
 		default = 
 		{
-			title_color: Color.White,
-			subtitle_color: Color(200, 200, 200),
-			time: 5000,
+			title_color =  Color.White,
+			subtitle_color = Color(200, 200, 200),
+			time = 5000,
 			icon = "Information"
 		},
 		upgrade = 
 		{
-			title_color: Color.White,
-			subtitle_color: Color(200, 200, 200),
-			time: 5000,
+			title_color = Color.White,
+			subtitle_color = Color(200, 200, 200),
+			time = 5000,
 			icon = "Upgrade"
 		},
 		warning = 
 		{
-			title_color: Color.Red,
-			subtitle_color: Color(200, 0, 0),
-			time: 5000,
+			title_color = Color.Red,
+			subtitle_color = Color(200, 0, 0),
+			time = 5000,
 			icon = "Warning"
 		}
 	}
