@@ -358,13 +358,13 @@ Items =
         description = "The classic machine gun."
     },
     {
-        name = "Assault Supplies",
+        name = "Assault Ammo",
         category = "Supplies",
         stacklimit = 100,
         loot = {2,3},
         rarity = 0.6,
         rarity_mod = {0.25,1},
-        description = "Supplies for an Assault Rifle."
+        description = "Ammo for an Assault Rifle."
     },
     {
         name = "Energy Cartridge",
@@ -377,58 +377,58 @@ Items =
         description = "Used to power a Portal Gun. Each Energy Cartridge allows for one shot."
     },
     {
-        name = "Pistol Supplies",
+        name = "Pistol Ammo",
         category = "Supplies",
         stacklimit = 50,
         loot = {1,2},
         rarity = 0.6,
         rarity_mod = {0.75,1},
-        description = "Supplies for a Pistol."
+        description = "Ammo for a Pistol."
     },
     {
-        name = "Revolver Supplies",
+        name = "Revolver Ammo",
         category = "Supplies",
         stacklimit = 50,
         loot = {1,2},
         rarity = 0.6,
         rarity_mod = {0.75,1},
-        description = "Supplies for a Revolver."
+        description = "Ammo for a Revolver."
     },
     {
-        name = "Sniper Supplies",
+        name = "Sniper Ammo",
         category = "Supplies",
         stacklimit = 50,
         loot = {3,4},
         rarity = 0.25,
         rarity_mod = {0.5,1},
-        description = "Supplies for a Sniper."
+        description = "Ammo for a Sniper."
     },
     {
-        name = "Sawn-Off Supplies",
+        name = "Sawn-Off Ammo",
         category = "Supplies",
         stacklimit = 50,
         loot = {1,2},
         rarity = 0.4,
         rarity_mod = {0.5,1},
-        description = "Supplies for a Sawn-Off Shotgun."
+        description = "Ammo for a Sawn-Off Shotgun."
     },
     {
-        name = "Machine Gun Supplies",
+        name = "Machine Gun Ammo",
         category = "Supplies",
         stacklimit = 50,
         loot = {2,3},
         rarity = 0.3,
         rarity_mod = {0.4,1},
-        description = "Supplies for a Machine Gun."
+        description = "Ammo for a Machine Gun."
     },
     {
-        name = "Shotgun Supplies",
+        name = "Shotgun Ammo",
         category = "Supplies",
         stacklimit = 50,
         loot = {2,3},
         rarity = 0.4,
         rarity_mod = {0.5,1},
-        description = "Supplies for a Shotgun."
+        description = "Ammo for a Shotgun."
     },
     {
         name = "Bubbles",
@@ -437,16 +437,16 @@ Items =
         loot = {1,2},
         rarity = 0.3,
         rarity_mod = {0.5,1},
-        description = "Supplies for a Bubble Gun. pew pew"
+        description = "Ammo for a Bubble Gun. pew pew"
     },
     {
-        name = "Submachine Gun Supplies",
+        name = "Submachine Gun Ammo",
         category = "Supplies",
         stacklimit = 50,
         loot = {1,2},
         rarity = 0.5,
         rarity_mod = {0.5,1},
-        description = "Supplies for a Submachine Gun."
+        description = "Ammo for a Submachine Gun."
     },
     {
         name = "Rockets",
@@ -456,7 +456,7 @@ Items =
         rarity = 0.12,
         rarity_mod = {0.5,0.75,1.5},
         max_loot = 3,
-        description = "Supplies for a Rocket Launcher."
+        description = "Ammo for a Rocket Launcher."
     },
     {
         name = "Grenade Munitions",
@@ -465,16 +465,7 @@ Items =
         loot = {3,4},
         rarity = 0.2,
         rarity_mod = {0.5,1},
-        description = "Supplies for a Grenade Launcher."
-    },
-    {
-        name = "Rift Generator",
-        category = "Supplies",
-        stacklimit = 1,
-        loot = {4,5,6},
-        rarity = 0.25,
-        rarity_mod = {0.5,0.75,1},
-        description = "Generates a temporary rift in front of you."
+        description = "Ammo for a Grenade Launcher."
     },
     {
         name = "Car Paint",
@@ -484,19 +475,6 @@ Items =
         rarity = 0.3,
         rarity_mod = {0.5,1},
         description = "Used to paint your car different colors."
-    },
-    {
-        name = "Guardian Tank Armor", -- armor with a ton of durability
-        category = "Survival",
-        stacklimit = 1,
-        loot = {5},
-        rarity = 0.01,
-        rarity_mod = {1},
-        can_equip = true,
-        durable = true,
-        max_durability = 5000,
-        equip_type = "chest",
-        description = "A piece of casing from an ancient, age-old automaton. This makes a rough, yet extremely durable piece of armor."
     },
     {
         name = "Grid Armor MKI", -- yellow outline, yellow streak, disable collision
@@ -551,26 +529,6 @@ Items =
         description = "When worn, this temporarily creates a Multi-Spatial Phasing Beacon, which enables the user to exist both in Gridspace and the real world at the same time. The appearance of the user when in this form has lead to this device being called 'grid armor'. When being worn, the user evades most attacks, yet can still interact with the world as normal."
     },
     {
-        name = "Spatial Encoding Beacon", -- Teleports you to the grid (takes 30 seconds to use)
-        category = "Supplies",
-        stacklimit = 3,
-        loot = {4,5,6},
-        can_use = true,
-        rarity = 0.05,
-        rarity_mod = {0.5,0.75,1},
-        description = "This Spatial Encoding Beacon allows the user to encode their DNA sequence on the fly and teleport themselves into the Grid."
-    },
-    {
-        name = "Mass Spatial Encoding Beacon", -- Teleports people around you to the grid (takes 45 seconds to use)
-        category = "Supplies",
-        stacklimit = 1,
-        loot = {5,6},
-        can_use = true,
-        rarity = 0.01,
-        rarity_mod = {1.5,1},
-        description = "This Mass Spatial Encoding Beacon allows the user and those around them to encode their DNA sequence on the fly and teleport themselves into the Grid."
-    },
-    {
         name = "EMP", -- Sets off a blast that disables all electronics within a range
         category = "Weapons",
         stacklimit = 3,
@@ -601,28 +559,6 @@ Items =
         rarity = 0.2,
         rarity_mod = {0.25,1},
         description = "Used to power various electronic devices."
-    },
-    {
-        name = "Unstable Boots", -- Run fast or something and you get thrown/teleported lol
-        category = "Supplies",
-        stacklimit = 1,
-        loot = {},
-        durable = true,
-        can_equip = true,
-        equip_type = "boots",
-        rarity = 1,
-        rarity_mod = {},
-        description = "Dark energy seeps from these boots. Wearing these for extended periods of time may induce strange side effects."
-    },
-    {
-        name = "Unstable Serum", -- strange effects
-        category = "Survival",
-        stacklimit = 2,
-        loot = {},
-        can_use = true,
-        rarity = 1,
-        rarity_mod = {},
-        description = "This is a vile of a deep, dark liquid. Ingesting this may induce strange side effects."
     },
     {
         name = "Lockpick", -- Currency
@@ -775,30 +711,6 @@ Items =
         description = "Restores 100% health when used."
     },
     {
-        name = "Beta Hat",
-        category = "Survival",
-        can_equip = true,
-        stacklimit = 3,
-        loot = {},
-        nodrop = true,
-        rarity = 1,
-        rarity_mod = {},
-        equip_type = "hat",
-        description = "A hat given to beta testers."
-    },
-    {
-        name = "Alpha Hat",
-        category = "Survival",
-        can_equip = true,
-        stacklimit = 3,
-        loot = {},
-        nodrop = true,
-        rarity = 1,
-        rarity_mod = {},
-        equip_type = "hat",
-        description = "A hat given to alpha testers."
-    },
-    {
         name = "Landclaim",
         category = "Survival",
         can_use = true,
@@ -807,30 +719,6 @@ Items =
         rarity = 0.03,
         rarity_mod = {0.5,0.75,1},
         description = "Used to claim an area of land to prevent others from building on your turf. Also prevents structure decay."
-    },
-    {
-        name = "Laser Glove", -- Shows a small beam going to a target location then fires a laser
-        category = "Weapons",
-        can_equip = true,
-        durable = true,
-        stacklimit = 1,
-        loot = {},
-        rarity = 1,
-        rarity_mod = {},
-        equip_type = "weapon_hand",
-        description = "Click to equip, and then hold Q to use. Uses a small targeting beam and fires a laser shortly after."
-    },
-    {
-        name = "Concussion Glove", -- Slams hand down on ground to create a shockwave
-        category = "Weapons",
-        can_equip = true,
-        durable = true,
-        stacklimit = 1,
-        loot = {},
-        rarity = 1,
-        rarity_mod = {},
-        equip_type = "weapon_hand",
-        description = "Click to equip, and then press Q to use. The user slams their fist on the ground, creating a shockwave that knocks nearby players back."
     },
     {
         name = "Repair Hammer", -- Press Q to whack builds and repair them
@@ -853,17 +741,6 @@ Items =
         rarity = 0.15,
         rarity_mod = {1},
         description = "After dying, you can use this item to place a waypoint on the location where you died."
-    },
-    {
-        name = "Jump Pad",
-        category = "Survival",
-        can_use = true,
-        stacklimit = 3,
-        loot = {3,4},
-        rarity = 0.4,
-        max_loot = 1,
-        rarity_mod = {0.5,1},
-        description = "This object will bounce you into the air when you step on it."
     },
     {
         name = "Nitro",
@@ -1118,16 +995,6 @@ Items =
         description = "A placeable explosive. Look at the location you want to place it at and use the item. Hold right click to detonate all placed C4. Can be used to destroy buildings placed by other players."
     },
     {
-        name = "Call Air Support",
-        category = "Weapons",
-        can_use = true,
-        stacklimit = 1,
-        loot = {5,6},
-        rarity = 0.2,
-        rarity_mod = {2,1},
-        description = "Use to call in helicopter air support."
-    },
-    {
         name = "Woet",
         category = "Supplies",
         can_use = true,
@@ -1149,18 +1016,6 @@ Items =
         rarity = 0.15,
         rarity_mod = {0.75,1},
         description = "Detects nearby mines. Batteries required."
-    },
-    {
-        name = "WaterWalk Boots",
-        category = "Survival",
-        can_equip = true,
-        equip_type = "boots",
-        durable = true,
-        stacklimit = 1,
-        loot = {5},
-        rarity = 0.05,
-        rarity_mod = {1},
-        description = "When equipped, these boots allow you to walk on water. Be careful though, as the surface will be hard if you skydive into it."
     },
     {
         name = "Stash",
@@ -1368,16 +1223,6 @@ Items =
         description = "A placeable teleporter. After placing two teleporters, open their configurations with E and add each teleporter's ID to 'Allow TPs From'. This will link the teleporters and allow you to teleport between them. You can also disable incoming teleports with the configuration menu."
     },
     {
-        name = "Cloaker",
-        category = "Survival",
-        can_use = true,
-        stacklimit = 1,
-        loot = {5},
-        rarity = 0.01,
-        rarity_mod = {1},
-        description = "A placeable device. After placing, this will cloak any nearby objects, players, and vehicles. These affected entities within range can only be seen when you are within 25m of them. Toggle on/off with the menu. Requires batteries to use."
-    },
-    {
         name = "Binoculars",
         category = "Supplies",
         can_use = true,
@@ -1449,47 +1294,6 @@ Items =
         description = "A military vest that can be worn. Protects against damage from all sources."
     },
     {
-        name = "Mysterious Note",
-        category = "Supplies",
-        can_use = true,
-        stacklimit = 1,
-        loot = {5},
-        rarity = 0.2,
-        rarity_mod = {1},
-        description = "A mysterious note. Who knows what you may find if you follow it."
-    },
-    {
-        name = "Burnt Note",
-        category = "Supplies",
-        can_use = true,
-        stacklimit = 1,
-        loot = {5},
-        rarity = 0.2,
-        rarity_mod = {1},
-        description = "A burnt note. Difficult to read, but it may be important."
-    },
-    {
-        name = "Death Note",
-        category = "Supplies",
-        can_use = true,
-        stacklimit = 1,
-        loot = {5},
-        rarity = 0.2,
-        rarity_mod = {1},
-        description = "A death note. Nothing special to see here...or is there?"
-    },
-    {
-        name = "WindWalker Potion",
-        category = "Survival",
-        can_use = true,
-        stacklimit = 3,
-        loot = {5},
-        rarity = 0.1,
-        rarity_mod = {1},
-        max_loot = 1,
-        description = "Upon drinking this potion, your body is transformed into a smoke-like appearance. This allows you to fly for the duration of the potion, but you are unable to attack or use other items."
-    },
-    {
         name = "UAV",
         category = "Supplies",
         can_use = true,
@@ -1499,32 +1303,7 @@ Items =
         rarity_mod = {1,0.5},
         max_loot = 1,
         description = "An unmanned aerial vehicle. This drone is excellent for scouting nearby areas and finding players with its built in Player Locator."
-    },
-    {
-        name = "Laser Drill",
-        category = "Weapons",
-        can_use = true,
-        stacklimit = 1,
-        loot = {5,6},
-        rarity = 0.025,
-        rarity_mod = {0.5,1},
-        max_loot = 1,
-        description = "A frail yet powerful device that can be placed on the ground. Once placed, you can configure it to fire out laser beams that can pierce through buildings. Very effective at breaking into bases."
-    },
-    {
-        name = "Sand Goggles", -- Only in loot in the desert
-        category = "Survival",
-        can_equip = true,
-        stacklimit = 1,
-        durable = true,
-        loot = {4},
-        rarity = 0.05,
-        rarity_mod = {1},
-        max_loot = 1,
-        equip_type = "glasses",
-        description = "Really RADICAL goggles that protect your eyes from harsh sandstorms."
-    },
-
+    }
 }
 
 Items_ammo_types = 
