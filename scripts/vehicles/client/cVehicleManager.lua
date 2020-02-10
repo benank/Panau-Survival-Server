@@ -4,7 +4,7 @@ function cVehicleManager:__init()
 
     self.text = 
     {
-        size = 40,
+        size = 17,
         color = Color.White,
         locked_color = Color(214,30,30),
         unlocked_color = Color(30,214,30),
