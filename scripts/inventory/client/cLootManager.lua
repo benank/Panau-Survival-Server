@@ -177,7 +177,7 @@ function cLootManager:OneLootboxCellSync(data)
 	
     if self.loot[data.cell.x][data.cell.y][data.uid] then
         self.loot[data.cell.x][data.cell.y][data.uid]:Remove()
-        print("WARN: OneLootboxCellSync box already existed! Removing and replacing with new box")
+        debug("WARN: OneLootboxCellSync box already existed! Removing and replacing with new box")
     end
 
     self.loot[data.cell.x][data.cell.y][data.uid] = cLootbox(data)

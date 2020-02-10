@@ -2,7 +2,7 @@ Items =
 {
     {
         name = "Apple",
-        category = "Consumables",
+        category = "Survival",
         stacklimit = 5,
         loot = {1,2},
         rarity = 1,
@@ -12,7 +12,7 @@ Items =
     },
     {
         name = "Grapplehook Upgrade - Speed",
-        category = "General",
+        category = "Supplies",
         stacklimit = 3,
         loot = {4,5,6},
         rarity = 0.2,
@@ -26,7 +26,7 @@ Items =
     },
     {
         name = "Grapplehook Upgrade - Recharge",
-        category = "General",
+        category = "Supplies",
         stacklimit = 3,
         loot = {4,5,6},
         rarity = 0.18,
@@ -40,7 +40,7 @@ Items =
     },
     {
         name = "Grapplehook Upgrade - Range",
-        category = "General",
+        category = "Supplies",
         stacklimit = 3,
         loot = {4,5,6},
         rarity = 0.15,
@@ -54,7 +54,7 @@ Items =
     },
     {
         name = "Grapplehook Upgrade - Underwater",
-        category = "General",
+        category = "Supplies",
         stacklimit = 3,
         loot = {4,5,6},
         rarity = 0.15,
@@ -67,7 +67,7 @@ Items =
     },
     {
         name = "Grapplehook Upgrade - Gun",
-        category = "General",
+        category = "Supplies",
         stacklimit = 3,
         loot = {4,5,6},
         rarity = 0.125,
@@ -80,7 +80,7 @@ Items =
     },
     {
         name = "Grapplehook Upgrade - Impulse",
-        category = "General",
+        category = "Supplies",
         stacklimit = 3,
         loot = {4,5,6},
         rarity = 0.17,
@@ -93,7 +93,7 @@ Items =
     },
     {
         name = "Grapplehook Upgrade - Smart",
-        category = "General",
+        category = "Supplies",
         stacklimit = 3,
         loot = {4,5,6},
         rarity = 0.14,
@@ -107,7 +107,7 @@ Items =
     },
     {
         name = "Parachute",
-        category = "General",
+        category = "Supplies",
         stacklimit = 2,
         loot = {4,5,6},
         rarity = 0.1,
@@ -121,7 +121,7 @@ Items =
     },
     {
         name = "Wingsuit",
-        category = "Clothing",
+        category = "Survival",
         stacklimit = 1,
         loot = {6},
         rarity = 0.1,
@@ -134,7 +134,7 @@ Items =
     },
     {
         name = "Water Bottle",
-        category = "Consumables",
+        category = "Survival",
         stacklimit = 3,
         loot = {1,2},
         rarity = 1,
@@ -144,7 +144,7 @@ Items =
     },
     {
         name = "CamelBak",
-        category = "Consumables",
+        category = "Survival",
         stacklimit = 1,
         loot = {2,3},
         rarity = 0.2,
@@ -155,7 +155,7 @@ Items =
     },
     {
         name = "Soda",
-        category = "Consumables",
+        category = "Survival",
         stacklimit = 10,
         loot = {1,2},
         rarity = 0.75,
@@ -165,7 +165,7 @@ Items =
     },
     {
         name = "Granola Bar",
-        category = "Consumables",
+        category = "Survival",
         stacklimit = 12,
         loot = {1,2},
         rarity = 1,
@@ -175,7 +175,7 @@ Items =
     },
     {
         name = "Trail Mix",
-        category = "Consumables",
+        category = "Survival",
         stacklimit = 10,
         loot = {2},
         rarity = 0.5,
@@ -185,7 +185,7 @@ Items =
     },
     {
         name = "Rations",
-        category = "Consumables",
+        category = "Survival",
         stacklimit = 10,
         loot = {2,3},
         rarity = 0.2,
@@ -195,7 +195,7 @@ Items =
     },
     {
         name = "Scrap Metal",
-        category = "Consumables",
+        category = "Survival",
         stacklimit = 25,
         loot = {1,2,3,4,5,6},
         rarity = 0.001,
@@ -205,7 +205,7 @@ Items =
     },
     {
         name = "Radiation Pills",
-        category = "Consumables",
+        category = "Survival",
         stacklimit = 6,
         loot = {2,3},
         rarity = 0.4,
@@ -358,17 +358,17 @@ Items =
         description = "The classic machine gun."
     },
     {
-        name = "Assault Ammo",
-        category = "Ammo",
+        name = "Assault Supplies",
+        category = "Supplies",
         stacklimit = 100,
         loot = {2,3},
         rarity = 0.6,
         rarity_mod = {0.25,1},
-        description = "Ammo for an Assault Rifle."
+        description = "Supplies for an Assault Rifle."
     },
     {
         name = "Energy Cartridge",
-        category = "Ammo",
+        category = "Supplies",
         stacklimit = 25,
         loot = {5,6},
         rarity = 0.25,
@@ -377,99 +377,99 @@ Items =
         description = "Used to power a Portal Gun. Each Energy Cartridge allows for one shot."
     },
     {
-        name = "Pistol Ammo",
-        category = "Ammo",
+        name = "Pistol Supplies",
+        category = "Supplies",
         stacklimit = 50,
         loot = {1,2},
         rarity = 0.6,
         rarity_mod = {0.75,1},
-        description = "Ammo for a Pistol."
+        description = "Supplies for a Pistol."
     },
     {
-        name = "Revolver Ammo",
-        category = "Ammo",
+        name = "Revolver Supplies",
+        category = "Supplies",
         stacklimit = 50,
         loot = {1,2},
         rarity = 0.6,
         rarity_mod = {0.75,1},
-        description = "Ammo for a Revolver."
+        description = "Supplies for a Revolver."
     },
     {
-        name = "Sniper Ammo",
-        category = "Ammo",
+        name = "Sniper Supplies",
+        category = "Supplies",
         stacklimit = 50,
         loot = {3,4},
         rarity = 0.25,
         rarity_mod = {0.5,1},
-        description = "Ammo for a Sniper."
+        description = "Supplies for a Sniper."
     },
     {
-        name = "Sawn-Off Ammo",
-        category = "Ammo",
+        name = "Sawn-Off Supplies",
+        category = "Supplies",
         stacklimit = 50,
         loot = {1,2},
         rarity = 0.4,
         rarity_mod = {0.5,1},
-        description = "Ammo for a Sawn-Off Shotgun."
+        description = "Supplies for a Sawn-Off Shotgun."
     },
     {
-        name = "Machine Gun Ammo",
-        category = "Ammo",
+        name = "Machine Gun Supplies",
+        category = "Supplies",
         stacklimit = 50,
         loot = {2,3},
         rarity = 0.3,
         rarity_mod = {0.4,1},
-        description = "Ammo for a Machine Gun."
+        description = "Supplies for a Machine Gun."
     },
     {
-        name = "Shotgun Ammo",
-        category = "Ammo",
+        name = "Shotgun Supplies",
+        category = "Supplies",
         stacklimit = 50,
         loot = {2,3},
         rarity = 0.4,
         rarity_mod = {0.5,1},
-        description = "Ammo for a Shotgun."
+        description = "Supplies for a Shotgun."
     },
     {
         name = "Bubbles",
-        category = "Ammo",
+        category = "Supplies",
         stacklimit = 50,
         loot = {1,2},
         rarity = 0.3,
         rarity_mod = {0.5,1},
-        description = "Ammo for a Bubble Gun. pew pew"
+        description = "Supplies for a Bubble Gun. pew pew"
     },
     {
-        name = "Submachine Gun Ammo",
-        category = "Ammo",
+        name = "Submachine Gun Supplies",
+        category = "Supplies",
         stacklimit = 50,
         loot = {1,2},
         rarity = 0.5,
         rarity_mod = {0.5,1},
-        description = "Ammo for a Submachine Gun."
+        description = "Supplies for a Submachine Gun."
     },
     {
         name = "Rockets",
-        category = "Ammo",
+        category = "Supplies",
         stacklimit = 50,
         loot = {4,5,6},
         rarity = 0.12,
         rarity_mod = {0.5,0.75,1.5},
         max_loot = 3,
-        description = "Ammo for a Rocket Launcher."
+        description = "Supplies for a Rocket Launcher."
     },
     {
         name = "Grenade Munitions",
-        category = "Ammo",
+        category = "Supplies",
         stacklimit = 50,
         loot = {3,4},
         rarity = 0.2,
         rarity_mod = {0.5,1},
-        description = "Ammo for a Grenade Launcher."
+        description = "Supplies for a Grenade Launcher."
     },
     {
         name = "Rift Generator",
-        category = "General",
+        category = "Supplies",
         stacklimit = 1,
         loot = {4,5,6},
         rarity = 0.25,
@@ -478,7 +478,7 @@ Items =
     },
     {
         name = "Car Paint",
-        category = "General",
+        category = "Supplies",
         stacklimit = 3,
         loot = {2,3},
         rarity = 0.3,
@@ -487,7 +487,7 @@ Items =
     },
     {
         name = "Guardian Tank Armor", -- armor with a ton of durability
-        category = "Clothing",
+        category = "Survival",
         stacklimit = 1,
         loot = {5},
         rarity = 0.01,
@@ -500,7 +500,7 @@ Items =
     },
     {
         name = "Grid Armor MKI", -- yellow outline, yellow streak, disable collision
-        category = "Clothing",
+        category = "Survival",
         stacklimit = 1,
         loot = {5},
         rarity = 0.005,
@@ -513,7 +513,7 @@ Items =
     },
     {
         name = "Grid Armor MKII", -- orange outline, *1.25 speed, orange streak, disable collision
-        category = "Clothing",
+        category = "Survival",
         stacklimit = 1,
         loot = {},
         rarity = 1,
@@ -526,7 +526,7 @@ Items =
     },
     {
         name = "Grid Armor MKIII", -- red outline, * 1.5 speed, red streak, disable collision
-        category = "Clothing",
+        category = "Survival",
         stacklimit = 1,
         loot = {},
         rarity = 1,
@@ -539,7 +539,7 @@ Items =
     },
     {
         name = "Grid Armor MKIV", -- blue outline, *2 speed, blue streak, invisible model, disable collision
-        category = "Clothing",
+        category = "Survival",
         stacklimit = 1,
         loot = {},
         rarity = 1,
@@ -552,7 +552,7 @@ Items =
     },
     {
         name = "Spatial Encoding Beacon", -- Teleports you to the grid (takes 30 seconds to use)
-        category = "General",
+        category = "Supplies",
         stacklimit = 3,
         loot = {4,5,6},
         can_use = true,
@@ -562,7 +562,7 @@ Items =
     },
     {
         name = "Mass Spatial Encoding Beacon", -- Teleports people around you to the grid (takes 45 seconds to use)
-        category = "General",
+        category = "Supplies",
         stacklimit = 1,
         loot = {5,6},
         can_use = true,
@@ -582,7 +582,7 @@ Items =
     },
     {
         name = "Radar",
-        category = "General",
+        category = "Supplies",
         stacklimit = 1,
         loot = {6},
         can_equip = true,
@@ -594,7 +594,7 @@ Items =
     },
     {
         name = "Batteries",
-        category = "General",
+        category = "Supplies",
         stacklimit = 6,
         loot = {2,3},
         durable = true,
@@ -604,7 +604,7 @@ Items =
     },
     {
         name = "Unstable Boots", -- Run fast or something and you get thrown/teleported lol
-        category = "General",
+        category = "Supplies",
         stacklimit = 1,
         loot = {},
         durable = true,
@@ -616,7 +616,7 @@ Items =
     },
     {
         name = "Unstable Serum", -- strange effects
-        category = "Comsumables",
+        category = "Survival",
         stacklimit = 2,
         loot = {},
         can_use = true,
@@ -625,9 +625,9 @@ Items =
         description = "This is a vile of a deep, dark liquid. Ingesting this may induce strange side effects."
     },
     {
-        name = "Credits", -- Currency
-        category = "General",
-        stacklimit = 500,
+        name = "Lockpick", -- Currency
+        category = "Supplies",
+        stacklimit = 99,
         loot = {}, -- Automatically placed in every lootbox for now
         rarity = 0,
         max_loot = 3,
@@ -636,7 +636,7 @@ Items =
     },
     {
         name = "Red Spray Paint",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         durable = true,
         stacklimit = 3,
@@ -648,7 +648,7 @@ Items =
     },
     {
         name = "Orange Spray Paint",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         durable = true,
         stacklimit = 3,
@@ -660,7 +660,7 @@ Items =
     },
     {
         name = "Yellow Spray Paint",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         durable = true,
         stacklimit = 3,
@@ -672,7 +672,7 @@ Items =
     },
     {
         name = "Green Spray Paint",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         durable = true,
         stacklimit = 3,
@@ -684,7 +684,7 @@ Items =
     },
     {
         name = "Blue Spray Paint",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         durable = true,
         stacklimit = 3,
@@ -696,7 +696,7 @@ Items =
     },
     {
         name = "Purple Spray Paint",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         durable = true,
         stacklimit = 3,
@@ -708,7 +708,7 @@ Items =
     },
     {
         name = "Pink Spray Paint",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         durable = true,
         stacklimit = 3,
@@ -720,7 +720,7 @@ Items =
     },
     {
         name = "White Spray Paint",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         durable = true,
         stacklimit = 3,
@@ -732,7 +732,7 @@ Items =
     },
     {
         name = "Black Spray Paint",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         durable = true,
         stacklimit = 3,
@@ -744,7 +744,7 @@ Items =
     },
     {
         name = "Spray Paint Remover",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         durable = true,
         stacklimit = 3,
@@ -756,7 +756,7 @@ Items =
     },
     {
         name = "Medkit",
-        category = "Consumables",
+        category = "Survival",
         can_use = true,
         stacklimit = 3,
         loot = {2,3},
@@ -766,7 +766,7 @@ Items =
     },
     {
         name = "Medpack",
-        category = "Consumables",
+        category = "Survival",
         can_use = true,
         stacklimit = 3,
         loot = {2,3},
@@ -776,7 +776,7 @@ Items =
     },
     {
         name = "Beta Hat",
-        category = "Clothing",
+        category = "Survival",
         can_equip = true,
         stacklimit = 3,
         loot = {},
@@ -788,7 +788,7 @@ Items =
     },
     {
         name = "Alpha Hat",
-        category = "Clothing",
+        category = "Survival",
         can_equip = true,
         stacklimit = 3,
         loot = {},
@@ -800,7 +800,7 @@ Items =
     },
     {
         name = "Landclaim",
-        category = "Build",
+        category = "Survival",
         can_use = true,
         stacklimit = 1,
         loot = {4,5,6},
@@ -846,7 +846,7 @@ Items =
     },
     {
         name = "Death Drop Locator",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 3,
         loot = {4},
@@ -856,7 +856,7 @@ Items =
     },
     {
         name = "Jump Pad",
-        category = "Build",
+        category = "Survival",
         can_use = true,
         stacklimit = 3,
         loot = {3,4},
@@ -867,7 +867,7 @@ Items =
     },
     {
         name = "Nitro",
-        category = "General",
+        category = "Supplies",
         durable = true,
         stacklimit = 5,
         loot = {2,3},
@@ -878,7 +878,7 @@ Items =
     },
     {
         name = "Vehicle Repair Kit",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 3,
         loot = {2,3},
@@ -910,7 +910,7 @@ Items =
     },
     {
         name = "Tripwire",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         durable = true,
         stacklimit = 10,
@@ -1129,7 +1129,7 @@ Items =
     },
     {
         name = "Woet",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 5,
         loot = {3},
@@ -1140,7 +1140,7 @@ Items =
     },
     {
         name = "Mine Detector",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         equip_type = "detector",
         durable = true,
@@ -1152,7 +1152,7 @@ Items =
     },
     {
         name = "WaterWalk Boots",
-        category = "Clothing",
+        category = "Survival",
         can_equip = true,
         equip_type = "boots",
         durable = true,
@@ -1164,7 +1164,7 @@ Items =
     },
     {
         name = "Stash",
-        category = "Build",
+        category = "Survival",
         can_use = true,
         stacklimit = 3,
         loot = {3,4},
@@ -1175,7 +1175,7 @@ Items =
     },
     {
         name = "Stash Hacker",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 3,
         loot = {5,6},
@@ -1186,7 +1186,7 @@ Items =
     },
     {
         name = "Stash Upgrade - Space",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 5,
         loot = {4,5,6},
@@ -1197,7 +1197,7 @@ Items =
     },
     {
         name = "Stash Upgrade - Keypad Lock",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 5,
         loot = {4,5,6},
@@ -1208,7 +1208,7 @@ Items =
     },
     {
         name = "Stash Upgrade - Identity Lock",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 5,
         loot = {5,6},
@@ -1219,7 +1219,7 @@ Items =
     },
     {
         name = "Stash Upgrade - Shield",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 5,
         loot = {4,5,6},
@@ -1230,7 +1230,7 @@ Items =
     },
     {
         name = "Stash Upgrade - Hack Protection",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 5,
         loot = {4,5,6},
@@ -1241,7 +1241,7 @@ Items =
     },
     {
         name = "Stash Upgrade - Electrocute",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 5,
         loot = {5,6},
@@ -1252,7 +1252,7 @@ Items =
     },
     {
         name = "Stash Upgrade - Self-Destruct",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 5,
         loot = {4,5,6},
@@ -1263,7 +1263,7 @@ Items =
     },
     {
         name = "Stash Upgrade - Notifier",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 5,
         loot = {5,6},
@@ -1274,7 +1274,7 @@ Items =
     },
     {
         name = "Stash Upgrade - Invisibility",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 5,
         loot = {5,6},
@@ -1285,7 +1285,7 @@ Items =
     },
     {
         name = "Stash Finder",
-        category = "General",
+        category = "Supplies",
         can_equip = true,
         equip_type = "detector",
         durable = true,
@@ -1297,7 +1297,7 @@ Items =
     },
     {
         name = "Wall",
-        category = "Build",
+        category = "Survival",
         can_use = true,
         stacklimit = 20,
         loot = {3,4,6},
@@ -1308,7 +1308,7 @@ Items =
     },
     {
         name = "Bed",
-        category = "Build",
+        category = "Survival",
         can_use = true,
         stacklimit = 1,
         loot = {4,5,6},
@@ -1318,7 +1318,7 @@ Items =
     },
     {
         name = "Door",
-        category = "Build",
+        category = "Survival",
         can_use = true,
         stacklimit = 1,
         loot = {5},
@@ -1328,7 +1328,7 @@ Items =
     },
     {
         name = "Sign",
-        category = "Build",
+        category = "Survival",
         can_use = true,
         stacklimit = 5,
         loot = {3,4},
@@ -1339,7 +1339,7 @@ Items =
     },
     {
         name = "Turret",
-        category = "Build",
+        category = "Survival",
         can_use = true,
         stacklimit = 1,
         loot = {4,5,6},
@@ -1349,7 +1349,7 @@ Items =
     },
     {
         name = "Helipad",
-        category = "Build",
+        category = "Survival",
         can_use = true,
         stacklimit = 1,
         loot = {4,5,6},
@@ -1359,7 +1359,7 @@ Items =
     },
     {
         name = "Teleporter",
-        category = "Build",
+        category = "Survival",
         can_use = true,
         stacklimit = 2,
         loot = {5,6},
@@ -1369,7 +1369,7 @@ Items =
     },
     {
         name = "Cloaker",
-        category = "Build",
+        category = "Survival",
         can_use = true,
         stacklimit = 1,
         loot = {5},
@@ -1379,7 +1379,7 @@ Items =
     },
     {
         name = "Binoculars",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 2,
         loot = {3,4},
@@ -1389,7 +1389,7 @@ Items =
     },
     {
         name = "Helmet",
-        category = "Clothing",
+        category = "Survival",
         can_equip = true,
         durable = true,
         equip_type = "hat",
@@ -1402,7 +1402,7 @@ Items =
     },
     {
         name = "Police Helmet",
-        category = "Clothing",
+        category = "Survival",
         can_equip = true,
         durable = true,
         equip_type = "hat",
@@ -1414,7 +1414,7 @@ Items =
     },
     {
         name = "Military Helmet",
-        category = "Clothing",
+        category = "Survival",
         can_equip = true,
         durable = true,
         equip_type = "hat",
@@ -1426,7 +1426,7 @@ Items =
     },
     {
         name = "Military Vest",
-        category = "Clothing",
+        category = "Survival",
         can_equip = true,
         durable = true,
         equip_type = "chest",
@@ -1438,7 +1438,7 @@ Items =
     },
     {
         name = "Kevlar Vest",
-        category = "Clothing",
+        category = "Survival",
         can_equip = true,
         durable = true,
         equip_type = "chest",
@@ -1450,7 +1450,7 @@ Items =
     },
     {
         name = "Mysterious Note",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 1,
         loot = {5},
@@ -1460,7 +1460,7 @@ Items =
     },
     {
         name = "Burnt Note",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 1,
         loot = {5},
@@ -1470,7 +1470,7 @@ Items =
     },
     {
         name = "Death Note",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 1,
         loot = {5},
@@ -1480,7 +1480,7 @@ Items =
     },
     {
         name = "WindWalker Potion",
-        category = "Consumables",
+        category = "Survival",
         can_use = true,
         stacklimit = 3,
         loot = {5},
@@ -1491,7 +1491,7 @@ Items =
     },
     {
         name = "UAV",
-        category = "General",
+        category = "Supplies",
         can_use = true,
         stacklimit = 2,
         loot = {5,6},
@@ -1513,7 +1513,7 @@ Items =
     },
     {
         name = "Sand Goggles", -- Only in loot in the desert
-        category = "Clothing",
+        category = "Survival",
         can_equip = true,
         stacklimit = 1,
         durable = true,
@@ -1529,17 +1529,17 @@ Items =
 
 Items_ammo_types = 
 {
-    ["Revolver"] = "Revolver Ammo",
-    ["Pistol"] = "Pistol Ammo",
-    ["Submachine Gun"] = "Submachine Gun Ammo",
-    ["Sawn-Off Shotgun"] = "Sawn-Off Ammo",
-    ["Machine Gun"] = "Machine Gun Ammo",
+    ["Revolver"] = "Revolver Supplies",
+    ["Pistol"] = "Pistol Supplies",
+    ["Submachine Gun"] = "Submachine Gun Supplies",
+    ["Sawn-Off Shotgun"] = "Sawn-Off Supplies",
+    ["Machine Gun"] = "Machine Gun Supplies",
     ["Bubble Gun"] = "Bubbles",
     ["Grenade Launcher"] = "Grenade Munitions",
-    ["Sniper Rifle"] = "Sniper Ammo",
+    ["Sniper Rifle"] = "Sniper Supplies",
     ["Rocket Launcher"] = "Rockets",
-    ["Assault Rifle"] = "Assault Ammo",
-    ["Shotgun"] = "Shotgun Ammo",
+    ["Assault Rifle"] = "Assault Supplies",
+    ["Shotgun"] = "Shotgun Supplies",
     ["Portal Gun"] = "Energy Cartridge"
     -- And more custom weapons to come
 

@@ -34,48 +34,48 @@ Lootbox.GeneratorConfig =
             min_items = 0,
             max_items = 4,
             respawn = 10,
-            min_credits = 1,
-            max_credits = 2
+            min_lockpicks = 1,
+            max_lockpicks = 2
         },
         [Lootbox.Types.Level2] = 
         {
             min_items = 1,
             max_items = 4,
             respawn = 15,
-            min_credits = 2,
-            max_credits = 4
+            min_lockpicks = 2,
+            max_lockpicks = 4
         },
         [Lootbox.Types.Level3] = 
         {
             min_items = 1,
             max_items = 4,
             respawn = 25,
-            min_credits = 3,
-            max_credits = 6
+            min_lockpicks = 3,
+            max_lockpicks = 6
         },
         [Lootbox.Types.Level4] = 
         {
             min_items = 1,
             max_items = 4,
             respawn = 45,
-            min_credits = 5,
-            max_credits = 10
+            min_lockpicks = 5,
+            max_lockpicks = 10
         },
         [Lootbox.Types.Level5] = 
         {
             min_items = 1,
             max_items = 3,
             respawn = 55,
-            min_credits = 20,
-            max_credits = 30
+            min_lockpicks = 20,
+            max_lockpicks = 30
         },
         [Lootbox.Types.SupplyCrate] = 
         {
             min_items = 6,
             max_items = 8,
             respawn = 9999,
-            min_credits = 40,
-            max_credits = 70
+            min_lockpicks = 40,
+            max_lockpicks = 70
         },
     }
 }

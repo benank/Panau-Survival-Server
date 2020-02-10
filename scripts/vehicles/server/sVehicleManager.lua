@@ -39,12 +39,12 @@ end
 -- When a player enters an unowned vehicle or owned (not by a friend or themself)
 function sVehicleManager:TryBuyVehicle(args)
 
-    local player_credits = Inventory.GetNumCredits({player = args.player})
+    local player_lockpicks = Inventory.GetNumLockpicks({player = args.player})
     local owned_vehicles = args.player:GetValue("OwnedVehicles")
-    print("creds: " .. player_credits)
+    print("lps: " .. player_lockpicks)
 
-    if player_credits < args.data.cost then
-        print("no creds")
+    if player_lockpicks < args.data.cost then
+        print("no lps")
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
         return

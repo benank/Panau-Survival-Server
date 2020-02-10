@@ -51,8 +51,8 @@ function sItemGenerator:GetLoot(tier)
 
     local contents = {}
 
-    -- Always have credits in there
-    local item = CreateItem({name = "Credits", amount = self:GetRandomNumberOfCredits(tier)})
+    -- Always have lockpicks in there
+    local item = CreateItem({name = "Lockpick", amount = self:GetRandomNumberOfLockpicks(tier)})
     local stack = shStack({contents = {item}})
     table.insert(contents, stack)
 
@@ -67,8 +67,8 @@ function sItemGenerator:GetLoot(tier)
 
 end
 
-function sItemGenerator:GetRandomNumberOfCredits(tier)
-    return math.random(Lootbox.GeneratorConfig.box[tier].min_credits, Lootbox.GeneratorConfig.box[tier].max_credits)
+function sItemGenerator:GetRandomNumberOfLockpicks(tier)
+    return math.random(Lootbox.GeneratorConfig.box[tier].min_lockpicks, Lootbox.GeneratorConfig.box[tier].max_lockpicks)
 end
 
 function sItemGenerator:GetStack(tier)

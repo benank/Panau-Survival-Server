@@ -9,7 +9,7 @@ if Client then
             local contents = {}
 
             -- Create new shItem and shStack instances for the client
-            for k,v in pairs(args.contents) do
+            for k,v in ipairs(args.contents) do
 
                 local items = {}
 
@@ -64,11 +64,11 @@ if Client then
 
     end
 
-    Inventory.GetNumCredits = function()
+    Inventory.GetNumLockpicks = function()
 
         local count = 0
         for index, stack in pairs(Inventory.contents) do
-            if stack:GetProperty("name") == "Credits" then
+            if stack:GetProperty("name") == "LockPick" then
                 count = count + stack:GetAmount()
             end
         end
@@ -262,10 +262,10 @@ elseif Server then
 
     end
 
-    Inventory.GetNumCredits = function(args)
+    Inventory.GetNumLockpicks = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.OperationBlock because args.player was invalid")
+            error("Failed to Inventory.GetNumLockpicks because args.player was invalid")
             return
         end
 
@@ -274,7 +274,7 @@ elseif Server then
     
         local count = 0
         for index, stack in pairs(inv) do
-            if stack:GetProperty("name") == "Credits" then
+            if stack:GetProperty("name") == "Lockpick" then
                 count = count + stack:GetAmount()
             end
         end

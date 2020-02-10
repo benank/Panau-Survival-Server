@@ -14,6 +14,7 @@ function cSafezone:__init()
         [Action.FireLeft] = true,
         [Action.McFire] = true,
         [Action.Fire] = true,
+        [Action.Kick] = true,
         [Action.FireVehicleWeapon] = true,
         [Action.VehicleFireLeft] = true,
         [Action.VehicleFireRight] = true

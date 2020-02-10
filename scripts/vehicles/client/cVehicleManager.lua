@@ -54,11 +54,11 @@ function cVehicleManager:LocalPlayerInput(args)
 
         if closest_vehicle then
             local data = closest_vehicle:GetValue("VehicleData")
-            local credits = Inventory.GetNumCredits()
+            local lockpicks = Inventory.GetNumLockpicks()
 
             -- TODO check if friends
             if data.owner_id ~= tostring(LocalPlayer:GetSteamId().id) then 
-                if credits < data.cost or #closest_vehicle:GetOccupants() > 0 then
+                if lockpicks < data.cost or #closest_vehicle:GetOccupants() > 0 then
                     return false
                 end
             end
@@ -86,7 +86,7 @@ function cVehicleManager:Render(args)
     local aim = LocalPlayer:GetAimTarget()
 
     if aim.entity and aim.entity.__type == "Vehicle" then
-        self:RenderVehicleDataMinimal(aim.entity)
+        self:RenderVehicleDataClassic(aim.entity)
     end
 
 end
@@ -114,9 +114,9 @@ function cVehicleManager:RenderVehicleDataMinimal(v)
     local cost_str = string.format("%d", data.cost)
     local cost_str_size = Render:GetTextSize(cost_str, self.text.size)
 
-    local credits_str = "CREDITS"
-    local credits_size = self.text.size * 0.28
-    local credits_str_size = Render:GetTextSize(credits_str, credits_size)
+    local lockpicks_str = "LOCKPICKS"
+    local lockpicks_size = self.text.size * 0.28
+    local lockpicks_str_size = Render:GetTextSize(lockpicks_str, lockpicks_size)
 
     if self.info_circle.data[1].amount ~= v:GetHealth() * 100 or self.info_circle.data[1].color ~= circle_color then
         self.info_circle.data[1].amount = v:GetHealth() * 100
@@ -131,7 +131,7 @@ function cVehicleManager:RenderVehicleDataMinimal(v)
 
     self.info_circle:Render(args)
     self:DrawShadowedText(-cost_str_size / 2, cost_str, self.text.color, self.text.size)
-    self:DrawShadowedText(-credits_str_size / 2 + Vector2(0, cost_str_size.y * 0.55), credits_str, self.text.color, credits_size)
+    self:DrawShadowedText(-lockpicks_str_size / 2 + Vector2(0, cost_str_size.y * 0.55), lockpicks_str, self.text.color, lockpicks_size)
 
 	Render:ResetTransform()
 
@@ -158,7 +158,7 @@ function cVehicleManager:RenderVehicleDataClassic(v)
     local vehicle_name = tostring(v)
     local vehicle_name_height = Render:GetTextHeight(vehicle_name, self.text.size)
 
-    local cost_str = string.format("Cost: %d Credits", data.cost)
+    local cost_str = string.format("Cost: %d Lockpicks", data.cost)
     local cost_str_height = Render:GetTextHeight(vehicle_name, self.text.size)
 
     local health_str = string.format("Health: %.0f%%", v:GetHealth() * 100)
