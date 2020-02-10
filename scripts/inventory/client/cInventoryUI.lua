@@ -13,18 +13,18 @@ function cInventoryUI:__init()
         Use = Color(200,200,200,100)
     }
 
-    self.window = Window.Create("Inventory")
+    self.window = BaseWindow.Create("Inventory")
     self.window:SetSize(Vector2(Render.Size.x * 0.5, Render.Size.y))
     self.window:SetPosition(Render.Size - self.window:GetSize())
-    self.window:SetTitle("Inventory")
     self.window:Hide()
     self.window:Focus()
+    self.window:SetBackgroundVisible(false)
     self.table = Table.Create(self.window)
     self.table:SetColumnCount(#Inventory.config.categories)
     self.table:SetSizeAutoRel(Vector2(1, 1))
     self.tableRow = TableRow.Create(self.table)
     self.tableRow:SetSizeAutoRel(Vector2(1,1))
-    self.tableRow:SetMargin(Vector2(20, 20), Vector2(20, 20))
+    self.tableRow:SetMargin(Vector2(10, 10), Vector2(10, 10))
     self.table:AddRow(self.tableRow)
 
     self:CreateInventory()
@@ -49,8 +49,6 @@ function cInventoryUI:__init()
     Events:Subscribe("KeyUp", self, self.KeyUp)
     Events:Subscribe("SetInventoryState", self, self.SetInventoryState)
     
-    self.window:Subscribe("WindowClosed", self, self.WindowClosed)
-
 end
 
 function cInventoryUI:SetInventoryState(open)
@@ -193,6 +191,7 @@ function cInventoryUI:CreateItemWindow(cat, index)
     print("create window " .. "itemwindow_"..cat..index)
     local itemWindow = BaseWindow.Create(tableRow, "itemwindow_"..cat..index)
     itemWindow:SetSizeAutoRel(Vector2(1,1))
+    itemWindow:SetPadding(Vector2(10, 10), Vector2(10, 10))
 
     local button_bg = Rectangle.Create(itemWindow, "button_bg")
     button_bg:SetSizeAutoRel(Vector2(1, 1))
@@ -201,6 +200,7 @@ function cInventoryUI:CreateItemWindow(cat, index)
     local button = Button.Create(itemWindow, "button")
     button:SetSizeAutoRel(Vector2(1, 1))
     button:SetBackgroundVisible(false)
+    button:SetTextSize(20)
 
     local durability_outer = Rectangle.Create(itemWindow, "dura_outer")
     durability_outer:SetSizeAutoRel(Vector2(0.9, 0.01))
@@ -224,6 +224,7 @@ function cInventoryUI:CreateItemWindow(cat, index)
     durability_inner:SetColor(Color.Black)
 
     --self:PopulateEntry({index = index})
+    tableRow:SizeToContents()
 
     button:SetDataNumber("stack_index", index)
 
