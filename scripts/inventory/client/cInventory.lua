@@ -7,7 +7,6 @@ function cInventory:__init()
     Network:Send("InventoryRequest")
 
     Network:Subscribe("InventoryUpdated", self, self.InventoryUpdated)
-    Network:Subscribe("InventoryHotbarUpdated", self, self.InventoryHotbarUpdated)
 
     Events:Fire("loader/CompleteResource", {count = 1})
 
@@ -19,19 +18,14 @@ function cInventory:ModulesLoad()
 
     local contents = {}
 
-    for index, stack in ipairs(Inventory.contents) do
-        contents[index] = {stack = stack:GetSyncObject(), uid = stack.uid}
+    for _, cat in pairs(Inventory.contents) do
+        contents[cat] = {}
+        for index, stack in ipairs(Inventory.contents) do
+            contents[cat][index] = {stack = stack:GetSyncObject(), uid = stack.uid}
+        end
     end
 
     Events:Fire("InventoryUpdated", {contents = contents, action = "full"})
-
-end
-
-function cInventory:InventoryHotbarUpdated(args)
-
-    if self.ui then
-        self.ui:UpdateHotbar(args)
-    end
 
 end
 

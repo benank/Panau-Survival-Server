@@ -22,7 +22,12 @@ function cInventoryUI:__init()
     self.table = Table.Create(self.window)
     self.table:SetColumnCount(#Inventory.config.categories)
     self.table:SetSizeAutoRel(Vector2(1, 1))
+    self.tableRow = TableRow.Create(self.table)
+    self.tableRow:SetSizeAutoRel(Vector2(1,1))
+    self.tableRow:SetMargin(Vector2(20, 20), Vector2(20, 20))
+    self.table:AddRow(self.tableRow)
 
+    self:CreateInventory()
 
     LocalPlayer:SetValue("InventoryOpen", false)
 
@@ -61,12 +66,15 @@ end
 function cInventoryUI:Update(args)
 
     if args.action == "full" then
-        local slots = GetInventoryNumSlots()
-        for i = 1, slots do
-            self:PopulateEntry({index = i})
+        for cat, _ in pairs(Inventory.contents) do
+            for index, stack in pairs(Inventory.contents[cat]) do
+                self:PopulateEntry({index = index, cat = cat})
+            end
         end
     elseif args.action == "update" or args.action == "remove" then
-        self:PopulateEntry({index = args.index})
+        self:PopulateEntry({index = args.index, cat = args.cat})
+    elseif args.action == "slots" then
+        -- TODO: update slot text in categories
     end
 
 end
@@ -84,18 +92,20 @@ end
 -- the loot, and set args.loot to true
 function cInventoryUI:PopulateEntry(args)
 
+    print("pop entry")
     local itemwindow = args.window
-
-    if not itemwindow then
-        itemwindow = self.window:FindChildByName("itemwindow"..args.index, true)
-    end
 
     local stack
 
     if not args.loot then
-        stack = Inventory.contents[args.index]
+        stack = Inventory.contents[args.cat][args.index]
     elseif args.loot and LootManager.current_box and LootManager.current_box.contents[args.index] then
         stack = LootManager.current_box.contents[args.index]
+    end
+
+    if not itemwindow then
+        print("itemwindow_"..stack:GetProperty("category")..args.index)
+        itemwindow = self.window:FindChildByName("itemwindow_"..stack:GetProperty("category")..args.index, true)
     end
 
     local button = itemwindow:FindChildByName("button", true)
@@ -143,39 +153,46 @@ function cInventoryUI:PopulateEntry(args)
 end
 
 function cInventoryUI:WindowClosed()
-
     self:ToggleVisible()
-
 end
 
 function cInventoryUI:CreateInventory()
 
     self.itemWindows = {}
+    self.columnWindows = {} -- Tables for each column in the inventory
 
     local contents = Inventory.contents
 
-    local total_index = 1
+    for index, cat_data in ipairs(Inventory.config.categories) do
+        local columnWindow = Table.Create(self.window, "columnWindow_" .. cat_data.name)
+        columnWindow:SetSizeAutoRel(Vector2(1,1))
+        self.columnWindows[cat_data.name] = columnWindow
+        self.tableRow:SetCellContents(index - 1, columnWindow)
+        self.itemWindows[cat_data.name] = {}
+    end
 
     -- Create entries for each item
-    for _, stack in ipairs(contents) do
-
-        local itemWindow = self:CreateItemWindow(stack, total_index)
-
-        self.itemWindows[i] = itemWindow
-        total_index = total_index + 1
+    for _, cat_data in pairs(Inventory.config.categories) do
+        for i = 1, Inventory.config.max_slots_per_category do -- Pre-create all itemWindows and utilize as needed
+            local itemWindow = self:CreateItemWindow(cat_data.name, i)
+            self.itemWindows[cat_data.name][i] = itemWindow
+        end
     end
 
 end
 
 -- Creates and returns a new item window. Can be used for loot and inventory
-function cInventoryUI:CreateItemWindow(stack, total_index)
+function cInventoryUI:CreateItemWindow(cat, index)
+
+    -- For reference, look at PopulateRightClick menu in old version for vertical buttons
+    local parent_column = self.columnWindows[cat]
 
     local tableRow = TableRow.Create(self.table)
-    tableRow:SetMargin(Vector2(20, 20), Vector2(20, 20))
-    self.table:AddRow(tableRow)
+    parent_column:AddRow(tableRow)
 
-    local itemWindow = BaseWindow.Create(tableRow, "itemwindow"..total_index)
-    itemWindow:SetSize(Vector2(Render.Size.x * 0.1, 75))
+    print("create window " .. "itemwindow_"..cat..index)
+    local itemWindow = BaseWindow.Create(tableRow, "itemwindow_"..cat..index)
+    itemWindow:SetSizeAutoRel(Vector2(1,1))
 
     local button_bg = Rectangle.Create(itemWindow, "button_bg")
     button_bg:SetSizeAutoRel(Vector2(1, 1))
@@ -206,11 +223,9 @@ function cInventoryUI:CreateItemWindow(stack, total_index)
     local durability_inner = Rectangle.Create(durability_outer, "dura_inner")
     durability_inner:SetColor(Color.Black)
 
-    self:PopulateEntry({index = total_index})
+    --self:PopulateEntry({index = index})
 
-    button:SetDataNumber("stack_index", total_index)
-
-    tableRow:SetCellContents(i, itemWindow)
+    button:SetDataNumber("stack_index", index)
 
     button:Subscribe("Press", self, self.LeftClickItemButton)
     button:Subscribe("RightPress", self, self.RightClickItemButton)
@@ -232,93 +247,6 @@ end
 
 function cInventoryUI:RightClickItemButton(button)
     -- Called when a button is right clicked
-end
-
--- Add buttons to the menu based on what item was right clicked
-function cInventoryUI:PopulateRightClickMenu(button)
-
-    local stack = Inventory.contents[button:GetDataNumber("stack_index")]
-
-    if not stack then return end
-
-    -- Remove all existing children
-    self.rightClickMenu:RemoveAllChildren()
-
-    local options = {}
-
-    if stack:GetProperty("can_equip") then
-        table.insert(options, stack:GetProperty("equipped") and "Unequip" or "Equip")
-    elseif stack:GetProperty("can_use") then
-        table.insert(options, "Use")
-    end
-
-    if stack:GetAmount() > 1 then
-
-        table.insert(options, "Split")
-        if stack:GetProperty("can_equip") or stack:GetProperty("durable") then
-            table.insert(options, "Shift")
-        end
-
-    end
-
-    -- THESE THINGS STOP WORKING AFTER CONSUMABLES CATEGORY
-    if self:GetCategoryFromIndex(button:GetDataNumber("stack_index") - 1) == stack:GetProperty("category") then
-        table.insert(options, "Move Left")
-    end
-    
-    if self:GetCategoryFromIndex(button:GetDataNumber("stack_index") + 1) == stack:GetProperty("category") then
-        table.insert(options, "Move Right")
-    end
-    
-    if stack:GetAmount() < stack:GetProperty("stacklimit") then
-        table.insert(options, "Merge")
-    end
-
-    if not LocalPlayer:InVehicle() then -- TODO change this so they can drop items to vehicle storage
-        table.insert(options, "Drop")
-    end
-
-    local button_size = Vector2(Render.Size.x * 0.04, 0)
-    self.rightClickMenu:SetSize(Vector2(button_size.x, button_size.y * #options))
-
-    local table = Table.Create(self.rightClickMenu)
-    table:SetColumnCount(1)
-    table:SetSizeAutoRel(Vector2(1, 1))
-
-    -- For as many options as we have
-    for i = 1, #options do
-
-        -- Add a table row and a button
-        local tableRow = TableRow.Create(table)
-        tableRow:SetSize(button_size)
-        tableRow:SetMargin(Vector2(0,0), Vector2(0,-3))
-        table:AddRow(tableRow)
-
-        local buttonWindow = BaseWindow.Create(tableRow)
-        buttonWindow:SetSize(button_size)
-        buttonWindow:SetMargin(Vector2(0, 0), Vector2(0, 0))
-        buttonWindow:SetPadding(Vector2(0, 0), Vector2(0, 0))
-
-        local button = Button.Create(buttonWindow)
-        button:SetText(options[i])
-        --button:SetTextSize(16)
-        button:SetPadding(Vector2(Render.Size.x * 0.005, Render.Size.x * 0.005), Vector2(Render.Size.x * 0.005, Render.Size.x * 0.005))
-        button:SizeToContents()
-        button:SetWidthRel(1)
-        button:SetMargin(Vector2(0, 0), Vector2(0, 0))
-
-        button:Subscribe("Press", self, self.ClickRightClickMenuButton)
-
-        buttonWindow:SizeToChildren()
-        tableRow:SetCellContents(0, buttonWindow)
-        tableRow:SizeToContents()
-
-    end
-
-    table:SizeToContents()
-    self.rightClickMenu:SizeToChildren()
-    self:ShowRightClickMenu()
-
 end
 
 function cInventoryUI:ConfirmAmountButtonPress(button)
@@ -423,18 +351,6 @@ function cInventoryUI:ToggleVisible()
     LocalPlayer:SetValue("InventoryOpen", self.window:GetVisible())
 
 end
-
-function cInventoryUI:GetCategoryFromIndex(index)
-
-    local slots = 0
-    
-    for k,v in ipairs(Inventory.config.categories) do
-        slots = slots + v.slots
-        if index <= slots and index > 0 then return v.name end
-    end
-
-end
-
 
 function cInventoryUI:KeyUp(args)
 

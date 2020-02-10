@@ -8,20 +8,23 @@ if Client then
 
             local contents = {}
 
-            -- Create new shItem and shStack instances for the client
-            for k,v in ipairs(args.contents) do
+            -- Create new shItem and shStack instances for the client (each module does this)
+            for category, _ in pairs(args.data.contents) do
+                contents[category] = {}
+                for index, v in pairs(args.data.contents[category]) do
+                    local items = {}
 
-                local items = {}
+                    for i, j in ipairs(v.stack.contents) do
+                        items[i] = shItem(j)
+                    end
 
-                for i, j in ipairs(v.stack.contents) do
-                    items[i] = shItem(j)
+                    contents[category][index] = shStack({contents = items, uid = v.stack.uid})
                 end
-
-                contents[k] = shStack({contents = items, uid = v.stack.uid})
 
             end
 
             Inventory.contents = contents
+            Inventory.slots = args.slots
 
         elseif args.action == "update" then
 
@@ -31,33 +34,37 @@ if Client then
                 items[i] = shItem(j)
             end
 
-            Inventory.contents[args.index] = shStack({contents = items, uid = args.stack.uid})
+            Inventory.contents[args.cat][args.index] = shStack({contents = items, uid = args.stack.uid})
 
         elseif args.action == "remove" then
 
-            Inventory.contents[args.index] = nil
+            Inventory.contents[args.cat][args.index] = nil
+
+        elseif args.action == "slots" then
+
+            Inventory.slots = args.slots
 
         end
 
     end
 
     Events:Subscribe("InventoryUpdated", function(args)
-
         Inventory.Update(args)
-
     end)
 
     Inventory.print = function()
 
         print("Printing Inventory contents")
 
-        for k, stack in pairs(Inventory.contents) do
+        for cat, _ in pairs(Inventory.contents) do
+            print("cat " .. cat)
+            for _, stack in pairs(Inventory.contents[cat]) do
+                print("stack " .. k)
+                for i, item in pairs(stack.contents) do
 
-            print("stack " .. k)
-            for i, item in pairs(stack.contents) do
+                    print("item " .. i .. " " .. item:ToString())
 
-                print("item " .. i .. " " .. item:ToString())
-
+                end
             end
 
         end
@@ -67,8 +74,8 @@ if Client then
     Inventory.GetNumLockpicks = function()
 
         local count = 0
-        for index, stack in pairs(Inventory.contents) do
-            if stack:GetProperty("name") == "LockPick" then
+        for _, stack in pairs(Inventory.contents["Supplies"]) do
+            if stack:GetProperty("name") == "Lockpick" then
                 count = count + stack:GetAmount()
             end
         end
@@ -87,24 +94,42 @@ elseif Server then
             return
         end
         
-        local contents_array = args.player:GetValue("Inventory")
+        local contents_array = args.player:GetValue("Inventory").contents
         local contents = {}
         
         -- Create new shItem and shStack instances for the client
-        for k,v in pairs(contents_array) do
+        for category, _ in ipairs(contents_array) do
+            contents[category] = {}
+            for index, v in pairs(args.contents[category]) do
+                local items = {}
 
-            local items = {}
+                for i, j in ipairs(v.stack.contents) do
+                    items[i] = shItem(j)
+                end
 
-            for i, j in ipairs(v.stack.contents) do
-                items[i] = shItem(j)
+                contents[category][index] = shStack({contents = items, uid = v.stack.uid})
             end
-
-            contents[k] = shStack({contents = items, uid = v.stack.uid})
 
         end
 
         return contents
     
+    end
+
+    Inventory.GetSlotsInCategory = function(args)
+
+        if not IsValid(args.player) then
+            error("Failed to Inventory.GetSlotsInCategory because args.player was invalid")
+            return
+        end
+
+        local slots = args.player:GetValue("Inventory").slots
+
+        assert(args.cat ~= nil, "Failed to Inventory.GetSlotsInCategory because args.cat was invalid")
+        assert(slots[args.cat] ~= nil, "Failed to Inventory.GetSlotsInCategory because slots[args.cat] was invalid")
+
+        return slots[args.cat]
+
     end
 
     Inventory.AddStack = function(args)
@@ -187,20 +212,11 @@ elseif Server then
         local item = shItem(args.item)
         local contents = Inventory.Get({player = args.player})
 
-        if args.check_uid then
-            for k, stack in pairs(contents) do
-                for i, _item in pairs(stack.contents) do
-                    if _item.uid == item.uid then
-                        return true
-                    end
-                end
-            end
-        else
-            for k, stack in pairs(contents) do
-                for i, _item in pairs(stack.contents) do
-                    if _item.name == item.name then
-                        return true
-                    end
+        for index, stack in pairs(contents[item.category]) do
+            for i, _item in pairs(stack.contents) do
+                if (args.check_uid and _item.uid == item.uid) -- If we are checking for a SPECIFIC item
+                or (not args.check_uid and _item.name == item.name) then -- If we are checking for any item of a type
+                    return true
                 end
             end
         end
@@ -273,7 +289,7 @@ elseif Server then
         if not inv then return end
     
         local count = 0
-        for index, stack in pairs(inv) do
+        for index, stack in pairs(inv["Supplies"]) do
             if stack:GetProperty("name") == "Lockpick" then
                 count = count + stack:GetAmount()
             end
@@ -294,13 +310,15 @@ elseif Server then
 
         print("Inventory contents of " .. args.player)
 
-        for k, stack in pairs(contents) do
+        for cat, _ in pairs(contents) do
+            print("cat " .. cat)
+            for _, stack in pairs(contents[cat]) do
+                print("stack " .. k)
+                for i, item in pairs(stack.contents) do
 
-            print("stack " .. k)
-            for i, item in pairs(stack.contents) do
+                    print("item " .. i .. " " .. item:ToString())
 
-                print("item " .. i .. " " .. item:ToString())
-
+                end
             end
 
         end

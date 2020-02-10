@@ -9,6 +9,7 @@ Inventory.config =
         [3] = {name = "Supplies", slots = 6},
         [4] = {name = "Survival", slots = 8}
     },
+    max_slots_per_category = 20,
     uid = 0,
     default_inv = 
     {
