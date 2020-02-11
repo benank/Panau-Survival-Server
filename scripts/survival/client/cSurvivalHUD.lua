@@ -5,7 +5,7 @@ function cSurvivalHUD:__init()
     -- TODO enable dynamic circle generation on upper level for parachute/wingsuit dura
 
 	self.circle_size = Render.Size.x * 0.02
-    self.circle_basepos = Vector2(Render.Size.x - self.circle_size * 8.5, Render.Size.y - self.circle_size * 1.5)
+    self.circle_basepos = Vector2(Render.Size.x - self.circle_size * 8.5, self.circle_size * 1.5)
     
     self.images = {}
     self:LoadIcons()

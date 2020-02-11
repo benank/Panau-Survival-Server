@@ -18,7 +18,7 @@ function cGrapplehookManager:__init()
 	self.recharge_color = Color(190, 190, 190)
 	self.recharge_color_text = Color(0,0,0, 150)
 	self.circle_size = Render.Size.x * 0.02
-	self.circle_basepos = Vector2(Render.Size.x - self.circle_size * 1.5, Render.Size.y * 0.6 - self.circle_size / 2)
+	self.circle_basepos = Vector2(self.circle_size * 1.5, Render.Size.y * 0.6 - self.circle_size / 2)
 	self.circle = CircleBar(self.circle_basepos, self.circle_size, 
 	{
 		[1] = {max_amount = 100, amount = 25, color = self.recharge_color}
