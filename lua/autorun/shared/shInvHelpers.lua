@@ -24,7 +24,7 @@ if Client then
             end
 
             Inventory.contents = contents
-            Inventory.slots = args.slots
+            Inventory.slots = args.data.slots
 
         elseif args.action == "update" then
 

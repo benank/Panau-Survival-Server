@@ -14,7 +14,7 @@ function cInventoryUI:__init()
     }
 
     self.window = BaseWindow.Create("Inventory")
-    self.window:SetSize(Vector2(Render.Size.x * 0.5, Render.Size.y))
+    self.window:SetSize(Vector2(math.max(Render.Size.x / 2, 800), Render.Size.y))
     self.window:SetPosition(Render.Size - self.window:GetSize())
     self.window:Hide()
     self.window:Focus()
@@ -70,10 +70,12 @@ function cInventoryUI:Update(args)
                 self:PopulateEntry({index = index, cat = cat})
             end
         end
+        self:UpdateAllCategoryTitles()
     elseif args.action == "update" or args.action == "remove" then
         self:PopulateEntry({index = args.index, cat = args.cat})
+        self:UpdateAllCategoryTitles()
     elseif args.action == "slots" then
-        -- TODO: update slot text in categories
+        self:UpdateAllCategoryTitles()
     end
 
 end
@@ -102,7 +104,6 @@ function cInventoryUI:PopulateEntry(args)
     end
 
     if not itemwindow then
-        print("itemwindow_"..stack:GetProperty("category")..args.index)
         itemwindow = self.window:FindChildByName("itemwindow_"..stack:GetProperty("category")..args.index, true)
     end
 
@@ -156,6 +157,7 @@ end
 function cInventoryUI:CreateInventory()
 
     self.itemWindows = {}
+    self.categoryTitles = {}
 
     local contents = Inventory.contents
 
@@ -168,12 +170,62 @@ function cInventoryUI:CreateInventory()
 
     -- Create entries for each item
     for _, cat_data in pairs(Inventory.config.categories) do
+        self.categoryTitles[cat_data.name] = self:CreateCategoryTitle(cat_data.name)
         for i = 1, Inventory.config.max_slots_per_category do -- Pre-create all itemWindows and utilize as needed
             local itemWindow = self:CreateItemWindow(cat_data.name, i)
             self.itemWindows[cat_data.name][i] = itemWindow
         end
     end
 
+end
+
+-- Updates all category titles in the inventory. Should be called when number of available slots changes (level up, items added/removed)
+function cInventoryUI:UpdateAllCategoryTitles()
+    for cat, _ in pairs(Inventory.contents) do
+        self:UpdateCategoryTitle(cat)
+    end
+end
+
+-- TODO: make this method shared
+function cInventoryUI:GetNumSlotsInCategory(cat)
+    if not Inventory.slots then return end
+    assert(Inventory.slots[cat] ~= nil, "cInventoryUI:GetNumSlotsInCategory failed: category was invalid (given: " .. cat .. ")")
+    local total = 0
+
+    for slot_type, amount in pairs(Inventory.slots[cat]) do
+        total = total + amount
+    end
+
+    return total
+end
+
+function cInventoryUI:GetCategoryTitleText(cat)
+    return string.format("%s %i/%i", -- TODO: add backpack support
+        cat,
+        #Inventory.contents[cat],
+        self:GetNumSlotsInCategory(cat) or 0)
+end
+
+function cInventoryUI:UpdateCategoryTitle(cat)
+    self.categoryTitles[cat]:SetText(self:GetCategoryTitleText(cat))
+    self.categoryTitles[cat]:SetPosition(self:GetCategoryTitlePosition(cat))
+end
+
+function cInventoryUI:CreateCategoryTitle(cat)
+    local categoryTitle = Label.Create(self.window, "categorytitle_"..cat)
+    categoryTitle:SetSize(Vector2(self.inv_dimensions.button_size.x, self.inv_dimensions.button_size.y * 0.5))
+    categoryTitle:SetTextSize(14)
+    categoryTitle:SetAlignment(GwenPosition.Center)
+    return categoryTitle
+end
+
+function cInventoryUI:GetCategoryTitlePosition(cat)
+    local index = Inventory.contents and #Inventory.contents[cat] or 0
+    return Vector2(
+        self.inv_dimensions[cat].x,
+        self.window:GetSize().y - (self.inv_dimensions.button_size.y * index)
+        - self.inv_dimensions.padding * (index + 1) - self.categoryTitles[cat]:GetSize().y
+    )
 end
 
 function cInventoryUI:GetItemWindowPosition(cat, index)
@@ -217,8 +269,6 @@ function cInventoryUI:CreateItemWindow(cat, index)
     equip_inner:SetColor(Color.Green)
 
     equip_outer:Hide()
-
-    --self:PopulateEntry({index = index})
 
     button:SetDataNumber("stack_index", index)
 
