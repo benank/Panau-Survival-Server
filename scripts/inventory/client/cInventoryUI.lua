@@ -23,7 +23,7 @@ function cInventoryUI:__init()
     self.inv_dimensions = 
     {
         padding = 4, -- Padding on all sides is the same
-        text_size = 18,
+        text_size = 20,
         button_size = Vector2(self.window:GetSize().x / #Inventory.config.categories, 40),
         cat_offsets = {} -- Per category offsets
     }
@@ -189,7 +189,6 @@ end
 -- Creates and returns a new item window. Can be used for loot and inventory
 function cInventoryUI:CreateItemWindow(cat, index)
 
-    print("create window " .. "itemwindow_"..cat..index)
     local itemWindow = BaseWindow.Create(self.window, "itemwindow_"..cat..index)
     itemWindow:SetSize(self.inv_dimensions.button_size)
     itemWindow:SetPosition(self:GetItemWindowPosition(cat, index))
@@ -202,6 +201,7 @@ function cInventoryUI:CreateItemWindow(cat, index)
     button:SetSizeAutoRel(Vector2(1, 1))
     button:SetBackgroundVisible(false)
     button:SetTextSize(self.inv_dimensions.text_size)
+    button:SetTextPadding(Vector2(500,500), Vector2(500,500))
 
     local durability_outer = Rectangle.Create(itemWindow, "dura_outer")
     durability_outer:SetSizeAutoRel(Vector2(0.9, 0.01))
