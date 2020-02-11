@@ -91,7 +91,6 @@ end
 -- the loot, and set args.loot to true
 function cInventoryUI:PopulateEntry(args)
 
-    print("pop entry")
     local itemwindow = args.window
 
     local stack
@@ -109,8 +108,7 @@ function cInventoryUI:PopulateEntry(args)
 
     local button = itemwindow:FindChildByName("button", true)
     local button_bg = itemwindow:FindChildByName("button_bg", true)
-    local dura_outer = itemwindow:FindChildByName("dura_outer", true)
-    local dura_inner = itemwindow:FindChildByName("dura_inner", true)
+    local durability = itemwindow:FindChildByName("dura", true)
     local equip_outer = itemwindow:FindChildByName("equip_outer", true)
     local equip_inner = itemwindow:FindChildByName("equip_inner", true)
 
@@ -139,13 +137,13 @@ function cInventoryUI:PopulateEntry(args)
     
     if stack:GetProperty("durable") then
 
-        dura_inner:SetSizeAutoRel(Vector2(1, 1 - (stack.contents[1].durability / stack.contents[1].max_durability)))
-        dura_outer:SetColor(self:GetDurabilityColor(stack.contents[1].durability / stack.contents[1].max_durability))
-        dura_outer:Show()
+        durability:SetSizeAutoRel(Vector2((stack.contents[1].durability / stack.contents[1].max_durability) / 0.95, 0.1))
+        durability:SetColor(self:GetDurabilityColor(stack.contents[1].durability / stack.contents[1].max_durability))
+        durability:Show()
 
     else
 
-        dura_outer:Hide()
+        durability:Hide()
 
     end
 
@@ -203,14 +201,13 @@ function cInventoryUI:CreateItemWindow(cat, index)
     button:SetTextSize(self.inv_dimensions.text_size)
     button:SetTextPadding(Vector2(500,500), Vector2(500,500))
 
-    local durability_outer = Rectangle.Create(itemWindow, "dura_outer")
-    durability_outer:SetSizeAutoRel(Vector2(0.9, 0.01))
-    durability_outer:SetPositionRel(Vector2(0.5, 0.1) - durability_outer:GetSizeRel() / 2)
-    durability_outer:SetColor(Color.Yellow)
-    durability_outer:Hide()
+    local durability = Rectangle.Create(itemWindow, "dura")
+    durability:SetPositionRel(Vector2(0.05, 0.75))
+    durability:SetColor(Color.Yellow)
+    durability:Hide()
 
     local equip_outer = Rectangle.Create(itemWindow, "equip_outer")
-    equip_outer:SetSizeAutoRel(Vector2(0.1, 0.1))
+    equip_outer:SetSizeAutoRel(Vector2(20, 20))
     equip_outer:SetPositionRel(Vector2(0.05, 0.05))
     equip_outer:SetColor(Color.Black)
 
@@ -220,9 +217,6 @@ function cInventoryUI:CreateItemWindow(cat, index)
     equip_inner:SetColor(Color.Green)
 
     equip_outer:Hide()
-
-    local durability_inner = Rectangle.Create(durability_outer, "dura_inner")
-    durability_inner:SetColor(Color.Black)
 
     --self:PopulateEntry({index = index})
 
