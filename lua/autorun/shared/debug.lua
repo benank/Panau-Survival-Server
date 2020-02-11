@@ -1,4 +1,5 @@
-debug_enabled = true
+IsTest = true
+debug_enabled = IsTest and true
 function debug(s)
 	if not debug_enabled then return end
 	if Server then
