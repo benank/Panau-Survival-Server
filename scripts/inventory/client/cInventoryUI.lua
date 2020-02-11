@@ -4,6 +4,7 @@ function cInventoryUI:__init()
 
     self.open_key = 'G'
     self.steam_id = tostring(LocalPlayer:GetSteamId().id)
+    self.dropping_counter = 0 -- Amount of stacks the player is trying to drop. If > 0, then drop items on inventory close
 
     self.bg_colors = 
     {
@@ -153,10 +154,6 @@ function cInventoryUI:PopulateEntry(args)
 
     end
 
-end
-
-function cInventoryUI:WindowClosed()
-    self:ToggleVisible()
 end
 
 function cInventoryUI:CreateInventory()
@@ -334,6 +331,7 @@ function cInventoryUI:RightClickItemButton(button)
     button:SetTextPressedColor(colors.text_hover)
     button:GetParent():FindChildByName("button_bg", true):SetColor(colors.background)
     self:SetItemWindowBorderColor(button:GetParent(), colors.border)
+    self.dropping_counter = button:GetDataBool("dropping") and self.dropping_counter + 1 or self.dropping_counter - 1
 end
 
 function cInventoryUI:SetItemWindowBorderColor(itemWindow, border_color)
@@ -429,13 +427,24 @@ function cInventoryUI:LocalPlayerInput(args)
     if self.blockedActions[args.input] then return false end
 end
 
+-- Called when the inventory is closed
+function cInventoryUI:InventoryClosed()
+
+    if self.dropping_counter > 0 then
+        self.dropping_counter = 0
+        -- loop through all items, find those that were marked for dropping (with amounts)
+    end
+    
+end
+
 function cInventoryUI:ToggleVisible()
 
-    if self.window:GetVisible() then
+    if self.window:GetVisible() then -- Close inventory
         self.window:Hide()
         Events:Unsubscribe(self.LPI)
         self.LPI = nil
-    else
+        self:InventoryClosed()
+    else -- Open inventory
         self.window:Show()
         Mouse:SetPosition(Render.Size / 2)
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)

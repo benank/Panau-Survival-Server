@@ -40,6 +40,24 @@ if Client then
 
             Inventory.contents[args.cat][args.index] = nil
 
+        elseif args.action == "cat" then
+
+            local contents = {}
+
+            -- Create new shItem and shStack instances for the client (each module does this)
+            for index, v in pairs(args.data.contents) do
+                local items = {}
+
+                for i, j in ipairs(v.stack.contents) do
+                    items[i] = shItem(j)
+                end
+
+                contents[index] = shStack({contents = items, uid = v.stack.uid})
+            end
+
+            Inventory.contents[args.cat] = contents
+            Inventory.slots[args.cat] = args.data.slots
+
         elseif args.action == "slots" then
 
             Inventory.slots = args.slots

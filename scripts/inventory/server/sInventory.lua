@@ -538,9 +538,20 @@ function sInventory:RemoveStack(args)
 
             self:CheckIfStackHasOneEquippedThenUnequip(self.contents[cat][args.index])
 
-            self.contents[cat][args.index] = nil
-            stack = nil
-            self:Sync({index = args.index, sync_remove = true})
+            -- If we are not removing the last item
+            if args.index < #self.contents[cat] then
+
+                self:ShiftItemsDown(cat, args.index)
+                self:Sync({sync_cat = true, cat = cat}) -- Category sync for less network requests
+
+            else
+
+                self.contents[cat][args.index] = nil
+                stack = nil
+                self:Sync({index = args.index, sync_remove = true})
+
+            end
+
 
         end
 
@@ -552,9 +563,15 @@ function sInventory:RemoveStack(args)
                 
                 self:CheckIfStackHasOneEquippedThenUnequip(self.contents[cat][_index])
 
-                self.contents[cat][_index] = nil
-                args.stack = nil
-                self:Sync({index = _index, sync_remove = true})
+                if _index < #self.contents[cat] then
+                    self:ShiftItemsDown(cat, _index)
+                    self:Sync({sync_cat = true, cat = cat})
+                else
+                    self.contents[cat][_index] = nil
+                    args.stack = nil
+                    self:Sync({index = _index, sync_remove = true})
+                end
+
                 break
             end
 
@@ -575,8 +592,14 @@ function sInventory:RemoveStack(args)
                         
                         self:CheckIfStackHasOneEquippedThenUnequip(self.contents[cat][i])
 
-                        self.contents[cat][i] = nil
-                        self:Sync({index = i, sync_remove = true})
+                        if i < #self.contents[cat] then
+                            self:ShiftItemsDown(cat, i)
+                            self:Sync({sync_cat = true, cat = cat})
+                        else
+                            self.contents[cat][i] = nil
+                            self:Sync({index = i, sync_remove = true})
+                        end
+
                     end
 
                     -- Got more items to remove, so keep going
@@ -601,6 +624,17 @@ function sInventory:RemoveStack(args)
 
     end
 
+end
+
+-- Shifts items in a category down incase one in the middle was removed
+-- This WILL remove the stack within index
+function sInventory:ShiftItemsDown(cat, index)
+    local temp_index = index + 1
+    while temp_index <= #self.contents[cat] do
+        self.contents[cat][temp_index - 1] = self.contents[cat][temp_index]:Copy() -- Copy items into new slot
+        self.contents[cat][temp_index] = nil -- Remove old item
+        temp_index = temp_index + 1
+    end
 end
 
 function sInventory:CheckIfStackHasOneEquippedThenUnequip(stack)
@@ -650,20 +684,24 @@ function sInventory:Sync(args)
         end
     end
 
-    if args.sync_full then
+    if args.sync_full then -- Sync entire inventory
         Network:Send(self.player, "InventoryUpdated", 
             {action = "full", data = self:GetSyncObject()})
-    elseif args.sync_stack then
+    elseif args.sync_stack then -- Sync a single stack
         Network:Send(self.player, "InventoryUpdated", 
             {action = "update", cat = args.stack:GetProperty("category"), stack = args.stack:GetSyncObject(), index = args.index})
-    elseif args.sync_remove then
+    elseif args.sync_remove then -- Sync the removal of a stack (only used if it was the top stack)
         Network:Send(self.player, "InventoryUpdated", 
             {action = "remove", cat = args.stack:GetProperty("category"), index = args.index})
-    elseif args.sync_slots then
+    elseif args.sync_cat then -- Sync an entire category of items
+        Network:Send(self.player, "InventoryUpdated", 
+            {action = "cat", cat = args.cat, data = self:GetCategorySyncObject(args.cat)})
+    elseif args.sync_slots then -- Sync ONLY slots
         Network:Send(self.player, "InventoryUpdated", 
             {action = "slots", slots = self.slots})
     end
 
+    -- If initial sync was done already, then update the database with the new info
     if self.initial_sync then
         self:UpdateDB()
     end
@@ -836,6 +874,10 @@ function sInventory:GetSyncObject()
 
     return {contents = data, slots = self.slots}
 
+end
+
+function sInventory:GetCategorySyncObject(cat)
+    return {contents = self.contents[cat], slots = self.slots[cat]}
 end
 
 function splitstr2(s, delimiter)
