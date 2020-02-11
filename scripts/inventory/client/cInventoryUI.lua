@@ -113,7 +113,12 @@ function cInventoryUI:PopulateEntry(args)
     local equip_outer = itemwindow:FindChildByName("equip_outer", true)
     local equip_inner = itemwindow:FindChildByName("equip_inner", true)
 
-    if not stack then return end -- No valid item found
+    if not stack then -- No item found, hide the entry
+        itemwindow:Hide()
+        return
+    else
+        itemwindow:Show()
+    end
 
     local item_name = stack:GetProperty("name")
     button:SetText(self:GetItemNameWithAmount(stack))
@@ -271,6 +276,7 @@ function cInventoryUI:CreateItemWindow(cat, index)
     equip_outer:Hide()
 
     button:SetDataNumber("stack_index", index)
+    itemWindow:Hide()
 
     button:Subscribe("Press", self, self.LeftClickItemButton)
     button:Subscribe("RightPress", self, self.RightClickItemButton)
