@@ -250,17 +250,21 @@ function cInventoryUI:CreateItemWindow(cat, index)
 
     local button_bg = Rectangle.Create(itemWindow, "button_bg")
     button_bg:SetSizeAutoRel(Vector2(1, 1))
-    button_bg:SetColor(self.bg_colors.None)
+    button_bg:SetColor(InventoryUIStyle.colors.default.background)
 
     local button = Button.Create(itemWindow, "button")
     button:SetSizeAutoRel(Vector2(1, 1))
     button:SetBackgroundVisible(false)
     button:SetTextSize(self.inv_dimensions.text_size)
     button:SetTextPadding(Vector2(500,500), Vector2(500,500))
+    local colors = InventoryUIStyle.colors.default
+    button:SetTextColor(colors.text)
+    button:SetTextNormalColor(colors.text)
+    button:SetTextHoveredColor(colors.text_hover)
+    button:SetTextPressedColor(colors.text_hover)
 
     local durability = Rectangle.Create(itemWindow, "dura")
     durability:SetPositionRel(Vector2(0.05, 0.75))
-    durability:SetColor(Color.Yellow)
     durability:Hide()
 
     local equip_outer = Rectangle.Create(itemWindow, "equip_outer")
@@ -273,9 +277,32 @@ function cInventoryUI:CreateItemWindow(cat, index)
     equip_inner:SetPositionRel(Vector2(0.5, 0.5) - equip_inner:GetSizeRel() / 2)
     equip_inner:SetColor(Color.Green)
 
+    local border_top = Rectangle.Create(itemWindow, "border_top")
+    border_top:SetSizeAutoRel(Vector2(1, 0))
+    border_top:SetHeight(InventoryUIStyle.border_size)
+    border_top:SetPosition(Vector2(0, 0))
+
+    local border_right = Rectangle.Create(itemWindow, "border_right")
+    border_right:SetSizeAutoRel(Vector2(0, 1))
+    border_right:SetWidth(InventoryUIStyle.border_size)
+    border_right:SetPosition(Vector2(itemWindow:GetWidth() - InventoryUIStyle.border_size, 0))
+
+    local border_bottom = Rectangle.Create(itemWindow, "border_bottom")
+    border_bottom:SetSizeAutoRel(Vector2(1, 0))
+    border_bottom:SetHeight(InventoryUIStyle.border_size)
+    border_bottom:SetPosition(Vector2(0, itemWindow:GetHeight() - InventoryUIStyle.border_size))
+
+    local border_left = Rectangle.Create(itemWindow, "border_left")
+    border_left:SetSizeAutoRel(Vector2(0, 1))
+    border_left:SetWidth(InventoryUIStyle.border_size)
+    border_left:SetPosition(Vector2(0, 0))
+
+    self:SetItemWindowBorderColor(itemWindow, colors.border)
+
     equip_outer:Hide()
 
     button:SetDataNumber("stack_index", index)
+    button:SetDataBool("dropping", false)
     itemWindow:Hide()
 
     button:Subscribe("Press", self, self.LeftClickItemButton)
@@ -298,6 +325,22 @@ end
 
 function cInventoryUI:RightClickItemButton(button)
     -- Called when a button is right clicked
+    button:SetDataBool("dropping", not button:GetDataBool("dropping"))
+    local colors = button:GetDataBool("dropping") and InventoryUIStyle.colors.dropping or InventoryUIStyle.colors.default
+
+    button:SetTextColor(colors.text)
+    button:SetTextNormalColor(colors.text)
+    button:SetTextHoveredColor(colors.text_hover)
+    button:SetTextPressedColor(colors.text_hover)
+    button:GetParent():FindChildByName("button_bg", true):SetColor(colors.background)
+    self:SetItemWindowBorderColor(button:GetParent(), colors.border)
+end
+
+function cInventoryUI:SetItemWindowBorderColor(itemWindow, border_color)
+    itemWindow:FindChildByName("border_top", true):SetColor(border_color)
+    itemWindow:FindChildByName("border_right", true):SetColor(border_color)
+    itemWindow:FindChildByName("border_bottom", true):SetColor(border_color)
+    itemWindow:FindChildByName("border_left", true):SetColor(border_color)
 end
 
 function cInventoryUI:ConfirmAmountButtonPress(button)
