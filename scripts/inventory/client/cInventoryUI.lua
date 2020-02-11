@@ -227,7 +227,7 @@ end
 function cInventoryUI:GetCategoryTitlePosition(cat)
     local index = Inventory.contents and #Inventory.contents[cat] or 0
     return Vector2(
-        self.inv_dimensions[cat].x,
+        self.inv_dimensions[cat].x - self.inv_dimensions.padding * #Inventory.config.categories,
         self.window:GetSize().y - (self.inv_dimensions.button_size.y * index)
         - self.inv_dimensions.padding * (index + 1) - self.categoryTitles[cat]:GetSize().y
     )
@@ -235,7 +235,7 @@ end
 
 function cInventoryUI:GetItemWindowPosition(cat, index)
     return Vector2(
-        self.inv_dimensions[cat].x,
+        self.inv_dimensions[cat].x - self.inv_dimensions.padding * #Inventory.config.categories,
         self.window:GetSize().y - (self.inv_dimensions.button_size.y * index)
         - self.inv_dimensions.padding * index
     )
