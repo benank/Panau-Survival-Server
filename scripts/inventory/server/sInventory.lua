@@ -443,10 +443,7 @@ end
 -- Syncs automatically
 function sInventory:AddStack(args)
 
-    print("sInventory:AddStack")
-
     local cat = args.stack:GetProperty("category")
-    print(cat)
 
     -- Try to stack it in a specific place
     if args.index then
@@ -502,9 +499,10 @@ function sInventory:AddStack(args)
     -- Still have some left, so check empty spaces now
     while args.stack:GetAmount() > 0 and self:HaveEmptySpaces(cat) do
 
-        self.contents[cat][#self.contents[cat] + 1] = args.stack:Copy()
+        local index = #self.contents[cat] + 1
+        self.contents[cat][index] = args.stack:Copy()
         args.stack.contents = {} -- Clear stack contents
-        self:Sync({index = i, stack = self.contents[cat][i], sync_stack = true})
+        self:Sync({index = index, stack = self.contents[cat][index], sync_stack = true})
     
     end
 
