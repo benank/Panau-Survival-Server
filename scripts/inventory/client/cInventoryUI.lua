@@ -19,14 +19,15 @@ function cInventoryUI:__init()
     self.window:Hide()
     self.window:Focus()
     self.window:SetBackgroundVisible(false)
-    self.table = Table.Create(self.window)
-    self.table:SetColumnCount(#Inventory.config.categories)
-    self.table:SetSizeAutoRel(Vector2(1, 1))
-    self.tableRow = TableRow.Create(self.table)
-    self.tableRow:SetSizeAutoRel(Vector2(1,1))
-    self.tableRow:SetMargin(Vector2(10, 10), Vector2(10, 10))
-    self.table:AddRow(self.tableRow)
 
+    self.inv_dimensions = 
+    {
+        padding = 4, -- Padding on all sides is the same
+        text_size = 18,
+        button_size = Vector2(self.window:GetSize().x / #Inventory.config.categories, 40),
+        cat_offsets = {} -- Per category offsets
+    }
+    
     self:CreateInventory()
 
     LocalPlayer:SetValue("InventoryOpen", false)
@@ -157,16 +158,14 @@ end
 function cInventoryUI:CreateInventory()
 
     self.itemWindows = {}
-    self.columnWindows = {} -- Tables for each column in the inventory
 
     local contents = Inventory.contents
 
     for index, cat_data in ipairs(Inventory.config.categories) do
-        local columnWindow = Table.Create(self.window, "columnWindow_" .. cat_data.name)
-        columnWindow:SetSizeAutoRel(Vector2(1,1))
-        self.columnWindows[cat_data.name] = columnWindow
-        self.tableRow:SetCellContents(index - 1, columnWindow)
         self.itemWindows[cat_data.name] = {}
+        self.inv_dimensions[cat_data.name] = Vector2(
+            self.inv_dimensions.button_size.x * (index - 1) +
+            self.inv_dimensions.padding * (index - 1), 0) 
     end
 
     -- Create entries for each item
@@ -179,19 +178,21 @@ function cInventoryUI:CreateInventory()
 
 end
 
+function cInventoryUI:GetItemWindowPosition(cat, index)
+    return Vector2(
+        self.inv_dimensions[cat].x,
+        self.window:GetSize().y - (self.inv_dimensions.button_size.y * index)
+        - self.inv_dimensions.padding * index
+    )
+end
+
 -- Creates and returns a new item window. Can be used for loot and inventory
 function cInventoryUI:CreateItemWindow(cat, index)
 
-    -- For reference, look at PopulateRightClick menu in old version for vertical buttons
-    local parent_column = self.columnWindows[cat]
-
-    local tableRow = TableRow.Create(self.table)
-    parent_column:AddRow(tableRow)
-
     print("create window " .. "itemwindow_"..cat..index)
-    local itemWindow = BaseWindow.Create(tableRow, "itemwindow_"..cat..index)
-    itemWindow:SetSizeAutoRel(Vector2(1,1))
-    itemWindow:SetPadding(Vector2(10, 10), Vector2(10, 10))
+    local itemWindow = BaseWindow.Create(self.window, "itemwindow_"..cat..index)
+    itemWindow:SetSize(self.inv_dimensions.button_size)
+    itemWindow:SetPosition(self:GetItemWindowPosition(cat, index))
 
     local button_bg = Rectangle.Create(itemWindow, "button_bg")
     button_bg:SetSizeAutoRel(Vector2(1, 1))
@@ -200,7 +201,7 @@ function cInventoryUI:CreateItemWindow(cat, index)
     local button = Button.Create(itemWindow, "button")
     button:SetSizeAutoRel(Vector2(1, 1))
     button:SetBackgroundVisible(false)
-    button:SetTextSize(20)
+    button:SetTextSize(self.inv_dimensions.text_size)
 
     local durability_outer = Rectangle.Create(itemWindow, "dura_outer")
     durability_outer:SetSizeAutoRel(Vector2(0.9, 0.01))
@@ -224,7 +225,6 @@ function cInventoryUI:CreateItemWindow(cat, index)
     durability_inner:SetColor(Color.Black)
 
     --self:PopulateEntry({index = index})
-    tableRow:SizeToContents()
 
     button:SetDataNumber("stack_index", index)
 
