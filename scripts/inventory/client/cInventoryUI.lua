@@ -5,6 +5,8 @@ function cInventoryUI:__init()
     self.open_key = 'G'
     self.steam_id = tostring(LocalPlayer:GetSteamId().id)
     self.dropping_counter = 0 -- Amount of stacks the player is trying to drop. If > 0, then drop items on inventory close
+    self.dropping_items = {} -- Table of items (cat + index) that the player is trying to drop
+    self.hovered_button = nil -- Button in inventory currently hovered
 
     self.bg_colors = 
     {
@@ -49,6 +51,7 @@ function cInventoryUI:__init()
     }
 
     Events:Subscribe("KeyUp", self, self.KeyUp)
+    Events:Subscribe("MouseScroll", self, self.MouseScroll)
     Events:Subscribe("SetInventoryState", self, self.SetInventoryState)
     
 end
@@ -85,8 +88,21 @@ function cInventoryUI:GetDurabilityColor(percent)
     return Color.FromHSV(120 * percent, 0.85, 0.85)
 end
 
-function cInventoryUI:GetItemNameWithAmount(stack)
-    return string.format("%s (%i)", stack:GetProperty("name"), stack:GetAmount())
+-- Gets formatted stack name for inventory/loot, like: Lockpick (50)
+function cInventoryUI:GetItemNameWithAmount(stack, index)
+    return string.format("%s (%s)", stack:GetProperty("name"), tostring(self:GetItemButtonStackAmount(stack, index)))
+end
+
+-- Returns 5/10 if dropping, otherwise returns the amount in the stack
+function cInventoryUI:GetItemButtonStackAmount(stack, index)
+    local itemWindow = self.window:FindChildByName("itemwindow_"..stack:GetProperty("category")..index, true)
+    local button = itemWindow:FindChildByName("button", true)
+
+    if button:GetDataBool("dropping") then -- If they are dropping this stack
+        return string.format("%i/%i", button:GetDataNumber("drop_amount"), stack:GetAmount())
+    else -- Otherwise
+        return stack:GetAmount()
+    end
 end
 
 -- Updates an entry in the inventory so it matches the current inventory
@@ -122,7 +138,7 @@ function cInventoryUI:PopulateEntry(args)
     end
 
     local item_name = stack:GetProperty("name")
-    button:SetText(self:GetItemNameWithAmount(stack))
+    button:SetText(self:GetItemNameWithAmount(stack, args.index))
     --[[button_bg:SetColor(
         stack.contents[1].equipped and self.bg_colors.Equipped 
         or (stack:GetOneEquipped() and self.bg_colors.Equipped_Under or self.bg_colors.None))--]]
@@ -299,7 +315,9 @@ function cInventoryUI:CreateItemWindow(cat, index)
     equip_outer:Hide()
 
     button:SetDataNumber("stack_index", index)
+    button:SetDataString("stack_category", cat)
     button:SetDataBool("dropping", false)
+    button:SetDataNumber("drop_amount", 0)
     itemWindow:Hide()
 
     button:Subscribe("Press", self, self.LeftClickItemButton)
@@ -313,11 +331,12 @@ end
 
 function cInventoryUI:HoverEnterButton(button)
     -- Called when the mouse hovers over a button
-    -- use local stack = Inventory.contents[args.button:GetDataNumber("stack_index")] to get stack
+    self.hovered_button = button
 end
 
 function cInventoryUI:HoverLeaveButton(button)
     -- Called when the mouse stops hovering over a button
+    self.hovered_button = nil
 end
 
 function cInventoryUI:RightClickItemButton(button)
@@ -332,6 +351,36 @@ function cInventoryUI:RightClickItemButton(button)
     button:GetParent():FindChildByName("button_bg", true):SetColor(colors.background)
     self:SetItemWindowBorderColor(button:GetParent(), colors.border)
     self.dropping_counter = button:GetDataBool("dropping") and self.dropping_counter + 1 or self.dropping_counter - 1
+
+    local cat = button:GetDataString("stack_category")
+    local index = button:GetDataNumber("stack_index")
+    button:SetDataNumber("drop_amount", Inventory.contents[cat][index]:GetAmount()) -- Reset dropping amount when they right click it
+
+    button:SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+
+end
+
+function cInventoryUI:MouseScroll(args)
+    if self.dropping_counter == 0 then return end -- Not dropping any items
+    if not self.hovered_button then return end -- Not hovering over a button
+    if not self.hovered_button:GetDataBool("dropping") then return end -- Not scrolling on an item they are dropping
+
+    local cat = self.hovered_button:GetDataString("stack_category")
+    local index = self.hovered_button:GetDataNumber("stack_index")
+
+    local change = args.delta < 0 and -1 or 1 -- Normalizing the change
+    local new_drop_amount = self.hovered_button:GetDataNumber("drop_amount") + change
+
+    -- Bounds on dropping the item
+    if new_drop_amount == 0 then
+        new_drop_amount = Inventory.contents[cat][index]:GetAmount()
+    elseif new_drop_amount > Inventory.contents[cat][index]:GetAmount() then
+        new_drop_amount = 1
+    end
+
+    self.hovered_button:SetDataNumber("drop_amount", new_drop_amount)
+    self.hovered_button:SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+
 end
 
 function cInventoryUI:SetItemWindowBorderColor(itemWindow, border_color)
@@ -434,7 +483,7 @@ function cInventoryUI:InventoryClosed()
         self.dropping_counter = 0
         -- loop through all items, find those that were marked for dropping (with amounts)
     end
-    
+
 end
 
 function cInventoryUI:ToggleVisible()

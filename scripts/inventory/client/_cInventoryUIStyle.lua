@@ -15,7 +15,7 @@ function cInventoryUIStyle:__init()
         },
         dropping = 
         {
-            background = Color(150, 0, 0, self.background_alpha),
+            background = Color(100, 0, 0, self.background_alpha),
             border = Color(255, 0, 0, 255),
             text = Color(220, 0, 0, 255),
             text_hover = Color(255, 0, 0, 255)
