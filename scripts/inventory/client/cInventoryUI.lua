@@ -16,6 +16,8 @@ function cInventoryUI:__init()
         Use = Color(200,200,200,100)
     }
 
+    self.padding = 4
+
     self.window = BaseWindow.Create("Inventory")
     self.window:SetSize(Vector2(math.max(Render.Size.x / 2, 800), Render.Size.y))
     self.window:SetPosition(Render.Size - self.window:GetSize())
@@ -25,9 +27,10 @@ function cInventoryUI:__init()
 
     self.inv_dimensions = 
     {
-        padding = 4, -- Padding on all sides is the same
+        padding = self.padding, -- Padding on all sides is the same
         text_size = 20,
-        button_size = Vector2(self.window:GetSize().x / #Inventory.config.categories, 40),
+        button_size = Vector2(
+            (self.window:GetSize().x - self.padding * #Inventory.config.categories) / #Inventory.config.categories, 40),
         cat_offsets = {} -- Per category offsets
     }
     
@@ -183,7 +186,7 @@ function cInventoryUI:CreateInventory()
         self.itemWindows[cat_data.name] = {}
         self.inv_dimensions[cat_data.name] = Vector2(
             self.inv_dimensions.button_size.x * (index - 1) +
-            self.inv_dimensions.padding * (index - 1), 0) 
+            self.inv_dimensions.padding * (index + 1), 0) 
     end
 
     -- Create entries for each item
@@ -240,7 +243,7 @@ end
 function cInventoryUI:GetCategoryTitlePosition(cat)
     local index = Inventory.contents and #Inventory.contents[cat] or 0
     return Vector2(
-        self.inv_dimensions[cat].x - self.inv_dimensions.padding * #Inventory.config.categories,
+        self.inv_dimensions[cat].x - self.inv_dimensions.padding * 2,
         self.window:GetSize().y - (self.inv_dimensions.button_size.y * index)
         - self.inv_dimensions.padding * (index + 1) - self.categoryTitles[cat]:GetSize().y
     )
@@ -248,7 +251,7 @@ end
 
 function cInventoryUI:GetItemWindowPosition(cat, index)
     return Vector2(
-        self.inv_dimensions[cat].x - self.inv_dimensions.padding * #Inventory.config.categories,
+        self.inv_dimensions[cat].x - self.inv_dimensions.padding * 2,
         self.window:GetSize().y - (self.inv_dimensions.button_size.y * index)
         - self.inv_dimensions.padding * index
     )
