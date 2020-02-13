@@ -173,7 +173,7 @@ function sInventory:DropStacks(args, player)
 
 end
 
-function sInventory:DropStack(args, player) -- TODO: update
+function sInventory:DropStack(args, player)
 
     if not self:CanPlayerPerformOperations(player) then return end
     if player ~= self.player then return end
@@ -223,7 +223,7 @@ function sInventory:DropStack(args, player) -- TODO: update
 
 end
 
-function sInventory:SplitStack(args, player) -- TODO: update
+function sInventory:SplitStack(args, player)
 
     if not self:CanPlayerPerformOperations(player) then return end
     if player ~= self.player then return end
@@ -263,26 +263,16 @@ function sInventory:SwapStack(args, player) -- TODO: update
 
     if not self:CanPlayerPerformOperations(player) then return end
     if not args.from or not args.to then return end
-    if not self.contents[args.from] then return end
+    if not self.contents[args.cat] or not self.contents[args.cat][args.from] or not self.contents[args.cat][args.to] then return end
 
-    local stack = self.contents[args.from]
+    local stack = self.contents[args.cat][args.from]
 
-    -- Cannot make it go in a separate category
-    if stack:GetProperty("category") ~= self:GetCategoryFromIndex(args.to) then return end
+    local stack_copy = self.contents[args.cat][args.from]:Copy()
 
-    -- TODO regenerate uids of items in new split stack
-    -- not really an issue right now because we use stack indexes then look inside those for uids
-    local stack_copy = self.contents[args.from]:Copy()
+    self.contents[args.cat][args.from] = self.contents[args.cat][args.to]
+    self.contents[args.cat][args.to] = stack_copy
 
-    local swap_with_empty = not self.contents[args.to]
-
-    if swap_with_empty then return end
-
-    self.contents[args.from] = self.contents[args.to]
-    self.contents[args.to] = stack_copy
-
-    self:Sync({index = args.from, stack = self.contents[args.from], sync_stack = true})
-    self:Sync({index = args.to, stack = self.contents[args.to], sync_stack = true})
+    self:Sync({cat = args.cat, sync_cat = true})
 
 end
 

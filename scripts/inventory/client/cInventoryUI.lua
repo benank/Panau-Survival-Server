@@ -7,6 +7,7 @@ function cInventoryUI:__init()
     self.dropping_counter = 0 -- Amount of stacks the player is trying to drop. If > 0, then drop items on inventory close
     self.dropping_items = {} -- Table of items (cat + index + amount) that the player is trying to drop
     self.hovered_button = nil -- Button in inventory currently hovered
+    self.pressed_button = nil -- Button that the mouse is currently left clicking
 
     self.bg_colors = 
     {
@@ -329,12 +330,22 @@ function cInventoryUI:CreateItemWindow(cat, index)
     itemWindow:Hide()
 
     button:Subscribe("Press", self, self.LeftClickItemButton)
+    button:Subscribe("Down", self, self.LeftClickItemButtonDown)
+    button:Subscribe("Up", self, self.LeftClickItemButtonUp)
     button:Subscribe("RightPress", self, self.RightClickItemButton)
     button:Subscribe("HoverEnter", self, self.HoverEnterButton)
     button:Subscribe("HoverLeave", self, self.HoverLeaveButton)
 
     button:BringToFront()
 
+end
+
+function cInventoryUI:LeftClickItemButtonDown(button)
+    self.pressed_button = button
+end
+
+function cInventoryUI:LeftClickItemButtonUp(button)
+    self.pressed_button = nil
 end
 
 function cInventoryUI:HoverEnterButton(button)
@@ -345,6 +356,23 @@ end
 function cInventoryUI:HoverLeaveButton(button)
     -- Called when the mouse stops hovering over a button
     self.hovered_button = nil
+
+    if self.pressed_button then
+        -- If they are holding an item to try to move it
+        local abs_btn_pos = self.pressed_button:GetParent():GetPosition() + self.window:GetPosition()
+        local diff = Mouse:GetPosition().y - abs_btn_pos.y
+        local swap_dir = diff < 0 and 1 or -1 -- Direction of swap
+
+        local cat = button:GetDataString("stack_category")
+        local index = button:GetDataNumber("stack_index")
+
+        if index + swap_dir < 0 then return end
+        if not Inventory.contents[cat][index + swap_dir] then return end
+
+        Network:Send("Inventory/Swap" .. self.steam_id, {cat = cat, from = index, to = index + swap_dir})
+
+        self.pressed_button = nil
+    end
 end
 
 function cInventoryUI:RightClickItemButton(button)
@@ -431,6 +459,8 @@ function cInventoryUI:SetItemWindowBorderColor(itemWindow, border_color)
 end
 
 function cInventoryUI:LeftClickItemButton(button)
+
+    if self.hovered_button ~= button then return end -- Only hovered button receives mouse clicks
 
     if button:GetDataBool("dropping") then
         -- Adjusting the drop amount
