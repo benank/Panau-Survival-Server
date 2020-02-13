@@ -1,5 +1,7 @@
 Events:Subscribe("PlayerChat", function(args)
 
+    if not IsTest and not IsAdmin(args.player) then return end
+
     local split = args.text:split(" ")
 
     if args.text:sub(1, 5) == "/item" then
