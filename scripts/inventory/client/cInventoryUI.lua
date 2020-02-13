@@ -49,6 +49,9 @@ function cInventoryUI:__init()
         [Action.LookUp] = true,
         [Action.HeliTurnRight] = true,
         [Action.HeliTurnLeft] = true,
+        [Action.NextWeapon] = true,
+        [Action.PrevWeapon] = true,
+        [Action.SwitchWeapon] = true,
         [Action.VehicleFireLeft] = true,
         [Action.VehicleFireRight] = true,
         [Action.ThrowGrenade] = true
