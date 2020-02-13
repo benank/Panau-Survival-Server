@@ -30,7 +30,7 @@ end
 
 function Notifications:PlayerChat(args)
 	
-	if args.player:GetValue("NT_TagName") == "[Admin]" then
+	if IsAdmin(args.player) then
 	
 		local cmd_args = args.text:split( " " )
 	
