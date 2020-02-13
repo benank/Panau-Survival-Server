@@ -211,7 +211,8 @@ end
 -- Splits a stack into two stacks based on the amount specified and returns the new stack
 function shStack:Split(amount)
 
-    if amount < 1 or amount >= self:GetAmount() then return end
+    if amount < 1 or amount > self:GetAmount() then return end
+    if amount == self:GetAmount() then return self end
 
     local removed_items = {}
 

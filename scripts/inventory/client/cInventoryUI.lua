@@ -356,6 +356,16 @@ function cInventoryUI:RightClickItemButton(button)
         error("cInventoryUI:RightClickItemButton failed: no stack was found")
     end
 
+    -- Splitting stacks / recombining stacks
+    if button:GetDataBool("dropping") and Key:IsDown(VirtualKey.LShift) then
+        local stack = Inventory.contents[cat][index]
+        if not stack then return end
+
+        local drop_amount = button:GetDataNumber("drop_amount")
+
+        Network:Send("Inventory/Split" .. self.steam_id, {cat = cat, index = index, amount = drop_amount})
+    end
+
     local amount = Inventory.contents[cat][index]:GetAmount()
     button:SetDataNumber("drop_amount", amount) -- Reset dropping amount when they right click it
     self:ToggleDroppingItemButton(button)

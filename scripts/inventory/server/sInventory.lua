@@ -227,25 +227,35 @@ function sInventory:SplitStack(args, player) -- TODO: update
 
     if not self:CanPlayerPerformOperations(player) then return end
     if player ~= self.player then return end
-    if not self.contents[args.index] then return end
+    if not self.contents[args.cat] or not self.contents[args.cat][args.index] then return end
     if not args.amount or args.amount < 1 then return end
 
     if not tonumber(tostring(args.amount)) then
         args.amount = 1
     end
 
-    if args.amount >= self.contents[args.index]:GetAmount() or args.amount < 1 then return end
+    if args.amount > self.contents[args.cat][args.index]:GetAmount() or args.amount < 1 then return end
     
-    -- TODO regenerate uids of items in new split stack
-    -- not really an issue right now because we use stack indexes then look inside those for uids
-    local split_stack = self.contents[args.index]:Split(args.amount)
-    self:Sync({index = args.index, stack = self.contents[args.index], sync_stack = true})
+    if self.contents[args.cat][args.index]:GetAmount() == args.amount then
+        -- Trying to recombine a stack
+        local stack = self.contents[args.cat][args.index]:Copy()
+        self:RemoveStack({cat = args.cat, stack = stack:Copy(), index = args.index, amount = args.amount})
+        
+        self:AddStack({stack = stack})
 
-    local return_stack = self:AddStack({stack = split_stack, new_space = true})
+    else
 
-    if return_stack then
-        self:AddStack({stack = return_stack})
+        local split_stack = self.contents[args.cat][args.index]:Split(args.amount)
+        self:Sync({index = args.index, stack = self.contents[args.cat][args.index], sync_stack = true})
+
+        local return_stack = self:AddStack({stack = split_stack, new_space = true})
+
+        if return_stack then
+            self:AddStack({stack = return_stack})
+        end
+
     end
+
 
 end
 
