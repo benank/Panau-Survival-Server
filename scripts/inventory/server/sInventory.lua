@@ -28,7 +28,6 @@ function sInventory:__init(player)
     table.insert(self.network_events, Network:Subscribe("Inventory/Drop" .. self.steamID, self, self.DropStacks))
     table.insert(self.network_events, Network:Subscribe("Inventory/Split" .. self.steamID, self, self.SplitStack))
     table.insert(self.network_events, Network:Subscribe("Inventory/Swap" .. self.steamID, self, self.SwapStack))
-    table.insert(self.network_events, Network:Subscribe("Inventory/Combine" .. self.steamID, self, self.CombineStack))
 
 end
 
@@ -82,7 +81,7 @@ function sInventory:ShiftStack(args, player)
 
 end
 
-function sInventory:ToggleEquipped(args, player) -- TODO: update
+function sInventory:ToggleEquipped(args, player)
 
     if not self:CanPlayerPerformOperations(player) then return end
     if not args.index or not args.cat then return end
@@ -259,7 +258,7 @@ function sInventory:SplitStack(args, player)
 
 end
 
-function sInventory:SwapStack(args, player) -- TODO: update
+function sInventory:SwapStack(args, player)
 
     if not self:CanPlayerPerformOperations(player) then return end
     if not args.from or not args.to then return end
@@ -273,48 +272,6 @@ function sInventory:SwapStack(args, player) -- TODO: update
     self.contents[args.cat][args.to] = stack_copy
 
     self:Sync({cat = args.cat, sync_cat = true})
-
-end
-
-function sInventory:CombineStack(args, player) -- TODO: update
-
-    if not self:CanPlayerPerformOperations(player) then return end
-    if not args.index then return end
-    if not self.contents[args.index] then return end
-
-    local stack = self.contents[args.index]
-    local name = stack:GetProperty("name")
-
-    if not stack or stack:GetAmount() >= stack:GetProperty("stacklimit") then return end
-
-    local cat_info = self:GetCategoryInfo(stack:GetProperty("category"))
-    
-    for i = cat_info.start_index, cat_info.end_index do
-
-        local check_stack = self.contents[i]
-
-        if check_stack and check_stack:GetProperty("name") == name 
-        and check_stack:GetAmount() < check_stack:GetProperty("stacklimit")
-        and args.index ~= i then
-
-            local return_stack = stack:AddStack(check_stack)
-
-            if return_stack then
-                self.contents[i] = return_stack
-                self:Sync({index = i, stack = return_stack, sync_stack = true})
-            else
-                self.contents[i] = nil
-                self:Sync({index = i, sync_remove = true}) -- UPDATE THIS WITH CAT IF IT IS THE SAME
-                
-                self:RemoveHotbarIndex(i)
-                self:UpdateHotbar()
-            end
-
-        end
-
-    end
-
-    self:Sync({index = args.index, stack = self.contents[args.index], sync_stack = true})
 
 end
 
