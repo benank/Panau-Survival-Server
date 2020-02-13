@@ -416,14 +416,16 @@ function sInventory:ModifyStackRemote(args)
 
 end
 
-function sInventory:ModifyDurabilityRemote(args) -- TODO: update
+function sInventory:ModifyDurabilityRemote(args)
 
     if args.player ~= self.player then
         error("sInventory:ModifyDurabilityRemote failed: player does not match")
         return
     end
 
-    for index, stack in pairs(self.contents) do
+    local cat = args.item.category
+
+    for index, stack in pairs(self.contents[cat]) do
 
         for _, item in pairs(stack.contents) do
 
@@ -434,8 +436,6 @@ function sInventory:ModifyDurabilityRemote(args) -- TODO: update
                     self:Sync({index = index, stack = stack, sync_stack = true})
                 else
                     self:RemoveItem({item = item, index = index})
-                    self:RemoveHotbarIndex(index)
-                    self:UpdateHotbar()
                 end
 
                 return

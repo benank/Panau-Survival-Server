@@ -20,68 +20,50 @@ end)
 
 Network:Subscribe("items/SpeedGrapplehookDecreaseDura", function(args, player)
 
-    args.change = math.ceil(args.change)
-    if args.change < 1 then
-        args.change = 1
-    end
-
-    local inv = Inventory.Get({player = player})
-
-    for index, stack in pairs(inv) do
-        if stack:GetProperty("name") == "Grapplehook Upgrade - Speed" and stack:GetOneEquipped() then
-            for item_index, item in pairs(stack.contents) do
-
-                if item.equipped then
-                    item.durability = item.durability + ItemsConfig.equippables["Grapplehook Upgrade - Speed"].dura_per_sec * args.change
-                    Inventory.ModifyDurability({
-                        player = player,
-                        item = item:GetSyncObject()
-                    })
-                end
-
-            end
-        end
-    end
+    args.name = "Grapplehook Upgrade - Speed"
+    DecreaseGrappleUpgradeDurability(args, player)
 
 end)
 
 Network:Subscribe("items/RangeGrapplehookDecreaseDura", function(args, player)
 
-    args.change = math.ceil(args.change)
-    if args.change < 1 then
-        args.change = 1
-    end
-
-    local inv = Inventory.Get({player = player})
-
-    for index, stack in pairs(inv) do
-        if stack:GetProperty("name") == "Grapplehook Upgrade - Range" and stack:GetOneEquipped() then
-            for item_index, item in pairs(stack.contents) do
-
-                if item.equipped then
-                    item.durability = item.durability + ItemsConfig.equippables["Grapplehook Upgrade - Range"].dura_per_sec * args.change
-                    Inventory.ModifyDurability({
-                        player = player,
-                        item = item:GetSyncObject()
-                    })
-                end
-
-            end
-        end
-    end
+    args.name = "Grapplehook Upgrade - Range"
+    DecreaseGrappleUpgradeDurability(args, player)
 
 end)
 
 Network:Subscribe("items/DecreaseRechargeGrappleDura", function(args, player)
 
-    local inv = Inventory.Get({player = player})
+    args.name = "Grapplehook Upgrade - Recharge"
+    DecreaseGrappleUpgradeDurability(args, player)
 
-    for index, stack in pairs(inv) do
-        if stack:GetProperty("name") == "Grapplehook Upgrade - Recharge" and stack:GetOneEquipped() then
+end)
+
+function DecreaseGrappleUpgradeDurability(args, player)
+
+    local inv = Inventory.Get({player = player})
+    local upgrade_name = args.name
+    local cat = Items_indexed[upgrade_name].category
+    local change = 1
+    
+    if ItemsConfig.equippables[upgrade_name].dura_per_use then
+        change = ItemsConfig.equippables[upgrade_name].dura_per_use
+    else
+        
+        args.change = math.ceil(args.change)
+        if args.change < 1 then
+            args.change = 1
+        end
+
+        change = ItemsConfig.equippables[upgrade_name].dura_per_sec * args.change
+    end
+    
+    for index, stack in pairs(inv[cat]) do
+        if stack:GetProperty("name") == upgrade_name and stack:GetOneEquipped() then
             for item_index, item in pairs(stack.contents) do
 
                 if item.equipped then
-                    item.durability = item.durability + ItemsConfig.equippables["Grapplehook Upgrade - Recharge"].dura_per_use
+                    item.durability = item.durability + change
                     Inventory.ModifyDurability({
                         player = player,
                         item = item:GetSyncObject()
@@ -92,7 +74,7 @@ Network:Subscribe("items/DecreaseRechargeGrappleDura", function(args, player)
         end
     end
 
-end)
+end
 
 Network:Subscribe("items/DecreaseSmartGrappleDura", function(args, player)
 
