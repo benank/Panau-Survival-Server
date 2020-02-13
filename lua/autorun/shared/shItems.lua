@@ -1308,17 +1308,17 @@ Items =
 
 Items_ammo_types = 
 {
-    ["Revolver"] = "Revolver Supplies",
-    ["Pistol"] = "Pistol Supplies",
-    ["Submachine Gun"] = "Submachine Gun Supplies",
-    ["Sawn-Off Shotgun"] = "Sawn-Off Supplies",
-    ["Machine Gun"] = "Machine Gun Supplies",
+    ["Revolver"] = "Revolver Ammo",
+    ["Pistol"] = "Pistol Ammo",
+    ["Submachine Gun"] = "Submachine Gun Ammo",
+    ["Sawn-Off Shotgun"] = "Sawn-Off Ammo",
+    ["Machine Gun"] = "Machine Gun Ammo",
     ["Bubble Gun"] = "Bubbles",
     ["Grenade Launcher"] = "Grenade Munitions",
-    ["Sniper Rifle"] = "Sniper Supplies",
+    ["Sniper Rifle"] = "Sniper Ammo",
     ["Rocket Launcher"] = "Rockets",
-    ["Assault Rifle"] = "Assault Supplies",
-    ["Shotgun"] = "Shotgun Supplies",
+    ["Assault Rifle"] = "Assault Ammo",
+    ["Shotgun"] = "Shotgun Ammo",
     ["Portal Gun"] = "Energy Cartridge"
     -- And more custom weapons to come
 

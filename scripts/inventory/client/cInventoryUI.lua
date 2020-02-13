@@ -289,8 +289,8 @@ function cInventoryUI:CreateItemWindow(cat, index)
     durability:Hide()
 
     local equip_outer = Rectangle.Create(itemWindow, "equip_outer")
-    equip_outer:SetSizeAutoRel(Vector2(20, 20))
-    equip_outer:SetPositionRel(Vector2(0.05, 0.05))
+    equip_outer:SetSize(Vector2(10, 10))
+    equip_outer:SetPosition(Vector2(4, 4))
     equip_outer:SetColor(Color.Black)
 
     local equip_inner = Rectangle.Create(equip_outer, "equip_inner")
@@ -420,36 +420,23 @@ function cInventoryUI:SetItemWindowBorderColor(itemWindow, border_color)
     itemWindow:FindChildByName("border_left", true):SetColor(border_color)
 end
 
-function cInventoryUI:ConfirmAmountButtonPress(button)
-
-    if not self.current_right_clicked then return end
-
-    local index = self.current_right_clicked:GetDataNumber("stack_index")
-    local amount = math.round(self.input_slider:GetValue())
-
-    local stack = Inventory.contents[index]
-    if not stack then return end
-
-    if amount < 1 or amount > stack:GetAmount() then return end
-
-    Network:Send("Inventory/" .. self.rightClickMenuAction .. self.steam_id, {index = index, amount = amount})
-
-end
-
 function cInventoryUI:LeftClickItemButton(button)
 
-    local index = button:GetDataNumber("stack_index")
-    local stack = Inventory.contents[index]
-    if not stack then return end
-    
-    if stack:GetProperty("can_equip") then
+    if button:GetDataBool("dropping") then
+        -- Adjusting the drop amount
+        self:MouseScroll({delta = 1}) -- Simulate mousescroll to change drop amount
+    else
+        -- Equipping or using an item
+        local cat = button:GetDataString("stack_category")
+        local index = button:GetDataNumber("stack_index")
+        local stack = Inventory.contents[cat][index]
+        if not stack then return end
 
-        Network:Send("Inventory/ToggleEquipped" .. self.steam_id, {index = index})
-
-    elseif stack:GetProperty("can_use") then
-
-        Network:Send("Inventory/Use" .. self.steam_id, {index = index})
-
+        if stack:GetProperty("can_equip") then
+            Network:Send("Inventory/ToggleEquipped" .. self.steam_id, {cat = cat, index = index})
+        else
+            Network:Send("Inventory/Use" .. self.steam_id, {cat = cat, index = index})
+        end
     end
 
 end

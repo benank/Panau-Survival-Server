@@ -114,11 +114,11 @@ elseif Server then
         
         local contents_array = args.player:GetValue("Inventory").contents
         local contents = {}
-        
+
         -- Create new shItem and shStack instances for the client
-        for category, _ in ipairs(contents_array) do
+        for category, _ in pairs(contents_array) do
             contents[category] = {}
-            for index, v in pairs(args.contents[category]) do
+            for index, v in pairs(contents_array[category]) do
                 local items = {}
 
                 for i, j in ipairs(v.stack.contents) do

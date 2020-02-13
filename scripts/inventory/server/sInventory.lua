@@ -85,26 +85,26 @@ end
 function sInventory:ToggleEquipped(args, player) -- TODO: update
 
     if not self:CanPlayerPerformOperations(player) then return end
-    if not args.index then return end
-    if not self.contents[args.index] then return end
-    if not self.contents[args.index]:GetProperty("can_equip") then return end
+    if not args.index or not args.cat then return end
+    if not self.contents[args.cat] or not self.contents[args.cat][args.index] then return end
+    if not self.contents[args.cat][args.index]:GetProperty("can_equip") then return end
 
     -- check for items of same equip type and unequip them
-    local equip_type = self.contents[args.index]:GetProperty("equip_type")
+    local equip_type = self.contents[args.cat][args.index]:GetProperty("equip_type")
     local can_equip = true
 
     if equip_type ~= "grapple_upgrade" then
-        for stack_index, stack in pairs(self.contents) do
-            if stack then
+        for cat, _ in pairs(self.contents) do
+            for stack_index, stack in pairs(self.contents[cat]) do
                 for item_index, item in pairs(stack.contents) do
 
                     if item.equipped and item.equip_type == equip_type
-                    and item.uid ~= self.contents[args.index].contents[1].uid then
+                    and item.uid ~= self.contents[args.cat][args.index].contents[1].uid then
 
                         item.equipped = false
-                        self:Sync({index = stack_index, stack = self.contents[stack_index], sync_stack = true})
+                        self:Sync({index = stack_index, stack = self.contents[cat][stack_index], sync_stack = true})
                         Events:Fire("Inventory/ToggleEquipped", 
-                            {player = self.player, item = self.contents[stack_index].contents[1]:Copy():GetSyncObject()})
+                            {player = self.player, item = self.contents[cat][stack_index].contents[1]:Copy():GetSyncObject()})
 
                     end
 
@@ -115,12 +115,12 @@ function sInventory:ToggleEquipped(args, player) -- TODO: update
         
         local num_upgrades = 0
 
-        for stack_index, stack in pairs(self.contents) do
-            if stack then
+        for cat, _ in pairs(self.contents) do
+            for index, stack in pairs(self.contents[cat]) do
                 for item_index, item in pairs(stack.contents) do
 
                     if item.equipped and item.equip_type == equip_type
-                    and item.uid ~= self.contents[args.index].contents[1].uid then
+                    and item.uid ~= self.contents[args.cat][args.index].contents[1].uid then
 
                         num_upgrades = num_upgrades + 1
                         
@@ -133,32 +133,32 @@ function sInventory:ToggleEquipped(args, player) -- TODO: update
     end
 
     -- Toggle equipped if it's not a grapple upgrade OR if we can equip a grapple upgrade OR if we are unequipping an upgrade
-    if equip_type ~= "grapple_upgrade" or can_equip or self.contents[args.index].contents[1].equipped then
-        self.contents[args.index].contents[1].equipped = not self.contents[args.index].contents[1].equipped
+    if equip_type ~= "grapple_upgrade" or can_equip or self.contents[args.cat][args.index].contents[1].equipped then
+        self.contents[args.cat][args.index].contents[1].equipped = not self.contents[args.cat][args.index].contents[1].equipped
     else
         Chat:Send(self.player, "you must unequip first", Color.Red)
         -- tell player they have to unequip a grapple upgrade before equipping another one
     end
 
-    self:Sync({index = args.index, stack = self.contents[args.index], sync_stack = true})
+    self:Sync({index = args.index, stack = self.contents[args.cat][args.index], sync_stack = true})
 
     Events:Fire("Inventory/ToggleEquipped", 
-        {player = self.player, item = self.contents[args.index].contents[1]:Copy():GetSyncObject()})
+        {player = self.player, item = self.contents[args.cat][args.index].contents[1]:Copy():GetSyncObject()})
 
 end
 
-function sInventory:UseItem(args, player) -- TODO: update
+function sInventory:UseItem(args, player)
 
     if not self:CanPlayerPerformOperations(player) then return end
-    if not args.index then return end
-    if not self.contents[args.index] then return end
-    if not self.contents[args.index]:GetProperty("can_use") then return end
+    if not args.index or not args.cat then return end
+    if not self.contents[args.cat] or not self.contents[args.cat][args.index] then return end
+    if not self.contents[args.cat][args.index]:GetProperty("can_use") then return end
 
-    local copy = self.contents[args.index].contents[1]:Copy()
+    local copy = self.contents[args.cat][args.index].contents[1]:Copy()
     copy.amount = 1
 
     Events:Fire("Inventory/UseItem", 
-        {player = self.player, item = copy:GetSyncObject(), index = args.index})
+        {player = self.player, item = copy:GetSyncObject(), cat = args.cat, index = args.index})
 
 end
 

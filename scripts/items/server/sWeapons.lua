@@ -100,18 +100,13 @@ function GetWeaponAmmo(args)
     if not player_inventory then return 0 end
 
     local cat = Items_indexed[ammo_name].category
-    local cat_info = GetCategoryInfo(cat, args.player)
 
     local total_ammo = 0
     
-    for i = cat_info.start_index, cat_info.end_index do
-
-        local stack = player_inventory[i]
-
+    for index, stack in pairs(player_inventory[cat]) do
         if stack and stack:GetProperty("name") == ammo_name then
             total_ammo = total_ammo + stack:GetAmount()
         end
-
     end
 
     return total_ammo
