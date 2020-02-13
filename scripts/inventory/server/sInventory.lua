@@ -71,14 +71,14 @@ function sInventory:Load()
 
 end
 
-function sInventory:ShiftStack(args, player) -- TODO: update
+function sInventory:ShiftStack(args, player)
 
     if not self:CanPlayerPerformOperations(player) then return end
-    if not args.index then return end
-    if not self.contents[args.index] then return end
+    if not args.index or not args.cat then return end
+    if not self.contents[args.cat] or not self.contents[args.cat][args.index] then return end
 
-    self.contents[args.index]:Shift()
-    self:Sync({index = args.index, stack = self.contents[args.index], sync_stack = true})
+    self.contents[args.cat][args.index]:Shift()
+    self:Sync({index = args.index, stack = self.contents[args.cat][args.index], sync_stack = true})
 
 end
 
