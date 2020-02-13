@@ -5,7 +5,7 @@ function cInventoryUI:__init()
     self.open_key = 'G'
     self.steam_id = tostring(LocalPlayer:GetSteamId().id)
     self.dropping_counter = 0 -- Amount of stacks the player is trying to drop. If > 0, then drop items on inventory close
-    self.dropping_items = {} -- Table of items (cat + index) that the player is trying to drop
+    self.dropping_items = {} -- Table of items (cat + index + amount) that the player is trying to drop
     self.hovered_button = nil -- Button in inventory currently hovered
 
     self.bg_colors = 
@@ -83,6 +83,11 @@ function cInventoryUI:Update(args)
         self:UpdateAllCategoryTitles()
     elseif args.action == "slots" then
         self:UpdateAllCategoryTitles()
+    elseif args.action == "cat" then
+        for i = 1, Inventory.config.max_slots_per_category do
+            self:PopulateEntry({index = i, cat = args.cat})
+        end
+        self:UpdateAllCategoryTitles()
     end
 
 end
@@ -124,7 +129,7 @@ function cInventoryUI:PopulateEntry(args)
     end
 
     if not itemwindow then
-        itemwindow = self.window:FindChildByName("itemwindow_"..stack:GetProperty("category")..args.index, true)
+        itemwindow = self.window:FindChildByName("itemwindow_"..(args.cat or stack:GetProperty("category"))..args.index, true)
     end
 
     local button = itemwindow:FindChildByName("button", true)
@@ -344,8 +349,33 @@ end
 
 function cInventoryUI:RightClickItemButton(button)
     -- Called when a button is right clicked
+    local cat = button:GetDataString("stack_category")
+    local index = button:GetDataNumber("stack_index")
+
+    if not Inventory.contents[cat][index] then
+        error("cInventoryUI:RightClickItemButton failed: no stack was found")
+    end
+
+    local amount = Inventory.contents[cat][index]:GetAmount()
+    button:SetDataNumber("drop_amount", amount) -- Reset dropping amount when they right click it
+    self:ToggleDroppingItemButton(button)
+
+    self.dropping_counter = button:GetDataBool("dropping") and self.dropping_counter + 1 or self.dropping_counter - 1
+        
+    -- Add or remove from self.dropping_items depending on if they are dropping it or not
+    self.dropping_items[cat .. tostring(index)] = button:GetDataBool("dropping") and {cat = cat, index = index, amount = amount} or nil
+
+end
+
+function cInventoryUI:ToggleDroppingItemButton(button)
+
     button:SetDataBool("dropping", not button:GetDataBool("dropping"))
     local colors = button:GetDataBool("dropping") and InventoryUIStyle.colors.dropping or InventoryUIStyle.colors.default
+
+    local cat = button:GetDataString("stack_category")
+    local index = button:GetDataNumber("stack_index")
+    local amount = Inventory.contents[cat][index]:GetAmount()
+    button:SetDataNumber("drop_amount", amount) -- Reset dropping amount when they right click it
 
     button:SetTextColor(colors.text)
     button:SetTextNormalColor(colors.text)
@@ -353,12 +383,6 @@ function cInventoryUI:RightClickItemButton(button)
     button:SetTextPressedColor(colors.text_hover)
     button:GetParent():FindChildByName("button_bg", true):SetColor(colors.background)
     self:SetItemWindowBorderColor(button:GetParent(), colors.border)
-    self.dropping_counter = button:GetDataBool("dropping") and self.dropping_counter + 1 or self.dropping_counter - 1
-
-    local cat = button:GetDataString("stack_category")
-    local index = button:GetDataNumber("stack_index")
-    button:SetDataNumber("drop_amount", Inventory.contents[cat][index]:GetAmount()) -- Reset dropping amount when they right click it
-
     button:SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
 
 end
@@ -383,6 +407,9 @@ function cInventoryUI:MouseScroll(args)
 
     self.hovered_button:SetDataNumber("drop_amount", new_drop_amount)
     self.hovered_button:SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+
+    -- Update dropping amount
+    self.dropping_items[cat .. tostring(index)].amount = new_drop_amount
 
 end
 
@@ -427,54 +454,6 @@ function cInventoryUI:LeftClickItemButton(button)
 
 end
 
-function cInventoryUI:ClickRightClickMenuButton(button)
-
-    if not self.current_right_clicked then return end
-
-    local index = self.current_right_clicked:GetDataNumber("stack_index")
-    local stack = Inventory.contents[index]
-    if not stack then return end
-
-    local action = button:GetText()
-    self.rightClickMenuAction = action
-
-    if action == "Drop" then
-
-        Mouse:SetPosition(Render.Size / 2)
-
-    elseif action == "Split" then
-
-        Mouse:SetPosition(Render.Size / 2)
-
-    elseif action == "Shift" then
-
-        Network:Send("Inventory/Shift" .. self.steam_id, {index = index})
-
-    elseif action == "Equip" or action == "Unequip" then
-
-        Network:Send("Inventory/ToggleEquipped" .. self.steam_id, {index = index})
-
-    elseif action == "Use" then
-
-        Network:Send("Inventory/Use" .. self.steam_id, {index = index})
-
-    elseif action == "Move Left" then
-
-        Network:Send("Inventory/Swap" .. self.steam_id, {from = index, to = index - 1})
-
-    elseif action == "Move Right" then
-
-        Network:Send("Inventory/Swap" .. self.steam_id, {from = index, to = index + 1})
-
-    elseif action == "Merge" then
-
-        Network:Send("Inventory/Combine" .. self.steam_id, {index = index})
-
-    end
-
-
-end
-
 function cInventoryUI:LocalPlayerInput(args)
     if self.blockedActions[args.input] then return false end
 end
@@ -482,8 +461,25 @@ end
 -- Called when the inventory is closed
 function cInventoryUI:InventoryClosed()
 
+    -- If we're trying to drop something
     if self.dropping_counter > 0 then
         self.dropping_counter = 0
+
+        -- If there are actually items to drop
+        if count_table(self.dropping_items) > 0 then
+
+            -- Reset UI
+            for _, data in pairs(self.dropping_items) do
+                self:ToggleDroppingItemButton(
+                    self.window:FindChildByName("itemwindow_"..data.cat..tostring(data.index), true):FindChildByName("button", true))
+            end
+
+            -- Send to server to drop
+            Network:Send("Inventory/Drop" .. self.steam_id, {stacks = self.dropping_items})
+
+        end
+
+        self.dropping_items = {}
         -- loop through all items, find those that were marked for dropping (with amounts)
     end
 

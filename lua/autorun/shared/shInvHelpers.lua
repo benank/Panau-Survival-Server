@@ -326,12 +326,12 @@ elseif Server then
 
         local contents = Inventory.Get(args)
 
-        print("Inventory contents of " .. args.player)
+        print("Inventory contents of " .. args.player:GetName())
 
         for cat, _ in pairs(contents) do
             print("cat " .. cat)
             for _, stack in pairs(contents[cat]) do
-                print("stack " .. k)
+                print("stack " .. _)
                 for i, item in pairs(stack.contents) do
 
                     print("item " .. i .. " " .. item:ToString())
