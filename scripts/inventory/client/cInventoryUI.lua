@@ -360,7 +360,7 @@ function cInventoryUI:HoverLeaveButton(button)
     -- Called when the mouse stops hovering over a button
     self.hovered_button = nil
 
-    if self.pressed_button and not self.pressed_button:GetDataBool("dropping") then
+    if self.pressed_button and self.dropping_counter == 0 then -- Can't move items if dropping one
         -- If they are holding an item to try to move it
         local abs_btn_pos = self.pressed_button:GetParent():GetPosition() + self.window:GetPosition()
         local diff = Mouse:GetPosition().y - abs_btn_pos.y
