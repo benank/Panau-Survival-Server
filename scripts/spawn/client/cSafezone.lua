@@ -40,6 +40,7 @@ function cSafezone:EnterSafezone()
     self.sz_subs = {}
 
     table.insert(self.sz_subs, Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput))
+    table.insert(self.sz_subs, Events:Subscribe("InputPoll", self, self.InputPoll))
 
 end
 
@@ -55,6 +56,12 @@ end
 
 function cSafezone:LocalPlayerInput(args)
     if self.sz_blacklisted[args.input] then return false end
+end
+
+function cSafezone:InputPoll(args)
+    for action, _ in pairs(self.sz_blacklisted) do
+        Input:SetValue(action, 0)
+    end
 end
 
 function cSafezone:Render(args)
