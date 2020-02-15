@@ -10,6 +10,7 @@ minidumps
 /libsteam.so
 /liblua.so
 Jcmp-Server
+logs
 steamapps
 _CommonRedist
 appcache
