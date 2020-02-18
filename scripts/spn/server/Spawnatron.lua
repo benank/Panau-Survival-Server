@@ -161,7 +161,7 @@ function Spawnatron:BuyStaticObject( player, item )
 -------
 local aimt = player:GetAimTarget()
 local angl = Angle(0, 0, 0)
-	args.position = 	aimt.position
+	args.position = 	aimt.position + Vector3(0,0.5,0)
 	args.angle = 		angl
 	args.model = 		item:GetModel()
 	args.collision = 	item:GetCollision()

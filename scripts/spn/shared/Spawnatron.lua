@@ -217,7 +217,16 @@ function Spawnatron:CreateItems()
 			}
         },
 		[self.types.StaticObject] = {
-				{ "Buildings", "Dev34 Menu", "Trees", "Plants & Bushes", "Interior Design", "Interior Decorating"},
+				{ "Lootboxes", "Buildings", "Dev34 Menu", "Trees", "Plants & Bushes", "Interior Design", "Interior Decorating"},
+                ["Lootboxes"] = {
+                    StaticObjectSpawnatronEntry( 20, 0, "f1m03airstrippile07.eez/go164_01-a.lod", "f1m03airstrippile07.eez/go164_01_lod1-a_col.pfx", "Lootbox 1" ),
+                    StaticObjectSpawnatronEntry( 20, 0, "mod.heavydrop.beretta.eez/wea00-b.lod", "mod.heavydrop.beretta.eez/wea00_lod1-b_col.pfx", "Lootbox 2" ),
+                    StaticObjectSpawnatronEntry( 20, 0, "23x16.flz/go164_01-g.lod", "23x16.flz/go164_01_lod1-b_col.pfx", "Lootbox 3" ),
+                    StaticObjectSpawnatronEntry( 20, 0, "mod.heavydrop.assault.eez/wea00-a.lod", "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx", "Lootbox 4" ),
+                    StaticObjectSpawnatronEntry( 20, 0, "pickup.boost.vehicle.eez/pu02-a.lod", "37x10.flz/go061_lod1-e_col.pfx", "Lootbox 5" ),
+                    
+                
+                },
                 ["Buildings"] = {
 				StaticObjectSpawnatronEntry( 20, 0, "areaset01.blz/gb084-a.lod", "gb084_lod1-a_col.pfx", "Wooden 1" ),
 				StaticObjectSpawnatronEntry( 20, 0, "areaset01.blz/gb090-a.lod", "gb090_lod1-a_col.pfx", "Hangar 1" ),
