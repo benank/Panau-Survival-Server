@@ -90,6 +90,7 @@ local char = string.char
 local key = 34
 
 function xor_cipher(arg)
+  arg = tostring(arg)
   local ret = {}
   for c in arg:gmatch('.') do
     insert(ret, char(bit32_bxor(c:byte(), key)))
