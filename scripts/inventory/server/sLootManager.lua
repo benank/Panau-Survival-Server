@@ -3,7 +3,7 @@ class 'sLootManager'
 function sLootManager:__init()
 
 
-    self:LoadFromFile()
+    --self:LoadFromFile()
     --self:GenerateAllLoot()
 
 end
