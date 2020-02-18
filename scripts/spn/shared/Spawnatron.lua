@@ -221,7 +221,7 @@ function Spawnatron:CreateItems()
                 ["Lootboxes"] = {
                     StaticObjectSpawnatronEntry( 20, 0, "f1m03airstrippile07.eez/go164_01-a.lod", "f1m03airstrippile07.eez/go164_01_lod1-a_col.pfx", "Lootbox 1" ),
                     StaticObjectSpawnatronEntry( 20, 0, "mod.heavydrop.beretta.eez/wea00-b.lod", "mod.heavydrop.beretta.eez/wea00_lod1-b_col.pfx", "Lootbox 2" ),
-                    StaticObjectSpawnatronEntry( 20, 0, "23x16.flz/go164_01-g.lod", "23x16.flz/go164_01_lod1-b_col.pfx", "Lootbox 3" ),
+                    StaticObjectSpawnatronEntry( 20, 0, "km05_01.seq.blz/go164_01-g.lod", "km05_01.seq.blz/go164_01_lod1-b_col.pfx", "Lootbox 3" ),
                     StaticObjectSpawnatronEntry( 20, 0, "mod.heavydrop.assault.eez/wea00-a.lod", "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx", "Lootbox 4" ),
                     StaticObjectSpawnatronEntry( 20, 0, "pickup.boost.vehicle.eez/pu02-a.lod", "37x10.flz/go061_lod1-e_col.pfx", "Lootbox 5" ),
                     
