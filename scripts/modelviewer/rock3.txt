@@ -1,2 +1,0 @@
-vegetation_0.blz/Jungle_G06_BeachRocksL-whole.lod
-vegetation_0.blz/Jungle_G06_BeachRocksL_lod1-whole_col.pfx

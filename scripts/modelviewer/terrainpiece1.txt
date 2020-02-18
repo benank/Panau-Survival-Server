@@ -1,2 +1,0 @@
-cch30emp.flz/gb145-g.lod
-cch30emp.flz/gb145_lod1-g_col.pfx

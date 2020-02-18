@@ -1,2 +1,0 @@
-arve.v009_civil_helicopter.eez/v009civ-body_m.lod
-arve.v009_civil_helicopter.eez/v009civ_lod1-body_m_col.pfx

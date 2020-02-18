@@ -1,2 +1,0 @@
-km01_00.seq.blz/v062cutscene-cablewind.lod
-km01_00.seq.blz/v062cutscene_lod1-cablewind_col.pfx

@@ -1,2 +1,0 @@
-arve.v076_jet_blackplane.eez/v076-wing_cr1.lod
-arve.v076_jet_blackplane.eez/v076_lod1-wing_cr1_col.pfx

@@ -1,2 +1,0 @@
-general.blz/wea05-wea5_clip.lod
-general.blz/wea05_lod1-wea5_clip_col.pfx

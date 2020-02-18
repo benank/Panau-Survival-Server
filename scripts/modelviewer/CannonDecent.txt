@@ -1,2 +1,0 @@
-general.blz/turret-barrel.lod
-general.blz/turret_lod1-barrel_col.pfx

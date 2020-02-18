@@ -1,2 +1,0 @@
-general.blz/wea35-tte.lod
-general.blz/wea35_lod1-tte_col.pfx

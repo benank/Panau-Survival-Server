@@ -1,2 +1,0 @@
-general.blz/gae09-b.lod
-general.blz/gae09_lod1-b_col.pfx

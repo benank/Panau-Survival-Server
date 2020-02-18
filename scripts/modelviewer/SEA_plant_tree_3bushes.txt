@@ -1,2 +1,0 @@
-general.blz/jungle_b11_understorym-whole.lod
-general.blz/jungle_b11_understorym_lod1-whole_col.pfx

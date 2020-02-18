@@ -1,2 +1,0 @@
-lave.v034_sport_buggy.eez/v034-exhaustpipe01-standard.lod
-lave.v034_sport_buggy.eez/v034_lod1-exhaustpipe01_lod1-standard_col.pfx

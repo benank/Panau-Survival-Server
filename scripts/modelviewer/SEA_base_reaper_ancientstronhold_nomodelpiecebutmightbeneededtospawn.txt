@@ -1,2 +1,0 @@
-32x34.flz/key040_1-part_d.lod
-32x34.flz/key040_1_lod1-part_d_col.pfx

@@ -1,2 +1,0 @@
-general.blz/jungle_g02_mossyrocksm-whole.lod
-general.blz/jungle_g02_mossyrocksm_lod1-whole_col.pfx

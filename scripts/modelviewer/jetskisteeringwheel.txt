@@ -1,2 +1,0 @@
-km01_03.seq.blz/v007cutscene-uppersteering.lod
-km01_03.seq.blz/v007cutscene_lod1-uppersteering_col.pfx

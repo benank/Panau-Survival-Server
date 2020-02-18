@@ -1,2 +1,0 @@
-seve.v089_raceboat.eez/v089-body_m.lod
-seve.v089_raceboat.eez/v089_lod1-body_m_col.pfx

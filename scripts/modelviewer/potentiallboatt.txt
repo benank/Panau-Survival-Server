@@ -1,2 +1,0 @@
-seve.v105_military_boat.eez/v105-body_m.lod
-seve.v105_military_boat.eez/v105_lod1-body_m_col.pfx

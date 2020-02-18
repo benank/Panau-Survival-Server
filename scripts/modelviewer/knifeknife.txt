@@ -1,2 +1,0 @@
-km04_00b.seq.blz/gp080-b.lod
-km04_00b.seq.blz/gp080_lod1-b_col.pfx

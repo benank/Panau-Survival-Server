@@ -1,2 +1,0 @@
-arve.v071_jet_fighter.eez/v071-wing_cl1_m.lod
-arve.v071_jet_fighter.eez/v071_lod1-wing_cl1_m_col.pfx

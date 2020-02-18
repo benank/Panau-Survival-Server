@@ -1,2 +1,0 @@
-km04_06.seq.blz/gp307-a.lod
-km04_06.seq.blz/gp307_lod1-a_col.pfx

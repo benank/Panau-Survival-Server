@@ -1,2 +1,0 @@
-f1m07.spawnablecover.eez/go300-d.lod
-f1m07.spawnablecover.eez/go300_lod1-d_col.pfx

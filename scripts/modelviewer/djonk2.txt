@@ -1,2 +1,0 @@
-seve.v082_motorboat_standard_small.eez/v082-body_m.lod
-seve.v082_motorboat_standard_small.eez/v082_lod1-body_m_col.pfx

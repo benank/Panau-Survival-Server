@@ -1,2 +1,0 @@
-general.blz/gd_rocks-a.lod
-general.blz/gd_rocks_lod1-a_col.pfx

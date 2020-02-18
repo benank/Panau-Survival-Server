@@ -1,2 +1,0 @@
-dropoffpoint.boat.eez/go175-a.lod
-dropoffpoint.boat.eez/go175_lod1-a_col.pfx

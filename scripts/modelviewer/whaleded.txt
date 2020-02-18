@@ -1,2 +1,0 @@
-bwc.flz/v320-body_dst.lod
-bwc.flz/v320_lod1-body_dst_col.pfx

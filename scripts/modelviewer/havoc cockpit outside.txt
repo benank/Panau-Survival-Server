@@ -1,2 +1,0 @@
-arve.v061_attackheli.eez/v061-cockpit_cu1.lod
-arve.v061_attackheli.eez/v061_lod1-cockpit_cu1_col.pfx

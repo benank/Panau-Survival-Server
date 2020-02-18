@@ -1,2 +1,0 @@
-arve.v064_personal_jet.eez/v064-flaps_bc1.lod
-arve.v064_personal_jet.eez/v064_lod1-flaps_bc1_col.pfx
