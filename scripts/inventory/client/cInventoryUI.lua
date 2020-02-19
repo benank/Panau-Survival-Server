@@ -366,8 +366,8 @@ function cInventoryUI:HoverLeaveButton(button)
         local diff = Mouse:GetPosition().y - abs_btn_pos.y
         local swap_dir = diff < 0 and 1 or -1 -- Direction of swap
 
-        local cat = button:GetDataString("stack_category")
-        local index = button:GetDataNumber("stack_index")
+        local cat = self.pressed_button:GetDataString("stack_category")
+        local index = self.pressed_button:GetDataNumber("stack_index")
 
         if index + swap_dir < 0 then return end
         if not Inventory.contents[cat][index + swap_dir] then return end
