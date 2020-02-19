@@ -428,30 +428,53 @@ function cInventoryUI:ToggleDroppingItemButton(button)
 
 end
 
+function cInventoryUI:ShiftStack(button)
+    
+    -- Trying to shift a stack
+    local cat = button:GetDataString("stack_category")
+    local index = button:GetDataNumber("stack_index")
+    local stack = Inventory.contents[cat][index]
+    if not stack then return end
+    if stack:GetAmount() == 1 then return end
+
+    Network:Send("Inventory/Shift" .. self.steam_id, {cat = cat, index = index})
+    
+end
+
 function cInventoryUI:MouseScroll(args)
-    if self.dropping_counter == 0 then return end -- Not dropping any items
+
     if not self.hovered_button then return end -- Not hovering over a button
-    if not self.hovered_button:GetDataBool("dropping") then return end -- Not scrolling on an item they are dropping
 
-    local cat = self.hovered_button:GetDataString("stack_category")
-    local index = self.hovered_button:GetDataNumber("stack_index")
 
-    local change = args.delta < 0 and -1 or 1 -- Normalizing the change
-    local new_drop_amount = self.hovered_button:GetDataNumber("drop_amount") + change
+    if self.dropping_counter == 0 then
+        -- Shifting through stack
+        self:ShiftStack(self.hovered_button)
 
-    -- Bounds on dropping the item
-    if new_drop_amount == 0 then
-        new_drop_amount = Inventory.contents[cat][index]:GetAmount()
-    elseif new_drop_amount > Inventory.contents[cat][index]:GetAmount() then
-        new_drop_amount = 1
+    else
+        -- Dropping items
+        if not self.hovered_button then return end -- Not hovering over a button
+        if not self.hovered_button:GetDataBool("dropping") then return end -- Not scrolling on an item they are dropping
+
+        local cat = self.hovered_button:GetDataString("stack_category")
+        local index = self.hovered_button:GetDataNumber("stack_index")
+
+        local change = args.delta < 0 and -1 or 1 -- Normalizing the change
+        local new_drop_amount = self.hovered_button:GetDataNumber("drop_amount") + change
+
+        -- Bounds on dropping the item
+        if new_drop_amount == 0 then
+            new_drop_amount = Inventory.contents[cat][index]:GetAmount()
+        elseif new_drop_amount > Inventory.contents[cat][index]:GetAmount() then
+            new_drop_amount = 1
+        end
+
+        self.hovered_button:SetDataNumber("drop_amount", new_drop_amount)
+        self.hovered_button:SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+
+        -- Update dropping amount
+        self.dropping_items[cat .. tostring(index)].amount = new_drop_amount
+
     end
-
-    self.hovered_button:SetDataNumber("drop_amount", new_drop_amount)
-    self.hovered_button:SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
-
-    -- Update dropping amount
-    self.dropping_items[cat .. tostring(index)].amount = new_drop_amount
-
 end
 
 function cInventoryUI:SetItemWindowBorderColor(itemWindow, border_color)
@@ -471,14 +494,7 @@ function cInventoryUI:LeftClickItemButton(button)
     else
         if Key:IsDown(VirtualKey.LShift) then
             -- Trying to shift a stack
-            local cat = button:GetDataString("stack_category")
-            local index = button:GetDataNumber("stack_index")
-            local stack = Inventory.contents[cat][index]
-            if not stack then return end
-            if stack:GetAmount() == 1 then return end
-
-            Network:Send("Inventory/Shift" .. self.steam_id, {cat = cat, index = index})
-
+            self:ShiftStack(button)
         else
             -- Equipping or using an item
             local cat = button:GetDataString("stack_category")
