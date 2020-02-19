@@ -1,6 +1,6 @@
-class 'GrappleUpgrades'
+class 'GrapplehookManager'
 
-function GrappleUpgrades:__init()
+function GrapplehookManager:__init()
 	
 	self.upgrades = { -- How many of each are equipped
 		["Recharge"] = 0,
@@ -10,7 +10,10 @@ function GrappleUpgrades:__init()
 		["Gun"] = 0,
 		["Impulse"] = 0,
 		["Smart"] = 0
-	}
+    }
+    
+    self.dura_change = 0
+    self.sync_timer = Timer()
 
 	self.smart = {d = 0, position = Vector3(0,-5000,0), radius = Render.Size.x * 0.125, ready = false, color = Color(0,0,200,150), indicator_size = Render.Size.x * 0.01, raycast_timer = Timer(), change = false}
 	self.speed = {base = 40, upgrades = {[1] = 1.5, [2] = 2, [3] = 2.5, [4] = 3}, dist = 10, sync_timer = Timer(), change = 0}
@@ -28,15 +31,15 @@ function GrappleUpgrades:__init()
 	Network:Subscribe("items/ToggleEquippedGrappleUpgrade", self, self.ToggleEquippedGrappleUpgrade)
 end
 
-function GrappleUpgrades:ModuleUnload()
+function GrapplehookManager:ModuleUnload()
 	if IsValid(self.range.object) then self.range.object:Remove() end
 end
 
-function GrappleUpgrades:FireGrapplehook()
+function GrapplehookManager:FireGrapplehook()
 
 end
 
-function GrappleUpgrades:FireGrapplehookHit()
+function GrapplehookManager:FireGrapplehookHit()
 
 	if self.upgrades["Recharge"] > 0 then
 		Network:Send("items/DecreaseRechargeGrappleDura")
@@ -54,7 +57,7 @@ function GrappleUpgrades:FireGrapplehookHit()
 end
 
 -- Called right before the grapplehook is fired. May not be 100% accurate
-function GrappleUpgrades:FireGrapplehookPre()
+function GrapplehookManager:FireGrapplehookPre()
 
 	if self.upgrades["Smart"] > 0 
 	and LocalPlayer:GetBonePosition("ragdoll_AttachHandLeft"):Distance(self.smart.position) < self.current_grapple_max_distance
@@ -92,7 +95,7 @@ function GrappleUpgrades:FireGrapplehookPre()
 end
 
 -- CAlled when a grapple upgrade is equipped/unequipped
-function GrappleUpgrades:ToggleEquippedGrappleUpgrade(args)
+function GrapplehookManager:ToggleEquippedGrappleUpgrade(args)
 
 	self.upgrades = args.upgrades
 
@@ -106,12 +109,12 @@ function GrappleUpgrades:ToggleEquippedGrappleUpgrade(args)
 
 end
 
-function GrappleUpgrades:DisableEvents()
+function GrapplehookManager:DisableEvents()
 	if self.localplayerinput then Events:Unsubscribe(self.localplayerinput) end
 	if self.postrender then Events:Unsubscribe(self.postrender) end
 end
 
-function GrappleUpgrades:CalcView()
+function GrapplehookManager:CalcView()
 	if self.smart.target_ang and self.upgrades["Smart"] > 0 then
 		Camera:SetAngle(self.smart.target_ang)
 		
@@ -124,9 +127,10 @@ function GrappleUpgrades:CalcView()
 	end
 end
 
-function GrappleUpgrades:Render(args)
+function GrapplehookManager:Render(args)
 
-	if LocalPlayer:InVehicle() then return end
+    if LocalPlayer:InVehicle() then return end
+    if not EquippableGrapplehook:GetEquipped() then return end -- If it's not equipped
 	
 	local left_arm_state = LocalPlayer:GetLeftArmState()
 	local base_state = LocalPlayer:GetBaseState()
@@ -145,6 +149,17 @@ function GrappleUpgrades:Render(args)
 	local ray = Physics:Raycast(cam_pos, Camera:GetAngle() * Vector3.Forward, 0, 1000)
 
 	self:RenderGrappleDistance(ray)
+
+    -- Basic grapplehook durability
+    if self.grappling then
+        self.dura_change = self.dura_change + args.delta
+
+        if self.sync_timer:GetSeconds() > 5 then
+            Network:Send("items/GrapplehookDecreaseDura", {change = math.ceil(self.dura_change)})
+            self.sync_timer:Restart()
+            self.dura_change = 0
+        end
+    end
 
 	local localplayer_velo = LocalPlayer:GetLinearVelocity()
 	local speed = math.abs((-LocalPlayer:GetAngle() * localplayer_velo).z)
@@ -170,7 +185,7 @@ function GrappleUpgrades:Render(args)
 			self.range.moved = false
 			self.range.active = false
 		end
-	end
+    end
 
 	if self.upgrades["Range"] > 0 and self.grappling then
 		self.range.change = self.range.change + args.delta
@@ -212,7 +227,7 @@ function GrappleUpgrades:Render(args)
 	
 end
 
-function GrappleUpgrades:RenderSmartGrapple(pos)
+function GrapplehookManager:RenderSmartGrapple(pos)
 
 	local size = self.smart.indicator_size
 
@@ -238,7 +253,7 @@ function GrappleUpgrades:RenderSmartGrapple(pos)
 
 end
 
-function GrappleUpgrades:RenderGrappleDistance(ray)
+function GrapplehookManager:RenderGrappleDistance(ray)
 
 	local triangleColor = Color(0,200,0,150)
 	
@@ -269,4 +284,4 @@ function GrappleUpgrades:RenderGrappleDistance(ray)
 	
 end
 
-GrappleUpgrades = GrappleUpgrades()
+GrapplehookManager = GrapplehookManager()

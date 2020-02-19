@@ -2,8 +2,6 @@ class 'cGrapplehookManager'
 
 function cGrapplehookManager:__init()
 
-	--Game:FireEvent("ply.parachute.enable")
-
 	self.rechargeModifier = 1
 	self.rechargeTime = 4
     self.charges = xor_cipher(1)
@@ -73,8 +71,6 @@ function cGrapplehookManager:PreTick(args)
 			self.charges = xor_cipher(charges_unencrypted)
 			self.currentTime = 0
 			LocalPlayer:SetValue("NumGrappleCharges", self.charges_unencrypted)
-
-			--Game:FireEvent("ply.grappling.enable")
 
 		end
 
@@ -152,7 +148,7 @@ end
 
 function cGrapplehookManager:Render()
 
-    if Game:GetState() ~= GUIState.Game then
+    if Game:GetState() ~= GUIState.Game or not self.grappleVisualEnabled then
         self.grapple_window:Hide()
         return
     else
