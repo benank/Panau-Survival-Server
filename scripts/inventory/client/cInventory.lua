@@ -25,7 +25,7 @@ function cInventory:ModulesLoad()
         end
     end
 
-    Events:Fire("InventoryUpdated", {contents = contents, action = "full"})
+    Events:Fire("InventoryUpdated", {data = {contents = contents}, action = "full"})
 
 end
 
