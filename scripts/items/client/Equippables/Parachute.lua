@@ -1,28 +1,46 @@
-local equipped = false
+class 'EquippableParachute'
 
-Game:FireEvent("ply.parachute.disable") -- Disable parachute
+function EquippableParachute:__init()
 
-Network:Subscribe("items/ToggleEquippedParachute", function(args)
+    self.equipped = false
 
-    equipped = args.equipped
+    self.blocked_actions = 
+    {
+        [Action.DeployParachuteWhileReelingAction] = true,
+        [Action.ExitToStuntposParachute] = true,
+        [Action.ParachuteOpenClose] = true,
+        [Action.StuntposToParachute] = true,
+        [Action.ActivateParachuteThrusters] = true
+    }
 
-    if equipped then
+    self:ToggleEnabled(false)
+
+    Network:Subscribe("items/ToggleEquippedParachute", self, self.ToggleEquipped)
+end
+
+function EquippableParachute:GetEquipped()
+    return self.equipped
+end
+
+function EquippableParachute:ToggleEquipped(args)
+    self.equipped = args.equipped
+
+    self:ToggleEnabled(self.equipped)
+end
+
+function EquippableParachute:ToggleEnabled(enabled)
+    if enabled then
+        if self.action_block then Events:Unsubscribe(self.action_block) end
+        self.action_block = nil
         Game:FireEvent("ply.parachute.enable")
     else
+        self.action_block = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
         Game:FireEvent("ply.parachute.disable")
     end
+end
 
-end)
+function EquippableParachute:LocalPlayerInput(args)
+    if self.action_block[args.input] and not self.equipped then return false end
+end
 
-local parachute_actions = 
-{
-    [Action.DeployParachuteWhileReelingAction] = true,
-    [Action.ExitToStuntposParachute] = true,
-    [Action.ParachuteOpenClose] = true,
-    [Action.StuntposToParachute] = true,
-    [Action.ActivateParachuteThrusters] = true
-}
-
-Events:Subscribe("LocalPlayerInput", function(args)
-    if parachute_actions[args.input] and not equipped then return false end
-end)
+EquippableParachute = EquippableParachute()
