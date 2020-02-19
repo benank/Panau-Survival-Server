@@ -222,7 +222,6 @@ Items =
         durable = true,
         max_durability = 1000,
         equip_type = "grapplehook",
-        description = "The classic grapplehook. When equipped, it allows you to use the grapplehook."
     },
     {
         name = "Area Bombing",
