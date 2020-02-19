@@ -32,12 +32,10 @@ end
 
 function EquippableGrapplehook:ToggleEnabled(enabled)
     if enabled then
-        print("enable")
         if self.action_block then Events:Unsubscribe(self.action_block) end
         self.action_block = nil
         Game:FireEvent("ply.grappling.enable")
     else
-        print("block")
         self.action_block = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
         Game:FireEvent("ply.grappling.disable")
     end
