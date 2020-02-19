@@ -6,7 +6,7 @@ function cSurvivalManager:__init()
     Events:Fire("loader/RegisterResource", {count = 2})
 
     self.hud = cSurvivalHUD()
-    self.grapple_manager = cGrapplehookManager()
+    --self.grapple_manager = cGrapplehookManager()
 
     self:UpdateClimateZone()
 
@@ -30,7 +30,7 @@ end
 function cSurvivalManager:Render(args)
 
     self.hud:Render(args)
-    self.grapple_manager:Render(args)
+    --self.grapple_manager:Render(args)
 
 end
 
