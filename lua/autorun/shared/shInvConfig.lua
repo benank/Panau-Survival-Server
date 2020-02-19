@@ -14,11 +14,11 @@ Inventory.config =
     default_inv = 
     {
         {
-            name = "Apple",
+            name = "Can of Peaches",
             amount = 3
         },
         {
-            name = "Water Bottle",
+            name = "Water",
             amount = 3
         },
         {
@@ -30,11 +30,7 @@ Inventory.config =
             amount = 25
         },
         {
-            name = "Radiation Pills",
-            amount = 3
-        },
-        {
-            name = "Revolver",
+            name = "Handgun",
             amount = 1
         },
         {
@@ -44,6 +40,10 @@ Inventory.config =
         {
             name = "Lockpick",
             amount = 10
+        },
+        {
+            name = "Grapplehook",
+            amount = 1
         },
         
     },
