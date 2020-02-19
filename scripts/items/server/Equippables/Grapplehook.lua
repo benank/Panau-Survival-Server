@@ -6,7 +6,6 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
     UpdateEquippedItem(args.player, args.item.name, args.item)
 
-    print("equip " .. tostring(args.item.equipped))
     Network:Send(args.player, "items/ToggleEquippedGrapplehook", {equipped = args.item.equipped == true})
 
 end)
