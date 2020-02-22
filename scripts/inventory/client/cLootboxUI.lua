@@ -89,7 +89,6 @@ end
 function cLootboxUI:RepositionWindow()
     local num_items = #LootManager.current_box.contents
     local items_height = num_items * self.itemWindows[1]:GetHeight() + num_items * ClientInventory.ui.inv_dimensions.padding
-    print(items_height)
     local center = Render.Size.y / 2
     self.window:SetPosition(Vector2(self.window:GetPosition().x, center - items_height / 2))
 end
@@ -103,8 +102,6 @@ function cLootboxUI:CreateWindow()
         local itemWindow = ClientInventory.ui:CreateItemWindow("loot", i, self.window)
         self.itemWindows[i] = itemWindow
     end
-
-    for k,v in pairs(self.itemWindows) do print(k,v) end
 
     self.window_created = true
 
