@@ -57,7 +57,7 @@ function shItem:__init(args)
         self.can_equip = args.can_equip
 
         if args.equip_type == nil then
-            error("shItem:__init failed: equip_type was not given for an equippable item")
+            error("shItem:__init failed: equip_type was not given for an equippable item: " .. tostring(self.name))
         end
 
         self.equip_type = args.equip_type
