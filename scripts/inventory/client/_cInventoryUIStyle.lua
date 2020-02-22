@@ -3,7 +3,7 @@ class 'cInventoryUIStyle'
 function cInventoryUIStyle:__init()
 
 
-    self.background_alpha = 100
+    self.background_alpha = 140
     self.colors = 
     {
         default = 

@@ -6,9 +6,10 @@ function sItemGenerator:__init()
 
     self:ComputeRaritySums()
 
+    -- Test command for generating loot
     Console:Subscribe("loot", function()
     
-        local tier = math.random(6)
+        local tier = math.random(4)
 
         local loot = ItemGenerator:GetLoot(tier)
         print("Level " .. tostring(tier) .. " Loot")
@@ -22,28 +23,6 @@ function sItemGenerator:__init()
     
     end)
 
-    Events:Subscribe("PlayerChat", function(args)
-    
-        local split = splitstr2(args.text, " ")
-
-        if split[1] == "/loot" and tonumber(split[2]) then
-
-            local tier = tonumber(split[2])
-
-            local loot = ItemGenerator:GetLoot(tier)
-            print("Level " .. tostring(tier) .. " Loot")
-        
-            CreateLootbox({
-                position = args.player:GetPosition(),
-                angle = args.player:GetAngle(),
-                tier = tier,
-                contents = loot
-            })
-
-        end
-    
-    end)
-
 end
 
 -- Returns a table of contents yummy
@@ -52,9 +31,9 @@ function sItemGenerator:GetLoot(tier)
     local contents = {}
 
     -- Always have lockpicks in there
-    local item = CreateItem({name = "Lockpick", amount = self:GetRandomNumberOfLockpicks(tier)})
+    --[[local item = CreateItem({name = "Lockpick", amount = self:GetRandomNumberOfLockpicks(tier)})
     local stack = shStack({contents = {item}})
-    table.insert(contents, stack)
+    table.insert(contents, stack)]]
 
     local num_items = math.ceil(Lootbox.GeneratorConfig.box[tier].min_items + 
         math.random() * (Lootbox.GeneratorConfig.box[tier].max_items - Lootbox.GeneratorConfig.box[tier].min_items))
@@ -73,7 +52,7 @@ end
 
 function sItemGenerator:GetStack(tier)
 
-    if tier < Lootbox.Types.Level1 or tier > Lootbox.Types.SupplyCrate then
+    if tier < Lootbox.Types.Level1 or tier > Lootbox.Types.Level5 then
         error("sItemGenerator:GetItem failed: invalid tier specified")
     end
 
@@ -121,6 +100,8 @@ function sItemGenerator:GetItemAmount(item, max_loot)
         Lootbox.GeneratorConfig.stack.min,
         math.min(math.random(Lootbox.GeneratorConfig.stack.max), max_loot or 999))
 
+        -- TODO: use self:GetRandomNumberOfLockpicks(tier) for lootboxes
+
     return amount
 
 end
@@ -128,6 +109,8 @@ end
 function sItemGenerator:FindTargetItem(target, tier)
 
     local sum = 0
+
+    -- TODO: optimize this with weighted tables
 
     for _, item in pairs(Items_indexed) do
 

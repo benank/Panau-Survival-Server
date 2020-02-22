@@ -92,56 +92,24 @@ function UpdateLootInCells(player)
     -- Sync all lootboxes in cells that need to be updated to the player
 
     local lootbox_data = {}
-	local spawn_quotas = DynamicCellTable(nil, {0, 0, 0, 0, 0})
 
     for _, update_cell in pairs(update_cells) do
-		local has_mapper = sCellLootManager:HasMappingPlayer(update_cell.x, update_cell.y)
-		--debug("has_mapper for " .. tostring(update_cell.x) .. " " .. tostring(update_cell.y) .. ": " .. tostring(has_mapper))
-		
-		--[[if not has_mapper then -- UNCOMMENT WHEN YOU WANT TO USE THIS AND IMPLEMENT IT FULLY
-			local tier_data = GetLootboxTiersInCell(update_cell.x, update_cell.y)
-			
-			for tier, real_tier_count in ipairs(tier_data) do
-				local target_tier_count = sCellLootManager:GetTargetLootCountForTier(update_cell.x, update_cell.y, tier) or 0
-				
-				local quota_table = spawn_quotas:GetValue(update_cell.x, update_cell.y)
-				
-				--print("target tier count:", target_tier_count)
-				--print("real_tier_count:", real_tier_count)
-				
-				quota_table[tier] = quota_table[tier] + (target_tier_count - real_tier_count)
-				spawn_quotas:SetValue(update_cell.x, update_cell.y, quota_table)
-			end
-		end--]]
-		
         for _, lootbox in pairs(LootCells.Loot[update_cell.x][update_cell.y]) do
             table.insert(lootbox_data, lootbox:GetSyncData())
         end
     end
 	
-	for _x, x_table in pairs(spawn_quotas.data) do
-		for _y, quota_data in pairs(x_table) do
-			for tier, spawn_quota in ipairs(quota_data) do
-				--print(tier, spawn_quota)
-				if spawn_quota > 0 then
-					-- TODO check if not mapper already ?
-					sCellLootManager:SetMappingPlayer(_x, _y, player)
-					break -- break out of only this loop
-				end
-			end
-		end
-	end
-	--print("\n")
 	
 	-- send the existing lootboxes in the newly streamed cells
-    Network:Send(player, "Inventory/LootboxCellsSync", {lootbox_data = lootbox_data, spawn_quotas = spawn_quotas.data})
+    Network:Send(player, "Inventory/LootboxCellsSync", {lootbox_data = lootbox_data})
 end
 
 -- return a table indexed 1 - 5 with how many of that tier are in the cell (also includes dropboxes and storages, etc)
 function GetLootboxTiersInCell(x, y)
-	local tier_data = {[1] = 0, [2] = 0, [3] = 0, [4] = 0, [5] = 0, [6] = 0, [7] = 0, [8] = 0}
+	local tier_data = {}
 	
-	for _, lootbox in pairs(LootCells.Loot[x][y]) do
+    for _, lootbox in pairs(LootCells.Loot[x][y]) do
+        if not tier_data[lootbox.tier] then tier_data[lootbox.tier] = {} end
 		tier_data[lootbox.tier] = tier_data[lootbox.tier] + 1
     end
 	

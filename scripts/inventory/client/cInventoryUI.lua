@@ -49,12 +49,21 @@ function cInventoryUI:__init()
         [Action.LookUp] = true,
         [Action.HeliTurnRight] = true,
         [Action.HeliTurnLeft] = true,
+        [Action.VehicleFireLeft] = true,
+        [Action.ThrowGrenade] = true,
+        [Action.VehicleFireRight] = true,
+        [Action.Reverse] = true,
+        [Action.UseItem] = true,
+        [Action.GuiPDAToggleAOI] = true,
+        [Action.GrapplingAction] = true,
+        [Action.PickupWithLeftHand] = true,
+        [Action.PickupWithRightHand] = true,
+        [Action.ActivateBlackMarketBeacon] = true,
+        [Action.GuiPDAZoomOut] = true,
+        [Action.GuiPDAZoomIn] = true,
         [Action.NextWeapon] = true,
         [Action.PrevWeapon] = true,
-        [Action.SwitchWeapon] = true,
-        [Action.VehicleFireLeft] = true,
-        [Action.VehicleFireRight] = true,
-        [Action.ThrowGrenade] = true
+        [Action.ExitVehicle] = true
     }
 
     Events:Subscribe("KeyUp", self, self.KeyUp)
@@ -122,7 +131,7 @@ end
 -- the loot, and set args.loot to true
 function cInventoryUI:PopulateEntry(args)
 
-    local itemwindow = args.window
+    local window = args.window or self.window
 
     local stack
 
@@ -132,9 +141,8 @@ function cInventoryUI:PopulateEntry(args)
         stack = LootManager.current_box.contents[args.index]
     end
 
-    if not itemwindow then
-        itemwindow = self.window:FindChildByName("itemwindow_"..(args.cat or stack:GetProperty("category"))..args.index, true)
-    end
+    local cat = args.loot and "loot" or (args.cat or stack:GetProperty("category"))
+    local itemwindow = window:FindChildByName("itemwindow_"..cat..args.index, true)
 
     local button = itemwindow:FindChildByName("button", true)
     local button_bg = itemwindow:FindChildByName("button_bg", true)
@@ -198,6 +206,8 @@ function cInventoryUI:CreateInventory()
             self.inv_dimensions.padding * (index + 1), 0) 
     end
 
+    self.inv_dimensions["loot"] = Vector2(0, 0)
+
     -- Create entries for each item
     for _, cat_data in pairs(Inventory.config.categories) do
         self.categoryTitles[cat_data.name] = self:CreateCategoryTitle(cat_data.name)
@@ -259,17 +269,24 @@ function cInventoryUI:GetCategoryTitlePosition(cat)
 end
 
 function cInventoryUI:GetItemWindowPosition(cat, index)
-    return Vector2(
-        self.inv_dimensions[cat].x - self.inv_dimensions.padding * 2,
-        self.window:GetSize().y - (self.inv_dimensions.button_size.y * index)
-        - self.inv_dimensions.padding * index
-    )
+    if cat == "loot" then
+        return Vector2(
+            0,
+            self.inv_dimensions.button_size.y * (index - 1) + (self.inv_dimensions.padding * index)
+        )
+    else
+        return Vector2(
+            self.inv_dimensions[cat].x - self.inv_dimensions.padding * 2,
+            self.window:GetSize().y - (self.inv_dimensions.button_size.y * index)
+            - self.inv_dimensions.padding * index
+        )
+    end
 end
 
 -- Creates and returns a new item window. Can be used for loot and inventory
-function cInventoryUI:CreateItemWindow(cat, index)
+function cInventoryUI:CreateItemWindow(cat, index, parent)
 
-    local itemWindow = BaseWindow.Create(self.window, "itemwindow_"..cat..index)
+    local itemWindow = BaseWindow.Create(parent or self.window, "itemwindow_"..cat..index)
     itemWindow:SetSize(self.inv_dimensions.button_size)
     itemWindow:SetPosition(self:GetItemWindowPosition(cat, index))
 
@@ -341,24 +358,45 @@ function cInventoryUI:CreateItemWindow(cat, index)
 
     button:BringToFront()
 
+    return itemWindow
+
 end
 
 function cInventoryUI:LeftClickItemButtonDown(button)
     self.pressed_button = button
+    
+    if button:GetDataString("stack_category") == "loot" then
+        return
+    end
+
 end
 
 function cInventoryUI:LeftClickItemButtonUp(button)
     self.pressed_button = nil
+    
+    if button:GetDataString("stack_category") == "loot" then
+        return
+    end
+
 end
 
 function cInventoryUI:HoverEnterButton(button)
     -- Called when the mouse hovers over a button
     self.hovered_button = button
+    
+    if button:GetDataString("stack_category") == "loot" then
+        return
+    end
+
 end
 
 function cInventoryUI:HoverLeaveButton(button)
     -- Called when the mouse stops hovering over a button
     self.hovered_button = nil
+
+    if button:GetDataString("stack_category") == "loot" then
+        return
+    end
 
     if self.pressed_button and self.dropping_counter == 0 then -- Can't move items if dropping one
         -- If they are holding an item to try to move it
@@ -379,6 +417,11 @@ function cInventoryUI:HoverLeaveButton(button)
 end
 
 function cInventoryUI:RightClickItemButton(button)
+
+    if button:GetDataString("stack_category") == "loot" then
+        return
+    end
+
     -- Called when a button is right clicked
     local cat = button:GetDataString("stack_category")
     local index = button:GetDataNumber("stack_index")
@@ -445,6 +488,9 @@ function cInventoryUI:MouseScroll(args)
 
     if not self.hovered_button then return end -- Not hovering over a button
 
+    if self.hovered_button:GetDataString("stack_category") == "loot" then
+        return
+    end
 
     if self.dropping_counter == 0 then
         -- Shifting through stack
@@ -487,6 +533,12 @@ end
 function cInventoryUI:LeftClickItemButton(button)
 
     if self.hovered_button ~= button then return end -- Only hovered button receives mouse clicks
+
+    -- Clicking on an item in loot
+    if button:GetDataString("stack_category") == "loot" then
+        ClientInventory.lootbox_ui:ClickItemButton(button)
+        return
+    end
 
     if button:GetDataBool("dropping") then
         -- Adjusting the drop amount

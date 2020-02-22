@@ -110,6 +110,7 @@ function GenerateDefaultInventory()
 
 end
 
+-- Used only for chat commands
 function GetLootName(lootstring)
     local split = splitstr(lootstring, " ")
 
@@ -123,6 +124,7 @@ function GetLootName(lootstring)
 
 end
 
+-- Used only for chat commands
 function GetLootAmount(lootstring)
     local split = splitstr(lootstring, " ")
 	return tonumber(split[#split])

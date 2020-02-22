@@ -7,9 +7,10 @@ Lootbox.Types =
     Level3 = 3,
     Level4 = 4,
     Level5 = 5, -- Floating ones
-    SupplyCrate = 6, -- Floating ones
     Dropbox = 7, -- Dropbox
-    Storage = 8
+    Storage = 8,
+    VendingMachineFood = 9,
+    VendingMachineDrink = 9
 }
 
 Lootbox.GeneratorConfig = 
@@ -20,12 +21,6 @@ Lootbox.GeneratorConfig =
         max = 7,
         min_percent = 0.05,
         max_percent = 0.25
-    },
-    tier_conversion = -- How the old tiers (1-3) conver to new ones (1-4)
-    {
-        [1] = {{chance = 0.6, tier = 1}, {chance = 0.4, tier = 2}},
-        [2] = {{chance = 0.6, tier = 2}, {chance = 0.4, tier = 3}},
-        [3] = {{chance = 0.7, tier = 3}, {chance = 0.3, tier = 4}}
     },
     box = 
     {
@@ -69,13 +64,21 @@ Lootbox.GeneratorConfig =
             min_lockpicks = 20,
             max_lockpicks = 30
         },
-        [Lootbox.Types.SupplyCrate] = 
+        [Lootbox.Types.VendingMachineFood] = 
         {
-            min_items = 6,
-            max_items = 8,
-            respawn = 9999,
-            min_lockpicks = 40,
-            max_lockpicks = 70
+            min_items = 2,
+            max_items = 3,
+            respawn = 15,
+            min_lockpicks = 0,
+            max_lockpicks = 0
+        },
+        [Lootbox.Types.VendingMachineDrink] = 
+        {
+            min_items = 2,
+            max_items = 3,
+            respawn = 15,
+            min_lockpicks = 0,
+            max_lockpicks = 0
         },
     }
 }
@@ -119,14 +122,19 @@ Lootbox.Models =
         model2 = "general.blz/gae03-gae03.lod",
         offset = Vector3(0, -0.05, 0)
     },
-    [Lootbox.Types.SupplyCrate] = 
-    {
-        model = "pickup.boost.vehicle.eez/pu02-a.lod",
-        col = "37x10.flz/go061_lod1-e_col.pfx",
-        model2 = "general.blz/gae03-gae03.lod",
-        offset = Vector3(0, -0.05, 0)
-    },
     [Lootbox.Types.Dropbox] = 
+    {
+        model = "geo.cbb.eez/go152-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        offset = Vector3(0, -0.025, 0)
+    },
+    [Lootbox.Types.VendingMachineFood] = 
+    {
+        model = "geo.cbb.eez/go152-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        offset = Vector3(0, -0.025, 0)
+    },
+    [Lootbox.Types.VendingMachineDrink] = 
     {
         model = "geo.cbb.eez/go152-a.lod",
         col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",

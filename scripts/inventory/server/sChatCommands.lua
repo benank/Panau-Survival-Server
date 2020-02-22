@@ -82,6 +82,20 @@ Events:Subscribe("PlayerChat", function(args)
 
         Chat:Send(args.player, "Removed " .. name .. " [x" .. tostring(amount) .. "]", Color.Green)
 
+    elseif split[1] == "/loot" and tonumber(split[2]) then
+
+        local tier = tonumber(split[2])
+
+        local loot = ItemGenerator:GetLoot(tier)
+        print("Level " .. tostring(tier) .. " Loot")
+    
+        CreateLootbox({
+            position = args.player:GetPosition(),
+            angle = args.player:GetAngle(),
+            tier = tier,
+            contents = loot
+        })
+
     end
     
 

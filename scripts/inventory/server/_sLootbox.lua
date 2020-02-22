@@ -107,7 +107,7 @@ function sLootbox:TakeLootStack(args, player)
 
     if #self.contents == 0 then
 
-        if self.tier == Lootbox.Types.Dropbox or self.tier == Lootbox.Types.SupplyCrate then
+        if self.tier == Lootbox.Types.Dropbox then
             self:Remove()
         elseif self.tier ~= Lootbox.Types.Storage then
             self:HideBox()
@@ -124,8 +124,6 @@ function sLootbox:TryOpenBox(args, player)
     if player:GetPosition():Distance(self.position) > Lootbox.Distances.Can_Open + 1 then return end
 
     self:Open(player)
-
-
 
 end
 

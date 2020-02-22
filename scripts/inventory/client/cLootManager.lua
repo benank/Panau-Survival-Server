@@ -6,10 +6,10 @@ function cLootManager:__init()
     self.current_box = nil -- Current opened box
     self.close_to_box = false -- If they are close enough to a box that we should raycast
 
-    self.SO_id_to_uid = {}
+    self.SO_id_to_uid = {} -- Static object ids to lootbox unique ids
 
     self.look_at_circle_size = Render.Size.x * 0.0075
-    self.look_at_circle_size_inner = self.look_at_circle_size * 0.8
+    self.look_at_circle_size_inner = self.look_at_circle_size * 0.85
     self.up = Vector3(0, 0.3, 0)
 
     self:CheckIfCloseToBox()
@@ -109,9 +109,7 @@ function cLootManager:RecreateContents(_contents)
 end
 
 function cLootManager:StaticObjectIdToUID(id)
-
     return self.SO_id_to_uid[id]
-
 end
 
 function cLootManager:CheckIfCloseToBox()
@@ -173,11 +171,10 @@ end
 
 function cLootManager:OneLootboxCellSync(data)
 
-	--debug("entered clootmanager:onelootboxcellssync")
-	
     if self.loot[data.cell.x][data.cell.y][data.uid] then
         self.loot[data.cell.x][data.cell.y][data.uid]:Remove()
-        debug("WARN: OneLootboxCellSync box already existed! Removing and replacing with new box")
+        --debug("WARN: OneLootboxCellSync box already existed! Removing and replacing with new box")
+        -- TODO: fix resync of lootboxes
     end
 
     self.loot[data.cell.x][data.cell.y][data.uid] = cLootbox(data)
@@ -190,29 +187,15 @@ function cLootManager:LootboxCellsSync(data)
 	-- spawn the boxes that the server has already for newly streamed cells
     for _, box_data in pairs(data.lootbox_data) do
 		
-		-- TODO - fix it respawning every box when the cell's loot is updated
+		-- TODO: fix it respawning every box when the cell's loot is updated
         if self.loot[box_data.cell.x][box_data.cell.y][box_data.uid] then
             self.loot[box_data.cell.x][box_data.cell.y][box_data.uid]:Remove()
-            debug("WARN: OneLootboxCellSync box already existed! Removing and replacing with new box")
+            --debug("WARN: OneLootboxCellSync box already existed! Removing and replacing with new box")
+            -- TODO: fix resync of lootboxes
         end
 
         self.loot[box_data.cell.x][box_data.cell.y][box_data.uid] = cLootbox(box_data)
     end
-
-	for _x, x_table in pairs(data.spawn_quotas) do
-		for _y, quota_data in pairs(x_table) do
-			for tier, spawn_quota in ipairs(quota_data) do
-				if spawn_quota > 0 then
-					--debug("x: " .. tostring(_x))
-					--debug("y: " .. tostring(_y))
-					cLootGenerator:FullfillQuotas(_x, _y, quota_data)
-				end
-				break -- only pass off the quotas once
-			end
-		end
-	end
-	
-	
 
 end
 
@@ -222,7 +205,6 @@ function cLootManager:ClearCell(cell)
 
     for uid, lootbox in pairs(self.loot[cell.x][cell.y]) do
 
-        --print("clear box")
         lootbox:Remove()
         self.loot[cell.x][cell.y][uid] = nil
 
@@ -235,13 +217,9 @@ end
 function cLootManager:Unload()
 
     for x = 1, #self.loot do
-
         for y = 1, #self.loot[x] do
-
             self:ClearCell({x = x, y = y})
-
         end
-
     end
 
 end
