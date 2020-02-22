@@ -322,6 +322,7 @@ Items =
         rarity = 1,
         rarity_mod = {1,0.75},
         can_equip = true,
+        equip_type = "nitro",
         durable = true,
         max_durability = 1000
     },
