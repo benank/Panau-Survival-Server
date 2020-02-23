@@ -408,7 +408,7 @@ function cInventoryUI:HoverLeaveButton(button)
         local index = self.pressed_button:GetDataNumber("stack_index")
 
         if index + swap_dir < 0 then return end
-        if not Inventory.contents[cat][index + swap_dir] then return end
+        if not Inventory.contents[cat] or not Inventory.contents[cat][index + swap_dir] then return end
 
         Network:Send("Inventory/Swap" .. self.steam_id, {cat = cat, from = index, to = index + swap_dir})
 

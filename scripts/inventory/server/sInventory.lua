@@ -165,17 +165,48 @@ function sInventory:DropStacks(args, player)
     
     if not args.stacks then return end
     if count_table(args.stacks) == 0 then return end
-
-    for _, data in pairs(args.stacks) do
-        self:DropStack(data, player)
+    if count_table(args.stacks) > Lootbox.Max_Items_In_Dropbox then
+        Chat:Send(player, string.format("You attempted to drop too many items at once! Please try again with less then %s items.",
+            Lootbox.Max_Items_In_Dropbox), Color.Red)
+        return
     end
+
+    if not self:CanPlayerPerformOperations(player) then return end
+
+    self.operation_block = self.operation_block + 1
+
+    -- Store all uids in case the inventory contents shift and indices are no longer valid
+    for index, data in pairs(args.stacks) do
+        args.stacks[index].uid = self.contents[data.cat][data.index].uid
+    end
+
+    -- Now remove items and add them to a lootbox
+    local lootbox
+    for _, data in pairs(args.stacks) do
+        lootbox = self:DropStack(data, player, lootbox) or lootbox
+    end
+
+    self.operation_block = self.operation_block - 1
 
 end
 
-function sInventory:DropStack(args, player)
+function sInventory:FindIndexFromUID(cat, uid)
+    
+    for index, stack in pairs(self.contents[cat]) do
+        if stack.uid == uid then
+            return index
+        end
+    end
 
-    if not self:CanPlayerPerformOperations(player) then return end
+    return 0
+end
+
+function sInventory:DropStack(args, player, lootbox)
+
     if player ~= self.player then return end
+
+    args.index = self:FindIndexFromUID(args.cat, args.uid) -- Get new new index from UID
+
     if not self.contents[args.cat] or not self.contents[args.cat][args.index] then return end
     if not args.amount or args.amount < 1 then return end
 
@@ -198,25 +229,33 @@ function sInventory:DropStack(args, player)
 
         self:CheckIfStackHasOneEquippedThenUnequip(split_stack)
 
-        CreateLootbox({
-            position = player:GetPosition(),
-            angle = player:GetAngle(),
-            tier = Lootbox.Types.Dropbox,
-            contents = {[1] = split_stack}
-        })
+        if not lootbox then
+            return CreateLootbox({
+                position = player:GetPosition(),
+                angle = player:GetAngle(),
+                tier = Lootbox.Types.Dropbox,
+                contents = {[1] = split_stack}
+            })
+        else
+            lootbox:AddStack(split_stack)
+        end
 
     else -- Dropping the entire stack
 
         self:CheckIfStackHasOneEquippedThenUnequip(stack)
 
-        CreateLootbox({
-            position = player:GetPosition(),
-            angle = player:GetAngle(),
-            tier = Lootbox.Types.Dropbox,
-            contents = {[1] = stack}
-        })
+        self:RemoveStack({stack = stack:Copy(), index = args.index})
 
-        self:RemoveStack({stack = stack, index = args.index})
+        if not lootbox then
+            return CreateLootbox({
+                position = player:GetPosition(),
+                angle = player:GetAngle(),
+                tier = Lootbox.Types.Dropbox,
+                contents = {[1] = stack}
+            })
+        else
+            lootbox:AddStack(stack)
+        end
 
     end
 
@@ -505,20 +544,16 @@ function sInventory:RemoveStack(args)
 
             self:CheckIfStackHasOneEquippedThenUnequip(self.contents[cat][args.index])
 
+            self.contents[cat][args.index] = nil
+
             -- If we are not removing the last item
             if args.index < #self.contents[cat] then
-
                 self:ShiftItemsDown(cat, args.index)
                 self:Sync({sync_cat = true, cat = cat}) -- Category sync for less network requests
-
             else
-
-                self.contents[cat][args.index] = nil
                 stack = nil
                 self:Sync({index = args.index, cat = cat, sync_remove = true})
-
             end
-
 
         end
 
@@ -529,12 +564,12 @@ function sInventory:RemoveStack(args)
             if _stack.uid == args.stack.uid then
                 
                 self:CheckIfStackHasOneEquippedThenUnequip(self.contents[cat][_index])
+                self.contents[cat][_index] = nil
 
                 if _index < #self.contents[cat] then
                     self:ShiftItemsDown(cat, _index)
                     self:Sync({sync_cat = true, cat = cat})
                 else
-                    self.contents[cat][_index] = nil
                     args.stack = nil
                     self:Sync({index = _index, cat = cat, sync_remove = true})
                 end
@@ -558,12 +593,12 @@ function sInventory:RemoveStack(args)
                     if check_stack:GetAmount() == 0 then
                         
                         self:CheckIfStackHasOneEquippedThenUnequip(self.contents[cat][i])
+                        self.contents[cat][i] = nil
 
                         if i < #self.contents[cat] then
                             self:ShiftItemsDown(cat, i)
                             self:Sync({sync_cat = true, cat = cat})
-                        else
-                            self.contents[cat][i] = nil
+                        elseif not args.shift_down then
                             self:Sync({index = i, cat = cat, sync_remove = true})
                         end
 

@@ -154,6 +154,7 @@ Lootbox.Scan_Interval = 2000 -- How often the client checks for new cells
 Lootbox.Dropbox_Despawn_Time = 60 * 60 * 1000
 Lootbox.Loot_Despawn_Time = 10 * 60 * 1000 -- How long it takes for an opened lootbox to despawn
 Lootbox.uid = 0
+Lootbox.Max_Items_In_Dropbox = 6
 
 function GetLootboxUID()
     Lootbox.uid = Lootbox.uid + 1

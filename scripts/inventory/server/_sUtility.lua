@@ -4,7 +4,7 @@ function CreateLootbox(args)
 
     if args.tier == Lootbox.Types.Dropbox then
 
-        local cell_x, cell_y = GetCell(args.position)
+        --[[local cell_x, cell_y = GetCell(args.position)
 
         for _, box in pairs(LootCells.Loot[cell_x][cell_y]) do
 
@@ -18,7 +18,7 @@ function CreateLootbox(args)
                 
             end
 
-        end
+        end]]
 
     end
 
@@ -26,7 +26,7 @@ function CreateLootbox(args)
     table.insert(LootCells.Loot[box.cell_x][box.cell_y], box)
 
     Network:SendToPlayers(GetNearbyPlayersInCell(box.cell_x, box.cell_y), "Inventory/OneLootboxCellSync", box:GetSyncData())
-
+    return box
 
 end
 
