@@ -1,6 +1,11 @@
 # Panau-Survival-Server
 All server code for the JC2MP server Panau Survival
 
+## Getting Set Up
+1. Clone the repo into your JC2MP server directory.
+2. Set `IKnowWhatImDoing` to true in the server's config.
+3. You're all set!
+
 ## Contributing Guidelines
 Want to help development? Awesome! Here are a couple guidelines for helping out.
 
