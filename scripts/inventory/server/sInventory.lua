@@ -544,13 +544,12 @@ function sInventory:RemoveStack(args)
 
             self:CheckIfStackHasOneEquippedThenUnequip(self.contents[cat][args.index])
 
-            self.contents[cat][args.index] = nil
-
             -- If we are not removing the last item
             if args.index < #self.contents[cat] then
                 self:ShiftItemsDown(cat, args.index)
                 self:Sync({sync_cat = true, cat = cat}) -- Category sync for less network requests
             else
+                self.contents[cat][args.index] = nil
                 stack = nil
                 self:Sync({index = args.index, cat = cat, sync_remove = true})
             end
@@ -564,12 +563,12 @@ function sInventory:RemoveStack(args)
             if _stack.uid == args.stack.uid then
                 
                 self:CheckIfStackHasOneEquippedThenUnequip(self.contents[cat][_index])
-                self.contents[cat][_index] = nil
 
                 if _index < #self.contents[cat] then
                     self:ShiftItemsDown(cat, _index)
                     self:Sync({sync_cat = true, cat = cat})
                 else
+                    self.contents[cat][_index] = nil
                     args.stack = nil
                     self:Sync({index = _index, cat = cat, sync_remove = true})
                 end
@@ -593,12 +592,12 @@ function sInventory:RemoveStack(args)
                     if check_stack:GetAmount() == 0 then
                         
                         self:CheckIfStackHasOneEquippedThenUnequip(self.contents[cat][i])
-                        self.contents[cat][i] = nil
 
                         if i < #self.contents[cat] then
                             self:ShiftItemsDown(cat, i)
                             self:Sync({sync_cat = true, cat = cat})
-                        elseif not args.shift_down then
+                        else
+                            self.contents[cat][i] = nil
                             self:Sync({index = i, cat = cat, sync_remove = true})
                         end
 
