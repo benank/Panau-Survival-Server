@@ -169,7 +169,7 @@ function cLoader:Start()
         self.window:Show()
     end
 
-    --Game:FireEvent("ply.pause")
+    Game:FireEvent("ply.pause")
     Game:FireEvent("ply.invulnerable")
 
     if not self.active then
