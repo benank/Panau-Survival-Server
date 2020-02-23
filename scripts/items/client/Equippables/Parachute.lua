@@ -40,7 +40,7 @@ function EquippableParachute:ToggleEnabled(enabled)
 end
 
 function EquippableParachute:LocalPlayerInput(args)
-    if self.action_block[args.input] and not self.equipped then return false end
+    if self.blocked_actions[args.input] and not self.equipped then return false end
 end
 
 EquippableParachute = EquippableParachute()

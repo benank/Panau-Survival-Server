@@ -14,7 +14,7 @@ function EquippableGrapplehook:__init()
         [Action.ReeledInReleaseAction] = true,
         [Action.DeployParachuteWhileReelingAction] = true
     }
-
+    
     self:ToggleEnabled(false)
 
     Network:Subscribe("items/ToggleEquippedGrapplehook", self, self.ToggleEquipped)
@@ -32,17 +32,24 @@ end
 
 function EquippableGrapplehook:ToggleEnabled(enabled)
     if enabled then
+        Game:FireEvent("ply.grappling.enable")
         if self.action_block then Events:Unsubscribe(self.action_block) end
         self.action_block = nil
-        Game:FireEvent("ply.grappling.enable")
+        if self.grapple_block then Events:Unsubscribe(self.grapple_block) end
+        self.grapple_block = nil
     else
         self.action_block = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
-        Game:FireEvent("ply.grappling.disable")
+        self.grapple_block = Events:Subscribe("SecondTick", self, self.SecondTick)
     end
 end
 
+-- Continuously disable it because it doesn't always work on first join
+function EquippableGrapplehook:SecondTick()
+    if not self.equipped then Game:FireEvent("ply.grappling.disable") end
+end
+
 function EquippableGrapplehook:LocalPlayerInput(args)
-    if self.action_block[args.input] and not self.equipped then return false end
+    if self.blocked_actions[args.input] and not self.equipped then return false end
 end
 
 EquippableGrapplehook = EquippableGrapplehook()
