@@ -43,6 +43,7 @@ config =
         ["Peanuts"] = {hunger = 8, thirst = 0},
         ["Pretzel"] = {hunger = 10, thirst = -2},
         ["Water"] = {hunger = 0, thirst = 16},
+        ["Macadamia Nuts"] = {hunger = 25, thirst = 0},
         ["CamelBak"] = {hunger = 0, thirst = 12, dura_per_use = 10}
     }
 }
