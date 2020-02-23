@@ -384,15 +384,29 @@ function cInventoryUI:HoverEnterButton(button)
     -- Called when the mouse hovers over a button
     self.hovered_button = button
     
+    if not button:GetDataBool("dropping") then
+        self:SetItemWindowBorderColor(button:GetParent(), InventoryUIStyle.colors.hover.border)
+        self:SetItemWindowBackgroundColor(button:GetParent(), InventoryUIStyle.colors.hover.background)
+    end
+
     if button:GetDataString("stack_category") == "loot" then
         return
     end
 
 end
 
+function cInventoryUI:SetItemWindowBackgroundColor(itemwindow, color)
+    itemwindow:FindChildByName("button_bg"):SetColor(color)
+end
+
 function cInventoryUI:HoverLeaveButton(button)
     -- Called when the mouse stops hovering over a button
     self.hovered_button = nil
+
+    if not button:GetDataBool("dropping") then
+        self:SetItemWindowBorderColor(button:GetParent(), InventoryUIStyle.colors.default.border)
+        self:SetItemWindowBackgroundColor(button:GetParent(), InventoryUIStyle.colors.default.background)
+    end
 
     if button:GetDataString("stack_category") == "loot" then
         return

@@ -19,6 +19,13 @@ function cInventoryUIStyle:__init()
             border = Color(255, 0, 0, 255),
             text = Color(220, 0, 0, 255),
             text_hover = Color(255, 0, 0, 255)
+        },
+        hover = 
+        {
+            background = Color(50, 50, 50, self.background_alpha),
+            border = Color(255, 255, 255, 200),
+            text = Color(220, 220, 220, 255),
+            text_hover = Color(255, 255, 255, 255)
         }
     }
 
