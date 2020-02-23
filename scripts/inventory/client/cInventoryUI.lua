@@ -565,6 +565,7 @@ function cInventoryUI:LeftClickItemButton(button)
             -- Equipping or using an item
             local cat = button:GetDataString("stack_category")
             local index = button:GetDataNumber("stack_index")
+            if not Inventory.contents[cat] then return end
             local stack = Inventory.contents[cat][index]
             if not stack then return end
 
