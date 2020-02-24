@@ -284,4 +284,4 @@ function GrapplehookManager:RenderGrappleDistance(ray)
 	
 end
 
-GrapplehookManager = GrapplehookManager()
+--GrapplehookManager = GrapplehookManager()

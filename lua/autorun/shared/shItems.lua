@@ -631,7 +631,7 @@ Items =
         equip_type = "grapplehook"
     },
     {
-        name = "Rocket Grapple",
+        name = "RocketGrapple",
         category = "Supplies",
         stacklimit = 3,
         loot = {1,2},

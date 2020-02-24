@@ -32,14 +32,23 @@ end
 
 function EquippableGrapplehook:ToggleEnabled(enabled)
     if enabled then
-        Game:FireEvent("ply.grappling.enable")
         if self.action_block then Events:Unsubscribe(self.action_block) end
         self.action_block = nil
         if self.grapple_block then Events:Unsubscribe(self.grapple_block) end
         self.grapple_block = nil
+        Game:FireEvent("ply.grappling.enable")
+        self.input_poll = Events:Subscribe("InputPoll", self, self.InputPoll)
     else
         self.action_block = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
         self.grapple_block = Events:Subscribe("SecondTick", self, self.SecondTick)
+    end
+end
+
+function EquippableGrapplehook:InputPoll(args)
+    if not self.equipped then
+        Input:SetValue(Action.DetachGrapple, 1.0)
+        Events:Unsubscribe(self.input_poll)
+        self.input_poll = nil
     end
 end
 
