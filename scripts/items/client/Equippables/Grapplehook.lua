@@ -37,19 +37,15 @@ function EquippableGrapplehook:ToggleEnabled(enabled)
         if self.grapple_block then Events:Unsubscribe(self.grapple_block) end
         self.grapple_block = nil
         Game:FireEvent("ply.grappling.enable")
-        self.input_poll = Events:Subscribe("InputPoll", self, self.InputPoll)
     else
+        self:StopUsing()
         self.action_block = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
         self.grapple_block = Events:Subscribe("SecondTick", self, self.SecondTick)
     end
 end
 
-function EquippableGrapplehook:InputPoll(args)
-    if not self.equipped then
-        Input:SetValue(Action.DetachGrapple, 1.0)
-        Events:Unsubscribe(self.input_poll)
-        self.input_poll = nil
-    end
+function EquippableGrapplehook:StopUsing()
+    LocalPlayer:SetBaseState(AnimationState.SUprightIdle)
 end
 
 -- Continuously disable it because it doesn't always work on first join

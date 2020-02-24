@@ -92,10 +92,16 @@ function EquippableRocketGrapple:UnsubscribeAllEvents()
     end
     self.events = {}
 
+    if IsValid(self.grapple.object) then
+        self.grapple.object:Remove()
+    end
+
     if self.grapple_fx[LocalPlayer:GetId()] and not EquippableGrapplehook:GetEquipped() then
         self.grapple_fx[LocalPlayer:GetId()]:Remove()
         self.grapple_fx[LocalPlayer:GetId()] = nil
     end
+
+    EquippableGrapplehook:StopUsing()
 
 end
 
