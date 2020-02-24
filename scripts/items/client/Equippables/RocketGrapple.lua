@@ -54,7 +54,7 @@ function EquippableRocketGrapple:FireGrapplehookPre()
 			local args = {
 				collision = "km02.towercomplex.flz/key013_01_lod1-g_col.pfx",
 				model = "",
-				position = Camera:GetPosition() + (ang * (Vector3.Forward * 30)),
+				position = Camera:GetPosition() + (ang * (Vector3.Forward * 40)),
 				angle = Camera:GetAngle()
 			}
 			self.grapple.object = ClientStaticObject.Create(args)
@@ -181,7 +181,7 @@ function EquippableRocketGrapple:Render(args)
 	and speed > 10 
 	and speed < self.speed_mod * self.speed_base
 	and ray.distance > self.speed_dist then
-		LocalPlayer:SetLinearVelocity(localplayer_velo * 1.1)
+		LocalPlayer:SetLinearVelocity(localplayer_velo * 1.05)
 	end
 
     if self.grapple.timer:GetMilliseconds() > 600 and not self.grapple.moved and self.grapple.active then
