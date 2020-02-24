@@ -140,7 +140,7 @@ function cLoader:Render(args)
 
     self.delta = self.delta + args.delta * 0.2
 
-    local mod = 0.05
+    --[[local mod = 0.05
     local size_rel = math.sin(self.delta * math.pi * 2) * mod + 1 + mod
     local vec_rel = Vector2(size_rel, size_rel)
 
@@ -148,7 +148,7 @@ function cLoader:Render(args)
     self.bg_color:SetPosition(Render.Size / 2 - self.bg_color:GetSize() / 2)
 
     self.bg_grayscale:SetSizeAutoRel(vec_rel)
-    self.bg_grayscale:SetPosition(Render.Size / 2 - self.bg_grayscale:GetSize() / 2)
+    self.bg_grayscale:SetPosition(Render.Size / 2 - self.bg_grayscale:GetSize() / 2)]]
 
 end
 
