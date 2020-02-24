@@ -143,7 +143,7 @@ function GrapplehookManager:Render(args)
 		
 	end
 
-	self.grappling = base_state == AnimationState.SReelFlight
+    self.grappling = base_state == AnimationState.SReelFlight
 
 	local cam_pos = Camera:GetPosition()
 	local ray = Physics:Raycast(cam_pos, Camera:GetAngle() * Vector3.Forward, 0, 1000)

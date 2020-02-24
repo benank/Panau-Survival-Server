@@ -23,6 +23,10 @@ function EquippableRocketGrapple:__init()
 	Network:Subscribe("items/ToggleEquippedRocketGrapple", self, self.ToggleEquippedRocketGrapple)
 end
 
+function EquippableRocketGrapple:GetEquipped()
+    return self.equipped
+end
+
 function EquippableRocketGrapple:ModuleUnload()
 	if IsValid(self.grapple.object) then self.grapple.object:Remove() end
 end
@@ -118,8 +122,9 @@ function EquippableRocketGrapple:HandlePlayerRocketGrapple(player)
 
     if not player:GetValue("RocketGrappleEquipped") then return end
     
-	local base_state = player:GetBaseState()
-	local grappling = base_state == AnimationState.SReelFlight
+    local base_state = player:GetBaseState()
+	local left_arm_state = LocalPlayer:GetLeftArmState()
+	local grappling = base_state == AnimationState.SReelFlight or left_arm_state == AnimationState.LaSGrapple
 	local player_velo = player:GetLinearVelocity()
     local speed = math.abs((-player:GetAngle() * player_velo).z)
     
@@ -160,23 +165,12 @@ function EquippableRocketGrapple:Render(args)
 		
 	end
 
-	self.grappling = base_state == AnimationState.SReelFlight
+	self.grappling = base_state == AnimationState.SReelFlight or left_arm_state == AnimationState.LaSGrapple
 
 	local cam_pos = Camera:GetPosition()
 	local ray = Physics:Raycast(cam_pos, Camera:GetAngle() * Vector3.Forward, 0, 1000)
 
 	self:RenderGrappleDistance(ray)
-
-    -- Basic grapplehook durability
-    if self.grappling then
-        self.dura_change = self.dura_change + args.delta
-    end
-
-    if self.sync_timer:GetSeconds() > 5 then
-        Network:Send("items/RocketGrappleDecreaseDura", {change = math.ceil(self.dura_change)})
-        self.sync_timer:Restart()
-        self.dura_change = 0
-    end
 
     self:HandlePlayerRocketGrapple(LocalPlayer)
 

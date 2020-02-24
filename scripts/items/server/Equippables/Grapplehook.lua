@@ -25,3 +25,7 @@ Network:Subscribe("items/GrapplehookDecreaseDura", function(args, player)
     UpdateEquippedItem(player, "Grapplehook", item)
 
 end)
+
+Network:Subscribe("EquippableGrapplehookResetPosition", function(args, player)
+    player:SetPosition(player:GetPosition())
+end)
