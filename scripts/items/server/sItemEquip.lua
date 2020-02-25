@@ -1,31 +1,11 @@
 Events:Subscribe("PlayerJoin", function(args)
     args.player:SetValue("EquippedItems", {})
-    args.player:SetValue("EquippedGrappleUpgrades", {
-		["Recharge"] = 0,
-		["Speed"] = 0,
-		["Range"] = 0,
-		["Underwater"] = 0,
-		["Gun"] = 0,
-		["Impulse"] = 0,
-		["Smart"] = 0
-    })
 end)
 
 function Unload()
 
     for player in Server:GetPlayers() do
-
         player:SetValue("EquippedItems", {})
-        player:SetValue("EquippedGrappleUpgrades", {
-            ["Recharge"] = 0,
-            ["Speed"] = 0,
-            ["Range"] = 0,
-            ["Underwater"] = 0,
-            ["Gun"] = 0,
-            ["Impulse"] = 0,
-            ["Smart"] = 0
-        })
-
     end
 
 end

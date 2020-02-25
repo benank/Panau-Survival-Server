@@ -197,20 +197,6 @@ Items =
         equip_type = "body_armor"
     },
     {
-        name = "Parachute",
-        category = "Supplies",
-        stacklimit = 2,
-        loot = {4,5,6},
-        rarity = 0.1,
-        rarity_mod = {1,1.5,2},
-        can_equip = true,
-        max_loot = 1,
-        durable = true,
-        max_durability = 1000,
-        equip_type = "parachute",
-        description = "The classic parachute. When equipped, it allows you to open your parachute."
-    },
-    {
         name = "Grapplehook",
         category = "Supplies",
         stacklimit = 3,
@@ -657,7 +643,7 @@ Items =
     {
         name = "Parachute",
         category = "Supplies",
-        stacklimit = 3,
+        stacklimit = 2,
         loot = {1,2},
         rarity = 1,
         rarity_mod = {1,0.75},

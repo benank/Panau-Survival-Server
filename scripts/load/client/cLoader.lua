@@ -193,6 +193,8 @@ function cLoader:Start()
         end)
     end
     
+    LocalPlayer:SetValue("Loading", true)
+    Events:Fire("LoadingStarted")
 
 end
 
@@ -278,6 +280,10 @@ function cLoader:Stop()
 
         self.window:Hide()
         self.subs = {}
+
+        
+        LocalPlayer:SetValue("Loading", false)
+        Events:Fire("LoadingStarted")
 
     end)
 

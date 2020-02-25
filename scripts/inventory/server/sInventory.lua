@@ -706,6 +706,7 @@ function sInventory:Sync(args)
     -- If initial sync was done already, then update the database with the new info
     if self.initial_sync then
         self:UpdateDB()
+        Events:Fire("InventoryUpdated", {player = self.player})
     end
 
 end
