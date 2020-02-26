@@ -91,7 +91,7 @@ Lootbox.Models =
         col = "mod.heavydrop.grenade.eez/wea00_lod1-c_col.pfx",
         top_model = "mod.heavydrop.grenade.eez/wea00-c1.lod",
         top_col = "mod.heavydrop.grenade.eez/wea00_lod1-c1_col.pfx",
-        offset = Vector3(0, 0.3, 0),
+        offset = Vector3(0, 0, 0),
         offset2 = Vector3(0, 0, 0),
         look_offset = Vector3(0, 0, 0.3)
     },
