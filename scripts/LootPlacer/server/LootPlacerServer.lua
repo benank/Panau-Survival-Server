@@ -2,18 +2,20 @@ class 'Place'
 lastplaced = Vector3(0,0,0)
 function Place:__init()
 	spawns = {}
-	---
+    ---
+    
+
 	tier1 = {}
-	tier1.model = "f1m03airstrippile07.eez/go164_01-a.lod"
-	tier1.collision = "f1m03airstrippile07.eez/go164_01_lod1-a_col.pfx"
+	tier1.model = "mod.heavydrop.grenade.eez/wea00-c.lod"
+	tier1.collision = "mod.heavydrop.grenade.eez/wea00_lod1-c_col.pfx"
 	tier1.angle = Angle(0, 0, 0)
 	tier2 = {}
-	tier2.model = "mod.heavydrop.beretta.eez/wea00-b.lod"
-	tier2.collision = "mod.heavydrop.beretta.eez/wea00_lod1-b_col.pfx"
+	tier2.model = "f1m03airstrippile07.eez/go164_01-a.lod"
+	tier2.collision = "f1m03airstrippile07.eez/go164_01_lod1-a_col.pfx"
 	tier2.angle = Angle(0, 0, 0)
 	tier3 = {}
-	tier3.model = "km05_01.seq.blz/go164_01-g.lod"
-	tier3.collision = "km05_01.seq.blz/go164_01_lod1-b_col.pfx"
+	tier3.model = "mod.heavydrop.beretta.eez/wea00-b.lod"
+	tier3.collision = "mod.heavydrop.beretta.eez/wea00_lod1-b_col.pfx"
 	tier3.angle = Angle(0, 0, 0)
 	tier4 = {}
 	tier4.model = "mod.heavydrop.assault.eez/wea00-a.lod"

@@ -10,29 +10,30 @@ function Place:__init()
     self.lastpos = Vector3()
 
 	tier1 = {}
-	tier1.model = "f1m03airstrippile07.eez/go164_01-a.lod"
-	tier1.collision = "f1m03airstrippile07.eez/go164_01_lod1-a_col.pfx"
-    tier1.angle = Angle(0, 0, 0)
-    tier1.offset = Vector3(0, -0.025, 0)
-    tier1.num = 1
+	tier1.model = "mod.heavydrop.grenade.eez/wea00-c.lod"
+	tier1.collision = "mod.heavydrop.grenade.eez/wea00_lod1-c_col.pfx"
+	tier1.angle = Angle(0, 0, 0)
 	tier2 = {}
-	tier2.model = "mod.heavydrop.beretta.eez/wea00-b.lod"
-	tier2.collision = "mod.heavydrop.beretta.eez/wea00_lod1-b_col.pfx"
+	tier2.model = "f1m03airstrippile07.eez/go164_01-a.lod"
+	tier2.collision = "f1m03airstrippile07.eez/go164_01_lod1-a_col.pfx"
 	tier2.angle = Angle(0, 0, 0)
-    tier2.num = 2
-    tier2.offset = Vector3(0, 0.35, 0)
 	tier3 = {}
-	tier3.model = "km05_01.seq.blz/go164_01-g.lod"
-	tier3.collision = "km05_01.seq.blz/go164_01_lod1-b_col.pfx"
+	tier3.model = "mod.heavydrop.beretta.eez/wea00-b.lod"
+	tier3.collision = "mod.heavydrop.beretta.eez/wea00_lod1-b_col.pfx"
 	tier3.angle = Angle(0, 0, 0)
-    tier3.num = 3
-    tier3.offset = Vector3(0, 0, -0.28)
 	tier4 = {}
 	tier4.model = "mod.heavydrop.assault.eez/wea00-a.lod"
 	tier4.collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
     tier4.angle = Angle(0, 0, 0)
+    
+    tier1.offset = Vector3(0, 0.28, 0)
+    tier1.num = 1
+    tier2.num = 2
+    tier2.offset = Vector3(0, -0.025, 0)
+    tier3.num = 3
+    tier3.offset = Vector3(0, 0.35, 0)
     tier4.num = 4
-    tier4.offset = Vector3(0, 0.25, 0)
+    tier4.offset = Vector3(0, 0.33, 0)
 
     Events:Subscribe("MouseScroll", self, self.MouseScroll)
     Events:Subscribe("MouseUp", self, self.MouseUp)
@@ -102,6 +103,11 @@ function Place:KeyHandle(args)
 end
 
 function Place:SpawnBox(tier)
+    if IsValid(self.current_object) then
+        self.current_object:Remove()
+        self.current_object = nil
+    end
+
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 500)
     self.current_offset = tier.offset
     self.current_object = ClientStaticObject.Create({
@@ -161,13 +167,13 @@ function Place:RendrBase()
 					model = object:GetModel()
                     if model == "f1m03airstrippile07.eez/go164_01-a.lod" 
                     or model == "mod.heavydrop.beretta.eez/wea00-b.lod" 
-                    or model == "km05_01.seq.blz/go164_01-g.lod" 
+                    or model == "mod.heavydrop.grenade.eez/wea00-c.lod" 
                     or model == "mod.heavydrop.assault.eez/wea00-a.lod" then --or model == "pickup.boost.cash.eez/pu05-a.lod" then
 						if model == "f1m03airstrippile07.eez/go164_01-a.lod" then -- tier 1
 							color = Color(0, 255, 0, alpha)
 						elseif model == "mod.heavydrop.beretta.eez/wea00-b.lod" then -- tier2
 							color = Color(0, 0, 255, alpha)
-						elseif model == "km05_01.seq.blz/go164_01-g.lod" then -- tier3
+						elseif model == "mod.heavydrop.grenade.eez/wea00-c.lod" then -- tier3
 							color = Color(255, 0, 0, alpha)
 						elseif model == "mod.heavydrop.assault.eez/wea00-a.lod" then -- tier4
 							color = Color(255, 255, 0, alpha)
