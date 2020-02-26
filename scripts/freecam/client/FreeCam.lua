@@ -151,7 +151,8 @@ function FreeCam:CalcView()
 end
 
 function FreeCam:Activate()
-	self.active = true 
+    self.active = true 
+    LocalPlayer:SetValue("FreecamActive", true)
 	self.position = LocalPlayer:GetBonePosition("ragdoll_Head")
 	self.angle = LocalPlayer:GetAngle()
 	self.angle.roll = 0
@@ -159,6 +160,7 @@ end
 
 function FreeCam:Deactivate()
 	self.active = false
+    LocalPlayer:SetValue("FreecamActive", false)
 	self:StopFollow()
 	if self.teleport then
 		Network:Send("FreeCamTP", {["pos"] = self.position, ["angle"] = self.angle})

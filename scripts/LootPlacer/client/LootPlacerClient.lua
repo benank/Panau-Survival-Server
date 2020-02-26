@@ -4,6 +4,42 @@ lastspawn = 0 -- ID of last object spawned
 shownearbyloot = true
 function Place:__init()
 
+    self.current_object = nil
+    self.yaw = 0
+    self.yaw_adj = math.pi / 12
+    self.lastpos = Vector3()
+
+	tier1 = {}
+	tier1.model = "f1m03airstrippile07.eez/go164_01-a.lod"
+	tier1.collision = "f1m03airstrippile07.eez/go164_01_lod1-a_col.pfx"
+    tier1.angle = Angle(0, 0, 0)
+    tier1.offset = Vector3(0, -0.025, 0)
+    tier1.num = 1
+	tier2 = {}
+	tier2.model = "mod.heavydrop.beretta.eez/wea00-b.lod"
+	tier2.collision = "mod.heavydrop.beretta.eez/wea00_lod1-b_col.pfx"
+	tier2.angle = Angle(0, 0, 0)
+    tier2.num = 2
+    tier2.offset = Vector3(0, 0.35, 0)
+	tier3 = {}
+	tier3.model = "km05_01.seq.blz/go164_01-g.lod"
+	tier3.collision = "km05_01.seq.blz/go164_01_lod1-b_col.pfx"
+	tier3.angle = Angle(0, 0, 0)
+    tier3.num = 3
+    tier3.offset = Vector3(0, 0, -0.28)
+	tier4 = {}
+	tier4.model = "mod.heavydrop.assault.eez/wea00-a.lod"
+	tier4.collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
+    tier4.angle = Angle(0, 0, 0)
+    tier4.num = 4
+    tier4.offset = Vector3(0, 0.25, 0)
+
+    Events:Subscribe("MouseScroll", self, self.MouseScroll)
+    Events:Subscribe("MouseUp", self, self.MouseUp)
+end
+
+function Place:MouseScroll(args)
+    self.yaw = self.yaw + math.ceil(args.delta) * self.yaw_adj
 end
 -----
 function Place:ChatHandle(args)
@@ -13,6 +49,11 @@ function Place:ChatHandle(args)
 		return false
 	elseif args.text == "/showloot" then
 		shownearbyloot = not shownearbyloot
+		return false
+	elseif args.text:find("/yaw") then
+		local splittext = args.text:split(" ")
+		local newyaw = tonumber(splittext[2])
+		self.yaw_adj = newyaw
 		return false
 	elseif args.text:find("/alpha") then
 		local splittext = args.text:split(" ")
@@ -50,32 +91,61 @@ function Place:KeyHandle(args)
 	if Game:GetState() ~= GUIState.Game then return end
 	if lootmode ~= true then return end
 	if args.key == string.byte("1") then -- tier 1
-		local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 50)
-		local position = ray.position
-		Network:Send("SpawnTier1", {pos = position})
+		self:SpawnBox(tier1)
 	elseif args.key == string.byte("2") then -- tier 2
-		local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 50)
-		local position = ray.position
-		position.y = position.y + .1
-		Network:Send("SpawnTier2", {pos = position})
+		self:SpawnBox(tier2)
 	elseif args.key == string.byte("3") then -- tier 3
-		local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 50)
-		local position = ray.position
-		position.y = position.y + .004
-		Network:Send("SpawnTier3", {pos = position})
-    elseif args.key == string.byte("4") then -- credits crate
-		local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 50)
-		local position = ray.position
-		Network:Send("SpawnTier4", {pos = position})
+		self:SpawnBox(tier3)
+    elseif args.key == string.byte("4") then -- tier 4
+		self:SpawnBox(tier4)
 	end
 end
+
+function Place:SpawnBox(tier)
+    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 500)
+    self.current_offset = tier.offset
+    self.current_object = ClientStaticObject.Create({
+        position = ray.position,
+        angle = Angle(),
+        model = tier.model
+    })
+    self.current_tier = tier.num
+end
+
+function Place:MouseUp(args)
+    if IsValid(self.current_object) then
+        Network:Send("SpawnTier" .. tostring(self.current_tier), {
+            pos = self.lastpos, 
+            angle = self.current_object:GetAngle()})
+        self.current_object:Remove()
+        self.current_object = nil
+    end
+end
+
+function Place:MoveBox()
+
+    if not IsValid(self.current_object) then return end
+
+    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 500)
+    self.lastpos = ray.position + self.current_offset
+    self.current_object:SetPosition(self.lastpos)
+    local ang = Angle.FromVectors(Vector3.Up, ray.normal)
+    ang.yaw = self.yaw
+    self.current_object:SetAngle(ang)
+
+end
+
 -----
 totalboxes = 0
 alpha = 200
 radius = 2.5
 range = 1500
 function Place:RendrBase()
-	if lootmode == true then
+    if lootmode == true then
+        
+        self:MoveBox()
+
+
 		Render:DrawText(Vector2(Render.Width * .025, Render.Height * .35), "/lootmode to exit loot-placing mode", Color(0, 255, 0, 175), (TextSize.Default * 1))
 		Render:DrawText(Vector2(Render.Width * .025, Render.Height * .40), "/saveloot to save all loot", Color(0, 255, 0, 175), (TextSize.Default * 1))
 		Render:DrawText(Vector2(Render.Width * .025, Render.Height * .45), "/alpha 0-255 to set the alpha on /showloot", Color(0, 255, 0, 175), (TextSize.Default * 1))

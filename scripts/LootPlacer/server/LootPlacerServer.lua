@@ -102,7 +102,8 @@ end
 -----
 function Place:SpawnTier1(args, player)
 	if player:GetValue("TrapPlacingMode") == 1 then return end
-	tier1.position = args.pos
+    tier1.position = args.pos
+    tier1.angle = args.angle
 	local t1 = StaticObject.Create(tier1)
 	table.insert(spawns, t1)
 	local iden = t1:GetId()
@@ -112,7 +113,8 @@ end
 -----
 function Place:SpawnTier2(args, player)
 	if player:GetValue("TrapPlacingMode") == 1 then return end
-	tier2.position = args.pos + Vector3(0,0.3,0)
+	tier2.position = args.pos
+    tier2.angle = args.angle
 	local t2 = StaticObject.Create(tier2)
 	table.insert(spawns, t2)
 	local iden = t2:GetId()
@@ -126,6 +128,7 @@ function Place:SpawnTier3(args, player)
 	print(tostring(player).." placed T3 "..tostring(dist).."m away from the last one at "..tostring(args.pos))
 	lastplaced = args.pos
 	tier3.position = args.pos
+    tier3.angle = args.angle
 	local t3 = StaticObject.Create(tier3)
 	table.insert(spawns, t3)
 	local iden = t3:GetId()
@@ -138,7 +141,8 @@ function Place:SpawnTier4(args, player)
 	local dist = Vector3.Distance(args.pos, lastplaced)
 	print(tostring(player).." placed T4 "..tostring(dist).."m away from the last one at "..tostring(args.pos))
 	lastplaced = args.pos
-	tier4.position = args.pos + Vector3(0,0.3,0)
+	tier4.position = args.pos
+    tier4.angle = args.angle
 	local t4 = StaticObject.Create(tier4)
 	table.insert(spawns, t4)
 	local iden = t4:GetId()
