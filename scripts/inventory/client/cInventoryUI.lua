@@ -67,6 +67,7 @@ function cInventoryUI:__init()
     }
 
     Events:Subscribe("KeyUp", self, self.KeyUp)
+    Events:Subscribe("KeyDown", self, self.KeyDown)
     Events:Subscribe("MouseScroll", self, self.MouseScroll)
     Events:Subscribe("SetInventoryState", self, self.SetInventoryState)
     
@@ -622,7 +623,7 @@ function cInventoryUI:ToggleVisible()
         self:InventoryClosed()
     else -- Open inventory
         self.window:Show()
-        Mouse:SetPosition(Render.Size / 2)
+        Mouse:SetPosition(Render.Size * 0.75)
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     end
 
@@ -634,6 +635,14 @@ end
 function cInventoryUI:KeyUp(args)
 
     if args.key == string.byte(self.open_key) then
+        self:ToggleVisible()
+    end
+
+end
+
+function cInventoryUI:KeyDown(args)
+
+    if args.key == string.byte(self.open_key) and not self.window:GetVisible() then
         self:ToggleVisible()
     end
 
