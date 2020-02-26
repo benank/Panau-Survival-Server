@@ -10,7 +10,7 @@ function cLootManager:__init()
 
     self.look_at_circle_size = Render.Size.x * 0.0075
     self.look_at_circle_size_inner = self.look_at_circle_size * 0.85
-    self.up = Vector3(0, 0.3, 0)
+    self.up = Vector3(0, 0.1, 0)
 
     self:CheckIfCloseToBox()
 
@@ -66,7 +66,7 @@ function cLootManager:Render(args)
 
         if not ClientInventory.lootbox_ui.window:GetVisible() then
             -- Draw circle to indicate that it can be opened
-            local pos = Render:WorldToScreen(box.position + self.up)
+            local pos = Render:WorldToScreen(box.look_position + self.up)
             Render:FillCircle(pos, self.look_at_circle_size, Color.White)
             Render:FillCircle(pos, self.look_at_circle_size_inner, Lootbox.LookAtColor)
         end

@@ -2,26 +2,6 @@
 -- Must contain: position, angle, tier, contents
 function CreateLootbox(args)
 
-    if args.tier == Lootbox.Types.Dropbox then
-
-        --[[local cell_x, cell_y = GetCell(args.position)
-
-        for _, box in pairs(LootCells.Loot[cell_x][cell_y]) do
-
-            -- If there is another dropbox close enough, use that one
-            if box.tier == Lootbox.Types.Dropbox and box.position:Distance(args.position) < 2 then
-
-                for k,v in pairs(args.contents) do
-                    box:AddStack(v)
-                    return
-                end
-                
-            end
-
-        end]]
-
-    end
-
     local box = sLootbox(args)
     table.insert(LootCells.Loot[box.cell_x][box.cell_y], box)
 

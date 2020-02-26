@@ -27,10 +27,7 @@ end
 function cLootbox:CreateModel()
 
     local position = self.position + self.model_data.offset
-
-    if self.model_data.offset2 then
-        position = position + self.angle * self.model_data.offset2
-    end
+    self.look_position = self.position + self.angle * (self.model_data.look_offset and self.model_data.look_offset or Vector3())
 
     table.insert(self.static_objects, 
         ClientStaticObject.Create({
@@ -44,7 +41,7 @@ function cLootbox:CreateModel()
 
         table.insert(self.static_objects, 
             ClientStaticObject.Create({
-                position = position,
+                position = position + self.angle * self.model_data.offset2,
                 angle = self.angle,
                 model = self.model_data.top_model,
                 collision = self.model_data.top_col
