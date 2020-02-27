@@ -42,7 +42,9 @@ function WeaponManager:PostTick(args)
 
     if not self.equipped then return end
 
-    if weapon.ammo_clip > self.current_ammo and self.cheat_timer:GetSeconds() > 1 then
+    local current_ammo = self:GetCurrentAmmo()
+
+    if self:GetTotalAmmoInWeapon(weapon) > current_ammo and self.cheat_timer:GetSeconds() > 1 then
         -- kick for ammo hax
         Network:Send("items/Cheating", {reason = "ammo hacks"})
         self.cheat_timer:Restart()
@@ -56,11 +58,20 @@ function WeaponManager:PostTick(args)
         return
     end
 
-    if self:GetTotalAmmoInWeapon(weapon) >= 0 and self:GetTotalAmmoInWeapon(weapon) < self.current_ammo then
-        Network:Send("Items/FireWeapon", {ammo = self.current_ammo})
-        self.current_ammo = self.current_ammo - 1
+    if self:GetTotalAmmoInWeapon(weapon) >= 0 and self:GetTotalAmmoInWeapon(weapon) < current_ammo then
+        Network:Send("Items/FireWeapon", {ammo = current_ammo})
+        self:SetCurrentAmmo(current_ammo - 1)
     end
+        
 
+end
+
+function WeaponManager:SetCurrentAmmo(ammo)
+    self.current_ammo = xor_cipher(ammo)
+end
+
+function WeaponManager:GetCurrentAmmo()
+    return tonumber(xor_cipher(self.current_ammo))
 end
 
 function WeaponManager:GetTotalAmmoInWeapon(weapon)
@@ -71,7 +82,7 @@ end
 function WeaponManager:ForceWeaponSwitch(args)
 
     self.current_weapon = args.weapon
-    self.current_ammo = args.ammo
+    self:SetCurrentAmmo(args.ammo)
     self.enabled = true
 
     Timer.SetTimeout(1500, function()
