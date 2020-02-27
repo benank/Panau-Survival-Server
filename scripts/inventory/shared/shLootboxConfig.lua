@@ -149,14 +149,16 @@ Lootbox.Models =
         model = "59x36.nl/go158-a1.lod",
         col = "59x36.nl/go158_lod1-a1_col.pfx",
         model_dst = "59x36.nl/go158-a1_dst.lod",
-        col_dst = "59x36.nl/go158_lod1-a1_dst_col.pfx"
+        col_dst = "59x36.nl/go158_lod1-a1_dst_col.pfx",
+        offset = Vector3(0, 0, 0)
     },
     [Lootbox.Types.VendingMachineDrink] = 
     {
         model = "59x36.nl/go158-a.lod",
         col = "59x36.nl/go158_lod1-a_col.pfx",
         model_dst = "59x36.nl/go158-a_dst.lod",
-        col_dst = "59x36.nl/go158_lod1-a_dst_col.pfx"
+        col_dst = "59x36.nl/go158_lod1-a_dst_col.pfx",
+        offset = Vector3(0, 0, 0)
     }
 }
 
