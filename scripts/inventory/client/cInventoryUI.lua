@@ -20,7 +20,7 @@ function cInventoryUI:__init()
     self.padding = 4
 
     self.window = BaseWindow.Create("Inventory")
-    self.window:SetSize(Vector2(math.max(Render.Size.x / 2, 800), Render.Size.y))
+    self.window:SetSize(Vector2(math.min(Render.Size.x * 0.9, InventoryUIStyle.default_inv_size), Render.Size.y))
     self.window:SetPosition(Render.Size - self.window:GetSize())
     self.window:Hide()
     self.window:Focus()

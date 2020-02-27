@@ -4,6 +4,7 @@ function cInventoryUIStyle:__init()
 
 
     self.background_alpha = 140
+    self.default_inv_size = 1000 -- 800 px wide for the entire inventory
     self.colors = 
     {
         default = 
