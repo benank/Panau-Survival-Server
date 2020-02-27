@@ -6,7 +6,6 @@ function cLootboxUI:__init()
 
     self.contents = {}
 
-    self.open_timer = Timer()
     
     self.window = BaseWindow.Create("Loot")
     self.window:SetSize(Vector2(ClientInventory.ui.inv_dimensions.button_size.x, Render.Size.y))
@@ -20,7 +19,6 @@ function cLootboxUI:__init()
     
     LocalPlayer:SetValue("LootOpen", false)
 
-    Events:Subscribe("KeyDown", self, self.KeyDown)
     Events:Subscribe("KeyUp", self, self.KeyUp)
     Network:Subscribe("Inventory/LootboxOpen", self, self.LootboxOpen)
     Network:Subscribe("Inventory/LootboxSync", self, self.LootboxSync)
@@ -137,24 +135,17 @@ function cLootboxUI:ToggleVisible()
 
 end
 
-function cLootboxUI:KeyDown(args)
+function cLootboxUI:KeyUp(args)
 
-    if args.key == string.byte(self.open_key) and not self.window:GetVisible() and self.open_timer:GetSeconds() > 0.5 then
+    if args.key == string.byte(self.open_key) then
 
-        if IsValid(LootManager.current_looking_box) then
-            self.open_timer:Restart()
+        if self.window:GetVisible() then
+            self:ToggleVisible()
+        elseif IsValid(LootManager.current_looking_box) then
             LootManager.current_box = LootManager.current_looking_box
             Network:Send("Inventory/TryOpenBox" .. tostring(LootManager.current_looking_box.uid))
         end
 
-    end
-
-end
-
-function cLootboxUI:KeyUp(args)
-
-    if args.key == string.byte(self.open_key) and self.window:GetVisible() then
-        self:ToggleVisible()
     end
 
 end
