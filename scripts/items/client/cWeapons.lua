@@ -7,6 +7,7 @@ function WeaponManager:__init()
     self.current_weapon = weapon.id
     self.default_weapon = self.current_weapon
     self.cheat_timer = Timer()
+    self.init_timer = Timer()
     self.equipped = false
     self.enabled = false
 
@@ -35,6 +36,7 @@ end
 function WeaponManager:PostTick(args)
 
     if LocalPlayer:GetValue("Loading") then return end
+    if self.init_timer:GetSeconds() < 5 then return end
 
     local weapon = LocalPlayer:GetEquippedWeapon()
     if not weapon then return end
@@ -81,6 +83,7 @@ end
 -- Forces the weapon to come out (and go into player's hands rather than under their legs lol)
 function WeaponManager:ForceWeaponSwitch(args)
 
+    self.init_timer:Restart()
     self.current_weapon = args.weapon
     self:SetCurrentAmmo(args.ammo)
     self.enabled = true
