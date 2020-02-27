@@ -201,7 +201,6 @@ function sLootbox:RespawnBox()
 
     Network:SendToPlayers(players_opened, "Inventory/ForceCloseLootbox")
 
-    self.tier = ConvertTier(self.original_tier)
     self.contents = ItemGenerator:GetLoot(self.tier)
     self.players_opened = {}
 

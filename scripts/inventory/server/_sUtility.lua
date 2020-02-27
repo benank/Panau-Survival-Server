@@ -112,13 +112,6 @@ end
 
 local random = math.random
 
-function ConvertTier(original_tier)
-    return random() < Lootbox.GeneratorConfig.tier_conversion[original_tier][1].chance
-    and Lootbox.GeneratorConfig.tier_conversion[original_tier][1].tier
-    or Lootbox.GeneratorConfig.tier_conversion[original_tier][2].tier
-
-end
-
 function randy(_min, _max, _seed)
     --math.randomseed(_seed and _seed or os.time())
     return math.random(_min, _max)
