@@ -127,8 +127,9 @@ function EquippableRocketGrapple:HandlePlayerRocketGrapple(player)
 	local grappling = base_state == AnimationState.SReelFlight or left_arm_state == AnimationState.LaSGrapple
 	local player_velo = player:GetLinearVelocity()
     local speed = math.abs((-player:GetAngle() * player_velo).z)
+    local parachuting = base_state == AnimationState.SParachute
     
-    local rocket_grappling = grappling and speed > 5
+    local rocket_grappling = grappling and speed > 5 and not parachuting
     if rocket_grappling then
         local arm_pos = player:GetBonePosition("ragdoll_AttachHandLeft")
         if not self.grapple_fx[player:GetId()] then
@@ -165,7 +166,8 @@ function EquippableRocketGrapple:Render(args)
 		
 	end
 
-	self.grappling = base_state == AnimationState.SReelFlight or left_arm_state == AnimationState.LaSGrapple
+    self.grappling = base_state == AnimationState.SReelFlight or left_arm_state == AnimationState.LaSGrapple
+    local parachuting = base_state == AnimationState.SParachute
 
 	local cam_pos = Camera:GetPosition()
 	local ray = Physics:Raycast(cam_pos, Camera:GetAngle() * Vector3.Forward, 0, 1000)
@@ -177,7 +179,8 @@ function EquippableRocketGrapple:Render(args)
 	local localplayer_velo = LocalPlayer:GetLinearVelocity()
 	local speed = math.abs((-LocalPlayer:GetAngle() * localplayer_velo).z)
 
-	if self.grappling 
+    if self.grappling 
+    and not parachuting
 	and speed > 10 
 	and speed < self.speed_mod * self.speed_base
 	and ray.distance > self.speed_dist then
