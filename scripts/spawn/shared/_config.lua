@@ -4,7 +4,7 @@ config =
     {
         position = Vector3(-10291, 202.5, -3019),
         radius = 75,
-        color = Color(255,255,0,100)
+        color = Color(255,255,0,50)
     },
     neutralzone = 
     {
