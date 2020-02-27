@@ -9,32 +9,6 @@ function Place:__init()
     self.yaw_adj = math.pi / 12
     self.lastpos = Vector3()
 
-	tier1 = {}
-	tier1.model = "mod.heavydrop.grenade.eez/wea00-c.lod"
-	tier1.collision = "mod.heavydrop.grenade.eez/wea00_lod1-c_col.pfx"
-	tier1.angle = Angle(0, 0, 0)
-	tier2 = {}
-	tier2.model = "f1m03airstrippile07.eez/go164_01-a.lod"
-	tier2.collision = "f1m03airstrippile07.eez/go164_01_lod1-a_col.pfx"
-	tier2.angle = Angle(0, 0, 0)
-	tier3 = {}
-	tier3.model = "mod.heavydrop.beretta.eez/wea00-b.lod"
-	tier3.collision = "mod.heavydrop.beretta.eez/wea00_lod1-b_col.pfx"
-	tier3.angle = Angle(0, 0, 0)
-	tier4 = {}
-	tier4.model = "mod.heavydrop.assault.eez/wea00-a.lod"
-	tier4.collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
-    tier4.angle = Angle(0, 0, 0)
-    
-    tier1.offset = Vector3(0, 0.28, 0)
-    tier1.num = 1
-    tier2.num = 2
-    tier2.offset = Vector3(0, -0.025, 0)
-    tier3.num = 3
-    tier3.offset = Vector3(0, 0.35, 0)
-    tier4.num = 4
-    tier4.offset = Vector3(0, 0.33, 0)
-
     Events:Subscribe("MouseScroll", self, self.MouseScroll)
     Events:Subscribe("MouseUp", self, self.MouseUp)
 end
@@ -92,13 +66,17 @@ function Place:KeyHandle(args)
 	if Game:GetState() ~= GUIState.Game then return end
 	if lootmode ~= true then return end
 	if args.key == string.byte("1") then -- tier 1
-		self:SpawnBox(tier1)
+		self:SpawnBox(Lootbox.Types.Level1)
 	elseif args.key == string.byte("2") then -- tier 2
-		self:SpawnBox(tier2)
+		self:SpawnBox(Lootbox.Types.Level2)
 	elseif args.key == string.byte("3") then -- tier 3
-		self:SpawnBox(tier3)
+		self:SpawnBox(Lootbox.Types.Level3)
     elseif args.key == string.byte("4") then -- tier 4
-		self:SpawnBox(tier4)
+		self:SpawnBox(Lootbox.Types.Level4)
+    elseif args.key == string.byte("5") then -- food vending machine
+		self:SpawnBox(Lootbox.Types.VendingMachineFood)
+    elseif args.key == string.byte("6") then -- drink vending machine
+		self:SpawnBox(Lootbox.Types.VendingMachineDrink)
 	end
 end
 
@@ -109,19 +87,21 @@ function Place:SpawnBox(tier)
     end
 
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 500)
-    self.current_offset = tier.offset
+    local obj_data = Lootbox.Models[tier]
+    self.current_offset = obj_data.offset
     self.current_object = ClientStaticObject.Create({
         position = ray.position,
         angle = Angle(),
-        model = tier.model
+        model = obj_data.model
     })
-    self.current_tier = tier.num
+    self.current_tier = tier
 end
 
 function Place:MouseUp(args)
     if IsValid(self.current_object) then
-        Network:Send("SpawnTier" .. tostring(self.current_tier), {
+        Network:Send("SpawnBox", {
             pos = self.lastpos, 
+            tier = self.current_tier,
             angle = self.current_object:GetAngle()})
         self.current_object:Remove()
         self.current_object = nil
@@ -135,15 +115,15 @@ function Place:MoveBox()
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 500)
     self.lastpos = ray.position + self.current_offset
     self.current_object:SetPosition(self.lastpos)
-    local ang = Angle.FromVectors(Vector3.Up, ray.normal)
-    ang.yaw = self.yaw
+    local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(self.yaw, 0, 0)
+    --ang.yaw = self.yaw
     self.current_object:SetAngle(ang)
 
 end
 
 -----
 totalboxes = 0
-alpha = 200
+alpha = 150
 radius = 2.5
 range = 1500
 function Place:RendrBase()
@@ -165,19 +145,9 @@ function Place:RendrBase()
 			for object in Client:GetStaticObjects() do
 				if plypos:Distance(object:GetPosition()) <= range then
 					model = object:GetModel()
-                    if model == "f1m03airstrippile07.eez/go164_01-a.lod" 
-                    or model == "mod.heavydrop.beretta.eez/wea00-b.lod" 
-                    or model == "mod.heavydrop.grenade.eez/wea00-c.lod" 
-                    or model == "mod.heavydrop.assault.eez/wea00-a.lod" then --or model == "pickup.boost.cash.eez/pu05-a.lod" then
-						if model == "f1m03airstrippile07.eez/go164_01-a.lod" then -- tier 1
-							color = Color(0, 255, 0, alpha)
-						elseif model == "mod.heavydrop.beretta.eez/wea00-b.lod" then -- tier2
-							color = Color(0, 0, 255, alpha)
-						elseif model == "mod.heavydrop.grenade.eez/wea00-c.lod" then -- tier3
-							color = Color(255, 0, 0, alpha)
-						elseif model == "mod.heavydrop.assault.eez/wea00-a.lod" then -- tier4
-							color = Color(255, 255, 0, alpha)
-						end
+                    if Lootbox.Colors[model] then
+                        color = Lootbox.Colors[model]
+                        color.a = alpha
 						local pos = object:GetPosition()
 						local transform = Transform3()
 						transform:Translate(Vector3(pos.x, pos.y, pos.z))

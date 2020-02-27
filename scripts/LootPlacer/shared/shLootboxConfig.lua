@@ -19,8 +19,8 @@ Lootbox.Colors =
     ["f1m03airstrippile07.eez/go164_01-a.lod"] = Color.Blue,
     ["mod.heavydrop.beretta.eez/wea00-b.lod"] = Color.Purple,
     ["mod.heavydrop.assault.eez/wea00-a.lod"] = Color.Red,
-    ["geo.cbb.eez/go152-a.lod"] = Color.Orange,
-    ["geo.cbb.eez/go152-a.lod"] = Color.Aqua
+    ["59x36.nl/go158-a1.lod"] = Color.Orange,
+    ["59x36.nl/go158-a.lod"] = Color.Aqua
 }
 
 Lootbox.Models = 
@@ -76,14 +76,18 @@ Lootbox.Models =
     },
     [Lootbox.Types.VendingMachineFood] = 
     {
-        model = "geo.cbb.eez/go152-a.lod",
-        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
-        offset = Vector3(0, -0.025, 0)
+        model = "59x36.nl/go158-a1.lod",
+        col = "59x36.nl/go158_lod1-a1_col.pfx",
+        model_dst = "59x36.nl/go158-a1_dst.lod",
+        col_dst = "59x36.nl/go158_lod1-a1_dst_col.pfx",
+        offset = Vector3(0, 0, 0)
     },
     [Lootbox.Types.VendingMachineDrink] = 
     {
-        model = "geo.cbb.eez/go152-a.lod",
-        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
-        offset = Vector3(0, -0.025, 0)
+        model = "59x36.nl/go158-a.lod",
+        col = "59x36.nl/go158_lod1-a_col.pfx",
+        model_dst = "59x36.nl/go158-a_dst.lod",
+        col_dst = "59x36.nl/go158_lod1-a_dst_col.pfx",
+        offset = Vector3(0, 0, 0)
     }
 }

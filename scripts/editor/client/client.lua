@@ -1067,12 +1067,3 @@ Events:Subscribe("KeyDown", VikSaveCarCoords)
 --Events:Subscribe("KeyDown", Keydown)
 
 --
-
-function AngleRender()
-	--print("ie")
-	for obj in Client:GetStaticObjects() do
-		--print("enterino")
-		Render:DrawText(Render:WorldToScreen(obj:GetPosition()), tostring(obj:GetAngle()), Color(170, 193, 213, 200), TextSize.Default * 1.25)
-	end
-end
-Events:Subscribe("Render", AngleRender)
