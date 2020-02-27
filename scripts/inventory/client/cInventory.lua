@@ -18,14 +18,14 @@ function cInventory:ModulesLoad()
 
     local contents = {}
 
-    for _, cat in pairs(Inventory.contents) do
+    for cat, _ in pairs(Inventory.contents) do
         contents[cat] = {}
-        for index, stack in ipairs(Inventory.contents) do
+        for index, stack in ipairs(Inventory.contents[cat]) do
             contents[cat][index] = {stack = stack:GetSyncObject(), uid = stack.uid}
         end
     end
 
-    Events:Fire("InventoryUpdated", {data = {contents = contents}, action = "full"})
+    Events:Fire("InventoryUpdated", {data = {contents = contents, slots = Inventory.slots}, action = "full"})
 
 end
 
