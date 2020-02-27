@@ -16,9 +16,7 @@ function sItemGenerator:__init()
     
 
         for k,v in pairs(loot) do
-
             print(v:GetProperty("name") .. " [x" .. tostring(v:GetAmount()) .. "]")
-
         end
     
     end)
@@ -52,7 +50,7 @@ end
 
 function sItemGenerator:GetStack(tier)
 
-    if tier < Lootbox.Types.Level1 or tier > Lootbox.Types.Level5 then
+    if not Lootbox.GeneratorConfig.spawnable[tier] then
         error("sItemGenerator:GetItem failed: invalid tier specified")
     end
 
@@ -64,16 +62,12 @@ function sItemGenerator:GetStack(tier)
     if item_data then
 
         local item = CreateItem(item_data)
-        
         local stack = shStack({contents = {item}})
-        
         local amount = self:GetItemAmount(item, item_data.max_loot)
 
         -- Add items to stack like this so it handles all the dirty work for us
         for i = 1, amount - 1 do
-
             stack:AddItem(CreateItem(item_data))
-
         end
 
         return stack

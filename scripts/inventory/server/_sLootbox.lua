@@ -21,6 +21,7 @@ function sLootbox:__init(args)
     self.contents = args.contents
     self.model_data = Lootbox.Models[args.tier]
     self.is_dropbox = args.tier == Lootbox.Types.Dropbox
+    self.is_vending_machine = args.tier == Lootbox.Types.VendingMachineFood or args.tier == Lootbox.Types.VendingMachineDrink
     -- Eventually add support for world specification
 
     self.players_opened = {}

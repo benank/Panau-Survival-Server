@@ -24,11 +24,16 @@ function sLootManager:LoadFromFile()
 			if string.len(line) > 0 then -- filter out empty lines
 				counter = counter + 1
                 local tokens = line:split(",")
-                table.insert(self.loot_data, {
-                    pos = Vector3(tonumber(tokens[2]), tonumber(tokens[3]), tonumber(tokens[4])),
-                    ang = Angle(tonumber(tokens[5]), tonumber(tokens[6]), tonumber(tokens[7])),
-                    tier = tonumber(tokens[1])
-                })
+                local tier = tonumber(tokens[1])
+                if Lootbox.GeneratorConfig.spawnable[tier] then
+                    table.insert(self.loot_data, {
+                        pos = Vector3(tonumber(tokens[2]), tonumber(tokens[3]), tonumber(tokens[4])),
+                        ang = Angle(tonumber(tokens[5]), tonumber(tokens[6]), tonumber(tokens[7])),
+                        tier = tonumber(tokens[1])
+                    })
+                else
+                    print("Found lootbox spawn with invalid tier " .. tostring(tier) .. ". Skipping!")
+                end
 			end
 		end
 		file:close()
