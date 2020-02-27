@@ -21,6 +21,7 @@ end
 
 function WeaponManager:LocalPlayerInput(args)
     if args.input == Action.FireRight then
+        if self.init_timer:GetSeconds() < 2 then return false end
         if not self.equipped or not self.enabled then return false end
     end
 end
@@ -36,7 +37,7 @@ end
 function WeaponManager:PostTick(args)
 
     if LocalPlayer:GetValue("Loading") then return end
-    if self.init_timer:GetSeconds() < 5 then return end
+    if self.init_timer:GetSeconds() < 2 then return end
 
     local weapon = LocalPlayer:GetEquippedWeapon()
     if not weapon then return end

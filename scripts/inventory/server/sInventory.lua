@@ -2,6 +2,8 @@ class 'sInventory'
 
 function sInventory:__init(player)
 
+    player:SetValue("InventoryOperationBlock", 0)
+
     self.player = player
     self.contents = {} -- Contents of the player's inventory
     self.slots = {} -- Number of slots that the player has for each inventory category (use self:GetSlots(cat))
@@ -329,7 +331,7 @@ function sInventory:CanPlayerPerformOperations(player)
 
     -- eventually modify this so that admins can do stuff if they clone the inv
     return IsValid(player) and IsValid(self.player) and player == self.player and self.operation_block == 0
-        and not player:GetValue("Loading") and player:GetEnabled()
+        and not player:GetValue("Loading") and player:GetEnabled() and player:GetValue("InventoryOperationBlock") == 0
 
 end
 

@@ -47,6 +47,7 @@ function FireWeapon(args, player)
         player:Kick("You were kicked for weapon mismatch")
 
     else
+        player:SetValue("InventoryOperationBlock", player:GetValue("InventoryOperationBlock") + 1)
         -- Remove ammo from inventory and decrease weapon durability
         local item_data = Items_indexed[ammo_name]
         item_data.amount = 1
@@ -70,6 +71,12 @@ function FireWeapon(args, player)
         equipped_item.durability = equipped_item.durability - ItemsConfig.equippables.weapons[weapon_name].dura_per_use
         Inventory.ModifyDurability({player = player, item = equipped_item})
         UpdateEquippedItem(player, equipped_item.name, equipped_item)
+
+        Timer.SetTimeout(500, function()
+            if IsValid(player) then
+                player:SetValue("InventoryOperationBlock", player:GetValue("InventoryOperationBlock") - 1)
+            end
+        end)
 
     end
 
