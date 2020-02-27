@@ -16,9 +16,7 @@ end)
 Network:Subscribe("Inventory/LootSyncRequest", function(args, player)
 
     if IsValid(player) and player:GetValue("LootCell") then -- If they are already in a cell, remove them from that one
-    
         RemovePlayerFromCell(player);
-
     end
 
     if not IsValid(player) then return end -- wat
@@ -40,9 +38,7 @@ end)
 Events:Subscribe("PlayerQuit", function(args)
 
     if args.player:GetValue("LootCell") then -- Remove from cell when they leave the server
-    
         RemovePlayerFromCell(args.player)
-
     end
 
 end)
@@ -59,7 +55,6 @@ function UpdateLootInCells(player)
 
     --debug('Updating loot in cell for ' .. player:GetName())
 
-
     local update_cells = {}
 
     if not old_cell then -- No old cell, so update all cells adjacent to them
@@ -74,19 +69,12 @@ function UpdateLootInCells(player)
         update_cells = GetAdjacentCells(cell.x, cell.y);
 
         for i = 1, #old_adjacent do
-
             for j = 1, #new_adjacent do
-        
                 if old_adjacent[i].x == new_adjacent[j].x and old_adjacent[i].y == new_adjacent[j].y then
-
                     update_cells[j] = nil
-
                 end
-
             end
-
         end
-
     end
 
     -- Sync all lootboxes in cells that need to be updated to the player
