@@ -61,7 +61,7 @@ function CircleBar:Update() -- Updates all information from self.data including 
 	local outer_radius = self.size * 1
 		
 	for _, data in ipairs(self.data) do
-		local percent = (data.max_amount / self.max) -- Percent of the circle it will take up
+		local percent = math.ceil((data.max_amount / self.max) * 100) / 100 -- Percent of the circle it will take up
 		
 		local coords_inner = self:GetCircleCoordinates(Vector2(), inner_radius, self.resolution, current_percent, current_percent + percent)
 		local coords_outer = self:GetCircleCoordinates(Vector2(), outer_radius, self.resolution, current_percent, current_percent + percent)
