@@ -109,7 +109,7 @@ Lootbox.Models =
     {
         model = "f1m03airstrippile07.eez/go164_01-a.lod",
         col = "f1m03airstrippile07.eez/go164_01_lod1-a_col.pfx",
-        offset = Vector3(0, -0.025, 0)
+        offset = Vector3(0, 0, 0)
     },
     [Lootbox.Types.Level3] =
     {
