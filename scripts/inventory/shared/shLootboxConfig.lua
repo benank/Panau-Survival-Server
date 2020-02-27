@@ -103,13 +103,14 @@ Lootbox.Models =
         top_col = "mod.heavydrop.grenade.eez/wea00_lod1-c1_col.pfx",
         offset = Vector3(0, 0, 0),
         offset2 = Vector3(0, 0, 0),
-        look_offset = Vector3(0, 0, 0.3)
+        look_offset = Vector3(0, -0.1, 0.2)
     },
     [Lootbox.Types.Level2] = 
     {
         model = "f1m03airstrippile07.eez/go164_01-a.lod",
         col = "f1m03airstrippile07.eez/go164_01_lod1-a_col.pfx",
-        offset = Vector3(0, 0, 0)
+        offset = Vector3(0, 0, 0),
+        look_offset = Vector3(0, 0.2, 0)
     },
     [Lootbox.Types.Level3] =
     {
@@ -150,7 +151,8 @@ Lootbox.Models =
         col = "59x36.nl/go158_lod1-a1_col.pfx",
         model_dst = "59x36.nl/go158-a1_dst.lod",
         col_dst = "59x36.nl/go158_lod1-a1_dst_col.pfx",
-        offset = Vector3(0, 0, 0)
+        offset = Vector3(0, 0, 0),
+        look_offset = Vector3(0, 1, -1)
     },
     [Lootbox.Types.VendingMachineDrink] = 
     {
@@ -158,7 +160,8 @@ Lootbox.Models =
         col = "59x36.nl/go158_lod1-a_col.pfx",
         model_dst = "59x36.nl/go158-a_dst.lod",
         col_dst = "59x36.nl/go158_lod1-a_dst_col.pfx",
-        offset = Vector3(0, 0, 0)
+        offset = Vector3(0, 0, 0),
+        look_offset = Vector3(0, 1, -1)
     }
 }
 
