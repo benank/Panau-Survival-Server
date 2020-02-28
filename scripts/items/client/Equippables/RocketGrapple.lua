@@ -129,7 +129,7 @@ function EquippableRocketGrapple:HandlePlayerRocketGrapple(player)
     local speed = math.abs((-player:GetAngle() * player_velo).z)
     local parachuting = base_state == AnimationState.SParachute
     
-    local rocket_grappling = grappling and speed > 5 and not parachuting
+    local rocket_grappling = grappling and speed > 10 and not parachuting
     if rocket_grappling then
         local arm_pos = player:GetBonePosition("ragdoll_AttachHandLeft")
         if not self.grapple_fx[player:GetId()] then
