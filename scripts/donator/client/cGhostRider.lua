@@ -18,47 +18,7 @@ function GhostRider:__init(player)
         angle = Angle(),
         effect_id = 326
         }),
-        offset = Vector3(0, -0.1, -0.1)
-    })
-    table.insert(self.fx, {
-        effect = ClientEffect.Create(AssetLocation.Game, {
-        position = Vector3(),
-        angle = Angle(),
-        effect_id = 326
-        }),
-        offset = Vector3(0, -0.1, -0.15)
-    })
-    table.insert(self.fx, {
-        effect = ClientEffect.Create(AssetLocation.Game, {
-        position = Vector3(),
-        angle = Angle(),
-        effect_id = 326
-        }),
-        offset = Vector3(0, -0.1, 0.1)
-    })
-    table.insert(self.fx, {
-        effect = ClientEffect.Create(AssetLocation.Game, {
-        position = Vector3(),
-        angle = Angle(),
-        effect_id = 326
-        }),
         offset = Vector3(0, -0.1, 0)
-    })
-    table.insert(self.fx, {
-        effect = ClientEffect.Create(AssetLocation.Game, {
-        position = Vector3(),
-        angle = Angle(),
-        effect_id = 326
-        }),
-        offset = Vector3(0.1, -0.1, 0)
-    })
-    table.insert(self.fx, {
-        effect = ClientEffect.Create(AssetLocation.Game, {
-        position = Vector3(),
-        angle = Angle(),
-        effect_id = 326
-        }),
-        offset = Vector3(-0.1, -0.1, 0)
     })
 end
 
