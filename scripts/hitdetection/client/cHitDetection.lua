@@ -58,20 +58,11 @@ end
 
 function cHitDetection:LocalPlayerBulletHit(args)
 
-    print("Local Player Bullet Hit")
-    output_table(args)
-
-    print(args.bone.name)
     if not args.bone or not BoneModifiers[args.bone.name] then return false end
     if not args.attacker then return false end
 
     local weapon = args.attacker:GetEquippedWeapon()
-
     if not weapon then return end
-
-    local damage = WeaponBaseDamage[weapon.id] * BoneModifiers[args.bone.name]
-
-    print(damage)
 
     Network:Send(HitDetectionBulletHit:get(), {
         attacker = args.attacker,
