@@ -27,6 +27,13 @@ ItemsConfig =
             ["Shotgun"] = {dura_per_use = 5, weapon_id = Weapon.Shotgun, equip_slot = WeaponSlot.Primary},
             ["Sniper Rifle"] = {dura_per_use = 10, weapon_id = Weapon.Sniper, equip_slot = WeaponSlot.Primary},
         },
-        ["Military Vest"] = {dura_per_hit = 1},
+        armor = 
+        {
+            ["Helmet"] = {dura_per_hit = 1},
+            ["Police Helmet"] = {dura_per_hit = 1},
+            ["Military Helmet"] = {dura_per_hit = 1},
+            ["Military Vest"] = {dura_per_hit = 1},
+            ["Kevlar Vest"] = {dura_per_hit = 1}
+        }
     }
 }
