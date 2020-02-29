@@ -3,14 +3,13 @@ class 'WeaponManager'
 function WeaponManager:__init()
 
     local weapon = LocalPlayer:GetEquippedWeapon()
-    self.current_ammo = 0
-    self.current_weapon = weapon.id
-    self.default_weapon = self.current_weapon
+    self.current_ammo = var(0)
+    self.current_weapon = var(weapon.id)
+    self.default_weapon = self.current_weapon:get()
     self.cheat_timer = Timer()
     self.init_timer = Timer()
     self.equipped = false
     self.enabled = false
-    self.ready = false
 
     self.firing_actions = 
     {
@@ -69,20 +68,24 @@ function WeaponManager:PostTick(args)
 
     local weapon = LocalPlayer:GetEquippedWeapon()
     if not weapon then return end
-    if weapon.id == self.default_weapon then return end
 
+    if not self.ready and LocalPlayer:GetEquippedWeapon().id == self.current_weapon:get() then
+        self.ready = true
+    end
+
+    if not self.ready then return end
     if not self.equipped then return end
 
     local current_ammo = self:GetCurrentAmmo()
 
-    if self:GetTotalAmmoInWeapon(weapon) > current_ammo and self.cheat_timer:GetSeconds() > 1 and self.ready then
+    if self:GetTotalAmmoInWeapon(weapon) > current_ammo and self.cheat_timer:GetSeconds() > 1 then
         -- kick for ammo hax
         Network:Send("items/Cheating", {reason = "ammo hacks"})
         self.cheat_timer:Restart()
         return
     end
 
-    if weapon.id ~= self.current_weapon and self.cheat_timer:GetSeconds() > 1 then
+    if weapon.id ~= self.current_weapon:get() and self.cheat_timer:GetSeconds() > 1 then
         -- kick for weapon hax
         Network:Send("items/Cheating", {reason = "weapon hacks"})
         self.cheat_timer:Restart()
@@ -99,11 +102,11 @@ end
 
 function WeaponManager:SetCurrentAmmo(ammo)
     self.out_of_ammo = ammo == 0
-    self.current_ammo = xor_cipher(ammo)
+    self.current_ammo:set(ammo)
 end
 
 function WeaponManager:GetCurrentAmmo()
-    return tonumber(xor_cipher(self.current_ammo))
+    return self.current_ammo:get()
 end
 
 function WeaponManager:GetTotalAmmoInWeapon(weapon)
@@ -114,7 +117,12 @@ end
 function WeaponManager:ForceWeaponSwitch(args)
 
     self.init_timer:Restart()
-    self.current_weapon = args.weapon
+    self.current_weapon:set(args.weapon)
+
+    if LocalPlayer:GetEquippedWeapon().id == args.weapon then
+        self.ready = true
+    end
+
     self:SetCurrentAmmo(args.ammo)
     self.enabled = true
 

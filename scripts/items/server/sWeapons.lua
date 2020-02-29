@@ -158,3 +158,7 @@ Events:Subscribe("ModuleUnload", function()
         player:ClearInventory()
     end
 end)
+
+Events:Subscribe("ClientModuleLoad", function(args)
+    args.player:ClearInventory()
+end)
