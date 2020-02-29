@@ -10,6 +10,17 @@ function WeaponManager:__init()
     self.init_timer = Timer()
     self.equipped = false
     self.enabled = false
+    self.ready = false
+
+    self.firing_actions = 
+    {
+        [Action.FireRight] = true,
+        [Action.Fire] = true,
+        [Action.FireLeft] = true,
+        [Action.McFire] = true,
+        [Action.VehicleFireLeft] = true,
+        [Action.VehicleFireRight] = true
+    }
 
 
     Network:Subscribe("items/ToggleWeaponEquipped", self, self.ToggleWeaponEquipped)
@@ -17,17 +28,34 @@ function WeaponManager:__init()
     Events:Subscribe("PostTick", self, self.PostTick)
     Events:Subscribe("LoadingComplete", self, self.LoadingComplete)
     Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
+    Events:Subscribe("InputPoll", self, self.InputPoll)
+end
+
+function WeaponManager:InputPoll(args)
+    if self.out_of_ammo then
+        for action, _ in pairs(self.firing_actions) do
+            Input:SetValue(action, 0)
+        end
+    end
 end
 
 function WeaponManager:LocalPlayerInput(args)
-    if args.input == Action.FireRight then
+    if self.firing_actions[args.input] and not LocalPlayer:InVehicle() then
         if self.init_timer:GetSeconds() < 2 then return false end
         if not self.equipped or not self.enabled then return false end
+        
+        -- Stop action when out of ammo to fix sync bug
+        -- You can fire rockets when 0 ammo because it appears on other clients' screens
+        if self:GetCurrentAmmo() == 0 then return false end
     end
 end
 
 function WeaponManager:LoadingComplete()
     self:ForceInputWeaponSwitch(5000)
+
+    Timer.SetTimeout(5000, function()
+        self.ready = true
+    end)
 end
 
 function WeaponManager:ToggleWeaponEquipped(args)
@@ -47,7 +75,7 @@ function WeaponManager:PostTick(args)
 
     local current_ammo = self:GetCurrentAmmo()
 
-    if self:GetTotalAmmoInWeapon(weapon) > current_ammo and self.cheat_timer:GetSeconds() > 1 then
+    if self:GetTotalAmmoInWeapon(weapon) > current_ammo and self.cheat_timer:GetSeconds() > 1 and self.ready then
         -- kick for ammo hax
         Network:Send("items/Cheating", {reason = "ammo hacks"})
         self.cheat_timer:Restart()
@@ -70,6 +98,7 @@ function WeaponManager:PostTick(args)
 end
 
 function WeaponManager:SetCurrentAmmo(ammo)
+    self.out_of_ammo = ammo == 0
     self.current_ammo = xor_cipher(ammo)
 end
 
