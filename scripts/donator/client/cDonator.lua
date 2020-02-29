@@ -66,6 +66,8 @@ function cDonator:CheckPlayer(player)
     local donator_data = player:GetValue("DonatorBenefits")
     local steamID = tostring(player:GetSteamId())
 
+    if not donator_data then return end
+
     if donator_data.level >= DonatorLevel.Colorful then
         if not self.close_donators[steamID] then
             self:AddPlayer(player)
