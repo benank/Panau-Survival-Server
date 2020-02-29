@@ -21,21 +21,21 @@ end
 
 function cDonator:GameRender(args)
 
-    for id, streak in pairs(self.streaks) do
-        if not IsValid(streak.player) then
+    for id, player in pairs(self.close_donators) do
+        if not IsValid(player) then
+            self.close_donators[id] = nil
             self.streaks[id] = nil
-        else
-            streak:Render(args)
+            self.ghost_riders[id]:Remove()
+            self.ghost_riders[id] = nil
         end
     end
 
+    for id, streak in pairs(self.streaks) do
+        streak:Render(args)
+    end
+
     for id, ghost_rider in pairs(self.ghost_riders) do
-        if not IsValid(ghost_rider.player) then
-            self.ghost_riders[id]:Remove()
-            self.ghost_riders[id] = nil
-        else
-            ghost_rider:Render(args)
-        end
+        ghost_rider:Render(args)
     end
 
 end
@@ -70,6 +70,7 @@ function cDonator:CheckPlayer(player)
 
     if donator_data.level >= DonatorLevel.Colorful then
         if not self.close_donators[steamID] then
+            print("add player!")
             self:AddPlayer(player)
         end
 
