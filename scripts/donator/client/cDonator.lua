@@ -31,8 +31,8 @@ function cDonator:GameRender(args)
 
     for id, ghost_rider in pairs(self.ghost_riders) do
         if not IsValid(ghost_rider.player) then
-            self.ghost_rider[id]:Remove()
-            self.ghost_rider[id] = nil
+            self.ghost_riders[id]:Remove()
+            self.ghost_riders[id] = nil
         else
             ghost_rider:Render(args)
         end
