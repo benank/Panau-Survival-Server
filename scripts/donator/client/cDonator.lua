@@ -25,8 +25,10 @@ function cDonator:GameRender(args)
         if not IsValid(player) then
             self.close_donators[id] = nil
             self.streaks[id] = nil
-            self.ghost_riders[id]:Remove()
-            self.ghost_riders[id] = nil
+            if self.ghost_riders[id] then
+                self.ghost_riders[id]:Remove()
+                self.ghost_riders[id] = nil
+            end
         end
     end
 
