@@ -1,5 +1,8 @@
 -- TODO: make this more robust
 Network:Subscribe("items/Cheating", function(args, player)
-    print(player:GetName() .. " was kicked for " .. tostring(args.reason))
-    player:Kick(tostring(args.reason))
+    Events:Fire("KickPlayer", {
+        player = player,
+        reason = args.reason,
+        p_reason = args.p_reason
+    })
 end)

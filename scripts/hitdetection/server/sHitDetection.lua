@@ -53,8 +53,12 @@ function sHitDetection:CheckHealth(player, damage)
     Timer.SetTimeout(timeout, function()
         if not IsValid(player) then return end
         if IsValid(player) and player:GetHealth() >= player:GetValue("LastHealth") and damage > 0 then
-            print(player:GetName() .. " kicked for health hacks")
-            player:Kick("Health hacks")
+            Events:Fire("KickPlayer", {
+                player = player,
+                reason = string.format("Health hacks. Current health %s, last known health: %s", 
+                    tostring(player:GetHealth()), tostring(player:GetValue("LastHealth"))),
+                p_reason = "Health hacks"
+            })
         end
     end)
 

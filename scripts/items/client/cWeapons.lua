@@ -97,7 +97,11 @@ function WeaponManager:PostTick(args)
     and weapon.id ~= 0
     and self.cheat_timer:GetSeconds() > 1 then
         -- kick for weapon hax
-        Network:Send("items/Cheating", {reason = "weapon hacks"})
+        Network:Send("items/Cheating", 
+        {
+            reason = string.format("Weapon mismatch. Expected: %s, found: %s", tostring(current_weapon_id), tostring(weapon.id)),
+            p_reason = "Weapon mismatch"
+        })
         self.cheat_timer:Restart()
         return
     end
@@ -106,7 +110,11 @@ function WeaponManager:PostTick(args)
     and weapon.id == current_weapon_id
     and self.cheat_timer:GetSeconds() > 1 then
         -- kick for ammo hax
-        Network:Send("items/Cheating", {reason = "ammo hacks"})
+        Network:Send("items/Cheating", 
+        {
+            reason = string.format("Ammo mismatch. Expected: %s, found: %s", tostring(current_ammo), tostring(self:GetTotalAmmoInWeapon(weapon))),
+            p_reason = "Ammo mismatch"
+        })
         self.cheat_timer:Restart()
         return
     end

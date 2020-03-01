@@ -30,3 +30,4 @@ vstdlib_s.dll
 config.lua
 *.vdf
 bans.txt
+kicks.txt

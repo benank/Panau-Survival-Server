@@ -34,17 +34,24 @@ function FireWeapon(args, player)
     local ammo_amount = GetWeaponAmmo({weapon_name = weapon_name, player = player})
 
     if not args.ammo or ammo_amount ~= args.ammo then
-        -- ammo mismatch, ban
-        print(player:GetName() .. " was kicked for ammo mismatch")
-        player:Kick("You were kicked for ammo mismatch")
+        Events:Fire("KickPlayer", {
+            player = player,
+            reason = string.format("Ammo mismatch. Current ammo %s, last known ammo: %s", 
+                tostring(args.ammo), tostring(ammo_amount)),
+            p_reason = "Ammo mismatch"
+        })
         return
     end
 
     if ammo_amount == 0 then
         -- They are firing a gun they do not have ammo for
         -- ban
-        print(player:GetName() .. " was kicked for weapon mismatch")
-        player:Kick("You were kicked for weapon mismatch")
+        Events:Fire("KickPlayer", {
+            player = player,
+            reason = string.format("Weapon mismatch. No ammo found for weapon: %s", 
+                tostring(weapon_name)),
+            p_reason = "Weapon mismatch"
+        })
 
     else
         player:SetValue("InventoryOperationBlock", player:GetValue("InventoryOperationBlock") + 1)
@@ -62,8 +69,12 @@ function FireWeapon(args, player)
         if not equipped_item then
             -- Shooting a weapon that they do not have equipped
             -- ban
-            print(player:GetName() .. " was kicked for weapon mismatch")
-            player:Kick("You were kicked for weapon mismatch")
+            Events:Fire("KickPlayer", {
+                player = player,
+                reason = string.format("Weapon mismatch. Not equipped: %s", 
+                    tostring(weapon_name)),
+                p_reason = "Weapon mismatch"
+            })
 
             return
         end
