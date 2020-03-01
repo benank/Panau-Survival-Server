@@ -49,11 +49,16 @@ function sLootManager:GenerateAllLoot()
 
         -- TODO: don't spawn all loot at once
 
+        -- TODO: get this info from spawn module
+        local sz_position = Vector3(-10291, 202.5, -3019)
+        local sz_radius = 75
+        local in_sz = lootbox_data.pos:Distance(sz_position) < sz_radius
+
         CreateLootbox({
             position = lootbox_data.pos,
             angle = lootbox_data.ang,
             tier = lootbox_data.tier,
-            contents = ItemGenerator:GetLoot(lootbox_data.tier)
+            contents = in_sz and {} or ItemGenerator:GetLoot(lootbox_data.tier)
         })
 
     end
