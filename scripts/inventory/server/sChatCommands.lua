@@ -1,6 +1,6 @@
 Events:Subscribe("PlayerChat", function(args)
 
-    if not IsTest and not IsAdmin(args.player) then return end
+    if not (IsTest or IsAdmin(args.player)) then return end
 
     local split = args.text:split(" ")
 
