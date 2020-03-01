@@ -19,5 +19,10 @@ Donators =
         steam_id = "STEAM_0:0:53948518", 
         name = "Flexology (Bacon)", 
         level = DonatorLevel.Colorful
+    },
+    ["STEAM_0:1:112643918"] = {
+        steam_id = "STEAM_0:1:112643918", 
+        name = "The Panau ᴉxɐʇ", 
+        level = DonatorLevel.Colorful
     }
 }
