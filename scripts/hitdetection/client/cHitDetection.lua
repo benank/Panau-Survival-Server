@@ -8,6 +8,7 @@ local EntityBulletHit = var("EntityBulletHit")
 local VehicleCollide = var("VehicleCollide")
 local PostTick = var("PostTick")
 local HitDetectionBulletHit = var("HitDetectionBulletHit")
+local HitDetectionExplosionHit = var("HitDetectionExplosionHit")
 
 function cHitDetection:__init()
 
@@ -39,16 +40,26 @@ function cHitDetection:EntityBulletHit(args)
 
     -- only is called for the person who shot
 
-    print("EntityBulletHit")
-    output_table(args)
+    --print("EntityBulletHit")
+    --output_table(args)
 
 end
 
 function cHitDetection:LocalPlayerExplosionHit(args)
 
-    print("LocalPlayerExplosionHit")
-    output_table(args)
-    return false
+    if args.attacker then
+
+        local weapon = args.attacker:GetEquippedWeapon()
+        if not weapon then return end
+
+        Network:Send(HitDetectionExplosionHit:get(), {
+            attacker = args.attacker,
+            damage = args.damage
+        })
+
+        return false
+
+    end
 
 end
 
