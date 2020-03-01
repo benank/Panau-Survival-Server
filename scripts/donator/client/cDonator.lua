@@ -70,7 +70,6 @@ function cDonator:CheckPlayer(player)
 
     if donator_data.level >= DonatorLevel.Colorful then
         if not self.close_donators[steamID] then
-            print("add player!")
             self:AddPlayer(player)
         end
 
