@@ -13,7 +13,7 @@ function sBans:KickPlayer(args)
     assert(IsValid(args.player), "Invalid player specified")
 
     local file = assert(io.open("kicks.txt", "a+"), "Failed to open file")
-    file:write(string.format("%s %s %s", self:GetTimeAndDate(), self:GetPlayerInfo(args.player), args.reason))
+    file:write(string.format("%s %s %s\n", self:GetTimeAndDate(), self:GetPlayerInfo(args.player), args.reason))
     file:close()
 
     print(args.player:GetName() .. " kicked for: " .. args.reason)
