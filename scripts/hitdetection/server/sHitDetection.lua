@@ -35,18 +35,28 @@ function sHitDetection:ExplosionHit(args, player)
     damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 
     local old_hp = player:GetHealth()
+    player:SetValue("LastHealth", old_hp)
     player:Damage(damage / 100, DamageEntity.Bullet, args.attacker)
 
     print(string.format("%s shot %s for %s damage [%s]",
     args.attacker:GetName(), player:GetName(), tostring(damage), tostring(weapon.id)))
 
+    self:CheckHealth(player, damage)
+
+end
+
+function sHitDetection:CheckHealth(player, damage)
+
+    local timeout = player:GetPing() * 2 + 1000
     -- If their health doesn't change after being shot
-    --[[Timer.SetTimeout(2000, function()
-        if IsValid(player) and player:GetHealth() >= old_hp and damage > 0 then
+
+    Timer.SetTimeout(timeout, function()
+        if not IsValid(player) then return end
+        if IsValid(player) and player:GetHealth() >= player:GetValue("LastHealth") and damage > 0 then
             print(player:GetName() .. " kicked for health hacks")
             player:Kick("Health hacks")
         end
-    end)]]
+    end)
 
 end
 
@@ -67,18 +77,14 @@ function sHitDetection:BulletHit(args, player)
     damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 
     local old_hp = player:GetHealth()
+    player:SetValue("LastHealth", old_hp)
     player:Damage(damage / 100, DamageEntity.Bullet, args.attacker)
 
     print(string.format("%s shot %s for %s damage [%s]",
     args.attacker:GetName(), player:GetName(), tostring(damage), tostring(weapon.id)))
 
     -- If their health doesn't change after being shot
-    --[[Timer.SetTimeout(200, function()
-        if IsValid(player) and player:GetHealth() >= old_hp and damage > 0 then
-            print(player:GetName() .. " kicked for health hacks")
-            player:Kick("Health hacks")
-        end
-    end)]]
+    self:CheckHealth(player, damage)
 
 end
 
