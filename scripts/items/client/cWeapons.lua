@@ -59,40 +59,59 @@ end
 
 function WeaponManager:ToggleWeaponEquipped(args)
     self.equipped = args.equipped
+    self.ready = false
+    self.init_timer:Restart()
+    self:ForceInputWeaponSwitch(1000)
+    
 end
 
 function WeaponManager:PostTick(args)
 
     if LocalPlayer:GetValue("Loading") then return end
-    if self.init_timer:GetSeconds() < 2 then return end
+    if self.init_timer:GetSeconds() < 1 then return end
 
     local weapon = LocalPlayer:GetEquippedWeapon()
     if not weapon then return end
 
-    if not self.ready and LocalPlayer:GetEquippedWeapon().id == self.current_weapon:get() then
+    local current_ammo = self:GetCurrentAmmo()
+
+    -- Wait for player to equip weapon and load ammo into it
+    if not self.ready and self:GetTotalAmmoInWeapon(weapon) ~= current_ammo then
+        self:ForceInputWeaponSwitch(500)
+        self.init_timer:Restart()
+        return;
+    end
+
+    local current_weapon_id = tonumber(self.current_weapon:get())
+
+    if not self.ready and LocalPlayer:GetEquippedWeapon().id == current_weapon_id then
         self.ready = true
     end
 
     if not self.ready then return end
     if not self.equipped then return end
 
-    local current_ammo = self:GetCurrentAmmo()
-
-    if self:GetTotalAmmoInWeapon(weapon) > current_ammo and self.cheat_timer:GetSeconds() > 1 then
-        -- kick for ammo hax
-        Network:Send("items/Cheating", {reason = "ammo hacks"})
-        self.cheat_timer:Restart()
-        return
-    end
-
-    if weapon.id ~= self.current_weapon:get() and self.cheat_timer:GetSeconds() > 1 then
+    if weapon.id ~= current_weapon_id 
+    and weapon.id ~= self.default_weapon 
+    and weapon.id ~= Weapon.Grapplinghook
+    and weapon.id ~= 0
+    and self.cheat_timer:GetSeconds() > 1 then
         -- kick for weapon hax
         Network:Send("items/Cheating", {reason = "weapon hacks"})
         self.cheat_timer:Restart()
         return
     end
 
-    if self:GetTotalAmmoInWeapon(weapon) >= 0 and self:GetTotalAmmoInWeapon(weapon) < current_ammo then
+    if self:GetTotalAmmoInWeapon(weapon) > current_ammo 
+    and weapon.id == current_weapon_id
+    and self.cheat_timer:GetSeconds() > 1 then
+        -- kick for ammo hax
+        Network:Send("items/Cheating", {reason = "ammo hacks"})
+        self.cheat_timer:Restart()
+        return
+    end
+
+    if weapon.id == current_weapon_id and self:GetTotalAmmoInWeapon(weapon) >= 0 and self:GetTotalAmmoInWeapon(weapon) < current_ammo then
         Network:Send("Items/FireWeapon", {ammo = current_ammo})
         self:SetCurrentAmmo(current_ammo - 1)
     end
@@ -106,7 +125,7 @@ function WeaponManager:SetCurrentAmmo(ammo)
 end
 
 function WeaponManager:GetCurrentAmmo()
-    return self.current_ammo:get()
+    return tonumber(self.current_ammo:get())
 end
 
 function WeaponManager:GetTotalAmmoInWeapon(weapon)
@@ -117,13 +136,9 @@ end
 function WeaponManager:ForceWeaponSwitch(args)
 
     self.init_timer:Restart()
+    self:SetCurrentAmmo(args.ammo)
     self.current_weapon:set(args.weapon)
 
-    if LocalPlayer:GetEquippedWeapon().id == args.weapon then
-        self.ready = true
-    end
-
-    self:SetCurrentAmmo(args.ammo)
     self.enabled = true
 
     Timer.SetTimeout(1500, function()
