@@ -52,7 +52,7 @@ function sHitDetection:CheckHealth(player, damage)
 
     Timer.SetTimeout(timeout, function()
         if not IsValid(player) then return end
-        if IsValid(player) and player:GetHealth() >= player:GetValue("LastHealth") and damage > 0 then
+        if IsValid(player) and player:GetHealth() >= player:GetValue("LastHealth") and damage > 0 and player:GetHealth() > 0 then
             Events:Fire("KickPlayer", {
                 player = player,
                 reason = string.format("Health hacks. Current health %s, last known health: %s", 
