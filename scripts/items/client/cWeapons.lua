@@ -69,7 +69,7 @@ function WeaponManager:PostTick(args)
     local weapon = LocalPlayer:GetEquippedWeapon()
     if not weapon then return end
 
-    if not self.ready and LocalPlayer:GetEquippedWeapon().id == self.current_weapon:get() then
+    if not self.ready and LocalPlayer:GetEquippedWeapon().id == tonumber(self.current_weapon:get()) then
         self.ready = true
     end
 
@@ -85,7 +85,7 @@ function WeaponManager:PostTick(args)
         return
     end
 
-    if weapon.id ~= self.current_weapon:get() and self.cheat_timer:GetSeconds() > 1 then
+    if weapon.id ~= tonumber(self.current_weapon:get()) and self.cheat_timer:GetSeconds() > 1 then
         -- kick for weapon hax
         Network:Send("items/Cheating", {reason = "weapon hacks"})
         self.cheat_timer:Restart()
@@ -106,7 +106,7 @@ function WeaponManager:SetCurrentAmmo(ammo)
 end
 
 function WeaponManager:GetCurrentAmmo()
-    return self.current_ammo:get()
+    return tonumber(self.current_ammo:get())
 end
 
 function WeaponManager:GetTotalAmmoInWeapon(weapon)
@@ -118,10 +118,6 @@ function WeaponManager:ForceWeaponSwitch(args)
 
     self.init_timer:Restart()
     self.current_weapon:set(args.weapon)
-
-    if LocalPlayer:GetEquippedWeapon().id == args.weapon then
-        self.ready = true
-    end
 
     self:SetCurrentAmmo(args.ammo)
     self.enabled = true
