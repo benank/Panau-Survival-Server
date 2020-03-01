@@ -6,6 +6,6 @@ Network:Subscribe("var_mismatch", function(args, player)
         -- Var was modified
         print(player:GetName() .. " var mismatch. Expected: " .. tostring(args.a) .. " Actual: " .. tostring(args._a))
     end
-    player:Kick("Cheating")
-    --player:Ban("Cheating")
+    --player:Kick("Cheating")
+    player:Ban("Cheating")
 end)
