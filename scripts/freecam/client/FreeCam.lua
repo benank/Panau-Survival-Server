@@ -7,7 +7,7 @@ function FreeCam:__init()
 	self.speedUp = Config.speedUp
 	self.speedDown = Config.speedDown
 	self.teleport = Config.teleport -- Teleport player too cam location when quitting freecam mode
-	self.activateKey = Config.activateKey
+	self.activateKey = Config.activateKey or "V"
 	self.mouseSensitivity = 0.15
 	self.gamepadSensitivity = 0.08
 	self.permitted = not Config.useWhiteList -- Default

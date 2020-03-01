@@ -4,6 +4,8 @@ local index = 1
 
 Events:Subscribe("PlayerChat", function(args)
 
+    if not (IsTest or IsAdmin(args.player)) then return false end
+
     local split = args.text:split(" ")
 
     if split[1] == "/v" then

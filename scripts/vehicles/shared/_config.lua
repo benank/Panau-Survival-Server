@@ -82,13 +82,6 @@ config =
             plane_id = 81, -- Pell Silverbolt
             boat_id = 80 -- Frisco Catshark
         },
-        ["ManciniWings"] = 
-        {
-            name = "Mancini Wings",
-            description = "The vehicle can deploy wings and fly.",
-            cost = 30,
-            type = "passive"
-        },
         ["Camouflage"] = 
         {
             name = "Camouflage",
