@@ -41,7 +41,7 @@ function sHitDetection:ExplosionHit(args, player)
     print(string.format("%s shot %s for %s damage [%s]",
     args.attacker:GetName(), player:GetName(), tostring(damage), tostring(weapon.id)))
 
-    self:CheckHealth(player, damage)
+    --self:CheckHealth(player, damage)
 
 end
 
@@ -88,7 +88,7 @@ function sHitDetection:BulletHit(args, player)
     args.attacker:GetName(), player:GetName(), tostring(damage), tostring(weapon.id)))
 
     -- If their health doesn't change after being shot
-    self:CheckHealth(player, damage)
+    --self:CheckHealth(player, damage)
 
 end
 
