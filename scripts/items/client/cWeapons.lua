@@ -115,7 +115,6 @@ function WeaponManager:PostTick(args)
         Network:Send("Items/FireWeapon", {ammo = current_ammo})
         self:SetCurrentAmmo(current_ammo - 1)
     end
-        
 
 end
 
