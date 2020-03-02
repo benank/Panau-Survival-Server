@@ -9,7 +9,7 @@ function sItemGenerator:__init()
     -- Test command for generating loot
     Console:Subscribe("loot", function()
     
-        local tier = math.random(4)
+        local tier = 2
 
         local loot = ItemGenerator:GetLoot(tier)
         print("Level " .. tostring(tier) .. " Loot")
@@ -63,7 +63,7 @@ function sItemGenerator:GetStack(tier)
 
         local item = CreateItem(item_data)
         local stack = shStack({contents = {item}})
-        local amount = self:GetItemAmount(item, item_data.max_loot)
+        local amount = self:GetItemAmount(item, item_data.max_loot, tier)
 
         -- Add items to stack like this so it handles all the dirty work for us
         for i = 1, amount - 1 do
@@ -80,7 +80,7 @@ function sItemGenerator:GetStack(tier)
 
 end
 
-function sItemGenerator:GetItemAmount(item, max_loot)
+function sItemGenerator:GetItemAmount(item, max_loot, tier)
 
     -- Get random amount
     local amount = math.ceil(item.stacklimit * 
@@ -95,6 +95,10 @@ function sItemGenerator:GetItemAmount(item, max_loot)
         math.min(math.random(Lootbox.GeneratorConfig.stack.max), max_loot or 999))
 
         -- TODO: use self:GetRandomNumberOfLockpicks(tier) for lootboxes
+
+    if item.name == "Lockpick" then
+        amount = self:GetRandomNumberOfLockpicks(tier)
+    end
 
     return amount
 

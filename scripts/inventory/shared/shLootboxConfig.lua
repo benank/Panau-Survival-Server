@@ -36,8 +36,8 @@ Lootbox.GeneratorConfig =
     {
         [Lootbox.Types.Level1] = 
         {
-            min_items = 0,
-            max_items = 4,
+            min_items = 1,
+            max_items = 2,
             respawn = 10,
             min_lockpicks = 1,
             max_lockpicks = 2
@@ -45,18 +45,18 @@ Lootbox.GeneratorConfig =
         [Lootbox.Types.Level2] = 
         {
             min_items = 1,
-            max_items = 4,
+            max_items = 2,
             respawn = 15,
-            min_lockpicks = 2,
-            max_lockpicks = 4
+            min_lockpicks = 1,
+            max_lockpicks = 5
         },
         [Lootbox.Types.Level3] = 
         {
             min_items = 1,
-            max_items = 4,
+            max_items = 3,
             respawn = 25,
             min_lockpicks = 3,
-            max_lockpicks = 6
+            max_lockpicks = 5
         },
         [Lootbox.Types.Level4] = 
         {
@@ -76,7 +76,7 @@ Lootbox.GeneratorConfig =
         },
         [Lootbox.Types.VendingMachineFood] = 
         {
-            min_items = 2,
+            min_items = 1,
             max_items = 3,
             respawn = 15,
             min_lockpicks = 0,
@@ -84,7 +84,7 @@ Lootbox.GeneratorConfig =
         },
         [Lootbox.Types.VendingMachineDrink] = 
         {
-            min_items = 2,
+            min_items = 1,
             max_items = 3,
             respawn = 15,
             min_lockpicks = 0,
