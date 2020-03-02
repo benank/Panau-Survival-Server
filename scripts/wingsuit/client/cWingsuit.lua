@@ -430,4 +430,6 @@ function Wingsuit:RemoveHelp()
 
 end
 
-Wingsuit = Wingsuit()
+if IsTest or IsStaff(LocalPlayer) then
+    Wingsuit = Wingsuit()
+end
