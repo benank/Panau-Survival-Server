@@ -423,7 +423,7 @@ function Nametags:Render()
 
     if self.player_enabled then
         local sorted_players = {}
-        table.insert( sorted_players, { LocalPlayer, 0})
+        --table.insert( sorted_players, { LocalPlayer, 0})
 
         for p in Client:GetStreamedPlayers() do
             local pos = p:GetPosition()
