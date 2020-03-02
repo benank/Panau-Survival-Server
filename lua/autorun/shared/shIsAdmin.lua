@@ -3,5 +3,5 @@ function IsAdmin(p)
 end
 
 function IsStaff(p)
-    return IsValid(p) and (IsAdmin(p) or IsMod(p))
+    return IsValid(p) and IsAdmin(p)
 end
