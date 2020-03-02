@@ -1,8 +1,10 @@
-local pos = Vector3()
+local pos = Vector3(-10415.34, 220.45, -2997.92)
 Network:Subscribe("PlayerDiedEffect", function()
-    ClientEffect.Play(AssetLocation.Game, {
-        position = Vector3(-10415.34, 220.45, -2997.92),
-        angle = Angle(),
-        effect_id = 137
-    })
+    if LocalPlayer:GetPosition():Distance(pos) < 1500 then
+        ClientEffect.Play(AssetLocation.Game, {
+            position = pos,
+            angle = Angle(),
+            effect_id = 137
+        })
+    end
 end)
