@@ -61,8 +61,12 @@ function sDonator:UpdatePlayer(player, donator_benefits)
 
     player:SetColor(donator_benefits.NameColor)
     player:SetNetworkValue("DonatorBenefits", donator_benefits)
-    player:SetNetworkValue("NT_TagName", donator_benefits.DonatorTagEnabled and donator_benefits.DonatorTagName or nil)
-    player:SetNetworkValue("NT_TagColor", donator_benefits.DonatorTagEnabled and donator_benefits.DonatorTagColor or nil)
+
+    player:SetNetworkValue("NameTag", donator_benefits.DonatorTagEnabled and
+    {
+        name = donator_benefits.DonatorTagName,
+        color =donator_benefits.DonatorTagColor
+    })
 
 end
 

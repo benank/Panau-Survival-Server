@@ -131,4 +131,4 @@ function DrawNameTag(player)
 	Render:ResetTransform()
 end
 
-Nametags2 = Nametags2()
+--Nametags2 = Nametags2()

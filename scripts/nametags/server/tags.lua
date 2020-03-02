@@ -1,11 +1,11 @@
-class 'NT_Tags'
-function NT_Tags:__init()
+class 'NameTags'
+function NameTags:__init()
 
 	Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerChat", self, self.Chat)
     
 end
-function NT_Tags:Chat(args)
+function NameTags:Chat(args)
 
 	local timeTable = os.date("*t", os.time())
 	timeTable.sec = tostring(timeTable.sec)
@@ -19,10 +19,10 @@ function NT_Tags:Chat(args)
     if args.player:GetValue("Slur") == 1 then return false end
     if args.player:GetValue("Muted") then return false end
     
-    if args.player:GetValue("NT_TagName") then
+    if args.player:GetValue("NameTag") then
         
-		local tag = tostring(args.player:GetValue("NT_TagName"))
-		local color = args.player:GetValue("NT_TagColor")
+		local tag = tostring(args.player:GetValue("NameTag").name)
+		local color = args.player:GetValue("NameTag").color
 		local str1 = "[" .. tag .. "] "
 		local str2 = args.player:GetName()
 		local str3 = ": "..args.text
@@ -44,19 +44,17 @@ function NT_Tags:Chat(args)
 	end
 end
 
-function NT_Tags:ClientModuleLoad()
+function NameTags:ClientModuleLoad()
 
     for p in Server:GetPlayers() do
         
         if not p:GetValue("DonatorBenefits") or p:GetValue("DonatorBenefits").level == 0 then
 
-            p:SetNetworkValue("NT_TagName", nil)
-            p:SetNetworkValue("NT_TagColor", nil)
+            p:SetNetworkValue("NameTag", nil)
             
             if sp[tostring(p:GetSteamId())] then
                 local tag_name = sp[tostring(p:GetSteamId())]
-                p:SetNetworkValue("NT_TagName", tag_name)
-                p:SetNetworkValue("NT_TagColor", spcol[tag_name])
+                p:SetNetworkValue("NameTag", {name = tag_name, color = spcol[tag_name]})
             end
 
         end
@@ -64,4 +62,5 @@ function NT_Tags:ClientModuleLoad()
     end
     
 end
-NT_Tags = NT_Tags()
+
+NameTags = NameTags()

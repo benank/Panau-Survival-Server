@@ -8,7 +8,7 @@ function Nametags:__init()
     self.vehicle_enabled    = false
     self.minimap_enabled    = true
 
-    self.player_limit       = 500
+    self.player_limit       = 500 -- TODO: update this when inside sz
     self.vehicle_limit      = 500
     self:UpdateLimits()
 
@@ -181,7 +181,7 @@ function Nametags:DrawHealthbar( pos_2d, scale, width, height, health, min, max,
     Render:FillArea( pos_2d, Vector2( width * health, height ), col )
 end
 
-function Nametags:DrawNametag( pos_3d, text, colour, scale, alpha, health, draw_healthbar )
+function Nametags:DrawNametag( pos_3d, text, colour, scale, alpha, health, draw_healthbar, nametag )
     -- Calculate the 2D position on-screen from the 3D position
     local pos_2d, success = Render:WorldToScreen( pos_3d )
 
@@ -190,9 +190,19 @@ function Nametags:DrawNametag( pos_3d, text, colour, scale, alpha, health, draw_
         local width = Render:GetTextWidth( text, self.size, scale )
         local height = Render:GetTextHeight( text, self.size, scale )
 
+        local tag_width = Render:GetTextWidth( nametag and nametag.name or "", self.size, scale )
+        local tag_height = Render:GetTextHeight( nametag and nametag.name or "", self.size, scale )
+
         -- Subtract half of the text size from both axis' so that the text is
         -- centered
-        pos_2d = pos_2d - Vector2( width/2, height/2 )
+
+        if nametag then
+            -- Draw the nametag
+            local nametag_pos_2d = pos_2d - Vector2( tag_width / 2, tag_height / 2 )
+            self:DrawShadowedText( nametag_pos_2d - Vector2(0, tag_height), nametag.name, nametag.color, scale, alpha )
+        end
+
+        pos_2d = pos_2d - Vector2( width / 2, height / 2 )
 
         -- Draw the name
         self:DrawShadowedText( pos_2d, text, colour, scale, alpha )
@@ -207,13 +217,13 @@ function Nametags:DrawNametag( pos_3d, text, colour, scale, alpha, health, draw_
                 actual_width = 50
             end
 
-            local offset = Vector2( actual_width - width, 0 )/2
+            local offset = Vector2( actual_width - width, 0 ) / 2
 
             pos_2d = pos_2d - offset
 
             self:DrawHealthbar( pos_2d, scale,
                                 actual_width, 
-                                2 * scale, 
+                                3 * scale, 
                                 health, 
                                 self.zero_health, 
                                 self.full_health, 
@@ -238,7 +248,7 @@ function Nametags:DrawCircle( pos_3d, scale, alpha, colour )
     Render:FillCircle( pos_2d, radius, colour )
 end
 
-function Nametags:DrawFullTag( pos, name, dist, colour, health )
+function Nametags:DrawFullTag( pos, name, dist, colour, health, nametag )
      -- Calculate the alpha for the player nametag
     local scale         = Nametags:CalculateAlpha(  dist, 
                                                     self.player_bias,
@@ -251,7 +261,7 @@ function Nametags:DrawFullTag( pos, name, dist, colour, health )
     local alpha = scale * 255
 
     -- Draw the player nametag!
-    self:DrawNametag( pos, name, colour, scale, alpha, health, true )
+    self:DrawNametag( pos, name, colour, scale, alpha, health, true, nametag )
 end
 
 function Nametags:DrawCircleTag( pos, dist, colour )
@@ -288,7 +298,7 @@ function Nametags:DrawPlayer( player_data )
             (LocalPlayer:InVehicle() and p:GetVehicle() == LocalPlayer:GetVehicle()) or
             self.player_count <= 10 then
 
-            self:DrawFullTag( pos, p:GetName(), dist, colour, p:GetHealth() )
+            self:DrawFullTag( pos, p:GetName(), dist, colour, p:GetHealth(), p:GetValue("NameTag") )
 
         elseif not (IsValid(self.highlighted_vehicle) and p:InVehicle() and
                     self.highlighted_vehicle == p:GetVehicle()) then
@@ -297,7 +307,7 @@ function Nametags:DrawPlayer( player_data )
         end
     else
         if self:AimingAt( pos ) < 0.005 then
-            self:DrawFullTag( pos, p:GetName(), dist, colour, p:GetHealth() )
+            self:DrawFullTag( pos, p:GetName(), dist, colour, p:GetHealth(), p:GetValue("NameTag") )
         else
             self:DrawCircleTag( pos, dist, colour )
         end
@@ -413,6 +423,7 @@ function Nametags:Render()
 
     if self.player_enabled then
         local sorted_players = {}
+        table.insert( sorted_players, { LocalPlayer, 0})
 
         for p in Client:GetStreamedPlayers() do
             local pos = p:GetPosition()
