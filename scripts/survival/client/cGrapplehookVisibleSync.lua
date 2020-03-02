@@ -3,6 +3,7 @@ function DrawGrapples()
 	for player in Client:GetStreamedPlayers() do
     
         if IsValid(player) 
+        and (player:GetState() == PlayerState.OnFoot or player:GetState() == PlayerState.StuntPos)
         and player:GetBonePosition("ragdoll_LeftHand") 
         and player:GetAimTarget() and player:GetAimTarget().position
         and player:GetPosition() then
