@@ -112,7 +112,7 @@ end
 -- Render the FX for other players' rocket grapples
 function EquippableRocketGrapple:HandleOtherPlayerRocketGrapples()
 
-    for player in Client:GetPlayers() do
+    for player in Client:GetStreamedPlayers() do
         self:HandlePlayerRocketGrapple(player)
     end
 

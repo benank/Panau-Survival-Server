@@ -85,7 +85,7 @@ end
 
 function cDonator:SecondTick()
 
-    for player in Client:GetPlayers() do
+    for player in Client:GetStreamedPlayers() do
         self:CheckPlayer(player)
     end
 
