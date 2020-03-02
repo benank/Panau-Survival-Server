@@ -177,7 +177,9 @@ function cLootManager:OneLootboxCellSync(data)
         -- TODO: fix resync of lootboxes
     end
 
-    self.loot[data.cell.x][data.cell.y][data.uid] = cLootbox(data)
+    if data.active then
+        self.loot[data.cell.x][data.cell.y][data.uid] = cLootbox(data)
+    end
 
 end
 
@@ -194,7 +196,9 @@ function cLootManager:LootboxCellsSync(data)
             -- TODO: fix resync of lootboxes
         end
 
-        self.loot[box_data.cell.x][box_data.cell.y][box_data.uid] = cLootbox(box_data)
+        if box_data.active then
+            self.loot[box_data.cell.x][box_data.cell.y][box_data.uid] = cLootbox(box_data)
+        end
     end
 
 end

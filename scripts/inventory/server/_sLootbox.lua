@@ -271,6 +271,7 @@ function sLootbox:GetSyncData()
         tier = self.tier,
         position = self.position,
         angle = self.angle,
+        active = self.active,
         model_data = self.model_data,
         cell = {x = self.cell_x, y = self.cell_y},
         uid = self.uid

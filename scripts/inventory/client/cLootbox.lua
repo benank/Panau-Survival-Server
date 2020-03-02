@@ -6,11 +6,14 @@ function cLootbox:__init(args)
     self.position = args.position
     self.angle = args.angle
     self.tier = args.tier
+    self.active = args.active
     self.model_data = args.model_data
     self.static_objects = {}
     self.contents = {}
 
-    self:CreateModel()
+    if self.active then
+        self:CreateModel()
+    end
 
 end
 
