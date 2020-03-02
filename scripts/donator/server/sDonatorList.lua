@@ -29,5 +29,10 @@ Donators =
         steam_id = "STEAM_0:1:87434552", 
         name = "Loyal", 
         level = DonatorLevel.Colorful
+    },
+    ["STEAM_0:0:27475230"] = {
+        steam_id = "STEAM_0:0:27475230", 
+        name = "Thasock", 
+        level = DonatorLevel.Donator
     }
 }
