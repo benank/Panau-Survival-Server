@@ -1,5 +1,5 @@
 function IsAdmin(p)
-    return IsValid(p) and p:GetValue("Nametag") and p:GetValue("Nametag").name == "Staff"
+    return IsValid(p) and p:GetValue("NameTag") and p:GetValue("NameTag").name == "Staff"
 end
 
 function IsStaff(p)
