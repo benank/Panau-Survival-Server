@@ -1,9 +1,5 @@
 function IsAdmin(p)
-    return IsValid(p) and p:GetValue("NT_TagName") == "Staff"
-end
-
-function IsMod(p)
-    return IsValid(p) and p:GetValue("NT_TagName") == "Mod"
+    return IsValid(p) and p:GetValue("Nametag") and p:GetValue("Nametag").name == "Staff"
 end
 
 function IsStaff(p)
