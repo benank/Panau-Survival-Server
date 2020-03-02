@@ -72,7 +72,13 @@ function cVehicleManager:LocalPlayerInput(args)
     local v = LocalPlayer:GetVehicle()
 	if IsValid(v) then
         local forwardvelocity = math.abs((v:GetAngle() * v:GetLinearVelocity()).z)
-        if planes[v:GetModelId()] and args.input == Action.PlaneDecTrust and v:GetDriver() == LocalPlayer and forwardvelocity < 5 then
+        local backwardvelocity = -forwardvelocity
+        if planes[v:GetModelId()] 
+        and args.input == Action.PlaneDecTrust 
+        and v:GetDriver() == LocalPlayer 
+        and forwardvelocity < 5
+        and backwardvelocity > -2
+        then
             v:SetLinearVelocity(v:GetLinearVelocity() + v:GetAngle() * Vector3.Backward * 0.25)
         end
     end
