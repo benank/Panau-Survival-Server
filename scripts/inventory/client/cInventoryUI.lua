@@ -603,8 +603,10 @@ function cInventoryUI:InventoryClosed()
                     self.window:FindChildByName("itemwindow_"..data.cat..tostring(data.index), true):FindChildByName("button", true))
             end
 
-            -- Send to server to drop
-            Network:Send("Inventory/Drop" .. self.steam_id, {stacks = self.dropping_items})
+            if not LocalPlayer:InVehicle() then
+                -- Send to server to drop
+                Network:Send("Inventory/Drop" .. self.steam_id, {stacks = self.dropping_items})
+            end
 
         end
 

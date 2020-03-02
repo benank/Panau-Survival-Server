@@ -165,6 +165,7 @@ end
 
 function sInventory:DropStacks(args, player)
     
+    if player:InVehicle() then return end
     if not args.stacks then return end
     if count_table(args.stacks) == 0 then return end
     if count_table(args.stacks) > Lootbox.Max_Items_In_Dropbox then
