@@ -7,37 +7,38 @@ LootCells =
 
 Events:Subscribe("ClientModuleLoad", function(args)
 
-	args.player:SetValue("LootCell", nil)
-	args.player:SetValue("OldLootCell", nil)
+	args.player:SetValue("Cell", nil)
+	args.player:SetValue("OldCell", nil)
 
 end)
 
 
 Network:Subscribe("Inventory/LootSyncRequest", function(args, player)
 
-    if IsValid(player) and player:GetValue("LootCell") then -- If they are already in a cell, remove them from that one
+    if IsValid(player) and player:GetValue("Cell") then -- If they are already in a cell, remove them from that one
         RemovePlayerFromCell(player);
     end
 
     if not IsValid(player) then return end -- wat
 
-    player:SetValue("OldLootCell", player:GetValue("LootCell"))
+    player:SetValue("OldCell", player:GetValue("Cell"))
 
     local new_cell_x, new_cell_y = GetCell(player:GetPosition())
 
-    player:SetValue("LootCell", {x = new_cell_x, y = new_cell_y})
+    player:SetValue("Cell", {x = new_cell_x, y = new_cell_y})
 
     --debug("[sCells] Player entered new cell: " .. new_cell_x .. " " .. new_cell_y)
 
     -- Add player to loot cell
     LootCells.Player[new_cell_x][new_cell_y][tostring(player:GetSteamId().id)] = player
     UpdateLootInCells(player);
+    Events:Fire("PlayerEnteredCell", {player = player})
 
 end)
 
 Events:Subscribe("PlayerQuit", function(args)
 
-    if args.player:GetValue("LootCell") then -- Remove from cell when they leave the server
+    if args.player:GetValue("Cell") then -- Remove from cell when they leave the server
         RemovePlayerFromCell(args.player)
     end
 
@@ -48,10 +49,10 @@ function UpdateLootInCells(player)
 
     if not IsValid(player) then return end
 
-    local cell = player:GetValue("LootCell")
-    local old_cell = player:GetValue("OldLootCell")
+    local cell = player:GetValue("Cell")
+    local old_cell = player:GetValue("OldCell")
 
-    if not player:GetValue("LootCell") then return end
+    if not player:GetValue("Cell") then return end
 
     --debug('Updating loot in cell for ' .. player:GetName())
 
@@ -116,7 +117,7 @@ end
 
 -- Removes a player from a cell
 function RemovePlayerFromCell(player)
-    local cell = player:GetValue("LootCell")
+    local cell = player:GetValue("Cell")
 
     LootCells.Player[cell.x][cell.y][tostring(player:GetSteamId().id)] = nil
 end

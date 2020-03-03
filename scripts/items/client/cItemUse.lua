@@ -81,7 +81,7 @@ end
 
 function cItemUse:CompleteUsage()
 
-    Network:Send("items/CompleteItemUsage")
+    Network:Send("items/CompleteItemUsage", {ray = Physics:Raycast(LocalPlayer:GetPosition(), Vector3.Down, 0, 5)})
     self:UnsubscribeEvents()
 
 end

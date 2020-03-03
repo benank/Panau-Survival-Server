@@ -2,11 +2,10 @@ ItemsConfig =
 {
     usables = -- No food items here because those have no delay when using them
     {
-        ["Mine"] = {use_time = 3},
+        ["Mine"] = {use_time = 3, explode_radius = 3},
         ["Bandages"] = {restore_hp = 0.2, use_time = 3},
         ["Healthpack"] = {restore_hp = 0.5, use_time = 5},
         ["Woet"] = {use_time = 2},
-
     },
     equippables = -- Use equip
     {
