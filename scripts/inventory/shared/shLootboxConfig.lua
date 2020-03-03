@@ -174,7 +174,7 @@ Lootbox.Distances =
 }
 Lootbox.Cell_Size = 256
 Lootbox.Scan_Interval = 2000 -- How often the client checks for new cells
-Lootbox.Dropbox_Despawn_Time = 60 * 60 * 1000
+Lootbox.Dropbox_Despawn_Time = 30 * 60 * 1000
 Lootbox.Loot_Despawn_Time = 10 * 60 * 1000 -- How long it takes for an opened lootbox to despawn
 Lootbox.uid = 0
 Lootbox.Max_Items_In_Dropbox = 6
