@@ -33,7 +33,15 @@ function cSafezoneSigns:__init()
             image = Image.Create(AssetLocation.Resource, "Safezone_Team"),
             size = Vector2(1200, 500),
             scale = 7,
-            position = Vector3(-10303.916992, 207.512619, -2956.305664),
+            position = Vector3(-10303.698242, 207.763489, -2956.489014),
+            angle = Angle(0.523599 + math.pi, 0, 0)
+        },
+        ["Welcome"] = 
+        {
+            image = Image.Create(AssetLocation.Resource, "Safezone_Team"),
+            size = Vector2(1000, 2000),
+            scale = 50,
+            position = Vector3(-10262.698242, 254.607315, -2951.677490),
             angle = Angle(0.523599 + math.pi, 0, 0)
         },
     }
