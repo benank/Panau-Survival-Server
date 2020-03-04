@@ -192,6 +192,14 @@ end
 -- Respawns the lootbox
 function sLootbox:RespawnBox()
 
+    -- Don't respawn box if someone is looting it
+    if count_table(self.players_opened) > 0 then
+        self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
+            self:RefreshBox()
+        end)
+        return
+    end
+
     local players_opened = {}
 
     for k,v in pairs(self.players_opened) do
