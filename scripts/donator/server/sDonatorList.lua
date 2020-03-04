@@ -32,12 +32,17 @@ Donators =
     },
     ["STEAM_0:0:27475230"] = {
         steam_id = "STEAM_0:0:27475230", 
-        name = "Thasock", 
+        name = "Thasock",
         level = DonatorLevel.Donator
     },
     ["STEAM_0:0:53272641"] = {
         steam_id = "STEAM_0:0:53272641", 
         name = "Kpina", 
+        level = DonatorLevel.Donator
+    },
+    ["STEAM_0:0:78672551"] = {
+        steam_id = "STEAM_0:0:78672551", 
+        name = "Teddy Beard", 
         level = DonatorLevel.Donator
     }
 }
