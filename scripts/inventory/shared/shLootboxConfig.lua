@@ -169,7 +169,7 @@ Lootbox.LookAtColor = Color(56, 198, 43)
 
 Lootbox.Distances = 
 {
-    Start_Raycast = 50,
+    Start_Raycast = 100,
     Can_Open = 2.25
 }
 Lootbox.Cell_Size = 256
