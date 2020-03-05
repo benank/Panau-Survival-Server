@@ -44,6 +44,27 @@ function cSafezoneSigns:__init()
             position = Vector3(-10262.698242, 254.607315, -2951.677490),
             angle = Angle(0.523599 + math.pi, 0, 0)
         },
+        ["GetConnected"] = 
+        {
+            image = Image.Create(AssetLocation.Resource, "Safezone_GetConnected"),
+            size = Vector2(2128, 276),
+            scale = 2.5,
+            position = Vector3(-10341.725586, 205.002228, -3062.086182),
+            angle = Angle(-2.094716 + math.pi, 0, 0)
+        },
+    }
+
+    self.stats =  -- Dynamic server stats for billboard
+    {
+        ["PlayersOnline"] = {
+            text = "Players Online: %s",
+            value = 0,
+            position = Vector3(-10252.943359, 261.488586, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color.White,
+            fontsize = 50,
+            scale = 0.03
+        }
     }
 
     self:CreateModels()
@@ -52,9 +73,14 @@ function cSafezoneSigns:__init()
     self:CreateLights()
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
-
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
+    Network:Subscribe("ServerStats/UpdatePlayersOnline", self, self.UpdatePlayersOnline)
+
+end
+
+function cSafezoneSigns:UpdatePlayersOnline(args)
+    self.stats["PlayersOnline"].value = args.online
 end
 
 function cSafezoneSigns:ModuleUnload()
@@ -117,7 +143,7 @@ end
 Events:Subscribe("LocalPlayerChat", function(args)
     if args.text == "/a" then
         local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 100)
-        print(ray.position - Camera:GetAngle() * Vector3.Forward * 0.1)
+        print(ray.position - Camera:GetAngle() * Vector3.Forward * 0.12)
         print(Angle.FromVectors(Vector3.Forward, ray.normal))
     end
     if args.text == "/pos" then
@@ -138,10 +164,8 @@ end
 
 function cSafezoneSigns:SecondTick()
 
-
-
     if Safezone.near_safezone and not self.render then
-        self.render = Events:Subscribe("GameRender", self, self.GameRender)
+        self.render = Events:Subscribe("GameRenderOpaque", self, self.GameRender)
     elseif not Safezone.near_safezone and self.render then
         Events:Unsubscribe(self.render)
         self.render = nil
@@ -157,6 +181,14 @@ function cSafezoneSigns:GameRender(args)
         sign_data.model:Draw()
         Render:ResetTransform()
     end
+
+    for name, sign_data in pairs(self.stats) do
+        local t = Transform3():Translate(sign_data.position):Rotate(sign_data.angle)
+        Render:SetTransform(t)
+        Render:DrawText(Vector3.Zero, string.format(sign_data.text, sign_data.value), sign_data.color, sign_data.fontsize, sign_data.scale)
+        Render:ResetTransform()
+    end
+
 
 end
 
