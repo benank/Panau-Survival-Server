@@ -69,12 +69,12 @@ function FireWeapon(args, player)
         if not equipped_item then
             -- Shooting a weapon that they do not have equipped
             -- ban
-            Events:Fire("KickPlayer", {
+            --[[Events:Fire("KickPlayer", {
                 player = player,
                 reason = string.format("Weapon mismatch. Not equipped: %s", 
                     tostring(weapon_name)),
                 p_reason = "Weapon mismatch"
-            })
+            })]]
 
             return
         end
