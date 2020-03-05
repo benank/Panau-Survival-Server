@@ -23,4 +23,5 @@ If you'd like to be more involved with development, send me (Lord Farquaad) a DM
 There are a few things that aren't open source because of privacy and exploitation concerns. These items are:
  - Server database
  - Loot spawns
+ - Vehicle spawns
 
