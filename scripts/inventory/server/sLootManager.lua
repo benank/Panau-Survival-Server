@@ -2,6 +2,7 @@ class 'sLootManager'
 
 function sLootManager:__init()
 
+    self.lootspawn_file = "lootspawns/lootspawns.txt"
     self.loot_data = {}
 
     self:LoadFromFile()
@@ -15,7 +16,7 @@ function sLootManager:LoadFromFile()
     local random = math.random
     local counter = 0
 	local spawn_timer = Timer() -- time loot spawn time
-	local file = io.open("lootspawns.txt", "r") -- read from lootspawns.txt
+	local file = io.open(self.lootspawn_file, "r") -- read from lootspawns.txt
 	if file ~= nil then -- file might not exist
 		local args = {}
 		args.world = DefaultWorld
