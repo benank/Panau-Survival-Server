@@ -16,7 +16,7 @@ function FreeCamManager:__init()
 	-- Set default permissions from whitelist
 	Events:Subscribe("ModuleLoad", self, self.SendPermissionAll)
 	Events:Subscribe("ModulesLoad", self, self.SendPermissionAll)
-	Events:Subscribe("PlayerJoin", self, self.SendPermission)
+	Events:Subscribe("ClientModuleLoad", self, self.SendPermission)
 
 	-- Notice other modules on serverside when cam has changed
 	Network:Subscribe("FreeCamChange", function(args, client)
@@ -63,7 +63,7 @@ function FreeCamManager:SendPermission(args)
 	local player = args.player
 
 	if FreeCamManager.CheckWhiteList(player) then
-		Network:Send(player, "FreeCam", {["perm"] = true})
+        Network:Send(player, "FreeCam", {["perm"] = true})
 	end
 end
 
