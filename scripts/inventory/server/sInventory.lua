@@ -474,7 +474,12 @@ function sInventory:AddStack(args)
 
         self:Sync({index = args.index, stack = istack, sync_stack = true})
 
-        if args.stack:GetAmount() > 0 then return args.stack else return end
+        if args.stack:GetAmount() > 0 then
+            Chat:Send(self.player, string.format("%s category is full!", cat), Color.Red)
+            return args.stack
+        else
+            return
+        end
 
     end
 
@@ -517,6 +522,7 @@ function sInventory:AddStack(args)
     end
 
     if args.stack:GetAmount() > 0 then
+        Chat:Send(self.player, string.format("%s category is full!", cat), Color.Red)
         return args.stack
         --error("sInventory:AddStack failed: there were some items left over")
     end
