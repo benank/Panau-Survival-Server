@@ -30,6 +30,7 @@ function cInventoryUIStyle:__init()
         }
     }
 
+    self.category_title_colors = {Normal = Color.White, Full = Color.Red}
     self.border_size = 2
 
 
