@@ -434,6 +434,7 @@ function sInventory:ModifyDurabilityRemote(args)
                     item.durability = args.item.durability
                     self:Sync({index = index, stack = stack, sync_stack = true})
                 else
+                    Chat:Send(self.player, string.format("%s ran out of durability and broke!", item.name), Color.Red)
                     self:RemoveItem({item = item, index = index})
                 end
 
