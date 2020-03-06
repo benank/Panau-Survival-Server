@@ -6,7 +6,11 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
     UpdateEquippedItem(args.player, args.item.name, args.item)
 
     local slots = ItemsConfig.equippables.backpacks[args.item.name].slots
-    
+
+    local equipped_visuals = args.player:GetValue("EquippedVisuals")
+    equipped_visuals[args.item.name] = args.item.equipped
+    args.player:SetNetworkValue("EquippedVisuals", equipped_visuals)
+
     Events:Fire("Inventory.ToggleBackpackEquipped-" .. tostring(args.player:GetSteamId().id), 
         {equipped = args.item.equipped == true, slots = slots})
 

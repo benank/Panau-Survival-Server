@@ -1,5 +1,6 @@
 Events:Subscribe("PlayerJoin", function(args)
     args.player:SetValue("EquippedItems", {})
+    args.player:SetNetworkValue("EquippedVisuals", {})
 end)
 
 function Unload()

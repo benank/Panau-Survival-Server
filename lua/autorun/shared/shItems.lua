@@ -113,6 +113,18 @@ Items =
         equip_type = "backpack"
     },
     {
+        name = "Helmet",
+        category = "Survival",
+        stacklimit = 2,
+        loot = {1,2},
+        rarity = 0.01,
+        rarity_mod = {0.5,1},
+        can_equip = true,
+        durable = true,
+        max_durability = 500,
+        equip_type = "helmet"
+    },
+    {
         name = "Police Helmet",
         category = "Survival",
         stacklimit = 1,
@@ -161,19 +173,7 @@ Items =
         equip_type = "body_armor"
     },
     {
-        name = "Elite Helmet",
-        category = "Survival",
-        stacklimit = 1,
-        loot = {4,5},
-        rarity = 0.01,
-        rarity_mod = {1,5},
-        can_equip = true,
-        durable = true,
-        max_durability = 1000,
-        equip_type = "helmet"
-    },
-    {
-        name = "Elite Vest",
+        name = "Kevlar Vest",
         category = "Survival",
         stacklimit = 1,
         loot = {4,5},

@@ -33,7 +33,7 @@ ItemsConfig =
             ["Police Helmet"] = {dura_per_hit = 1},
             ["Military Helmet"] = {dura_per_hit = 1},
             ["Military Vest"] = {dura_per_hit = 1},
-            ["Elite Vest"] = {dura_per_hit = 1}
+            ["Kevlar Vest"] = {dura_per_hit = 1}
         },
         backpacks = 
         {

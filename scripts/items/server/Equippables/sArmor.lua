@@ -3,6 +3,10 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
     if not args.item or not IsValid(args.player) then return end
     if not ItemsConfig.equippables.armor[args.item.name] then return end
 
+    local equipped_visuals = args.player:GetValue("EquippedVisuals")
+    equipped_visuals[args.item.name] = args.item.equipped
+    args.player:SetNetworkValue("EquippedVisuals", equipped_visuals)
+
     UpdateEquippedItem(args.player, args.item.name, args.item)
 
 end)

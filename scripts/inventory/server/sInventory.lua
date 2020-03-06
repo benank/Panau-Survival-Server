@@ -862,7 +862,7 @@ function sInventory:Deserialize(data)
                     item_data.name = split3[k]
 
                     if not CreateItem({name = item_data.name, amount = 1}) then -- Unable to find item, eg does not exist
-                        error("Unable to find item with name " .. tostring(split3[k]) .. " in convert_string")
+                        error("Unable to find item with name " .. tostring(split3[k]) .. " in sInventory:Deserialize")
                     end
                 
                 elseif (k == 3) then -- Amount
