@@ -18,13 +18,25 @@ end)
 
 function ModifyBackpackDurability(args)
 
-    local item = GetEquippedItem(args.armor_name, args.player)
+    local item
+
+    local equipped_items = args.player:GetValue("EquippedItems")
+
+    for name, _item in pairs(equipped_items) do
+        if ItemsConfig.equippables.backpacks[name] then
+            item = _item
+            break
+        end
+    end
+
     if not item then return end
     local change = args.damage
     if change < 1 or not change then change = 1 end
 
     -- If it is armor, durability will be subtracted in sArmor.lua
     if ItemsConfig.equippables.armor[item.name] then return end
+
+    print("sub " .. tostring(change))
 
     item.durability = item.durability - change * ItemsConfig.equippables.backpacks[item.name].dura_per_hit
     Inventory.ModifyDurability({
