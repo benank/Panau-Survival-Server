@@ -36,8 +36,6 @@ function ModifyBackpackDurability(args)
     -- If it is armor, durability will be subtracted in sArmor.lua
     if ItemsConfig.equippables.armor[item.name] then return end
 
-    print("sub " .. tostring(change))
-
     item.durability = item.durability - change * ItemsConfig.equippables.backpacks[item.name].dura_per_hit
     Inventory.ModifyDurability({
         player = args.player,
