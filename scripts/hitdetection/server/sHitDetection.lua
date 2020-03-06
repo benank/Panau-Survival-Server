@@ -2,8 +2,21 @@ class 'sHitDetection'
 
 function sHitDetection:__init()
 
-    Network:Subscribe("HitDetectionBulletHit", self, self.BulletHit)
-    Network:Subscribe("HitDetectionExplosionHit", self, self.ExplosionHit)
+    Network:Subscribe("HitDetectionSyncHit", self, self.SyncHit)
+end
+
+function sHitDetection:SyncHit(args, player)
+
+    for _, v in pairs(args.pending) do
+
+        if v.type == WeaponHitType.Explosive then
+            self:ExplosionHit(v, player)
+        else
+            self:BulletHit(v, player)
+        end
+
+    end
+
 end
 
 function sHitDetection:ExplosionHit(args, player)

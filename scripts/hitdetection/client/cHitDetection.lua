@@ -7,10 +7,12 @@ local LocalPlayerExplosionHit = var("LocalPlayerExplosionHit")
 local EntityBulletHit = var("EntityBulletHit")
 local VehicleCollide = var("VehicleCollide")
 local PostTick = var("PostTick")
-local HitDetectionBulletHit = var("HitDetectionBulletHit")
-local HitDetectionExplosionHit = var("HitDetectionExplosionHit")
+local HitDetectionSyncHit = var("HitDetectionSyncHit")
 
 function cHitDetection:__init()
+
+    self.pending = {}
+    self.sync_timer = Timer()
 
     Events:Subscribe(LocalPlayerBulletHit:get(), self, self.LocalPlayerBulletHit)
     Events:Subscribe(LocalPlayerDeath:get(), self, self.LocalPlayerDeath)
@@ -24,6 +26,24 @@ end
 function cHitDetection:PostTick(args)
 
     -- Collision checks for hitting things when in ragdoll
+
+    -- Sync damage every 100ms
+    if self.sync_timer:GetMilliseconds() > 100 then
+
+        self.sync_timer:Restart()
+
+        if #self.pending > 0 then
+            
+            Network:Send(HitDetectionSyncHit:get(), {
+                pending = self.pending
+            })
+
+            self.pending = {}
+
+        end
+
+    end
+
 
 end
 
@@ -52,11 +72,12 @@ function cHitDetection:LocalPlayerExplosionHit(args)
         local weapon = args.attacker:GetEquippedWeapon()
         if not weapon then return end
 
-        Network:Send(HitDetectionExplosionHit:get(), {
+        table.insert(self.pending, {
             attacker = args.attacker,
-            damage = args.damage
+            bone = args.bone,
+            type = WeaponHitType.Explosive
         })
-
+    
         return false
 
     end
@@ -75,9 +96,10 @@ function cHitDetection:LocalPlayerBulletHit(args)
     local weapon = args.attacker:GetEquippedWeapon()
     if not weapon then return end
 
-    Network:Send(HitDetectionBulletHit:get(), {
+    table.insert(self.pending, {
         attacker = args.attacker,
-        bone = args.bone
+        bone = args.bone,
+        type = WeaponHitType.Bodyshot
     })
 
     return false
