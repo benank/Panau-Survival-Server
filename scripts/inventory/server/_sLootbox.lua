@@ -13,7 +13,6 @@ function sLootbox:__init(args)
     self.uid = GetLootboxUID()
     self.active = args.active == true
     self.tier = args.tier
-    self.original_tier = args.original_tier
     self.position = args.position
     self.cell_x, self.cell_y = GetCell(self.position)
     self.angle = args.angle
@@ -133,7 +132,7 @@ function sLootbox:Open(player)
     if not self.despawn_timer then
 
         self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
-            self:RefreshBox()
+            self:HideBox()
         end)
 
     end
@@ -155,6 +154,14 @@ end
 -- Hides the lootbox until it's ready to respawn
 function sLootbox:HideBox()
 
+    -- Don't hide box if someone is looting it
+    if count_table(self.players_opened) > 0 then
+        self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
+            self:HideBox()
+        end)
+        return
+    end
+
     if self.despawn_timer then
         Timer.Clear(self.despawn_timer)
         self.despawn_timer = nil
@@ -164,8 +171,11 @@ function sLootbox:HideBox()
     self.active = false
     self.players_opened = {}
 
+    LootManager:DespawnBox(self)
+
     Timer.SetTimeout(self:GetRespawnTime(), function()
-        self:RespawnBox()
+        -- Respawn random box from the same tier
+        LootManager:RespawnBox(self.tier)
     end)
 
 end
@@ -190,12 +200,12 @@ end
 function sLootbox:RespawnBox()
 
     -- Don't respawn box if someone is looting it
-    if count_table(self.players_opened) > 0 then
+    --[[if count_table(self.players_opened) > 0 then
         self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
             self:RefreshBox()
         end)
         return
-    end
+    end]]
 
     local players_opened = {}
 
@@ -210,8 +220,8 @@ function sLootbox:RespawnBox()
     self.contents = ItemGenerator:GetLoot(self.tier)
     self.players_opened = {}
 
-    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell_x, self.cell_y), "Inventory/OneLootboxCellSync", self:GetSyncData())
     self.active = true
+    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell_x, self.cell_y), "Inventory/OneLootboxCellSync", self:GetSyncData())
 
 end
 
@@ -249,6 +259,11 @@ function sLootbox:Remove()
     self.network_subs = nil
     self = nil
 
+end
+
+-- Syncs the single lootbox to all nearby players, used for dropboxes to make them instantly appear
+function sLootbox:Sync()
+    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell_x, self.cell_y), "Inventory/OneLootboxCellSync", self:GetSyncData())
 end
 
 -- Update contents to anyone who has it open

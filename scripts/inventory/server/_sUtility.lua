@@ -5,7 +5,6 @@ function CreateLootbox(args)
     local box = sLootbox(args)
     table.insert(LootCells.Loot[box.cell_x][box.cell_y], box)
 
-    Network:SendToPlayers(GetNearbyPlayersInCell(box.cell_x, box.cell_y), "Inventory/OneLootboxCellSync", box:GetSyncData())
     return box
 
 end

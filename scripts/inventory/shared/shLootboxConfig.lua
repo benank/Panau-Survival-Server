@@ -41,7 +41,7 @@ Lootbox.GeneratorConfig =
             respawn = 10,
             min_lockpicks = 1,
             max_lockpicks = 2,
-            max_spawned = 0.5 -- % of total boxes spawned at once, between 0 and 1
+            max_spawned = 1.0 -- % of total boxes spawned at once, between 0 and 1
         },
         [Lootbox.Types.Level2] = 
         {
@@ -50,7 +50,7 @@ Lootbox.GeneratorConfig =
             respawn = 15,
             min_lockpicks = 1,
             max_lockpicks = 5,
-            max_spawned = 0.5
+            max_spawned = 1.0
         },
         [Lootbox.Types.Level3] = 
         {
@@ -59,7 +59,7 @@ Lootbox.GeneratorConfig =
             respawn = 25,
             min_lockpicks = 3,
             max_lockpicks = 5,
-            max_spawned = 0.5
+            max_spawned = 1.0
         },
         [Lootbox.Types.Level4] = 
         {
@@ -68,7 +68,7 @@ Lootbox.GeneratorConfig =
             respawn = 45,
             min_lockpicks = 5,
             max_lockpicks = 10,
-            max_spawned = 0.5
+            max_spawned = 1.0
         },
         [Lootbox.Types.Level5] = 
         {
@@ -180,7 +180,7 @@ Lootbox.Distances =
 }
 Lootbox.Cell_Size = 256
 Lootbox.Scan_Interval = 2000 -- How often the client checks for new cells
-Lootbox.Dropbox_Despawn_Time = 30 * 60 * 1000
+Lootbox.Dropbox_Despawn_Time = 10 * 60 * 1000
 Lootbox.Loot_Despawn_Time = 10 * 60 * 1000 -- How long it takes for an opened lootbox to despawn
 Lootbox.uid = 0
 Lootbox.Max_Items_In_Dropbox = 6

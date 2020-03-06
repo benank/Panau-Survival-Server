@@ -233,12 +233,15 @@ function sInventory:DropStack(args, player, lootbox)
         self:CheckIfStackHasOneEquippedThenUnequip(split_stack)
 
         if not lootbox then
-            return CreateLootbox({
+            lootbox = CreateLootbox({
                 position = player:GetPosition(),
                 angle = player:GetAngle(),
                 tier = Lootbox.Types.Dropbox,
+                active = true,
                 contents = {[1] = split_stack}
             })
+            lootbox:Sync()
+            return lootbox
         else
             lootbox:AddStack(split_stack)
         end
@@ -250,12 +253,15 @@ function sInventory:DropStack(args, player, lootbox)
         self:RemoveStack({stack = stack:Copy(), index = args.index})
 
         if not lootbox then
-            return CreateLootbox({
+            local lootbox = CreateLootbox({
                 position = player:GetPosition(),
                 angle = player:GetAngle(),
                 tier = Lootbox.Types.Dropbox,
+                active = true,
                 contents = {[1] = stack}
             })
+            lootbox:Sync()
+            return lootbox
         else
             lootbox:AddStack(stack)
         end

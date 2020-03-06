@@ -12,6 +12,28 @@ function sLootManager:__init()
 
 end
 
+function sLootManager:DespawnBox(box)
+    self.active_lootboxes[box.tier][box.uid] = nil
+    self.inactive_lootboxes[box.tier][box.uid] = box
+end
+
+function sLootManager:RespawnBox(tier)
+
+    -- Select a box from inactive
+    local box = random_table_value(self.inactive_lootboxes[tier])
+
+    if not box then
+        error("Failed to find inactive box for tier " .. tostring(tier))
+        return
+    end
+
+    self.inactive_lootboxes[tier][box.uid] = nil
+    self.active_lootboxes[tier][box.uid] = box
+
+    box:RefreshBox()
+
+end
+
 function sLootManager:LoadFromFile()
 
     math.randomseed(os.clock())
@@ -74,21 +96,31 @@ function sLootManager:GenerateAllLoot()
             position = lootbox_data.pos,
             angle = lootbox_data.ang,
             tier = lootbox_data.tier,
-            active = active,
+            active = active or in_sz,
             contents = in_sz and {} or ItemGenerator:GetLoot(lootbox_data.tier)
         })
 
         -- Separate active & inactive boxes
         if active then
-            self.active_lootboxes[box.uid] = box
+            self.active_lootboxes[box.tier][box.uid] = box
         else
-            self.inactive_lootboxes[box.id] = box
+            self.inactive_lootboxes[box.tier][box.uid] = box
         end
 
     end
 
     print(string.format("Spawned %s/%s lootboxes.",
-        tostring(count_table(self.active_lootboxes)), tostring(#self.loot_data)))
+        tostring(self:GetNumSpawnedBoxes()), tostring(#self.loot_data)))
+
+end
+
+function sLootManager:GetNumSpawnedBoxes()
+    
+    local lootbox_total = 0
+    for tier, _ in pairs(self.active_lootboxes) do
+        lootbox_total = lootbox_total + count_table(self.active_lootboxes[tier])
+    end
+    return lootbox_total
 
 end
 
