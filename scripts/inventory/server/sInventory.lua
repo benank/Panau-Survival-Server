@@ -11,11 +11,9 @@ function sInventory:__init(player)
     self.steamID = tostring(player:GetSteamId().id)
     self.operation_block = 0 -- Increment/decrement this to disable inventory operations
     
-    self:Load()
-
     self.events = {}
     self.network_events = {}
-
+    
     table.insert(self.events, Events:Subscribe("Inventory.AddStack-" .. self.steamID, self, self.AddStackRemote))
     table.insert(self.events, Events:Subscribe("Inventory.AddItem-" .. self.steamID, self, self.AddItemRemote))
     table.insert(self.events, Events:Subscribe("Inventory.RemoveStack-" .. self.steamID, self, self.RemoveStackRemote))
@@ -24,12 +22,16 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.ModifyDurability-" .. self.steamID, self, self.ModifyDurabilityRemote))
     table.insert(self.events, Events:Subscribe("Inventory.OperationBlock-" .. self.steamID, self, self.OperationBlockRemote))
 
+    table.insert(self.events, Events:Subscribe("Inventory.ToggleBackpackEquipped-" .. self.steamID, self, self.ToggleBackpackEquipped))
+
     table.insert(self.network_events, Network:Subscribe("Inventory/Shift" .. self.steamID, self, self.ShiftStack))
     table.insert(self.network_events, Network:Subscribe("Inventory/ToggleEquipped" .. self.steamID, self, self.ToggleEquipped))
     table.insert(self.network_events, Network:Subscribe("Inventory/Use" .. self.steamID, self, self.UseItem))
     table.insert(self.network_events, Network:Subscribe("Inventory/Drop" .. self.steamID, self, self.DropStacks))
     table.insert(self.network_events, Network:Subscribe("Inventory/Split" .. self.steamID, self, self.SplitStack))
     table.insert(self.network_events, Network:Subscribe("Inventory/Swap" .. self.steamID, self, self.SwapStack))
+
+    self:Load()
 
 end
 
@@ -72,6 +74,29 @@ function sInventory:Load()
 
 end
 
+function sInventory:ToggleBackpackEquipped(args)
+
+    if not args.equipped then
+        -- Unequipped backpack
+        for cat, slots_to_add in pairs(args.slots) do
+            self.slots[cat].backpack = self.slots[cat].backpack - slots_to_add
+        end
+
+        self:Sync({sync_slots = true})
+        self:CheckForOverflow()
+
+    else
+
+        for cat, slots_to_add in pairs(args.slots) do
+            self.slots[cat].backpack = self.slots[cat].backpack + slots_to_add
+        end
+
+        self:Sync({sync_slots = true})
+
+    end
+
+end
+
 function sInventory:ShiftStack(args, player)
 
     if not self:CanPlayerPerformOperations(player) then return end
@@ -90,61 +115,90 @@ function sInventory:ToggleEquipped(args, player)
     if not self.contents[args.cat] or not self.contents[args.cat][args.index] then return end
     if not self.contents[args.cat][args.index]:GetProperty("can_equip") then return end
 
+    local uid = self.contents[args.cat][args.index].uid
+
     -- check for items of same equip type and unequip them
     local equip_type = self.contents[args.cat][args.index]:GetProperty("equip_type")
-    local can_equip = true
 
-    if equip_type ~= "grapple_upgrade" then
-        for cat, _ in pairs(self.contents) do
-            for stack_index, stack in pairs(self.contents[cat]) do
-                for item_index, item in pairs(stack.contents) do
+    for cat, _ in pairs(self.contents) do
+        for stack_index, stack in pairs(self.contents[cat]) do
+            for item_index, item in pairs(stack.contents) do
 
-                    if item.equipped and item.equip_type == equip_type
-                    and item.uid ~= self.contents[args.cat][args.index].contents[1].uid then
+                if item.equipped and item.equip_type == equip_type
+                and item.uid ~= self.contents[args.cat][args.index].contents[1].uid then
 
-                        item.equipped = false
-                        self:Sync({index = stack_index, stack = self.contents[cat][stack_index], sync_stack = true})
-                        Events:Fire("Inventory/ToggleEquipped", 
-                            {player = self.player, item = self.contents[cat][stack_index].contents[1]:Copy():GetSyncObject()})
-
-                    end
+                    item.equipped = false
+                    Events:Fire("Inventory/ToggleEquipped", 
+                        {player = self.player, item = self.contents[cat][stack_index].contents[1]:Copy():GetSyncObject()})
 
                 end
+
             end
         end
-    else -- Trying to equip a grapple upgrade
-        
-        local num_upgrades = 0
-
-        for cat, _ in pairs(self.contents) do
-            for index, stack in pairs(self.contents[cat]) do
-                for item_index, item in pairs(stack.contents) do
-
-                    if item.equipped and item.equip_type == equip_type
-                    and item.uid ~= self.contents[args.cat][args.index].contents[1].uid then
-
-                        num_upgrades = num_upgrades + 1
-                        
-                    end
-
-                end
-            end
-        end
-        can_equip = num_upgrades < Inventory.config.max_grapple_upgrades
     end
+    
+    local index = self:FindIndexFromUID(args.cat, uid)
 
-    -- Toggle equipped if it's not a grapple upgrade OR if we can equip a grapple upgrade OR if we are unequipping an upgrade
-    if equip_type ~= "grapple_upgrade" or can_equip or self.contents[args.cat][args.index].contents[1].equipped then
-        self.contents[args.cat][args.index].contents[1].equipped = not self.contents[args.cat][args.index].contents[1].equipped
-    else
-        Chat:Send(self.player, "you must unequip first", Color.Red)
-        -- tell player they have to unequip a grapple upgrade before equipping another one
-    end
+    -- Equip/unequip the item
+    self.contents[args.cat][index].contents[1].equipped = not self.contents[args.cat][index].contents[1].equipped
 
-    self:Sync({index = args.index, stack = self.contents[args.cat][args.index], sync_stack = true})
+    -- Sync it
+    self:Sync({cat = args.cat, sync_cat = true})
 
     Events:Fire("Inventory/ToggleEquipped", 
-        {player = self.player, item = self.contents[args.cat][args.index].contents[1]:Copy():GetSyncObject()})
+        {player = self.player, item = self.contents[args.cat][index].contents[1]:Copy():GetSyncObject()})
+
+end
+
+-- Checks for item overflow when a backpack is unequipped
+function sInventory:CheckForOverflow()
+
+    local stacks_to_drop = {}
+
+    for cat, data in pairs(self.contents) do
+
+        local max_slots = self:GetNumSlotsInCategory(cat)
+
+        -- If there is an overflow
+        while #self.contents[cat] > max_slots do
+
+            local index_to_remove = math.random(#self.contents[cat])
+            local stack = table.remove(self.contents[cat], index_to_remove)
+            
+            self:CheckIfStackHasOneEquippedThenUnequip(stack)
+
+            table.insert(stacks_to_drop, stack)
+
+        end
+
+    end
+
+    -- If they overflowed, drop the items
+    if #stacks_to_drop > 0 then
+
+        -- Send the player a chat message
+        local chat_msg = "Inventory overflow! You dropped: "
+        for index, stack in pairs(stacks_to_drop) do
+            chat_msg = chat_msg .. string.format("%s (%s)", tostring(stack:GetProperty("name")), tostring(stack:GetAmount()))
+            if index < #stacks_to_drop then
+                chat_msg = chat_msg .. ", "
+            end
+        end
+
+        Chat:Send(self.player, chat_msg, Color.Red)
+
+        local dropbox = CreateLootbox({
+            position = self.player:GetPosition(),
+            angle = self.player:GetAngle(),
+            tier = Lootbox.Types.Dropbox,
+            active = true,
+            contents = stacks_to_drop
+        })
+        dropbox:Sync()
+
+        -- Full sync in case they dropped from multiple categories
+        self:Sync({sync_full = true})
+    end
 
 end
 
@@ -701,6 +755,8 @@ function sInventory:Sync(args)
             end
         end
     end
+
+    self:CheckForOverflow()
 
     if args.sync_full then -- Sync entire inventory
         Network:Send(self.player, "InventoryUpdated", 

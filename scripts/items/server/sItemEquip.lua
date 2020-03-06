@@ -6,6 +6,7 @@ function Unload()
 
     for player in Server:GetPlayers() do
         player:SetValue("EquippedItems", {})
+        player:SetNetworkValue("EquippedVisuals", {})
     end
 
 end

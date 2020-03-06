@@ -58,7 +58,7 @@ function cVehicleManager:LocalPlayerInput(args)
 
             -- TODO check if friends
             if data.owner_id ~= tostring(LocalPlayer:GetSteamId().id) then 
-                if lockpicks < data.cost or #closest_vehicle:GetOccupants() > 0 then
+                if lockpicks < data.cost or (IsValid(closest_vehicle) and #closest_vehicle:GetOccupants() > 0) then
                     return false
                 end
             end

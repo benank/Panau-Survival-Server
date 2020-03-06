@@ -5,9 +5,6 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
     UpdateEquippedItem(args.player, args.item.name, args.item)
 
-    -- use net vals for sync
-    --Network:Send(args.player, "items/ToggleEquippedGrapplehook", {equipped = args.item.equipped == true})
-
 end)
 
 Events:Subscribe("HitDetection/ArmorDamaged", function(args)

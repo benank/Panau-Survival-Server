@@ -87,8 +87,8 @@ function cInventoryUI:Update(args)
 
     if args.action == "full" then
         for cat, _ in pairs(Inventory.contents) do
-            for index, stack in pairs(Inventory.contents[cat]) do
-                self:PopulateEntry({index = index, cat = cat})
+            for i = 1, Inventory.config.max_slots_per_category do
+                self:PopulateEntry({index = i, cat = cat})
             end
         end
         self:UpdateAllCategoryTitles()
@@ -243,10 +243,12 @@ function cInventoryUI:GetNumSlotsInCategory(cat)
 end
 
 function cInventoryUI:GetCategoryTitleText(cat)
-    return string.format("%s %i/%i", -- TODO: add backpack support
+    return string.format("%s %i/%i%s",
         cat,
         #Inventory.contents[cat],
-        self:GetNumSlotsInCategory(cat) or 0)
+        self:GetNumSlotsInCategory(cat) or 0,
+        Inventory.slots[cat].backpack > 0 and " (+" .. tostring(Inventory.slots[cat].backpack) .. ")" or ""
+    )
 end
 
 function cInventoryUI:UpdateCategoryTitle(cat)
