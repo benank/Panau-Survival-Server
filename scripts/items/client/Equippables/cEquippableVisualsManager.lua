@@ -20,6 +20,9 @@ function cEquippableVisualsManager:Render(args)
 
         if IsValid(visual.player) then
             visual:Render()
+        else
+            visual:Remove()
+            self.nearby_players[id] = nil
         end
 
     end
