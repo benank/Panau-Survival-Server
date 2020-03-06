@@ -10,9 +10,8 @@ function sLootbox:__init(args)
         error("sLootbox:__init failed: a key argument is missing from the constructor")
     end
 
-
     self.uid = GetLootboxUID()
-    self.active = true
+    self.active = args.active == true
     self.tier = args.tier
     self.original_tier = args.original_tier
     self.position = args.position
@@ -42,9 +41,7 @@ function sLootbox:__init(args)
     table.insert(self.network_subs, Network:Subscribe("Inventory/CloseBox" .. tostring(self.uid), self, self.CloseBox))
 
     Events:Subscribe("ModuleUnload", function()
-    
         self:Remove()
-    
     end)
 
 
@@ -256,9 +253,7 @@ end
 
 -- Update contents to anyone who has it open
 function sLootbox:UpdateToPlayers()
-
     Network:SendToPlayers(self.players_opened, "Inventory/LootboxSync", {contents = self:GetContentsData()})
-
 end
 
 function sLootbox:GetContentsData()

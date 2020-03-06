@@ -83,7 +83,9 @@ function UpdateLootInCells(player)
 
     for _, update_cell in pairs(update_cells) do
         for _, lootbox in pairs(LootCells.Loot[update_cell.x][update_cell.y]) do
-            table.insert(lootbox_data, lootbox:GetSyncData())
+            if lootbox.active then -- Only get active boxes
+                table.insert(lootbox_data, lootbox:GetSyncData())
+            end
         end
     end
 	

@@ -40,7 +40,8 @@ Lootbox.GeneratorConfig =
             max_items = 2,
             respawn = 10,
             min_lockpicks = 1,
-            max_lockpicks = 2
+            max_lockpicks = 2,
+            max_spawned = 0.5 -- % of total boxes spawned at once, between 0 and 1
         },
         [Lootbox.Types.Level2] = 
         {
@@ -48,7 +49,8 @@ Lootbox.GeneratorConfig =
             max_items = 2,
             respawn = 15,
             min_lockpicks = 1,
-            max_lockpicks = 5
+            max_lockpicks = 5,
+            max_spawned = 0.5
         },
         [Lootbox.Types.Level3] = 
         {
@@ -56,7 +58,8 @@ Lootbox.GeneratorConfig =
             max_items = 3,
             respawn = 25,
             min_lockpicks = 3,
-            max_lockpicks = 5
+            max_lockpicks = 5,
+            max_spawned = 0.5
         },
         [Lootbox.Types.Level4] = 
         {
@@ -64,7 +67,8 @@ Lootbox.GeneratorConfig =
             max_items = 4,
             respawn = 45,
             min_lockpicks = 5,
-            max_lockpicks = 10
+            max_lockpicks = 10,
+            max_spawned = 0.5
         },
         [Lootbox.Types.Level5] = 
         {
@@ -80,7 +84,8 @@ Lootbox.GeneratorConfig =
             max_items = 3,
             respawn = 15,
             min_lockpicks = 0,
-            max_lockpicks = 0
+            max_lockpicks = 0,
+            max_spawned = 1.0
         },
         [Lootbox.Types.VendingMachineDrink] = 
         {
@@ -88,7 +93,8 @@ Lootbox.GeneratorConfig =
             max_items = 3,
             respawn = 15,
             min_lockpicks = 0,
-            max_lockpicks = 0
+            max_lockpicks = 0,
+            max_spawned = 1.0
         },
     }
 }
