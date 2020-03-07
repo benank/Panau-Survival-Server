@@ -21,8 +21,10 @@ function cEquippableVisualPlayer:Update()
 
     for name, obj in pairs(self.objs) do
 
-        if IsValid(obj) then obj:Remove() end
-        self.objs[name] = nil
+        if not self.equipped_visuals[name] then
+            if IsValid(obj) then obj:Remove() end
+            self.objs[name] = nil
+        end
 
     end
 
