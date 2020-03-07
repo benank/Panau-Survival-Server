@@ -183,7 +183,7 @@ function cInventoryUI:PopulateEntry(args)
     
     if stack:GetProperty("durable") then
 
-        durability:SetSizeAutoRel(Vector2((stack.contents[1].durability / stack.contents[1].max_durability) / 0.95, 0.1))
+        durability:SetSizeAutoRel(Vector2(math.min(1, stack.contents[1].durability / stack.contents[1].max_durability) * 0.95, 0.1))
         durability:SetColor(self:GetDurabilityColor(stack.contents[1].durability / stack.contents[1].max_durability))
         durability:Show()
 
