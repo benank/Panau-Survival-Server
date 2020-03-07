@@ -32,6 +32,8 @@ end
 -- Checks to see if a player has at least one visual item equipped
 function cEquippableVisualsManager:CheckPlayer(player)
 
+    if player:GetValue("Loading") then return end
+
     local equipped_visuals = player:GetValue("EquippedVisuals")
     local steamID = tostring(player:GetSteamId())
 
