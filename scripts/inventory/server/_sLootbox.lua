@@ -99,8 +99,6 @@ function sLootbox:TakeLootStack(args, player)
     end
 
     self:UpdateToPlayers()
-    -- We can sync the whole thing right now because there's not much
-    -- TODO optimize this to only sync changed stacks
 
     if #self.contents == 0 then
 
@@ -129,10 +127,21 @@ function sLootbox:Open(player)
     self.players_opened[tostring(player:GetSteamId().id)] = player
     Network:Send(player, "Inventory/LootboxOpen", {contents = self:GetContentsData()})
 
+    self:StartDespawnTimer()
+
+end
+
+function sLootbox:StartDespawnTimer()
+
     if not self.despawn_timer then
 
         self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
-            self:HideBox()
+            if count_table(self.players_opened) == 0 then
+                -- Don't hide if there is someone looting it
+                self:HideBox()
+            else
+                self:StartDespawnTimer()
+            end
         end)
 
     end
@@ -140,9 +149,7 @@ function sLootbox:Open(player)
 end
 
 function sLootbox:CloseBox(args, player)
-
     self.players_opened[tostring(player:GetSteamId().id)] = nil
-
 end
 
 -- Refreshes loot if not all items were taken
@@ -154,13 +161,7 @@ end
 -- Hides the lootbox until it's ready to respawn
 function sLootbox:HideBox()
 
-    -- Don't hide box if someone is looting it
-    if count_table(self.players_opened) > 0 then
-        self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
-            self:HideBox()
-        end)
-        return
-    end
+    self:ForceClose()
 
     if self.despawn_timer then
         Timer.Clear(self.despawn_timer)
@@ -196,6 +197,10 @@ function sLootbox:GetRespawnTime()
 
 end
 
+function sLootbox:ForceClose()
+    Network:SendToPlayers(self.players_opened, "Inventory/ForceCloseLootbox")
+end
+
 -- Respawns the lootbox
 function sLootbox:RespawnBox()
 
@@ -207,15 +212,7 @@ function sLootbox:RespawnBox()
         return
     end]]
 
-    local players_opened = {}
-
-    for k,v in pairs(self.players_opened) do
-        if IsValid(v) then
-            table.insert(players_opened, v)
-        end
-    end
-
-    Network:SendToPlayers(players_opened, "Inventory/ForceCloseLootbox")
+    self:ForceClose()
 
     self.contents = ItemGenerator:GetLoot(self.tier)
     self.players_opened = {}
