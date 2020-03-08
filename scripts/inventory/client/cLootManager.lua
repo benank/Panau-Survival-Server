@@ -47,7 +47,7 @@ end
 
 function cLootManager:Render(args)
 
-    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 5)
+    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 6.5)
     local found_box = false
 
     if ray.entity and ray.entity.__type == "ClientStaticObject" then
