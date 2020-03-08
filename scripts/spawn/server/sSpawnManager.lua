@@ -166,6 +166,7 @@ function sSpawnManager:DelayedSpawn(args)
 end
 
 function sSpawnManager:PlayerSpawn(args)
+    args.player:SetValue("Spawn/KilledRecently", false)
 	return false
 end
 
@@ -173,7 +174,7 @@ function sSpawnManager:PlayerDeath(args)
 	args.player:SetValue("Spawn/KilledRecently", true)
 	Timer.SetTimeout(5000, function()
 		if IsValid(args.player) then
-			args.player:SetPosition(self:GetRespawnPosition(args.player))
+            args.player:SetPosition(self:GetRespawnPosition(args.player))
 		end
 	end)
 end
