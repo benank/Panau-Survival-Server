@@ -20,6 +20,8 @@ end
 function sLootManager:RespawnBox(tier)
 
     -- Select a box from inactive
+    if count_table(self.inactive_lootboxes[tier]) == 0 then return end
+    
     local box = random_table_value(self.inactive_lootboxes[tier])
 
     if not box then
