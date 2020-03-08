@@ -29,6 +29,7 @@ function sHitDetection:ExplosionHit(args, player)
     if not weapon then return end
 
     local percent = 1
+    if not args.damage then args.damage = 100 end
 
     if weapon.id == Weapon.GrenadeLauncher then
         percent = args.damage / 350
