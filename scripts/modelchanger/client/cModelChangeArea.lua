@@ -13,13 +13,13 @@ end
 function cModelChangeArea:Create()
 
     local radius = 5
-    local coords = self:GetCircleCoordinates(Vector2.Zero, radius, 7, 0, 1)
+    local coords = self:GetCircleCoordinates(Vector2.Zero, radius, 20, 0, 1)
 
     for _, point in pairs(coords) do
         table.insert(self.fx, ClientParticleSystem.Create(AssetLocation.Game, {
-            position = self.position + Vector3(point.x, 0, point.y),
+            position = self.position + Vector3(point.x, -0.5, point.y),
             angle = Angle(),
-            path = "fire_lave_large_01.psmb"
+            path = "fire_lave_medium_05.psmb"
         }))
     end
 

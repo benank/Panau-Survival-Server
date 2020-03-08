@@ -97,6 +97,8 @@ function cModelChanger:SecondTick()
 
     local player_pos = LocalPlayer:GetPosition()
 
+    if LocalPlayer:GetHealth() <= 0 then return end
+
     for name, zone_data in pairs(ModelLocations) do
         local dist = player_pos:Distance(zone_data.pos)
 
