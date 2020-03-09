@@ -82,6 +82,8 @@ function cLootboxUI:Update(args)
         self:RepositionWindow()
     end
 
+    self:ToggleVisible()
+
 end
 
 -- Adjusts y position of window to center it depending on how many items are in it
@@ -123,10 +125,6 @@ function cLootboxUI:ToggleVisible()
         end
     else
 
-        for i = 1, Inventory.config.max_slots_per_category do
-            self.itemWindows[i]:Hide()
-        end
-
         self.window:Show()
         Mouse:SetPosition(Render.Size / 2)
         self:RepositionWindow()
@@ -136,7 +134,7 @@ function cLootboxUI:ToggleVisible()
     if not ClientInventory.ui.window:GetVisible() then
         Mouse:SetVisible(self.window:GetVisible())
     end
-    
+
     LocalPlayer:SetValue("LootOpen", self.window:GetVisible())
 
 end
@@ -149,7 +147,6 @@ function cLootboxUI:KeyUp(args)
             self:ToggleVisible()
         elseif IsValid(LootManager.current_looking_box) and not self.window:GetVisible() then
             LootManager.current_box = LootManager.current_looking_box
-            self:ToggleVisible()
             Network:Send("Inventory/TryOpenBox" .. tostring(LootManager.current_looking_box.uid))
         end
 
