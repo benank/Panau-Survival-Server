@@ -600,7 +600,7 @@ Items =
         rarity_mod = {1,0.75},
         can_equip = true,
         durable = true,
-        max_durability = 500,
+        max_durability = 1000,
         equip_type = "grapplehook"
     },
     {
