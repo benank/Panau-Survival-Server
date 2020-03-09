@@ -635,7 +635,10 @@ function cInventoryUI:ToggleVisible()
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     end
 
-    Mouse:SetVisible(self.window:GetVisible())
+    if not ClientInventory.lootbox_ui.window:GetVisible() then
+        Mouse:SetVisible(self.window:GetVisible())
+    end
+    
     LocalPlayer:SetValue("InventoryOpen", self.window:GetVisible())
 
 end

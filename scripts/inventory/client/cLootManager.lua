@@ -73,14 +73,17 @@ function cLootManager:Render(args)
 
     end
 
-    if not found_box then 
+    local dist = IsValid(self.current_looking_box)
+        and LocalPlayer:GetPosition():Distance(self.current_looking_box.position)
+        or 99
+
+    if not found_box and (not ClientInventory.lootbox_ui.window:GetVisible() or dist > Lootbox.Distances.Can_Open) then 
         self.current_looking_box = nil
         self.current_box = nil
 
         if ClientInventory.lootbox_ui.window:GetVisible() then
             ClientInventory.lootbox_ui:ToggleVisible()
         end
-
 
     end
 

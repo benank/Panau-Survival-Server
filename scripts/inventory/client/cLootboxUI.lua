@@ -52,7 +52,6 @@ function cLootboxUI:LootboxOpen(args)
     LootManager:RecreateContents(args.contents)
 
     self:Update({action = "full"})
-    self:ToggleVisible()
 
 end
 
@@ -110,7 +109,6 @@ end
 function cLootboxUI:LocalPlayerInput(args)
 
     if ClientInventory.ui.blockedActions[args.input] then return false end
-    self:ToggleVisible() -- If they do anything that's not a blocked action, like move, close the UI
 
 end
 
@@ -124,13 +122,21 @@ function cLootboxUI:ToggleVisible()
             Network:Send("Inventory/CloseBox" .. tostring(LootManager.current_box.uid)) -- Send event to close box
         end
     else
+
+        for i = 1, Inventory.config.max_slots_per_category do
+            self.itemWindows[i]:Hide()
+        end
+
         self.window:Show()
         Mouse:SetPosition(Render.Size / 2)
         self:RepositionWindow()
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     end
 
-    Mouse:SetVisible(self.window:GetVisible())
+    if not ClientInventory.ui.window:GetVisible() then
+        Mouse:SetVisible(self.window:GetVisible())
+    end
+    
     LocalPlayer:SetValue("LootOpen", self.window:GetVisible())
 
 end
@@ -141,8 +147,9 @@ function cLootboxUI:KeyUp(args)
 
         if self.window:GetVisible() then
             self:ToggleVisible()
-        elseif IsValid(LootManager.current_looking_box) then
+        elseif IsValid(LootManager.current_looking_box) and not self.window:GetVisible() then
             LootManager.current_box = LootManager.current_looking_box
+            self:ToggleVisible()
             Network:Send("Inventory/TryOpenBox" .. tostring(LootManager.current_looking_box.uid))
         end
 
