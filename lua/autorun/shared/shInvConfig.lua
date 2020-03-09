@@ -31,11 +31,13 @@ Inventory.config =
         },
         {
             name = "Handgun",
-            amount = 1
+            amount = 1,
+            max_dura = true
         },
         {
             name = "Parachute",
-            amount = 1
+            amount = 1,
+            max_dura = true
         },
         {
             name = "Lockpick",
@@ -43,7 +45,8 @@ Inventory.config =
         },
         {
             name = "Grapplehook",
-            amount = 1
+            amount = 1,
+            max_dura = true
         },
         
     },
