@@ -4,10 +4,41 @@ function cModelChangeArea:__init(args)
 
     self.position = args.position
     self.name = args.name
+    self.shapetrigger = ShapeTrigger.Create({
+        position = self.position,
+        angle = Angle(),
+        components = {
+            {
+                type = TriggerType.Sphere,
+                size = Vector3(5,5,5),
+                position = Vector3(0,0,0)
+            }
+        },
+        trigger_player = true,
+        trigger_player_in_vehicle = false,
+        trigger_vehicle = false,
+        trigger_npc = false,
+        vehicle_type = VehicleTriggerType.All
+    })
 
     self.fx = {}
     self:Create()
 
+    self.sub = Events:Subscribe("ShapeTriggerEnter", self, self.ShapeTriggerEnter)
+    self.sub2 = Events:Subscribe("ShapeTriggerExit", self, self.ShapeTriggerExit)
+
+end
+
+function cModelChangeArea:ShapeTriggerEnter(args)
+    if args.trigger ~= self.shapetrigger or args.entity ~= LocalPlayer then return end
+
+    cModelChanger:EnterZone(self.name)
+end
+
+function cModelChangeArea:ShapeTriggerExit(args)
+    if args.trigger ~= self.shapetrigger or args.entity ~= LocalPlayer then return end
+
+    cModelChanger:ExitZone(self.name)
 end
 
 function cModelChangeArea:Create()
@@ -44,4 +75,7 @@ function cModelChangeArea:Remove()
     for k,v in pairs(self.fx) do
         if IsValid(v) then v:Remove() end
     end
+    self.shapetrigger:Remove()
+    Events:Unsubscribe(self.sub)
+    Events:Unsubscribe(self.sub2)
 end

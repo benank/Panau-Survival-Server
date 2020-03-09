@@ -92,6 +92,37 @@ function cModelChanger:PressButton(button)
 
 end
 
+function cModelChanger:EnterZone(name)
+    
+    local zone_data = ModelLocations[name]
+
+    if self.model_change_areas[name] and not self.window:GetVisible() then
+        self.window:Show()
+        Mouse:SetVisible(true)
+        Mouse:SetPosition(Render.Size / 2)
+        self.lpi = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
+        self.current_zone = name
+
+        for index, data in pairs(zone_data.models) do
+            self.buttons[index]:SetText(data.name)
+            self.buttons[index]:SetDataNumber("index", index)
+        end
+
+    end
+
+end
+
+function cModelChanger:ExitZone(name)
+    
+    if self.model_change_areas[name] and self.window:GetVisible() then
+        self.window:Hide()
+        Mouse:SetVisible(false)
+        Events:Unsubscribe(self.lpi)
+        self.lpi = nil
+    end
+
+end
+
 function cModelChanger:SecondTick()
     -- Check for nearby zones
 
@@ -110,25 +141,6 @@ function cModelChanger:SecondTick()
         elseif dist > 500 and self.model_change_areas[name] then
             self.model_change_areas[name]:Remove()
             self.model_change_areas[name] = nil
-        end
-
-        if self.model_change_areas[name] and dist < 5 and not self.window:GetVisible() then
-            self.window:Show()
-            Mouse:SetVisible(true)
-            Mouse:SetPosition(Render.Size / 2)
-            self.lpi = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
-            self.current_zone = name
-
-            for index, data in pairs(zone_data.models) do
-                self.buttons[index]:SetText(data.name)
-                self.buttons[index]:SetDataNumber("index", index)
-            end
-
-        elseif self.model_change_areas[name] and dist > 5 and self.window:GetVisible() then
-            self.window:Hide()
-            Mouse:SetVisible(false)
-            Events:Unsubscribe(self.lpi)
-            self.lpi = nil
         end
 
     end
