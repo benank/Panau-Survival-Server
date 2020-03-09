@@ -23,7 +23,8 @@ Inventory.config =
         },
         {
             name = "Shotgun",
-            amount = 1
+            amount = 1,
+            max_dura = true
         },
         {
             name = "Shotgun Ammo",
