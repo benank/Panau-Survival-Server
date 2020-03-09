@@ -271,7 +271,7 @@ Items =
     },
     {
         name = "Flares",
-        category = "Survival",
+        category = "Explosives",
         stacklimit = 5,
         loot = {1,2,3},
         rarity = 0.05,
