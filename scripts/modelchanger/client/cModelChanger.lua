@@ -13,6 +13,7 @@ function cModelChanger:__init()
     self.buttons = {}
     self.current_zone = nil
     self.request_timer = Timer()
+    self.streaming_dist = 1500
 
     for i = 1, 6 do
         local button = Button.Create(self.window, "Button1")
@@ -133,12 +134,12 @@ function cModelChanger:SecondTick()
     for name, zone_data in pairs(ModelLocations) do
         local dist = player_pos:Distance(zone_data.pos)
 
-        if dist < 500 and not self.model_change_areas[name] then
+        if dist < self.streaming_dist and not self.model_change_areas[name] then
             self.model_change_areas[name] = cModelChangeArea({
                 position = zone_data.pos,
                 name = name
             })
-        elseif dist > 500 and self.model_change_areas[name] then
+        elseif dist > self.streaming_dist and self.model_change_areas[name] then
             self.model_change_areas[name]:Remove()
             self.model_change_areas[name] = nil
         end
