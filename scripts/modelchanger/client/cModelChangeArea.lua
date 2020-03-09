@@ -4,6 +4,12 @@ function cModelChangeArea:__init(args)
 
     self.position = args.position
     self.name = args.name
+    self.light = ClientLight.Create({
+        position = args.position,
+        color = Color.White,
+        multiplier = 10,
+        radius = 10
+    })
     self.shapetrigger = ShapeTrigger.Create({
         position = self.position,
         angle = Angle(),
@@ -75,6 +81,7 @@ function cModelChangeArea:Remove()
     for k,v in pairs(self.fx) do
         if IsValid(v) then v:Remove() end
     end
+    self.light:Remove()
     self.shapetrigger:Remove()
     Events:Unsubscribe(self.sub)
     Events:Unsubscribe(self.sub2)
