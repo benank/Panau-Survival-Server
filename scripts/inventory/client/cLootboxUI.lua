@@ -82,7 +82,7 @@ function cLootboxUI:Update(args)
         self:RepositionWindow()
     end
 
-    if not self.window:GetVisible() or (#self.contents == 0 and self.window:GetVisible()) then
+    if not self.window:GetVisible() or #LootManager.current_box.contents == 0 then
         self:ToggleVisible()
     end
 
