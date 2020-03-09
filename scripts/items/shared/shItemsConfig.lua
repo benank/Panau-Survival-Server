@@ -32,7 +32,6 @@ ItemsConfig =
             ["Helmet"] = {dura_per_hit = 6},
             ["Police Helmet"] = {dura_per_hit = 4},
             ["Military Helmet"] = {dura_per_hit = 2},
-            ["Police Vest"] = {dura_per_hit = 6},
             ["Military Vest"] = {dura_per_hit = 4},
             ["Kevlar Vest"] = {dura_per_hit = 2}
         },

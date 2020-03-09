@@ -137,18 +137,6 @@ Items =
         equip_type = "helmet"
     },
     {
-        name = "Police Vest",
-        category = "Survival",
-        stacklimit = 1,
-        loot = {2,3},
-        rarity = 0.01,
-        rarity_mod = {1,5},
-        can_equip = true,
-        durable = true,
-        max_durability = 1000,
-        equip_type = "body_armor"
-    },
-    {
         name = "Military Helmet",
         category = "Survival",
         stacklimit = 1,
