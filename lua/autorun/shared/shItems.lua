@@ -582,7 +582,7 @@ Items =
     {
         name = "Grapplehook",
         category = "Supplies",
-        stacklimit = 3,
+        stacklimit = 2,
         loot = {2,3},
         rarity = 0.075,
         rarity_mod = {1,0.75},
