@@ -600,7 +600,7 @@ Items =
         rarity_mod = {1,0.8},
         can_equip = true,
         durable = true,
-        max_durability = 1500,
+        max_durability = 2000,
         equip_type = "grapplehook"
     },
     {
@@ -624,7 +624,7 @@ Items =
         rarity_mod = {1,1.5},
         can_equip = true,
         durable = true,
-        max_durability = 1500,
+        max_durability = 2000,
         equip_type = "parachute"
     },
     {
