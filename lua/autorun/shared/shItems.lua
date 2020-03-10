@@ -594,13 +594,13 @@ Items =
     {
         name = "RocketGrapple",
         category = "Supplies",
-        stacklimit = 1,
+        stacklimit = 2,
         loot = {4,5},
-        rarity = 0.025,
+        rarity = 0.015,
         rarity_mod = {1,0.8},
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 1500,
         equip_type = "grapplehook"
     },
     {
@@ -624,7 +624,7 @@ Items =
         rarity_mod = {1,1.5},
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 1500,
         equip_type = "parachute"
     },
     {
