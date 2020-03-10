@@ -624,7 +624,7 @@ Items =
         rarity_mod = {1,1.5},
         can_equip = true,
         durable = true,
-        max_durability = 2000,
+        max_durability = 2500,
         equip_type = "parachute"
     },
     {
