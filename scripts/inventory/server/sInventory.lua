@@ -521,6 +521,15 @@ function sInventory:OnItemBreak(item)
         Network:SendNearby(self.player, "InventoryFX/ParachuteBreak", {
             player = self.player
         })
+    elseif item.name == "Grapplehook" or item.name == "RocketGrapple" then
+        -- Special FX for when a parachute breaks
+        Network:Send(self.player, "InventoryFX/GrapplehookBreak", {
+            player = self.player
+        })
+
+        Network:SendNearby(self.player, "InventoryFX/GrapplehookBreak", {
+            player = self.player
+        })
     end
 end
 
