@@ -40,7 +40,8 @@ Lootbox.GeneratorConfig =
             max_items = 2,
             respawn = 10,
             min_lockpicks = 1,
-            max_lockpicks = 2
+            max_lockpicks = 2,
+            max_spawned = 1.0 -- % of total boxes spawned at once, between 0 and 1
         },
         [Lootbox.Types.Level2] = 
         {
@@ -48,7 +49,8 @@ Lootbox.GeneratorConfig =
             max_items = 2,
             respawn = 15,
             min_lockpicks = 1,
-            max_lockpicks = 5
+            max_lockpicks = 5,
+            max_spawned = 1.0
         },
         [Lootbox.Types.Level3] = 
         {
@@ -56,7 +58,8 @@ Lootbox.GeneratorConfig =
             max_items = 3,
             respawn = 25,
             min_lockpicks = 3,
-            max_lockpicks = 5
+            max_lockpicks = 5,
+            max_spawned = 1.0
         },
         [Lootbox.Types.Level4] = 
         {
@@ -64,7 +67,8 @@ Lootbox.GeneratorConfig =
             max_items = 4,
             respawn = 45,
             min_lockpicks = 5,
-            max_lockpicks = 10
+            max_lockpicks = 10,
+            max_spawned = 1.0
         },
         [Lootbox.Types.Level5] = 
         {
@@ -80,7 +84,8 @@ Lootbox.GeneratorConfig =
             max_items = 3,
             respawn = 15,
             min_lockpicks = 0,
-            max_lockpicks = 0
+            max_lockpicks = 0,
+            max_spawned = 1.0
         },
         [Lootbox.Types.VendingMachineDrink] = 
         {
@@ -88,7 +93,8 @@ Lootbox.GeneratorConfig =
             max_items = 3,
             respawn = 15,
             min_lockpicks = 0,
-            max_lockpicks = 0
+            max_lockpicks = 0,
+            max_spawned = 1.0
         },
     }
 }
@@ -169,12 +175,12 @@ Lootbox.LookAtColor = Color(56, 198, 43)
 
 Lootbox.Distances = 
 {
-    Start_Raycast = 50,
-    Can_Open = 2.25
+    Start_Raycast = 100,
+    Can_Open = 2.5
 }
 Lootbox.Cell_Size = 256
 Lootbox.Scan_Interval = 2000 -- How often the client checks for new cells
-Lootbox.Dropbox_Despawn_Time = 60 * 60 * 1000
+Lootbox.Dropbox_Despawn_Time = 10 * 60 * 1000
 Lootbox.Loot_Despawn_Time = 10 * 60 * 1000 -- How long it takes for an opened lootbox to despawn
 Lootbox.uid = 0
 Lootbox.Max_Items_In_Dropbox = 6

@@ -5,7 +5,6 @@ function CreateLootbox(args)
     local box = sLootbox(args)
     table.insert(LootCells.Loot[box.cell_x][box.cell_y], box)
 
-    Network:SendToPlayers(GetNearbyPlayersInCell(box.cell_x, box.cell_y), "Inventory/OneLootboxCellSync", box:GetSyncData())
     return box
 
 end
@@ -57,7 +56,7 @@ function CreateItem(args)
     if data.durable then
 
         data.max_durability = data.max_durability and data.max_durability or Items.Config.default_durability
-        data.durability = randy(
+        data.durability = args.max_dura and data.max_durability or randy(
             math.ceil(Items.Config.min_durability_percent * data.max_durability),
             math.ceil(Items.Config.max_durability_percent * data.max_durability)
         )

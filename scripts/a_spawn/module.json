@@ -4,5 +4,14 @@
     "author_url": "",
     "description": "Auto-generated",
     "name": "spawn"
+  },
+  "resources":
+  {
+    "Safezone_Lootboxes": "https://i.imgur.com/xyykOyX.png",
+    "Safezone_ServerBasics": "https://i.imgur.com/uDNiNyE.png",
+    "Safezone_Rules": "https://i.imgur.com/UG4YAuW.png",
+    "Safezone_Team": "https://i.imgur.com/cbc9jB8.png",
+    "Safezone_Welcome": "https://i.imgur.com/8UqoFpN.png",
+    "Safezone_GetConnected": "https://i.imgur.com/gvgn0bJ.png"
   }
 }

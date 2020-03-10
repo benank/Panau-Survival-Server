@@ -28,11 +28,17 @@ ItemsConfig =
         },
         armor = 
         {
-            ["Helmet"] = {dura_per_hit = 1},
-            ["Police Helmet"] = {dura_per_hit = 1},
-            ["Military Helmet"] = {dura_per_hit = 1},
-            ["Military Vest"] = {dura_per_hit = 1},
-            ["Kevlar Vest"] = {dura_per_hit = 1}
+            ["Helmet"] = {dura_per_hit = 6},
+            ["Police Helmet"] = {dura_per_hit = 4},
+            ["Military Helmet"] = {dura_per_hit = 2},
+            ["Military Vest"] = {dura_per_hit = 4},
+            ["Kevlar Vest"] = {dura_per_hit = 2}
+        },
+        backpacks = 
+        {
+            ["Combat Backpack"] = {dura_per_hit = 2,    slots = {Weapons = 2, Explosives = 4, Supplies = 4, Survival = 0}},
+            ["Explorer Backpack"] = {dura_per_hit = 2,  slots = {Weapons = 1, Explosives = 1, Supplies = 4, Survival = 4}},
+            ["Military Vest"] = {dura_per_hit = 2,      slots = {Weapons = 1, Explosives = 1, Supplies = 0, Survival = 0}}
         }
     }
 }

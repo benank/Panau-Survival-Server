@@ -1,11 +1,13 @@
 Events:Subscribe("PlayerJoin", function(args)
     args.player:SetValue("EquippedItems", {})
+    args.player:SetNetworkValue("EquippedVisuals", {})
 end)
 
 function Unload()
 
     for player in Server:GetPlayers() do
         player:SetValue("EquippedItems", {})
+        player:SetNetworkValue("EquippedVisuals", {})
     end
 
 end

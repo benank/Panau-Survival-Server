@@ -87,8 +87,8 @@ function cInventoryUI:Update(args)
 
     if args.action == "full" then
         for cat, _ in pairs(Inventory.contents) do
-            for index, stack in pairs(Inventory.contents[cat]) do
-                self:PopulateEntry({index = index, cat = cat})
+            for i = 1, Inventory.config.max_slots_per_category do
+                self:PopulateEntry({index = i, cat = cat})
             end
         end
         self:UpdateAllCategoryTitles()
@@ -183,7 +183,7 @@ function cInventoryUI:PopulateEntry(args)
     
     if stack:GetProperty("durable") then
 
-        durability:SetSizeAutoRel(Vector2((stack.contents[1].durability / stack.contents[1].max_durability) / 0.95, 0.1))
+        durability:SetSizeAutoRel(Vector2(math.min(1, stack.contents[1].durability / stack.contents[1].max_durability) * 0.9, 0.1))
         durability:SetColor(self:GetDurabilityColor(stack.contents[1].durability / stack.contents[1].max_durability))
         durability:Show()
 
@@ -243,15 +243,21 @@ function cInventoryUI:GetNumSlotsInCategory(cat)
 end
 
 function cInventoryUI:GetCategoryTitleText(cat)
-    return string.format("%s %i/%i", -- TODO: add backpack support
+    return string.format("%s %i/%i%s",
         cat,
         #Inventory.contents[cat],
-        self:GetNumSlotsInCategory(cat) or 0)
+        self:GetNumSlotsInCategory(cat) or 0,
+        Inventory.slots[cat].backpack > 0 and " (+" .. tostring(Inventory.slots[cat].backpack) .. ")" or ""
+    )
 end
 
 function cInventoryUI:UpdateCategoryTitle(cat)
     self.categoryTitles[cat]:SetText(self:GetCategoryTitleText(cat))
     self.categoryTitles[cat]:SetPosition(self:GetCategoryTitlePosition(cat))
+
+    local is_full = #Inventory.contents[cat] == self:GetNumSlotsInCategory(cat)
+    self.categoryTitles[cat]:SetTextColor(
+        is_full and InventoryUIStyle.category_title_colors.Full or InventoryUIStyle.category_title_colors.Normal)
 end
 
 function cInventoryUI:CreateCategoryTitle(cat)
@@ -629,7 +635,10 @@ function cInventoryUI:ToggleVisible()
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     end
 
-    Mouse:SetVisible(self.window:GetVisible())
+    if not ClientInventory.lootbox_ui.window:GetVisible() then
+        Mouse:SetVisible(self.window:GetVisible())
+    end
+    
     LocalPlayer:SetValue("InventoryOpen", self.window:GetVisible())
 
 end

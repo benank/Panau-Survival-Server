@@ -36,3 +36,10 @@ function output_table(t)
     end
     print("------------------------")
 end
+
+-- Dev_34
+function random_table_value(t)
+    local keys = {}
+    for k in pairs(t) do table.insert(keys, k) end
+    return t[keys[math.random(#keys)]]
+end

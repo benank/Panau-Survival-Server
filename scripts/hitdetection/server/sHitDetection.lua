@@ -2,8 +2,21 @@ class 'sHitDetection'
 
 function sHitDetection:__init()
 
-    Network:Subscribe("HitDetectionBulletHit", self, self.BulletHit)
-    Network:Subscribe("HitDetectionExplosionHit", self, self.ExplosionHit)
+    Network:Subscribe("HitDetectionSyncHit", self, self.SyncHit)
+end
+
+function sHitDetection:SyncHit(args, player)
+
+    for _, v in pairs(args.pending) do
+
+        if v.type == WeaponHitType.Explosive then
+            self:ExplosionHit(v, player)
+        else
+            self:BulletHit(v, player)
+        end
+
+    end
+
 end
 
 function sHitDetection:ExplosionHit(args, player)
@@ -16,6 +29,7 @@ function sHitDetection:ExplosionHit(args, player)
     if not weapon then return end
 
     local percent = 1
+    if not args.damage then args.damage = 100 end
 
     if weapon.id == Weapon.GrenadeLauncher then
         percent = args.damage / 350
@@ -36,10 +50,16 @@ function sHitDetection:ExplosionHit(args, player)
 
     local old_hp = player:GetHealth()
     player:SetValue("LastHealth", old_hp)
-    player:Damage(damage / 100, DamageEntity.Bullet, args.attacker)
+    player:Damage(damage / 100, DamageEntity.Explosion, args.attacker)
 
     print(string.format("%s shot %s for %s damage [%s]",
     args.attacker:GetName(), player:GetName(), tostring(damage), tostring(weapon.id)))
+
+    Events:Fire("HitDetection/PlayerExplosionHit", {
+        player = player,
+        attacker = args.attacker,
+        damage = damage
+    })
 
     --self:CheckHealth(player, damage)
 
@@ -87,6 +107,12 @@ function sHitDetection:BulletHit(args, player)
     print(string.format("%s shot %s for %s damage [%s]",
     args.attacker:GetName(), player:GetName(), tostring(damage), tostring(weapon.id)))
 
+    Events:Fire("HitDetection/PlayerBulletHit", {
+        player = player,
+        attacker = args.attacker,
+        damage = damage
+    })
+
     -- If their health doesn't change after being shot
     --self:CheckHealth(player, damage)
 
@@ -100,11 +126,15 @@ function sHitDetection:GetArmorMod(player, hit_type, damage, original_damage)
         if equipped_items[armor_name] and ArmorModifiers[armor_name][hit_type] > 0 then
 
             damage = damage * (1 - ArmorModifiers[armor_name][hit_type])
-            Events:Fire("HitDetection/ArmorDamaged", {
-                player = player,
-                armor_name = armor_name,
-                damage = original_damage
-            })
+
+            -- If the armor prevented some damage, then modify its durability
+            if ArmorModifiers[armor_name][hit_type] > 0 then
+                Events:Fire("HitDetection/ArmorDamaged", {
+                    player = player,
+                    armor_name = armor_name,
+                    damage_diff = original_damage - original_damage * (1 - ArmorModifiers[armor_name][hit_type])
+                })
+            end
 
         end
     end

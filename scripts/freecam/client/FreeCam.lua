@@ -42,10 +42,10 @@ function FreeCam:__init()
 		end)
 
 	-- Change permission/force activate
-	Network:Subscribe("FreeCam", function(args)
+    Network:Subscribe("FreeCam", function(args)
 			if args.perm ~= nil then
 				-- Change permission
-				self.permitted = args.perm
+                self.permitted = args.perm
 			end
 			if args.active ~= nil then
 				-- Set active

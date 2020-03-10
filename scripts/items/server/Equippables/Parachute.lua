@@ -43,7 +43,7 @@ Events:Subscribe("PostTick", function()
 
     end
 
-    if timer2:GetSeconds() > 5 then
+    if timer2:GetSeconds() > 3 then
 
         for player in Server:GetPlayers() do
 

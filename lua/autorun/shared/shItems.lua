@@ -113,6 +113,18 @@ Items =
         equip_type = "backpack"
     },
     {
+        name = "Helmet",
+        category = "Survival",
+        stacklimit = 2,
+        loot = {1,2},
+        rarity = 0.01,
+        rarity_mod = {0.5,1},
+        can_equip = true,
+        durable = true,
+        max_durability = 500,
+        equip_type = "helmet"
+    },
+    {
         name = "Police Helmet",
         category = "Survival",
         stacklimit = 1,
@@ -123,18 +135,6 @@ Items =
         durable = true,
         max_durability = 1000,
         equip_type = "helmet"
-    },
-    {
-        name = "Police Vest",
-        category = "Survival",
-        stacklimit = 1,
-        loot = {2,3},
-        rarity = 0.01,
-        rarity_mod = {1,5},
-        can_equip = true,
-        durable = true,
-        max_durability = 1000,
-        equip_type = "body_armor"
     },
     {
         name = "Military Helmet",
@@ -161,19 +161,7 @@ Items =
         equip_type = "body_armor"
     },
     {
-        name = "Elite Helmet",
-        category = "Survival",
-        stacklimit = 1,
-        loot = {4,5},
-        rarity = 0.01,
-        rarity_mod = {1,5},
-        can_equip = true,
-        durable = true,
-        max_durability = 1000,
-        equip_type = "helmet"
-    },
-    {
-        name = "Elite Vest",
+        name = "Kevlar Vest",
         category = "Survival",
         stacklimit = 1,
         loot = {4,5},
@@ -271,7 +259,7 @@ Items =
     },
     {
         name = "Flares",
-        category = "Survival",
+        category = "Explosives",
         stacklimit = 5,
         loot = {1,2,3},
         rarity = 0.05,
@@ -349,7 +337,7 @@ Items =
         category = "Supplies",
         stacklimit = 5,
         loot = {1,2},
-        rarity = 0.1,
+        rarity = 0.05,
         rarity_mod = {1,0.5},
         can_use = true
     },
@@ -596,11 +584,11 @@ Items =
         category = "Supplies",
         stacklimit = 2,
         loot = {2,3},
-        rarity = 0.2,
+        rarity = 0.075,
         rarity_mod = {1,0.75},
         can_equip = true,
         durable = true,
-        max_durability = 500,
+        max_durability = 1000,
         equip_type = "grapplehook"
     },
     {
@@ -608,11 +596,11 @@ Items =
         category = "Supplies",
         stacklimit = 2,
         loot = {4,5},
-        rarity = 0.025,
+        rarity = 0.015,
         rarity_mod = {1,0.8},
         can_equip = true,
         durable = true,
-        max_durability = 1500,
+        max_durability = 2000,
         equip_type = "grapplehook"
     },
     {
@@ -636,7 +624,7 @@ Items =
         rarity_mod = {1,1.5},
         can_equip = true,
         durable = true,
-        max_durability = 800,
+        max_durability = 2500,
         equip_type = "parachute"
     },
     {

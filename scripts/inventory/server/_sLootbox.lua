@@ -10,11 +10,9 @@ function sLootbox:__init(args)
         error("sLootbox:__init failed: a key argument is missing from the constructor")
     end
 
-
     self.uid = GetLootboxUID()
-    self.active = true
+    self.active = args.active == true
     self.tier = args.tier
-    self.original_tier = args.original_tier
     self.position = args.position
     self.cell_x, self.cell_y = GetCell(self.position)
     self.angle = args.angle
@@ -42,9 +40,7 @@ function sLootbox:__init(args)
     table.insert(self.network_subs, Network:Subscribe("Inventory/CloseBox" .. tostring(self.uid), self, self.CloseBox))
 
     Events:Subscribe("ModuleUnload", function()
-    
         self:Remove()
-    
     end)
 
 
@@ -103,8 +99,6 @@ function sLootbox:TakeLootStack(args, player)
     end
 
     self:UpdateToPlayers()
-    -- We can sync the whole thing right now because there's not much
-    -- TODO optimize this to only sync changed stacks
 
     if #self.contents == 0 then
 
@@ -133,10 +127,21 @@ function sLootbox:Open(player)
     self.players_opened[tostring(player:GetSteamId().id)] = player
     Network:Send(player, "Inventory/LootboxOpen", {contents = self:GetContentsData()})
 
+    self:StartDespawnTimer()
+
+end
+
+function sLootbox:StartDespawnTimer()
+
     if not self.despawn_timer then
 
         self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
-            self:RefreshBox()
+            if count_table(self.players_opened) == 0 then
+                -- Don't hide if there is someone looting it
+                self:HideBox()
+            else
+                self:StartDespawnTimer()
+            end
         end)
 
     end
@@ -144,9 +149,7 @@ function sLootbox:Open(player)
 end
 
 function sLootbox:CloseBox(args, player)
-
     self.players_opened[tostring(player:GetSteamId().id)] = nil
-
 end
 
 -- Refreshes loot if not all items were taken
@@ -158,6 +161,8 @@ end
 -- Hides the lootbox until it's ready to respawn
 function sLootbox:HideBox()
 
+    self:ForceClose()
+
     if self.despawn_timer then
         Timer.Clear(self.despawn_timer)
         self.despawn_timer = nil
@@ -167,8 +172,11 @@ function sLootbox:HideBox()
     self.active = false
     self.players_opened = {}
 
+    LootManager:DespawnBox(self)
+
     Timer.SetTimeout(self:GetRespawnTime(), function()
-        self:RespawnBox()
+        -- Respawn random box from the same tier
+        LootManager:RespawnBox(self.tier)
     end)
 
 end
@@ -189,24 +197,28 @@ function sLootbox:GetRespawnTime()
 
 end
 
+function sLootbox:ForceClose()
+    Network:SendToPlayers(self.players_opened, "Inventory/ForceCloseLootbox")
+end
+
 -- Respawns the lootbox
 function sLootbox:RespawnBox()
 
-    local players_opened = {}
+    -- Don't respawn box if someone is looting it
+    --[[if count_table(self.players_opened) > 0 then
+        self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
+            self:RefreshBox()
+        end)
+        return
+    end]]
 
-    for k,v in pairs(self.players_opened) do
-        if IsValid(v) then
-            table.insert(players_opened, v)
-        end
-    end
-
-    Network:SendToPlayers(players_opened, "Inventory/ForceCloseLootbox")
+    self:ForceClose()
 
     self.contents = ItemGenerator:GetLoot(self.tier)
     self.players_opened = {}
 
-    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell_x, self.cell_y), "Inventory/OneLootboxCellSync", self:GetSyncData())
     self.active = true
+    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell_x, self.cell_y), "Inventory/OneLootboxCellSync", self:GetSyncData())
 
 end
 
@@ -246,11 +258,14 @@ function sLootbox:Remove()
 
 end
 
+-- Syncs the single lootbox to all nearby players, used for dropboxes to make them instantly appear
+function sLootbox:Sync()
+    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell_x, self.cell_y), "Inventory/OneLootboxCellSync", self:GetSyncData())
+end
+
 -- Update contents to anyone who has it open
 function sLootbox:UpdateToPlayers()
-
     Network:SendToPlayers(self.players_opened, "Inventory/LootboxSync", {contents = self:GetContentsData()})
-
 end
 
 function sLootbox:GetContentsData()
