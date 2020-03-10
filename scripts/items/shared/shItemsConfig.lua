@@ -10,8 +10,8 @@ ItemsConfig =
     },
     equippables = -- Use equip
     {
-        ["Grapplehook"] = {dura_per_sec = 100},
-        ["RocketGrapple"] = {dura_per_sec = 200},
+        ["Grapplehook"] = {dura_per_sec = 1},
+        ["RocketGrapple"] = {dura_per_sec = 2},
         ["Parachute"] = {dura_per_sec = 1},
         weapons = 
         {
