@@ -494,7 +494,7 @@ function sInventory:ModifyDurabilityRemote(args)
                     item.durability = args.item.durability
                     self:Sync({index = index, stack = stack, sync_stack = true})
                 else
-                    Chat:Send(self.player, string.format("%s ran out of durability and broke!", item.name), Color.Red)
+                    self:OnItemBreak(item:Copy())
                     self:RemoveItem({item = item, index = index})
                 end
 
@@ -506,6 +506,22 @@ function sInventory:ModifyDurabilityRemote(args)
 
     end
 
+end
+
+-- Called when an item runs out of durability and breaks
+function sInventory:OnItemBreak(item)
+    Chat:Send(self.player, string.format("%s ran out of durability and broke!", item.name), Color.Red)
+
+    if item.name == "Parachute" then
+        -- Special FX for when a parachute breaks
+        Network:Send(self.player, "InventoryFX/ParachuteBreak", {
+            player = self.player
+        })
+
+        Network:SendNearby(self.player, "InventoryFX/ParachuteBreak", {
+            player = self.player
+        })
+    end
 end
 
 -- Adds a stack to the inventory, and will try to add it to specified index if possible
