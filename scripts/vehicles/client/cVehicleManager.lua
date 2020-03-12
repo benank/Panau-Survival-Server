@@ -54,7 +54,7 @@ function cVehicleManager:LocalPlayerInput(args)
 
         if closest_vehicle then
             local data = closest_vehicle:GetValue("VehicleData")
-            local lockpicks = Inventory.GetNumLockpicks()
+            local lockpicks = Inventory.GetNumOfItem({item_name = "Lockpick"})
 
             -- TODO check if friends
             if data.owner_id ~= tostring(LocalPlayer:GetSteamId().id) then 

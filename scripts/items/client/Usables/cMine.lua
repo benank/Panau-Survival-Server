@@ -56,6 +56,7 @@ function cMine:CreateMine()
         model = "general.blz/go063-b2.lod"
     })
 
+
 end
 
 function cMine:Remove()

@@ -39,7 +39,7 @@ end
 -- When a player enters an unowned vehicle or owned (not by a friend or themself)
 function sVehicleManager:TryBuyVehicle(args)
 
-    local player_lockpicks = Inventory.GetNumLockpicks({player = args.player})
+    local player_lockpicks = Inventory.GetNumOfItem({player = args.player, item_name = "Lockpick"})
     local owned_vehicles = args.player:GetValue("OwnedVehicles")
     print("lps: " .. player_lockpicks)
 

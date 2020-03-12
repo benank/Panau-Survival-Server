@@ -54,7 +54,7 @@ function CreateItem(args)
         return nil
     end
 
-    local data = Items_indexed[args.name]
+    local data = deepcopy(Items_indexed[args.name])
 
     if data.durable then
 

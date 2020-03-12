@@ -3,14 +3,50 @@ class 'cMines'
 function cMines:__init(args)
 
     self.mine_cells = {} -- Mines in cells
+    self.pickup_key = 'E'
+    self.pickup_timer = Timer()
 
     Network:Subscribe(var("items/MineSyncOne"):get(), self, self.MineSyncOne)
     Network:Subscribe(var("items/MineExplode"):get(), self, self.MineExplode)
     Network:Subscribe(var("items/MinesCellsSync"):get(), self, self.MinesCellsSync)
+    Network:Subscribe(var("items/RemoveMine"):get(), self, self.RemoveMine)
 
     Events:Subscribe(var("Cells/LocalPlayerCellUpdate"):get() 
         .. tostring(ItemsConfig.usables.Mine.cell_size), self, self.LocalPlayerCellUpdate)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+
+    Events:Subscribe("KeyUp", self, self.KeyUp)
+
+end
+
+function cMines:RemoveMine(args)
+    VerifyCellExists(self.mine_cells, args.cell)
+    if self.mine_cells[args.cell.x][args.cell.y][args.id] then
+        self.mine_cells[args.cell.x][args.cell.y][args.id]:Remove()
+        self.mine_cells[args.cell.x][args.cell.y][args.id] = nil
+    end
+end
+
+function cMines:KeyUp(args)
+
+    if args.key == string.byte(self.pickup_key) and self.pickup_timer:GetSeconds() > 1 then
+
+        self.pickup_timer:Restart()
+
+        local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 6.5)
+
+        local cell_x, cell_y = GetCell(ray.position, ItemsConfig.usables.Mine.cell_size)
+        VerifyCellExists(self.mine_cells, {x = cell_x, y = cell_y})
+
+        for id, mine in pairs(self.mine_cells[cell_x][cell_y]) do
+            if mine.position:Distance(ray.position) < 0.1 and mine.owner_id == tostring(LocalPlayer:GetSteamId()) then
+        
+                Network:Send(var("items/PickupMine"):get(), {id = mine.id})
+                break
+            end
+        end
+
+    end
 
 end
 

@@ -89,11 +89,25 @@ if Client then
 
     end
 
-    Inventory.GetNumLockpicks = function()
+    Inventory.GetNumOfItem = function(args)
 
+        if not args.item_name then
+            error("Failed to Inventory.GetNumOfItem because args.item_name was invalid")
+            return
+        end
+
+        local inv = Inventory.contents
+        if not inv then return end
+
+        local item = Items_indexed[args.item_name]
+        if not item then
+            error("Failed to Inventory.GetNumOfItem because item was invalid")
+            return
+        end
+    
         local count = 0
-        for _, stack in pairs(Inventory.contents["Supplies"]) do
-            if stack:GetProperty("name") == "Lockpick" then
+        for index, stack in pairs(inv[item.category]) do
+            if stack:GetProperty("name") == item.name then
                 count = count + stack:GetAmount()
             end
         end
@@ -101,6 +115,7 @@ if Client then
         return count
         
     end
+
 
 
 elseif Server then
@@ -296,19 +311,30 @@ elseif Server then
 
     end
 
-    Inventory.GetNumLockpicks = function(args)
+    Inventory.GetNumOfItem = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.GetNumLockpicks because args.player was invalid")
+            error("Failed to Inventory.GetNumOfItem because args.player was invalid")
+            return
+        end
+
+        if not args.item_name then
+            error("Failed to Inventory.GetNumOfItem because args.item_name was invalid")
             return
         end
 
         local inv = Inventory.Get({player = args.player})
         if not inv then return end
+
+        local item = Items_indexed[args.item_name]
+        if not item then
+            error("Failed to Inventory.GetNumOfItem because item was invalid")
+            return
+        end
     
         local count = 0
-        for index, stack in pairs(inv["Supplies"]) do
-            if stack:GetProperty("name") == "Lockpick" then
+        for index, stack in pairs(inv[item.category]) do
+            if stack:GetProperty("name") == item.name then
                 count = count + stack:GetAmount()
             end
         end

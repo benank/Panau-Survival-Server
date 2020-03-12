@@ -13,9 +13,45 @@ function sMines:__init()
 
     Network:Subscribe("items/CompleteItemUsage", self, self.CompleteItemUsage)
     Network:Subscribe("items/StepOnMine", self, self.StepOnMine)
+    Network:Subscribe("items/PickupMine", self, self.PickupMine)
 
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring( ItemsConfig.usables.Mine.cell_size), self, self.PlayerCellUpdate)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+end
+
+function sMines:PickupMine(args, player)
+    if not args.id or not self.mines[args.id] then return end
+
+    local mine = self.mines[args.id]
+
+    if mine.owner_id ~= tostring(player:GetSteamId()) then return end -- They do not own this mine
+
+    local num_mines = Inventory.GetNumOfItem({player = player, item_name = "Mine"})
+
+    local item = deepcopy(Items_indexed["Mine"])
+    item.amount = 1
+
+    Inventory.AddItem({
+        item = item,
+        player = player
+    })
+
+    -- If the number of mines in their inventory did not go up, they did not have room for it
+    if num_mines == Inventory.GetNumOfItem({player = player, item_name = "Mine"}) then
+        Chat:Send(player, "Failed to remove mine because you do not have space for it!", Color.Red)
+        return
+    end
+
+    local cmd = SQL:Command("DELETE FROM mines where id = ?")
+    cmd:Bind(1, args.id)
+    cmd:Execute()
+
+    -- Remove mine
+    local cell = mine:GetCell()
+    self.mine_cells[cell.x][cell.y] = nil
+    self.mines[args.id] = nil
+    mine:Remove(player)
+
 end
 
 function sMines:ClientModuleLoad(args)

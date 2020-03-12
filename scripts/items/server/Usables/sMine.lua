@@ -35,6 +35,12 @@ function sMine:GetCell()
     return {x = self.cell_x, y = self.cell_y}
 end
 
+function sMine:Remove(player)
+    Network:Send(player, "items/RemoveMine", {id = self.id, cell = {x = self.cell_x, y = self.cell_y}})
+    Network:SendNearby(player, "items/RemoveMine", {id = self.id, cell = {x = self.cell_x, y = self.cell_y}})
+end
+
+
 function sMine:GetSyncObject()
     return {
         id = self.id,
