@@ -4,12 +4,68 @@ function sLootManager:__init()
 
     self.lootspawn_file = "lootspawns/lootspawns.txt"
     self.loot_data = {}
+
     self.active_lootboxes = {}
     self.inactive_lootboxes = {}
 
     self:LoadFromFile()
     self:GenerateAllLoot()
 
+    Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(Lootbox.Cell_Size), self, self.PlayerCellUpdate)
+    Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+
+end
+
+function sLootManager:ClientModuleLoad(args)
+    Events:Fire("ForcePlayerUpdateCell", {player = args.player, cell_size = Lootbox.Cell_Size})
+end
+
+function sLootManager:PlayerQuit(args)
+    -- Remove player from cell if they are in one
+    if args.player:GetValue("Cell") then
+        
+        local cell = args.player:GetValue("Cell")[Lootbox.Cell_Size]
+        VerifyCellExists(LootCells.Player, cell)
+        LootCells.Player[cell.x][cell.y][tostring(args.player:GetSteamId().id)] = nil
+
+    end
+end
+
+-- Updates LootCells.Player
+function sLootManager:UpdatePlayerInCell(args)
+    local cell = args.cell
+
+    if args.old_cell.x ~= nil and args.old_cell.y ~= nil then
+        VerifyCellExists(LootCells.Player, args.old_cell)
+        LootCells.Player[args.old_cell.x][args.old_cell.y][tostring(args.player:GetSteamId().id)] = nil
+    end
+
+    VerifyCellExists(LootCells.Player, cell)
+    LootCells.Player[cell.x][cell.y][tostring(args.player:GetSteamId().id)] = args.player
+
+end
+
+function sLootManager:PlayerCellUpdate(args)
+
+    self:UpdatePlayerInCell(args)
+    
+    local lootbox_data = {}
+
+    for _, update_cell in pairs(args.updated) do
+
+        -- If these cells don't exist, create them
+        VerifyCellExists(LootCells.Loot, update_cell)
+
+        for _, lootbox in pairs(LootCells.Loot[update_cell.x][update_cell.y]) do
+            if lootbox.active then -- Only get active boxes
+                table.insert(lootbox_data, lootbox:GetSyncData())
+            end
+        end
+    end
+    
+	-- send the existing lootboxes in the newly streamed cells
+    Network:Send(args.player, "Inventory/LootboxCellsSync", {lootbox_data = lootbox_data})
 end
 
 function sLootManager:DespawnBox(box)

@@ -185,6 +185,14 @@ Lootbox.Loot_Despawn_Time = 10 * 60 * 1000 -- How long it takes for an opened lo
 Lootbox.uid = 0
 Lootbox.Max_Items_In_Dropbox = 6
 
+
+LootCells = 
+{
+    Loot = {},
+    Player = {}
+}
+
+
 function GetLootboxUID()
     Lootbox.uid = Lootbox.uid + 1
     return Lootbox.uid

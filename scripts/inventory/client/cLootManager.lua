@@ -2,7 +2,7 @@ class 'cLootManager'
 
 function cLootManager:__init()
 
-    self.loot = GenerateCellArray() -- Create 2D array to store loot in cells
+    self.loot = {} -- Create 2D array to store loot in cells
     self.current_box = nil -- Current opened box
     self.close_to_box = false -- If they are close enough to a box that we should raycast
 
@@ -14,12 +14,18 @@ function cLootManager:__init()
 
     self:CheckIfCloseToBox()
 
-    Network:Subscribe("Inventory/LootboxCellsSync", self, self.LootboxCellsSync)
-    Network:Subscribe("Inventory/OneLootboxCellSync", self, self.OneLootboxCellSync)
-    Network:Subscribe("Inventory/RemoveLootbox", self, self.RemoveLootbox)
-    Network:Subscribe("Inventory/ForceCloseLootbox", self, self.ForceCloseLootbox)
+    Network:Subscribe(var("Inventory/LootboxCellsSync"):get(), self, self.LootboxCellsSync)
+    Network:Subscribe(var("Inventory/OneLootboxCellSync"):get(), self, self.OneLootboxCellSync)
+    Network:Subscribe(var("Inventory/RemoveLootbox"):get(), self, self.RemoveLootbox)
+    Network:Subscribe(var("Inventory/ForceCloseLootbox"):get(), self, self.ForceCloseLootbox)
     
     Events:Subscribe("ModuleUnload", self, self.Unload)
+
+    Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(Lootbox.Cell_Size), self, self.LocalPlayerCellUpdate)
+
+end
+
+function cLootManager:LocalPlayerCellUpdate(args)
 
 end
 
@@ -37,6 +43,7 @@ end
 
 function cLootManager:RemoveLootbox(args)
 
+    VerifyCellExists(self.loot, args.cell)
     if self.loot[args.cell.x][args.cell.y][args.uid] then
         self.loot[args.cell.x][args.cell.y][args.uid]:Remove()
         self.loot[args.cell.x][args.cell.y][args.uid] = nil
@@ -54,8 +61,9 @@ function cLootManager:Render(args)
 
         local uid = self:StaticObjectIdToUID(ray.entity:GetId())
         local entity_pos = ray.entity:GetPosition()
-        local cell_x, cell_y = GetCell(entity_pos)
+        local cell_x, cell_y = GetCell(entity_pos, Lootbox.Cell_Size)
 
+        VerifyCellExists(self.loot, {x = cell_x, y = cell_y})
         if not uid or not self.loot[cell_x][cell_y][uid] then return end
         if Vector3.Distance(entity_pos, LocalPlayer:GetPosition()) > Lootbox.Distances.Can_Open then return end
 
@@ -146,7 +154,7 @@ end
 function cLootManager:IsOneBoxCloseEnough()
 
     local player_pos = LocalPlayer:GetPosition()
-    local player_cell_x, player_cell_y = GetCell(player_pos)
+    local player_cell_x, player_cell_y = GetCell(player_pos, Lootbox.Cell_Size)
 
     -- TODO optimize this (but still needs to check for boxes in adjacent cells)
 
@@ -154,6 +162,7 @@ function cLootManager:IsOneBoxCloseEnough()
 
         for y = player_cell_y - 1, player_cell_y + 1 do
 
+            VerifyCellExists(self.loot, {x = x, y = y})
             for _, box in pairs(self.loot[x][y]) do
 
                 if Vector3.Distance(box.position, player_pos) < Lootbox.Distances.Start_Raycast then
@@ -174,10 +183,9 @@ end
 
 function cLootManager:OneLootboxCellSync(data)
 
+    VerifyCellExists(self.loot, data.cell)
     if self.loot[data.cell.x][data.cell.y][data.uid] then
         self.loot[data.cell.x][data.cell.y][data.uid]:Remove()
-        --debug("WARN: OneLootboxCellSync box already existed! Removing and replacing with new box")
-        -- TODO: fix resync of lootboxes
     end
 
     if data.active then
@@ -187,16 +195,14 @@ function cLootManager:OneLootboxCellSync(data)
 end
 
 function cLootManager:LootboxCellsSync(data)
-	--debug("entered lootboxcellssync on client")
 	
 	-- spawn the boxes that the server has already for newly streamed cells
     for _, box_data in pairs(data.lootbox_data) do
-		
-		-- TODO: fix it respawning every box when the cell's loot is updated
+        
+        VerifyCellExists(self.loot, box_data.cell)
+        
         if self.loot[box_data.cell.x][box_data.cell.y][box_data.uid] then
             self.loot[box_data.cell.x][box_data.cell.y][box_data.uid]:Remove()
-            --debug("WARN: OneLootboxCellSync box already existed! Removing and replacing with new box")
-            -- TODO: fix resync of lootboxes
         end
 
         if box_data.active then
@@ -208,7 +214,7 @@ end
 
 function cLootManager:ClearCell(cell)
 
-    if not self.loot[cell.x] or not self.loot[cell.x][cell.y] then return end
+    VerifyCellExists(self.loot, cell)
 
     for uid, lootbox in pairs(self.loot[cell.x][cell.y]) do
 
@@ -223,8 +229,8 @@ end
 
 function cLootManager:Unload()
 
-    for x = 1, #self.loot do
-        for y = 1, #self.loot[x] do
+    for x, _ in pairs(self.loot) do
+        for y, _ in pairs(self.loot[x]) do
             self:ClearCell({x = x, y = y})
         end
     end

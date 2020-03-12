@@ -3,6 +3,8 @@
 function CreateLootbox(args)
 
     local box = sLootbox(args)
+
+    VerifyCellExists(LootCells.Loot, {x = box.cell_x, y = box.cell_y})
     table.insert(LootCells.Loot[box.cell_x][box.cell_y], box)
 
     return box
@@ -18,6 +20,7 @@ function GetNearbyPlayersInCell(cell_x, cell_y)
 
         for y = cell_y - 1, cell_y + 1 do
 
+            VerifyCellExists(LootCells.Player, {x = x, y = y})
             for _, player in pairs(LootCells.Player[x][y]) do
 
                 if IsValid(player) then

@@ -14,7 +14,7 @@ function sLootbox:__init(args)
     self.active = args.active == true
     self.tier = args.tier
     self.position = args.position
-    self.cell_x, self.cell_y = GetCell(self.position)
+    self.cell_x, self.cell_y = GetCell(self.position, Lootbox.Cell_Size)
     self.angle = args.angle
     self.contents = args.contents
     self.model_data = Lootbox.Models[args.tier]
@@ -184,7 +184,7 @@ end
 -- Gets a dynamic respawn time based on how many players are nearby
 function sLootbox:GetRespawnTime()
 
-    local adjacent = GetAdjacentCells(self.cell_x, self.cell_y);
+    local adjacent = GetAdjacentCells(self.cell_x, self.cell_y)
     local num_nearby_players = 0
 
     for _, cell in pairs(adjacent) do
