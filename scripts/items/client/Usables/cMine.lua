@@ -1,6 +1,3 @@
-local NetName = var("items/StepOnMine")
-local STE = var("ShapeTriggerEnter")
-
 class 'cMine'
 
 function cMine:__init(args)
@@ -8,23 +5,33 @@ function cMine:__init(args)
     self.position = args.position
     self.id = args.id
     self.owner_id = args.owner_id
+    self.cell_x, self.cell_y = GetCell(self.position, ItemsConfig.usables.Mine.cell_size)
 
     self:CreateMine()
 
     self.subs = 
     {
-        Events:Subscribe(STE:get(), self, self.ShapeTriggerEnter)
+        Events:Subscribe(var("ShapeTriggerEnter"):get(), self, self.ShapeTriggerEnter)
     }
+
 end
 
-function cMine:ShapeTriggerEnter()
-    if args.trigger ~= self.shapetrigger or args.entity ~= LocalPlayer then return end
+function cMine:ShapeTriggerEnter(args)
+    if args.trigger ~= self.shapetrigger then return end
+    if args.entity.__type ~= "LocalPlayer" then return end
+    if args.entity ~= LocalPlayer then return end
     if self.owner_id == tostring(LocalPlayer:GetSteamId()) then return end -- Don't explode on the owner
 
-    Network:Send(NetName:get(), {id = self.id})
+    Network:Send(var("items/StepOnMine"):get(), {id = self.id})
+end
+
+function cMine:GetCell()
+    return {x = self.cell_x, y = self.cell_y}
 end
 
 function cMine:CreateMine()
+
+    local radius = ItemsConfig.usables.Mine.explode_radius
 
     self.shapetrigger = ShapeTrigger.Create({
         position = self.position,
@@ -32,7 +39,7 @@ function cMine:CreateMine()
         components = {
             {
                 type = TriggerType.Sphere,
-                size = Vector3(1,1,1),
+                size = Vector3(radius,radius,radius),
                 position = Vector3(0,0,0)
             }
         },
@@ -52,10 +59,10 @@ function cMine:CreateMine()
 end
 
 function cMine:Remove()
+    self.object:Remove()
     self.shapetrigger:Remove()
     for k,v in pairs(self.subs) do
         Events:Unsubscribe(v)
         v = nil
     end
-    self.object:Remove()
 end

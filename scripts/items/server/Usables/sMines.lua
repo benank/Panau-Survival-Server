@@ -1,17 +1,45 @@
 class 'sMines'
 
+local MINE_ID = 0
+
 function sMines:__init()
 
-    SQL:Execute("CREATE TABLE IF NOT EXISTS mines (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR UNIQUE, position VARCHAR)")
+    SQL:Execute("CREATE TABLE IF NOT EXISTS mines (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR)")
 
-    self.mines = {} -- Active mines
+    self.mines = {} -- Active mines, indexed by mine id
+    self.mine_cells = {} -- Active mines, organized by cell x, y, then mine id
 
     self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
-    self:LoadAllMines()
-
     Network:Subscribe("items/CompleteItemUsage", self, self.CompleteItemUsage)
     Network:Subscribe("items/StepOnMine", self, self.StepOnMine)
+
+    Events:Subscribe("Cells/PlayerCellUpdate" .. tostring( ItemsConfig.usables.Mine.cell_size), self, self.PlayerCellUpdate)
+    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+end
+
+function sMines:ClientModuleLoad(args)
+    Events:Fire("ForcePlayerUpdateCell", {player = args.player, cell_size = ItemsConfig.usables.Mine.cell_size})
+end
+
+function sMines:PlayerCellUpdate(args)
+    
+    local mine_data = {}
+
+    for _, update_cell in pairs(args.updated) do
+
+        -- If these cells don't exist, create them
+        VerifyCellExists(self.mine_cells, update_cell)
+
+        for _, mine in pairs(self.mine_cells[update_cell.x][update_cell.y]) do
+            if not mine.exploded then -- Only get active mines
+                table.insert(mine_data, mine:GetSyncObject())
+            end
+        end
+    end
+    
+	-- send the existing mines in the newly streamed cells
+    Network:Send(args.player, "items/MinesCellsSync", {mine_data = mine_data})
 end
 
 function sMines:StepOnMine(args, player)
@@ -20,18 +48,42 @@ function sMines:StepOnMine(args, player)
     local id = tonumber(args.id)
 
     local mine = self.mines[id]
-    if not self.mines[id] then return end
+    if not mine then return end
 
     if mine:Explode(player) then
 
         -- Successfully exploded, remove mine
         local cmd = SQL:Command("DELETE FROM mines where id = ?")
-        command:Bind(1, id)
-        command:Execute()
+        cmd:Bind(1, id)
+        cmd:Execute()
 
+        -- Remove mine
+        local cell = mine:GetCell()
+        self.mine_cells[cell.x][cell.y] = nil
         self.mines[id] = nil
 
     end
+
+end
+
+function sMines:AddMine(args)
+
+    args.id = tonumber(args.id)
+
+    local mine = sMine({
+        id = args.id,
+        owner_id = args.owner_id,
+        position = args.position
+    })
+    
+    self.mines[args.id] = mine
+    local cell = mine:GetCell()
+
+    -- Add to mines in the cell
+    VerifyCellExists(self.mine_cells, cell)
+    self.mine_cells[cell.x][cell.y][mine.id] = mine
+
+    return mine
 
 end
 
@@ -46,11 +98,12 @@ function sMines:LoadAllMines()
             local split = mine_data.position:split(",")
             local pos = Vector3(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]))
 
-            self.mines[mine_data.id] = sMine({
+            self:AddMine({
                 id = mine_data.id,
-                owner_id = mine_data.owner_id,
+                owner_id = mine_data.steamID,
                 position = pos
             })
+        end
 
     end
 
@@ -60,16 +113,23 @@ function sMines:PlaceMine(position, player)
 
     local steamID = tostring(player:GetSteamId())
     local cmd = SQL:Command("INSERT INTO mines (steamID, position) VALUES (?, ?)")
-    command:Bind(1, steamID)
-    command:Bind(2, tostring(position))
-    command:Execute()
+    cmd:Bind(1, steamID)
+    cmd:Bind(2, tostring(position))
+    cmd:Execute()
 
-    local mine = sMine({
-        position = position, 
-        owner_id = steamID -- TODO: add friends to it as well
-    })
-
-    self.mines[]
+	cmd = SQL:Query("SELECT last_insert_rowid() as id FROM mines")
+    local result = cmd:Execute()
+    
+    if not result or not result[1] or not result[1].id then
+        error("Failed to place mine")
+        return
+    end
+    
+    self:AddMine({
+        id = result[1].id,
+        owner_id = steamID, -- TODO: add friends to it as well
+        position = position
+    }):SyncNearby(player)
 
 end
 
@@ -77,10 +137,12 @@ end
 function sMines:TryPlaceMine(args, player)
 
     -- If they are within sz radius * 2, we don't let them place that close
-    if args.player:Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
-        Chat:Send(player, "Cannot place mines while in a vehicle!", Color.Red)
+    if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
+        Chat:Send(player, "Cannot place mines while near the safezone!", Color.Red)
         return
     end
+
+    args.ray.position = Vector3(args.ray.position.x, math.max(args.ray.position.y, player:GetPosition().y), args.ray.position.z)
 
     local player_iu = player:GetValue("ItemUse")
 
@@ -113,13 +175,20 @@ function sMines:CompleteItemUsage(args, player)
         return
     end
 
-    if args.ray.position:Distance(player:GetPosition() > 5) then
+    if args.ray.position:Distance(player:GetPosition()) > 5 then
         Chat:Send(player, "Placing mine failed!", Color.Red)
         return
     end
+
+    if args.ray.entity and (args.ray.entity.__type == "Vehicle" or args.ray.entity.__type == "Player") then
+        Chat:Send(player, "Placing mine failed!", Color.Red)
+        return
+    end
+
 
     self:TryPlaceMine(args, player)
 
 end
 
 sMines = sMines()
+sMines:LoadAllMines()
