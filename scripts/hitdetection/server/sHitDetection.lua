@@ -3,6 +3,41 @@ class 'sHitDetection'
 function sHitDetection:__init()
 
     Network:Subscribe("HitDetectionSyncHit", self, self.SyncHit)
+    Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
+end
+
+function sHitDetection:HitDetectionSyncExplosion(args, player)
+    
+    if player:GetValue("InSafezone") then return end
+
+    local explosive_data = ExplosiveBaseDamage[args.type]
+
+    if not explosive_data then return end
+
+    local dist = args.position:Distance(args.local_position)
+    dist = math.min(explosive_data.radius, dist)
+    local percent_modifier = 1 - dist / explosive_data.radius
+
+    if percent_modifier == 0 then return end
+
+    local hit_type = WeaponHitType.Explosive
+    local original_damage = explosive_data.damage * percent_modifier
+    local damage = original_damage
+    damage = self:GetArmorMod(player, hit_type, damage, original_damage)
+
+    local old_hp = player:GetHealth()
+    player:SetValue("LastHealth", old_hp)
+    player:Damage(damage / 100, DamageEntity.Explosion)
+
+    print(string.format("%s was exploded for %s damage [%s]",
+        player:GetName(), tostring(damage), tostring(args.type)))
+
+    Events:Fire("HitDetection/PlayerExplosionItemHit", {
+        player = player,
+        damage = damage,
+        type = args.type
+    })
+
 end
 
 function sHitDetection:SyncHit(args, player)

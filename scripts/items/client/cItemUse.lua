@@ -81,7 +81,10 @@ end
 
 function cItemUse:CompleteUsage()
 
-    Network:Send("items/CompleteItemUsage")
+    local ray = Physics:Raycast(LocalPlayer:GetPosition(), Vector3.Down, 0, 5)
+    if ray.entity and ray.entity.__type == "ClientStaticObject" then ray.entity = nil end
+
+    Network:Send("items/CompleteItemUsage", {ray = ray})
     self:UnsubscribeEvents()
 
 end
@@ -117,6 +120,8 @@ function cItemUse:Render(args)
     self.progress_circle.data[1].amount = (self.progress.current / self.progress.max) * 100
     self.progress_circle:Update()
 
+    LocalPlayer:SetBaseState(AnimationState.SCrouch)
+    
     if self.progress.current >= self.progress.max then
         self:CompleteUsage()
     end
@@ -130,7 +135,7 @@ function cItemUse:RenderCountdown(args)
     local text_size = Render:GetTextSize(text, font_size)
     Render:DrawText(Render.Size / 2 - text_size / 2 + self.offset, text, Color.Black, font_size)
     Render:DrawText(Render.Size / 2 - text_size / 2, text, Color.White, font_size)
-
+    
 end
 
 function cItemUse:RenderInfo(args)

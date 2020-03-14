@@ -122,8 +122,13 @@ function WeaponManager:PostTick(args)
     if weapon.id == current_weapon_id and self:GetTotalAmmoInWeapon(weapon) >= 0 and self:GetTotalAmmoInWeapon(weapon) < current_ammo then
         Network:Send("Items/FireWeapon", {ammo = current_ammo})
         self:SetCurrentAmmo(current_ammo - 1)
+        self:FireWeapon()
     end
 
+end
+
+function WeaponManager:FireWeapon()
+    Events:Fire("FireWeapon")
 end
 
 function WeaponManager:SetCurrentAmmo(ammo)

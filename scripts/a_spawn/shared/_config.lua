@@ -13,3 +13,5 @@ config =
         color = Color(0,106,255,100)
     }
 }
+
+local sz_config = SharedObject.Create("SafezoneConfig", config)

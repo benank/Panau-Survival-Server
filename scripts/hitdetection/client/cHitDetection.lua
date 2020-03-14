@@ -1,25 +1,47 @@
 class 'cHitDetection'
 
-
-local LocalPlayerBulletHit = var("LocalPlayerBulletHit")
-local LocalPlayerDeath = var("LocalPlayerDeath")
-local LocalPlayerExplosionHit = var("LocalPlayerExplosionHit")
-local EntityBulletHit = var("EntityBulletHit")
-local VehicleCollide = var("VehicleCollide")
-local PostTick = var("PostTick")
-local HitDetectionSyncHit = var("HitDetectionSyncHit")
-
 function cHitDetection:__init()
 
     self.pending = {}
     self.sync_timer = Timer()
 
-    Events:Subscribe(LocalPlayerBulletHit:get(), self, self.LocalPlayerBulletHit)
-    Events:Subscribe(LocalPlayerDeath:get(), self, self.LocalPlayerDeath)
-    Events:Subscribe(LocalPlayerExplosionHit:get(), self, self.LocalPlayerExplosionHit)
-    Events:Subscribe(EntityBulletHit:get(), self, self.EntityBulletHit)
-    Events:Subscribe(VehicleCollide:get(), self, self.VehicleCollide)
-    Events:Subscribe(PostTick:get(), self, self.PostTick)
+    Events:Subscribe(var("LocalPlayerBulletHit"):get(), self, self.LocalPlayerBulletHit)
+    Events:Subscribe(var("LocalPlayerDeath"):get(), self, self.LocalPlayerDeath)
+    Events:Subscribe(var("LocalPlayerExplosionHit"):get(), self, self.LocalPlayerExplosionHit)
+    Events:Subscribe(var("EntityBulletHit"):get(), self, self.EntityBulletHit)
+    Events:Subscribe(var("VehicleCollide"):get(), self, self.VehicleCollide)
+    Events:Subscribe(var("PostTick"):get(), self, self.PostTick)
+
+    Events:Subscribe(var("HitDetection/Explosion"):get(), self, self.Explosion)
+
+end
+
+-- Explosions from items, like mines
+function cHitDetection:Explosion(args)
+
+    local explosive_data = ExplosiveBaseDamage[args.type]
+
+    if explosive_data then
+
+        local dist = args.position:Distance(args.local_position)
+        dist = math.min(explosive_data.radius, dist)
+        local percent_modifier = 1 - dist / explosive_data.radius
+
+        if percent_modifier == 0 then return end
+
+        local damage = explosive_data.damage * percent_modifier
+        local knockback_effect = explosive_data.knockback * percent_modifier
+
+        LocalPlayer:SetRagdollLinearVelocity(((args.local_position - args.position):Normalized() + Vector3(0, 1.5, 0)) * knockback_effect)
+
+        Network:Send(var("HitDetectionSyncExplosion"):get(), {
+            position = args.position,
+            local_position = args.local_position,
+            type = args.type
+        })
+
+    end
+
 
 end
 
@@ -34,7 +56,7 @@ function cHitDetection:PostTick(args)
 
         if #self.pending > 0 then
             
-            Network:Send(HitDetectionSyncHit:get(), {
+            Network:Send(var("HitDetectionSyncHit"):get(), {
                 pending = self.pending
             })
 
@@ -60,8 +82,8 @@ function cHitDetection:EntityBulletHit(args)
 
     -- only is called for the person who shot
 
-    --print("EntityBulletHit")
-    --output_table(args)
+    print("EntityBulletHit")
+    output_table(args)
 
 end
 

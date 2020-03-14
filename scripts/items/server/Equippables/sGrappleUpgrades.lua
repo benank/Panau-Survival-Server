@@ -1,4 +1,4 @@
-Events:Subscribe("Inventory/ToggleEquipped", function(args)
+--[[Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
     if not args.item or not IsValid(args.player) then return end
     if not args.item.name:find("Grapplehook Upgrade") then return end
@@ -94,4 +94,4 @@ function GetGrappleUpgradeName(name)
     local upgrade_name_split = name:split(" ")
     return upgrade_name_split[#upgrade_name_split]
 
-end
+end--]]
