@@ -22,12 +22,7 @@ Inventory.config =
             amount = 3
         },
         {
-            name = "Shotgun",
-            amount = 1,
-            max_dura = true
-        },
-        {
-            name = "Shotgun Ammo",
+            name = "Handgun Ammo",
             amount = 25
         },
         {
@@ -42,7 +37,11 @@ Inventory.config =
         },
         {
             name = "Mine",
-            amount = 10
+            amount = 5
+        },
+        {
+            name = "Mine",
+            amount = 5
         },
         {
             name = "Grapplehook",
