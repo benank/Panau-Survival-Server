@@ -13,6 +13,11 @@ WeaponBaseDamage =
     [Weapon.Shotgun] = 5,
 }
 
+ExplosiveBaseDamage = 
+{
+    ["Mine"] = {damage = 140, radius = 15, knockback = 15}
+}
+
 WeaponHitType = 
 {
     Headshot = 1,

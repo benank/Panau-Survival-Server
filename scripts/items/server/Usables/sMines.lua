@@ -107,7 +107,7 @@ function sMines:StepOnMine(args, player)
     local mine = self.mines[id]
     if not mine then return end
 
-    if mine:Explode(player) then
+    if mine:Trigger(player) then
 
         -- Successfully exploded, remove mine
         local cmd = SQL:Command("DELETE FROM mines where id = ?")
@@ -187,6 +187,9 @@ function sMines:PlaceMine(position, player)
         owner_id = steamID, -- TODO: add friends to it as well
         position = position
     }):SyncNearby(player)
+
+    Network:Send(player, "items/MinePlaceSound", {position = position})
+    Network:SendNearby(player, "items/MinePlaceSound", {position = position})
 
 end
 

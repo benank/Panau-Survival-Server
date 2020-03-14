@@ -10,14 +10,15 @@ function sMine:__init(args)
 
 end
 
-function sMine:Explode(player)
+function sMine:Trigger(player)
 
     if self.exploded then return false end -- Already exploded
     if tostring(player:GetSteamId()) == self.owner_id then return false end -- This is the owner, don't explode
 
     -- No need to sort players by cells for this, so just send nearby to remove
-    Network:Send(player, "items/MineExplode", {position = self.position, id = self.id})
-    Network:SendNearby(player, "items/MineExplode", {position = self.position, id = self.id})
+    -- Don't send to player who triggered in case they are lagging so it will trigger instantly for them
+    --Network:Send(player, "items/MineTrigger", {position = self.position, id = self.id})
+    Network:SendNearby(player, "items/MineTrigger", {position = self.position, id = self.id})
 
     self.exploded = true
 

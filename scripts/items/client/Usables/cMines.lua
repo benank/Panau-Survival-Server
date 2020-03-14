@@ -14,13 +14,25 @@ function cMines:__init(args)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
     Events:Subscribe("KeyUp", self, self.KeyUp)
-
+    
+    Network:Subscribe(var("items/MinePlaceSound"):get(), self, self.MinePlaceSound)
     Network:Subscribe(var("items/MineSyncOne"):get(), self, self.MineSyncOne)
-    Network:Subscribe(var("items/MineExplode"):get(), self, self.MineExplode)
+    Network:Subscribe(var("items/MineTrigger"):get(), self, self.MineTrigger)
     Network:Subscribe(var("items/MinesCellsSync"):get(), self, self.MinesCellsSync)
     Network:Subscribe(var("items/RemoveMine"):get(), self, self.RemoveMine)
     Network:Subscribe(var("items/MineDestroy"):get(), self, self.MineDestroy)
 
+end
+
+function cMines:MinePlaceSound(args)
+    local sound = ClientSound.Create(AssetLocation.Game, {
+        bank_id = 11,
+        sound_id = 2,
+        position = args.position,
+        angle = Angle()
+    })
+
+    sound:SetParameter(0,1)
 end
 
 function cMines:MineDestroy(args)
@@ -99,6 +111,29 @@ function cMines:MineSyncOne(args)
     self:AddMine(args)
 end
 
+function cMines:MineTrigger(args)
+
+    local sound = ClientSound.Create(AssetLocation.Game, {
+        bank_id = 11,
+        sound_id = 1,
+        position = args.position,
+        angle = Angle()
+    })
+
+    local trigger_time = ItemsConfig.usables.Mine.trigger_time
+
+    sound:SetParameter(0,3 - trigger_time) -- Start time, 0-3
+    sound:SetParameter(1,0.75)
+    sound:SetParameter(2,0)
+
+
+    Timer.SetTimeout(trigger_time * 1000, function()
+        self:MineExplode(args)
+        sound:Remove()
+    end)
+
+end
+
 function cMines:MineExplode(args)
 
     for x, _ in pairs(self.mine_cells) do
@@ -108,6 +143,7 @@ function cMines:MineExplode(args)
                     self.mine_cells[x][y][id]:Remove()
                     self.mine_cells[x][y][id] = nil
                     self.CSO_register[mine.object:GetId()] = nil
+                    break
                 end
             end
         end
@@ -117,6 +153,14 @@ function cMines:MineExplode(args)
         position = args.position,
         effect_id = 20,
         angle = Angle()
+    })
+
+    print("explode me")
+    -- Let HitDetection do the rest
+    Events:Fire(var("HitDetection/Explosion"):get(), {
+        position = args.position,
+        local_position = LocalPlayer:GetPosition(),
+        type = "Mine"
     })
 
 end

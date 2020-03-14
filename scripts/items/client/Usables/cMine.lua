@@ -23,6 +23,7 @@ function cMine:ShapeTriggerEnter(args)
     if self.owner_id == tostring(LocalPlayer:GetSteamId()) then return end -- Don't explode on the owner
 
     Network:Send(var("items/StepOnMine"):get(), {id = self.id})
+    cMines:MineTrigger({position = self.position, id = self.id})
 end
 
 function cMine:GetCell()
@@ -31,7 +32,7 @@ end
 
 function cMine:CreateMine()
 
-    local radius = ItemsConfig.usables.Mine.explode_radius
+    local radius = ItemsConfig.usables.Mine.trigger_radius
 
     self.shapetrigger = ShapeTrigger.Create({
         position = self.position,
