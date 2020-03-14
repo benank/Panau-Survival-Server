@@ -11,14 +11,15 @@ function cLootbox:__init(args)
     self.static_objects = {}
     self.contents = {}
 
-    if self.active then
+    Timer.SetTimeout(100, function()
         self:CreateModel()
-    end
+    end)
 
 end
 
 function cLootbox:Remove()
 
+    self.active = false
     for _, obj in pairs(self.static_objects) do
         if IsValid(obj) then 
             obj:Remove()
@@ -28,6 +29,8 @@ function cLootbox:Remove()
 end
 
 function cLootbox:CreateModel()
+
+    if not self.active then return end
 
     local position = self.position + self.model_data.offset
     self.look_position = self.position + self.angle * (self.model_data.look_offset and self.model_data.look_offset or Vector3())

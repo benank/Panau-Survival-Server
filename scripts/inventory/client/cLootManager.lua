@@ -195,7 +195,7 @@ function cLootManager:OneLootboxCellSync(data)
 end
 
 function cLootManager:LootboxCellsSync(data)
-	
+    
 	-- spawn the boxes that the server has already for newly streamed cells
     for _, box_data in pairs(data.lootbox_data) do
         
