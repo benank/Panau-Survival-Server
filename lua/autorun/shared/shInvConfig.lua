@@ -41,7 +41,7 @@ Inventory.config =
             max_dura = true
         },
         {
-            name = "Lockpick",
+            name = "Mine",
             amount = 10
         },
         {
