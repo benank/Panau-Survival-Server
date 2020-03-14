@@ -56,3 +56,6 @@ rocket
 Model: general.blz/wea51-a.lod
 15:57:09 | [info ] | [modelviewer] Collision: general.blz/wea51_lod1-a_col.pfx
 
+cardboard box
+Model: km01_01.seq.blz/v062cutscene_agency-box.lod
+11:57:26 | [info ] | [modelviewer] Collision: km01_01.seq.blz/v062cutscene_agency_lod1-box_col.pfx

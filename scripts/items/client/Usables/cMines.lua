@@ -5,17 +5,42 @@ function cMines:__init(args)
     self.mine_cells = {} -- Mines in cells
     self.pickup_key = 'E'
     self.pickup_timer = Timer()
+    self.CSO_register = {}
+
+    Events:Subscribe(var("Cells/LocalPlayerCellUpdate"):get() 
+        .. tostring(ItemsConfig.usables.Mine.cell_size), self, self.LocalPlayerCellUpdate)
+
+    Events:Subscribe(var("FireWeapon"):get(), self, self.FireWeapon)
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+
+    Events:Subscribe("KeyUp", self, self.KeyUp)
 
     Network:Subscribe(var("items/MineSyncOne"):get(), self, self.MineSyncOne)
     Network:Subscribe(var("items/MineExplode"):get(), self, self.MineExplode)
     Network:Subscribe(var("items/MinesCellsSync"):get(), self, self.MinesCellsSync)
     Network:Subscribe(var("items/RemoveMine"):get(), self, self.RemoveMine)
+    Network:Subscribe(var("items/MineDestroy"):get(), self, self.MineDestroy)
 
-    Events:Subscribe(var("Cells/LocalPlayerCellUpdate"):get() 
-        .. tostring(ItemsConfig.usables.Mine.cell_size), self, self.LocalPlayerCellUpdate)
-    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+end
 
-    Events:Subscribe("KeyUp", self, self.KeyUp)
+function cMines:MineDestroy(args)
+    ClientEffect.Play(AssetLocation.Game, {
+        position = args.pos,
+        angle = Angle(),
+        effect_id = 28
+    })
+end
+
+function cMines:FireWeapon(args)
+    local target = LocalPlayer:GetAimTarget()
+
+    if not target.entity then return end
+    if target.entity.__type ~= "ClientStaticObject" then return end
+
+    local mine = self.CSO_register[target.entity:GetId()]
+    if not mine then return end
+
+    Network:Send(var("items/DestroyMine"):get(), {id = mine.id})
 
 end
 
@@ -65,6 +90,7 @@ function cMines:AddMine(args)
         self.mine_cells[cell.x][cell.y][mine.id]:Remove()
     end
 
+    self.CSO_register[mine.object:GetId()] = mine
     self.mine_cells[cell.x][cell.y][mine.id] = mine
 
 end
@@ -81,6 +107,7 @@ function cMines:MineExplode(args)
                 if id == args.id then
                     self.mine_cells[x][y][id]:Remove()
                     self.mine_cells[x][y][id] = nil
+                    self.CSO_register[mine.object:GetId()] = nil
                 end
             end
         end

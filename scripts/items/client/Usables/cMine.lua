@@ -51,11 +51,11 @@ function cMine:CreateMine()
     })
 
     self.object = ClientStaticObject.Create({
-        position = self.position,
-        angle = Angle(),
-        model = "general.blz/go063-b2.lod"
+        position = self.position + Vector3(0, 0.02, 0),
+        angle = Angle(0, -math.pi / 2, 0),
+        model = "f2m07.researchfacility.flz/key028_01-b.lod",
+        collision = "f2m07.researchfacility.flz/key028_01_lod1-b_col.pfx"
     })
-
 
 end
 

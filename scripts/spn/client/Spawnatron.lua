@@ -166,13 +166,8 @@ function Spawnatron:SetActive( active )
     end
 end
 
-go_up_timer = Timer()
 function Spawnatron:Render()
     local is_visible = self.active and (Game:GetState() == GUIState.Game)
-	
-	if go_up_timer:GetMilliseconds() > 20 then
-		go_up_timer:Restart()
-	end
 
     if self.window:GetVisible() ~= is_visible then
         self.window:SetVisible( is_visible )
@@ -184,7 +179,7 @@ function Spawnatron:Render()
 end
 
 function Spawnatron:KeyUp( args )
-    if args.key == string.byte('B') and not LocalPlayer:GetValue("Talking") then
+    if args.key == string.byte('B') then
         self:SetActive( not self:GetActive() )
     end
 end
@@ -222,14 +217,4 @@ end
 
 local buy_menu = Spawnatron()
 
---Network:Subscribe ("buymodel", self.GetActive)
-
-Events:Subscribe("LocalPlayerChat", function(args) 
-	if args.text == "/pos" then 
-		Chat:Print(tostring(LocalPlayer:GetPosition()), Color.LawnGreen) 
-		return false 
-	elseif args.text == "/angle" then
-		Chat:Print(tostring(LocalPlayer:GetAngle()), Color.LawnGreen) 
-		return false 
-	end
-end)
+Network:Subscribe ("buymodel", self.GetActive)

@@ -60,8 +60,8 @@ function cHitDetection:EntityBulletHit(args)
 
     -- only is called for the person who shot
 
-    --print("EntityBulletHit")
-    --output_table(args)
+    print("EntityBulletHit")
+    output_table(args)
 
 end
 

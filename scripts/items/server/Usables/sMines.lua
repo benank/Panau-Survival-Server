@@ -13,10 +13,31 @@ function sMines:__init()
 
     Network:Subscribe("items/CompleteItemUsage", self, self.CompleteItemUsage)
     Network:Subscribe("items/StepOnMine", self, self.StepOnMine)
+    Network:Subscribe("items/DestroyMine", self, self.DestroyMine)
     Network:Subscribe("items/PickupMine", self, self.PickupMine)
 
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring( ItemsConfig.usables.Mine.cell_size), self, self.PlayerCellUpdate)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+end
+
+function sMines:DestroyMine(args, player)
+    if not args.id or not self.mines[args.id] then return end
+
+    local mine = self.mines[args.id]
+
+    Network:Send(player, "items/MineDestroy", {pos = mine.position})
+    Network:SendNearby(player, "items/MineDestroy", {pos = mine.position})
+
+    local cmd = SQL:Command("DELETE FROM mines where id = ?")
+    cmd:Bind(1, args.id)
+    cmd:Execute()
+
+    -- Remove mine
+    local cell = mine:GetCell()
+    self.mine_cells[cell.x][cell.y] = nil
+    self.mines[args.id] = nil
+    mine:Remove(player)
+
 end
 
 function sMines:PickupMine(args, player)
