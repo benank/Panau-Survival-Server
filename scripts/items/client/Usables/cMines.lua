@@ -36,11 +36,12 @@ function cMines:MinePlaceSound(args)
 end
 
 function cMines:MineDestroy(args)
-    ClientEffect.Play(AssetLocation.Game, {
+    --[[ClientEffect.Play(AssetLocation.Game, {
         position = args.pos,
         angle = Angle(),
         effect_id = 28
-    })
+    })]]
+    self:MineExplode(args)
 end
 
 function cMines:FireWeapon(args)
@@ -75,13 +76,12 @@ function cMines:KeyUp(args)
         local cell_x, cell_y = GetCell(ray.position, ItemsConfig.usables.Mine.cell_size)
         VerifyCellExists(self.mine_cells, {x = cell_x, y = cell_y})
 
-        for id, mine in pairs(self.mine_cells[cell_x][cell_y]) do
-            if mine.position:Distance(ray.position) < 0.1 and mine.owner_id == tostring(LocalPlayer:GetSteamId()) then
-        
-                Network:Send(var("items/PickupMine"):get(), {id = mine.id})
-                break
-            end
-        end
+        if not ray.entity then return end
+        if ray.entity.__type ~= "ClientStaticObject" then return end
+
+        local mine = self.CSO_register[ray.entity:GetId()]
+
+        Network:Send(var("items/PickupMine"):get(), {id = mine.id})
 
     end
 
@@ -91,6 +91,7 @@ function cMines:AddMine(args)
 
     local mine = cMine({
         position = args.position,
+        angle = args.angle,
         id = args.id,
         owner_id = args.owner_id
     })
@@ -140,9 +141,14 @@ function cMines:MineExplode(args)
         for y, _ in pairs(self.mine_cells[x]) do
             for id, mine in pairs(self.mine_cells[x][y]) do
                 if id == args.id then
+                    if not args.position then
+                        args.position = self.mine_cells[x][y][id].position
+                    end
+
                     self.mine_cells[x][y][id]:Remove()
                     self.mine_cells[x][y][id] = nil
                     self.CSO_register[mine.object:GetId()] = nil
+
                     break
                 end
             end
@@ -155,7 +161,6 @@ function cMines:MineExplode(args)
         angle = Angle()
     })
 
-    print("explode me")
     -- Let HitDetection do the rest
     Events:Fire(var("HitDetection/Explosion"):get(), {
         position = args.position,

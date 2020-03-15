@@ -15,7 +15,7 @@ WeaponBaseDamage =
 
 ExplosiveBaseDamage = 
 {
-    ["Mine"] = {damage = 130, radius = 12, knockback = 15}
+    ["Mine"] = {damage = 130, radius = 10, knockback = 10}
 }
 
 WeaponHitType = 

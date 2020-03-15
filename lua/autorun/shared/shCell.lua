@@ -22,7 +22,7 @@ function GetAdjacentCells(cell_x, cell_y) -- X and Y of a cell
 
     end
 
-    return adjacent;
+    return adjacent
 end
 
 CELL_SIZES = {256, 512, 1024}

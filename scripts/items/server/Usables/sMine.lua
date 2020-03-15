@@ -4,6 +4,7 @@ function sMine:__init(args)
 
     self.id = args.id
     self.position = args.position
+    self.angle = args.angle
     self.owner_id = args.owner_id
     self.exploded = false
     self.cell_x, self.cell_y = GetCell(self.position, ItemsConfig.usables.Mine.cell_size)
@@ -46,6 +47,7 @@ function sMine:GetSyncObject()
     return {
         id = self.id,
         position = self.position,
+        angle = self.angle,
         owner_id = self.owner_id
     }
 end

@@ -1,10 +1,8 @@
 class 'sMines'
 
-local MINE_ID = 0
-
 function sMines:__init()
 
-    SQL:Execute("CREATE TABLE IF NOT EXISTS mines (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR)")
+    SQL:Execute("CREATE TABLE IF NOT EXISTS mines (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, angle VARCHAR)")
 
     self.mines = {} -- Active mines, indexed by mine id
     self.mine_cells = {} -- Active mines, organized by cell x, y, then mine id
@@ -16,7 +14,7 @@ function sMines:__init()
     Network:Subscribe("items/DestroyMine", self, self.DestroyMine)
     Network:Subscribe("items/PickupMine", self, self.PickupMine)
 
-    Events:Subscribe("Cells/PlayerCellUpdate" .. tostring( ItemsConfig.usables.Mine.cell_size), self, self.PlayerCellUpdate)
+    Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(ItemsConfig.usables.Mine.cell_size), self, self.PlayerCellUpdate)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
 end
 
@@ -25,8 +23,8 @@ function sMines:DestroyMine(args, player)
 
     local mine = self.mines[args.id]
 
-    Network:Send(player, "items/MineDestroy", {pos = mine.position})
-    Network:SendNearby(player, "items/MineDestroy", {pos = mine.position})
+    Network:Send(player, "items/MineDestroy", {position = mine.position, id = mine.id})
+    Network:SendNearby(player, "items/MineDestroy", {position = mine.position, id = mine.id})
 
     local cmd = SQL:Command("DELETE FROM mines where id = ?")
     cmd:Bind(1, args.id)
@@ -45,7 +43,7 @@ function sMines:PickupMine(args, player)
 
     local mine = self.mines[args.id]
 
-    if mine.owner_id ~= tostring(player:GetSteamId()) then return end -- They do not own this mine
+    --if mine.owner_id ~= tostring(player:GetSteamId()) then return end -- They do not own this mine
 
     local num_mines = Inventory.GetNumOfItem({player = player, item_name = "Mine"})
 
@@ -59,7 +57,7 @@ function sMines:PickupMine(args, player)
 
     -- If the number of mines in their inventory did not go up, they did not have room for it
     if num_mines == Inventory.GetNumOfItem({player = player, item_name = "Mine"}) then
-        Chat:Send(player, "Failed to remove mine because you do not have space for it!", Color.Red)
+        Chat:Send(player, "Failed to pick up mine because you do not have space for it!", Color.Red)
         return
     end
 
@@ -130,7 +128,8 @@ function sMines:AddMine(args)
     local mine = sMine({
         id = args.id,
         owner_id = args.owner_id,
-        position = args.position
+        position = args.position,
+        angle = args.angle
     })
     
     self.mines[args.id] = mine
@@ -155,10 +154,14 @@ function sMines:LoadAllMines()
             local split = mine_data.position:split(",")
             local pos = Vector3(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]))
 
+            local split2 = mine_data.angle:split(",")
+            local angle = Angle(tonumber(split2[1]), tonumber(split2[2]), tonumber(split2[3]))
+
             self:AddMine({
                 id = mine_data.id,
                 owner_id = mine_data.steamID,
-                position = pos
+                position = pos,
+                angle = angle
             })
         end
 
@@ -166,12 +169,13 @@ function sMines:LoadAllMines()
 
 end
 
-function sMines:PlaceMine(position, player)
+function sMines:PlaceMine(position, angle, player)
 
     local steamID = tostring(player:GetSteamId())
-    local cmd = SQL:Command("INSERT INTO mines (steamID, position) VALUES (?, ?)")
+    local cmd = SQL:Command("INSERT INTO mines (steamID, position, angle) VALUES (?, ?, ?)")
     cmd:Bind(1, steamID)
     cmd:Bind(2, tostring(position))
+    cmd:Bind(3, tostring(angle))
     cmd:Execute()
 
 	cmd = SQL:Query("SELECT last_insert_rowid() as id FROM mines")
@@ -185,7 +189,8 @@ function sMines:PlaceMine(position, player)
     self:AddMine({
         id = result[1].id,
         owner_id = steamID, -- TODO: add friends to it as well
-        position = position
+        position = position,
+        angle = angle
     }):SyncNearby(player)
 
     Network:Send(player, "items/MinePlaceSound", {position = position})
@@ -196,13 +201,8 @@ end
 -- args.ray = raycast down
 function sMines:TryPlaceMine(args, player)
 
-    -- If they are within sz radius * 2, we don't let them place that close
-    if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
-        Chat:Send(player, "Cannot place mines while near the safezone!", Color.Red)
-        return
-    end
-
     args.ray.position = Vector3(args.ray.position.x, math.max(args.ray.position.y, player:GetPosition().y), args.ray.position.z)
+    local angle = Angle.FromVectors(Vector3.Up, args.ray.normal) * Angle(0, -math.pi / 2, 0)
 
     local player_iu = player:GetValue("ItemUse")
 
@@ -216,7 +216,7 @@ function sMines:TryPlaceMine(args, player)
         })
 
         -- Now actually place the mine
-        self:PlaceMine(args.ray.position, player)
+        self:PlaceMine(args.ray.position, angle, player)
 
     end
 
@@ -242,6 +242,12 @@ function sMines:CompleteItemUsage(args, player)
 
     if args.ray.entity and (args.ray.entity.__type == "Vehicle" or args.ray.entity.__type == "Player") then
         Chat:Send(player, "Placing mine failed!", Color.Red)
+        return
+    end
+
+    -- If they are within sz radius * 2, we don't let them place that close
+    if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
+        Chat:Send(player, "Cannot place mines while near the safezone!", Color.Red)
         return
     end
 

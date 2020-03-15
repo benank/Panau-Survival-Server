@@ -3,6 +3,7 @@ class 'cMine'
 function cMine:__init(args)
 
     self.position = args.position
+    self.angle = args.angle
     self.id = args.id
     self.owner_id = args.owner_id
     self.cell_x, self.cell_y = GetCell(self.position, ItemsConfig.usables.Mine.cell_size)
@@ -52,8 +53,8 @@ function cMine:CreateMine()
     })
 
     self.object = ClientStaticObject.Create({
-        position = self.position + Vector3(0, 0.02, 0),
-        angle = Angle(0, -math.pi / 2, 0),
+        position = self.position + self.angle * Vector3(0, 0, 0.02),
+        angle = self.angle,
         model = "f2m07.researchfacility.flz/key028_01-b.lod",
         collision = "f2m07.researchfacility.flz/key028_01_lod1-b_col.pfx"
     })
