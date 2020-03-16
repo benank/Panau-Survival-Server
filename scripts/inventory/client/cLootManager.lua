@@ -54,6 +54,8 @@ end
 
 function cLootManager:Render(args)
 
+    if not ClientInventory or not ClientInventory.lootbox_ui then return end
+
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 6.5)
     local found_box = false
 
