@@ -23,13 +23,20 @@ function cHitDetection:Explosion(args)
 
     if explosive_data then
 
-        local dist = args.position:Distance(args.local_position)
-        dist = math.min(explosive_data.radius, dist)
-        local percent_modifier = 1 - dist / explosive_data.radius
+        local from_pos = args.position + Vector3.Up
+        local to_pos = LocalPlayer:GetBonePosition("ragdoll_Spine")
+        local diff = (to_pos - from_pos):Normalized()
+        local ray = Physics:Raycast(from_pos, diff, 0, 15, false)
 
+        -- Not on FOV
+        if not ray.entity or ray.entity.__type ~= "LocalPlayer"then return end
+    
+        local dist = args.position:Distance(args.local_position)
+        dist = math.min(explosive_data.radius, math.max(0, dist - 5))
+        local percent_modifier = 1 - (dist / (explosive_data.radius / 2))
+    
         if percent_modifier == 0 then return end
 
-        local damage = explosive_data.damage * percent_modifier
         local knockback_effect = explosive_data.knockback * percent_modifier
 
         LocalPlayer:SetRagdollLinearVelocity(((args.local_position - args.position):Normalized() + Vector3(0, 1.5, 0)) * knockback_effect)

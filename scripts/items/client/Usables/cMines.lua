@@ -60,6 +60,8 @@ end
 function cMines:RemoveMine(args)
     VerifyCellExists(self.mine_cells, args.cell)
     if self.mine_cells[args.cell.x][args.cell.y][args.id] then
+        local mine = self.mine_cells[args.cell.x][args.cell.y][args.id]
+        self.CSO_register[mine.object:GetId()] = nil
         self.mine_cells[args.cell.x][args.cell.y][args.id]:Remove()
         self.mine_cells[args.cell.x][args.cell.y][args.id] = nil
     end
@@ -71,7 +73,7 @@ function cMines:KeyUp(args)
 
         self.pickup_timer:Restart()
 
-        local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 6.5)
+        local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 4.5)
 
         local cell_x, cell_y = GetCell(ray.position, ItemsConfig.usables.Mine.cell_size)
         VerifyCellExists(self.mine_cells, {x = cell_x, y = cell_y})
@@ -80,6 +82,7 @@ function cMines:KeyUp(args)
         if ray.entity.__type ~= "ClientStaticObject" then return end
 
         local mine = self.CSO_register[ray.entity:GetId()]
+        if not mine then return end
 
         Network:Send(var("items/PickupMine"):get(), {id = mine.id})
 
@@ -137,6 +140,8 @@ end
 
 function cMines:MineExplode(args)
 
+    local found_mine = false
+
     for x, _ in pairs(self.mine_cells) do
         for y, _ in pairs(self.mine_cells[x]) do
             for id, mine in pairs(self.mine_cells[x][y]) do
@@ -149,11 +154,15 @@ function cMines:MineExplode(args)
                     self.mine_cells[x][y][id] = nil
                     self.CSO_register[mine.object:GetId()] = nil
 
+                    found_mine = true
+
                     break
                 end
             end
         end
     end
+
+    if not found_mine then return end -- Someone picked up the mine before it explodedF
 
     ClientEffect.Play(AssetLocation.Game, {
         position = args.position,

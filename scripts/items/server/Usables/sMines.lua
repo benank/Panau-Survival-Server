@@ -16,12 +16,33 @@ function sMines:__init()
 
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(ItemsConfig.usables.Mine.cell_size), self, self.PlayerCellUpdate)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("items/MineExplode", self, self.MineExplode)
+end
+
+function sMines:MineExplode(args)
+
+    local cell_x, cell_y = GetCell(args.position, ItemsConfig.usables.Mine.cell_size)
+    local adjacent_cells = GetAdjacentCells(cell_x, cell_y)
+
+    for _, cell in pairs(adjacent_cells) do
+
+        VerifyCellExists(self.mine_cells, cell)
+        for _, mine in pairs(self.mine_cells[cell.x][cell.y]) do
+            if mine.position:Distance(args.position) < 10 + ItemsConfig.usables.Mine.trigger_radius then
+                self:DestroyMine({id = mine.id}, args.player)
+            end
+        end
+
+    end
+
 end
 
 function sMines:DestroyMine(args, player)
     if not args.id or not self.mines[args.id] then return end
 
     local mine = self.mines[args.id]
+
+    if mine.exploded then return end
 
     Network:Send(player, "items/MineDestroy", {position = mine.position, id = mine.id})
     Network:SendNearby(player, "items/MineDestroy", {position = mine.position, id = mine.id})
@@ -32,9 +53,15 @@ function sMines:DestroyMine(args, player)
 
     -- Remove mine
     local cell = mine:GetCell()
-    self.mine_cells[cell.x][cell.y] = nil
+    self.mine_cells[cell.x][cell.y][args.id] = nil
     self.mines[args.id] = nil
     mine:Remove(player)
+
+    Events:Fire("items/MineExplode", {
+        position = mine.position,
+        radius = 10,
+        player = player
+    })
 
 end
 
@@ -43,7 +70,7 @@ function sMines:PickupMine(args, player)
 
     local mine = self.mines[args.id]
 
-    --if mine.owner_id ~= tostring(player:GetSteamId()) then return end -- They do not own this mine
+    if mine.exploded then return end
 
     local num_mines = Inventory.GetNumOfItem({player = player, item_name = "Mine"})
 
@@ -67,7 +94,7 @@ function sMines:PickupMine(args, player)
 
     -- Remove mine
     local cell = mine:GetCell()
-    self.mine_cells[cell.x][cell.y] = nil
+    self.mine_cells[cell.x][cell.y][args.id] = nil
     self.mines[args.id] = nil
     mine:Remove(player)
 
@@ -107,15 +134,30 @@ function sMines:StepOnMine(args, player)
 
     if mine:Trigger(player) then
 
-        -- Successfully exploded, remove mine
-        local cmd = SQL:Command("DELETE FROM mines where id = ?")
-        cmd:Bind(1, id)
-        cmd:Execute()
-
-        -- Remove mine
         local cell = mine:GetCell()
-        self.mine_cells[cell.x][cell.y] = nil
-        self.mines[id] = nil
+
+        Timer.SetTimeout(1000 * ItemsConfig.usables.Mine.trigger_time, function()
+            
+            -- IF mine has not been picked up yet
+            if self.mine_cells[cell.x][cell.y][id] then
+
+                -- Successfully exploded, remove mine
+                local cmd = SQL:Command("DELETE FROM mines where id = ?")
+                cmd:Bind(1, id)
+                cmd:Execute()
+
+                -- Remove mine
+                self.mine_cells[cell.x][cell.y][id] = nil
+                self.mines[id] = nil
+                
+                Events:Fire("items/MineExplode", {
+                    position = mine.position,
+                    radius = 10,
+                    player = player
+                })
+            end
+
+        end)
 
     end
 

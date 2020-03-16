@@ -6,6 +6,7 @@ function cMine:__init(args)
     self.angle = args.angle
     self.id = args.id
     self.owner_id = args.owner_id
+    self.exploding = false
     self.cell_x, self.cell_y = GetCell(self.position, ItemsConfig.usables.Mine.cell_size)
 
     self:CreateMine()
@@ -23,6 +24,7 @@ function cMine:ShapeTriggerEnter(args)
     if args.entity ~= LocalPlayer then return end
     if self.owner_id == tostring(LocalPlayer:GetSteamId()) then return end -- Don't explode on the owner
 
+    self.exploding = true
     Network:Send(var("items/StepOnMine"):get(), {id = self.id})
     cMines:MineTrigger({position = self.position, id = self.id})
 end

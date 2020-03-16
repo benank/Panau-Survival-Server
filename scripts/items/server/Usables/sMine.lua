@@ -7,13 +7,14 @@ function sMine:__init(args)
     self.angle = args.angle
     self.owner_id = args.owner_id
     self.exploded = false
+    self.exploding = false
     self.cell_x, self.cell_y = GetCell(self.position, ItemsConfig.usables.Mine.cell_size)
 
 end
 
 function sMine:Trigger(player)
 
-    if self.exploded then return false end -- Already exploded
+    if self.exploded or self.exploding then return false end -- Already exploded
     if tostring(player:GetSteamId()) == self.owner_id then return false end -- This is the owner, don't explode
 
     -- No need to sort players by cells for this, so just send nearby to remove
@@ -21,7 +22,7 @@ function sMine:Trigger(player)
     --Network:Send(player, "items/MineTrigger", {position = self.position, id = self.id})
     Network:SendNearby(player, "items/MineTrigger", {position = self.position, id = self.id})
 
-    self.exploded = true
+    self.exploding = true
 
     return true
 
