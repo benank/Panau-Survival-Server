@@ -3,10 +3,10 @@ class 'cCollisionChecker'
 function cCollisionChecker:__init()
 
     self.object = ClientStaticObject.Create({
-        position = self.position,
-        angle = self.angle,
+        position = Vector3(),
+        angle = Angle(),
         model = ' ',
-        collision = 'km05.blz/gp703_lod1-a_col.pfx'
+        collision = 'km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx'
     })
 
     self.timer = Timer()
@@ -21,7 +21,7 @@ function cCollisionChecker:Render(args)
 
     self.object:SetPosition(basepos - Vector3(0, 1, 0))
 
-    local ray = Physics:Raycast(basepos, Vector3.Down, 0, 2)
+    local ray = Physics:Raycast(basepos, Vector3.Down, 0, 3)
 
     if ray.distance == 2 and self.timer:GetSeconds() > 1 then
         self.timer:Restart()
