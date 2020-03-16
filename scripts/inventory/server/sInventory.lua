@@ -393,6 +393,7 @@ function sInventory:CanPlayerPerformOperations(player)
     -- eventually modify this so that admins can do stuff if they clone the inv
     return IsValid(player) and IsValid(self.player) and player == self.player and self.operation_block == 0
         and not player:GetValue("Loading") and player:GetEnabled() and player:GetValue("InventoryOperationBlock") == 0
+        and player:GetHealth() > 0 and not player:GetValue("dead")
 
 end
 
