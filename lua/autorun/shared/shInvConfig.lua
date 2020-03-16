@@ -44,6 +44,14 @@ Inventory.config =
             amount = 5
         },
         {
+            name = "Claymore",
+            amount = 5
+        },
+        {
+            name = "Claymore",
+            amount = 5
+        },
+        {
             name = "Grapplehook",
             amount = 1,
             max_dura = true
