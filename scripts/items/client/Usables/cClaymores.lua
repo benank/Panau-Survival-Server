@@ -117,16 +117,22 @@ function cClaymores:Render(args)
     if not self.placing_claymore then return end
     if not IsValid(self.obj) then return end
 
-    local ray1 = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 6)
+    local range = 7
+    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, range)
 
-    local ray2 = Physics:Raycast(ray1.position + Vector3.Up, Vector3.Down, 0, 15)
+    if ray.distance >= range then
+        self.obj:SetPosition(Vector3.Zero)
+        return
+    end
 
-    if ray2.position:Distance(LocalPlayer:GetPosition()) > 5 then return end
-    if ray2.entity and ray2.entity.__type ~= "ClientStaticObject" then return end
+    if ray.entity and ray.entity.__type ~= "ClientStaticObject" then
+        self.obj:SetPosition(Vector3.Zero)
+        return
+    end
 
 
-    self.obj:SetPosition(ray2.position)
-    local ang = Angle.FromVectors(Vector3.Up, ray2.normal) * Angle(self.yaw, 0, 0)
+    self.obj:SetPosition(ray.position)
+    local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(self.yaw, 0, 0)
     self.obj:SetAngle(ang)
 
 end
