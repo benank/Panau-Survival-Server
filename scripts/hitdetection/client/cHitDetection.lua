@@ -39,7 +39,8 @@ function cHitDetection:Explosion(args)
 
         local knockback_effect = explosive_data.knockback * percent_modifier
 
-        LocalPlayer:SetRagdollLinearVelocity(((args.local_position - args.position):Normalized() + Vector3(0, 1.5, 0)) * knockback_effect)
+        LocalPlayer:SetRagdollLinearVelocity(
+            LocalPlayer:GetLinearVelocity() + (-(args.local_position - args.position):Normalized() + Vector3(0, 1.5, 0)) * knockback_effect)
 
         Network:Send(var("HitDetectionSyncExplosion"):get(), {
             position = args.position,

@@ -15,8 +15,8 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     if not explosive_data then return end
 
     local dist = args.position:Distance(args.local_position)
-    dist = math.min(explosive_data.radius, math.max(0, dist - 5))
-    local percent_modifier = 1 - (dist / (explosive_data.radius / 2))
+    dist = math.min(explosive_data.radius / 2, math.max(0, dist / 2))
+    local percent_modifier = math.max(0, 1 - (dist / (explosive_data.radius / 2)))
 
     if percent_modifier == 0 then return end
 

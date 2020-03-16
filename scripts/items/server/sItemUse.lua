@@ -44,6 +44,8 @@ Events:Subscribe("Inventory/UseItem", function(args)
 
         local use_time = ItemsConfig.usables[args.item.name].use_time
 
+        if not use_time then return end
+
         Inventory.OperationBlock({player = args.player, change = 1}) -- Block inventory operations
         
         player_iu.using = true

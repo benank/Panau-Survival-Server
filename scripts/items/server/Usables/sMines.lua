@@ -16,10 +16,10 @@ function sMines:__init()
 
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(ItemsConfig.usables.Mine.cell_size), self, self.PlayerCellUpdate)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
-    Events:Subscribe("items/MineExplode", self, self.MineExplode)
+    Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 end
 
-function sMines:MineExplode(args)
+function sMines:ItemExplode(args)
 
     local cell_x, cell_y = GetCell(args.position, ItemsConfig.usables.Mine.cell_size)
     local adjacent_cells = GetAdjacentCells(cell_x, cell_y)
@@ -28,7 +28,7 @@ function sMines:MineExplode(args)
 
         VerifyCellExists(self.mine_cells, cell)
         for _, mine in pairs(self.mine_cells[cell.x][cell.y]) do
-            if mine.position:Distance(args.position) < 10 + ItemsConfig.usables.Mine.trigger_radius then
+            if mine.position:Distance(args.position) < args.radius + ItemsConfig.usables.Mine.trigger_radius then
                 self:DestroyMine({id = mine.id}, args.player)
             end
         end
@@ -57,7 +57,7 @@ function sMines:DestroyMine(args, player)
     self.mines[args.id] = nil
     mine:Remove(player)
 
-    Events:Fire("items/MineExplode", {
+    Events:Fire("items/ItemExplode", {
         position = mine.position,
         radius = 10,
         player = player
@@ -150,7 +150,7 @@ function sMines:StepOnMine(args, player)
                 self.mine_cells[cell.x][cell.y][id] = nil
                 self.mines[id] = nil
                 
-                Events:Fire("items/MineExplode", {
+                Events:Fire("items/ItemExplode", {
                     position = mine.position,
                     radius = 10,
                     player = player
