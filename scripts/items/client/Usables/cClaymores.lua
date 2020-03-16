@@ -37,8 +37,8 @@ function cClaymores:__init(args)
 
     Events:Subscribe(var("FireWeapon"):get(), self, self.FireWeapon)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
-
     Events:Subscribe("KeyUp", self, self.KeyUp)
+    Events:Subscribe("GameRenderOpaque", self, self.GameRenderOpaque)
     
     Network:Subscribe(var("items/StartClaymorePlacement"):get(), self, self.StartClaymorePlacement)
     Network:Subscribe(var("items/ClaymorePlaceSound"):get(), self, self.ClaymorePlaceSound)
@@ -47,6 +47,16 @@ function cClaymores:__init(args)
     Network:Subscribe(var("items/ClaymoresCellsSync"):get(), self, self.ClaymoresCellsSync)
     Network:Subscribe(var("items/RemoveClaymore"):get(), self, self.RemoveClaymore)
 
+end
+
+function cClaymores:GameRenderOpaque(args)
+    for x, _ in pairs(self.claymore_cells) do
+        for y, _ in pairs(self.claymore_cells[x]) do
+            for _, claymore in pairs(self.claymore_cells[x][y]) do
+                claymore:Render()
+            end
+        end
+    end
 end
 
 function cClaymores:StartClaymorePlacement()
@@ -61,7 +71,7 @@ function cClaymores:StartClaymorePlacement()
 
     self.place_subs = 
     {
-        Events:Subscribe("Render", self, self.Render),
+        Events:Subscribe("GameRenderOpaque", self, self.Render),
         Events:Subscribe("MouseScroll", self, self.MouseScroll),
         Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput),
         Events:Subscribe("MouseUp", self, self.MouseUp)
@@ -134,6 +144,20 @@ function cClaymores:Render(args)
     self.obj:SetPosition(ray.position)
     local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(self.yaw, 0, 0)
     self.obj:SetAngle(ang)
+
+    
+    local angle = self.obj:GetAngle() * Angle(math.pi / 2, 0, 0)
+    local start_ray_pos = self.obj:GetPosition() + angle * Vector3(0, 0.25, 0)
+
+    local ray = Physics:Raycast(start_ray_pos, angle * Vector3.Forward, 0, ItemsConfig.usables.Claymore.trigger_range, false)
+
+    local end_ray_pos = ray.position
+
+    Render:DrawLine(
+        start_ray_pos,
+        end_ray_pos,
+        Color(255, 0, 0, 255)
+    )
 
 end
 

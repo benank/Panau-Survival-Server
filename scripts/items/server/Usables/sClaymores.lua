@@ -30,7 +30,7 @@ function sClaymores:ItemExplode(args)
 
         VerifyCellExists(self.claymore_cells, cell)
         for _, claymore in pairs(self.claymore_cells[cell.x][cell.y]) do
-            if claymore.position:Distance(args.position) < args.radius + ItemsConfig.usables.Claymore.trigger_radius then
+            if claymore.position:Distance(args.position) < args.radius then
                 self:DestroyClaymore({id = claymore.id}, args.player)
             end
         end

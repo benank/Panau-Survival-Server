@@ -2,25 +2,51 @@ class 'cClaymore'
 
 function cClaymore:__init(args)
 
+    self.range = 2
     self.position = args.position
     self.angle = args.angle
     self.id = args.id
     self.owner_id = args.owner_id
     self.cell_x, self.cell_y = GetCell(self.position, ItemsConfig.usables.Claymore.cell_size)
+    self.alpha = 0
+    self.trigger_timer = Timer()
 
     self:CreateClaymore()
 
-    self.subs = 
-    {
-        Events:Subscribe(var("ShapeTriggerEnter"):get(), self, self.ShapeTriggerEnter)
-    }
+    self.timer = Timer()
 
 end
 
-function cClaymore:ShapeTriggerEnter(args)
-    if args.trigger ~= self.shapetrigger then return end
-    if args.entity.__type ~= "LocalPlayer" then return end
-    if args.entity ~= LocalPlayer then return end
+function cClaymore:Render()
+
+    local angle = self.angle * Angle(math.pi / 2, 0, 0)
+    local start_ray_pos = self.position + angle * Vector3(0, 0.25, 0)
+
+    local ray = Physics:Raycast(start_ray_pos, angle * Vector3.Forward, 0, ItemsConfig.usables.Claymore.trigger_range, false)
+
+    local end_ray_pos = ray.position
+
+    Render:DrawLine(
+        start_ray_pos,
+        end_ray_pos,
+        Color(255, 0, 0, self.alpha)
+    )
+
+    if ray.entity and (ray.entity.__type == "LocalPlayer" or ray.entity.__type == "Vehicle") and self.trigger_timer:GetSeconds() > 1 then
+        self:Trigger()
+        self.trigger_timer:Restart()
+    end
+
+    -- Update alpha of laser
+    if self.timer:GetSeconds() > 1 then
+        self.timer:Restart()
+        self.alpha = (1 - math.min(Camera:GetPosition():Distance(self.position), 20) / 20) * 120
+    end
+
+
+end
+
+function cClaymore:Trigger(args)
     if self.owner_id == tostring(LocalPlayer:GetSteamId()) then return end -- Don't explode on the owner
 
     Network:Send(var("items/StepOnClaymore"):get(), {id = self.id})
@@ -35,23 +61,6 @@ function cClaymore:CreateClaymore()
 
     local radius = ItemsConfig.usables.Claymore.trigger_radius
 
-    self.shapetrigger = ShapeTrigger.Create({
-        position = self.position,
-        angle = Angle(),
-        components = {
-            {
-                type = TriggerType.Sphere,
-                size = Vector3(radius,radius,radius),
-                position = Vector3(0,0,0)
-            }
-        },
-        trigger_player = true,
-        trigger_player_in_vehicle = true,
-        trigger_vehicle = true,
-        trigger_npc = false,
-        vehicle_type = VehicleTriggerType.All
-    })
-
     self.object = ClientStaticObject.Create({
         position = self.position,
         angle = self.angle,
@@ -63,9 +72,4 @@ end
 
 function cClaymore:Remove()
     self.object:Remove()
-    self.shapetrigger:Remove()
-    for k,v in pairs(self.subs) do
-        Events:Unsubscribe(v)
-        v = nil
-    end
 end
