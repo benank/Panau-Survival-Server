@@ -184,7 +184,9 @@ end
 
 function sVehicleManager:GetVehicleCost(args)
 
-    if config.spawn.cost_overrides[args.model_id] then
+    return 5
+
+    --[[if config.spawn.cost_overrides[args.model_id] then
         return random(
             math.round(config.spawn.cost_modifier * config.spawn.cost_overrides[args.model_id] * (1 - config.spawn.variance)), 
             math.round(config.spawn.cost_modifier * config.spawn.cost_overrides[args.model_id] * (1 + config.spawn.variance)))
@@ -196,7 +198,7 @@ function sVehicleManager:GetVehicleCost(args)
 
     for k,v in pairs(args) do print(k,v) end
     error("Could not determine valid spawn type for: ")
-    return 999
+    return 999]]
 
 end
 
