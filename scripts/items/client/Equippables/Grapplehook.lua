@@ -84,10 +84,17 @@ function EquippableGrapplehook:ToggleEnabled(enabled)
 end
 
 function EquippableGrapplehook:StopUsing()
+
+    local base_state = LocalPlayer:GetBaseState()
+
     if LocalPlayer:GetBaseState() == AnimationState.SReeledInIdle then
         Network:Send("EquippableGrapplehookResetPosition")
     end
-    LocalPlayer:SetBaseState(AnimationState.SUprightIdle)
+
+    if base_state == AnimationState.SReelFlight then
+        LocalPlayer:SetBaseState(AnimationState.SUprightIdle)
+    end
+
 end
 
 -- Continuously disable it because it doesn't always work on first join
