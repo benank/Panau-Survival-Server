@@ -99,7 +99,7 @@ function sCells:UpdatePlayerCell(player, cell_size)
             end
         end
 
-        --debug(string.format("%s entered cell %s, %s [%s]", player:GetName(), tostring(new_cell.x), tostring(new_cell.y), tostring(cell_size)))
+        debug(string.format("%s entered cell %s, %s [%s]", player:GetName(), tostring(new_cell.x), tostring(new_cell.y), tostring(cell_size)))
     
         Events:Fire("Cells/PlayerCellUpdate" .. tostring(cell_size), {
             player = player,

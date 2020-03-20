@@ -4,7 +4,7 @@ function CreateLootbox(args)
 
     local box = sLootbox(args)
 
-    VerifyCellExists(LootCells.Loot, {x = box.cell.x, y = box.cell.y})
+    VerifyCellExists(LootCells.Loot, box.cell)
     table.insert(LootCells.Loot[box.cell.x][box.cell.y], box)
 
     return box

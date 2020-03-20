@@ -115,6 +115,11 @@ function cCells:Render(args)
 end
 
 function cCells:ModulesLoad()
+    
+    for _, cell_size in pairs(CELL_SIZES) do
+        self.current_cell[cell_size] = {}
+    end
+
     self.ready_for_cell = true
 end
 
