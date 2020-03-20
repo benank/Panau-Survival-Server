@@ -75,14 +75,12 @@ function cLootboxUI:Update(args)
             ClientInventory.ui:PopulateEntry({index = i, loot = true, window = self.window})
         end
 
-        self:RepositionWindow()
-
     elseif args.action == "update" or args.action == "remove" then
         ClientInventory.ui:PopulateEntry({index = args.index, loot = true, window = self.window})
-        self:RepositionWindow()
     end
 
     if not self.window:GetVisible() or #LootManager.current_box.contents == 0 then
+        self:RepositionWindow()
         self:ToggleVisible()
     end
 
