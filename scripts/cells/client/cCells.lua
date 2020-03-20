@@ -89,8 +89,7 @@ function cCells:CheckCells()
     
     -- Check if we entered a new cell, if so tell the server
     for _, cell_size in pairs(CELL_SIZES) do
-        local cell_check = self:CheckIfPlayerInNewCell(cell_size)
-        entered_new_cell = entered_new_cell or cell_check
+        entered_new_cell = self:CheckIfPlayerInNewCell(cell_size) or cell_check
     end
 
     -- If we entered at least one new cell, tell the server to update us
