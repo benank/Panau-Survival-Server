@@ -7,7 +7,7 @@ function sClaymore:__init(args)
     self.angle = args.angle
     self.owner_id = args.owner_id
     self.exploded = false
-    self.cell_x, self.cell_y = GetCell(self.position, ItemsConfig.usables.Claymore.cell_size)
+    self.cell = GetCell(self.position, ItemsConfig.usables.Claymore.cell_size)
 
 end
 
@@ -34,12 +34,12 @@ function sClaymore:SyncNearby(player)
 end
 
 function sClaymore:GetCell()
-    return {x = self.cell_x, y = self.cell_y}
+    return self.cell
 end
 
 function sClaymore:Remove(player)
-    Network:Send(player, "items/RemoveClaymore", {id = self.id, cell = {x = self.cell_x, y = self.cell_y}})
-    Network:SendNearby(player, "items/RemoveClaymore", {id = self.id, cell = {x = self.cell_x, y = self.cell_y}})
+    Network:Send(player, "items/RemoveClaymore", {id = self.id, cell = self.cell})
+    Network:SendNearby(player, "items/RemoveClaymore", {id = self.id, cell = self.cell})
 end
 
 

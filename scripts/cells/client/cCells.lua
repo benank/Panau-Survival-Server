@@ -38,28 +38,29 @@ end
 function cCells:CheckIfPlayerInNewCell(cell_size)
 
     -- Get our current cell
-    local cell_x, cell_y = GetCell(LocalPlayer:GetPosition(), cell_size)
+    local cell = GetCell(LocalPlayer:GetPosition(), cell_size)
+    local current_cell = self.current_cell[cell_size]
 
     -- if our cell is different than our previous cell, update it
-    if cell_x ~= self.current_cell.x or cell_y ~= self.current_cell.y then
+    if cell.x ~= current_cell.x or cell.y ~= current_cell.y then
     
         local old_adjacent = {}
-        local new_adjacent = GetAdjacentCells(cell_x, cell_y)
+        local new_adjacent = GetAdjacentCells(cell)
 
-        local updated = GetAdjacentCells(cell_x, cell_y)
+        local updated = GetAdjacentCells(cell)
 
-        if self.current_cell.x ~= nil and self.current_cell.y ~= nil then
+        if current_cell.x ~= nil and current_cell.y ~= nil then
 
-            old_adjacent = GetAdjacentCells(self.current_cell.x, self.current_cell.y)
+            old_adjacent = GetAdjacentCells(current_cell)
 
             -- Filter out old adjacent cells that are still adjacent -- old adjacent only contains old ones that are no longer adjacent
-            for i = 1, #old_adjacent do
-                for j = 1, #new_adjacent do
+            for old_index, old_adjacent_cell in pairs(old_adjacent) do
+                for new_index, new_adjacent_cell in pairs(updated) do
             
                     -- If new adjacent also contains a cell from old adjacent, remove it from old adjacent
-                    if old_adjacent[i].x == new_adjacent[j].x and old_adjacent[i].y == new_adjacent[j].y then
-                        old_adjacent[i] = nil
-                        updated[j] = nil
+                    if old_adjacent_cell.x == new_adjacent_cell.x and old_adjacent_cell.y == new_adjacent_cell.y then
+                        old_adjacent[old_index] = nil
+                        updated[new_index] = nil
                     end
                     
                 end
@@ -68,15 +69,15 @@ function cCells:CheckIfPlayerInNewCell(cell_size)
 
         -- Fire cell upated event on localplayer
         Events:Fire(LocalPlayerCellUpdateEvent:get() .. tostring(cell_size), {
-            old_cell = self.current_cell[cell_size],
+            old_cell = current_cell,
             old_adjacent = old_adjacent,
-            cell = {x = cell_x, y = cell_y},
+            cell = cell,
             adjacent = new_adjacent,
             updated = updated
         })
 
         -- Update the current cell we are in
-        self.current_cell[cell_size] = {x = cell_x, y = cell_y}
+        self.current_cell[cell_size] = cell
 
         return true
     end

@@ -8,7 +8,7 @@ function sMine:__init(args)
     self.owner_id = args.owner_id
     self.exploded = false
     self.exploding = false
-    self.cell_x, self.cell_y = GetCell(self.position, ItemsConfig.usables.Mine.cell_size)
+    self.cell = GetCell(self.position, ItemsConfig.usables.Mine.cell_size)
 
 end
 
@@ -35,12 +35,12 @@ function sMine:SyncNearby(player)
 end
 
 function sMine:GetCell()
-    return {x = self.cell_x, y = self.cell_y}
+    return self.cell
 end
 
 function sMine:Remove(player)
-    Network:Send(player, "items/RemoveMine", {id = self.id, cell = {x = self.cell_x, y = self.cell_y}})
-    Network:SendNearby(player, "items/RemoveMine", {id = self.id, cell = {x = self.cell_x, y = self.cell_y}})
+    Network:Send(player, "items/RemoveMine", {id = self.id, cell = self.cell})
+    Network:SendNearby(player, "items/RemoveMine", {id = self.id, cell = self.cell})
 end
 
 

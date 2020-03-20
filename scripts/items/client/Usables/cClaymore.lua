@@ -7,7 +7,7 @@ function cClaymore:__init(args)
     self.angle = args.angle
     self.id = args.id
     self.owner_id = args.owner_id
-    self.cell_x, self.cell_y = GetCell(self.position, ItemsConfig.usables.Claymore.cell_size)
+    self.cell = GetCell(self.position, ItemsConfig.usables.Claymore.cell_size)
     self.alpha = 0
     self.trigger_timer = Timer()
 
@@ -54,7 +54,7 @@ function cClaymore:Trigger(args)
 end
 
 function cClaymore:GetCell()
-    return {x = self.cell_x, y = self.cell_y}
+    return self.cell
 end
 
 function cClaymore:CreateClaymore()

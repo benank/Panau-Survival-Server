@@ -27,6 +27,11 @@ end
 
 function cLootManager:LocalPlayerCellUpdate(args)
 
+    -- Remove loot from old cells
+    for _, cell in pairs(args.old_adjacent) do
+        self:ClearCell(cell)
+    end
+
 end
 
 -- Forces the lootbox ui to close
@@ -63,13 +68,13 @@ function cLootManager:Render(args)
 
         local uid = self:StaticObjectIdToUID(ray.entity:GetId())
         local entity_pos = ray.entity:GetPosition()
-        local cell_x, cell_y = GetCell(entity_pos, Lootbox.Cell_Size)
+        local cell = GetCell(entity_pos, Lootbox.Cell_Size)
 
-        VerifyCellExists(self.loot, {x = cell_x, y = cell_y})
-        if not uid or not self.loot[cell_x][cell_y][uid] then return end
+        VerifyCellExists(self.loot, cell)
+        if not uid or not self.loot[cell.x][cell.y][uid] then return end
         if Vector3.Distance(entity_pos, LocalPlayer:GetPosition()) > Lootbox.Distances.Can_Open then return end
 
-        local box = self.loot[cell_x][cell_y][uid]
+        local box = self.loot[cell.x][cell.y][uid]
 
         self.current_looking_box = box
         found_box = true
@@ -156,22 +161,20 @@ end
 function cLootManager:IsOneBoxCloseEnough()
 
     local player_pos = LocalPlayer:GetPosition()
-    local player_cell_x, player_cell_y = GetCell(player_pos, Lootbox.Cell_Size)
+    local player_cell = GetCell(player_pos, Lootbox.Cell_Size)
 
     -- TODO optimize this (but still needs to check for boxes in adjacent cells)
 
-    for x = player_cell_x - 1, player_cell_x + 1 do
+    local adjacent_cells = GetAdjacentCells(player_cell)
 
-        for y = player_cell_y - 1, player_cell_y + 1 do
+    for _, cell in pairs(adjacent_cells) do
 
-            VerifyCellExists(self.loot, {x = x, y = y})
-            for _, box in pairs(self.loot[x][y]) do
+        VerifyCellExists(self.loot, cell)
+        for _, box in pairs(self.loot[cell.x][cell.y]) do
 
-                if Vector3.Distance(box.position, player_pos) < Lootbox.Distances.Start_Raycast then
+            if Vector3.Distance(box.position, player_pos) < Lootbox.Distances.Start_Raycast then
 
-                    return true
-
-                end
+                return true
 
             end
 

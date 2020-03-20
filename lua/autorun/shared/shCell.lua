@@ -1,5 +1,5 @@
 function GetCell(pos, cell_size)
-    return math.floor((pos.x + 16384) / cell_size), math.floor((pos.z + 16384) / cell_size)
+    return {x = math.floor(pos.x / cell_size), y = math.floor(pos.z / cell_size)}
 end
 
 function VerifyCellExists(cell_table, cell)
@@ -8,13 +8,13 @@ function VerifyCellExists(cell_table, cell)
 end
 
 -- Returns a table containing objects with x and y of cells that are adjacent to the one given including the one given
-function GetAdjacentCells(cell_x, cell_y) -- X and Y of a cell
+function GetAdjacentCells(cell)
 
     local adjacent = {}
 
-	for x = cell_x - 1, cell_x + 1 do
+	for x = cell.x - 1, cell.x + 1 do
 
-        for y = cell_y - 1, cell_y + 1 do
+        for y = cell.y - 1, cell.y + 1 do
 
             table.insert(adjacent, {x = x, y = y})
 

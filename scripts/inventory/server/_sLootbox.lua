@@ -14,7 +14,7 @@ function sLootbox:__init(args)
     self.active = args.active == true
     self.tier = args.tier
     self.position = args.position
-    self.cell_x, self.cell_y = GetCell(self.position, Lootbox.Cell_Size)
+    self.cell = GetCell(self.position, Lootbox.Cell_Size)
     self.angle = args.angle
     self.contents = args.contents
     self.model_data = Lootbox.Models[args.tier]
@@ -168,7 +168,7 @@ function sLootbox:HideBox()
         self.despawn_timer = nil
     end
 
-    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell_x, self.cell_y), "Inventory/RemoveLootbox", {cell = {x = self.cell_x, y = self.cell_y}, uid = self.uid})
+    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
     self.active = false
     self.players_opened = {}
 
@@ -184,7 +184,7 @@ end
 -- Gets a dynamic respawn time based on how many players are nearby
 function sLootbox:GetRespawnTime()
 
-    local adjacent = GetAdjacentCells(self.cell_x, self.cell_y)
+    local adjacent = GetAdjacentCells(self.cell)
     local num_nearby_players = 0
 
     for _, cell in pairs(adjacent) do
@@ -218,7 +218,7 @@ function sLootbox:RespawnBox()
     self.players_opened = {}
 
     self.active = true
-    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell_x, self.cell_y), "Inventory/OneLootboxCellSync", self:GetSyncData())
+    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/OneLootboxCellSync", self:GetSyncData())
 
 end
 
@@ -226,14 +226,14 @@ end
 function sLootbox:Remove()
 
     self.active = false
-    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell_x, self.cell_y), "Inventory/RemoveLootbox", {cell = {x = self.cell_x, y = self.cell_y}, uid = self.uid})
+    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
 
     if self.despawn_timer then Timer.Clear(self.despawn_timer) end
 
-    for index, box in pairs(LootCells.Loot[self.cell_x][self.cell_y]) do
+    for index, box in pairs(LootCells.Loot[self.cell.x][self.cell.y]) do
 
         if box.uid == self.uid then
-            table.remove(LootCells.Loot[self.cell_x][self.cell_y], index)
+            table.remove(LootCells.Loot[self.cell.x][self.cell.y], index)
             return
         end
 
@@ -242,7 +242,7 @@ function sLootbox:Remove()
     self.uid = nil
     self.tier = nil
     self.position = nil
-    self.cell_x = nil; self.cell_y = nil;
+    self.cell = nil
     self.angle = nil
     self.contents = nil
     self.model_data = nil
@@ -260,7 +260,7 @@ end
 
 -- Syncs the single lootbox to all nearby players, used for dropboxes to make them instantly appear
 function sLootbox:Sync()
-    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell_x, self.cell_y), "Inventory/OneLootboxCellSync", self:GetSyncData())
+    Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/OneLootboxCellSync", self:GetSyncData())
 end
 
 -- Update contents to anyone who has it open
@@ -288,7 +288,7 @@ function sLootbox:GetSyncData()
         angle = self.angle,
         active = self.active,
         model_data = self.model_data,
-        cell = {x = self.cell_x, y = self.cell_y},
+        cell = self.cell,
         uid = self.uid
     }
 

@@ -75,8 +75,8 @@ function cMines:KeyUp(args)
 
         local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 4.5)
 
-        local cell_x, cell_y = GetCell(ray.position, ItemsConfig.usables.Mine.cell_size)
-        VerifyCellExists(self.mine_cells, {x = cell_x, y = cell_y})
+        local cell = GetCell(ray.position, ItemsConfig.usables.Mine.cell_size)
+        VerifyCellExists(self.mine_cells, cell)
 
         if not ray.entity then return end
         if ray.entity.__type ~= "ClientStaticObject" then return end

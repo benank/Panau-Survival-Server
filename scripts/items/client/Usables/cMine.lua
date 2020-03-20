@@ -7,7 +7,7 @@ function cMine:__init(args)
     self.id = args.id
     self.owner_id = args.owner_id
     self.exploding = false
-    self.cell_x, self.cell_y = GetCell(self.position, ItemsConfig.usables.Mine.cell_size)
+    self.cell = GetCell(self.position, ItemsConfig.usables.Mine.cell_size)
 
     self:CreateMine()
 
@@ -30,7 +30,7 @@ function cMine:ShapeTriggerEnter(args)
 end
 
 function cMine:GetCell()
-    return {x = self.cell_x, y = self.cell_y}
+    return self.cell
 end
 
 function cMine:CreateMine()

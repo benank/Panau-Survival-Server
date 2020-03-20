@@ -23,8 +23,8 @@ end
 
 function sClaymores:ItemExplode(args)
 
-    local cell_x, cell_y = GetCell(args.position, ItemsConfig.usables.Claymore.cell_size)
-    local adjacent_cells = GetAdjacentCells(cell_x, cell_y)
+    local cell = GetCell(args.position, ItemsConfig.usables.Claymore.cell_size)
+    local adjacent_cells = GetAdjacentCells(cell)
 
     for _, cell in pairs(adjacent_cells) do
 

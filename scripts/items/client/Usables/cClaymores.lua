@@ -216,8 +216,8 @@ function cClaymores:KeyUp(args)
 
         local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 4.5)
 
-        local cell_x, cell_y = GetCell(ray.position, ItemsConfig.usables.Claymore.cell_size)
-        VerifyCellExists(self.claymore_cells, {x = cell_x, y = cell_y})
+        local cell = GetCell(ray.position, ItemsConfig.usables.Claymore.cell_size)
+        VerifyCellExists(self.claymore_cells, cell)
 
         if not ray.entity then return end
         if ray.entity.__type ~= "ClientStaticObject" then return end

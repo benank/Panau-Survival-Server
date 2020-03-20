@@ -4,21 +4,21 @@ function CreateLootbox(args)
 
     local box = sLootbox(args)
 
-    VerifyCellExists(LootCells.Loot, {x = box.cell_x, y = box.cell_y})
-    table.insert(LootCells.Loot[box.cell_x][box.cell_y], box)
+    VerifyCellExists(LootCells.Loot, {x = box.cell.x, y = box.cell.y})
+    table.insert(LootCells.Loot[box.cell.x][box.cell.y], box)
 
     return box
 
 end
 
-function GetNearbyPlayersInCell(cell_x, cell_y)
+function GetNearbyPlayersInCell(cell)
 
     local nearby_players = {}
 
     -- Sync to all players in adjacent cells
-    for x = cell_x - 1, cell_x + 1 do
+    for x = cell.x - 1, cell.x + 1 do
 
-        for y = cell_y - 1, cell_y + 1 do
+        for y = cell.y - 1, cell.y + 1 do
 
             VerifyCellExists(LootCells.Player, {x = x, y = y})
             for _, player in pairs(LootCells.Player[x][y]) do
