@@ -61,93 +61,50 @@ end
 
 function cClaymores:StartClaymorePlacement()
 
-    self.yaw = 0
-
-    self.obj = ClientStaticObject.Create({
-        position = Vector3(),
-        angle = Angle(),
+    Events:Fire("build/StartObjectPlacement", {
         model = 'km05.blz/gp703-a.lod'
     })
 
     self.place_subs = 
     {
-        Events:Subscribe("GameRenderOpaque", self, self.Render),
-        Events:Subscribe("MouseScroll", self, self.MouseScroll),
-        Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput),
-        Events:Subscribe("MouseUp", self, self.MouseUp)
+        Events:Subscribe("ObjectPlacerGameRender", self, self.Render),
+        Events:Subscribe("build/PlaceObject", self, self.PlaceObject),
+        Events:Subscribe("build/CancelObjectPlacement", self, self.CancelObjectPlacement)
     }
     
     self.placing_claymore = true
 end
 
-function cClaymores:LocalPlayerInput(args)
-    if self.blockedActions[args.input] then return false end
+function cClaymores:PlaceObject(args)
+    if not self.placing_claymore then return end
+
+    Network:Send("items/PlaceClaymore", {
+        position = args.position,
+        angle = args.angle
+    })
+    self:StopPlacement()
 end
 
-function cClaymores:MouseScroll(args)
-    if not self.placing_claymore then return end
-    if not IsValid(self.obj) then return end
-
-    local change = math.ceil(args.delta)
-    self.yaw = self.yaw + change * math.pi / 6
-end
-
-function cClaymores:MouseUp(args)
-    if not self.placing_claymore then return end
-    if not IsValid(self.obj) then return end
-
-    if args.button == 1 then
-        -- Left click, place claymore
-        Network:Send("items/PlaceClaymore", {
-            position = self.obj:GetPosition(),
-            angle = self.obj:GetAngle()
-        })
-        self:StopPlacement()
-    elseif args.button == 2 then 
-        -- Right click, cancel placement
-        Network:Send("items/CancelClaymorePlacement")
-        self:StopPlacement()
-    end
+function cClaymores:CancelObjectPlacement()
+    Network:Send("items/CancelClaymorePlacement")
+    self:StopPlacement()
 end
 
 function cClaymores:StopPlacement()
     for k, v in pairs(self.place_subs) do
         Events:Unsubscribe(v)
     end
+
     self.place_subs = {}
     self.placing_claymore = false
-
-    if IsValid(self.obj) then
-        self.obj:Remove()
-    end
 end
 
 function cClaymores:Render(args)
 
     if not self.placing_claymore then return end
-    if not IsValid(self.obj) then return end
 
-    local range = 7
-    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, range)
-
-    if ray.distance >= range then
-        self.obj:SetPosition(Vector3.Zero)
-        return
-    end
-
-    if ray.entity and ray.entity.__type ~= "ClientStaticObject" then
-        self.obj:SetPosition(Vector3.Zero)
-        return
-    end
-
-
-    self.obj:SetPosition(ray.position)
-    local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(self.yaw, 0, 0)
-    self.obj:SetAngle(ang)
-
-    
-    local angle = self.obj:GetAngle() * Angle(math.pi / 2, 0, 0)
-    local start_ray_pos = self.obj:GetPosition() + angle * Vector3(0, 0.25, 0)
+    local angle = args.object:GetAngle() * Angle(math.pi / 2, 0, 0)
+    local start_ray_pos = args.object:GetPosition() + angle * Vector3(0, 0.25, 0)
 
     local ray = Physics:Raycast(start_ray_pos, angle * Vector3.Forward, 0, ItemsConfig.usables.Claymore.trigger_range, false)
 
@@ -158,19 +115,6 @@ function cClaymores:Render(args)
         end_ray_pos,
         Color(255, 0, 0, 255)
     )
-
-end
-
-function cClaymores:StartPlacingClaymore()
-
-    self.object = ClientStaticObject.Create({
-        position = self.position,
-        angle = self.angle,
-        model = 'km05.blz/gp703-a.lod',
-        collision = 'km05.blz/gp703_lod1-a_col.pfx'
-    })
-
-    -- TODO
 
 end
 
