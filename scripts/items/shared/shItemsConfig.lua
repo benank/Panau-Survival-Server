@@ -40,6 +40,14 @@ ItemsConfig =
             ["Combat Backpack"] = {dura_per_hit = 2,    slots = {Weapons = 2, Explosives = 4, Supplies = 4, Survival = 0}},
             ["Explorer Backpack"] = {dura_per_hit = 2,  slots = {Weapons = 1, Explosives = 1, Supplies = 4, Survival = 4}},
             ["Military Vest"] = {dura_per_hit = 2,      slots = {Weapons = 1, Explosives = 1, Supplies = 0, Survival = 0}}
+        },
+        grenades = 
+        {
+            ["HE Grenade"] = {},
+            ["Molotov"] = {},
+            ["Smoke Grenade"] = {},
+            ["Toxic Grenade"] = {},
+            ["Flashbang"] = {},
         }
     }
 }
