@@ -56,11 +56,12 @@ Grenade.Types = {
         ["effect_time"] = 15 -- default effect time for this effect is 15
 	},
 	["Flares"] = {
-		["effect_id"] = 236,
+		["effect_id"] = 266,
         ["trail_effect_id"] = 61,
 		["weight"] = 1,
         ["drag"] = 0.15,
-        ["repeat_interval"] = 2000, -- effect repeats
+        --["repeat_interval"] = 2000, -- effect repeats
+        --["repeat_effect_id"] = 236,
 		["restitution"] = 0.2,
 		["radius"] = 0,
         ["model"] = "general.blz/wea33-wea33.lod",
