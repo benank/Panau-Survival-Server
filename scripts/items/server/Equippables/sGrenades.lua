@@ -1,10 +1,21 @@
 class "Grenades"
 
 function Grenades:__init()
-	Network:Subscribe("GrenadeTossed", self, self.GrenadeTossed)
+
+    for player in Server:GetPlayers() do
+        player:SetNetworkValue("ThrowingGrenade", nil)
+        player:SetNetworkValue("EquippedGrenade", nil)
+    end
+
+    Network:Subscribe("items/GrenadeTossed", self, self.GrenadeTossed)
+    Network:Subscribe("items/StartThrowingGrenade", self, self.StartThrowingGrenade)
     Network:Subscribe("GrenadeExplode", self, self.GrenadeExplode)
     
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
+end
+
+function Grenades:StartThrowingGrenade(args, player)
+    player:SetNetworkValue("ThrowingGrenade", true)
 end
 
 function Grenades:ToggleEquipped(args)
@@ -16,16 +27,25 @@ function Grenades:ToggleEquipped(args)
         name = args.item.name,
         equipped = args.item.equipped == true
     })
+
     args.player:SetNetworkValue("EquippedGrenade", args.item.name)
+    args.player:SetNetworkValue("ThrowingGrenade", nil)
 
 end
 
 function Grenades:GrenadeTossed(args, sender)
-	Network:SendNearby(sender, "items/GrenadeTossed", args)
+    sender:SetNetworkValue("ThrowingGrenade", nil)
+    if not sender:GetValue("EquippedGrenade") then return end
+	Network:SendNearby(sender, "items/GrenadeTossed", {
+        position = args.position,
+        velocity = args.velocity,
+        type = sender:GetValue("EquippedGrenade"),
+        fusetime = math.max(0, args.fusetime)
+    })
 end
 
 function Grenades:GrenadeExplode(args, sender)
-	if sender:GetPosition():Distance(args.position) < args.type.radius then
+	--[[if sender:GetPosition():Distance(args.position) < args.type.radius then
 		local falloff = (args.type.radius - sender:GetPosition():Distance(args.position)) / (args.type.radius * 0.6)
 
 		sender:SetHealth(sender:GetHealth() - falloff)
@@ -34,7 +54,7 @@ function Grenades:GrenadeExplode(args, sender)
 			sender:GetVehicle():SetHealth(sender:GetVehicle():GetHealth() - falloff)
 			sender:GetVehicle():SetLinearVelocity(sender:GetVehicle():GetLinearVelocity() + ((sender:GetVehicle():GetPosition() - args.position):Normalized() * args.type.radius * 2 * falloff))
 		end
-	end
+	end]]
 end
 
 grenades = Grenades()

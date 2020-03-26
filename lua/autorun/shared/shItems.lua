@@ -260,11 +260,12 @@ Items =
     {
         name = "Flares",
         category = "Explosives",
-        stacklimit = 5,
+        stacklimit = 10,
         loot = {1,2,3},
         rarity = 0.05,
         rarity_mod = {1,1,1},
-        can_use = true
+        can_equip = true,
+        equip_type = "held"
     },
     {
         name = "Healthpack",

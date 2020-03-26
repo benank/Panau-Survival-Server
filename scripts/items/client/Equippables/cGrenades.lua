@@ -1,10 +1,9 @@
-local GRENADE_DEBUG = true
+local GRENADE_DEBUG = false
 
 class "Grenades"
 
 Grenades.OverThrowTime = 0.36
 Grenades.UnderThrowTime = 0.48
-Grenades.GrenadeOffset = Vector3(0.3, -0.06, -0.02)
 
 if GRENADE_DEBUG then
 	function Sphere(center, radius, nLatitude, nLongitude)
@@ -50,7 +49,8 @@ function Grenades:__init()
     self.throwing = false
 
     self.grenade_name = "" -- Name of grenade that is current equipped
-    self.max_power = 5
+    self.max_time = 5
+    self.max_speed = 25
 
 	self.grenades = {}
 	self.dummies = {}
@@ -61,23 +61,23 @@ function Grenades:__init()
 	self.thrownTimer = Timer()
 	self.flashedTimer = Timer()
 
-	Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
-	Events:Subscribe("InputPoll", self, self.InputPoll)
-	Events:Subscribe("KeyUp", self, self.KeyUp)
-	Events:Subscribe("KeyDown", self, self.KeyDown)
-	Events:Subscribe("PostTick", self, self.PostTick)
-	Events:Subscribe("Render", self, self.Render)
-	Events:Subscribe("GameRender", self, self.GameRender)
-	Events:Subscribe("PostRender", self, self.PostRender)
-    Network:Subscribe("items/GrenadeTossed", self, self.GrenadeTossed)
-    Network:Subscribe("items/ToggleEquippedGrenade", self, self.ToggleEquippedGrenade)
+	Events:Subscribe(var("ModuleUnload"):get(), self, self.ModuleUnload)
+	Events:Subscribe(var("InputPoll"):get(), self, self.InputPoll)
+	Events:Subscribe(var("KeyUp"):get(), self, self.KeyUp)
+	Events:Subscribe(var("KeyDown"):get(), self, self.KeyDown)
+	Events:Subscribe(var("PostTick"):get(), self, self.PostTick)
+	Events:Subscribe(var("Render"):get(), self, self.Render)
+	Events:Subscribe(var("GameRender"):get(), self, self.GameRender)
+	Events:Subscribe(var("PostRender"):get(), self, self.PostRender)
+    Network:Subscribe(var("items/GrenadeTossed"):get(), self, self.GrenadeTossed)
+    Network:Subscribe(var("items/ToggleEquippedGrenade"):get(), self, self.ToggleEquippedGrenade)
 end
 
 function Grenades:ToggleEquippedGrenade(args)
     self.equipped = args.equipped
 
     if self.equipped then
-        self.grenade_name = args.Name
+        self.grenade_name = args.name
     else
         self.grenade_name = ""
     end
@@ -88,8 +88,9 @@ function Grenades:ModuleUnload()
 		grenade:Remove()
 	end
 
-	for k, dummy in ipairs(self.dummies) do
-		dummy:Remove()
+	for k, dummy in pairs(self.dummies) do
+        dummy.object:Remove()
+        if IsValid(dummy.fx) then dummy.fx:Remove() end
 	end
 end
 
@@ -122,7 +123,7 @@ function Grenades:KeyUp(args)
 
     if args.key == string.byte(self.throw_key) and self.equipped and self.throwing then
         self.throwing = false
-        --self:TossGrenade(Grenade.Types.Flashbang)
+        self:TossGrenade(Grenade.Types[self.grenade_name])
     end
 
 end
@@ -130,9 +131,11 @@ end
 function Grenades:KeyDown(args)
 
     if args.key == string.byte(self.throw_key) and self.equipped and not self.throwing then
-        self.power = self.max_power
+        self.time_to_explode = self.max_time
         self.charge_timer = Timer()
         self.throwing = true
+        LocalPlayer:SetValue("ThrowingGrenade", true)
+        Network:Send(var("items/StartThrowingGrenade"):get())
     end
 
 	--[[if args.key == string.byte("G") then
@@ -147,20 +150,22 @@ function Grenades:KeyDown(args)
 end
 
 function Grenades:PostTick(args)
-	if not self.thrown then
-		local position = LocalPlayer:GetBonePosition("ragdoll_LeftForeArm") + LocalPlayer:GetBoneAngle("ragdoll_LeftForeArm") * Grenades.GrenadeOffset
+    if not self.thrown then
+        
+		local position = LocalPlayer:GetBonePosition("ragdoll_LeftForeArm") + LocalPlayer:GetBoneAngle("ragdoll_LeftForeArm") * Grenade.Types[self.grenade_name].offset
 
-		self.thrownVelocity = (Camera:GetAngle() * Vector3.Forward * 25 * (self.power / self.max_power)) * ((Camera:GetAngle().pitch + (math.pi / 2)) / (math.pi / 2))
+		self.thrownVelocity = (Camera:GetAngle() * Vector3.Forward * self.max_speed) * ((Camera:GetAngle().pitch + (math.pi / 2)) / (math.pi / 2))
 		self.thrownPosition = position
 
 		if self.thrownTimer and self.thrownTimer:GetSeconds() > (self.thrownUnder and Grenades.UnderThrowTime or Grenades.OverThrowTime) then
 			local grenade = {
 				["position"] = self.thrownPosition,
 				["velocity"] = self.thrownVelocity,
-				["type"] = self.thrownType
+                ["fusetime"] = math.max(0, self.max_time - self.charge_timer:GetSeconds()),
+                ["type"] = self.grenade_name
 			}
 
-			Network:Send("GrenadeTossed", grenade)
+			Network:Send(var("items/GrenadeTossed"):get(), grenade)
 			self:GrenadeTossed(grenade)
 
 			self.thrown = true
@@ -168,7 +173,32 @@ function Grenades:PostTick(args)
     end
     
     if self.throwing then
-        self.power = 5 - tonumber(string.format("%.0f", self.charge_timer:GetSeconds()))
+        local old_time_to_explode = self.time_to_explode
+        self.time_to_explode = self.max_time - tonumber(string.format("%.0f", self.charge_timer:GetSeconds()))
+
+        if old_time_to_explode ~= self.time_to_explode and self.grenade_name ~= "Molotov" then
+            
+            local sound = ClientSound.Create(AssetLocation.Game, {
+                bank_id = 11,
+                sound_id = 6,
+                position = LocalPlayer:GetBonePosition("ragdoll_LeftForeArm"),
+                angle = Angle()
+            })
+
+            sound:SetParameter(0,0) -- 3.5 total, 
+            sound:SetParameter(1,0.75)
+            sound:SetParameter(2,0)
+
+            Timer.SetTimeout(200, function()
+                sound:Remove()
+            end)
+
+        end
+
+
+        if self.charge_timer:GetSeconds() >= 5 and self.grenade_name ~= "Molotov" then
+            self:TossGrenade(self.type)
+        end
     end
 
 	for k, grenade in ipairs(self.grenades) do
@@ -182,15 +212,18 @@ end
 
 function Grenades:RenderPowerDisplay(args)
 
+    local my_dummy = self.dummies[LocalPlayer:GetId()]
+    if not my_dummy or my_dummy.name == "Molotov" then return end
+
     local size = Vector2(Render.Size.x * 0.1, 50)
     local pos = Vector2(Render.Size.x * 0.5, Render.Size.y - 10 - size.y / 2)
 
-    local num_bars = self.max_power
+    local num_bars = self.max_time
 
     for i = 0, num_bars - 1 do
         Render:FillArea(pos - Vector2(size.x * num_bars / 2, size.y / 2) + i * Vector2(size.x + 10, 0), size, Color.Black)
 
-        local color = i < self.power and Color.Red or Color.Gray
+        local color = i < self.time_to_explode and Color.Red or Color.Gray
         Render:FillArea(pos - Vector2(size.x * num_bars / 2, size.y / 2) + i * Vector2(size.x + 10, 0) + Vector2(5,5), size - Vector2(10,10), color)
     end
 
@@ -214,18 +247,16 @@ function Grenades:GameRender(args)
 		for k, grenade in ipairs(self.grenades) do
 			local transform = Transform3():Translate(grenade.object:GetPosition()):Rotate(Angle.AngleAxis(math.rad(90), Vector3.Left))
 
-			Render:SetTransform(transform:Scale(0.1))
-			Grenades.DebugModel:Draw()
+			--Render:SetTransform(transform:Scale(0.1))
+			--Grenades.DebugModel:Draw()
 
-			if grenade.timer:GetSeconds() > grenade.fusetime - 1 then
-				Render:SetTransform(transform:Scale(10):Scale(grenade.radius * 0.4))
-				Grenades.DebugModel:Draw()
+            Render:SetTransform(transform:Scale(grenade.radius))
+            Grenades.DebugModel:Draw()
 
-				Render:SetTransform(transform:Scale(1 / 0.4))
-				Grenades.DebugModel:Draw()
+            --Render:SetTransform(transform:Scale(1 / 0.4))
+            --Grenades.DebugModel:Draw()
 
-				Render:ResetTransform()
-			end
+            Render:ResetTransform()
 		end
 
 		collectgarbage()
@@ -244,21 +275,45 @@ function Grenades:ApplyDummy(player)
 	local state = player:GetLeftArmState()
 	local dummy = self.dummies[player:GetId()]
 
-	if table.find({AnimationState.LaSUnderThrowGrenade, AnimationState.LaSOverThrowGrenade}, state) then
-		if not dummy then
-			dummy = ClientStaticObject.Create({
-				model = "wea33-wea33.lod",
-				position = Vector3(),
-				angle = Angle()
-			})
+    if table.find({AnimationState.LaSUnderThrowGrenade, AnimationState.LaSOverThrowGrenade}, state)
+    or player:GetValue("ThrowingGrenade") then
+    
+        local grenade_name = player:GetValue("EquippedGrenade")
+        local grenade_data = Grenade.Types[grenade_name]
+        if not grenade_data then return end
 
+        if not dummy or dummy.name ~= grenade_name then
+            
+
+			dummy = {
+                object = ClientStaticObject.Create({
+                    model = grenade_data.model,
+                    position = Vector3(),
+                    angle = Angle()
+                    }),
+                name = grenade_name
+            }
+
+            if grenade_data.extra_effect_id then
+                dummy.fx = ClientEffect.Create(AssetLocation.Game, {
+                    effect_id = grenade_data.extra_effect_id,
+                    position = Vector3(),
+                    angle = Angle()
+                })
+            end
+            
 			self.dummies[player:GetId()] = dummy
 		end
 
-		dummy:SetAngle(player:GetBoneAngle("ragdoll_LeftForeArm"))
-		dummy:SetPosition(player:GetBonePosition("ragdoll_LeftForeArm") + dummy:GetAngle() * Grenades.GrenadeOffset)
+		dummy.object:SetAngle(player:GetBoneAngle("ragdoll_LeftForeArm") * grenade_data.angle)
+        dummy.object:SetPosition(player:GetBonePosition("ragdoll_LeftForeArm") + dummy.object:GetAngle() * grenade_data.offset)
+        if dummy.fx then
+            dummy.fx:SetPosition(dummy.object:GetPosition())
+        end
+
 	elseif dummy then
-		dummy:Remove()
+        dummy.object:Remove()
+        if IsValid(dummy.fx) then dummy.fx:Remove() end
 		self.dummies[player:GetId()] = nil
 	end
 end
@@ -268,34 +323,13 @@ function Grenades:TossGrenade(type)
 		self.thrown = false
 		self.thrownUnder = Camera:GetAngle().pitch < -math.pi / 12
 		self.thrownType = type
-		self.thrownTimer = false
+        self.thrownTimer = false
+        self.throwing = false
 	end
 end
 
 function Grenades:GrenadeTossed(args)
-	if GRENADE_DEBUG then
-		local type = false
-
-		for k, v in pairs(Grenade.Types) do
-			if table.compare(args.type, v) then
-				type = k
-			end
-		end
-
-		if type then
-			Chat:Print(type .. " Grenade:", Color.Yellow)
-			for k, v in pairs(args.type) do
-				Chat:Print("		" .. k .. ": " .. v, Color.Yellow)
-			end
-		else
-			Chat:Print("Unknown Grenade:", Color.Red)
-			for k, v in pairs(args.type) do
-				Chat:Print("		" .. k .. ": " .. v, Color.Red)
-			end
-		end
-	end
-
-	table.insert(self.grenades, Grenade(args.position, args.velocity, args.type))
+	table.insert(self.grenades, Grenade(args.position, args.velocity, args.type, args.fusetime))
 end
 
 Grenades = Grenades()
