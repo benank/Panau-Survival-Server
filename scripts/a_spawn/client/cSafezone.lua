@@ -29,7 +29,7 @@ function cSafezone:SecondTick()
     self.near_safezone = LocalPlayer:GetPosition():Distance(config.safezone.position) < config.safezone.radius * 4
 
     for player in Client:GetStreamedPlayers() do
-        player:SetOutlineEnabled(player:GetValue("InSafezone") == true)
+        player:SetOutlineEnabled(player:GetValue(var("InSafezone"):get()) == true)
         player:SetOutlineColor(config.safezone.color)
     end
 

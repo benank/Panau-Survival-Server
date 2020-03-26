@@ -1,6 +1,6 @@
 class "Grenade"
 
-Grenade.FlashTime = 3
+Grenade.FlashTime = 7 -- Max flashbang white screen time
 
 Grenade.Types = {
 	-- Type Explanation (For Jman):
@@ -14,12 +14,20 @@ Grenade.Types = {
 	--    If you want to add an specific behaviours then please do so in the code below and in client/grenades.lua & server/grenades.lua
 	--    In the future I might add callbacks to the following "Types" so that you can define what should occur for certain events.
 
-    -- 266 flare
-
-    -- flare smoke: 118/km07_cylinder_e.bin (get ClientParticleEffect for smoke)
-
 	["HE Grenade"] = {
 		["effect_id"] = 411,
+        ["trail_effect_id"] = 61,
+		["weight"] = 1,
+		["drag"] = 0.15,
+		["restitution"] = 0.2,
+		["radius"] = 8,
+        ["model"] = "general.blz/wea33-wea33.lod",
+        ["offset"] = Vector3(-0.32, 0, 0.03),
+        ["angle"] = Angle(0, math.pi / 2, 0),
+        ["effect_time"] = 5
+	},
+	["Laser Grenade"] = {
+		["effect_id"] = 344,
         ["trail_effect_id"] = 61,
 		["weight"] = 1,
 		["drag"] = 0.15,
@@ -35,8 +43,8 @@ Grenade.Types = {
         ["trail_effect_id"] = 61,
 		["weight"] = 1,
 		["drag"] = 0.15,
-		["restitution"] = 0,
-		["radius"] = 150,
+		["restitution"] = 0.2,
+		["radius"] = 50,
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),
         ["angle"] = Angle(0, math.pi / 2, 0),
@@ -48,12 +56,38 @@ Grenade.Types = {
 		["weight"] = 1,
 		["drag"] = 0.15, -- 70, 
         ["restitution"] = 0.2,
-        ["repeating"] = true,
-		["radius"] = 22,
+        ["radius"] = 22,
+        ["custom_func"] = function(grenade)
+            
+            local function createfx()
+                for i = 1, 6 do
+                    ClientEffect.Play(AssetLocation.Game, {
+                        ["position"] = grenade.position,
+                        ["angle"] = Angle(),
+                        ["effect_id"] = grenade.effect_id
+                    })
+                end
+            end
+
+            createfx()
+
+            Timer.SetTimeout(15 * 1000, function()
+                createfx()
+            end)
+
+            ClientLight.Play({
+                position = grenade.position + Vector3(0, 10, 0),
+                angle = Angle(),
+                color = Color(64, 200, 28),
+                multiplier = 1,
+                radius = 22,
+                timeout = grenade.type.effect_time
+            })
+        end,
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),
         ["angle"] = Angle(0, math.pi / 2, 0),
-        ["effect_time"] = 15 -- default effect time for this effect is 15
+        ["effect_time"] = 30 -- default effect time for this effect is 15
 	},
 	["Flares"] = {
         ["effect_id"] = 266,
@@ -96,32 +130,62 @@ Grenade.Types = {
 		["weight"] = 1,
         ["drag"] = 0.15,
         ["repeat_interval"] = 500, -- effect repeats
+        ["custom_func"] = function(grenade)
+            if grenade.type.repeat_interval then
+                ClientEffect.Play(AssetLocation.Game, {
+                    ["position"] = grenade.position,
+                    ["angle"] = Angle(),
+                    ["effect_id"] = grenade.type.repeat_effect_id or grenade.type.effect_id
+                })
+
+                Timer.SetTimeout(grenade.type.repeat_interval, function()
+                    if grenade.detonation_timer:GetSeconds() < grenade.type.effect_time - grenade.type.repeat_interval / 1000 then
+                        grenade.type.custom_func(grenade)
+                    end
+                end)
+            end
+        end,
 		["restitution"] = 0.2,
 		["radius"] = 0,
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),
         ["angle"] = Angle(0, math.pi / 2, 0),
-        ["effect_time"] = 15
+        ["effect_time"] = 30
 	},
 	["Molotov"] = {
         ["effect_id"] = 452,
         ["trail_effect_id"] = 326,
-		["weight"] = 2,
+		["weight"] = 1,
 		["drag"] = 0.15,
 		["restitution"] = 0,
         ["radius"] = 5,
         ["repeat_interval"] = 5000,
         ["repeat_effect_id"] = 30,
+        ["custom_func"] = function(grenade)
+            if grenade.type.repeat_interval then
+                ClientEffect.Play(AssetLocation.Game, {
+                    ["position"] = grenade.position,
+                    ["angle"] = Angle(),
+                    ["effect_id"] = grenade.type.repeat_effect_id or grenade.type.effect_id
+                })
+
+                Timer.SetTimeout(grenade.type.repeat_interval, function()
+                    if grenade.detonation_timer:GetSeconds() < grenade.type.effect_time - grenade.type.repeat_interval / 1000 * 0.9 then
+                        grenade.type.custom_func(grenade)
+                    end
+                end)
+            end
+        end,
 		["explode_on_contact"] = true,
         ["model"] = "km05.market.nl/go168-d.lod",
         ["offset"] = Vector3(-0.32, -0.08, 0.03),
         ["angle"] = Angle(0, math.pi / 2, 0),
         ["extra_effect_id"] = 326, -- Effect that is attached to bottle as it is thrown
-        ["effect_time"] = 15
+        ["effect_time"] = 30
 	}
 }
 
-function Grenade:__init(position, velocity, type, fusetime)
+function Grenade:__init(position, velocity, type, fusetime, is_mine)
 	self.object = ClientStaticObject.Create({
 		["position"] = position,
 		["angle"] = Angle.FromVectors(velocity, Vector3.Forward),
@@ -133,7 +197,7 @@ function Grenade:__init(position, velocity, type, fusetime)
 		["effect_id"] = Grenade.Types[type].trail_effect_id
     })
     
-    if type ~= "Molotov" then
+    if type ~= "Molotov" and fusetime > 0 then
 
         Timer.SetTimeout(math.max(0, (fusetime - 3.5)) * 1000, function()
             
@@ -148,7 +212,7 @@ function Grenade:__init(position, velocity, type, fusetime)
             self.sound:SetParameter(1,0.75)
             self.sound:SetParameter(2,0)
 
-            Timer.SetTimeout(5000, function()
+            Timer.SetTimeout(fusetime * 1000, function()
                 self.sound:Remove()
             end)
         
@@ -159,7 +223,8 @@ function Grenade:__init(position, velocity, type, fusetime)
 
     self.repeating_fx = {}
     
-	self.velocity = velocity
+    self.velocity = velocity
+    self.grenade_type = type
 	self.type = Grenade.Types[type]
 	self.weight = self.type.weight
 	self.drag = self.type.drag
@@ -170,19 +235,20 @@ function Grenade:__init(position, velocity, type, fusetime)
 	self.timer = Timer()
     self.lastTime = 0
     self.detonated = false
+    self.is_mine = is_mine == true
 end
 
 function Grenade:Update()
 	local delta = (self.timer:GetSeconds() - self.lastTime) / 1
 
-    if self.timer:GetSeconds() < self.fusetime then
+    if self.timer:GetSeconds() < self.fusetime or self.grenade_type == "Molotov" then
 		if not self.stopped then
 			self.velocity = (self.velocity - (self.velocity * self.drag * delta)) + (Vector3.Down * self.weight * 9.81 * delta)
 
 			local ray = Physics:Raycast(self.object:GetPosition(), self.velocity * delta, 0, 1, true)
 
 			if ray.distance <= math.min(self.velocity:Length() * delta, 1) then
-				if table.compare(self.type, Grenade.Types.Flashbang) then
+				if self.type.explode_on_contact then
 					self:Detonate()
 				else
 					local dotTimesTwo = 2 * self.velocity:Dot(ray.normal)
@@ -194,10 +260,6 @@ function Grenade:Update()
 
 					if (self.velocity * delta):Length() <= 0.01 then
                         self.stopped = true
-                        
-                        if self.type.explode_on_contact then
-                            self:Detonate()
-                        end
 					end
 				end
 			end
@@ -207,11 +269,12 @@ function Grenade:Update()
 				self.effect:SetPosition(self.object:GetPosition())
 				self.object:SetAngle(Angle.FromVectors(self.velocity, Vector3.Right))
                 self.effect:SetAngle(self.object:GetAngle())
-                if self.sound then self.sound:SetPosition(self.object:GetPosition()) end
 			else
 				self.object:SetPosition(self.object:GetPosition() + (Vector3.Up * 0.05))
 				self.effect:SetPosition(self.object:GetPosition())
-			end
+            end
+            
+            if IsValid(self.sound) then self.sound:SetPosition(self.object:GetPosition()) end
 		end
 	elseif not self.type.explode_on_contact then
 		self:Detonate()
@@ -222,10 +285,19 @@ end
 
 function Grenade:Detonate()
 	if not table.compare(self.type, Grenade.Types.Flashbang) then
-		Network:Send("GrenadeExplode", {
-			["position"] = self.object:GetPosition(),
-			["angle"] = self.object:GetAngle()
-		})
+        Events:Fire(var("HitDetection/Explosion"):get(), {
+			position = self.object:GetPosition(),
+            type = self.grenade_type,
+            local_position = LocalPlayer:GetPosition()
+        })
+        
+        if self.is_mine then
+            Network:Send(var("items/GrenadeExploded"):get(), {
+                position = self.object:GetPosition(),
+                radius = self.type.radius
+            })
+        end
+
 	elseif table.compare(self.type, Grenade.Types.Flashbang) then
 		local position, onscreen = Render:WorldToScreen(self.object:GetPosition())
 		local distance = self.object:GetPosition():Distance(Camera:GetPosition())
@@ -233,12 +305,14 @@ function Grenade:Detonate()
 		local ray = Physics:Raycast(Camera:GetPosition(), direction, 0, distance)
 
 		if onscreen and ray.distance == distance and ray.distance < self.radius then
+            Grenades.flashed_time = (1 - ray.distance / self.radius) * Grenade.FlashTime
 			Grenades.flashed = true
-			Grenades.flashedOpacity = 255
+            Grenades.flashedOpacity = 255
 			Grenades.flashedTimer:Restart()
 		elseif not onscreen and ray.distance == distance and ray.distance < self.radius and Camera:GetAngle():Dot(Angle.FromVectors(Vector3.Forward, direction)) > 0.65 then
+            Grenades.flashed_time = (1 - ray.distance / self.radius) * Grenade.FlashTime
 			Grenades.flashed = true
-			Grenades.flashedOpacity = 100
+			Grenades.flashedOpacity = 150
 			Grenades.flashedTimer:Restart()
 		end
     end
@@ -254,48 +328,12 @@ function Grenade:Detonate()
     self.detonation_timer = Timer()
     self.position = self.object:GetPosition()
 
-    self:CreateAdditionalEffects()
-    
-
-    self:Remove()
-    
-end
-
---[[
-
-local sound = ClientSound.Create(AssetLocation.Game, {
-			bank_id = 11,
-			sound_id = 6,
-			position = LocalPlayer:GetPosition(),
-			angle = Angle()
-})
-
-sound:SetParameter(0,0) -- 3.5 total, 
-sound:SetParameter(1,0.75)
-sound:SetParameter(2,0)
-
-
-]]
-
-function Grenade:CreateAdditionalEffects()
-
-    if self.type.repeat_interval then
-        ClientEffect.Play(AssetLocation.Game, {
-            ["position"] = self.position,
-            ["angle"] = Angle(),
-            ["effect_id"] = self.type.repeat_effect_id or self.type.effect_id
-        })
-
-        Timer.SetTimeout(self.type.repeat_interval, function()
-            if self.detonation_timer:GetSeconds() < self.type.effect_time - self.type.repeat_interval / 1000 then
-                self:CreateAdditionalEffects()
-            end
-        end)
-    end
-
     if self.type.custom_func then
         self.type.custom_func(self)
     end
+
+    self:Remove()
+    
 end
 
 function Grenade:Remove()

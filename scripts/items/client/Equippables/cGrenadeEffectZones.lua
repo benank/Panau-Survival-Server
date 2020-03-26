@@ -1,4 +1,4 @@
-class 'GrenadeEffectZones'
+--[[class 'GrenadeEffectZones'
 
 function GrenadeEffectZones:__init()
 
@@ -27,4 +27,4 @@ function GrenadeEffectZones:ShapeTriggerExit(trigger)
 
 end
 
-GrenadeEffectZones = GrenadeEffectZones()
+GrenadeEffectZones = GrenadeEffectZones()]]

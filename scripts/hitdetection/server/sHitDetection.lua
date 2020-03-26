@@ -23,11 +23,14 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     local hit_type = WeaponHitType.Explosive
     local original_damage = explosive_data.damage * percent_modifier
     local damage = original_damage
-    damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 
-    local old_hp = player:GetHealth()
-    player:SetValue("LastHealth", old_hp)
-    player:Damage(damage / 100, DamageEntity.Explosion)
+    if args.in_fov then
+        damage = self:GetArmorMod(player, hit_type, damage, original_damage)
+
+        local old_hp = player:GetHealth()
+        player:SetValue("LastHealth", old_hp)
+        player:Damage(damage / 100, DamageEntity.Explosion)
+    end
 
     print(string.format("%s was exploded for %s damage [%s]",
         player:GetName(), tostring(damage), tostring(args.type)))
@@ -37,6 +40,11 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
         damage = damage,
         type = args.type
     })
+
+    if player:InVehicle() then
+        player:GetVehicle():SetHealth(player:GetVehicle():GetHealth() - original_damage / explosive_data.damage * 0.5)
+        player:GetVehicle():SetLinearVelocity(player:GetVehicle():GetLinearVelocity() + ((player:GetVehicle():GetPosition() - args.position):Normalized() * explosive_data.radius * explosive_data.knockback))
+    end
 
 end
 

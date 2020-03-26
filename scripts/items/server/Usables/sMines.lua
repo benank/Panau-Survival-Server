@@ -267,32 +267,38 @@ end
 
 function sMines:CompleteItemUsage(args, player)
 
-    if player:InVehicle() then
-        Chat:Send(player, "Cannot place mines while in a vehicle!", Color.Red)
-        return
-    end
+    local player_iu = player:GetValue("ItemUse")
 
-    if not args.ray or args.ray.distance >= 5 then
-        Chat:Send(player, "Placing mine failed!", Color.Red)
-        return
-    end
+    if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed
+        and player_iu.item.name == "Mine" then
 
-    if args.ray.position:Distance(player:GetPosition()) > 5 then
-        Chat:Send(player, "Placing mine failed!", Color.Red)
-        return
-    end
+        if player:InVehicle() then
+            Chat:Send(player, "Cannot place mines while in a vehicle!", Color.Red)
+            return
+        end
 
-    if args.ray.entity and (args.ray.entity.__type == "Vehicle" or args.ray.entity.__type == "Player") then
-        Chat:Send(player, "Placing mine failed!", Color.Red)
-        return
-    end
+        if not args.ray or args.ray.distance >= 5 then
+            Chat:Send(player, "Placing mine failed!", Color.Red)
+            return
+        end
 
-    -- If they are within sz radius * 2, we don't let them place that close
-    if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
-        Chat:Send(player, "Cannot place mines while near the safezone!", Color.Red)
-        return
-    end
+        if args.ray.position:Distance(player:GetPosition()) > 5 then
+            Chat:Send(player, "Placing mine failed!", Color.Red)
+            return
+        end
 
+        if args.ray.entity and (args.ray.entity.__type == "Vehicle" or args.ray.entity.__type == "Player") then
+            Chat:Send(player, "Placing mine failed!", Color.Red)
+            return
+        end
+
+        -- If they are within sz radius * 2, we don't let them place that close
+        if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
+            Chat:Send(player, "Cannot place mines while near the safezone!", Color.Red)
+            return
+        end
+
+    end
 
     self:TryPlaceMine(args, player)
 

@@ -51,6 +51,7 @@ function Grenades:__init()
     self.grenade_name = "" -- Name of grenade that is current equipped
     self.max_time = 5
     self.max_speed = 25
+    self.flashed_time = Grenade.FlashTime
 
 	self.grenades = {}
 	self.dummies = {}
@@ -98,24 +99,28 @@ function Grenades:InputPoll()
 	if not self.thrown then
 		if not self.thrownTimer then
 			self.thrownTimer = Timer()
-		end
+        end
+        
+        if not self.override_animation and not LocalPlayer:InVehicle() then
 
-		if LocalPlayer:GetBaseState() ~= AnimationState.SParachute then
-			Input:SetValue(Action.TurnLeft, 0)
-			Input:SetValue(Action.TurnRight, 0)
-			Input:SetValue(Action.LookLeft, 0)
-			Input:SetValue(Action.LookUp, 0)
-			Input:SetValue(Action.LookRight, 0)
-			Input:SetValue(Action.LookDown, 0)
+            if LocalPlayer:GetBaseState() ~= AnimationState.SParachute then
+                Input:SetValue(Action.TurnLeft, 0)
+                Input:SetValue(Action.TurnRight, 0)
+                Input:SetValue(Action.LookLeft, 0)
+                Input:SetValue(Action.LookUp, 0)
+                Input:SetValue(Action.LookRight, 0)
+                Input:SetValue(Action.LookDown, 0)
 
-			LocalPlayer:SetAngle(Angle(Camera:GetAngle().yaw, LocalPlayer:GetAngle().pitch, LocalPlayer:GetAngle().roll))
-		end
+                LocalPlayer:SetAngle(Angle(Camera:GetAngle().yaw, LocalPlayer:GetAngle().pitch, LocalPlayer:GetAngle().roll))
+            end
 
-		if self.thrownUnder then
-			LocalPlayer:SetLeftArmState(AnimationState.LaSUnderThrowGrenade)
-		else
-			LocalPlayer:SetLeftArmState(AnimationState.LaSOverThrowGrenade)
-		end
+            if self.thrownUnder then
+                LocalPlayer:SetLeftArmState(AnimationState.LaSUnderThrowGrenade)
+            else
+                LocalPlayer:SetLeftArmState(AnimationState.LaSOverThrowGrenade)
+            end
+
+        end
 	end
 end
 
@@ -123,36 +128,49 @@ function Grenades:KeyUp(args)
 
     if args.key == string.byte(self.throw_key) and self.equipped and self.throwing then
         self.throwing = false
-        self:TossGrenade(Grenade.Types[self.grenade_name])
+
+        if not self.override_animation then
+            self:TossGrenade(Grenade.Types[self.grenade_name])
+        end
     end
 
 end
 
 function Grenades:KeyDown(args)
 
+    if LocalPlayer:GetValue(var("InSafezone"):get()) or LocalPlayer:InVehicle() then return end
+
     if args.key == string.byte(self.throw_key) and self.equipped and not self.throwing then
         self.time_to_explode = self.max_time
         self.charge_timer = Timer()
         self.throwing = true
+        self.override_animation = false
         LocalPlayer:SetValue("ThrowingGrenade", true)
         Network:Send(var("items/StartThrowingGrenade"):get())
     end
 
-	--[[if args.key == string.byte("G") then
-		self:TossGrenade(Grenade.Types.Frag)
-	elseif args.key == string.byte("H") then
-		self:TossGrenade(Grenade.Types.Flashbang)
-	elseif args.key == string.byte("J") then
-		self:TossGrenade(Grenade.Types.Smoke)
-	elseif args.key == string.byte("K") then
-		self:TossGrenade(Grenade.Types.MichaelBay)
-	end]]
 end
 
 function Grenades:PostTick(args)
     if not self.thrown then
         
 		local position = LocalPlayer:GetBonePosition("ragdoll_LeftForeArm") + LocalPlayer:GetBoneAngle("ragdoll_LeftForeArm") * Grenade.Types[self.grenade_name].offset
+
+        if self.override_animation then
+            local grenade = {
+				["position"] = position,
+				["velocity"] = Vector3.Zero,
+                ["fusetime"] = 0,
+                ["type"] = self.grenade_name
+			}
+
+			Network:Send(var("items/GrenadeTossed"):get(), grenade)
+			self:GrenadeTossed(grenade)
+
+            self.thrown = true
+
+            return
+        end
 
 		self.thrownVelocity = (Camera:GetAngle() * Vector3.Forward * self.max_speed) * ((Camera:GetAngle().pitch + (math.pi / 2)) / (math.pi / 2))
 		self.thrownPosition = position
@@ -165,14 +183,15 @@ function Grenades:PostTick(args)
                 ["type"] = self.grenade_name
 			}
 
-			Network:Send(var("items/GrenadeTossed"):get(), grenade)
+            Network:Send(var("items/GrenadeTossed"):get(), grenade)
+            grenade.is_mine = true
 			self:GrenadeTossed(grenade)
 
 			self.thrown = true
 		end
     end
     
-    if self.throwing then
+    if self.throwing and not self.override_animation then
         local old_time_to_explode = self.time_to_explode
         self.time_to_explode = self.max_time - tonumber(string.format("%.0f", self.charge_timer:GetSeconds()))
 
@@ -197,6 +216,7 @@ function Grenades:PostTick(args)
 
 
         if self.charge_timer:GetSeconds() >= 5 and self.grenade_name ~= "Molotov" then
+            self.override_animation = true
             self:TossGrenade(self.type)
         end
     end
@@ -215,7 +235,7 @@ function Grenades:RenderPowerDisplay(args)
     local my_dummy = self.dummies[LocalPlayer:GetId()]
     if not my_dummy or my_dummy.name == "Molotov" then return end
 
-    local size = Vector2(Render.Size.x * 0.1, 50)
+    local size = Vector2(Render.Size.x * 0.1, 45)
     local pos = Vector2(Render.Size.x * 0.5, Render.Size.y - 10 - size.y / 2)
 
     local num_bars = self.max_time
@@ -264,8 +284,8 @@ function Grenades:GameRender(args)
 end
 
 function Grenades:PostRender()
-	if self.flashedTimer:GetSeconds() < Grenade.FlashTime and self.flashed then
-		Render:FillArea(Vector2.Zero, Render.Size, Color(255, 255, 255, self.flashedOpacity * (Grenade.FlashTime - self.flashedTimer:GetSeconds()) / Grenade.FlashTime))
+	if self.flashedTimer:GetSeconds() < self.flashed_time and self.flashed then
+		Render:FillArea(Vector2.Zero, Render.Size, Color(255, 255, 255, self.flashedOpacity * (self.flashed_time - self.flashedTimer:GetSeconds()) / self.flashed_time))
 	else
 		self.flashed = false
 	end
@@ -324,12 +344,11 @@ function Grenades:TossGrenade(type)
 		self.thrownUnder = Camera:GetAngle().pitch < -math.pi / 12
 		self.thrownType = type
         self.thrownTimer = false
-        self.throwing = false
 	end
 end
 
 function Grenades:GrenadeTossed(args)
-	table.insert(self.grenades, Grenade(args.position, args.velocity, args.type, args.fusetime))
+	table.insert(self.grenades, Grenade(args.position, args.velocity, args.type, args.fusetime, args.is_mine))
 end
 
 Grenades = Grenades()

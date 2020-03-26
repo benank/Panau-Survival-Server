@@ -389,6 +389,16 @@ Items =
         equip_type = "held"
     },
     {
+        name = "Laser Grenade",
+        category = "Explosives",
+        stacklimit = 5,
+        loot = {4},
+        rarity = 0.05,
+        rarity_mod = {1},
+        can_equip = true,
+        equip_type = "held"
+    },
+    {
         name = "Mine",
         category = "Explosives",
         stacklimit = 5,

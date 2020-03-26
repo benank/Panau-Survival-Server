@@ -49,6 +49,7 @@ ItemsConfig =
             ["Toxic Grenade"] = {},
             ["Flashbang"] = {},
             ["Flares"] = {},
+            ["Laser Grenade"] = {},
         }
     }
 }

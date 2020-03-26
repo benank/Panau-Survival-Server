@@ -9,8 +9,19 @@ function Grenades:__init()
 
     Network:Subscribe("items/GrenadeTossed", self, self.GrenadeTossed)
     Network:Subscribe("items/StartThrowingGrenade", self, self.StartThrowingGrenade)
+    Network:Subscribe("items/GrenadeExploded", self, self.GrenadeExploded)
     
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
+end
+
+function Grenades:GrenadeExploded(args, player)
+    if args.position and args.radius < 100 then
+        Events:Fire("items/ItemExplode", {
+            position = args.position,
+            radius = args.radius,
+            player = player
+        })
+    end
 end
 
 function Grenades:StartThrowingGrenade(args, player)
@@ -33,6 +44,7 @@ function Grenades:ToggleEquipped(args)
 end
 
 function Grenades:GrenadeTossed(args, sender)
+    if sender:InVehicle() then return end
     sender:SetNetworkValue("ThrowingGrenade", nil)
     if not sender:GetValue("EquippedGrenade") then return end
 	Network:SendNearby(sender, "items/GrenadeTossed", {
@@ -41,19 +53,6 @@ function Grenades:GrenadeTossed(args, sender)
         type = sender:GetValue("EquippedGrenade"),
         fusetime = math.max(0, args.fusetime)
     })
-end
-
-function Grenades:GrenadeExplode(args, sender)
-	--[[if sender:GetPosition():Distance(args.position) < args.type.radius then
-		local falloff = (args.type.radius - sender:GetPosition():Distance(args.position)) / (args.type.radius * 0.6)
-
-		sender:SetHealth(sender:GetHealth() - falloff)
-		
-		if sender:InVehicle() then
-			sender:GetVehicle():SetHealth(sender:GetVehicle():GetHealth() - falloff)
-			sender:GetVehicle():SetLinearVelocity(sender:GetVehicle():GetLinearVelocity() + ((sender:GetVehicle():GetPosition() - args.position):Normalized() * args.type.radius * 2 * falloff))
-		end
-	end]]
 end
 
 grenades = Grenades()
