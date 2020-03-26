@@ -56,7 +56,8 @@ Grenade.Types = {
         ["effect_time"] = 15 -- default effect time for this effect is 15
 	},
 	["Flares"] = {
-		["effect_id"] = 266,
+        ["effect_id"] = 266,
+        ["effect_angle"] = Angle(0, -math.pi / 12, 0),
         ["trail_effect_id"] = 61,
 		["weight"] = 1,
         ["drag"] = 0.15,
@@ -67,7 +68,27 @@ Grenade.Types = {
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),
         ["angle"] = Angle(0, math.pi / 2, 0),
-        ["effect_time"] = 15
+        ["effect_time"] = 15,
+        ["custom_func"] = function(grenade)
+            Timer.SetTimeout(7000, function()
+                ClientParticleSystem.Play(AssetLocation.Game, {
+                    position = grenade.position + Vector3(0, 81, 5),
+                    timeout = 8,
+                    angle = Angle(),
+                    path = "fx_flare_02.psmb"
+                })
+            end)
+            Timer.SetTimeout(1000, function()
+                ClientLight.Play({
+                    position = grenade.position + Vector3(0, 110, 0),
+                    angle = Angle(),
+                    color = Color(252, 73, 60),
+                    multiplier = 10,
+                    radius = 500,
+                    timeout = 15
+                })
+            end)
+        end
 	},
 	["Smoke Grenade"] = {
 		["effect_id"] = 71,
@@ -203,8 +224,7 @@ function Grenade:Detonate()
 	if not table.compare(self.type, Grenade.Types.Flashbang) then
 		Network:Send("GrenadeExplode", {
 			["position"] = self.object:GetPosition(),
-			["angle"] = self.object:GetAngle(),
-			["type"] = self.type
+			["angle"] = self.object:GetAngle()
 		})
 	elseif table.compare(self.type, Grenade.Types.Flashbang) then
 		local position, onscreen = Render:WorldToScreen(self.object:GetPosition())
@@ -227,7 +247,7 @@ function Grenade:Detonate()
 
 	ClientEffect.Play(AssetLocation.Game, {
 		["position"] = self.object:GetPosition(),
-		["angle"] = Angle(),
+		["angle"] = self.type.effect_angle or Angle(),
 		["effect_id"] = self.effect_id
     })
 
@@ -271,6 +291,10 @@ function Grenade:CreateAdditionalEffects()
                 self:CreateAdditionalEffects()
             end
         end)
+    end
+
+    if self.type.custom_func then
+        self.type.custom_func(self)
     end
 end
 

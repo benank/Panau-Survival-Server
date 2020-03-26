@@ -9,7 +9,6 @@ function Grenades:__init()
 
     Network:Subscribe("items/GrenadeTossed", self, self.GrenadeTossed)
     Network:Subscribe("items/StartThrowingGrenade", self, self.StartThrowingGrenade)
-    Network:Subscribe("GrenadeExplode", self, self.GrenadeExplode)
     
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
 end
