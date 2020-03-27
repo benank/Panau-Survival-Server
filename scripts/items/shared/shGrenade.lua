@@ -58,6 +58,8 @@ Grenade.Types = {
         ["restitution"] = 0.2,
         ["radius"] = 22,
         ["custom_func"] = function(grenade)
+
+            GrenadeEffectZones:Add(grenade.position, grenade.grenade_type, "Toxic", grenade.type.effect_time)
             
             local function createfx()
                 for i = 1, 6 do
@@ -158,23 +160,33 @@ Grenade.Types = {
 		["weight"] = 1,
 		["drag"] = 0.15,
 		["restitution"] = 0,
-        ["radius"] = 5,
+        ["radius"] = 3,
         ["repeat_interval"] = 5000,
         ["repeat_effect_id"] = 30,
         ["custom_func"] = function(grenade)
-            if grenade.type.repeat_interval then
-                ClientEffect.Play(AssetLocation.Game, {
-                    ["position"] = grenade.position,
-                    ["angle"] = Angle(),
-                    ["effect_id"] = grenade.type.repeat_effect_id or grenade.type.effect_id
-                })
 
-                Timer.SetTimeout(grenade.type.repeat_interval, function()
-                    if grenade.detonation_timer:GetSeconds() < grenade.type.effect_time - grenade.type.repeat_interval / 1000 * 0.9 then
-                        grenade.type.custom_func(grenade)
-                    end
-                end)
+            if grenade.position.y < 200 then return end
+
+            GrenadeEffectZones:Add(grenade.position, grenade.grenade_type, "Fire", grenade.type.effect_time)
+
+            local function func(grenade)
+                if grenade.type.repeat_interval then
+                    ClientEffect.Play(AssetLocation.Game, {
+                        ["position"] = grenade.position,
+                        ["angle"] = Angle(),
+                        ["effect_id"] = grenade.type.repeat_effect_id or grenade.type.effect_id
+                    })
+
+                    Timer.SetTimeout(grenade.type.repeat_interval, function()
+                        if grenade.detonation_timer:GetSeconds() < grenade.type.effect_time - grenade.type.repeat_interval / 1000 * 0.9 then
+                            func(grenade)
+                        end
+                    end)
+                end
             end
+
+            func(grenade)
+
         end,
 		["explode_on_contact"] = true,
         ["model"] = "km05.market.nl/go168-d.lod",

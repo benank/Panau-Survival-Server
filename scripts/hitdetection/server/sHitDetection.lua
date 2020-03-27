@@ -4,6 +4,25 @@ function sHitDetection:__init()
 
     Network:Subscribe("HitDetectionSyncHit", self, self.SyncHit)
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
+
+    Events:Subscribe("SecondTick", self, self.SecondTick)
+    Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
+end
+
+function sHitDetection:PlayerDeath(args)
+    args.player:SetNetworkValue("OnFire", false)
+end
+
+function sHitDetection:SecondTick()
+
+    for p in Server:GetPlayers() do
+        if p:GetValue("OnFire") and (p:GetPosition().y < 199.5 or p:GetValue("InSafezone")) then
+            p:SetNetworkValue("OnFire", false)
+        elseif p:GetValue("OnFire") then
+            p:SetHealth(p:GetHealth() - FireDamagePerSecond)
+        end
+    end
+
 end
 
 function sHitDetection:HitDetectionSyncExplosion(args, player)

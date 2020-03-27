@@ -10,8 +10,19 @@ function Grenades:__init()
     Network:Subscribe("items/GrenadeTossed", self, self.GrenadeTossed)
     Network:Subscribe("items/StartThrowingGrenade", self, self.StartThrowingGrenade)
     Network:Subscribe("items/GrenadeExploded", self, self.GrenadeExploded)
+    Network:Subscribe("items/PlayerInsideToxicGrenadeArea", self, self.PlayerInsideToxicGrenadeArea)
+    Network:Subscribe("items/PlayerInsideFireGrenadeArea", self, self.PlayerInsideFireGrenadeArea)
     
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
+end
+
+function Grenades:PlayerInsideFireGrenadeArea(args, player)
+    if player:GetValue("InSafezone") then return end
+    player:SetNetworkValue("OnFire", true)
+end
+
+function Grenades:PlayerInsideToxicGrenadeArea(args, player)
+    player:SetHealth(player:GetHealth() - 0.1)
 end
 
 function Grenades:GrenadeExploded(args, player)

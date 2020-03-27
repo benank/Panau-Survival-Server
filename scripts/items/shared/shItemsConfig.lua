@@ -43,13 +43,13 @@ ItemsConfig =
         },
         grenades = 
         {
-            ["HE Grenade"] = {},
-            ["Molotov"] = {},
-            ["Smoke Grenade"] = {},
-            ["Toxic Grenade"] = {},
-            ["Flashbang"] = {},
-            ["Flares"] = {},
-            ["Laser Grenade"] = {},
+            ["HE Grenade"] = true,
+            ["Molotov"] = true,
+            ["Smoke Grenade"] = true,
+            ["Toxic Grenade"] = true,
+            ["Flashbang"] = true,
+            ["Flares"] = true,
+            ["Laser Grenade"] = true,
         }
     }
 }
