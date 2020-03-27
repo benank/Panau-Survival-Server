@@ -36,20 +36,28 @@ Inventory.config =
             max_dura = true
         },
         {
-            name = "Mine",
-            amount = 5
+            name = "HE Grenade",
+            amount = 10
         },
         {
-            name = "Mine",
-            amount = 5
+            name = "Toxic Grenade",
+            amount = 10
         },
         {
-            name = "Claymore",
-            amount = 5
+            name = "Flares",
+            amount = 10
         },
         {
-            name = "Claymore",
-            amount = 5
+            name = "Smoke Grenade",
+            amount = 10
+        },
+        {
+            name = "Molotov",
+            amount = 10
+        },
+        {
+            name = "Flashbang",
+            amount = 10
         },
         {
             name = "Grapplehook",
