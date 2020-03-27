@@ -129,7 +129,7 @@ function sInventory:ToggleEquipped(args, player)
 
                     item.equipped = false
                     Events:Fire("Inventory/ToggleEquipped", 
-                        {player = self.player, item = self.contents[cat][stack_index].contents[1]:Copy():GetSyncObject()})
+                        {index = stack_index, player = self.player, item = self.contents[cat][stack_index].contents[1]:Copy():GetSyncObject()})
 
                 end
 
@@ -146,7 +146,7 @@ function sInventory:ToggleEquipped(args, player)
     self:Sync({cat = args.cat, sync_cat = true})
 
     Events:Fire("Inventory/ToggleEquipped", 
-        {player = self.player, item = self.contents[args.cat][index].contents[1]:Copy():GetSyncObject()})
+        {player = self.player, index = index, item = self.contents[args.cat][index].contents[1]:Copy():GetSyncObject()})
 
 end
 
@@ -742,7 +742,7 @@ function sInventory:CheckIfStackHasOneEquippedThenUnequip(stack)
             if item.equipped then
                 item.equipped = false
                 Events:Fire("Inventory/ToggleEquipped", 
-                    {player = self.player, item = item:GetSyncObject()})
+                    {player = self.player, index = _, item = item:GetSyncObject()})
             end
         end    
     end
@@ -774,6 +774,7 @@ function sInventory:Sync(args)
                         if item.equipped then
                             Events:Fire("Inventory/ToggleEquipped", {
                                 player = self.player, 
+                                index = _,
                                 item = item:Copy():GetSyncObject()})
                         end
                     end
