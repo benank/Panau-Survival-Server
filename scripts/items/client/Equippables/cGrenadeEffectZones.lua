@@ -38,7 +38,6 @@ end
 
 function GrenadeEffectZones:Add(position, grenade_type, type, timeout)
 
-    print("add")
     local grenade_data = Grenade.Types[grenade_type]
     if not grenade_data then return end
 
@@ -82,11 +81,15 @@ function GrenadeEffectZones:ExitZone(zone)
 end
 
 function GrenadeEffectZones:ShapeTriggerEnter(args)
+    if args.entity.__type ~= "LocalPlayer" then return end
+    if args.entity ~= LocalPlayer then return end
     if not self.active_zones[args.trigger:GetId()] then return end
     self:EnterZone(self.active_zones[args.trigger:GetId()])
 end
 
 function GrenadeEffectZones:ShapeTriggerExit(args)
+    if args.entity.__type ~= "LocalPlayer" then return end
+    if args.entity ~= LocalPlayer then return end
     if not self.active_zones[args.trigger:GetId()] then return end
     self:ExitZone(self.active_zones[args.trigger:GetId()])
 end

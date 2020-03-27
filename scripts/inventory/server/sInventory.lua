@@ -492,8 +492,8 @@ function sInventory:SetItemEquippedRemote(args)
 
     for item_index, item in pairs(stack.contents) do
         if item.uid == args.item.uid then
-            stack.contents[item_index].equipped = args.Equipped
-            
+            stack.contents[item_index].equipped = args.equipped
+
             Events:Fire("Inventory/ToggleEquipped", {player = self.player, index = index, item = item:GetSyncObject()})
             self:Sync({index = index, stack = stack, sync_stack = true})
             

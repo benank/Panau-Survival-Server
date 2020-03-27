@@ -62,6 +62,12 @@ function Grenades:__init()
 	self.thrownTimer = Timer()
 	self.flashedTimer = Timer()
 
+    self.time_to_explode = self.max_time
+    self.charge_timer = Timer()
+    self.throwing = false
+    self.override_animation = false
+    LocalPlayer:SetValue("ThrowingGrenade", false)
+
 	Events:Subscribe(var("ModuleUnload"):get(), self, self.ModuleUnload)
 	Events:Subscribe(var("InputPoll"):get(), self, self.InputPoll)
 	Events:Subscribe(var("KeyUp"):get(), self, self.KeyUp)
@@ -223,10 +229,6 @@ function Grenades:PostTick(args)
 
 	for k, grenade in ipairs(self.grenades) do
 		grenade:Update()
-
-		if not IsValid(grenade.object) or not IsValid(grenade.effect) then
-			table.remove(self.grenades, k)
-		end
 	end
 end
 

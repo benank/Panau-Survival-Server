@@ -254,9 +254,10 @@ function Grenade:__init(position, velocity, type, fusetime, is_mine)
 end
 
 function Grenade:Update()
-	local delta = (self.timer:GetSeconds() - self.lastTime) / 1
+    local delta = (self.timer:GetSeconds() - self.lastTime) / 1
+    if self.detonated then return end
 
-    if self.timer:GetSeconds() < self.fusetime or self.grenade_type == "Molotov" then
+    if self.timer:GetSeconds() < self.fusetime or self.type.explode_on_contact then
 		if not self.stopped then
 			self.velocity = (self.velocity - (self.velocity * self.drag * delta)) + (Vector3.Down * self.weight * 9.81 * delta)
 
@@ -279,17 +280,19 @@ function Grenade:Update()
 				end
 			end
 
-			if not self.stopped then
-				self.object:SetPosition(self.object:GetPosition() + (self.velocity * delta))
-				self.effect:SetPosition(self.object:GetPosition())
-				self.object:SetAngle(Angle.FromVectors(self.velocity, Vector3.Right))
-                self.effect:SetAngle(self.object:GetAngle())
-			else
-				self.object:SetPosition(self.object:GetPosition() + (Vector3.Up * 0.05))
-				self.effect:SetPosition(self.object:GetPosition())
+            if IsValid(self.object) and IsValid(self.effect) then
+                if not self.stopped then
+                    self.object:SetPosition(self.object:GetPosition() + (self.velocity * delta))
+                    self.effect:SetPosition(self.object:GetPosition())
+                    self.object:SetAngle(Angle.FromVectors(self.velocity, Vector3.Right))
+                    self.effect:SetAngle(self.object:GetAngle())
+                else
+                    self.object:SetPosition(self.object:GetPosition() + (Vector3.Up * 0.05))
+                    self.effect:SetPosition(self.object:GetPosition())
+                end
             end
             
-            if IsValid(self.sound) then self.sound:SetPosition(self.object:GetPosition()) end
+            if IsValid(self.sound) and IsValid(self.object) then self.sound:SetPosition(self.object:GetPosition()) end
 		end
 	elseif not self.type.explode_on_contact then
 		self:Detonate()
@@ -299,6 +302,10 @@ function Grenade:Update()
 end
 
 function Grenade:Detonate()
+    if self.detonated then return end
+
+    self.detonated = true
+
 	if not table.compare(self.type, Grenade.Types.Flashbang) then
         Events:Fire(var("HitDetection/Explosion"):get(), {
 			position = self.object:GetPosition(),
@@ -332,8 +339,6 @@ function Grenade:Detonate()
 		end
     end
     
-    self.detonated = true
-
 	ClientEffect.Play(AssetLocation.Game, {
 		["position"] = self.object:GetPosition(),
 		["angle"] = self.type.effect_angle or Angle(),
@@ -352,6 +357,6 @@ function Grenade:Detonate()
 end
 
 function Grenade:Remove()
-    self.object:Remove()
-	self.effect:Remove()
+    if IsValid(self.object) then self.object:Remove() end
+	if IsValid(self.effect) then self.effect:Remove() end
 end
