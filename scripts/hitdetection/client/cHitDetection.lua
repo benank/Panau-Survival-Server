@@ -30,7 +30,7 @@ function cHitDetection:Explosion(args)
         local diff = (to_pos - from_pos):Normalized()
         local ray = Physics:Raycast(from_pos, diff, 0, 15, false)
 
-        local in_fov = ray.entity and ray.entity.__type ~= "LocalPlayer"
+        local in_fov = ray.entity and ray.entity.__type == "LocalPlayer"
     
         local dist = args.position:Distance(args.local_position)
         dist = math.min(explosive_data.radius, math.max(0, dist - 5))
