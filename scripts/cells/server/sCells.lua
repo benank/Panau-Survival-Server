@@ -10,6 +10,7 @@ function sCells:__init()
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
     Network:Subscribe("Cells/NewCellSyncRequest", self, self.CellSyncRequest)
+    Network:Subscribe("Cells/InitialCellSync", self, self.CellSyncRequest)
 
     --[[
     To subscribe to cell events, use this:
@@ -43,7 +44,7 @@ function sCells:ResetPlayerCellValue(player)
 
     local cell = {}
     for _, cell_size in pairs(CELL_SIZES) do
-        cell[cell_size] = {x = nil, y = nil}
+        cell[cell_size] = {x = nil, y = nil, z = nil}
     end
 
 	player:SetValue("Cell", cell)
@@ -61,54 +62,36 @@ end
 function sCells:CellSyncRequest(args, player)
 
     if not IsValid(player) then return end
+    if not args.position then return end
     
     for _, cell_size in pairs(CELL_SIZES) do
-        self:UpdatePlayerCell(player, cell_size)
+        self:UpdatePlayerCell(player, args.position, cell_size)
     end
 
 end
 
-function sCells:UpdatePlayerCell(player, cell_size)
+function sCells:UpdatePlayerCell(player, position, cell_size)
     
     if not IsValid(player) then return end
 
+    if not player:GetValue("Cell") then
+        player:SetValue("Cell", {[cell_size] = {}})
+    end
+
     local old_cell = player:GetValue("Cell")[cell_size]
-    local new_cell = GetCell(player:GetPosition(), cell_size)
+    local new_cell = GetCell(position, cell_size)
 
     -- Check if they entered a new cell
-    if new_cell.x ~= old_cell.x or new_cell.y ~= old_cell.y or force then
+    if new_cell.x ~= old_cell.x or new_cell.y ~= old_cell.y then
 
-        local old_adjacent = {}
-        local new_adjacent = GetAdjacentCells(new_cell)
+        
+        local cell_data = UpdateCell(old_cell, new_cell)
+        cell_data.player = player
 
-        -- Adjacent cells that are new
-        local updated = GetAdjacentCells(new_cell)
-
-        -- If this wasn't the first sync, then the old cell will be valid
-        if old_cell.x ~= nil and old_cell.y ~= nil then
-            old_adjacent = GetAdjacentCells(old_cell)
-
-            for i = 1, #old_adjacent do
-                for j = 1, #new_adjacent do
-                    if old_adjacent[i] and new_adjacent[j] 
-                    and old_adjacent[i].x == new_adjacent[j].x and old_adjacent[i].y == new_adjacent[j].y then
-                        old_adjacent[j] = nil
-                        updated[j] = nil
-                    end
-                end
-            end
-        end
-
-        --debug(string.format("%s entered cell %s, %s [%s]", player:GetName(), tostring(new_cell.x), tostring(new_cell.y), tostring(cell_size)))
+        --[[debug(string.format("%s entered cell %s, %s [%s]", 
+            player:GetName(), tostring(new_cell.x), tostring(new_cell.y), tostring(cell_size)))]]
     
-        Events:Fire("Cells/PlayerCellUpdate" .. tostring(cell_size), {
-            player = player,
-            old_cell = old_cell,
-            old_adjacent = old_adjacent,
-            cell = new_cell,
-            adjacent = new_adjacent,
-            updated = updated
-        })
+        Events:Fire("Cells/PlayerCellUpdate" .. tostring(cell_size), cell_data)
 
         local player_cell_total = player:GetValue("Cell")
         player_cell_total[cell_size] = new_cell

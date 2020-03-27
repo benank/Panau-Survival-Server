@@ -7,7 +7,7 @@ function cCells:__init()
 
     self.current_cell = {}
     self.ready_for_cell = false
-    self.CELL_SCAN_INTERVAL = 2000
+    self.CELL_SCAN_INTERVAL = 1000
     self.scan_timer = Timer()
 
     for _, cell_size in pairs(CELL_SIZES) do
@@ -17,6 +17,9 @@ function cCells:__init()
     Events:Subscribe(var("Render"):get(), self, self.Render)
     Events:Subscribe(var("ModulesLoad"):get(), self, self.ModulesLoad)
 
+    Network:Send(CellSyncRequestEvent:get(), {
+        position = self:GetViewpoint()
+    })
     
     --[[
     To subscribe to cell events, use this:
@@ -33,48 +36,26 @@ function cCells:__init()
     Cells use a lazy loading strategy and only load the cells that have been accessed by a player.
 
     ]]
+
+end
+
+function cCells:GetViewpoint()
+    return Camera:GetPosition() + Camera:GetAngle() * Vector3.Forward * 3
 end
 
 function cCells:CheckIfPlayerInNewCell(cell_size)
 
     -- Get our current cell
-    local cell = GetCell(LocalPlayer:GetPosition(), cell_size)
+    local cell = GetCell(self:GetViewpoint(), cell_size)
     local current_cell = self.current_cell[cell_size]
 
     -- if our cell is different than our previous cell, update it
-    if cell.x ~= current_cell.x or cell.y ~= current_cell.y then
+    if cell.x ~= current_cell.x or cell.y ~= current_cell.y or cell.z ~= current_cell.z then
     
-        local old_adjacent = {}
-        local new_adjacent = GetAdjacentCells(cell)
-
-        local updated = GetAdjacentCells(cell)
-
-        if current_cell.x ~= nil and current_cell.y ~= nil then
-
-            old_adjacent = GetAdjacentCells(current_cell)
-
-            -- Filter out old adjacent cells that are still adjacent -- old adjacent only contains old ones that are no longer adjacent
-            for old_index, old_adjacent_cell in pairs(old_adjacent) do
-                for new_index, new_adjacent_cell in pairs(updated) do
-            
-                    -- If new adjacent also contains a cell from old adjacent, remove it from old adjacent
-                    if old_adjacent_cell.x == new_adjacent_cell.x and old_adjacent_cell.y == new_adjacent_cell.y then
-                        old_adjacent[old_index] = nil
-                        updated[new_index] = nil
-                    end
-                    
-                end
-            end
-        end
-
+        local cell_data = UpdateCell(current_cell, cell)
+        
         -- Fire cell upated event on localplayer
-        Events:Fire(LocalPlayerCellUpdateEvent:get() .. tostring(cell_size), {
-            old_cell = current_cell,
-            old_adjacent = old_adjacent,
-            cell = cell,
-            adjacent = new_adjacent,
-            updated = updated
-        })
+        Events:Fire(LocalPlayerCellUpdateEvent:get() .. tostring(cell_size), cell_data)
 
         -- Update the current cell we are in
         self.current_cell[cell_size] = cell
@@ -90,12 +71,15 @@ function cCells:CheckCells()
     
     -- Check if we entered a new cell, if so tell the server
     for _, cell_size in pairs(CELL_SIZES) do
-        entered_new_cell = self:CheckIfPlayerInNewCell(cell_size) or cell_check
+        local cell_check = self:CheckIfPlayerInNewCell(cell_size)
+        entered_new_cell = entered_new_cell or cell_check
     end
 
     -- If we entered at least one new cell, tell the server to update us
     if entered_new_cell then
-        Network:Send(CellSyncRequestEvent:get())
+        Network:Send(CellSyncRequestEvent:get(), {
+            position = self:GetViewpoint()
+        })
     end
 
 end
@@ -115,12 +99,13 @@ function cCells:Render(args)
 end
 
 function cCells:ModulesLoad()
-    
+    self.ready_for_cell = true
+    self.current_cell = {} -- Reset current cell
+
     for _, cell_size in pairs(CELL_SIZES) do
         self.current_cell[cell_size] = {}
     end
 
-    self.ready_for_cell = true
 end
 
 cCells = cCells()
