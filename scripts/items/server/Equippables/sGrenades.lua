@@ -22,6 +22,7 @@ function Grenades:PlayerInsideFireGrenadeArea(args, player)
 end
 
 function Grenades:PlayerInsideToxicGrenadeArea(args, player)
+    if player:GetValue("InSafezone") then return end
     player:SetHealth(player:GetHealth() - 0.1)
 end
 
