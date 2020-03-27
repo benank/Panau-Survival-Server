@@ -52,6 +52,7 @@ function Grenades:__init()
     self.max_time = 5
     self.max_speed = 25
     self.flashed_time = Grenade.FlashTime
+    self.can_use_timer = Timer()
 
 	self.grenades = {}
 	self.dummies = {}
@@ -134,6 +135,7 @@ function Grenades:KeyUp(args)
 
     if args.key == string.byte(self.throw_key) and self.equipped and self.throwing then
         self.throwing = false
+        self.can_use_timer:Restart()
 
         if not self.override_animation then
             self:TossGrenade(Grenade.Types[self.grenade_name])
@@ -145,11 +147,13 @@ end
 function Grenades:KeyDown(args)
 
     if LocalPlayer:GetValue(var("InSafezone"):get()) or LocalPlayer:InVehicle() then return end
+    if self.can_use_timer:GetSeconds() < 0.5 then return end
 
     if args.key == string.byte(self.throw_key) and self.equipped and not self.throwing and self.grenade_name:len() > 1 then
         self.time_to_explode = self.max_time
         self.charge_timer = Timer()
         self.throwing = true
+        self.can_use_timer:Restart()
         self.override_animation = false
         LocalPlayer:SetValue("ThrowingGrenade", true)
         Network:Send(var("items/StartThrowingGrenade"):get())
@@ -160,6 +164,7 @@ end
 function Grenades:PostTick(args)
     if not self.thrown and self.grenade_name:len() > 1 then
         
+        self.can_use_timer:Restart()
 		local position = LocalPlayer:GetBonePosition("ragdoll_LeftForeArm") + LocalPlayer:GetBoneAngle("ragdoll_LeftForeArm") * Grenade.Types[self.grenade_name].offset
 
         if self.override_animation then
@@ -198,6 +203,7 @@ function Grenades:PostTick(args)
     end
     
     if self.throwing and not self.override_animation then
+        self.can_use_timer:Restart()
         local old_time_to_explode = self.time_to_explode
         self.time_to_explode = self.max_time - tonumber(string.format("%.0f", self.charge_timer:GetSeconds()))
 
