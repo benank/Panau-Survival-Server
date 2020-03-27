@@ -21,6 +21,7 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.ModifyStack-" .. self.steamID, self, self.ModifyStackRemote))
     table.insert(self.events, Events:Subscribe("Inventory.ModifyDurability-" .. self.steamID, self, self.ModifyDurabilityRemote))
     table.insert(self.events, Events:Subscribe("Inventory.OperationBlock-" .. self.steamID, self, self.OperationBlockRemote))
+    table.insert(self.events, Events:Subscribe("Inventory.SetItemEquipped-" .. self.steamID, self, self.SetItemEquippedRemote))
 
     table.insert(self.events, Events:Subscribe("Inventory.ToggleBackpackEquipped-" .. self.steamID, self, self.ToggleBackpackEquipped))
 
@@ -129,7 +130,7 @@ function sInventory:ToggleEquipped(args, player)
 
                     item.equipped = false
                     Events:Fire("Inventory/ToggleEquipped", 
-                        {player = self.player, item = self.contents[cat][stack_index].contents[1]:Copy():GetSyncObject()})
+                        {index = stack_index, player = self.player, item = self.contents[cat][stack_index].contents[1]:Copy():GetSyncObject()})
 
                 end
 
@@ -146,7 +147,7 @@ function sInventory:ToggleEquipped(args, player)
     self:Sync({cat = args.cat, sync_cat = true})
 
     Events:Fire("Inventory/ToggleEquipped", 
-        {player = self.player, item = self.contents[args.cat][index].contents[1]:Copy():GetSyncObject()})
+        {player = self.player, index = index, item = self.contents[args.cat][index].contents[1]:Copy():GetSyncObject()})
 
 end
 
@@ -476,6 +477,32 @@ function sInventory:ModifyStackRemote(args)
 
 end
 
+function sInventory:SetItemEquippedRemote(args)
+
+    if args.player ~= self.player then
+        error("sInventory:ModifyDurabilityRemote failed: player does not match")
+        return
+    end
+
+    local cat = args.item.category
+    local index = args.index
+
+    local stack = self.contents[cat][index]
+    if not stack then return end
+
+    for item_index, item in pairs(stack.contents) do
+        if item.uid == args.item.uid then
+            stack.contents[item_index].equipped = args.equipped
+
+            Events:Fire("Inventory/ToggleEquipped", {player = self.player, index = index, item = item:GetSyncObject()})
+            self:Sync({index = index, stack = stack, sync_stack = true})
+            
+            break
+        end
+    end
+
+end
+
 function sInventory:ModifyDurabilityRemote(args)
 
     if args.player ~= self.player then
@@ -742,7 +769,7 @@ function sInventory:CheckIfStackHasOneEquippedThenUnequip(stack)
             if item.equipped then
                 item.equipped = false
                 Events:Fire("Inventory/ToggleEquipped", 
-                    {player = self.player, item = item:GetSyncObject()})
+                    {player = self.player, index = _, item = item:GetSyncObject()})
             end
         end    
     end
@@ -774,6 +801,7 @@ function sInventory:Sync(args)
                         if item.equipped then
                             Events:Fire("Inventory/ToggleEquipped", {
                                 player = self.player, 
+                                index = _,
                                 item = item:Copy():GetSyncObject()})
                         end
                     end

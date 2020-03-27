@@ -4,6 +4,25 @@ function sHitDetection:__init()
 
     Network:Subscribe("HitDetectionSyncHit", self, self.SyncHit)
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
+
+    Events:Subscribe("SecondTick", self, self.SecondTick)
+    Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
+end
+
+function sHitDetection:PlayerDeath(args)
+    args.player:SetNetworkValue("OnFire", false)
+end
+
+function sHitDetection:SecondTick()
+
+    for p in Server:GetPlayers() do
+        if p:GetValue("OnFire") and (p:GetPosition().y < 199.5 or p:GetValue("InSafezone")) then
+            p:SetNetworkValue("OnFire", false)
+        elseif p:GetValue("OnFire") then
+            p:SetHealth(p:GetHealth() - FireDamagePerSecond)
+        end
+    end
+
 end
 
 function sHitDetection:HitDetectionSyncExplosion(args, player)
@@ -23,11 +42,14 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     local hit_type = WeaponHitType.Explosive
     local original_damage = explosive_data.damage * percent_modifier
     local damage = original_damage
-    damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 
-    local old_hp = player:GetHealth()
-    player:SetValue("LastHealth", old_hp)
-    player:Damage(damage / 100, DamageEntity.Explosion)
+    if args.in_fov then
+        damage = self:GetArmorMod(player, hit_type, damage, original_damage)
+
+        local old_hp = player:GetHealth()
+        player:SetValue("LastHealth", old_hp)
+        player:Damage(damage / 100, DamageEntity.Explosion)
+    end
 
     print(string.format("%s was exploded for %s damage [%s]",
         player:GetName(), tostring(damage), tostring(args.type)))
@@ -37,6 +59,11 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
         damage = damage,
         type = args.type
     })
+
+    if player:InVehicle() then
+        player:GetVehicle():SetHealth(player:GetVehicle():GetHealth() - original_damage / explosive_data.damage * 0.5)
+        player:GetVehicle():SetLinearVelocity(player:GetVehicle():GetLinearVelocity() + ((player:GetVehicle():GetPosition() - args.position):Normalized() * explosive_data.radius * explosive_data.knockback))
+    end
 
 end
 

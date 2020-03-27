@@ -84,7 +84,21 @@ function GenerateDefaultInventory()
 
     for k,v in pairs(Inventory.config.default_inv) do 
         
-        table.insert(items, shStack({contents = {CreateItem(v)}}))
+        local item = CreateItem(v)
+        local contents = {item}
+
+        if item.durable or item.can_equip then
+            contents = {}
+            for i = 1, v.amount do
+                table.insert(contents, CreateItem({
+                    name = v.name,
+                    amount = 1,
+                    max_dura = true
+                }))
+            end
+        end
+
+        table.insert(items, shStack({contents = contents}))
         
     end
 

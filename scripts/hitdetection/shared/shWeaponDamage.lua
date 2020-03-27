@@ -13,10 +13,14 @@ WeaponBaseDamage =
     [Weapon.Shotgun] = 5,
 }
 
+FireDamagePerSecond = 0.05
+
 ExplosiveBaseDamage = 
 {
     ["Mine"] = {damage = 130, radius = 10, knockback = 10},
-    ["Claymore"] = {damage = 150, radius = 10, knockback = 12}
+    ["Claymore"] = {damage = 150, radius = 10, knockback = 12},
+    ["HE Grenade"] = {damage = 110, radius = 5, knockback = 5},
+    ["Laser Grenade"] = {damage = 300, radius = 8, knockback = 60}
 }
 
 WeaponHitType = 

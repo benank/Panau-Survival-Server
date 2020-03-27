@@ -19,17 +19,18 @@ end
 -- Explosions from items, like mines
 function cHitDetection:Explosion(args)
 
+    if LocalPlayer:GetValue(var("InSafezone"):get()) then return end
+
     local explosive_data = ExplosiveBaseDamage[args.type]
 
     if explosive_data then
 
         local from_pos = args.position + Vector3.Up
-        local to_pos = LocalPlayer:GetBonePosition("ragdoll_Spine")
+        local to_pos = LocalPlayer:GetBonePosition(var("ragdoll_Spine"):get())
         local diff = (to_pos - from_pos):Normalized()
         local ray = Physics:Raycast(from_pos, diff, 0, 15, false)
 
-        -- Not on FOV
-        if not ray.entity or ray.entity.__type ~= "LocalPlayer"then return end
+        local in_fov = ray.entity and ray.entity.__type ~= "LocalPlayer"
     
         local dist = args.position:Distance(args.local_position)
         dist = math.min(explosive_data.radius, math.max(0, dist - 5))
@@ -39,13 +40,16 @@ function cHitDetection:Explosion(args)
 
         local knockback_effect = explosive_data.knockback * percent_modifier
 
-        LocalPlayer:SetRagdollLinearVelocity(
-            LocalPlayer:GetLinearVelocity() + (-(args.local_position - args.position):Normalized() + Vector3(0, 1.5, 0)) * knockback_effect)
+        if in_fov and not LocalPlayer:InVehicle() then
+            LocalPlayer:SetRagdollLinearVelocity(
+                LocalPlayer:GetLinearVelocity() + ((args.local_position - args.position):Normalized() + Vector3(0, 1.5, 0)) * knockback_effect)
+        end
 
         Network:Send(var("HitDetectionSyncExplosion"):get(), {
             position = args.position,
             local_position = args.local_position,
-            type = args.type
+            type = args.type,
+            in_fov = in_fov
         })
 
     end

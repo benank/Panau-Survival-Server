@@ -258,6 +258,27 @@ elseif Server then
 
     end
 
+    Inventory.SetItemEquipped = function(args)
+
+        if not IsValid(args.player) then
+            error("Failed to Inventory.SetItemEquipped because args.player was invalid")
+            return
+        end
+
+        if not args.item then
+            error("Failed to Inventory.SetItemEquipped because args.item was invalid")
+            return
+        end
+
+        if not args.index then
+            error("Failed to Inventory.SetItemEquipped because args.index was invalid")
+            return
+        end
+
+        Events:Fire("Inventory.SetItemEquipped-"..tostring(args.player:GetSteamId().id), args)
+
+    end
+
     Inventory.ModifyStack = function(args)
 
         if not IsValid(args.player) then

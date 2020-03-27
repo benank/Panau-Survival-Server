@@ -260,11 +260,12 @@ Items =
     {
         name = "Flares",
         category = "Explosives",
-        stacklimit = 5,
+        stacklimit = 10,
         loot = {1,2,3},
         rarity = 0.05,
         rarity_mod = {1,1,1},
-        can_use = true
+        can_equip = true,
+        equip_type = "held"
     },
     {
         name = "Healthpack",
@@ -378,22 +379,22 @@ Items =
         can_use = true
     },
     {
-        name = "Grenade",
+        name = "HE Grenade",
         category = "Explosives",
-        stacklimit = 2,
-        loot = {2,3},
+        stacklimit = 10,
+        loot = {3,4},
         rarity = 0.1,
         rarity_mod = {1,2},
         can_equip = true,
         equip_type = "held"
     },
     {
-        name = "HE Grenade",
+        name = "Laser Grenade",
         category = "Explosives",
-        stacklimit = 2,
-        loot = {3,4},
-        rarity = 0.1,
-        rarity_mod = {1,2},
+        stacklimit = 5,
+        loot = {4},
+        rarity = 0.05,
+        rarity_mod = {1},
         can_equip = true,
         equip_type = "held"
     },
@@ -409,7 +410,7 @@ Items =
     {
         name = "Molotov",
         category = "Explosives",
-        stacklimit = 2,
+        stacklimit = 10,
         loot = {3,4},
         rarity = 0.1,
         rarity_mod = {1,2},
@@ -419,7 +420,7 @@ Items =
     {
         name = "Smoke Grenade",
         category = "Explosives",
-        stacklimit = 2,
+        stacklimit = 10,
         loot = {1,2},
         rarity = 0.1,
         rarity_mod = {1,2},
@@ -429,7 +430,17 @@ Items =
     {
         name = "Toxic Grenade",
         category = "Explosives",
-        stacklimit = 2,
+        stacklimit = 10,
+        loot = {2,3},
+        rarity = 0.1,
+        rarity_mod = {1,2},
+        can_equip = true,
+        equip_type = "held"
+    },
+    {
+        name = "Flashbang",
+        category = "Explosives",
+        stacklimit = 10,
         loot = {2,3},
         rarity = 0.1,
         rarity_mod = {1,2},
