@@ -76,6 +76,10 @@ function sCells:UpdatePlayerCell(player, position, cell_size)
 
     if not player:GetValue("Cell") then
         player:SetValue("Cell", {[cell_size] = {}})
+    elseif not player:GetValue("Cell")[cell_size] then
+        local cell_data = player:GetValue("Cell")
+        cell_data[cell_size] = {}
+        player:SetValue("Cell", cell_data)
     end
 
     local old_cell = player:GetValue("Cell")[cell_size]
