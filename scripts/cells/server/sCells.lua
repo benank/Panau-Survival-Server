@@ -44,7 +44,7 @@ function sCells:ResetPlayerCellValue(player)
 
     local cell = {}
     for _, cell_size in pairs(CELL_SIZES) do
-        cell[cell_size] = {x = nil, y = nil, z = nil}
+        cell[cell_size] = {x = nil, y = nil}
     end
 
 	player:SetValue("Cell", cell)
@@ -84,7 +84,6 @@ function sCells:UpdatePlayerCell(player, position, cell_size)
     -- Check if they entered a new cell
     if new_cell.x ~= old_cell.x or new_cell.y ~= old_cell.y then
 
-        
         local cell_data = UpdateCell(old_cell, new_cell)
         cell_data.player = player
 

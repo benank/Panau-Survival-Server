@@ -50,7 +50,7 @@ function cCells:CheckIfPlayerInNewCell(cell_size)
     local current_cell = self.current_cell[cell_size]
 
     -- if our cell is different than our previous cell, update it
-    if cell.x ~= current_cell.x or cell.y ~= current_cell.y or cell.z ~= current_cell.z then
+    if cell.x ~= current_cell.x or cell.y ~= current_cell.y then
     
         local cell_data = UpdateCell(current_cell, cell)
         
