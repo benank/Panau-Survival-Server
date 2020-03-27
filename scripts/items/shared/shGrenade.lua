@@ -18,7 +18,8 @@ Grenade.Types = {
 		["effect_id"] = 411,
         ["trail_effect_id"] = 61,
 		["weight"] = 1,
-		["drag"] = 0.15,
+        ["drag"] = 0.15,
+        ["trigger_explosives"] = true,
 		["restitution"] = 0.2,
 		["radius"] = 8,
         ["model"] = "general.blz/wea33-wea33.lod",
@@ -31,6 +32,7 @@ Grenade.Types = {
         ["trail_effect_id"] = 61,
 		["weight"] = 1,
 		["drag"] = 0.15,
+        ["trigger_explosives"] = true,
 		["restitution"] = 0.2,
 		["radius"] = 8,
         ["model"] = "general.blz/wea33-wea33.lod",
@@ -159,6 +161,7 @@ Grenade.Types = {
         ["trail_effect_id"] = 326,
 		["weight"] = 1,
 		["drag"] = 0.15,
+        ["trigger_explosives"] = true,
 		["restitution"] = 0,
         ["radius"] = 3,
         ["repeat_interval"] = 5000,
@@ -303,7 +306,7 @@ function Grenade:Detonate()
             local_position = LocalPlayer:GetPosition()
         })
         
-        if self.is_mine then
+        if self.is_mine and Grenade.Types[self.grenade_type].trigger_explosives then
             Network:Send(var("items/GrenadeExploded"):get(), {
                 position = self.object:GetPosition(),
                 radius = self.type.radius

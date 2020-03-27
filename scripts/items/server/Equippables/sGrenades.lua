@@ -50,6 +50,7 @@ function Grenades:ToggleEquipped(args)
     })
 
     args.player:SetNetworkValue("EquippedGrenade", args.item.name)
+    args.player:SetValue("EquippedGrenadeData", args)
     args.player:SetNetworkValue("ThrowingGrenade", nil)
 
 end
@@ -58,6 +59,45 @@ function Grenades:GrenadeTossed(args, sender)
     if sender:InVehicle() then return end
     sender:SetNetworkValue("ThrowingGrenade", nil)
     if not sender:GetValue("EquippedGrenade") then return end
+
+    local item_data = sender:GetValue("EquippedGrenadeData")
+    if not item_data then return end
+
+    local inv = Inventory.Get({player = sender})
+    if not inv then return end
+
+    local stack = inv[item_data.item.category][item_data.index]
+
+    local stack_index = -1
+
+    for index, stack in pairs(inv[item_data.item.category]) do
+        for _, item in pairs(stack.contents) do
+            if item.uid == item_data.item.uid then
+                stack_index = index
+                break
+            end
+        end
+    end
+
+    Inventory.RemoveItem({
+        item = item_data.item,
+        index = stack_index,
+        player = sender
+    })
+
+    inv = Inventory.Get({player = sender}) -- Refresh inventory
+
+    -- If there is another grenade in the stack, equip it
+    local stack = inv[item_data.item.category][stack_index]
+    if stack and stack:GetProperty("name") == item_data.item.name then
+        Inventory.SetItemEquipped({
+            player = sender,
+            item = stack.contents[1]:GetSyncObject(),
+            index = stack_index,
+            equipped = true
+        })
+    end
+
 	Network:SendNearby(sender, "items/GrenadeTossed", {
         position = args.position,
         velocity = args.velocity,
