@@ -158,7 +158,7 @@ function Grenades:KeyDown(args)
 end
 
 function Grenades:PostTick(args)
-    if not self.thrown then
+    if not self.thrown and self.grenade_name:len() > 1 then
         
 		local position = LocalPlayer:GetBonePosition("ragdoll_LeftForeArm") + LocalPlayer:GetBoneAngle("ragdoll_LeftForeArm") * Grenade.Types[self.grenade_name].offset
 
