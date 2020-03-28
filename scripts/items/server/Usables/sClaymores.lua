@@ -47,8 +47,8 @@ function sClaymores:DestroyClaymore(args, player)
 
     if claymore.exploded then return end
 
-    Network:Send(player, "items/ClaymoreExplode", {position = claymore.position, id = claymore.id})
-    Network:SendNearby(player, "items/ClaymoreExplode", {position = claymore.position, id = claymore.id})
+    Network:Send(player, "items/ClaymoreExplode", {position = claymore.position, id = claymore.id, owner_id = claymore.owner_id})
+    Network:SendNearby(player, "items/ClaymoreExplode", {position = claymore.position, id = claymore.id, owner_id = claymore.owner_id})
 
     local cmd = SQL:Command("DELETE FROM claymores where id = ?")
     cmd:Bind(1, args.id)

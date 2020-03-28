@@ -19,11 +19,37 @@ end
 function Grenades:PlayerInsideFireGrenadeArea(args, player)
     if player:GetValue("InSafezone") then return end
     player:SetNetworkValue("OnFire", true)
+
+    local attacker = nil
+
+    for p in Server:GetPlayers() do
+        if tostring(p:GetSteamId()) == args.attacker_id then
+            attacker = p
+            break
+        end
+    end
+
+    player:SetNetworkValue("FireAttacker", attacker)
 end
 
 function Grenades:PlayerInsideToxicGrenadeArea(args, player)
     if player:GetValue("InSafezone") then return end
-    player:SetHealth(player:GetHealth() - 0.1)
+    -- TODO: integrate with hitdetection and add attacker argument to Damage
+    
+    local attacker = nil
+
+    for p in Server:GetPlayers() do
+        if tostring(p:GetSteamId()) == args.attacker_id then
+            attacker = p
+            break
+        end
+    end
+
+    Events:Fire("HitDetection/PlayerInToxicArea", {
+        player = player,
+        attacker = attacker,
+        type = "Toxic Grenade"
+    })
 end
 
 function Grenades:GrenadeExploded(args, player)
@@ -103,7 +129,8 @@ function Grenades:GrenadeTossed(args, sender)
         position = args.position,
         velocity = args.velocity,
         type = sender:GetValue("EquippedGrenade"),
-        fusetime = math.max(0, args.fusetime)
+        fusetime = math.max(0, args.fusetime),
+        owner_id = tostring(sender:GetSteamId())
     })
 end
 

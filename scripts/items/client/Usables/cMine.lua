@@ -26,7 +26,7 @@ function cMine:ShapeTriggerEnter(args)
 
     self.exploding = true
     Network:Send(var("items/StepOnMine"):get(), {id = self.id})
-    cMines:MineTrigger({position = self.position, id = self.id})
+    cMines:MineTrigger({position = self.position, id = self.id, owner_id = self.owner_id})
 end
 
 function cMine:GetCell()

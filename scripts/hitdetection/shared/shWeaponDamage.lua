@@ -14,12 +14,13 @@ WeaponBaseDamage =
 }
 
 FireDamagePerSecond = 0.05
+ToxicDamagePerSecond = 0.08
 
 ExplosiveBaseDamage = 
 {
-    ["Mine"] = {damage = 130, radius = 10, knockback = 10},
-    ["Claymore"] = {damage = 150, radius = 10, knockback = 12},
-    ["HE Grenade"] = {damage = 110, radius = 5, knockback = 5},
+    ["Mine"] = {damage = 140, radius = 10, knockback = 10},
+    ["Claymore"] = {damage = 170, radius = 10, knockback = 12},
+    ["HE Grenade"] = {damage = 120, radius = 5, knockback = 5},
     ["Laser Grenade"] = {damage = 300, radius = 8, knockback = 60}
 }
 

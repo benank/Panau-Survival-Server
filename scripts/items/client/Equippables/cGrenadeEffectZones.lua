@@ -22,28 +22,33 @@ end
 
 
 function GrenadeEffectZones:SecondTick()
+    local inside_toxic_zone = false
+
     for id, zone in pairs(self.active_zones) do
 
         if zone.inside_zone then
             -- Player is currently inside this zone
 
             -- apply damage, etc
-            if zone.type == "Toxic" then
-                Network:Send(var("items/PlayerInsideToxicGrenadeArea"):get())
+            if zone.type == "Toxic" and not inside_toxic_zone then
+                Network:Send(var("items/PlayerInsideToxicGrenadeArea"):get(), {
+                    attacker_id = zone.owner_id
+                })
+                inside_toxic_zone = true
             end
         end
 
     end
 end
 
-function GrenadeEffectZones:Add(position, grenade_type, type, timeout)
+function GrenadeEffectZones:Add(args)
 
-    local grenade_data = Grenade.Types[grenade_type]
+    local grenade_data = Grenade.Types[args.grenade_type]
     if not grenade_data then return end
 
     local zone = {
         trigger = ShapeTrigger.Create({
-            position = position,
+            position = args.position,
             angle = Angle(),
             components = {
                 {
@@ -58,10 +63,11 @@ function GrenadeEffectZones:Add(position, grenade_type, type, timeout)
             trigger_npc = false,
             vehicle_type = VehicleTriggerType.All
         }),
-        type = type,
+        type = args.type,
+        owner_id = args.owner_id,
         inside_zone = false,
         timer = Timer(),
-        timeout = timeout
+        timeout = args.timeout
     }
 
     self.active_zones[zone.trigger:GetId()] = zone
@@ -72,7 +78,9 @@ function GrenadeEffectZones:EnterZone(zone)
     zone.inside_zone = true
 
     if zone.type == "Fire" then
-        Network:Send(var("items/PlayerInsideFireGrenadeArea"):get())
+        Network:Send(var("items/PlayerInsideFireGrenadeArea"):get(), {
+            attacker_id = zone.owner_id
+        })
     end
 end
 

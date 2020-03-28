@@ -49,7 +49,8 @@ function cHitDetection:Explosion(args)
             position = args.position,
             local_position = args.local_position,
             type = args.type,
-            in_fov = in_fov
+            in_fov = in_fov,
+            attacker_id = args.attacker_id
         })
 
     end

@@ -61,7 +61,13 @@ Grenade.Types = {
         ["radius"] = 22,
         ["custom_func"] = function(grenade)
 
-            GrenadeEffectZones:Add(grenade.position, grenade.grenade_type, "Toxic", grenade.type.effect_time)
+            GrenadeEffectZones:Add({
+                position = grenade.position, 
+                grenade_type = grenade.grenade_type, 
+                type = "Toxic",
+                timeout = grenade.type.effect_time,
+                owner_id = grenade.owner_id
+            })
             
             local function createfx()
                 for i = 1, 6 do
@@ -170,7 +176,13 @@ Grenade.Types = {
 
             if grenade.position.y < 200 then return end
 
-            GrenadeEffectZones:Add(grenade.position, grenade.grenade_type, "Fire", grenade.type.effect_time)
+            GrenadeEffectZones:Add({
+                position = grenade.position,
+                grenade_type = grenade.grenade_type, 
+                type = "Fire", 
+                timeout = grenade.type.effect_time,
+                owner_id = grenade.owner_id
+            })
 
             local function func(grenade)
                 if grenade.type.repeat_interval then
@@ -200,21 +212,21 @@ Grenade.Types = {
 	}
 }
 
-function Grenade:__init(position, velocity, type, fusetime, is_mine)
+function Grenade:__init(args)
 	self.object = ClientStaticObject.Create({
-		["position"] = position,
-		["angle"] = Angle.FromVectors(velocity, Vector3.Forward),
-		["model"] = Grenade.Types[type].model
+		["position"] = args.position,
+		["angle"] = Angle.FromVectors(args.velocity, Vector3.Forward),
+		["model"] = Grenade.Types[args.type].model
 	})
 	self.effect = ClientEffect.Create(AssetLocation.Game, {
 		["position"] = self.object:GetPosition(),
 		["angle"] = self.object:GetAngle(),
-		["effect_id"] = Grenade.Types[type].trail_effect_id
+		["effect_id"] = Grenade.Types[args.type].trail_effect_id
     })
     
-    if type ~= "Molotov" and fusetime > 0 then
+    if args.type ~= "Molotov" and args.fusetime > 0 then
 
-        Timer.SetTimeout(math.max(0, (fusetime - 3.5)) * 1000, function()
+        Timer.SetTimeout(math.max(0, (args.fusetime - 3.5)) * 1000, function()
             
             self.sound = ClientSound.Create(AssetLocation.Game, {
                 bank_id = 11,
@@ -223,11 +235,11 @@ function Grenade:__init(position, velocity, type, fusetime, is_mine)
                 angle = Angle()
             })
 
-            self.sound:SetParameter(0,1 - math.min(1, fusetime / 3.5)) -- 3.5 total, 
+            self.sound:SetParameter(0,1 - math.min(1, args.fusetime / 3.5)) -- 3.5 total, 
             self.sound:SetParameter(1,0.75)
             self.sound:SetParameter(2,0)
 
-            Timer.SetTimeout(fusetime * 1000, function()
+            Timer.SetTimeout(args.fusetime * 1000, function()
                 self.sound:Remove()
             end)
         
@@ -238,19 +250,20 @@ function Grenade:__init(position, velocity, type, fusetime, is_mine)
 
     self.repeating_fx = {}
     
-    self.velocity = velocity
-    self.grenade_type = type
-	self.type = Grenade.Types[type]
+    self.velocity = args.velocity
+    self.grenade_type = args.type
+	self.type = Grenade.Types[args.type]
 	self.weight = self.type.weight
 	self.drag = self.type.drag
 	self.restitution = self.type.restitution
 	self.radius = self.type.radius
-	self.fusetime = fusetime
+	self.fusetime = args.fusetime
 	self.effect_id = self.type.effect_id
 	self.timer = Timer()
     self.lastTime = 0
     self.detonated = false
-    self.is_mine = is_mine == true
+    self.is_mine = args.is_mine == true
+    self.owner_id = self.is_mine and tostring(LocalPlayer:GetSteamId()) or args.owner_id
 end
 
 function Grenade:Update()
@@ -310,7 +323,8 @@ function Grenade:Detonate()
         Events:Fire(var("HitDetection/Explosion"):get(), {
 			position = self.object:GetPosition(),
             type = self.grenade_type,
-            local_position = LocalPlayer:GetPosition()
+            local_position = LocalPlayer:GetPosition(),
+            attacker_id = self.owner_id
         })
         
         if self.is_mine and Grenade.Types[self.grenade_type].trigger_explosives then

@@ -50,7 +50,7 @@ function cClaymore:Trigger(args)
     if self.owner_id == tostring(LocalPlayer:GetSteamId()) then return end -- Don't explode on the owner
 
     Network:Send(var("items/StepOnClaymore"):get(), {id = self.id})
-    cClaymores:ClaymoreExplode({position = self.position, id = self.id})
+    cClaymores:ClaymoreExplode({position = self.position, id = self.id, owner_id = self.owner_id})
 end
 
 function cClaymore:GetCell()

@@ -175,7 +175,9 @@ function Grenades:PostTick(args)
                 ["type"] = self.grenade_name
 			}
 
-			Network:Send(var("items/GrenadeTossed"):get(), grenade)
+            Network:Send(var("items/GrenadeTossed"):get(), grenade)
+            
+            grenade.owner_id = tostring(LocalPlayer:GetSteamId())
 			self:GrenadeTossed(grenade)
 
             self.thrown = true
@@ -356,7 +358,7 @@ function Grenades:TossGrenade(type)
 end
 
 function Grenades:GrenadeTossed(args)
-	table.insert(self.grenades, Grenade(args.position, args.velocity, args.type, args.fusetime, args.is_mine))
+	table.insert(self.grenades, Grenade(args))
 end
 
 Grenades = Grenades()

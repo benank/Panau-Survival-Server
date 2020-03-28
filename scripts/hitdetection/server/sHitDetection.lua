@@ -5,6 +5,8 @@ function sHitDetection:__init()
     Network:Subscribe("HitDetectionSyncHit", self, self.SyncHit)
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
 
+    Events:Subscribe("HitDetection/PlayerInToxicArea", self, self.PlayerInsideToxicArea)
+
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
 end
@@ -13,13 +15,30 @@ function sHitDetection:PlayerDeath(args)
     args.player:SetNetworkValue("OnFire", false)
 end
 
+function sHitDetection:PlayerInsideToxicArea(args)
+    args.player:Damage(ToxicDamagePerSecond, DamageEntity.Toxic, args.attacker)
+
+    print(string.format("%s was damaged by toxic gas for %s damage [Source: %s] [%s]",
+        args.player:GetName(), 
+        tostring(ToxicDamagePerSecond), 
+        IsValid(args.attacker) and tostring(args.attacker:GetSteamId()) or "Unknown", 
+        args.type))
+end
+
 function sHitDetection:SecondTick()
 
     for p in Server:GetPlayers() do
         if p:GetValue("OnFire") and (p:GetPosition().y < 199.5 or p:GetValue("InSafezone")) then
             p:SetNetworkValue("OnFire", false)
         elseif p:GetValue("OnFire") then
-            p:SetHealth(p:GetHealth() - FireDamagePerSecond)
+            p:Damage(FireDamagePerSecond, DamageEntity.Fire, p:GetValue("FireAttacker"))
+
+            print(string.format("%s was damaged by fire for %s damage [Source: %s] [%s]",
+                p:GetName(), 
+                tostring(FireDamagePerSecond), 
+                IsValid(p:GetValue("FireAttacker")) and tostring(p:GetValue("FireAttacker"):GetSteamId()) or "Unknown", 
+                "Molotov"))
+        
         end
     end
 
@@ -43,16 +62,32 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     local original_damage = explosive_data.damage * percent_modifier
     local damage = original_damage
 
+    local attacker = nil
+
+    if args.attacker_id then
+        for p in Server:GetPlayers() do
+            if tostring(p:GetSteamId()) == args.attacker_id then
+                attacker = p
+                break
+            end
+        end
+    end
+
     if args.in_fov then
         damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 
         local old_hp = player:GetHealth()
         player:SetValue("LastHealth", old_hp)
-        player:Damage(damage / 100, DamageEntity.Explosion)
+
+        if IsValid(attacker) then
+            player:Damage(damage / 100, DamageEntity.Explosion, attacker)
+        else
+            player:Damage(damage / 100, DamageEntity.Explosion)
+        end
     end
 
-    print(string.format("%s was exploded for %s damage [%s]",
-        player:GetName(), tostring(damage), tostring(args.type)))
+    print(string.format("%s was exploded for %s damage [Source: %s] [%s]",
+        player:GetName(), tostring(damage), tostring(args.attacker_id), tostring(args.type)))
 
     Events:Fire("HitDetection/PlayerExplosionItemHit", {
         player = player,
