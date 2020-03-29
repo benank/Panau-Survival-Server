@@ -274,12 +274,14 @@ function Grenades:GameRender(args)
     for k, grenade in ipairs(self.grenades) do
 
         if grenade.is_mine and grenade.detonated and grenade.grenade_type == "Toxic Grenade" then
-            local transform = Transform3():Translate(grenade.position):Rotate(Angle.AngleAxis(math.rad(90), Vector3.Left))
+            local transform = Transform3():Translate(grenade.position):Scale(grenade.radius)
 
             --Render:SetTransform(transform:Scale(0.1))
             --Grenades.DebugModel:Draw()
 
-            Render:SetTransform(transform:Scale(grenade.radius))
+            Render:SetTransform(transform)
+            Grenades.DebugModel:Draw()
+            Render:SetTransform(transform:Rotate(Angle.AngleAxis(math.rad(90), Vector3.Left)))
             Grenades.DebugModel:Draw()
 
             --Render:SetTransform(transform:Scale(1 / 0.4))
