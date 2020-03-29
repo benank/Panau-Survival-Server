@@ -20,6 +20,17 @@ function cInventoryFX:GrapplehookBreak(args)
         angle = args.player:GetBoneAngle("ragdoll_LeftHand"),
         effect_id = 11
     })
+
+    
+    local sound = ClientSound.Create(AssetLocation.Game, {
+        bank_id = 15,
+        sound_id = 14,
+        position = args.player:GetBonePosition("ragdoll_LeftHand"),
+        angle = Angle()
+    })
+
+    sound:SetParameter(0,0)
+    sound:SetParameter(1,0.75)
     
 end
 
