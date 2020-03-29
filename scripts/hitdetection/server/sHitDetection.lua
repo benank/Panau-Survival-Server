@@ -64,16 +64,29 @@ end
 function sHitDetection:PlayerInsideToxicArea(args)
     if args.player:GetHealth() <= 0 then return end
 
-    args.player:Damage(ToxicDamagePerSecond, DamageEntity.ToxicGrenade, args.attacker)
+    local attacker = nil
+
+    for p in Server:GetPlayers() do
+        if tostring(p:GetSteamId()) == args.attacker_id then
+            attacker = p
+            break
+        end
+    end
+
+    if IsValid(attacker) then
+        args.player:Damage(ToxicDamagePerSecond, DamageEntity.ToxicGrenade, attacker)
+    else
+        args.player:Damage(ToxicDamagePerSecond, DamageEntity.ToxicGrenade)
+    end
 
     print(string.format("%s [%s] was damaged by toxic gas for %s damage [Source: %s] [%s]",
         args.player:GetName(), 
         tostring(args.player:GetSteamId()),
         tostring(ToxicDamagePerSecond), 
-        IsValid(args.attacker) and tostring(args.attacker:GetSteamId()) or "Unknown", 
+        args.attacker_id, 
         DamageEntityNames[DamageEntity.ToxicGrenade]))
 
-    self:SetPlayerLastDamaged(args.player, DamageEntityNames[DamageEntity.ToxicGrenade], tostring(args.attacker:GetSteamId()))
+    self:SetPlayerLastDamaged(args.player, DamageEntityNames[DamageEntity.ToxicGrenade], args.attacker_id)
 
 end
 
@@ -83,18 +96,31 @@ function sHitDetection:SecondTick()
         if p:GetValue("OnFire") and (p:GetPosition().y < 199.5 or p:GetValue("InSafezone")) then
             p:SetNetworkValue("OnFire", false)
         elseif p:GetValue("OnFire") and p:GetHealth() >= 0 then
-            p:Damage(FireDamagePerSecond, DamageEntity.Molotov, p:GetValue("FireAttacker"))
+
+            local attacker = nil
+            local attacker_id = p:GetValue("FireAttackerId")
+
+            for p in Server:GetPlayers() do
+                if tostring(p:GetSteamId()) == attacker_id then
+                    attacker = p
+                    break
+                end
+            end
+
+            if IsValid(attacker) then
+                p:Damage(FireDamagePerSecond, DamageEntity.Molotov, attacker_id)
+            else
+                p:Damage(FireDamagePerSecond, DamageEntity.Molotov)
+            end
 
             print(string.format("%s [%s] was damaged by fire for %s damage [Source: %s] [%s]",
                 p:GetName(), 
                 tostring(p:GetSteamId()),
                 tostring(FireDamagePerSecond), 
-                IsValid(p:GetValue("FireAttacker")) and tostring(p:GetValue("FireAttacker"):GetSteamId()) or "Unknown", 
+                attacker_id, 
                 DamageEntityNames[DamageEntity.Molotov]))
         
-            if IsValid(p:GetValue("FireAttacker")) then
-                self:SetPlayerLastDamaged(p, DamageEntityNames[DamageEntity.Molotov], tostring(p:GetValue("FireAttacker"):GetSteamId()))
-            end
+            self:SetPlayerLastDamaged(p, DamageEntityNames[DamageEntity.Molotov], attacker_id)
         end
     end
 

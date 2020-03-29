@@ -26,6 +26,7 @@ function sLootManager:PlayerQuit(args)
     if args.player:GetValue("Cell") and args.player:GetValue("Cell")[Lootbox.Cell_Size] then
         
         local cell = args.player:GetValue("Cell")[Lootbox.Cell_Size]
+        if not cell.x or not cell.y then return end
         VerifyCellExists(LootCells.Player, cell)
         LootCells.Player[cell.x][cell.y][tostring(args.player:GetSteamId().id)] = nil
 
