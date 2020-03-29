@@ -90,7 +90,7 @@ function Grenades:ToggleEquippedGrenade(args)
 end
 
 function Grenades:ModuleUnload()
-	for k, grenade in ipairs(self.grenades) do
+	for k, grenade in pairs(self.grenades) do
 		grenade:Remove()
 	end
 
@@ -233,7 +233,7 @@ function Grenades:PostTick(args)
         end
     end
 
-	for k, grenade in ipairs(self.grenades) do
+	for k, grenade in pairs(self.grenades) do
 		grenade:Update()
 	end
 end
@@ -271,7 +271,7 @@ function Grenades:Render(args)
 end
 
 function Grenades:GameRender(args)
-    for k, grenade in ipairs(self.grenades) do
+    for k, grenade in pairs(self.grenades) do
 
         if grenade.is_mine and grenade.detonated and grenade.grenade_type == "Toxic Grenade" then
             local transform = Transform3():Translate(grenade.position):Scale(grenade.radius)
