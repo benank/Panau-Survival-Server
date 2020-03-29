@@ -314,6 +314,10 @@ function Grenade:Update()
 	self.lastTime = self.timer:GetSeconds()
 end
 
+function Grenade:GetDamageEntity()
+    return ItemsConfig.equippables.grenades[self.grenade_type]
+end
+
 function Grenade:Detonate()
     if self.detonated then return end
 
@@ -322,7 +326,7 @@ function Grenade:Detonate()
 	if not table.compare(self.type, Grenade.Types.Flashbang) then
         Events:Fire(var("HitDetection/Explosion"):get(), {
 			position = self.object:GetPosition(),
-            type = self.grenade_type,
+            type = self:GetDamageEntity(),
             local_position = LocalPlayer:GetPosition(),
             attacker_id = self.owner_id
         })

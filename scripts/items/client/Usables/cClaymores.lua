@@ -232,7 +232,7 @@ function cClaymores:ClaymoreExplode(args)
     Events:Fire(var("HitDetection/Explosion"):get(), {
         position = args.position,
         local_position = LocalPlayer:GetPosition(),
-        type = "Claymore",
+        type = DamageEntity.Claymore,
         attacker_id = args.owner_id
     })
 

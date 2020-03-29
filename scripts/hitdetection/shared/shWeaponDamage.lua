@@ -4,9 +4,9 @@ WeaponBaseDamage =
     [Weapon.Assault] = 5,
     [Weapon.BubbleGun] = -2,
     [Weapon.GrenadeLauncher] = 50,
-    [Weapon.MachineGun] = 8,
-    [Weapon.Revolver] = 12,
-    [Weapon.RocketLauncher] = 110,
+    [Weapon.MachineGun] = 10,
+    [Weapon.Revolver] = 10,
+    [Weapon.RocketLauncher] = 100,
     [Weapon.SMG] = 5,
     [Weapon.Sniper] = 80,
     [Weapon.SawnOffShotgun] = 3, -- Damage per bullet in each shot
@@ -18,10 +18,10 @@ ToxicDamagePerSecond = 0.08
 
 ExplosiveBaseDamage = 
 {
-    ["Mine"] = {damage = 140, radius = 10, knockback = 10},
-    ["Claymore"] = {damage = 170, radius = 10, knockback = 12},
-    ["HE Grenade"] = {damage = 120, radius = 5, knockback = 5},
-    ["Laser Grenade"] = {damage = 300, radius = 8, knockback = 60}
+    [DamageEntity.Mine] = {damage = 140, radius = 10, knockback = 10},
+    [DamageEntity.Claymore] = {damage = 170, radius = 10, knockback = 12},
+    [DamageEntity.HEGrenade] = {damage = 120, radius = 5, knockback = 5},
+    [DamageEntity.LaserGrenade] = {damage = 300, radius = 8, knockback = 60}
 }
 
 WeaponHitType = 
@@ -96,3 +96,23 @@ ArmorModifiers = -- Percentages subtracted, 0.2 = 20% less damage = 80% total da
         [WeaponHitType.Melee] = 0.6,
     },
 }
+
+WeaponNames = 
+{
+    [Weapon.Handgun] = "Handgun",
+    [Weapon.Assault] = "Assault Rifle",
+    [Weapon.BubbleGun] = "Bubble Gun",
+    [Weapon.GrenadeLauncher] = "Grenade Launcher",
+    [Weapon.MachineGun] = "Machine Gun",
+    [Weapon.Revolver] = "Revolver",
+    [Weapon.RocketLauncher] = "Rocket Launcher",
+    [Weapon.SMG] = "SMG",
+    [Weapon.Sniper] = "Sniper Rifle",
+    [Weapon.SawnOffShotgun] = "Sawn-Off Shotgun",
+    [Weapon.Shotgun] = "Shotgun"
+}
+
+function GetWeaponName(weapon_id)
+    if WeaponNames[weapon_id] then return WeaponNames[weapon_id] end
+    return "Unknown Weapon"
+end

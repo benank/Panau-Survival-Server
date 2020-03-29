@@ -110,7 +110,8 @@ function cHitDetection:LocalPlayerExplosionHit(args)
         table.insert(self.pending, {
             attacker = args.attacker,
             bone = args.bone,
-            type = WeaponHitType.Explosive
+            type = WeaponHitType.Explosive,
+            damage = args.damage
         })
     
         return false

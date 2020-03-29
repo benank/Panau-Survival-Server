@@ -44,8 +44,8 @@ function sMines:DestroyMine(args, player)
 
     if mine.exploded then return end
 
-    Network:Send(player, "items/MineDestroy", {position = mine.position, id = mine.id})
-    Network:SendNearby(player, "items/MineDestroy", {position = mine.position, id = mine.id})
+    Network:Send(player, "items/MineDestroy", {position = mine.position, id = mine.id, owner_id = mine.owner_id})
+    Network:SendNearby(player, "items/MineDestroy", {position = mine.position, id = mine.id, owner_id = mine.owner_id})
 
     local cmd = SQL:Command("DELETE FROM mines where id = ?")
     cmd:Bind(1, args.id)

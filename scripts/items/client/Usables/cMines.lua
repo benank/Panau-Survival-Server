@@ -174,7 +174,7 @@ function cMines:MineExplode(args)
     Events:Fire(var("HitDetection/Explosion"):get(), {
         position = args.position,
         local_position = LocalPlayer:GetPosition(),
-        type = "Mine",
+        type = DamageEntity.Mine,
         attacker_id = args.owner_id
     })
 

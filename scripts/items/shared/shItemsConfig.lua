@@ -43,13 +43,13 @@ ItemsConfig =
         },
         grenades = 
         {
-            ["HE Grenade"] = true,
-            ["Molotov"] = true,
-            ["Smoke Grenade"] = true,
-            ["Toxic Grenade"] = true,
-            ["Flashbang"] = true,
-            ["Flares"] = true,
-            ["Laser Grenade"] = true,
+            ["HE Grenade"] = DamageEntity.HEGrenade,
+            ["Molotov"] = DamageEntity.Molotov,
+            ["Smoke Grenade"] = DamageEntity.None,
+            ["Toxic Grenade"] = DamageEntity.ToxicGrenade,
+            ["Flashbang"] = DamageEntity.None,
+            ["Flares"] = DamageEntity.None,
+            ["Laser Grenade"] = DamageEntity.LaserGrenade,
         }
     }
 }

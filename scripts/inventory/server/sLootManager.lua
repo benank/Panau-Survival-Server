@@ -23,7 +23,7 @@ end
 
 function sLootManager:PlayerQuit(args)
     -- Remove player from cell if they are in one
-    if args.player:GetValue("Cell") then
+    if args.player:GetValue("Cell") and args.player:GetValue("Cell")[Lootbox.Cell_Size] then
         
         local cell = args.player:GetValue("Cell")[Lootbox.Cell_Size]
         VerifyCellExists(LootCells.Player, cell)

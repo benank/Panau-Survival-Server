@@ -2,6 +2,8 @@ class 'sHitDetection'
 
 function sHitDetection:__init()
 
+    self.last_damage_timeout = 15 -- 15 seconds to clear last damaged kill attribution
+
     Network:Subscribe("HitDetectionSyncHit", self, self.SyncHit)
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
 
@@ -13,16 +15,66 @@ end
 
 function sHitDetection:PlayerDeath(args)
     args.player:SetNetworkValue("OnFire", false)
+
+    local last_damaged = args.player:GetValue("LastDamaged")
+
+    if last_damaged and last_damaged.timer:GetSeconds() < self.last_damage_timeout then
+        -- Kill attribution
+        local query = SQL:Query("SELECT name FROM player_names WHERE steam_id = (?) LIMIT 1")
+        query:Bind(1, last_damaged.steam_id)
+        local killer_name = query:Execute()
+
+        if killer_name and killer_name[1] and killer_name[1].name then
+            killer_name = killer_name[1].name
+        else
+            killer_name = "???"
+        end
+
+        print(string.format("%s [%s] was killed by %s [%s] [%s]", 
+            args.player:GetName(),
+            tostring(args.player:GetSteamId()),
+            killer_name,
+            last_damaged.steam_id,
+            DamageEntityNames[args.reason]))
+
+        Chat:Send(args.player, string.format("You were killed by %s [%s]", 
+            killer_name, last_damaged.damage_type), Color.Red)
+        
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = last_damaged.steam_id,
+            message = string.format("You killed %s [%s]", args.player:GetName(), last_damaged.damage_type),
+            color = Color.Red
+        })
+
+    else
+        -- Player died on their own without anyone else, like drowning or falling from too high
+
+        print(string.format("%s [%s] died [%s]", 
+            args.player:GetName(),
+            tostring(args.player:GetSteamId()),
+            DamageEntityNames[args.reason]))
+
+        Chat:Send(args.player, string.format("You died [Reason: %s]", DamageEntityNames[args.reason]), Color.Red)
+        
+    end
+
+    args.player:SetValue("LastDamaged", nil)
 end
 
 function sHitDetection:PlayerInsideToxicArea(args)
-    args.player:Damage(ToxicDamagePerSecond, DamageEntity.Toxic, args.attacker)
+    if args.player:GetHealth() <= 0 then return end
 
-    print(string.format("%s was damaged by toxic gas for %s damage [Source: %s] [%s]",
+    args.player:Damage(ToxicDamagePerSecond, DamageEntity.ToxicGrenade, args.attacker)
+
+    print(string.format("%s [%s] was damaged by toxic gas for %s damage [Source: %s] [%s]",
         args.player:GetName(), 
+        tostring(args.player:GetSteamId()),
         tostring(ToxicDamagePerSecond), 
         IsValid(args.attacker) and tostring(args.attacker:GetSteamId()) or "Unknown", 
-        args.type))
+        DamageEntityNames[DamageEntity.ToxicGrenade]))
+
+    self:SetPlayerLastDamaged(args.player, DamageEntityNames[DamageEntity.ToxicGrenade], tostring(args.attacker:GetSteamId()))
+
 end
 
 function sHitDetection:SecondTick()
@@ -30,15 +82,19 @@ function sHitDetection:SecondTick()
     for p in Server:GetPlayers() do
         if p:GetValue("OnFire") and (p:GetPosition().y < 199.5 or p:GetValue("InSafezone")) then
             p:SetNetworkValue("OnFire", false)
-        elseif p:GetValue("OnFire") then
-            p:Damage(FireDamagePerSecond, DamageEntity.Fire, p:GetValue("FireAttacker"))
+        elseif p:GetValue("OnFire") and p:GetHealth() >= 0 then
+            p:Damage(FireDamagePerSecond, DamageEntity.Molotov, p:GetValue("FireAttacker"))
 
-            print(string.format("%s was damaged by fire for %s damage [Source: %s] [%s]",
+            print(string.format("%s [%s] was damaged by fire for %s damage [Source: %s] [%s]",
                 p:GetName(), 
+                tostring(p:GetSteamId()),
                 tostring(FireDamagePerSecond), 
                 IsValid(p:GetValue("FireAttacker")) and tostring(p:GetValue("FireAttacker"):GetSteamId()) or "Unknown", 
-                "Molotov"))
+                DamageEntityNames[DamageEntity.Molotov]))
         
+            if IsValid(p:GetValue("FireAttacker")) then
+                self:SetPlayerLastDamaged(p, DamageEntityNames[DamageEntity.Molotov], tostring(p:GetValue("FireAttacker"):GetSteamId()))
+            end
         end
     end
 
@@ -47,6 +103,7 @@ end
 function sHitDetection:HitDetectionSyncExplosion(args, player)
     
     if player:GetValue("InSafezone") then return end
+    if player:GetHealth() <= 0 then return end
 
     local explosive_data = ExplosiveBaseDamage[args.type]
 
@@ -73,21 +130,21 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
         end
     end
 
-    if args.in_fov then
-        damage = self:GetArmorMod(player, hit_type, damage, original_damage)
+    if not args.in_fov then return end
+    
+    damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 
-        local old_hp = player:GetHealth()
-        player:SetValue("LastHealth", old_hp)
+    local old_hp = player:GetHealth()
+    player:SetValue("LastHealth", old_hp)
 
-        if IsValid(attacker) then
-            player:Damage(damage / 100, DamageEntity.Explosion, attacker)
-        else
-            player:Damage(damage / 100, DamageEntity.Explosion)
-        end
+    if IsValid(attacker) then
+        player:Damage(damage / 100, args.type, attacker)
+    else
+        player:Damage(damage / 100, args.type)
     end
 
-    print(string.format("%s was exploded for %s damage [Source: %s] [%s]",
-        player:GetName(), tostring(damage), tostring(args.attacker_id), tostring(args.type)))
+    print(string.format("%s [%s] was exploded for %s damage [Source: %s] [%s]",
+        player:GetName(), tostring(player:GetSteamId()), tostring(damage), tostring(args.attacker_id), DamageEntityNames[args.type]))
 
     Events:Fire("HitDetection/PlayerExplosionItemHit", {
         player = player,
@@ -98,6 +155,10 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     if player:InVehicle() then
         player:GetVehicle():SetHealth(player:GetVehicle():GetHealth() - original_damage / explosive_data.damage * 0.5)
         player:GetVehicle():SetLinearVelocity(player:GetVehicle():GetLinearVelocity() + ((player:GetVehicle():GetPosition() - args.position):Normalized() * explosive_data.radius * explosive_data.knockback))
+    end
+
+    if args.attacker_id then
+        self:SetPlayerLastDamaged(player, DamageEntityNames[args.type], args.attacker_id)
     end
 
 end
@@ -121,6 +182,7 @@ function sHitDetection:ExplosionHit(args, player)
     if not IsValid(args.attacker) then return end
 
     if args.attacker:GetValue("InSafezone") or player:GetValue("InSafezone") then return end
+    if player:GetHealth() <= 0 then return end
 
     local weapon = args.attacker:GetEquippedWeapon()
     if not weapon then return end
@@ -149,14 +211,21 @@ function sHitDetection:ExplosionHit(args, player)
     player:SetValue("LastHealth", old_hp)
     player:Damage(damage / 100, DamageEntity.Explosion, args.attacker)
 
-    print(string.format("%s shot %s for %s damage [%s]",
-    args.attacker:GetName(), player:GetName(), tostring(damage), tostring(weapon.id)))
+    print(string.format("%s [%s] shot %s [%s] for %s damage [%s]",
+    args.attacker:GetName(), 
+    tostring(args.attacker:GetSteamId()),
+    player:GetName(), 
+    tostring(player:GetSteamId()),
+    tostring(damage), 
+    tostring(GetWeaponName(weapon.id))))
 
     Events:Fire("HitDetection/PlayerExplosionHit", {
         player = player,
         attacker = args.attacker,
         damage = damage
     })
+
+    self:SetPlayerLastDamaged(player, GetWeaponName(weapon.id), tostring(args.attacker:GetSteamId()))
 
     --self:CheckHealth(player, damage)
 
@@ -186,6 +255,7 @@ function sHitDetection:BulletHit(args, player)
     if not IsValid(args.attacker) then return end
 
     if args.attacker:GetValue("InSafezone") or player:GetValue("InSafezone") then return end
+    if player:GetHealth() <= 0 then return end
 
     local weapon = args.attacker:GetEquippedWeapon()
     if not weapon then return end
@@ -201,14 +271,21 @@ function sHitDetection:BulletHit(args, player)
     player:SetValue("LastHealth", old_hp)
     player:Damage(damage / 100, DamageEntity.Bullet, args.attacker)
 
-    print(string.format("%s shot %s for %s damage [%s]",
-    args.attacker:GetName(), player:GetName(), tostring(damage), tostring(weapon.id)))
+    print(string.format("%s [%s] shot %s [%s] for %s damage [%s]",
+        args.attacker:GetName(), 
+        tostring(args.attacker:GetSteamId()),
+        player:GetName(), 
+        tostring(player:GetSteamId()),
+        tostring(damage), 
+        tostring(GetWeaponName(weapon.id))))
 
     Events:Fire("HitDetection/PlayerBulletHit", {
         player = player,
         attacker = args.attacker,
         damage = damage
     })
+
+    self:SetPlayerLastDamaged(player, GetWeaponName(weapon.id), tostring(args.attacker:GetSteamId()))
 
     -- If their health doesn't change after being shot
     --self:CheckHealth(player, damage)
@@ -238,6 +315,14 @@ function sHitDetection:GetArmorMod(player, hit_type, damage, original_damage)
 
     return damage
 
+end
+
+function sHitDetection:SetPlayerLastDamaged(player, damage_type, steam_id)
+    player:SetValue("LastDamaged", {
+        damage_type = damage_type, -- Name of damage type
+        steam_id = steam_id,
+        timer = Timer()
+    })
 end
 
 sHitDetection = sHitDetection()
