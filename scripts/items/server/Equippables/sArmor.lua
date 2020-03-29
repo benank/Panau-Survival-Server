@@ -7,6 +7,7 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
     equipped_visuals[args.item.name] = args.item.equipped
     args.player:SetNetworkValue("EquippedVisuals", equipped_visuals)
 
+    UpdateEquippedItemSurvivalHUD(args)
     UpdateEquippedItem(args.player, args.item.name, args.item)
 
 end)
@@ -24,6 +25,18 @@ Events:Subscribe("HitDetection/ArmorDamaged", function(args)
         item = item
     })
 
+    args.item = item
+    UpdateEquippedItemSurvivalHUD(args)
     UpdateEquippedItem(args.player, item.name, item)
 
 end)
+
+function UpdateEquippedItemSurvivalHUD(args)
+
+    if args.item.name:find("Helmet") then
+        args.player:SetNetworkValue("EquippedHelmet", (args.item.equipped == true and args.item.durability > 0) and args.item or nil)
+    elseif args.item.name:find("Vest") then
+        args.player:SetNetworkValue("EquippedVest", (args.item.equipped == true and args.item.durability > 0) and args.item or nil)
+    end
+
+end

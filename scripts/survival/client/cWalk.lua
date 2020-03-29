@@ -1,4 +1,4 @@
-local inputsub = nil
+--[[local inputsub = nil
 local walking = false
 local z_key = string.byte("Z")
 
@@ -21,4 +21,4 @@ end)
 
 Events:Subscribe("KeyUp", function(args)
     walking = false
-end)
+end)]]

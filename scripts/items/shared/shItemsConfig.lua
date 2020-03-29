@@ -29,11 +29,11 @@ ItemsConfig =
         },
         armor = 
         {
-            ["Helmet"] = {dura_per_hit = 6},
-            ["Police Helmet"] = {dura_per_hit = 4},
-            ["Military Helmet"] = {dura_per_hit = 2},
-            ["Military Vest"] = {dura_per_hit = 4},
-            ["Kevlar Vest"] = {dura_per_hit = 2}
+            ["Helmet"] = {dura_per_hit = 10},
+            ["Police Helmet"] = {dura_per_hit = 6},
+            ["Military Helmet"] = {dura_per_hit = 4},
+            ["Military Vest"] = {dura_per_hit = 6},
+            ["Kevlar Vest"] = {dura_per_hit = 4}
         },
         backpacks = 
         {
