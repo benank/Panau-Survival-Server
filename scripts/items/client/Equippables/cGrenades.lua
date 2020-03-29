@@ -183,7 +183,7 @@ function Grenades:PostTick(args)
             return
         end
 
-		self.thrownVelocity = (Camera:GetAngle() * Vector3.Forward * self.max_speed) * ((Camera:GetAngle().pitch + (math.pi / 2)) / (math.pi / 2))
+		self.thrownVelocity = ((Camera:GetAngle() * Angle(0, math.pi * 0.07, 0)) * Vector3.Forward * self.max_speed) * ((Camera:GetAngle().pitch + (math.pi / 2)) / (math.pi / 1.5))
 		self.thrownPosition = position
 
 		if self.thrownTimer and self.thrownTimer:GetSeconds() > (self.thrownUnder and Grenades.UnderThrowTime or Grenades.OverThrowTime) then

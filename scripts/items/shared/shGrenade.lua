@@ -17,10 +17,10 @@ Grenade.Types = {
 	["HE Grenade"] = {
 		["effect_id"] = 411,
         ["trail_effect_id"] = 61,
-		["weight"] = 1,
-        ["drag"] = 0.15,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
         ["trigger_explosives"] = true,
-		["restitution"] = 0.2,
+		["restitution"] = 0.3,
 		["radius"] = 8,
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),
@@ -30,10 +30,10 @@ Grenade.Types = {
 	["Laser Grenade"] = {
 		["effect_id"] = 344,
         ["trail_effect_id"] = 61,
-		["weight"] = 1,
-		["drag"] = 0.15,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
         ["trigger_explosives"] = true,
-		["restitution"] = 0.2,
+		["restitution"] = 0.3,
 		["radius"] = 8,
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),
@@ -43,9 +43,9 @@ Grenade.Types = {
 	["Flashbang"] = {
 		["effect_id"] = 19,
         ["trail_effect_id"] = 61,
-		["weight"] = 1,
-		["drag"] = 0.15,
-		["restitution"] = 0.2,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
+		["restitution"] = 0.3,
 		["radius"] = 50,
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),
@@ -55,9 +55,9 @@ Grenade.Types = {
 	["Toxic Grenade"] = {
 		["effect_id"] = 184,
         ["trail_effect_id"] = 61,
-		["weight"] = 1,
-		["drag"] = 0.15, -- 70, 
-        ["restitution"] = 0.2,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
+		["restitution"] = 0.3,
         ["radius"] = 18,
         ["custom_func"] = function(grenade)
 
@@ -103,11 +103,11 @@ Grenade.Types = {
         ["effect_id"] = 266,
         ["effect_angle"] = Angle(0, -math.pi / 12, 0),
         ["trail_effect_id"] = 61,
-		["weight"] = 1,
-        ["drag"] = 0.15,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
         --["repeat_interval"] = 2000, -- effect repeats
         --["repeat_effect_id"] = 236,
-		["restitution"] = 0.2,
+		["restitution"] = 0.3,
 		["radius"] = 0,
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),
@@ -137,8 +137,8 @@ Grenade.Types = {
 	["Smoke Grenade"] = {
 		["effect_id"] = 71,
         ["trail_effect_id"] = 61,
-		["weight"] = 1,
-        ["drag"] = 0.15,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
         ["repeat_interval"] = 500, -- effect repeats
         ["custom_func"] = function(grenade)
             if grenade.type.repeat_interval then
@@ -155,7 +155,7 @@ Grenade.Types = {
                 end)
             end
         end,
-		["restitution"] = 0.2,
+		["restitution"] = 0.3,
 		["radius"] = 0,
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),
@@ -165,8 +165,8 @@ Grenade.Types = {
 	["Molotov"] = {
         ["effect_id"] = 452,
         ["trail_effect_id"] = 326,
-		["weight"] = 1,
-		["drag"] = 0.15,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
         ["trigger_explosives"] = true,
 		["restitution"] = 0,
         ["radius"] = 3,
@@ -278,7 +278,8 @@ function Grenade:Update()
     if self.detonated then return end
 
     if self.timer:GetSeconds() < self.fusetime or self.type.explode_on_contact then
-		if not self.stopped then
+        if not self.stopped then
+            local old_velocity = self.velocity
 			self.velocity = (self.velocity - (self.velocity * self.drag * delta)) + (Vector3.Down * self.weight * 9.81 * delta)
 
 			local ray = Physics:Raycast(self.object:GetPosition(), self.velocity * delta, 0, 1, true)
@@ -294,12 +295,27 @@ function Grenade:Update()
 					self.velocity.z = self.velocity.z - dotTimesTwo * ray.normal.z
 					self.velocity = self.velocity * self.restitution
 
-					if (self.velocity * delta):Length() <= 0.01 then
+					if (self.velocity * delta):Length() <= 0.005 then
                         self.stopped = true
-					end
-				end
-			end
+                    end
+                    
+                    -- Play sound of grenade bouncing
+                    local sound = ClientSound.Create(AssetLocation.Game, {
+                        bank_id = 17,
+                        sound_id = 37,
+                        position = self.object:GetPosition(),
+                        angle = Angle()
+                    })
+                    
+                    sound:SetParameter(0,0.5)
+                    sound:SetParameter(1,0)
+                    sound:SetParameter(2,0)
 
+                end
+                
+
+            end
+            
             if IsValid(self.object) and IsValid(self.effect) then
                 if not self.stopped then
                     self.object:SetPosition(self.object:GetPosition() + (self.velocity * delta))
@@ -309,6 +325,8 @@ function Grenade:Update()
                 else
                     self.object:SetPosition(self.object:GetPosition() + (Vector3.Up * 0.05))
                     self.effect:SetPosition(self.object:GetPosition())
+
+                    
                 end
             end
             
