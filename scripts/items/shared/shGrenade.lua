@@ -58,7 +58,7 @@ Grenade.Types = {
 		["weight"] = 1,
 		["drag"] = 0.15, -- 70, 
         ["restitution"] = 0.2,
-        ["radius"] = 22,
+        ["radius"] = 18,
         ["custom_func"] = function(grenade)
 
             GrenadeEffectZones:Add({
