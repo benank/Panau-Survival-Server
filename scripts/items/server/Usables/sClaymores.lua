@@ -261,6 +261,11 @@ function sClaymores:UseItem(args)
 
     if args.item.name ~= "Claymore" then return end
 
+    if args.player:GetValue("StuntingVehicle") then
+        Chat:Send(args.player, "You cannot use this item while stunting on a vehicle!", Color.Red)
+        return
+    end
+
     Inventory.OperationBlock({player = args.player, change = 1}) -- Block inventory operations until they finish placing or cancel
     args.player:SetValue("ClaymoreUsingItem", args)
 

@@ -13,24 +13,19 @@ Events:Subscribe("Inventory/UseItem", function(args)
 
     if ItemsConfig.usables[args.item.name] and not player_iu.using then
     
-        if ItemsConfig.usables[args.item.name].vehicle and not args.player:InVehicle() then
-        
-            --[[jcmp.notify(player, {
-                title: 'Cannot use item!',
-                subtitle: `You must be in a vehicle to use ${item.name}!`,
-                preset: 'warn'
-            })--]]
+        if args.player:GetValue("StuntingVehicle") then
+            Chat:Send(args.player, "You cannot use this item while stunting on a vehicle!", Color.Red)
             return
         end
 
-        if ItemsConfig.usables[args.item.name].storage and 
+        --[[if ItemsConfig.usables[args.item.name].vehicle and not args.player:InVehicle() then
+        
+            return
+        end]]
+
+        --[[if ItemsConfig.usables[args.item.name].storage and 
             (not args.player.current_box or not args.player.current_box.is_storage or not args.player.current_box.storage) then
         
-            --[[jcmp.notify(player, {
-                title: 'Cannot use item!',
-                subtitle: `You must open a storage to use ${item.name}!`,
-                preset: 'warn'
-            })--]]
             return
         end
 
@@ -39,7 +34,7 @@ Events:Subscribe("Inventory/UseItem", function(args)
             if not args.player.current_box.storage.can_use_item(args.item.name, args.player) then
                 return
             end
-        end
+        end]]
 
 
         local use_time = ItemsConfig.usables[args.item.name].use_time
