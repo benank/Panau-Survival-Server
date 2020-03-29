@@ -212,7 +212,14 @@ Grenade.Types = {
 	}
 }
 
+local GRENADE_ID = 0
+local function GET_GRENADE_ID()
+    GRENADE_ID = GRENADE_ID + 1
+    return GRENADE_ID
+end
+
 function Grenade:__init(args)
+    self.id = GET_GRENADE_ID()
 	self.object = ClientStaticObject.Create({
 		["position"] = args.position,
 		["angle"] = Angle.FromVectors(args.velocity, Vector3.Forward),
@@ -369,6 +376,10 @@ function Grenade:Detonate()
     if self.type.custom_func then
         self.type.custom_func(self)
     end
+
+    Timer.SetTimeout(1000 * self.type.effect_time, function()
+        Grenades.grenades[self.id] = nil
+    end)
 
     self:Remove()
     

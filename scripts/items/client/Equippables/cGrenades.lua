@@ -5,42 +5,40 @@ class "Grenades"
 Grenades.OverThrowTime = 0.36
 Grenades.UnderThrowTime = 0.48
 
-if GRENADE_DEBUG then
-	function Sphere(center, radius, nLatitude, nLongitude)
-		local vertices = {}
-		local fVert    = 2
-		local nPitch   = nLongitude + 1
-		local pitchInc = (180 / nPitch) * (math.pi / 180)
-		local rotInc   = (360 / nLatitude) * (math.pi / 180)
+function Sphere(center, radius, nLatitude, nLongitude)
+    local vertices = {}
+    local fVert    = 2
+    local nPitch   = nLongitude + 1
+    local pitchInc = (180 / nPitch) * (math.pi / 180)
+    local rotInc   = (360 / nLatitude) * (math.pi / 180)
 
-		-- table.insert(vertices, Vertex(Vector3(center.x, center.y + radius, center.z), Color(255, 0, 0, 125)))
-		-- table.insert(vertices, Vertex(Vector3(center.x, center.y - radius, center.z), Color(255, 0, 0, 125)))
+    -- table.insert(vertices, Vertex(Vector3(center.x, center.y + radius, center.z), Color(255, 0, 0, 125)))
+    -- table.insert(vertices, Vertex(Vector3(center.x, center.y - radius, center.z), Color(255, 0, 0, 125)))
 
-		local p, s, x, y, z, out
+    local p, s, x, y, z, out
 
-		for p = 1, nPitch do
-			out = radius * math.sin(p * pitchInc)
+    for p = 1, nPitch do
+        out = radius * math.sin(p * pitchInc)
 
-			if out < 0 then
-				out = -out
-			end
+        if out < 0 then
+            out = -out
+        end
 
-			y = radius * math.cos(p * pitchInc)
+        y = radius * math.cos(p * pitchInc)
 
-			for s = 0, nLatitude do
-				x = out * math.cos(s * rotInc)
-				z = out * math.sin(s * rotInc)
+        for s = 0, nLatitude do
+            x = out * math.cos(s * rotInc)
+            z = out * math.sin(s * rotInc)
 
-				table.insert(vertices, Vertex(Vector3(center.x + x, center.y + y, center.z + z), Color(255, 0, 0, 125)))
-			end
-		end
+            table.insert(vertices, Vertex(Vector3(center.x + x, center.y + y, center.z + z), Color(255, 0, 0, 150)))
+        end
+    end
 
-		return vertices
-	end
-
-	Grenades.DebugModel = Model.Create(Sphere(Vector3.Zero, 1, 8, 256))
-	Grenades.DebugModel:SetTopology(Topology.LineStrip)
+    return vertices
 end
+
+Grenades.DebugModel = Model.Create(Sphere(Vector3.Zero, 1, 32, 32))
+Grenades.DebugModel:SetTopology(Topology.LineStrip)
 
 function Grenades:__init()
 
@@ -273,12 +271,13 @@ function Grenades:Render(args)
 end
 
 function Grenades:GameRender(args)
-	if GRENADE_DEBUG then
-		for k, grenade in ipairs(self.grenades) do
-			local transform = Transform3():Translate(grenade.object:GetPosition()):Rotate(Angle.AngleAxis(math.rad(90), Vector3.Left))
+    for k, grenade in ipairs(self.grenades) do
 
-			--Render:SetTransform(transform:Scale(0.1))
-			--Grenades.DebugModel:Draw()
+        if grenade.is_mine and grenade.detonated and grenade.grenade_type == "Toxic Grenade" then
+            local transform = Transform3():Translate(grenade.position):Rotate(Angle.AngleAxis(math.rad(90), Vector3.Left))
+
+            --Render:SetTransform(transform:Scale(0.1))
+            --Grenades.DebugModel:Draw()
 
             Render:SetTransform(transform:Scale(grenade.radius))
             Grenades.DebugModel:Draw()
@@ -287,10 +286,10 @@ function Grenades:GameRender(args)
             --Grenades.DebugModel:Draw()
 
             Render:ResetTransform()
-		end
+        end
+    end
 
-		collectgarbage()
-	end
+    collectgarbage()
 end
 
 function Grenades:PostRender()
@@ -358,7 +357,8 @@ function Grenades:TossGrenade(type)
 end
 
 function Grenades:GrenadeTossed(args)
-	table.insert(self.grenades, Grenade(args))
+    local grenade = Grenade(args)
+    self.grenades[grenade.id] = grenade
 end
 
 Grenades = Grenades()
