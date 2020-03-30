@@ -123,7 +123,7 @@ function sHitDetection:SecondTick()
             end
 
             if IsValid(attacker) then
-                p:Damage(FireDamagePerSecond, DamageEntity.Molotov, attacker_id)
+                p:Damage(FireDamagePerSecond, DamageEntity.Molotov, attacker)
             else
                 p:Damage(FireDamagePerSecond, DamageEntity.Molotov)
             end
