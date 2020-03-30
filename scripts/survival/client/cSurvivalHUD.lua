@@ -66,6 +66,18 @@ function cSurvivalHUD:__init()
     Network:Subscribe("Survival/Update", self, self.Update)
     Events:Subscribe("NetworkObjectValueChange", self, self.NetworkObjectValueChange)
 
+    -- Refresh on reload
+    self:NetworkObjectValueChange({
+        object = LocalPlayer, 
+        value = LocalPlayer:GetValue("EquippedHelmet"),
+        key = "EquippedHelmet"
+    })
+
+    self:NetworkObjectValueChange({
+        object = LocalPlayer, 
+        value = LocalPlayer:GetValue("EquippedVest"),
+        key = "EquippedVest"
+    })
 end
 
 function cSurvivalHUD:NetworkObjectValueChange(args)
