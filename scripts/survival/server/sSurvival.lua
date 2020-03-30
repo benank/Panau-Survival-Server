@@ -3,8 +3,10 @@ class 'sSurvivalManager'
 
 function sSurvivalManager:__init()
 
-
+    self.players_dying = {} -- Players who are dying from hunger or thirst being 0
     self.timer = Timer()
+    self.damage_timer = Timer()
+    self.damage_interval = 5 -- Every 5 seconds, dying players are damaged
 
     Network:Subscribe("Survival/Ready", self, self.PlayerReady)
     Network:Subscribe("Survival/UpdateClimateZone", self, self.UpdateClimateZone)
@@ -12,6 +14,18 @@ function sSurvivalManager:__init()
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
     Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
+
+end
+
+function sSurvivalManager:CheckForDyingPlayer(player)
+
+    local survival = player:GetValue("Survival")
+
+    if survival.hunger == 0 or survival.thirst == 0 then
+        self.players_dying[tostring(player:GetSteamId())] = player
+    elseif survival.hunger > 0 and survival.thirst > 0 then
+        self.players_dying[tostring(player:GetSteamId())] = nil
+    end
 
 end
 
@@ -28,10 +42,11 @@ function sSurvivalManager:UseItem(args)
     survival.thirst = math.max(0, math.min(survival.thirst + restore_data.thirst, 100))
 
     if restore_data.health then -- If this food item restores health, like Energy Drink
-        args.player:SetHealth(args.player:GetHealth() + restore_data.health / 100)
+        args.player:Damage(-restore_data.health / 100)
     end
 
     args.player:SetValue("Survival", survival)
+    self:CheckForDyingPlayer(args.player)
 
     if not args.item.durable then
 
@@ -90,6 +105,7 @@ function sSurvivalManager:PlayerSpawn(args)
         survival.thirst = config.respawn.thirst
 
         args.player:SetValue("Survival", survival)
+        self:CheckForDyingPlayer(args.player)
 
         self:SyncToPlayer(args.player)
         self:UpdateDB(args.player)
@@ -114,6 +130,42 @@ function sSurvivalManager:PostTick(args)
 
     end
 
+    if self.damage_timer:GetSeconds() > self.damage_interval then
+
+        self:DamageDyingPlayers()
+
+        self.damage_timer:Restart()
+    end
+
+end
+
+function sSurvivalManager:DamageDyingPlayers()
+
+    for id, player in pairs(self.players_dying) do
+        if not IsValid(player) then
+            self.players_dying[id] = nil
+        else
+
+            local survival = player:GetValue("Survival")
+            if survival.hunger == 0 then
+                Events:Fire("HitDetection/PlayerSurvivalDamage", {
+                    type = DamageEntity.Hunger,
+                    amount = 0.03,
+                    player = player
+                })
+            end
+
+            if survival.thirst == 0 then
+                Events:Fire("HitDetection/PlayerSurvivalDamage", {
+                    type = DamageEntity.Thirst,
+                    amount = 0.05,
+                    player = player
+                })
+            end
+        end
+
+    end
+
 end
 
 function sSurvivalManager:AdjustSurvivalStats(player)
@@ -128,12 +180,7 @@ function sSurvivalManager:AdjustSurvivalStats(player)
     survival.thirst = math.max(survival.thirst - config.decay.thirst * zone_mod.thirst, 0)
 
     player:SetValue("Survival", survival)
-
-    if survival.hunger or survival.thirst == 0 then
-
-        -- ADD THEM TO THE KILL LIST
-
-    end
+    self:CheckForDyingPlayer(player)
 
     self:SyncToPlayer(player)
     self:UpdateDB(player)
@@ -153,9 +200,9 @@ function sSurvivalManager:PlayerReady(args, player)
         
         local data = 
         {
-            hunger = result[1].hunger,
-            thirst = result[1].thirst,
-            radiation = result[1].radiation
+            hunger = tonumber(result[1].hunger),
+            thirst = tonumber(result[1].thirst),
+            radiation = tonumber(result[1].radiation)
         }
 
         player:SetValue("Survival", data)
@@ -181,6 +228,7 @@ function sSurvivalManager:PlayerReady(args, player)
     end
     
     self:SyncToPlayer(player)
+    self:CheckForDyingPlayer(player)
 
 end
 

@@ -4,6 +4,8 @@ DamageEntity.Mine = 7
 DamageEntity.Claymore = 8
 DamageEntity.HEGrenade = 9
 DamageEntity.LaserGrenade = 10
+DamageEntity.Hunger = 11
+DamageEntity.Thirst = 12
 
 DamageEntityNames = 
 {
@@ -17,5 +19,7 @@ DamageEntityNames =
     [DamageEntity.Mine] = "Mine",
     [DamageEntity.Claymore] = "Claymore",
     [DamageEntity.HEGrenade] = "HE Grenade",
-    [DamageEntity.LaserGrenade] = "Laser Grenade"
+    [DamageEntity.LaserGrenade] = "Laser Grenade",
+    [DamageEntity.Hunger] = "Hunger",
+    [DamageEntity.Thirst] = "Thirst",
 }

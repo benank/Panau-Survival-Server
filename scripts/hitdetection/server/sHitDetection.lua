@@ -8,9 +8,24 @@ function sHitDetection:__init()
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
 
     Events:Subscribe("HitDetection/PlayerInToxicArea", self, self.PlayerInsideToxicArea)
+    Events:Subscribe("HitDetection/PlayerSurvivalDamage", self, self.PlayerSurvivalDamage)
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
+end
+
+function sHitDetection:PlayerSurvivalDamage(args)
+
+    if args.player:GetHealth() <= 0 then return end
+    
+    args.player:Damage(args.amount, args.type)
+
+    print(string.format("%s [%s] was damaged by survival for %s damage [%s]",
+        args.player:GetName(), 
+        tostring(args.player:GetSteamId()),
+        tostring(args.amount), 
+        DamageEntityNames[args.type]))
+
 end
 
 function sHitDetection:PlayerDeath(args)

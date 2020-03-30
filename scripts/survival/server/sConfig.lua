@@ -13,8 +13,8 @@ config =
     },
     decay = 
     {
-        hunger = 0.1,
-        thirst = 0.25,
+        hunger = 1.1,
+        thirst = 1.5,
         radiation = 0
     },
     decaymods = 
