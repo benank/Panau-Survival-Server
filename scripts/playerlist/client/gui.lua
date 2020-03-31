@@ -43,9 +43,9 @@ function ListGUI:__init()
     
     self.colors = 
     {
-        friends = Color(32, 181, 40, 50),
-        i_added = Color(181, 40, 32, 50),
-        they_added = Color(242, 122, 16, 50),
+        friends = Color(32, 181, 40, 150),
+        i_added = Color(181, 40, 32, 150),
+        they_added = Color(242, 122, 16, 150),
         default = Color(255, 255, 255, 30),
         default_odd = Color(0, 0, 0, 0),
         default_selected = Color(255, 255, 255, 50),
