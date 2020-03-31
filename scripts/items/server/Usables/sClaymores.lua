@@ -73,7 +73,7 @@ function sClaymores:PickupClaymore(args, player)
 
     local claymore = self.claymores[args.id]
 
-    if claymore.owner_id ~= tostring(player:GetSteamId()) then return end -- They do not own this claymore
+    --if claymore.owner_id ~= tostring(player:GetSteamId()) then return end -- They do not own this claymore
 
     if claymore.exploded then return end
 
