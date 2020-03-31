@@ -40,7 +40,6 @@ function cHitDetection:Explosion(args)
 
         local knockback_effect = explosive_data.knockback * percent_modifier
 
-        print(LocalPlayer:GetBaseState())
         if in_fov and not LocalPlayer:InVehicle() 
         and not LocalPlayer:GetValue("StuntingVehicle")
         and LocalPlayer:GetBaseState() ~= AnimationState.SReeledInIdle
