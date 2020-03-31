@@ -169,7 +169,7 @@ function cClaymores:KeyUp(args)
         local claymore = self.CSO_register[ray.entity:GetId()]
         if not claymore then return end
 
-        if claymore.owner_id ~= tostring(LocalPlayer:GetSteamId()) then return end
+        --if claymore.owner_id ~= tostring(LocalPlayer:GetSteamId()) then return end
 
         Network:Send(var("items/PickupClaymore"):get(), {id = claymore.id})
 
