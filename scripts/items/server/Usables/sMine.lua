@@ -16,6 +16,7 @@ function sMine:Trigger(player)
 
     if self.exploded or self.exploding then return false end -- Already exploded
     if tostring(player:GetSteamId()) == self.owner_id then return false end -- This is the owner, don't explode
+    if IsAFriend(player, self.owner_id) then return end -- Owner is a friend
 
     -- No need to sort players by cells for this, so just send nearby to remove
     -- Don't send to player who triggered in case they are lagging so it will trigger instantly for them

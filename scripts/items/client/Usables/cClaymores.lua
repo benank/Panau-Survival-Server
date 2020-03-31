@@ -38,7 +38,7 @@ function cClaymores:__init(args)
     Events:Subscribe(var("FireWeapon"):get(), self, self.FireWeapon)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("KeyUp", self, self.KeyUp)
-    Events:Subscribe("GameRenderOpaque", self, self.GameRenderOpaque)
+    Events:Subscribe("GameRender", self, self.GameRender)
     
     Network:Subscribe(var("items/StartClaymorePlacement"):get(), self, self.StartClaymorePlacement)
     Network:Subscribe(var("items/ClaymorePlaceSound"):get(), self, self.ClaymorePlaceSound)
@@ -49,7 +49,7 @@ function cClaymores:__init(args)
 
 end
 
-function cClaymores:GameRenderOpaque(args)
+function cClaymores:GameRender(args)
     for x, _ in pairs(self.claymore_cells) do
         for y, _ in pairs(self.claymore_cells[x]) do
             for _, claymore in pairs(self.claymore_cells[x][y]) do
