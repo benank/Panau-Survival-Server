@@ -50,7 +50,10 @@ function ListGUI:__init()
         default_odd = Color(0, 0, 0, 0),
         default_selected = Color(255, 255, 255, 50),
     }
-	
+
+    self.friend_delays = {} -- Delays on how often a player can be added/removed
+    self.friend_delay_time = 30
+    
 	self.PlayerCount = 0
 	self.Rows = {}
 
@@ -208,17 +211,20 @@ end
 
 function ListGUI:PressFriendButton(button)
 
-    if button:GetText() == "Remove" then
-        -- Removing a friend
-        Network:Send("Friends/Remove", {
-            id = button:GetDataString("steam_id")
-        })
-    elseif button:GetText() == "Add" then
-        -- Adding a friend
-        Network:Send("Friends/Add", {
-            id = button:GetDataString("steam_id")
-        })
+    local steam_id = button:GetDataString("steam_id")
+    local delay = self.friend_delays[steam_id]
+
+    if not delay or delay:GetSeconds() >= self.friend_delay_time then
+        if button:GetText() == "Remove" then
+            -- Removing a friend
+            Network:Send("Friends/Remove", {id = steam_id})
+        elseif button:GetText() == "Add" then
+            -- Adding a friend
+            Network:Send("Friends/Add", {id = steam_id})
+        end
     end
+
+    self.friend_delays[steam_id] = Timer()
 
 end
 
