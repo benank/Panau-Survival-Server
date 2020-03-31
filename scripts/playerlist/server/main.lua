@@ -11,7 +11,7 @@ function ListHandler:__init()
 end
 
 function ListHandler:PlayerQuit(args)
-	self.PingList[args.player:GetId()] = nil
+	self.PingList[tostring(args.player:GetId())] = nil
 end
 
 function ListHandler:SendPingList(player)
@@ -21,7 +21,7 @@ end
 function ListHandler:PostTick(args)
 	if Server:GetElapsedSeconds() - self.LastTick >= 4 then
 		for player in Server:GetPlayers() do
-			self.PingList[player:GetId()] = player:GetPing()
+			self.PingList[tostring(player:GetSteamId())] = player:GetPing()
 		end
 
 		self.LastTick = Server:GetElapsedSeconds()

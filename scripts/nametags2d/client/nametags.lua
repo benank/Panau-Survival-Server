@@ -275,6 +275,10 @@ end
 
 function Nametags:DrawPlayer( player_data )
     local p         = player_data[1]
+
+    -- Do not render tags if they are not a friend
+    if not IsAFriend(LocalPlayer, tostring(p:GetSteamId())) then return end
+
     local dist      = player_data[2]
 
     local pos       = p:GetBonePosition( "ragdoll_Head" ) + 
@@ -286,10 +290,11 @@ function Nametags:DrawPlayer( player_data )
         local radar_pos_2d, radar_success = Render:WorldToMinimap(pos)
 
         if radar_success then
-            local size = Vector2( 4, 4 )
+            local size = Vector2( 5, 5 )
             local color = p:GetColor()
             color.a = (Game:GetSetting( GameSetting.HUDOpacity ) / 100) * 255
-            Render:FillArea( radar_pos_2d - size/2, size, color )
+            Render:FillCircle(radar_pos_2d - size/2 * 1.5, size.x * 1.5, Color.Black )
+            Render:FillCircle(radar_pos_2d - size/2, size.x, color )
         end
     end
 

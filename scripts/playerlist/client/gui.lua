@@ -9,7 +9,7 @@ function ListGUI:__init()
 	self.ReceivedLastUpdate = true
 
 	self.window = Window.Create()
-	self.window:SetSizeRel( Vector2( 0.25, 0.8 ) )
+	self.window:SetSizeRel( Vector2( 0.4, 0.8 ) )
 	self.window:SetPositionRel( Vector2( 0.5, 0.5 ) - 
 								self.window:GetSizeRel()/2 )
 	self.window:SetTitle( "Total Players: 0" )
@@ -18,10 +18,14 @@ function ListGUI:__init()
 	self.list = SortedList.Create( self.window )
 	self.list:SetDock( GwenPosition.Fill )
 	self.list:SetMargin( Vector2( 4, 4 ), Vector2( 4, 0 ) )
-	self.list:AddColumn( "ID", 64 )
+	self.list:AddColumn( "#", 40 )
 	self.list:AddColumn( "Name" )
 	self.list:AddColumn( "Ping", 64 )
-	self.list:SetButtonsVisible( true )
+	self.list:AddColumn( "Level", 64 )
+	self.list:AddColumn( "Kills", 64 )
+	self.list:AddColumn( "Deaths", 64 )
+	self.list:AddColumn( "Friends", 128 )
+    self.list:SetButtonsVisible( true )
 
 	self.filter = TextBox.Create( self.window )
 	self.filter:SetDock( GwenPosition.Bottom )
@@ -35,7 +39,17 @@ function ListGUI:__init()
 	self.filterGlobal:SetMargin( Vector2( 4, 4 ), Vector2( 4, 0 ) )
 	self.filterGlobal:GetLabel():SetText( "Search entire name" )
 	self.filterGlobal:GetCheckBox():SetChecked( true )
-	self.filterGlobal:GetCheckBox():Subscribe( "CheckChanged", self, self.FilterChanged )
+    self.filterGlobal:GetCheckBox():Subscribe( "CheckChanged", self, self.FilterChanged )
+    
+    self.colors = 
+    {
+        friends = Color(32, 181, 40, 50),
+        i_added = Color(181, 40, 32, 50),
+        they_added = Color(242, 122, 16, 50),
+        default = Color(255, 255, 255, 30),
+        default_odd = Color(0, 0, 0, 0),
+        default_selected = Color(255, 255, 255, 50),
+    }
 	
 	self.PlayerCount = 0
 	self.Rows = {}
@@ -86,15 +100,14 @@ function ListGUI:__init()
 
 	self.window:SetTitle("Total Players: "..tostring(self.PlayerCount))
 
-	Network:Subscribe("UpdatePings", self, self.UpdatePings)
+    Network:Subscribe("UpdatePings", self, self.UpdatePings)
+    Network:Subscribe("Friends/Update", self, self.UpdateFriends)
 
 	Events:Subscribe( "KeyUp", self, self.KeyUp )
 	Events:Subscribe( "LocalPlayerInput", self, self.LocalPlayerInput )
 	Events:Subscribe( "PostTick", self, self.PostTick )
 	Events:Subscribe( "PlayerJoin", self, self.PlayerJoin )
 	Events:Subscribe( "PlayerQuit", self, self.PlayerQuit )
-	Events:Subscribe( "ModulesLoad", self, self.ModulesLoad )
-	Events:Subscribe( "ModuleUnload", self, self.ModuleUnload )
 
 	self.window:Subscribe( "WindowClosed", self, self.CloseClicked )
 end
@@ -131,6 +144,12 @@ function ListGUI:UpdatePings( list )
 	self.ReceivedLastUpdate = true
 end
 
+function ListGUI:UpdateFriends()
+	for steam_id, tablerow in pairs(self.Rows) do
+		self:UpdateFriendColor(tablerow, steam_id)
+	end
+end
+
 function ListGUI:PlayerJoin( args )
 	self:AddPlayer(args.player)
 	self.window:SetTitle("Total Players: "..tostring(self.PlayerCount))
@@ -151,27 +170,98 @@ function ListGUI:AddPlayer( player )
 	local item = self.list:AddItem( tostring(player:GetId()) )
 	item:SetCellText( 1, player:GetName() )
 	item:SetCellText( 2, "..." )
+	item:SetCellText( 3, "..." )
+	item:SetCellText( 4, "..." )
+    item:SetCellText( 5, "..." )
 
-	if LocalPlayer:IsFriend( player ) then
-		item:SetTextColor( Color( 150, 160, 255 ) )
-		item:SetToolTip( "Friend" )
-	end
+    for i = 0, 6 do
+        item:GetCellContents(i):SetTextSize(20)
+        item:GetCellContents(i):SetPadding(Vector2(4,4), Vector2(4,4))
 
-	self.Rows[player:GetId()] = item
+        if i ~= 1 then
+            item:GetCellContents(i):SetAlignment(GwenPosition.Center)
+        end
+
+        if i == 6 and player ~= LocalPlayer then
+            local btn = Button.Create(item, "button")
+            btn:SetText("Add")
+            btn:SetTextSize(16)
+            btn:SetAlignment(GwenPosition.Center)
+            btn:SetSize(Vector2(128,24))
+            btn:SetPadding(Vector2(20,20), Vector2(20,20))
+            btn:SetDataString("steam_id", tostring(player:GetSteamId()))
+            item:SetCellContents(i, btn)
+            btn:Subscribe("Press", self, self.PressFriendButton)
+        end
+
+    end
+
+	self.Rows[tostring(player:GetSteamId())] = item
 
 	local text = self.filter:GetText():lower()
 	local visible = (string.find( item:GetCellText(1):lower(), text ) == 1)
 
 	item:SetVisible( visible )
+    self:UpdateFriendColor(item, tostring(player:GetSteamId()))
+
+end
+
+function ListGUI:PressFriendButton(button)
+
+    if button:GetText() == "Remove" then
+        -- Removing a friend
+        Network:Send("Friends/Remove", {
+            id = button:GetDataString("steam_id")
+        })
+    elseif button:GetText() == "Add" then
+        -- Adding a friend
+        Network:Send("Friends/Add", {
+            id = button:GetDataString("steam_id")
+        })
+    end
+
+end
+
+function ListGUI:UpdateFriendColor(tablerow, steam_id)
+
+    if IsFriend(LocalPlayer, steam_id) and IsAFriend(LocalPlayer, steam_id) then
+        -- Both are friends
+		tablerow:SetBackgroundEvenColor(self.colors.friends)
+        tablerow:SetBackgroundHoverColor(self.colors.friends)
+        tablerow:SetBackgroundOddColor(self.colors.friends)
+        tablerow:FindChildByName("button", true):SetText("Remove")
+    elseif IsFriend(LocalPlayer, steam_id) and not IsAFriend(LocalPlayer, steam_id) then
+        -- LocalPlayer friended but they did not friend back
+		tablerow:SetBackgroundEvenColor(self.colors.i_added)
+        tablerow:SetBackgroundHoverColor(self.colors.i_added)
+        tablerow:SetBackgroundOddColor(self.colors.i_added)
+        tablerow:FindChildByName("button", true):SetText("Remove")
+    elseif not IsFriend(LocalPlayer, steam_id) and IsAFriend(LocalPlayer, steam_id) then
+        -- Player friended but LocalPlayer did not friend back
+		tablerow:SetBackgroundEvenColor(self.colors.they_added)
+        tablerow:SetBackgroundHoverColor(self.colors.they_added)
+        tablerow:SetBackgroundOddColor(self.colors.they_added)
+        tablerow:FindChildByName("button", true):SetText("Add")
+    else
+        -- No relation to this player
+		tablerow:SetBackgroundEvenColor(self.colors.default)
+        tablerow:SetBackgroundHoverColor(self.colors.default_selected)
+        tablerow:SetBackgroundOddColor(self.colors.default_odd)
+
+        if steam_id ~= tostring(LocalPlayer:GetSteamId()) then
+            tablerow:FindChildByName("button", true):SetText("Add")
+        end
+    end
+    
 end
 
 function ListGUI:RemovePlayer( player )
 	self.PlayerCount = self.PlayerCount - 1
 
-	if self.Rows[player:GetId()] == nil then return end
+	if self.Rows[tostring(player:GetSteamId())] == nil then return end
 
-	self.list:RemoveItem( self.Rows[player:GetId()] )
-	self.Rows[player:GetId()] = nil
+	self.list:RemoveItem( self.Rows[tostring(player:GetSteamId())] )
+	self.Rows[tostring(player:GetSteamId())] = nil
 end
 
 function ListGUI:FilterChanged()
@@ -211,24 +301,6 @@ function ListGUI:PostTick()
 			self.ReceivedLastUpdate = false
 		end
 	end
-end
-
-
-function ListGUI:ModulesLoad()
-    Events:Fire( "HelpAddItem",
-        {
-            name = "Player List",
-            text = 
-                "The player list is a basic list of players and their pings. " ..
-                "It can be accessed through F6."
-        } )
-end
-
-function ListGUI:ModuleUnload()
-    Events:Fire( "HelpRemoveItem",
-        {
-            name = "Player List"
-        } )
 end
 
 list = ListGUI()
