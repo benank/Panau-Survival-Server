@@ -43,6 +43,11 @@ function cClaymore:Render()
         self.alpha = (1 - math.min(Camera:GetPosition():Distance(self.position), 20) / 20) * 120
     end
 
+    if self.owner_id == tostring(LocalPlayer:GetSteamId()) or
+    IsAFriend(LocalPlayer, self.owner_id) then
+        self.alpha = 200
+    end
+
 
 end
 
