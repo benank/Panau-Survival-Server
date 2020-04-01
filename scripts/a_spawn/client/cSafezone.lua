@@ -75,15 +75,13 @@ function cSafezone:Render(args)
             Network:Send("EnterExitSafezone", {in_sz = self.in_safezone})
             if self.in_safezone then 
                 Events:Fire("EnterSafezone")
-                self:EnterSafezone()
-                LocalPlayer:SetOutlineEnabled(self.in_safezone)
-                LocalPlayer:SetOutlineColor(config.safezone.color)            
+                self:EnterSafezone()         
             else 
                 self:ExitSafezone()
-                Events:Fire("ExitSafezone") 
-                LocalPlayer:SetOutlineEnabled(self.in_safezone)
-                LocalPlayer:SetOutlineColor(config.safezone.color)            
+                Events:Fire("ExitSafezone")        
             end
+            LocalPlayer:SetOutlineEnabled(self.in_safezone)
+            LocalPlayer:SetOutlineColor(config.safezone.color)   
         end
     end
 

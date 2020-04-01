@@ -18,8 +18,8 @@ function sSpawnManager:__init()
 end
 
 function sSpawnManager:EnterExitSafezone(args, player)
-	local in_sz = args.in_sz and player:GetPosition():Distance(config.safezone.position) < config.safezone.radius * 1.05
-	player:SetNetworkValue("InSafezone", in_sz)
+	local in_sz = args.in_sz and player:GetPosition():Distance(config.safezone.position) < config.safezone.radius
+    player:SetNetworkValue("InSafezone", in_sz)
 
 	Events:Fire("EnterExitSafezone", {player = player, in_sz = in_sz})
 
@@ -167,6 +167,9 @@ end
 
 function sSpawnManager:PlayerSpawn(args)
     args.player:SetValue("Spawn/KilledRecently", false)
+    self:EnterExitSafezone({
+        in_sz = true
+    }, args.player)
 	return false
 end
 
