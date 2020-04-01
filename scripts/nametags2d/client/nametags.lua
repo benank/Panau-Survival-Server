@@ -290,11 +290,11 @@ function Nametags:DrawPlayer( player_data )
         local radar_pos_2d, radar_success = Render:WorldToMinimap(pos)
 
         if radar_success then
-            local size = Vector2( 5, 5 )
+            local size = Vector2( 6, 6 )
             local color = p:GetColor()
             color.a = (Game:GetSetting( GameSetting.HUDOpacity ) / 100) * 255
-            Render:FillCircle(radar_pos_2d - size/2 * 1.5, size.x * 1.5, Color.Black )
             Render:FillCircle(radar_pos_2d - size/2, size.x, color )
+            Render:DrawCircle(radar_pos_2d - size/2, size.x, Color.Black )
         end
     end
 
