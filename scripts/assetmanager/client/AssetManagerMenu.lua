@@ -27,9 +27,60 @@ function AssetManagerMenu:__init()
     self:LoadCategories()
     self:CreateVehiclesMenu()
 
+    for i = 1, 20 do
+        self:AddVehicle({
+            id = 3,
+            name = "Really Fast Car " .. tostring(i),
+            health = 0.3473812
+        })
+    end
+
     Events:Subscribe( "Render", self, self.Render )
     Events:Subscribe( "KeyUp", self, self.KeyUp )
     Events:Subscribe( "LocalPlayerInput", self, self.LocalPlayerInput )
+end
+
+function AssetManagerMenu:AddVehicle(data)
+
+    local list = self.categories["Vehicles"].list
+    
+	local item = list:AddItem( tostring(data.id) )
+	item:SetCellText( 0, data.name )
+	item:SetCellText( 1, string.format("%.0f%%", data.health * 100) )
+	item:SetCellText( 2, "..." )
+
+    for i = 0, 5 do
+        item:GetCellContents(i):SetTextSize(20)
+        item:GetCellContents(i):SetPadding(Vector2(4,4), Vector2(4,4))
+
+        if i ~= 0 then
+            item:GetCellContents(i):SetAlignment(GwenPosition.Center)
+        end
+
+    end
+
+    local button_names = 
+    {
+        [3] = "Spawn",
+        [4] = "Waypoint",
+        [5] = "Delete"
+    }
+    
+    for index, name in pairs(button_names) do
+        local btn = Button.Create(item, "button_" .. name)
+        btn:SetText(name)
+        btn:SetTextSize(16)
+        btn:SetAlignment(GwenPosition.Center)
+        btn:SetSize(Vector2(80,24))
+        btn:SetDataString("vehicle_id", tostring(data.id))
+        item:SetCellContents(index, btn)
+        btn:Subscribe("Press", self, self.PressVehicleButton)
+    end
+
+end
+
+function AssetManagerMenu:PressVehicleButton(btn)
+
 end
 
 function AssetManagerMenu:CreateVehiclesMenu()
@@ -43,6 +94,9 @@ function AssetManagerMenu:CreateVehiclesMenu()
 	list:AddColumn( "Waypoint", 80 )
 	list:AddColumn( "Delete", 80 )
     list:SetButtonsVisible( true )
+    list:SetPadding(Vector2(0,0), Vector2(0,0))
+
+    self.categories["Vehicles"].list = list
 
 	list:SetSort( 
 		function( column, a, b )
