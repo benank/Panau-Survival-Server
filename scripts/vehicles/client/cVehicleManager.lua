@@ -97,52 +97,6 @@ function cVehicleManager:Render(args)
 
 end
 
-function cVehicleManager:RenderVehicleDataMinimal(v)
-
-    local data = v:GetValue("VehicleData")
-    if not data then return end
-
-    local pos = v:GetPosition() + Vector3(0,1,0)
-    local bb_min, bb_max = v:GetBoundingBox()
-    local v_size = bb_min:Distance(bb_max)
-    
-    if pos:Distance(LocalPlayer:GetPosition()) > v_size then return end
-
-    local color = self.text.color
-    local circle_color = self.text.locked_color
-    
-    if tostring(data.owner_id) == tostring(LocalPlayer:GetSteamId().id) then -- If this player owns it
-        circle_color = self.text.unlocked_color
-    elseif false then--string.find(tostring(LocalPlayer:GetValue("Friends")), tostring(data.owner_id))false then
-        circle_color = self.text.unlocked_color -- Owned by friend
-    end
-
-    local cost_str = string.format("%d", data.cost)
-    local cost_str_size = Render:GetTextSize(cost_str, self.text.size)
-
-    local lockpicks_str = "LOCKPICKS"
-    local lockpicks_size = self.text.size * 0.28
-    local lockpicks_str_size = Render:GetTextSize(lockpicks_str, lockpicks_size)
-
-    if self.info_circle.data[1].amount ~= v:GetHealth() * 100 or self.info_circle.data[1].color ~= circle_color then
-        self.info_circle.data[1].amount = v:GetHealth() * 100
-        self.info_circle.data[1].color = circle_color
-        self.info_circle:Update()
-    end
-
-    local pos_2d = Render:WorldToScreen(pos)
-    
-    local t = Transform2():Translate(pos_2d)
-    Render:SetTransform(t)
-
-    self.info_circle:Render(args)
-    self:DrawShadowedText(-cost_str_size / 2, cost_str, self.text.color, self.text.size)
-    self:DrawShadowedText(-lockpicks_str_size / 2 + Vector2(0, cost_str_size.y * 0.55), lockpicks_str, self.text.color, lockpicks_size)
-
-	Render:ResetTransform()
-
-end
-
 function cVehicleManager:RenderVehicleDataClassic(v)
 
     local data = v:GetValue("VehicleData")
@@ -154,11 +108,11 @@ function cVehicleManager:RenderVehicleDataClassic(v)
 
     local color = self.text.color
     local circle_color = self.text.locked_color
+
+    local friendly_vehicle = tostring(data.owner_id) == tostring(LocalPlayer:GetSteamId().id) or IsAFriend(LocalPlayer, data.owner_id)
     
-    if tostring(data.owner_id) == tostring(LocalPlayer:GetSteamId().id) then -- If this player owns it
+    if friendly_vehicle then
         circle_color = self.text.unlocked_color
-    elseif false then--string.find(tostring(LocalPlayer:GetValue("Friends")), tostring(data.owner_id))false then
-        circle_color = self.text.unlocked_color -- Owned by friend
     end
 
     local vehicle_name = tostring(v)
@@ -174,8 +128,11 @@ function cVehicleManager:RenderVehicleDataClassic(v)
     local t = Transform2():Translate(pos_2d)
     Render:SetTransform(t)
     self:DrawShadowedText(-Vector2(0, vehicle_name_height * 1.5) + self.text.offset, vehicle_name, self.text.color, self.text.size)
-    self:DrawShadowedText(-Vector2(0, vehicle_name_height * 0.5) + self.text.offset, cost_str, self.text.color, self.text.size)
-    self:DrawShadowedText(Vector2(0, cost_str_height * 0.5) + self.text.offset, health_str, self.text.color, self.text.size)
+    self:DrawShadowedText(-Vector2(0, vehicle_name_height * 0.5) + self.text.offset, health_str, self.text.color, self.text.size)
+
+    if not friendly_vehicle then
+        self:DrawShadowedText(Vector2(0, cost_str_height * 0.5) + self.text.offset, cost_str, self.text.color, self.text.size)
+    end
 
     local circle_size = self.text.size * 3 / 2 * 0.8
     local circle_pos = -Vector2(circle_size * 1.3, 0)
