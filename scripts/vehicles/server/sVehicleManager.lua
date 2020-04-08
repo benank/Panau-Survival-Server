@@ -108,7 +108,6 @@ function sVehicleManager:ClientModuleLoad(args)
     if result and count_table(result) > 0 then
         -- Send player vehicle data
         for i, v in ipairs(result) do
-            output_table(v)
             v.spawned = false
             v.position = self:DeserializePosition(v.pos)
             v.angle = self:DeserializeAngle(v.angle)
@@ -207,7 +206,9 @@ function sVehicleManager:SpawnVehicles()
             local vehicle_data = self:GenerateVehicleData(spawn_args)
             vehicle_data.health = vehicle:GetHealth()
             vehicle_data.position = vehicle:GetPosition()
-            vehicle_data.model_id = vehicle:GetModelId()        
+            vehicle_data.model_id = vehicle:GetModelId()
+            vehicle_data.spawned = true
+            vehicle_data.vehicle = vehicle
 
             vehicle:SetNetworkValue("VehicleData", vehicle_data)
             insert(self.vehicles, vehicle)
@@ -342,6 +343,8 @@ function sVehicleManager:SaveVehicle(vehicle, player)
         local result = cmd:Execute()
         vehicle_data.vehicle_id = tonumber(result[1].insert_id)
     end
+
+    vehicle_data.spawned = true
 
     vehicle:SetNetworkValue("VehicleData", vehicle_data)
 

@@ -41,6 +41,25 @@ function AssetManagerMenu:__init()
 
     Events:Subscribe("Vehicles/OwnedVehiclesUpdate", self, self.OwnedVehiclesUpdate)
     Events:Subscribe("Vehicles/ResetVehiclesMenu", self, self.ResetVehiclesMenu)
+
+    Events:Subscribe("SecondTick", self, self.SecondTick)
+end
+
+function AssetManagerMenu:SecondTick()
+    self:UpdateVehicleDistances()
+end
+
+function AssetManagerMenu:UpdateVehicleDistances()
+    for id, vehicle_data in pairs(self.categories["Vehicles"].vehicles) do
+        local pos = vehicle_data.data.position
+        if IsValid(vehicle_data.data.vehicle) then
+            pos = vehicle_data.data.vehicle:GetPosition()
+        end
+
+        vehicle_data.item:SetCellText( 2, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(pos)) )
+
+    end
+
 end
 
 function AssetManagerMenu:ResetVehiclesMenu()
@@ -59,14 +78,20 @@ function AssetManagerMenu:OwnedVehiclesUpdate(vehicles)
 end
 
 function AssetManagerMenu:UpdateVehicle(data)
-    local item = self.categories["Vehicles"].vehicles[data.vehicle_id]
+    self.categories["Vehicles"].vehicles[data.vehicle_id].data = data
+    local item = self.categories["Vehicles"].vehicles[data.vehicle_id].item
 
-    -- TODO
+    if data.spawned then
+        item:FindChildByName("button_Spawn", true):Hide()
+    else
+        item:FindChildByName("button_Spawn", true):Show()
+    end
+
 end
 
 function AssetManagerMenu:GetFormattedDistanceString(dist)
     if dist > 1000 then
-        return string.format("%.1f km", dist / 1000)
+        return string.format("%.2f km", dist / 1000)
     else
         return string.format("%.0f m", dist)
     end
@@ -104,17 +129,37 @@ function AssetManagerMenu:AddVehicle(data)
         btn:SetTextSize(16)
         btn:SetAlignment(GwenPosition.Center)
         btn:SetSize(Vector2(80,24))
-        btn:SetDataString("vehicle_id", tostring(data.id))
+        btn:SetDataString("vehicle_id", tostring(data.vehicle_id))
+        btn:SetDataString("type", name)
         item:SetCellContents(index, btn)
         btn:Subscribe("Press", self, self.PressVehicleButton)
+
+        if name == "Spawn" and data.spawned then
+            btn:Hide()
+        end
     end
 
-    self.categories["Vehicles"].vehicles[data.vehicle_id] = {item = item, data = data}
+    self.categories["Vehicles"].vehicles[tonumber(data.vehicle_id)] = {item = item, data = data}
 
 end
 
 function AssetManagerMenu:PressVehicleButton(btn)
+    
+    local type = btn:GetDataString("type")
+    local vehicle_data = self.categories["Vehicles"].vehicles[tonumber(btn:GetDataString("vehicle_id"))]
 
+    if not vehicle_data then return end
+
+    if type == "Spawn" then
+
+    elseif type == "Waypoint" then
+
+        Waypoint:SetPosition(IsValid(vehicle_data.data.vehicle) and vehicle_data.data.vehicle:GetPosition() or vehicle_data.data.position)
+
+    elseif type == "Delete" then
+
+
+    end
 end
 
 function AssetManagerMenu:CreateVehiclesMenu()
