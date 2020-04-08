@@ -27,27 +27,59 @@ function AssetManagerMenu:__init()
     self:LoadCategories()
     self:CreateVehiclesMenu()
 
-    for i = 1, 20 do
+    --[[for i = 1, 20 do
         self:AddVehicle({
             id = 3,
             name = "Really Fast Car " .. tostring(i),
             health = 0.3473812
         })
-    end
+    end]]
 
     Events:Subscribe( "Render", self, self.Render )
     Events:Subscribe( "KeyUp", self, self.KeyUp )
     Events:Subscribe( "LocalPlayerInput", self, self.LocalPlayerInput )
+
+    Events:Subscribe("Vehicles/OwnedVehiclesUpdate", self, self.OwnedVehiclesUpdate)
+    Events:Subscribe("Vehicles/ResetVehiclesMenu", self, self.ResetVehiclesMenu)
+end
+
+function AssetManagerMenu:ResetVehiclesMenu()
+    self.categories["Vehicles"].list:Remove()
+    self:CreateVehiclesMenu()
+end
+
+function AssetManagerMenu:OwnedVehiclesUpdate(vehicles)
+    for id, vehicle_data in pairs(vehicles) do
+        if self.categories["Vehicles"].vehicles[id] then
+            self:UpdateVehicle(vehicle_data)
+        else
+            self:AddVehicle(vehicle_data)
+        end
+    end
+end
+
+function AssetManagerMenu:UpdateVehicle(data)
+    local item = self.categories["Vehicles"].vehicles[data.vehicle_id]
+
+    -- TODO
+end
+
+function AssetManagerMenu:GetFormattedDistanceString(dist)
+    if dist > 1000 then
+        return string.format("%.1f km", dist / 1000)
+    else
+        return string.format("%.0f m", dist)
+    end
 end
 
 function AssetManagerMenu:AddVehicle(data)
-
+    
     local list = self.categories["Vehicles"].list
     
-	local item = list:AddItem( tostring(data.id) )
-	item:SetCellText( 0, data.name )
+	local item = list:AddItem( tostring(data.vehicle_id) )
+	item:SetCellText( 0, Vehicle.GetNameByModelId(tonumber(data.model_id)) )
 	item:SetCellText( 1, string.format("%.0f%%", data.health * 100) )
-	item:SetCellText( 2, "..." )
+	item:SetCellText( 2, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(data.position)) )
 
     for i = 0, 5 do
         item:GetCellContents(i):SetTextSize(20)
@@ -77,6 +109,8 @@ function AssetManagerMenu:AddVehicle(data)
         btn:Subscribe("Press", self, self.PressVehicleButton)
     end
 
+    self.categories["Vehicles"].vehicles[data.vehicle_id] = {item = item, data = data}
+
 end
 
 function AssetManagerMenu:PressVehicleButton(btn)
@@ -97,6 +131,7 @@ function AssetManagerMenu:CreateVehiclesMenu()
     list:SetPadding(Vector2(0,0), Vector2(0,0))
 
     self.categories["Vehicles"].list = list
+    self.categories["Vehicles"].vehicles = {}
 
 	list:SetSort( 
 		function( column, a, b )

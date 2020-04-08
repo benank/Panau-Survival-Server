@@ -2,6 +2,8 @@ class 'cVehicleManager'
 
 function cVehicleManager:__init()
 
+    self.owned_vehicles = {} -- My owned vehicles
+
     self.text = 
     {
         size = 17,
@@ -11,12 +13,6 @@ function cVehicleManager:__init()
         shadow_adj = Vector2(1, 1),
         offset = Vector2(25,0)
     }
-
-    self.info_circle = CircleBar(Vector2(), self.text.size * 1, 
-	{
-		[1] = {max_amount = 100, amount = 50, color = self.text.locked_color}
-	})
-
 
     self.block_actions = 
     {
@@ -35,8 +31,17 @@ function cVehicleManager:__init()
         [Action.StuntposEnterVehicle] = true
     }
 
-    Events:Subscribe("SecondTick", self, self.SecondTick)
+    Events:Fire("Vehicles/ResetVehiclesMenu")
 
+    Events:Subscribe("SecondTick", self, self.SecondTick)
+    Network:Subscribe("Vehicles/SyncOwnedVehicles", self, self.SyncOwnedVehicles)
+
+end
+
+function cVehicleManager:SyncOwnedVehicles(vehicles)
+    self.owned_vehicles = vehicles
+
+    Events:Fire("Vehicles/OwnedVehiclesUpdate", vehicles)
 end
 
 function cVehicleManager:LocalPlayerInput(args)
@@ -56,9 +61,11 @@ function cVehicleManager:LocalPlayerInput(args)
             local data = closest_vehicle:GetValue("VehicleData")
             local lockpicks = Inventory.GetNumOfItem({item_name = "Lockpick"})
 
-            -- TODO check if friends
-            if data.owner_id ~= tostring(LocalPlayer:GetSteamId().id) then 
-                if lockpicks < data.cost or (IsValid(closest_vehicle) and #closest_vehicle:GetOccupants() > 0) then
+            if not data then return false end
+
+            if data.owner_steamid ~= tostring(LocalPlayer:GetSteamId().id)
+            and not IsAFriend(LocalPlayer, data.owner_steamid) then 
+                if lockpicks < data.cost or (IsValid(closest_vehicle) and count_table(closest_vehicle:GetOccupants()) > 0) then
                     return false
                 end
             end
@@ -109,7 +116,7 @@ function cVehicleManager:RenderVehicleDataClassic(v)
     local color = self.text.color
     local circle_color = self.text.locked_color
 
-    local friendly_vehicle = tostring(data.owner_id) == tostring(LocalPlayer:GetSteamId().id) or IsAFriend(LocalPlayer, data.owner_id)
+    local friendly_vehicle = tostring(data.owner_steamid) == tostring(LocalPlayer:GetSteamId()) or IsAFriend(LocalPlayer, data.owner_steamid)
     
     if friendly_vehicle then
         circle_color = self.text.unlocked_color
@@ -127,10 +134,13 @@ function cVehicleManager:RenderVehicleDataClassic(v)
     
     local t = Transform2():Translate(pos_2d)
     Render:SetTransform(t)
-    self:DrawShadowedText(-Vector2(0, vehicle_name_height * 1.5) + self.text.offset, vehicle_name, self.text.color, self.text.size)
-    self:DrawShadowedText(-Vector2(0, vehicle_name_height * 0.5) + self.text.offset, health_str, self.text.color, self.text.size)
 
-    if not friendly_vehicle then
+    if friendly_vehicle then
+        self:DrawShadowedText(-Vector2(0, vehicle_name_height * 1) + self.text.offset, vehicle_name, self.text.color, self.text.size)
+        self:DrawShadowedText(Vector2(0, vehicle_name_height * 0) + self.text.offset, health_str, self.text.color, self.text.size)
+    else
+        self:DrawShadowedText(-Vector2(0, vehicle_name_height * 1.5) + self.text.offset, vehicle_name, self.text.color, self.text.size)
+        self:DrawShadowedText(-Vector2(0, vehicle_name_height * 0.5) + self.text.offset, health_str, self.text.color, self.text.size)
         self:DrawShadowedText(Vector2(0, cost_str_height * 0.5) + self.text.offset, cost_str, self.text.color, self.text.size)
     end
 
