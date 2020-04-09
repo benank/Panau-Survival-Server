@@ -33,9 +33,20 @@ function cVehicleManager:__init()
 
     Events:Fire("Vehicles/ResetVehiclesMenu")
 
+    Events:Subscribe("Vehicles/SpawnVehicle", self, self.SpawnVehicle)
+    Events:Subscribe("Vehicles/DeleteVehicle", self, self.DeleteVehicle)
+
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Network:Subscribe("Vehicles/SyncOwnedVehicles", self, self.SyncOwnedVehicles)
 
+end
+
+function cVehicleManager:SpawnVehicle(args)
+    Network:Send("Vehicles/SpawnVehicle", args)
+end
+
+function cVehicleManager:DeleteVehicle(args)
+    Network:Send("Vehicles/DeleteVehicle", args)
 end
 
 function cVehicleManager:SyncOwnedVehicles(vehicles)
@@ -63,7 +74,7 @@ function cVehicleManager:LocalPlayerInput(args)
 
             if not data then return false end
 
-            if data.owner_steamid ~= tostring(LocalPlayer:GetSteamId().id)
+            if data.owner_steamid ~= tostring(LocalPlayer:GetSteamId())
             and not IsAFriend(LocalPlayer, data.owner_steamid) then 
                 if lockpicks < data.cost or (IsValid(closest_vehicle) and count_table(closest_vehicle:GetOccupants()) > 0) then
                     return false

@@ -17,9 +17,59 @@ function sVehicleManager:__init()
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
     Events:Subscribe("PlayerEnterVehicle", self, self.PlayerEnterVehicle)
 
+    Network:Subscribe("Vehicles/SpawnVehicle", self, self.PlayerSpawnVehicle)
+    Network:Subscribe("Vehicles/DeleteVehicle", self, self.PlayerDeleteVehicle)
+
 end
+
+function sVehicleManager:PlayerExitVehicle(args)
+    local vehicle_data = args.vehicle:GetValue("VehicleData")
+    if not vehicle_data then return end
+
+    if vehicle_data.vehicle_id then
+        -- Vehicle is owned, update it
+        self:SaveVehicle(args.vehicle, args.player)
+    end
+end
+
+function sVehicleManager:PlayerSpawnVehicle(args, player)
+
+    local player_owned_vehicles = player:GetValue("OwnedVehicles")
+    args.vehicle_id = tonumber(args.vehicle_id)
+
+    local vehicle_data = player_owned_vehicles[args.vehicle_id]
+
+    if not vehicle_data then return end
+    if vehicle_data.spawned then return end
+
+    local spawn_args = deepcopy(vehicle_data)
+    
+    spawn_args.tone1 = vehicle_data.col1
+    spawn_args.tone2 = vehicle_data.col2
+
+    local vehicle = self:SpawnVehicle(spawn_args)
+    vehicle:SetHealth(vehicle_data.health)
+
+    vehicle_data.spawned = true
+    vehicle_data.vehicle = vehicle
+
+    player_owned_vehicles[args.vehicle_id] = vehicle_data
+
+    vehicle:SetNetworkValue("VehicleData", vehicle_data)
+    player:SetValue("OwnedVehicles", player_owned_vehicles)
+    insert(self.vehicles, vehicle)
+
+    self:SyncPlayerOwnedVehicles(player)
+
+end
+
+function sVehicleManager:PlayerDeleteVehicle(args, player)
+
+end
+
 
 function sVehicleManager:PlayerEnterVehicle(args)
 
@@ -30,6 +80,10 @@ function sVehicleManager:PlayerEnterVehicle(args)
     and not IsAFriend(args.player, data.owner_steamid) then
         -- If this is not the owner and they are not a friend of the owner
         self:TryBuyVehicle(args)
+    else
+        -- This is an owned vehicle, so update it in the DB
+        print("save")
+        self:SaveVehicle(args.vehicle, args.player)
     end
 
 end
@@ -41,14 +95,12 @@ function sVehicleManager:TryBuyVehicle(args)
     local owned_vehicles = args.player:GetValue("OwnedVehicles")
 
     if player_lockpicks < args.data.cost then
-        print("nope 2")
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
         return
     end
 
     if count_table(owned_vehicles) >= config.player_max_vehicles then
-        print("nope 3")
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
         return
@@ -56,7 +108,6 @@ function sVehicleManager:TryBuyVehicle(args)
 
     -- If they tried to steal it while there was someone inside
     if IsValid(args.old_driver) then
-        print("nope 4")
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
         return
@@ -108,11 +159,16 @@ function sVehicleManager:ClientModuleLoad(args)
     if result and count_table(result) > 0 then
         -- Send player vehicle data
         for i, v in ipairs(result) do
+            v.model_id = tonumber(v.model_id)
             v.spawned = false
+            v.guards = tonumber(v.guards)
+            v.cost = tonumber(v.cost)
             v.position = self:DeserializePosition(v.pos)
             v.angle = self:DeserializeAngle(v.angle)
             v.col1 = self:DeserializeColor(v.col1)
             v.col2 = self:DeserializeColor(v.col2)
+            v.vehicle_id = tonumber(v.vehicle_id)
+            v.health = tonumber(v.health)
             owned_vehicles[v.vehicle_id] = v
         end
     end
@@ -332,7 +388,7 @@ function sVehicleManager:SaveVehicle(vehicle, player)
     
     -- If we are updating the vehicle
     if vehicle_data.vehicle_id then
-        cmd:Bind(12, vehicle_data.vehicle_id)
+        cmd:Bind(12, tonumber(vehicle_data.vehicle_id))
     end
 
     cmd:Execute()
@@ -345,6 +401,7 @@ function sVehicleManager:SaveVehicle(vehicle, player)
     end
 
     vehicle_data.spawned = true
+    vehicle_data.position = vehicle:GetPosition()
 
     vehicle:SetNetworkValue("VehicleData", vehicle_data)
 
@@ -381,15 +438,5 @@ function sVehicleManager:DeserializeColor(col)
     local split = col:split(",")
     return Color(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]))
 end
-
---[[
-
-vehicle data object (stored on vehicles) should have the following information:
-cost
-owner_steamid
-vehicle_id (from DB)
-upgrades (table of traps/protections, etc)
-
-]]
 
 VehicleManager = sVehicleManager()

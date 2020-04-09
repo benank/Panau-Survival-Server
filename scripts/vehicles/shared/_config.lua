@@ -32,7 +32,7 @@ config =
             [18] = 50 -- raider/stonewall tank
         },
         variance = 0.15,
-        health = {max = 1, min = 0.5},
+        health = {max = 1, min = 0.6},
         cost_modifier = 1 -- Global cost modifier for all vehicles (integer)
     },
     cost_multiplier_on_purchase = 3, -- Cost multiplier after purchasing an unowned vehicle

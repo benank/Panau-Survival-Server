@@ -5,6 +5,8 @@ function AssetManagerMenu:__init()
 
     self.open_key = VirtualKey.F7
 
+    self.button_timer = Timer()
+
     self.window = Window.Create()
     self.window:SetSizeRel( Vector2( 0.5, 0.5 ) )
     self.window:SetPositionRel( Vector2( 0.5, 0.5 ) - self.window:GetSizeRel()/2 )
@@ -26,14 +28,6 @@ function AssetManagerMenu:__init()
 
     self:LoadCategories()
     self:CreateVehiclesMenu()
-
-    --[[for i = 1, 20 do
-        self:AddVehicle({
-            id = 3,
-            name = "Really Fast Car " .. tostring(i),
-            health = 0.3473812
-        })
-    end]]
 
     Events:Subscribe( "Render", self, self.Render )
     Events:Subscribe( "KeyUp", self, self.KeyUp )
@@ -144,6 +138,9 @@ function AssetManagerMenu:AddVehicle(data)
 end
 
 function AssetManagerMenu:PressVehicleButton(btn)
+
+    if self.button_timer:GetSeconds() < 1 then return end
+    self.button_timer:Restart()
     
     local type = btn:GetDataString("type")
     local vehicle_data = self.categories["Vehicles"].vehicles[tonumber(btn:GetDataString("vehicle_id"))]
@@ -152,12 +149,19 @@ function AssetManagerMenu:PressVehicleButton(btn)
 
     if type == "Spawn" then
 
+        Events:Fire("Vehicles/SpawnVehicle", {
+            vehicle_id = vehicle_data.data.vehicle_id
+        })
+
     elseif type == "Waypoint" then
 
         Waypoint:SetPosition(IsValid(vehicle_data.data.vehicle) and vehicle_data.data.vehicle:GetPosition() or vehicle_data.data.position)
 
     elseif type == "Delete" then
 
+        Events:Fire("Vehicles/DeleteVehicle", {
+            vehicle_id = vehicle_data.data.vehicle_id
+        })
 
     end
 end
