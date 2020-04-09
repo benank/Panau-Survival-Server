@@ -62,6 +62,17 @@ function AssetManagerMenu:ResetVehiclesMenu()
 end
 
 function AssetManagerMenu:OwnedVehiclesUpdate(vehicles)
+
+    -- Remove non-existent vehicles
+    for id, data in pairs(self.categories["Vehicles"].vehicles) do
+        if not vehicles[id] then
+            data.item:Remove()
+            self.categories["Vehicles"].vehicles[id] = nil
+        end
+    end
+
+    local valid_vehicles = {}
+
     for id, vehicle_data in pairs(vehicles) do
         if self.categories["Vehicles"].vehicles[id] then
             self:UpdateVehicle(vehicle_data)

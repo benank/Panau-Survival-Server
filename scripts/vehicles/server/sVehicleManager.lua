@@ -67,6 +67,28 @@ function sVehicleManager:PlayerSpawnVehicle(args, player)
 end
 
 function sVehicleManager:PlayerDeleteVehicle(args, player)
+    if not args.vehicle_id then return end
+
+    args.vehicle_id = tonumber(args.vehicle_id)
+    
+    local player_owned_vehicles = player:GetValue("OwnedVehicles")
+
+    local vehicle_data = player_owned_vehicles[args.vehicle_id]
+
+    if not vehicle_data then return end
+    
+    local cmd = SQL:Command("DELETE FROM vehicles WHERE vehicle_id = (?)")
+    cmd:Bind(1, args.vehicle_id)
+    cmd:Execute()
+
+    if IsValid(vehicle_data.vehicle) then
+        vehicle_data.vehicle:Remove()
+    end
+
+    player_owned_vehicles[args.vehicle_id] = nil
+    player:SetValue("OwnedVehicles", player_owned_vehicles)
+
+    self:SyncPlayerOwnedVehicles(player)
 
 end
 
@@ -82,7 +104,6 @@ function sVehicleManager:PlayerEnterVehicle(args)
         self:TryBuyVehicle(args)
     else
         -- This is an owned vehicle, so update it in the DB
-        print("save")
         self:SaveVehicle(args.vehicle, args.player)
     end
 
