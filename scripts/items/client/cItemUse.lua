@@ -84,7 +84,10 @@ function cItemUse:CompleteUsage()
     local ray = Physics:Raycast(LocalPlayer:GetPosition(), Vector3.Down, 0, 5)
     if ray.entity and ray.entity.__type == "ClientStaticObject" then ray.entity = nil end
 
-    Network:Send("items/CompleteItemUsage", {ray = ray})
+    local forward_ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 500)
+    if forward_ray.entity and forward_ray.entity.__type == "ClientStaticObject" then forward_ray.entity = nil end
+
+    Network:Send("items/CompleteItemUsage", {ray = ray, forward_ray = forward_ray})
     self:UnsubscribeEvents()
 
 end
