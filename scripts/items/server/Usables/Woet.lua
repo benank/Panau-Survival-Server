@@ -16,11 +16,6 @@ Network:Subscribe("items/CompleteItemUsage", function(args, player)
             return
         end
 
-        if math.abs(entity:GetLinearVelocity().z) > 1 then
-            Chat:Send(player, "The vehicle must not be moving in order to use this item!", Color.Red)
-            return
-        end
-
         entity:SetAngularVelocity(Vector3(0, 0, 15))
 
         -- Possibly check if they are the owner/friend of owner
