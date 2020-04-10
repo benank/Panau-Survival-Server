@@ -40,10 +40,10 @@ function AssetManagerMenu:__init()
 end
 
 function AssetManagerMenu:SecondTick()
-    self:UpdateVehicleDistances()
+    self:UpdateVehicleSecondTick()
 end
 
-function AssetManagerMenu:UpdateVehicleDistances()
+function AssetManagerMenu:UpdateVehicleSecondTick()
     for id, vehicle_data in pairs(self.categories["Vehicles"].vehicles) do
         local pos = vehicle_data.data.position
         if IsValid(vehicle_data.data.vehicle) then
@@ -51,7 +51,9 @@ function AssetManagerMenu:UpdateVehicleDistances()
         end
 
         vehicle_data.item:SetCellText( 2, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(pos)) )
-
+        
+        local health = IsValid(vehicle_data.data.vehicle) and vehicle_data.data.vehicle:GetHealth() or vehicle_data.data.health
+        vehicle_data.item:SetCellText( 1, string.format("%.0f%%", health * 100) )
     end
 
 end
@@ -150,7 +152,7 @@ end
 
 function AssetManagerMenu:PressVehicleButton(btn)
 
-    if self.button_timer:GetSeconds() < 1 then return end
+    if self.button_timer:GetSeconds() < 0.5 then return end
     self.button_timer:Restart()
     
     local type = btn:GetDataString("type")

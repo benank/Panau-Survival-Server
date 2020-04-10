@@ -7,7 +7,11 @@ function sVehicleManager:__init()
 
     SQL:Execute("CREATE TABLE IF NOT EXISTS vehicles (vehicle_id INTEGER PRIMARY KEY AUTOINCREMENT, model_id INTEGER, pos VARCHAR, angle VARCHAR, col1 VARCHAR, col2 VARCHAR, decal VARCHAR, template VARCHAR, owner_steamid VARCHAR, health REAL, cost INTEGER, guards INTEGER)")
 
-    self.vehicles = {}
+    self.vehicles = {} -- All vehicles in the server
+    self.owned_vehicles = {} -- All owned vehicles in the server
+
+    self.despawning_vehicles = {} -- Owned vehicles that will despawn because the owner got off
+
     self.spawns = {} -- Spawn positions with their corresponding vehicles and times, etc
     self.spawn_weights = {}
 
@@ -20,8 +24,68 @@ function sVehicleManager:__init()
     Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
     Events:Subscribe("PlayerEnterVehicle", self, self.PlayerEnterVehicle)
 
+    Events:Subscribe("TimeChange", self, self.TimeChange)
+
+    Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+
     Network:Subscribe("Vehicles/SpawnVehicle", self, self.PlayerSpawnVehicle)
     Network:Subscribe("Vehicles/DeleteVehicle", self, self.PlayerDeleteVehicle)
+
+    local func = coroutine.wrap(function()
+        while true do
+
+            self:Tick500()
+
+            Timer.Sleep(500)
+        end
+    end)()
+
+end
+
+function sVehicleManager:Tick500()
+    -- Every 500 ms, heal vehicles that are at gas stations
+end
+
+function sVehicleManager:TimeChange()
+    for id, timer in pairs(self.despawning_vehicles) do
+
+        if count_table(self.owned_vehicles[id]:GetOccupants()) > 0 then
+            -- Friend is using vehicle, restart timer
+            timer:Restart()
+            self:SaveVehicle(self.owned_vehicles[id])
+
+        elseif timer:GetMinutes() >= config.owned_despawn_time then
+            -- Remove vehicle from game
+            self.despawning_vehicles[id] = nil
+            self.owned_vehicles[id]:Remove()
+            self.owned_vehicles[id] = nil
+
+            for index, vehicle in pairs(self.vehicles) do
+                local vehicle_data = vehicle:GetValue("VehicleData")
+
+                if vehicle_data and vehicle_data.vehicle_id and tonumber(vehicle_data.vehicle_id) == tonumber(id) then
+                    table.remove(self.vehicles, index, 1)
+                    break
+                end
+
+            end
+
+        end
+
+    end
+
+end
+
+function sVehicleManager:PlayerQuit(args)
+
+    local vehicles = args.player:GetValue("OwnedVehicles")
+    if not vehicles then return end
+
+    for id, vehicle_data in pairs(vehicles) do
+        if IsValid(vehicle_data.vehicle) then
+            self.despawning_vehicles[id] = Timer()
+        end
+    end
 
 end
 
@@ -32,6 +96,11 @@ function sVehicleManager:PlayerExitVehicle(args)
     if vehicle_data.vehicle_id then
         -- Vehicle is owned, update it
         self:SaveVehicle(args.vehicle, args.player)
+
+        -- If a friend is using the vehicle, restart the timer
+        if self.despawning_vehicles[vehicle_data.vehicle_id] then
+            self.despawning_vehicles[vehicle_data.vehicle_id]:Restart()
+        end
     end
 end
 
@@ -57,6 +126,8 @@ function sVehicleManager:PlayerSpawnVehicle(args, player)
     vehicle_data.vehicle = vehicle
 
     player_owned_vehicles[args.vehicle_id] = vehicle_data
+
+    self.owned_vehicles[args.vehicle_id] = vehicle
 
     vehicle:SetNetworkValue("VehicleData", vehicle_data)
     player:SetValue("OwnedVehicles", player_owned_vehicles)
@@ -88,7 +159,13 @@ function sVehicleManager:PlayerDeleteVehicle(args, player)
     player_owned_vehicles[args.vehicle_id] = nil
     player:SetValue("OwnedVehicles", player_owned_vehicles)
 
+    self.owned_vehicles[args.vehicle_id] = nil
+
     self:SyncPlayerOwnedVehicles(player)
+
+    
+    Chat:Send(args.player, string.format("Vehicle deleted. (%s/%s)", 
+        tostring(count_table(player_owned_vehicles)), tostring(config.player_max_vehicles)), Color.Green)
 
 end
 
@@ -105,6 +182,11 @@ function sVehicleManager:PlayerEnterVehicle(args)
     else
         -- This is an owned vehicle, so update it in the DB
         self:SaveVehicle(args.vehicle, args.player)
+
+        -- If a friend is using the vehicle, restart the timer
+        if self.despawning_vehicles[data.vehicle_id] then
+            self.despawning_vehicles[data.vehicle_id]:Restart()
+        end
     end
 
 end
@@ -145,14 +227,53 @@ function sVehicleManager:TryBuyVehicle(args)
         player = args.player
     })
 
-    -- Now buy the vehicle
-    args.data.owner_steamid = tostring(args.player:GetSteamId())
+    if args.data.vehicle_id then
+        owned_vehicles[args.data.vehicle_id] = args.data
+        args.player:SetValue("OwnedVehicles", owned_vehicles)
+        self:SyncPlayerOwnedVehicles(args.player)
+    end
 
     -- Check if vehicle is owned or unowned
     if not args.data.owner_steamid then
         -- Not owned previously
         args.data.cost = args.data.cost * config.cost_multiplier_on_purchase
+
+        Chat:Send(args.player, string.format("Vehicle successfully purchased! (%s/%s)", 
+            tostring(count_table(owned_vehicles)), tostring(config.player_max_vehicles)), Color.Green)
+    
+    elseif args.data.vehicle_id then
+        
+        -- Remove vehicle from old owner's list
+        local old_owner = nil
+
+        for p in Server:GetPlayers() do
+            if tostring(p:GetSteamId()) == args.data.owner_steamid then
+                old_owner = p
+                break
+            end
+        end
+
+        if IsValid(old_owner) then
+            local player_owned_vehicles = old_owner:GetValue("OwnedVehicles")
+            player_owned_vehicles[args.data.vehicle_id] = nil
+            old_owner:SetValue("OwnedVehicles", player_owned_vehicles)
+            self:SyncPlayerOwnedVehicles(old_owner)
+        end
+
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = args.data.owner_steamid,
+            message = string.format("%s stole your vehicle [%s]", args.player:GetName(), args.vehicle:GetName()),
+            color = Color.Red
+        })
+
+        Chat:Send(args.player, string.format("Vehicle successfully stolen! (%s/%s)", 
+            tostring(count_table(owned_vehicles)), tostring(config.player_max_vehicles)), Color.Green)
+    
+        self.despawning_vehicles[args.data.vehicle_id] = nil
     end
+
+    -- Now buy the vehicle
+    args.data.owner_steamid = tostring(args.player:GetSteamId())
 
     args.vehicle:SetNetworkValue("VehicleData", args.data)
 
@@ -191,6 +312,12 @@ function sVehicleManager:ClientModuleLoad(args)
             v.vehicle_id = tonumber(v.vehicle_id)
             v.health = tonumber(v.health)
             owned_vehicles[v.vehicle_id] = v
+
+            if IsValid(self.owned_vehicles[v.vehicle_id]) then
+                v.spawned = true
+                v.vehicle = self.owned_vehicles[v.vehicle_id]
+                self.despawning_vehicles[v.vehicle_id] = nil
+            end
         end
     end
 
@@ -384,7 +511,7 @@ function sVehicleManager:SaveVehicle(vehicle, player)
     if not vehicle_data then return end
 
     local cmd = SQL:Command("UPDATE vehicles SET model_id = ?, pos = ?, angle = ?, col1 = ?, col2 = ?, decal = ?, template = ?, owner_steamid = ?, health = ?, cost = ?, guards = ? where vehicle_id = ?")
-    if not vehicle_data.vehicle_id then -- New vehicle
+    if not vehicle_data.vehicle_id and player then -- New vehicle
 
         if not IsValid(player) then return end -- How can we insert if the player isn't valid
         cmd = SQL:Command("INSERT INTO vehicles (model_id, pos, angle, col1, col2, decal, template, owner_steamid, health, cost, guards) values (?,?,?,?,?,?,?,?,?,?,?)")
@@ -426,10 +553,14 @@ function sVehicleManager:SaveVehicle(vehicle, player)
 
     vehicle:SetNetworkValue("VehicleData", vehicle_data)
 
-    local owned_vehicles = player:GetValue("OwnedVehicles")
-    owned_vehicles[vehicle_data.vehicle_id] = vehicle_data
-    player:SetValue("OwnedVehicles", owned_vehicles)
-    self:SyncPlayerOwnedVehicles(player)
+    if IsValid(player) then
+        local owned_vehicles = player:GetValue("OwnedVehicles")
+        owned_vehicles[vehicle_data.vehicle_id] = vehicle_data
+        player:SetValue("OwnedVehicles", owned_vehicles)
+        self:SyncPlayerOwnedVehicles(player)
+    end
+
+    self.owned_vehicles[vehicle_data.vehicle_id] = vehicle
 
 end
 

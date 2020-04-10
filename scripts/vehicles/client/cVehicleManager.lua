@@ -3,6 +3,7 @@ class 'cVehicleManager'
 function cVehicleManager:__init()
 
     self.owned_vehicles = {} -- My owned vehicles
+    self.in_gas_station = false
 
     self.text = 
     {
@@ -187,6 +188,29 @@ function cVehicleManager:SecondTick()
         self.render = nil
         Events:Unsubscribe(self.lpi)
         self.lpi = nil
+    end
+
+    if LocalPlayer:InVehicle() then
+        local v = LocalPlayer:GetVehicle()
+        if v:GetDriver() == LocalPlayer then
+
+            local vehicle_pos = v:GetPosition()
+            local in_gas_station = false
+
+            for _, pos in pairs(gasStations) do
+                if pos:Distance(vehicle_pos) < config.gas_station_radius then
+                    in_gas_station = true
+                end
+            end
+
+            if self.in_gas_station and not in_gas_station then
+                Network:Send("Vehicles/ExitGasStation")
+            elseif not self.in_gas_station and in_gas_station then
+                Network:Send("Vehicles/EnterGasStation")
+            end
+                
+            self.in_gas_station = in_gas_station
+        end
     end
 
 end
