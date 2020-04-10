@@ -19,9 +19,9 @@ function cLootboxUI:__init()
     
     LocalPlayer:SetValue("LootOpen", false)
 
-    Events:Subscribe("KeyUp", self, self.KeyUp)
-    Network:Subscribe("Inventory/LootboxOpen", self, self.LootboxOpen)
-    Network:Subscribe("Inventory/LootboxSync", self, self.LootboxSync)
+    Events:Subscribe(var("KeyUp"):get(), self, self.KeyUp)
+    Network:Subscribe(var("Inventory/LootboxOpen"):get(), self, self.LootboxOpen)
+    Network:Subscribe(var("Inventory/LootboxSync"):get(), self, self.LootboxSync)
     
 end
 

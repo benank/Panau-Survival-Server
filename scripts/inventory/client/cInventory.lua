@@ -4,9 +4,9 @@ function cInventory:__init()
 
     Events:Fire("loader/RegisterResource", {count = 2})
 
-    Network:Send("InventoryRequest")
+    Network:Send(var("InventoryRequest"):get())
 
-    Network:Subscribe("InventoryUpdated", self, self.InventoryUpdated)
+    Network:Subscribe(var("InventoryUpdated"):get(), self, self.InventoryUpdated)
 
     Events:Fire("loader/CompleteResource", {count = 1})
 
@@ -25,13 +25,13 @@ function cInventory:ModulesLoad()
         end
     end
 
-    Events:Fire("InventoryUpdated", {data = {contents = contents, slots = Inventory.slots}, action = "full"})
+    Events:Fire(var("InventoryUpdated"):get(), {data = {contents = contents, slots = Inventory.slots}, action = "full"})
 
 end
 
 function cInventory:InventoryUpdated(args)
 
-    Events:Fire("InventoryUpdated", args)
+    Events:Fire(var("InventoryUpdated"):get(), args)
     self.last_update = args
 
     if not self.ui then
