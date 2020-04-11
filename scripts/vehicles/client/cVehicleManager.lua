@@ -32,6 +32,9 @@ function cVehicleManager:__init()
         [Action.StuntposEnterVehicle] = true
     }
 
+    -- TODO update with levels
+    LocalPlayer:SetValue("MaxVehicles", config.player_max_vehicles)
+
     Events:Fire("Vehicles/ResetVehiclesMenu")
 
     Events:Subscribe("Vehicles/SpawnVehicle", self, self.SpawnVehicle)

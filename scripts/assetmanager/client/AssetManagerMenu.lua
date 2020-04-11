@@ -82,6 +82,9 @@ function AssetManagerMenu:OwnedVehiclesUpdate(vehicles)
             self:AddVehicle(vehicle_data)
         end
     end
+
+    self.categories["Vehicles"].button:SetText(string.format("Vehicles (%d/%d)", 
+        count_table(self.categories["Vehicles"].vehicles), LocalPlayer:GetValue("MaxVehicles")))
 end
 
 function AssetManagerMenu:UpdateVehicle(data)
