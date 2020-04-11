@@ -40,6 +40,33 @@ function sVehicleManager:__init()
         end
     end)()
 
+
+    -- Respawn vehicles loop
+    local func = coroutine.wrap(function()
+        while true do
+
+            local random = math.random
+
+            for spawn_type, data_entries in pairs(self.spawns) do
+                for index, spawn_data in pairs(data_entries) do
+
+                    if not spawn_data.spawned 
+                    and random() < config.spawn[spawn_type].spawn_chance
+                    and spawn_data.respawn_timer:GetMinutes() >= config.spawn[spawn_type].respawn_interval then
+                        -- Spawn vehicle
+                        self:SpawnNaturalVehicle(spawn_type, index)
+                    end
+
+                    Timer.Sleep(1)
+                end
+
+            end
+        
+
+            Timer.Sleep(1000 * 60)
+        end
+    end)()
+
 end
 
 function sVehicleManager:Tick500()
@@ -57,18 +84,12 @@ function sVehicleManager:TimeChange()
         elseif timer:GetMinutes() >= config.owned_despawn_time then
             -- Remove vehicle from game
             self.despawning_vehicles[id] = nil
+
+            local vehicle_id = self.owned_vehicles[id]:GetId()
             self.owned_vehicles[id]:Remove()
             self.owned_vehicles[id] = nil
 
-            for index, vehicle in pairs(self.vehicles) do
-                local vehicle_data = vehicle:GetValue("VehicleData")
-
-                if vehicle_data and vehicle_data.vehicle_id and tonumber(vehicle_data.vehicle_id) == tonumber(id) then
-                    table.remove(self.vehicles, index, 1)
-                    break
-                end
-
-            end
+            self.vehicles[vehicle_id] = nil
 
         end
 
@@ -131,7 +152,7 @@ function sVehicleManager:PlayerSpawnVehicle(args, player)
 
     vehicle:SetNetworkValue("VehicleData", vehicle_data)
     player:SetValue("OwnedVehicles", player_owned_vehicles)
-    insert(self.vehicles, vehicle)
+    self.vehicles[vehicle:GetId()] = vehicle
 
     self:SyncPlayerOwnedVehicles(player)
 
@@ -239,7 +260,7 @@ function sVehicleManager:TryBuyVehicle(args)
         args.data.cost = args.data.cost * config.cost_multiplier_on_purchase
 
         Chat:Send(args.player, string.format("Vehicle successfully purchased! (%s/%s)", 
-            tostring(count_table(owned_vehicles)), tostring(config.player_max_vehicles)), Color.Green)
+            tostring(count_table(owned_vehicles) + 1), tostring(config.player_max_vehicles)), Color.Green)
     
     elseif args.data.vehicle_id then
         
@@ -278,6 +299,11 @@ function sVehicleManager:TryBuyVehicle(args)
     args.vehicle:SetNetworkValue("VehicleData", args.data)
 
     self:SaveVehicle(args.vehicle, args.player)
+
+    if args.data.spawn_index and args.data.spawn_type then
+        self.spawns[args.data.spawn_type][args.data.spawn_index].respawn_timer:Restart()
+        self.spawns[args.data.spawn_type][args.data.spawn_index].spawned = false
+    end
 
 end
 
@@ -365,9 +391,10 @@ function sVehicleManager:ParseVehicle(line)
     -- Create vector
     local vector = Vector3(tonumber(tokens[1]),tonumber(tokens[2]),tonumber(tokens[3]))
     local angle  = Angle(tonumber(tokens[4]),tonumber(tokens[5]),tonumber(tokens[6]))
-    insert(self.spawns[tokens[7]], {position = vector, angle = angle})
-	
+
     -- Save to table
+    insert(self.spawns[tokens[7]], {position = vector, angle = angle, spawned = false, respawn_timer = Timer()})
+	
 end
 
 function sVehicleManager:SetupSpawnTables()
@@ -391,37 +418,56 @@ function sVehicleManager:SpawnVehicles()
     -- Start a timer to measure load time
     local timer = Timer()
     local cnt = 0
+    local total_cnt = 0
+
+    local random = math.random
 
     for spawn_type, data_entries in pairs(self.spawns) do
         for index, spawn_data in pairs(data_entries) do
 
-            local spawn_args = self:GetVehicleFromType(spawn_type)
-            spawn_args.position = spawn_data.position
-            spawn_args.angle = spawn_data.angle
+            if random() < config.spawn[spawn_type].spawn_chance then
+                self:SpawnNaturalVehicle(spawn_type, index)
+                cnt = cnt + 1
+            end
             
-            spawn_args.spawn_type = spawn_type
-            
-            spawn_args.tone1 = self:GetColorFromHSV(config.colors.default)
-            spawn_args.tone2 = spawn_args.tone1 -- Matching tones here so cars look normal. 
-
-            local vehicle = self:SpawnVehicle(spawn_args)
-            vehicle:SetHealth(config.spawn.health.min + (config.spawn.health.max - config.spawn.health.min) * random())
-
-            local vehicle_data = self:GenerateVehicleData(spawn_args)
-            vehicle_data.health = vehicle:GetHealth()
-            vehicle_data.position = vehicle:GetPosition()
-            vehicle_data.model_id = vehicle:GetModelId()
-            vehicle_data.spawned = true
-            vehicle_data.vehicle = vehicle
-
-            vehicle:SetNetworkValue("VehicleData", vehicle_data)
-            insert(self.vehicles, vehicle)
-            cnt = cnt + 1
+            total_cnt = total_cnt + 1
 
         end
     end
 
-    print(string.format("Spawned %d vehicles, %.02f seconds", cnt, timer:GetSeconds()))
+    print(string.format("Spawned %d/%d vehicles, %.02f seconds", cnt, total_cnt, timer:GetSeconds()))
+
+end
+
+-- Spawns/respawns a natural vehicle 
+function sVehicleManager:SpawnNaturalVehicle(spawn_type, index)
+
+    local spawn_data = self.spawns[spawn_type][index]
+    self.spawns[spawn_type][index].spawned = true
+
+    local spawn_args = self:GetVehicleFromType(spawn_type)
+    spawn_args.position = spawn_data.position
+    spawn_args.angle = spawn_data.angle
+    
+    spawn_args.spawn_type = spawn_type
+    
+    spawn_args.tone1 = self:GetColorFromHSV(config.colors.default)
+    spawn_args.tone2 = spawn_args.tone1 -- Matching tones here so cars look normal. 
+
+    local vehicle = self:SpawnVehicle(spawn_args)
+    vehicle:SetHealth(config.spawn.health.min + (config.spawn.health.max - config.spawn.health.min) * random())
+
+    local vehicle_data = self:GenerateVehicleData(spawn_args)
+    vehicle_data.health = vehicle:GetHealth()
+    vehicle_data.position = vehicle:GetPosition()
+    vehicle_data.model_id = vehicle:GetModelId()
+    vehicle_data.spawned = true
+    vehicle_data.vehicle = vehicle
+    vehicle_data.spawn_type = spawn_type
+    vehicle_data.spawn_index = index
+
+    vehicle:SetNetworkValue("VehicleData", vehicle_data)
+    self.vehicles[vehicle:GetId()] = vehicle
 
 end
 

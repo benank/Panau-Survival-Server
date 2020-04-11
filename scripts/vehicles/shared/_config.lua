@@ -2,15 +2,15 @@ config =
 {
     spawn = 
     {
-        ["CIV_GROUND"] = {cost = 4, spawn_chance = 0.9}, -- base cost + chance of spawning at beginning + per hour/respawn
-        ["CIV_WATER"] = {cost = 7, spawn_chance = 0.8},
-        ["CIV_HELI"] = {cost = 15, spawn_chance = 0.7},
-        ["CIV_PLANE"] = {cost = 13, spawn_chance = 0.8},
-        ["CIV_PLANE_LARGE"] = {cost = 16, spawn_chance = 0.3},
-        ["MIL_GROUND"] = {cost = 10, spawn_chance = 0.7},
-        ["MIL_WATER"] = {cost = 20, spawn_chance = 0.7},
-        ["MIL_HELI"] = {cost = 30, spawn_chance = 0.5},
-        ["MIL_PLANE"] = {cost = 40, spawn_chance = 0.5},
+        ["CIV_GROUND"] = {cost = 4, spawn_chance = 0.9, respawn_interval = 15}, -- base cost + chance of spawning at beginning + per hour/respawn
+        ["CIV_WATER"] = {cost = 7, spawn_chance = 0.8, respawn_interval = 20},
+        ["CIV_HELI"] = {cost = 15, spawn_chance = 0.7, respawn_interval = 30},
+        ["CIV_PLANE"] = {cost = 13, spawn_chance = 0.8, respawn_interval = 30},
+        ["CIV_PLANE_LARGE"] = {cost = 16, spawn_chance = 0.3, respawn_interval = 60},
+        ["MIL_GROUND"] = {cost = 10, spawn_chance = 0.7, respawn_interval = 40},
+        ["MIL_WATER"] = {cost = 20, spawn_chance = 0.7, respawn_interval = 40},
+        ["MIL_HELI"] = {cost = 30, spawn_chance = 0.5, respawn_interval = 120},
+        ["MIL_PLANE"] = {cost = 40, spawn_chance = 0.5, respawn_interval = 120},
         cost_overrides = -- Vehicle-specific price overrides (such as topa)
         {
             [64] = 100, -- Topachula
