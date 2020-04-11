@@ -16,7 +16,7 @@ function sVehicleManager:__init()
     self.spawn_weights = {}
 
     self:SetupSpawnTables()
-    self:ReadVehicleSpawnData("spawns.txt")
+    self:ReadVehicleSpawnData("spawns/spawns.txt")
     self:SpawnVehicles()
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
