@@ -19,7 +19,7 @@ function cSurvivalManager:__init()
 
     Network:Subscribe("Survival/Update", self, self.Update)
     Events:Subscribe("Render", self, self.Render)
-    Events:Subscribe("MinuteTick", self, self.MinuteTick)
+    Events:Subscribe("TimeChange", self, self.TimeChange)
 
 end
 
@@ -44,7 +44,7 @@ function cSurvivalManager:UpdateClimateZone()
     Network:Send("Survival/UpdateClimateZone", {zone = LocalPlayer:GetClimateZone()})
 end
 
-function cSurvivalManager:MinuteTick()
+function cSurvivalManager:TimeChange()
     self:UpdateClimateZone()
 end
 

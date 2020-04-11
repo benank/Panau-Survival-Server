@@ -6,7 +6,7 @@ ItemsConfig =
         ["Claymore"] = {trigger_range = 3, cell_size = 256},
         ["Bandages"] = {restore_hp = 0.2, use_time = 3},
         ["Healthpack"] = {restore_hp = 0.5, use_time = 5},
-        ["Woet"] = {use_time = 2},
+        ["Woet"] = {use_time = 1, range = 5},
     },
     equippables = -- Use equip
     {

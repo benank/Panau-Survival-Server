@@ -66,10 +66,10 @@ function cInventoryUI:__init()
         [Action.ExitVehicle] = true
     }
 
-    Events:Subscribe("KeyUp", self, self.KeyUp)
-    Events:Subscribe("KeyDown", self, self.KeyDown)
-    Events:Subscribe("MouseScroll", self, self.MouseScroll)
-    Events:Subscribe("SetInventoryState", self, self.SetInventoryState)
+    Events:Subscribe(var("KeyUp"):get(), self, self.KeyUp)
+    Events:Subscribe(var("KeyDown"):get(), self, self.KeyDown)
+    Events:Subscribe(var("MouseScroll"):get(), self, self.MouseScroll)
+    Events:Subscribe(var("SetInventoryState"):get(), self, self.SetInventoryState)
     
 end
 

@@ -40,17 +40,13 @@ end
 
 function CreateItem(args)
 
-    --for k,v in pairs(args) do print(k,v) end
-
     if not args.name or not args.amount or args.amount < 1 then
         print("CreateItem failed: missing name or amount")
-        --print(debug.traceback())
         return nil
     end
 
     if not Items_indexed[args.name] then
         print("CreateItem failed: item was not found: " .. args.name)
-        --print(debug.traceback())
         return nil
     end
 
