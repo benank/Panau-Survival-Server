@@ -25,8 +25,9 @@ function sVehicleManager:__init()
     Events:Subscribe("PlayerEnterVehicle", self, self.PlayerEnterVehicle)
 
     Events:Subscribe("TimeChange", self, self.TimeChange)
-
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+
+    Events:Subscribe("Items/PlayerUseVehicleGuard", self, self.PlayerUseVehicleGuard)
 
     Network:Subscribe("Vehicles/SpawnVehicle", self, self.PlayerSpawnVehicle)
     Network:Subscribe("Vehicles/DeleteVehicle", self, self.PlayerDeleteVehicle)
@@ -68,6 +69,48 @@ function sVehicleManager:__init()
             Timer.Sleep(1000 * 60)
         end
     end)()
+
+end
+
+function sVehicleManager:PlayerUseVehicleGuard(args)
+
+    local vehicle_data = args.vehicle:GetValue("VehicleData")
+
+    if vehicle_data.guards >= config.max_vehicle_guards then
+        Chat:Send(args.player, "This vehicle already has the maximum amount of guards!", Color.Red)
+
+        self:GivePlayerVehicleGuard(args.player)
+
+        return
+    end
+
+    local player_owned_vehicles = args.player:GetValue("OwnedVehicles")
+    
+    if not player_owned_vehicles[vehicle_data.vehicle_id] then
+        Chat:Send(player, "You can only use this item on a vehicle that you own!", Color.Red)
+
+        self:GivePlayerVehicleGuard(args.player)
+
+        return
+    end
+
+
+    vehicle_data.guards = vehicle_data.guards + 1
+
+    args.vehicle:SetNetworkValue("VehicleData", vehicle_data)
+    self:SaveVehicle(args.vehicle, args.player)
+
+end
+
+function sVehicleManager:GivePlayerVehicleGuard(player)
+    
+    local item = deepcopy(Items_indexed["Vehicle Guard"])
+    item.amount = 1
+
+    Inventory.AddItem({
+        item = item,
+        player = player
+    })
 
 end
 
@@ -379,6 +422,35 @@ function sVehicleManager:TryBuyVehicle(args)
         item = item_cost:GetSyncObject(),
         player = args.player
     })
+
+    print(args.data.guards)
+
+    if args.data.guards > 0 then
+        args.data.guards = args.data.guards - 1
+
+        Events:Fire("HitDetection/VehicleGuardActivate", {
+            player = args.player,
+            attacker_id = args.data.owner_steamid
+        })
+
+        args.vehicle:SetNetworkValue("VehicleData", args.data)
+
+        local owner = nil
+
+        for p in Server:GetPlayers() do
+            if tostring(p:GetSteamId()) == args.data.owner_steamid then
+                owner = p
+                break
+            end
+        end
+
+        self:SaveVehicle(args.vehicle, owner)
+
+        Network:Send(args.player, "Vehicles/VehicleGuardActivate", {position = args.player:GetPosition()})
+        Network:SendNearby(args.player, "Vehicles/VehicleGuardActivate", {position = args.player:GetPosition()})
+
+        return
+    end
 
     if args.data.vehicle_id then
         owned_vehicles[args.data.vehicle_id] = args.data

@@ -43,7 +43,16 @@ function cVehicleManager:__init()
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Network:Subscribe("Vehicles/SyncOwnedVehicles", self, self.SyncOwnedVehicles)
+    Network:Subscribe("Vehicles/VehicleGuardActivate", self, self.VehicleGuardActivate)
 
+end
+
+function cVehicleManager:VehicleGuardActivate(args)
+    ClientEffect.Play(AssetLocation.Game, {
+        position = args.position,
+        angle = Angle(),
+        effect_id = 23
+    })
 end
 
 function cVehicleManager:TransferVehicle(args)

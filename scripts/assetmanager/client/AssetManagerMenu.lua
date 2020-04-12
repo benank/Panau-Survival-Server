@@ -54,6 +54,7 @@ function AssetManagerMenu:UpdateVehicleSecondTick()
         
         local health = IsValid(vehicle_data.data.vehicle) and vehicle_data.data.vehicle:GetHealth() or vehicle_data.data.health
         vehicle_data.item:SetCellText( 1, string.format("%.0f%%", health * 100) )
+
     end
 
 end
@@ -97,6 +98,7 @@ function AssetManagerMenu:UpdateVehicle(data)
         item:FindChildByName("button_Spawn", true):Show()
     end
 
+    item:SetCellText( 3, tostring(data.guards) )
 end
 
 function AssetManagerMenu:GetFormattedDistanceString(dist)
@@ -115,8 +117,9 @@ function AssetManagerMenu:AddVehicle(data)
 	item:SetCellText( 0, Vehicle.GetNameByModelId(tonumber(data.model_id)) )
 	item:SetCellText( 1, string.format("%.0f%%", data.health * 100) )
 	item:SetCellText( 2, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(data.position)) )
+	item:SetCellText( 3, tostring(data.guards) )
 
-    for i = 0, 5 do
+    for i = 0, 7 do
         item:GetCellContents(i):SetTextSize(20)
         item:GetCellContents(i):SetPadding(Vector2(4,4), Vector2(4,4))
 
@@ -128,10 +131,10 @@ function AssetManagerMenu:AddVehicle(data)
 
     local button_names = 
     {
-        [3] = "Spawn",
-        [4] = "Waypoint",
-        [5] = "Transfer",
-        [6] = "Delete"
+        [4] = "Spawn",
+        [5] = "Waypoint",
+        [6] = "Transfer",
+        [7] = "Delete"
     }
     
     for index, name in pairs(button_names) do
@@ -195,6 +198,7 @@ function AssetManagerMenu:CreateVehiclesMenu()
 	list:AddColumn( "Vehicle Name" )
 	list:AddColumn( "Health", 80 )
 	list:AddColumn( "Distance", 80 )
+	list:AddColumn( "Guards", 80 )
 	list:AddColumn( "Spawn", 80 )
 	list:AddColumn( "Waypoint", 80 )
 	list:AddColumn( "Transfer", 80 )

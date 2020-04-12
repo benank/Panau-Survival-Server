@@ -10,8 +10,38 @@ function sHitDetection:__init()
     Events:Subscribe("HitDetection/PlayerInToxicArea", self, self.PlayerInsideToxicArea)
     Events:Subscribe("HitDetection/PlayerSurvivalDamage", self, self.PlayerSurvivalDamage)
 
+    Events:Subscribe("HitDetection/VehicleGuardActivate", self, self.VehicleGuardActivate)
+
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
+end
+
+function sHitDetection:VehicleGuardActivate(args)
+
+    local attacker = nil
+
+    for p in Server:GetPlayers() do
+        if tostring(p:GetSteamId()) == args.attacker_id then
+            attacker = p
+            break
+        end
+    end
+
+    if IsValid(attacker) then
+        args.player:Damage(VehicleGuardDamage, DamageEntity.VehicleGuard, attacker)
+    else
+        args.player:Damage(VehicleGuardDamage, DamageEntity.VehicleGuard)
+    end
+
+    print(string.format("%s [%s] was damaged by vehicle guard for %s damage [Source: %s]",
+        args.player:GetName(), 
+        tostring(args.player:GetSteamId()),
+        tostring(VehicleGuardDamage), 
+        args.attacker_id, 
+        DamageEntityNames[DamageEntity.VehicleGuard]))
+
+    self:SetPlayerLastDamaged(args.player, DamageEntityNames[DamageEntity.VehicleGuard], args.attacker_id)
+
 end
 
 function sHitDetection:PlayerSurvivalDamage(args)
