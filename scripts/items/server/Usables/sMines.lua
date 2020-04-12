@@ -196,14 +196,13 @@ function sMines:LoadAllMines()
             local split = mine_data.position:split(",")
             local pos = Vector3(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]))
 
-            local split2 = mine_data.angle:split(",")
-            local angle = Angle(tonumber(split2[1]), tonumber(split2[2]), tonumber(split2[3]))
+            local angle = self:DeserializeAngle(mine_data.angle)
 
             self:AddMine({
                 id = mine_data.id,
                 owner_id = mine_data.steamID,
                 position = pos,
-                angle = angle * Angle(0, math.pi, 0)
+                angle = angle
             })
         end
 
@@ -217,7 +216,7 @@ function sMines:PlaceMine(position, angle, player)
     local cmd = SQL:Command("INSERT INTO mines (steamID, position, angle) VALUES (?, ?, ?)")
     cmd:Bind(1, steamID)
     cmd:Bind(2, tostring(position))
-    cmd:Bind(3, tostring(angle))
+    cmd:Bind(3, self:SerializeAngle(angle))
     cmd:Execute()
 
 	cmd = SQL:Query("SELECT last_insert_rowid() as id FROM mines")
@@ -240,11 +239,20 @@ function sMines:PlaceMine(position, angle, player)
 
 end
 
+function sMines:SerializeAngle(ang)
+    return math.round(ang.x, 5) .. "," .. math.round(ang.y, 5) .. "," .. math.round(ang.z, 5) .. "," .. math.round(ang.w, 5)
+end
+
+function sMines:DeserializeAngle(ang)
+    local split = ang:split(",")
+    return Angle(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]), tonumber(split[4]) or 0)
+end
+
 -- args.ray = raycast down
 function sMines:TryPlaceMine(args, player)
 
     args.ray.position = Vector3(args.ray.position.x, math.max(args.ray.position.y, player:GetPosition().y), args.ray.position.z)
-    local angle = Angle.FromVectors(Vector3.Up, args.ray.normal) * Angle(0, -math.pi / 2, 0)
+    local angle = Angle.FromVectors(Vector3.Down, args.ray.normal) * Angle(0, math.pi / 2, 0)
 
     local player_iu = player:GetValue("ItemUse")
 
