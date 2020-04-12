@@ -203,7 +203,7 @@ function sMines:LoadAllMines()
                 id = mine_data.id,
                 owner_id = mine_data.steamID,
                 position = pos,
-                angle = angle
+                angle = angle * Angle(0, math.pi, 0)
             })
         end
 
