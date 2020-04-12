@@ -18,7 +18,7 @@ function sSpawnManager:__init()
 end
 
 function sSpawnManager:EnterExitSafezone(args, player)
-	local in_sz = args.in_sz and player:GetPosition():Distance(config.safezone.position) < config.safezone.radius
+	local in_sz = args.in_sz and player:GetPosition():Distance(config.safezone.position) < config.safezone.radius * 1.1
     player:SetNetworkValue("InSafezone", in_sz)
 
 	Events:Fire("EnterExitSafezone", {player = player, in_sz = in_sz})
@@ -27,12 +27,15 @@ function sSpawnManager:EnterExitSafezone(args, player)
 	if in_sz then
 		player:DisableCollision(CollisionGroup.Player, CollisionGroup.Vehicle)
 		player:DisableCollision(CollisionGroup.Vehicle, CollisionGroup.Player)
-		player:DisableCollision(CollisionGroup.Vehicle, CollisionGroup.Vehicle)
+		player:DisableCollision(CollisionGroup.Player, CollisionGroup.Player)
+        player:DisableCollision(CollisionGroup.Vehicle, CollisionGroup.Vehicle)
+        
 	else
 		player:EnableCollision(CollisionGroup.Player, CollisionGroup.Vehicle)
 		player:EnableCollision(CollisionGroup.Vehicle, CollisionGroup.Player)
 		player:EnableCollision(CollisionGroup.Vehicle, CollisionGroup.Vehicle)
-	end
+		player:EnableCollision(CollisionGroup.Player, CollisionGroup.Player)
+    end
 
 end
 
