@@ -77,6 +77,7 @@ function sLootbox:TakeLootStack(args, player)
     if not self.players_opened[tostring(player:GetSteamId().id)] then return end
     if not args.index or args.index < 1 then return end
     if not self.active then return end
+    if player:GetHealth() <= 0 then return end
 
     local stack = self.contents[args.index]
 
@@ -116,6 +117,7 @@ function sLootbox:TryOpenBox(args, player)
 
     if not IsValid(player) then return end
     if #self.contents == 0 then return end
+    if player:GetHealth() <= 0 then return end
     if player:GetPosition():Distance(self.position) > Lootbox.Distances.Can_Open + 1 then return end
 
     self:Open(player)
