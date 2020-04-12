@@ -39,10 +39,15 @@ function cVehicleManager:__init()
 
     Events:Subscribe("Vehicles/SpawnVehicle", self, self.SpawnVehicle)
     Events:Subscribe("Vehicles/DeleteVehicle", self, self.DeleteVehicle)
+    Events:Subscribe("Vehicles/TransferVehicle", self, self.TransferVehicle)
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Network:Subscribe("Vehicles/SyncOwnedVehicles", self, self.SyncOwnedVehicles)
 
+end
+
+function cVehicleManager:TransferVehicle(args)
+    Network:Send("Vehicles/TransferVehicle", {id = args.id, vehicle_id = args.vehicle_id})
 end
 
 function cVehicleManager:SpawnVehicle(args)

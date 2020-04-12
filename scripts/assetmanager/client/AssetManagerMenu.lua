@@ -130,7 +130,8 @@ function AssetManagerMenu:AddVehicle(data)
     {
         [3] = "Spawn",
         [4] = "Waypoint",
-        [5] = "Delete"
+        [5] = "Transfer",
+        [6] = "Delete"
     }
     
     for index, name in pairs(button_names) do
@@ -173,6 +174,11 @@ function AssetManagerMenu:PressVehicleButton(btn)
 
         Waypoint:SetPosition(IsValid(vehicle_data.data.vehicle) and vehicle_data.data.vehicle:GetPosition() or vehicle_data.data.position)
 
+    elseif type == "Transfer" then
+
+        self.transferring_vehicle_id = vehicle_data.data.vehicle_id
+        VehiclePlayerTransferMenu:SetActive(true)
+
     elseif type == "Delete" then
 
         Events:Fire("Vehicles/DeleteVehicle", {
@@ -191,6 +197,7 @@ function AssetManagerMenu:CreateVehiclesMenu()
 	list:AddColumn( "Distance", 80 )
 	list:AddColumn( "Spawn", 80 )
 	list:AddColumn( "Waypoint", 80 )
+	list:AddColumn( "Transfer", 80 )
 	list:AddColumn( "Delete", 80 )
     list:SetButtonsVisible( true )
     list:SetPadding(Vector2(0,0), Vector2(0,0))
@@ -260,6 +267,7 @@ function AssetManagerMenu:SetActive( active )
     if self.active ~= active then
         self.active = active
         Mouse:SetVisible( self.active )
+        VehiclePlayerTransferMenu:SetActive(false)
     end
 end
 
