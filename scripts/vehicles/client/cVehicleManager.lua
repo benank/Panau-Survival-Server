@@ -51,7 +51,7 @@ function cVehicleManager:VehicleGuardActivate(args)
     ClientEffect.Play(AssetLocation.Game, {
         position = args.position,
         angle = Angle(),
-        effect_id = 23
+        effect_id = 92
     })
 end
 

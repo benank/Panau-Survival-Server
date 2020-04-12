@@ -100,6 +100,8 @@ function sVehicleManager:PlayerUseVehicleGuard(args)
     args.vehicle:SetNetworkValue("VehicleData", vehicle_data)
     self:SaveVehicle(args.vehicle, args.player)
 
+    Chat:Send(args.player, string.format("Vehicle guard equipped. (%d/%d)", vehicle_data.guards, config.max_vehicle_guards), Color.Green)
+
 end
 
 function sVehicleManager:GivePlayerVehicleGuard(player)
@@ -422,8 +424,6 @@ function sVehicleManager:TryBuyVehicle(args)
         item = item_cost:GetSyncObject(),
         player = args.player
     })
-
-    print(args.data.guards)
 
     if args.data.guards > 0 then
         args.data.guards = args.data.guards - 1
