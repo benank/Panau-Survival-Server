@@ -146,6 +146,7 @@ function Grenades:KeyDown(args)
 
     if LocalPlayer:GetValue(var("InSafezone"):get()) or LocalPlayer:InVehicle() then return end
     if self.can_use_timer:GetSeconds() < 0.5 then return end
+    if LocalPlayer:GetHealth() <= 0 then return end
 
     if args.key == string.byte(self.throw_key) and self.equipped and not self.throwing and self.grenade_name:len() > 1 then
         self.time_to_explode = self.max_time

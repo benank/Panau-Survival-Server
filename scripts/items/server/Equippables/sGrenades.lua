@@ -67,6 +67,7 @@ function Grenades:GrenadeTossed(args, sender)
     if sender:InVehicle() then return end
     sender:SetNetworkValue("ThrowingGrenade", nil)
     if not sender:GetValue("EquippedGrenade") then return end
+    if sender:GetHealth() <= 0 then return end
 
     local item_data = sender:GetValue("EquippedGrenadeData")
     if not item_data then return end
