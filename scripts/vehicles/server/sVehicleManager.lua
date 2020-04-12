@@ -62,11 +62,80 @@ function sVehicleManager:__init()
                 end
 
             end
-        
+
+            self:CheckForDestroyedVehicles()
 
             Timer.Sleep(1000 * 60)
         end
     end)()
+
+end
+
+function sVehicleManager:CheckForDestroyedVehicles()
+
+    for id, vehicle in pairs(self.vehicles) do
+
+        if IsValid(vehicle) and vehicle:GetHealth() <= 0.2 and not vehicle:GetValue("Remove") then
+            vehicle:SetValue("Remove", true)
+        elseif IsValid(vehicle) and vehicle:GetValue("Remove") then
+            -- Remove vehicle
+            local vehicle_data = vehicle:GetValue("VehicleData")
+
+            -- If this vehicle was owned by someone
+            if vehicle_data.vehicle_id then
+
+                self.despawning_vehicles[vehicle_data.vehicle_id] = nil
+                self.owned_vehicles[vehicle_data.vehicle_id] = nil
+
+                local cmd = SQL:Command("DELETE FROM vehicles WHERE vehicle_id = (?)")
+                cmd:Bind(1, vehicle_data.vehicle_id)
+                cmd:Execute()
+
+
+                local owner = nil
+
+                for p in Server:GetPlayers() do
+                    if tostring(p:GetSteamId()) == vehicle_data.owner_steamid then
+                        owner = p
+                        break
+                    end
+                end
+
+                -- Owner is online
+                if IsValid(owner) then
+
+                    local player_owned_vehicles = owner:GetValue("OwnedVehicles")
+                    player_owned_vehicles[vehicle_data.vehicle_id] = nil
+                    owner:SetValue("OwnedVehicles", player_owned_vehicles)
+                
+                    self.owned_vehicles[vehicle_data.vehicle_id] = nil
+                
+                    self:SyncPlayerOwnedVehicles(owner)
+
+                end
+                
+                Events:Fire("SendPlayerPersistentMessage", {
+                    steam_id = vehicle_data.owner_steamid,
+                    message = string.format("Your vehicle was destroyed [%s]", vehicle:GetName()),
+                    color = Color.Red
+                })
+
+            else
+
+                -- Add to respawn list if not owned
+                self.spawns[vehicle_data.spawn_type][vehicle_data.spawn_index].spawned = false
+                self.spawns[vehicle_data.spawn_type][vehicle_data.spawn_index].respawn_timer:Restart()
+
+            end
+
+            vehicle:Remove()
+            self.vehicles[id] = nil
+
+        end
+
+        Timer.Sleep(1)
+
+    end
 
 end
 

@@ -126,6 +126,8 @@ end
 
 function cVehicleManager:RenderVehicleDataClassic(v)
 
+    if v:GetHealth() <= 0 then return end
+
     local data = v:GetValue("VehicleData")
     if not data then return end
 
