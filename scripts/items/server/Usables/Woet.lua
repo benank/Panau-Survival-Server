@@ -2,7 +2,8 @@ Network:Subscribe("items/CompleteItemUsage", function(args, player)
 
     local player_iu = player:GetValue("ItemUse")
 
-    if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed then
+    if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed and 
+    player_iu.item.name == "Woet" then
 
         local entity = args.forward_ray.entity
 
