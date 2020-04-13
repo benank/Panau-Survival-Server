@@ -2,7 +2,7 @@ class 'cInventoryUIStyle'
 
 function cInventoryUIStyle:__init()
 
-    self.background_alpha = 140
+    self.background_alpha = 160
     self.default_inv_size = 1000 -- 800 px wide for the entire inventory
     self.colors = 
     {
@@ -22,7 +22,7 @@ function cInventoryUIStyle:__init()
         },
         hover = 
         {
-            background = Color(50, 50, 50, self.background_alpha),
+            background = Color(255, 255, 255, 40),
             border = Color(255, 255, 255, 200),
             text = Color(220, 220, 220, 255),
             text_hover = Color(255, 255, 255, 255)
@@ -35,7 +35,7 @@ function cInventoryUIStyle:__init()
     self.item_colors = 
     {
         blue = Color(17, 84, 135, self.background_alpha), -- armor, grapples, para, grenades, radio
-        red = Color(137, 29, 19, self.background_alpha), -- cruis missile, nuke, area bombing
+        red = Color(120, 10, 10, self.background_alpha), -- cruise missile, nuke, area bombing
         pink = Color(140, 63, 140, self.background_alpha), -- backpacks, scuba gear, explosive detector
         yellow = Color(155, 145, 29, self.background_alpha), -- landclaim, ping, bping, evac, vehicle repair, backtrak, stashhacker, woet
         darkgreen = Color(24, 99, 24, self.background_alpha), -- food/drink items
@@ -45,8 +45,8 @@ function cInventoryUIStyle:__init()
 
     self.item_color_map = 
     {
-        ["Combat Backpack"] = self.item_colors.yellow,
-        ["Explorer Backpack"] = self.item_colors.yellow,
+        ["Combat Backpack"] = self.item_colors.pink,
+        ["Explorer Backpack"] = self.item_colors.pink,
         ["Helmet"] = self.item_colors.blue,
         ["Police Helmet"] = self.item_colors.blue,
         ["Military Helmet"] = self.item_colors.blue,
@@ -101,9 +101,76 @@ function cInventoryUIStyle:__init()
 
 end
 
+function cInventoryUIStyle:GetItemColorByName(name)
+    if self.item_color_map[name] then
+        return self.item_color_map[name]
+    else
+        return self.colors.default.background
+    end
+end
+
 -- Updates an item's color based on whether or not is it being dropped or has a specific item color
 function cInventoryUIStyle:UpdateItemColor(itemwindow)
 
+    -- Updates the color of an item window based on its color, hovered, and dropping properties
+    local button = itemwindow:FindChildByName("button", true)
+    local dropping = button:GetDataBool("dropping")
+    local cat = button:GetDataString("stack_category")
+    local index = button:GetDataNumber("stack_index")
+
+    local stack = nil
+
+    if not itemwindow:GetDataBool("loot") then
+        stack = Inventory.contents[cat][index]
+    elseif itemwindow:GetDataBool("loot") and LootManager.current_box and LootManager.current_box.contents[index] then
+        stack = LootManager.current_box.contents[index]
+    end
+
+    if not stack then
+        error("Stack not found " .. tostring(cat) .. " " .. tostring(index))
+        return
+    end
+
+    local colors = button:GetDataBool("dropping") and self.colors.dropping or InventoryUIStyle.colors.default
+
+    local text = itemwindow:FindChildByName("text", true)
+
+    text:SetTextColor(colors.text)
+
+    if dropping then
+        -- Make item red
+        itemwindow:FindChildByName("button_bg", true):SetColor(InventoryUIStyle.colors.dropping.background)
+        self:SetBorderColor(itemwindow, self.colors.dropping.border)
+    else
+        -- Make item normal color
+        self:SetBorderColor(itemwindow, self.colors.hover.border)
+        itemwindow:FindChildByName("button_bg", true):SetColor(self:GetItemColorByName(stack:GetProperty("name")))
+    end
+
+    local hovered = button:GetDataBool("hovered")
+
+    if hovered then
+
+        itemwindow:FindChildByName("button_bg_2", true):Show()
+        itemwindow:FindChildByName("border_container", true):Show()
+
+    else
+
+        itemwindow:FindChildByName("button_bg_2", true):Hide()
+
+        if not dropping then
+            self:SetBorderColor(itemwindow, self.colors.default.border)
+            itemwindow:FindChildByName("border_container", true):Hide()
+        end
+
+    end
+end
+
+function cInventoryUIStyle:SetBorderColor(itemwindow, color)
+    itemwindow:FindChildByName("border_top", true):SetColor(color)
+    itemwindow:FindChildByName("border_right", true):SetColor(color)
+    itemwindow:FindChildByName("border_bottom", true):SetColor(color)
+    itemwindow:FindChildByName("border_left", true):SetColor(color)
 end
 
 InventoryUIStyle = cInventoryUIStyle()

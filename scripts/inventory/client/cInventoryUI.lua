@@ -147,6 +147,9 @@ function cInventoryUI:PopulateEntry(args)
     local cat = args.loot and "loot" or (args.cat or stack:GetProperty("category"))
     local itemwindow = window:FindChildByName("itemwindow_"..cat..args.index, true)
 
+    itemwindow:SetDataBool("loot", args.loot == true)
+    itemwindow:SetDataNumber("loot_index", args.index)
+
     local button = itemwindow:FindChildByName("button", true)
     local button_bg = itemwindow:FindChildByName("button_bg", true)
     local durability = itemwindow:FindChildByName("dura", true)
@@ -161,7 +164,9 @@ function cInventoryUI:PopulateEntry(args)
     end
 
     local item_name = stack:GetProperty("name")
-    button:SetText(self:GetItemNameWithAmount(stack, args.index))
+
+    button:GetParent():FindChildByName("text"):SetText(self:GetItemNameWithAmount(stack, args.index))
+    button:GetParent():FindChildByName("text_shadow"):SetText(self:GetItemNameWithAmount(stack, args.index))
     --[[button_bg:SetColor(
         stack.contents[1].equipped and self.bg_colors.Equipped 
         or (stack:GetOneEquipped() and self.bg_colors.Equipped_Under or self.bg_colors.None))--]]
@@ -192,6 +197,8 @@ function cInventoryUI:PopulateEntry(args)
         durability:Hide()
 
     end
+
+    InventoryUIStyle:UpdateItemColor(itemwindow)
 
 end
 
@@ -303,11 +310,30 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     button_bg:SetSizeAutoRel(Vector2(1, 1))
     button_bg:SetColor(InventoryUIStyle.colors.default.background)
 
+    local button_bg_2 = Rectangle.Create(itemWindow, "button_bg_2")
+    button_bg_2:SetSizeAutoRel(Vector2(1, 1))
+    button_bg_2:SetColor(InventoryUIStyle.colors.hover.background)
+    button_bg_2:Hide()
+
     local button = Button.Create(itemWindow, "button")
     button:SetSizeAutoRel(Vector2(1, 1))
     button:SetBackgroundVisible(false)
     button:SetTextSize(self.inv_dimensions.text_size)
     button:SetTextPadding(Vector2(500,500), Vector2(500,500))
+
+    local text_shadow = Label.Create(itemWindow, "text_shadow")
+    text_shadow:SetSizeAutoRel(Vector2(1, 1))
+    text_shadow:SetTextSize(self.inv_dimensions.text_size)
+    text_shadow:SetTextColor(Color.Black)
+    text_shadow:SetAlignment(GwenPosition.Center)
+    text_shadow:SetPosition(Vector2(1,1))
+
+    local text = Label.Create(itemWindow, "text")
+    text:SetSizeAutoRel(Vector2(1, 1))
+    text:SetTextSize(self.inv_dimensions.text_size)
+    text:SetTextColor(Color.White)
+    text:SetAlignment(GwenPosition.Center)
+
     local colors = InventoryUIStyle.colors.default
     button:SetTextColor(colors.text)
     button:SetTextNormalColor(colors.text)
@@ -328,33 +354,37 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     equip_inner:SetPositionRel(Vector2(0.5, 0.5) - equip_inner:GetSizeRel() / 2)
     equip_inner:SetColor(Color.Green)
 
-    local border_top = Rectangle.Create(itemWindow, "border_top")
+    local border_container = Rectangle.Create(itemWindow, "border_container")
+    border_container:SetSizeAutoRel(Vector2(1, 1))
+    border_container:SetColor(Color(0, 0, 0, 0))
+    border_container:Hide()
+
+    local border_top = Rectangle.Create(border_container, "border_top")
     border_top:SetSizeAutoRel(Vector2(1, 0))
     border_top:SetHeight(InventoryUIStyle.border_size)
     border_top:SetPosition(Vector2(0, 0))
 
-    local border_right = Rectangle.Create(itemWindow, "border_right")
+    local border_right = Rectangle.Create(border_container, "border_right")
     border_right:SetSizeAutoRel(Vector2(0, 1))
     border_right:SetWidth(InventoryUIStyle.border_size)
-    border_right:SetPosition(Vector2(itemWindow:GetWidth() - InventoryUIStyle.border_size, 0))
+    border_right:SetPosition(Vector2(border_container:GetWidth() - InventoryUIStyle.border_size, 0))
 
-    local border_bottom = Rectangle.Create(itemWindow, "border_bottom")
+    local border_bottom = Rectangle.Create(border_container, "border_bottom")
     border_bottom:SetSizeAutoRel(Vector2(1, 0))
     border_bottom:SetHeight(InventoryUIStyle.border_size)
-    border_bottom:SetPosition(Vector2(0, itemWindow:GetHeight() - InventoryUIStyle.border_size))
+    border_bottom:SetPosition(Vector2(0, border_container:GetHeight() - InventoryUIStyle.border_size))
 
-    local border_left = Rectangle.Create(itemWindow, "border_left")
+    local border_left = Rectangle.Create(border_container, "border_left")
     border_left:SetSizeAutoRel(Vector2(0, 1))
     border_left:SetWidth(InventoryUIStyle.border_size)
     border_left:SetPosition(Vector2(0, 0))
-
-    self:SetItemWindowBorderColor(itemWindow, colors.border)
 
     equip_outer:Hide()
 
     button:SetDataNumber("stack_index", index)
     button:SetDataString("stack_category", cat)
     button:SetDataBool("dropping", false)
+    button:SetDataBool("hovered", false)
     button:SetDataNumber("drop_amount", 0)
     itemWindow:Hide()
 
@@ -365,7 +395,10 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     button:Subscribe("HoverEnter", self, self.HoverEnterButton)
     button:Subscribe("HoverLeave", self, self.HoverLeaveButton)
 
+    text_shadow:BringToFront()
+    text:BringToFront()
     button:BringToFront()
+
 
     return itemWindow
 
@@ -392,11 +425,9 @@ end
 function cInventoryUI:HoverEnterButton(button)
     -- Called when the mouse hovers over a button
     self.hovered_button = button
+    button:SetDataBool("hovered", true)
     
-    if not button:GetDataBool("dropping") then
-        self:SetItemWindowBorderColor(button:GetParent(), InventoryUIStyle.colors.hover.border)
-        self:SetItemWindowBackgroundColor(button:GetParent(), InventoryUIStyle.colors.hover.background)
-    end
+    InventoryUIStyle:UpdateItemColor(button:GetParent())
 
     if button:GetDataString("stack_category") == "loot" then
         return
@@ -404,18 +435,12 @@ function cInventoryUI:HoverEnterButton(button)
 
 end
 
-function cInventoryUI:SetItemWindowBackgroundColor(itemwindow, color)
-    itemwindow:FindChildByName("button_bg"):SetColor(color)
-end
-
 function cInventoryUI:HoverLeaveButton(button)
     -- Called when the mouse stops hovering over a button
     self.hovered_button = nil
+    button:SetDataBool("hovered", false)
 
-    if not button:GetDataBool("dropping") then
-        self:SetItemWindowBorderColor(button:GetParent(), InventoryUIStyle.colors.default.border)
-        self:SetItemWindowBackgroundColor(button:GetParent(), InventoryUIStyle.colors.default.background)
-    end
+    InventoryUIStyle:UpdateItemColor(button:GetParent())
 
     if button:GetDataString("stack_category") == "loot" then
         return
@@ -484,13 +509,10 @@ function cInventoryUI:ToggleDroppingItemButton(button)
     local amount = Inventory.contents[cat][index]:GetAmount()
     button:SetDataNumber("drop_amount", amount) -- Reset dropping amount when they right click it
 
-    button:SetTextColor(colors.text)
-    button:SetTextNormalColor(colors.text)
-    button:SetTextHoveredColor(colors.text_hover)
-    button:SetTextPressedColor(colors.text_hover)
-    button:GetParent():FindChildByName("button_bg", true):SetColor(colors.background)
-    self:SetItemWindowBorderColor(button:GetParent(), colors.border)
-    button:SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+    button:GetParent():FindChildByName("text"):SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+    button:GetParent():FindChildByName("text_shadow"):SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+
+    InventoryUIStyle:UpdateItemColor(button:GetParent())
 
 end
 
@@ -538,19 +560,15 @@ function cInventoryUI:MouseScroll(args)
         end
 
         self.hovered_button:SetDataNumber("drop_amount", new_drop_amount)
-        self.hovered_button:SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+
+        local parent = self.hovered_button:GetParent()
+        parent:FindChildByName("text"):SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+        parent:FindChildByName("text_shadow"):SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
 
         -- Update dropping amount
         self.dropping_items[cat .. tostring(index)].amount = new_drop_amount
 
     end
-end
-
-function cInventoryUI:SetItemWindowBorderColor(itemWindow, border_color)
-    itemWindow:FindChildByName("border_top", true):SetColor(border_color)
-    itemWindow:FindChildByName("border_right", true):SetColor(border_color)
-    itemWindow:FindChildByName("border_bottom", true):SetColor(border_color)
-    itemWindow:FindChildByName("border_left", true):SetColor(border_color)
 end
 
 function cInventoryUI:LeftClickItemButton(button)
