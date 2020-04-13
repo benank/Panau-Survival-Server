@@ -220,7 +220,8 @@ function cInventoryUI:CreateInventory()
 
     -- Create entries for each item
     for _, cat_data in pairs(Inventory.config.categories) do
-        self.categoryTitles[cat_data.name] = self:CreateCategoryTitle(cat_data.name)
+        self.categoryTitles[cat_data.name] = 
+            {text = self:CreateCategoryTitle(cat_data.name), shadow = self:CreateCategoryTitle(cat_data.name, true)}
         for i = 1, Inventory.config.max_slots_per_category do -- Pre-create all itemWindows and utilize as needed
             local itemWindow = self:CreateItemWindow(cat_data.name, i)
             self.itemWindows[cat_data.name][i] = itemWindow
@@ -259,19 +260,28 @@ function cInventoryUI:GetCategoryTitleText(cat)
 end
 
 function cInventoryUI:UpdateCategoryTitle(cat)
-    self.categoryTitles[cat]:SetText(self:GetCategoryTitleText(cat))
-    self.categoryTitles[cat]:SetPosition(self:GetCategoryTitlePosition(cat))
+    self.categoryTitles[cat].text:SetText(self:GetCategoryTitleText(cat))
+    self.categoryTitles[cat].text:SetPosition(self:GetCategoryTitlePosition(cat))
+
+    self.categoryTitles[cat].shadow:SetText(self:GetCategoryTitleText(cat))
+    self.categoryTitles[cat].shadow:SetPosition(self:GetCategoryTitlePosition(cat) + Vector2(1,1))
 
     local is_full = #Inventory.contents[cat] == self:GetNumSlotsInCategory(cat)
-    self.categoryTitles[cat]:SetTextColor(
+    self.categoryTitles[cat].text:SetTextColor(
         is_full and InventoryUIStyle.category_title_colors.Full or InventoryUIStyle.category_title_colors.Normal)
 end
 
-function cInventoryUI:CreateCategoryTitle(cat)
-    local categoryTitle = Label.Create(self.window, "categorytitle_"..cat)
+function cInventoryUI:CreateCategoryTitle(cat, is_shadow)
+    local categoryTitle = Label.Create(self.window, "categorytitle_"..cat..(is_shadow and "shadow" or ""))
     categoryTitle:SetSize(Vector2(self.inv_dimensions.button_size.x, self.inv_dimensions.button_size.y * 0.5))
     categoryTitle:SetTextSize(14)
     categoryTitle:SetAlignment(GwenPosition.Center)
+
+    if is_shadow then
+        categoryTitle:SetTextColor(Color.Black)
+        categoryTitle:SendToBack()
+    end
+
     return categoryTitle
 end
 
@@ -280,7 +290,7 @@ function cInventoryUI:GetCategoryTitlePosition(cat)
     return Vector2(
         self.inv_dimensions[cat].x - self.inv_dimensions.padding * 2,
         self.window:GetSize().y - (self.inv_dimensions.button_size.y * index)
-        - self.inv_dimensions.padding * (index + 1) - self.categoryTitles[cat]:GetSize().y
+        - self.inv_dimensions.padding * (index + 1) - self.categoryTitles[cat].text:GetSize().y
     )
 end
 
