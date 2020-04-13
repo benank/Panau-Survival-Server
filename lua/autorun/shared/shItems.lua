@@ -642,11 +642,11 @@ Items =
         equip_type = "grapplehook"
     },
     {
-        name = "Mine Detector",
+        name = "Explosives Detector",
         category = "Supplies",
         stacklimit = 1,
-        loot = {2,3,4},
-        rarity = 0.01,
+        loot = {3,4},
+        rarity = 0.0025,
         rarity_mod = {1,2,5},
         can_equip = true,
         durable = true,
