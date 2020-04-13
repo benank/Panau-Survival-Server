@@ -11,10 +11,9 @@ Lootbox.Types =
     Storage = 8, -- Deprecated
     VendingMachineFood = 9,
     VendingMachineDrink = 10,
-    BoxStash = 11,
-    BarrelStash = 12,
-    GarbageStash = 13,
-    LockedStash = 14,
+    BarrelStash = 11,
+    GarbageStash = 12,
+    LockedStash = 13,
 }
 
 Lootbox.GeneratorConfig = 
@@ -154,12 +153,6 @@ Lootbox.Models =
         model = "geo.cbb.eez/go152-a.lod",
         col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
         offset = Vector3(0, -0.025, 0)
-    },
-    [Lootbox.Types.BoxStash] = 
-    {
-        model = "22x19.flz/go222-g.lod",
-        col = "22x19.flz/go222_lod1-g_col.pfx",
-        offset = Vector3(0, 0, 0)
     },
     [Lootbox.Types.BarrelStash] = 
     {

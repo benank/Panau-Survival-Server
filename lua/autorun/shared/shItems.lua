@@ -325,15 +325,6 @@ Items =
         can_use = true
     },
     {
-        name = "Box Stash",
-        category = "Survival",
-        stacklimit = 3,
-        loot = {1},
-        rarity = 0.01,
-        rarity_mod = {1},
-        can_use = true
-    },
-    {
         name = "Barrel Stash",
         category = "Survival",
         stacklimit = 3,
