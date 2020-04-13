@@ -325,6 +325,42 @@ Items =
         can_use = true
     },
     {
+        name = "Box Stash",
+        category = "Survival",
+        stacklimit = 3,
+        loot = {1},
+        rarity = 0.01,
+        rarity_mod = {1},
+        can_use = true
+    },
+    {
+        name = "Barrel Stash",
+        category = "Survival",
+        stacklimit = 3,
+        loot = {2},
+        rarity = 0.01,
+        rarity_mod = {1},
+        can_use = true
+    },
+    {
+        name = "Garbage Stash",
+        category = "Survival",
+        stacklimit = 3,
+        loot = {3},
+        rarity = 0.01,
+        rarity_mod = {1},
+        can_use = true
+    },
+    {
+        name = "Locked Stash",
+        category = "Survival",
+        stacklimit = 3,
+        loot = {4},
+        rarity = 0.01,
+        rarity_mod = {1},
+        can_use = true
+    },
+    {
         name = "Tactical Nuke",
         category = "Explosives",
         stacklimit = 2,
