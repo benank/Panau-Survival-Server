@@ -29,6 +29,14 @@ function cInventoryUIStyle:__init()
         }
     }
 
+    self.equipped_icon = 
+    {
+        color = Color(110, 124, 164, 255),
+        color_under = Color(110, 124, 164, 150),
+        position = Vector2(10, 10),
+        radius = 6
+    }
+
     self.category_title_colors = {Normal = Color.White, Full = Color.Red}
     self.border_size = 2
 

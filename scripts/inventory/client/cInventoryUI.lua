@@ -69,6 +69,7 @@ function cInventoryUI:__init()
     Events:Subscribe(var("KeyUp"):get(), self, self.KeyUp)
     Events:Subscribe(var("KeyDown"):get(), self, self.KeyDown)
     Events:Subscribe(var("MouseScroll"):get(), self, self.MouseScroll)
+    self.window:Subscribe(var("PostRender"):get(), self, self.WindowRender)
     Events:Subscribe(var("SetInventoryState"):get(), self, self.SetInventoryState)
     
 end
@@ -102,6 +103,35 @@ function cInventoryUI:Update(args)
             self:PopulateEntry({index = i, cat = args.cat})
         end
         self:UpdateAllCategoryTitles()
+    end
+
+end
+
+function cInventoryUI:WindowRender()
+
+    if not self.window:GetVisible() then return end
+    if not Inventory.contents then return end
+
+    local base_pos = self.window:GetPosition()
+    local icon = InventoryUIStyle.equipped_icon
+
+    for category, _ in pairs(Inventory.contents) do
+        for index, stack in pairs(Inventory.contents[category]) do
+            local itemWindow = self.itemWindows[category][index]
+
+            if itemWindow then
+                
+                local position = itemWindow:GetPosition() + base_pos + icon.position
+
+                if stack.contents[1].equipped then
+                    -- Top item in stack is equipped
+                    Render:FillCircle(position, icon.radius, icon.color)
+                elseif stack:GetOneEquipped() then
+                    -- An item in the stack is equipped
+                    Render:FillCircle(position, icon.radius, icon.color_under)
+                end
+            end
+        end
     end
 
 end
@@ -171,7 +201,7 @@ function cInventoryUI:PopulateEntry(args)
         stack.contents[1].equipped and self.bg_colors.Equipped 
         or (stack:GetOneEquipped() and self.bg_colors.Equipped_Under or self.bg_colors.None))--]]
     
-    if stack:GetOneEquipped() then
+    --[[if stack:GetOneEquipped() then
 
         equip_inner:SetColor(
             stack.contents[1].equipped and self.bg_colors.Equipped 
@@ -183,7 +213,7 @@ function cInventoryUI:PopulateEntry(args)
 
         equip_outer:Hide()
 
-    end
+    end]]
 
     
     if stack:GetProperty("durable") then
