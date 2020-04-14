@@ -32,7 +32,7 @@ function cInventoryUIStyle:__init()
     self.equipped_icon = 
     {
         color = Color(110, 124, 164, 255),
-        color_under = Color(110, 124, 164, 150),
+        color_under = Color(110, 124, 164, 120),
         position = Vector2(10, 10),
         radius = 6
     }
