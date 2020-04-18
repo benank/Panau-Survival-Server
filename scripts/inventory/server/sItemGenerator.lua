@@ -112,18 +112,20 @@ function sItemGenerator:FindTargetItem(target, tier)
 
     for _, item in pairs(Items_indexed) do
 
-        for index, _tier in pairs(item.loot) do
+        if item.in_loot ~= false then
+            for index, _tier in pairs(item.loot) do
 
-            if tier == _tier then
+                if tier == _tier then
 
-                sum = sum + item.rarity * item.rarity_mod[index]
+                    sum = sum + item.rarity * item.rarity_mod[index]
 
-                if target <= sum then
-                    return item
+                    if target <= sum then
+                        return item
+                    end
+
                 end
 
             end
-
         end
 
     end
@@ -134,16 +136,18 @@ function sItemGenerator:ComputeRaritySums()
 
     for _, item in pairs(Items_indexed) do
 
-        for index, tier in pairs(item.loot) do
+        if item.in_loot ~= false then
+            for index, tier in pairs(item.loot) do
 
-            if not self.computed_rarity_sums[tier] then
-                self.computed_rarity_sums[tier] = 0
+                if not self.computed_rarity_sums[tier] then
+                    self.computed_rarity_sums[tier] = 0
+                end
+
+                -- Sum up all the rarities per tier
+                self.computed_rarity_sums[tier] = self.computed_rarity_sums[tier] + 
+                    item.rarity * item.rarity_mod[index] 
+
             end
-
-            -- Sum up all the rarities per tier
-            self.computed_rarity_sums[tier] = self.computed_rarity_sums[tier] + 
-                item.rarity * item.rarity_mod[index] 
-
         end
 
     end
