@@ -56,6 +56,8 @@ end
     optional:
         angle (Angle): angle offset of the object
         display_bb (bool): whether or not to display red lines around the object's bounding box
+        disable_walls (bool): whether or not to disable placement on walls
+        disable_ceil (bool): whether or not to disable placement on ceilings
 
 ]]
 function cObjectPlacer:StartObjectPlacement(args)
@@ -77,6 +79,9 @@ function cObjectPlacer:StartObjectPlacement(args)
 
     self.display_bb = args.display_bb == true
     self.angle_offset = args.angle ~= nil and args.angle or Angle()
+
+    self.disable_walls = args.disable_walls
+    self.disable_ceil = args.disable_ceil
 
     self.object = ClientStaticObject.Create({
         position = Vector3(),
@@ -101,21 +106,31 @@ function cObjectPlacer:Render(args)
 
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, self.range)
 
-    local can_place_here = ray.distance < self.range
+    local in_range = ray.distance < self.range
+    local can_place_here = in_range
 
     if ray.entity then
         can_place_here = can_place_here and ray.entity.__type == "ClientStaticObject"
     end
 
-    if can_place_here then
+    local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(self.rotation_yaw / 180 * math.pi, 0, 0) * self.angle_offset
+    self.object:SetAngle(ang)
+
+    local roll = math.abs(ang.roll)
+
+    if self.disable_walls and roll > math.pi / 6 then
+        can_place_here = false
+    elseif self.disable_ceil and roll > math.pi * 0.6 then
+        can_place_here = false
+    end
+
+    if in_range then
         self.object:SetPosition(ray.position)
     else
         self.object:SetPosition(Vector3())
     end
-    
-    local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(self.rotation_yaw / 180 * math.pi, 0, 0) * self.angle_offset
-    self.object:SetAngle(ang)
 
+    self.can_place_here = can_place_here
     self:RenderText(can_place_here)
 
     -- Fire an event in case other modules need to render other things, like a line for claymores
@@ -175,12 +190,14 @@ function cObjectPlacer:MouseUp(args)
     if args.button == 1 then
         -- Left click, place object
 
-        Events:Fire("build/PlaceObject", {
-            model = self.object:GetModel(),
-            position = self.object:GetPosition(),
-            angle = self.object:GetAngle()
-        })
-        self:StopObjectPlacement()
+        if self.can_place_here then
+            Events:Fire("build/PlaceObject", {
+                model = self.object:GetModel(),
+                position = self.object:GetPosition(),
+                angle = self.object:GetAngle()
+            })
+            self:StopObjectPlacement()
+        end
 
     elseif args.button == 2 then 
         -- Right click, cancel placement
