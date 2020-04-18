@@ -16,6 +16,27 @@ Lootbox.Types =
     LockedStash = 13,
 }
 
+StashAccessMode = 
+{
+    Everyone = 1,
+    Friends = 2,
+    OnlyMe = 3
+}
+
+StashAccessModeStrings = 
+{
+    [StashAccessMode.Everyone] = "Everyone",
+    [StashAccessMode.Friends] = "Friends",
+    [StashAccessMode.OnlyMe] = "Only Me"
+}
+
+Lootbox.Stashes = 
+{
+    [Lootbox.Types.BarrelStash] = {capacity = 12},
+    [Lootbox.Types.GarbageStash] = {capacity = 12},
+    [Lootbox.Types.LockedStash] = {capacity = 12},
+}
+
 Lootbox.GeneratorConfig = 
 {
     stack = 

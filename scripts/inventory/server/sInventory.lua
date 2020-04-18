@@ -13,6 +13,8 @@ function sInventory:__init(player)
     
     self.events = {}
     self.network_events = {}
+
+    player:SetNetworkValue("MaxStashes", 10) -- TODO: update with level
     
     table.insert(self.events, Events:Subscribe("Inventory.AddStack-" .. self.steamID, self, self.AddStackRemote))
     table.insert(self.events, Events:Subscribe("Inventory.AddItem-" .. self.steamID, self, self.AddItemRemote))
