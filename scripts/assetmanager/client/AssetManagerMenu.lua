@@ -78,18 +78,16 @@ function AssetManagerMenu:UpdateVehicleSecondTick()
         
         local health = IsValid(vehicle_data.data.vehicle) and vehicle_data.data.vehicle:GetHealth() or vehicle_data.data.health
         vehicle_data.item:SetCellText( 1, string.format("%.0f%%", health * 100) )
-
     end
-
 end
 
 function AssetManagerMenu:UpdateStashSecondTick()
     for id, stash_data in pairs(self.categories["Stashes"].stashes) do
+
         local pos = stash_data.data.position
         stash_data.item:SetCellText( 3, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(pos)) )
-        
-    end
 
+    end
 end
 
 function AssetManagerMenu:ResetVehiclesMenu()
