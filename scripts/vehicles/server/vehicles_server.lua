@@ -404,7 +404,7 @@ end
 function VehiclesServer:Second()
 	self:CheckForDeadVehs()
 	for id, tbl in pairs(self.timer) do
-		if os.time() - tbl["TIME"] > 1 then
+		if os.time() - tbl["TIME"] > 1 and IsValid(tbl["PLAYER"]) then
 			self:SendClientNewData(tbl["PLAYER"])
 			self.timer[id] = nil
 		end
