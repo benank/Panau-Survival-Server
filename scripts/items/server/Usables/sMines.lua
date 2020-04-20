@@ -229,7 +229,7 @@ function sMines:PlaceMine(position, angle, player)
     
     self:AddMine({
         id = result[1].id,
-        owner_id = steamID, -- TODO: add friends to it as well
+        owner_id = steamID,
         position = position,
         angle = angle
     }):SyncNearby(player)
