@@ -30,16 +30,8 @@ function AssetManagerMenu:__init()
     self:CreateVehiclesMenu()
     self:CreateStashesMenu()
 
-    self:AddStash({
-        num_items = 2,
-        capacity = 10,
-        access_mode = "Everyone",
-        position = Vector3(0,0,0),
-        name = "Barrel Stash",
-        stash_id = 1
-    })
 
-    self:UpdateCategoryNames()
+    Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
     Events:Subscribe( "Render", self, self.Render )
     Events:Subscribe( "KeyUp", self, self.KeyUp )
@@ -48,11 +40,17 @@ function AssetManagerMenu:__init()
     Events:Subscribe("Vehicles/OwnedVehiclesUpdate", self, self.OwnedVehiclesUpdate)
     Events:Subscribe("Vehicles/ResetVehiclesMenu", self, self.ResetVehiclesMenu)
 
+    Events:Subscribe("Stashes/ResetStashesMenu", self, self.ResetStashesMenu)
+
     Events:Subscribe("SecondTick", self, self.SecondTick)
 end
 
+function AssetManagerMenu:ModulesLoad()
+    self:UpdateCategoryNames()
+end
+
 function AssetManagerMenu:UpdateCategoryNames()
-    
+
     self.categories["Vehicles"].button:SetText(string.format("Vehicles (%d/%d)", 
         count_table(self.categories["Vehicles"].vehicles), LocalPlayer:GetValue("MaxVehicles")))
 
@@ -88,6 +86,11 @@ function AssetManagerMenu:UpdateStashSecondTick()
         stash_data.item:SetCellText( 3, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(pos)) )
 
     end
+end
+
+function AssetManagerMenu:ResetStashesMenu()
+    self.categories["Stashes"].list:Remove()
+    self:CreateStashesMenu()
 end
 
 function AssetManagerMenu:ResetVehiclesMenu()

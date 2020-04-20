@@ -9,7 +9,8 @@ end
 function cStashPlacement:StartStashPlacement(args)
 
     Events:Fire("build/StartObjectPlacement", {
-        model = args.model_data.model
+        model = args.model_data.model,
+        disable_walls = true
     })
 
     self.place_subs = 
@@ -18,7 +19,7 @@ function cStashPlacement:StartStashPlacement(args)
         Events:Subscribe("build/PlaceObject", self, self.PlaceObject),
         Events:Subscribe("build/CancelObjectPlacement", self, self.CancelObjectPlacement)
     }
-    
+
     self.placing_stash = true
 end
 

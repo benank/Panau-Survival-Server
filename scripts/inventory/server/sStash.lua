@@ -2,10 +2,14 @@ class 'sStash'
 
 function sStash:__init(args)
 
+    self.id = args.id
     self.lootbox = args.lootbox
     self.owner_id = args.owner_id
     self.access_mode = args.access_mode
+    self.name = args.name
+    self.health = args.health
     self.capacity = Lootbox.Stashes[self.lootbox.tier].capacity
+    self.can_change_access = self.lootbox.tier == Lootbox.Types.LockedStash
 
     self.lootbox.stash = self
 
@@ -37,13 +41,53 @@ function sStash:ChangeAccessMode(mode, player)
     -- Player is not owner of this stash
     if not self:IsPlayerOwner(player) then return end
 
+    -- Cannot change access mode of this type of stash
+    if not self.can_change_access then return end
+
     self.access_mode = mode
     self:UpdateToDB()
 
-    -- Also sync new access mode to owner
+    self:Sync(player)
+
+    -- Force close lootbox for players who cannot open anymore
+    for id, p in pairs(self.lootbox.players_opened) do
+        if not self:CanPlayerOpen(p) then
+            self.lootbox:ForceClose(p)
+        end
+    end
 
 end
 
 function sStash:UpdateToDB()
-    -- Update stash to DB, including contents and access type
+    -- Updates stash to DB, including contents and access type
+    
+	local command = SQL:Command("UPDATE stashes SET contents = ?, name = ?, access_mode = ?, health = ? WHERE steamID = (?)")
+	command:Bind(1, Serialize(self.lootbox.contents))
+	command:Bind(2, self.name)
+	command:Bind(3, self.access_mode)
+	command:Bind(4, self.health)
+	command:Bind(5, self.owner_id)
+	command:Execute()
+
+end
+
+-- Called when the contents of the stash are changed by player
+function sStash:ContentsChanged(player)
+
+end
+
+function sStash:Sync(player)
+    Network:Send(player, "Stashes/Sync", self:GetSyncData()) 
+end
+
+function sStash:GetSyncData()
+    return {
+        id = self.id,
+        access_mode = self.access_mode,
+        owner_id = self.owner_id,
+        name = self.name,
+        capacity = self.capacity,
+        can_change_access = self.can_change_access,
+        num_items = count_table(self.lootbox.contents)
+    }
 end

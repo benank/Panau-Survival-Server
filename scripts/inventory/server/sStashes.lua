@@ -6,8 +6,13 @@ function sStashes:__init()
 
     self.stashes = {}
 
-    Network:Subscribe("items/DeleteStash", self, self.DeleteClaymore)
+    self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
+    -- TODO: send stash data to player on join
+
+    Network:Subscribe("Stashes/DeleteStash", self, self.DeleteStash)
+
+    Events:Subscribe("items/PlaceStash", self, self.TryPlaceStash)
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
@@ -31,10 +36,10 @@ function sStashes:ItemExplode(args)
 
 end
 
-function sStashes:PickupClaymore(args, player)
-    --[[if not args.id or not self.claymores[args.id] then return end
+function sStashes:DeleteStash(args, player)
+    --[[if not args.id or not self.stashes[args.id] then return end
 
-    local claymore = self.claymores[args.id]
+    local claymore = self.stashes[args.id]
 
     --if claymore.owner_id ~= tostring(player:GetSteamId()) then return end -- They do not own this claymore
 
@@ -70,27 +75,33 @@ end
 
 function sStashes:AddStash(args)
 
-    -- TODO
-
     args.id = tonumber(args.id)
+
+    local lootbox = CreateLootbox({
+        position = args.position,
+        angle = args.angle,
+        tier = args.tier,
+        contents = args.contents
+    })
 
     local stash = sStash({
         id = args.id,
         owner_id = args.owner_id,
-        position = args.position,
-        angle = args.angle
+        contents = args.contents,
+        lootbox = lootbox,
+        name = args.name
     })
+
+    lootbox.stash = stash
     
     self.stashes[args.id] = stash
 
-    return stash
+    return lootbox
 
 end
 
 -- Load all stashes from DB
 function sStashes:LoadAllStashes()
-
-    -- TODO
 
     local result = SQL:Query("SELECT * FROM stashes"):Execute()
     
@@ -100,14 +111,18 @@ function sStashes:LoadAllStashes()
             local split = stash_data.position:split(",")
             local pos = Vector3(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]))
 
-            local split2 = stash_data.angle:split(",")
-            local angle = Angle(tonumber(split2[1]), tonumber(split2[2]), tonumber(split2[3]))
+            local angle = self:DeserializeAngle(stash_data.angle)
 
             self:AddStash({
-                id = stash_data.id,
+                id = tonumber(stash_data.id),
                 owner_id = stash_data.steamID,
                 position = pos,
-                angle = angle
+                angle = angle,
+                tier = tonumber(stash_data.type),
+                access_mode = tonumber(stash_data.access_mode),
+                contents = Deserialize(stash_data.contents),
+                name = stash_data.name,
+                health = tonumber(stash_data.health)
             })
         end
 
@@ -115,15 +130,22 @@ function sStashes:LoadAllStashes()
 
 end
 
-function sStashes:PlaceStash(position, angle, player)
+function sStashes:PlaceStash(position, angle, type, player)
     
-    -- TODO
-
     local steamID = tostring(player:GetSteamId())
-    local cmd = SQL:Command("INSERT INTO stashes (steamID, position, angle) VALUES (?, ?, ?)")
+
+    local lootbox_data = Lootbox.Stashes[type]
+    if not lootbox_data then return end
+
+    local cmd = SQL:Command("INSERT INTO stashes (steamID, name, type, position, angle, access_mode, health, contents) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
     cmd:Bind(1, steamID)
-    cmd:Bind(2, tostring(position))
-    cmd:Bind(3, tostring(angle))
+    cmd:Bind(2, lootbox_data.name)
+    cmd:Bind(3, type)
+    cmd:Bind(4, tostring(position))
+    cmd:Bind(5, self:SerializeAngle(angle))
+    cmd:Bind(6, lootbox_data.default_access)
+    cmd:Bind(7, lootbox_data.health)
+    cmd:Bind(8, "")
     cmd:Execute()
 
 	cmd = SQL:Query("SELECT last_insert_rowid() as id FROM stashes")
@@ -133,13 +155,51 @@ function sStashes:PlaceStash(position, angle, player)
         error("Failed to place stash")
         return
     end
-    
-    self:AddClaymore({
+
+    self:AddStash({
         id = result[1].id,
-        owner_id = steamID, -- TODO: add friends to it as well
+        owner_id = steamID,
         position = position,
-        angle = angle
-    }):SyncNearby(player)
+        angle = angle,
+        contents = {},
+        health = result[1].health,
+        tier = type,
+        access_mode = result[1].access_mode,
+        name = result[1].name
+    })
+
+end
+
+function sStashes:SerializeAngle(ang)
+    return math.round(ang.x, 5) .. "," .. math.round(ang.y, 5) .. "," .. math.round(ang.z, 5) .. "," .. math.round(ang.w, 5)
+end
+
+function sStashes:DeserializeAngle(ang)
+    local split = ang:split(",")
+    return Angle(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]), tonumber(split[4]) or 0)
+end
+
+function sStashes:TryPlaceStash(args, player)
+
+    Inventory.OperationBlock({player = player, change = -1})
+
+    if not args.position or not args.angle then return end
+
+    -- If they are within sz radius * 2, we don't let them place that close
+    if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
+        Chat:Send(player, "Cannot place stashes while near the safezone!", Color.Red)
+        return
+    end
+
+    local roll = math.abs(ang.roll)
+
+    -- Trying to place on a wall or something
+    if roll > math.pi / 6 then
+        Chat:Send(player, "Cannot place stash here!", Color.Red)
+        return
+    end
+
+    self:PlaceStash(args.position, args.angle, player)
 
 end
 

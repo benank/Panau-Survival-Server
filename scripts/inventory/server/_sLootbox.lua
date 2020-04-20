@@ -49,6 +49,8 @@ end
 
 function sLootbox:AddStack(_stack)
 
+    -- TODO: add support for players to add stacks for stashes
+
     if not _stack then
         error("sLootbox:AddStack failed: _stack does not exist")
     end
@@ -80,6 +82,13 @@ function sLootbox:TakeLootStack(args, player)
     if not self.active then return end
     if player:GetHealth() <= 0 then return end
 
+    -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
+    if self.is_stash then
+        if not self.stash:CanPlayerOpen(player) then return end
+
+        self.stash:ContentsChanged(player)
+    end
+
     local stack = self.contents[args.index]
 
     if not stack then return end
@@ -106,7 +115,7 @@ function sLootbox:TakeLootStack(args, player)
 
         if self.tier == Lootbox.Types.Dropbox then
             self:Remove()
-        elseif self.tier ~= Lootbox.Types.Storage then
+        elseif not self.is_stash then
             self:HideBox()
         end
 
@@ -120,6 +129,11 @@ function sLootbox:TryOpenBox(args, player)
     if #self.contents == 0 then return end
     if player:GetHealth() <= 0 then return end
     if player:GetPosition():Distance(self.position) > Lootbox.Distances.Can_Open + 1 then return end
+
+    -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
+    if self.is_stash then
+        if not self.stash:CanPlayerOpen(player) then return end
+    end
 
     self:Open(player)
 
@@ -135,6 +149,9 @@ function sLootbox:Open(player)
 end
 
 function sLootbox:StartDespawnTimer()
+
+    -- No despawn timer for stashes
+    if self.is_stash then return end
 
     if not self.despawn_timer then
 
@@ -200,8 +217,12 @@ function sLootbox:GetRespawnTime()
 
 end
 
-function sLootbox:ForceClose()
-    Network:SendToPlayers(self.players_opened, "Inventory/ForceCloseLootbox")
+function sLootbox:ForceClose(player)
+    if IsValid(player) then
+        Network:Send(player, "Inventory/ForceCloseLootbox")
+    else
+        Network:SendToPlayers(self.players_opened, "Inventory/ForceCloseLootbox")
+    end
 end
 
 -- Respawns the lootbox
@@ -285,7 +306,7 @@ end
 
 function sLootbox:GetSyncData()
 
-    return {
+    local data = {
         tier = self.tier,
         position = self.position,
         angle = self.angle,
@@ -294,5 +315,11 @@ function sLootbox:GetSyncData()
         cell = self.cell,
         uid = self.uid
     }
+
+    if self.is_stash then
+        data.stash = self.stash:GetSyncData()
+    end
+
+    return data
 
 end
