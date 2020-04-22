@@ -163,8 +163,6 @@ function VehiclePlayerTransferMenu:PressTransferButton(button)
 end
 
 function VehiclePlayerTransferMenu:RemovePlayer( player )
-	self.PlayerCount = self.PlayerCount - 1
-
 	if self.Rows[tostring(player:GetSteamId())] == nil then return end
 
 	self.list:RemoveItem( self.Rows[tostring(player:GetSteamId())] )
