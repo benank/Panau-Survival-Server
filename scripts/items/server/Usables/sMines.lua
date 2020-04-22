@@ -72,6 +72,8 @@ function sMines:PickupMine(args, player)
 
     if mine.exploded then return end
 
+    if mine.position:Distance(player:GetPosition()) > 5 then return end
+
     local num_mines = Inventory.GetNumOfItem({player = player, item_name = "Mine"})
 
     local item = deepcopy(Items_indexed["Mine"])

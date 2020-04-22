@@ -9,6 +9,8 @@ local StashNameToType =
 
 function sStashPlacement:__init()
 
+    self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
 
     Network:Subscribe("items/CancelStashPlacement", self, self.CancelStashPlacement)
@@ -16,11 +18,18 @@ function sStashPlacement:__init()
     
 end
 
+function sStashPlacement:GetStashTypeFromName(name)
+    for stash_type, data in pairs(Lootbox.Stashes) do
+        if data.name == name then return stash_type end
+    end
+end
+
 function sStashPlacement:TryPlaceStash(args, player)
 
     local player_iu = player:GetValue("StashUsingItem")
+    local type = self:GetStashTypeFromName(player_iu.item.name)
 
-    if player_iu.item and StashNameToType[player_iu.item.name] then
+    if player_iu.item and type then
 
         Inventory.RemoveItem({
             item = player_iu.item,
@@ -29,18 +38,23 @@ function sStashPlacement:TryPlaceStash(args, player)
         })
 
         -- Now actually place the stash
-        sStashes:PlaceStash(args.position, args.angle, player)
+        sStashes:PlaceStash(args.position, args.angle, type, player)
 
     end
-
 
 end
 
 function sStashPlacement:PlaceStash(args, player)
+    Inventory.OperationBlock({player = player, change = -1})
     if not args.position or not args.angle then return end
 
     if player:InVehicle() then
         Chat:Send(player, "Cannot place stashes while in a vehicle!", Color.Red)
+        return
+    end
+
+    if player:GetValue("Stunting") then
+        Chat:Send(player, "Cannot place stashes while stunting!", Color.Red)
         return
     end
 
@@ -52,6 +66,14 @@ function sStashPlacement:PlaceStash(args, player)
     -- If they are within sz radius * 2, we don't let them place that close
     if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
         Chat:Send(player, "Cannot place stashes while near the safezone!", Color.Red)
+        return
+    end
+
+    local roll = math.abs(args.angle.roll)
+
+    -- Trying to place on a wall or something
+    if roll > math.pi / 6 then
+        Chat:Send(player, "Cannot place stash here!", Color.Red)
         return
     end
 

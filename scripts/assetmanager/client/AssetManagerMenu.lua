@@ -41,6 +41,7 @@ function AssetManagerMenu:__init()
     Events:Subscribe("Vehicles/ResetVehiclesMenu", self, self.ResetVehiclesMenu)
 
     Events:Subscribe("Stashes/ResetStashesMenu", self, self.ResetStashesMenu)
+    Events:Subscribe("Stashes/UpdateStashes", self, self.UpdateStashes)
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
 end
@@ -51,11 +52,15 @@ end
 
 function AssetManagerMenu:UpdateCategoryNames()
 
-    self.categories["Vehicles"].button:SetText(string.format("Vehicles (%d/%d)", 
-        count_table(self.categories["Vehicles"].vehicles), LocalPlayer:GetValue("MaxVehicles")))
+    if LocalPlayer:GetValue("MaxVehicles") ~= nil then
+        self.categories["Vehicles"].button:SetText(string.format("Vehicles (%d/%d)", 
+            count_table(self.categories["Vehicles"].vehicles), LocalPlayer:GetValue("MaxVehicles")))
+    end
 
-    self.categories["Stashes"].button:SetText(string.format("Stashes (%d/%d)", 
-        count_table(self.categories["Stashes"].stashes), LocalPlayer:GetValue("MaxStashes")))
+    if LocalPlayer:GetValue("MaxStashes") ~= nil then
+        self.categories["Stashes"].button:SetText(string.format("Stashes (%d/%d)", 
+            count_table(self.categories["Stashes"].stashes), LocalPlayer:GetValue("MaxStashes")))
+    end
 
 end
 
@@ -98,6 +103,27 @@ function AssetManagerMenu:ResetVehiclesMenu()
     self:CreateVehiclesMenu()
 end
 
+function AssetManagerMenu:UpdateStashes(owned_stashes)
+
+    -- Remove non-existent stashes
+    for id, data in pairs(self.categories["Stashes"].stashes) do
+        if not owned_stashes[id] then
+            data.item:Remove()
+            self.categories["Stashes"].stashes[id] = nil
+        end
+    end
+
+    for id, stash_data in pairs(owned_stashes) do
+        if self.categories["Stashes"].stashes[id] then
+            self:UpdateStash(stash_data)
+        else
+            self:AddStash(stash_data)
+        end
+    end
+
+    self:UpdateCategoryNames()
+end
+
 function AssetManagerMenu:OwnedVehiclesUpdate(vehicles)
 
     -- Remove non-existent vehicles
@@ -107,8 +133,6 @@ function AssetManagerMenu:OwnedVehiclesUpdate(vehicles)
             self.categories["Vehicles"].vehicles[id] = nil
         end
     end
-
-    local valid_vehicles = {}
 
     for id, vehicle_data in pairs(vehicles) do
         if self.categories["Vehicles"].vehicles[id] then
@@ -132,6 +156,15 @@ function AssetManagerMenu:UpdateVehicle(data)
     end
 
     item:SetCellText( 3, tostring(data.guards) )
+end
+
+function AssetManagerMenu:UpdateStash(data)
+    self.categories["Stashes"].stashes[data.id].data = data
+    local item = self.categories["Stashes"].stashes[data.id].item
+
+    item:SetCellText( 0, tostring(data.name) )
+    item:SetCellText( 1, string.format("%d/%d", data.num_items, data.capacity) )
+    item:SetCellText( 2, tostring(data.access_mode) )
 end
 
 function AssetManagerMenu:GetFormattedDistanceString(dist)
@@ -277,8 +310,8 @@ end
 function AssetManagerMenu:AddStash(data)
     
     local list = self.categories["Stashes"].list
-    
-	local item = list:AddItem( tostring(data.stash_id) )
+
+	local item = list:AddItem( tostring(data.id) )
 	item:SetCellText( 0, data.name )
 	item:SetCellText( 1, string.format("%d/%d", data.num_items, data.capacity) )
 	item:SetCellText( 2, data.access_mode )
@@ -306,13 +339,13 @@ function AssetManagerMenu:AddStash(data)
         btn:SetTextSize(16)
         btn:SetAlignment(GwenPosition.Center)
         btn:SetSize(Vector2(80,24))
-        btn:SetDataString("stash_id", tostring(data.stash_id))
+        btn:SetDataString("stash_id", tostring(data.id))
         btn:SetDataString("type", name)
         item:SetCellContents(index, btn)
         btn:Subscribe("Press", self, self.PressStashButton)
     end
 
-    self.categories["Stashes"].stashes[tonumber(data.stash_id)] = {item = item, data = data}
+    self.categories["Stashes"].stashes[tonumber(data.id)] = {item = item, data = data}
     self:UpdateCategoryNames()
 
 end
@@ -333,7 +366,7 @@ function AssetManagerMenu:PressStashButton(btn)
         self.stash_rename_input:MakeCaratVisible()
         self.stash_rename_input:SetCursorPosition(1)
         self.stash_rename_input:Focus()
-        self.renaming_stash_id = stash_data.stash_id
+        self.renaming_stash_id = tonumber(btn:GetDataString("stash_id"))
 
     elseif type == "Waypoint" then
 
@@ -417,7 +450,7 @@ function AssetManagerMenu:PressRenameStashButton(btn)
     local text = self.stash_rename_input:GetText()
 
     if text then
-        text = text:sub(1, 20):trim()
+        text = text:sub(1, 30):trim()
 
         Events:Fire("Stashes/RenameStash", {
             id = self.renaming_stash_id,

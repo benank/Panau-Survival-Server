@@ -47,9 +47,32 @@ function sLootbox:__init(args)
 
 end
 
-function sLootbox:AddStack(_stack)
+-- Called when a player tries to drag to swap two items in a stash
+function sLootbox:PlayerSwapStack(args, player)
 
-    -- TODO: add support for players to add stacks for stashes
+    if not self.players_opened[tostring(player:GetSteamId().id)] then return end
+    if not self.active then return end
+    if player:GetHealth() <= 0 then return end
+
+
+
+end
+
+-- Called when a player tries to add a stack to a stash
+function sLootbox:PlayerAddStack(stack, player)
+
+    if not self.players_opened[tostring(player:GetSteamId().id)] then return end
+    if not self.active then return end
+    if player:GetHealth() <= 0 then return end
+
+    
+    if self.is_stash then
+        self.stash:UpdateToDB()
+    end
+
+end
+
+function sLootbox:AddStack(_stack)
 
     if not _stack then
         error("sLootbox:AddStack failed: _stack does not exist")
@@ -73,6 +96,9 @@ function sLootbox:AddStack(_stack)
 
     self:UpdateToPlayers()
 
+    if self.is_stash then
+        self.stash:UpdateToDB()
+    end
 end
 
 function sLootbox:TakeLootStack(args, player)
@@ -100,13 +126,9 @@ function sLootbox:TakeLootStack(args, player)
     local return_stack = inv:AddStack({stack = stack})
 
     if return_stack then
-
         self.contents[args.index] = return_stack
-
     else
-
         table.remove(self.contents, args.index)
-
     end
 
     self:UpdateToPlayers()
@@ -121,6 +143,9 @@ function sLootbox:TakeLootStack(args, player)
 
     end
 
+    if self.is_stash then
+        self.stash:UpdateToDB()
+    end
 end
 
 function sLootbox:TryOpenBox(args, player)

@@ -31,6 +31,22 @@ function sStash:IsPlayerOwner(player)
     return tostring(player:GetSteamId()) == self.owner_id
 end
 
+function sStash:ChangeName(name, player)
+
+    name = tostring(name):sub(1, 30):trim()
+
+    if not name then return end
+    if name:len() < 3 then return end
+    
+    if not self:IsPlayerOwner(player) then return end
+    
+    self.name = name
+    
+    self:UpdateToDB()
+    self:Sync(player)
+
+end
+
 function sStash:ChangeAccessMode(mode, player)
 
     -- Invalid access mode
@@ -61,12 +77,12 @@ end
 function sStash:UpdateToDB()
     -- Updates stash to DB, including contents and access type
     
-	local command = SQL:Command("UPDATE stashes SET contents = ?, name = ?, access_mode = ?, health = ? WHERE steamID = (?)")
+	local command = SQL:Command("UPDATE stashes SET contents = ?, name = ?, access_mode = ?, health = ? WHERE id = (?)")
 	command:Bind(1, Serialize(self.lootbox.contents))
 	command:Bind(2, self.name)
 	command:Bind(3, self.access_mode)
 	command:Bind(4, self.health)
-	command:Bind(5, self.owner_id)
+	command:Bind(5, self.id)
 	command:Execute()
 
 end
@@ -80,6 +96,12 @@ function sStash:Sync(player)
     Network:Send(player, "Stashes/Sync", self:GetSyncData()) 
 end
 
+-- Removes the stash from the world, DB, and owner's menu
+function sStash:Remove()
+    self.lootbox:Remove()
+
+end
+
 function sStash:GetSyncData()
     return {
         id = self.id,
@@ -87,6 +109,7 @@ function sStash:GetSyncData()
         owner_id = self.owner_id,
         name = self.name,
         capacity = self.capacity,
+        position = self.lootbox.position,
         can_change_access = self.can_change_access,
         num_items = count_table(self.lootbox.contents)
     }

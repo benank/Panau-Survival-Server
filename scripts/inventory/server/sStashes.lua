@@ -6,19 +6,56 @@ function sStashes:__init()
 
     self.stashes = {}
 
-    self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
-
-    -- TODO: send stash data to player on join
-
     Network:Subscribe("Stashes/DeleteStash", self, self.DeleteStash)
+    Network:Subscribe("Stashes/RenameStash", self, self.RenameStash)
 
-    Events:Subscribe("items/PlaceStash", self, self.TryPlaceStash)
-    Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 end
 
+function sStashes:RenameStash(args, player)
+    
+    if not args.id or not args.name then return end
+
+    local player_stashes = player:GetValue("Stashes")
+    local stash = player_stashes[args.id]
+
+    if not stash then return end
+
+    local stash_instance = self.stashes[args.id]
+
+    if not stash_instance then return end
+
+    stash_instance:ChangeName(args.name, player)
+end
+
+function sStashes:ClientModuleLoad(args)
+
+    args.player:SetNetworkValue("MaxStashes", 10) -- TODO: update with level
+    
+    local player_stashes = {}
+    local steam_id = tostring(args.player:GetSteamId())
+
+    for id, stash in pairs(self.stashes) do
+
+        if stash.owner_id == steam_id then
+            -- Player owns this stash
+            player_stashes[id] = stash:GetSyncData()
+        end
+
+    end
+
+    args.player:SetValue("Stashes", player_stashes)
+    self:SyncStashesToPlayer(args.player)
+end
+
+function sStashes:SyncStashesToPlayer(player)
+    Network:Send(player, "Stashes/SyncMyStashes", player:GetValue("Stashes"))
+end
+
 function sStashes:ItemExplode(args)
+
+    -- TODO: damage nearby stashes
 
     --[[local cell = GetCell(args.position, ItemsConfig.usables.Claymore.cell_size)
     local adjacent_cells = GetAdjacentCells(cell)
@@ -81,6 +118,7 @@ function sStashes:AddStash(args)
         position = args.position,
         angle = args.angle,
         tier = args.tier,
+        active = true,
         contents = args.contents
     })
 
@@ -89,6 +127,8 @@ function sStashes:AddStash(args)
         owner_id = args.owner_id,
         contents = args.contents,
         lootbox = lootbox,
+        access_mode = tonumber(args.access_mode),
+        health = args.health,
         name = args.name
     })
 
@@ -106,7 +146,7 @@ function sStashes:LoadAllStashes()
     local result = SQL:Query("SELECT * FROM stashes"):Execute()
     
     if #result > 0 then
-
+        
         for _, stash_data in pairs(result) do
             local split = stash_data.position:split(",")
             local pos = Vector3(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]))
@@ -123,7 +163,7 @@ function sStashes:LoadAllStashes()
                 contents = Deserialize(stash_data.contents),
                 name = stash_data.name,
                 health = tonumber(stash_data.health)
-            })
+            }):Sync()
         end
 
     end
@@ -166,7 +206,7 @@ function sStashes:PlaceStash(position, angle, type, player)
         tier = type,
         access_mode = result[1].access_mode,
         name = result[1].name
-    })
+    }):Sync()
 
 end
 
@@ -177,30 +217,6 @@ end
 function sStashes:DeserializeAngle(ang)
     local split = ang:split(",")
     return Angle(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]), tonumber(split[4]) or 0)
-end
-
-function sStashes:TryPlaceStash(args, player)
-
-    Inventory.OperationBlock({player = player, change = -1})
-
-    if not args.position or not args.angle then return end
-
-    -- If they are within sz radius * 2, we don't let them place that close
-    if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
-        Chat:Send(player, "Cannot place stashes while near the safezone!", Color.Red)
-        return
-    end
-
-    local roll = math.abs(ang.roll)
-
-    -- Trying to place on a wall or something
-    if roll > math.pi / 6 then
-        Chat:Send(player, "Cannot place stash here!", Color.Red)
-        return
-    end
-
-    self:PlaceStash(args.position, args.angle, player)
-
 end
 
 sStashes = sStashes()
