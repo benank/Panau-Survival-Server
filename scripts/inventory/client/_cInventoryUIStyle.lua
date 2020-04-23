@@ -134,14 +134,11 @@ function cInventoryUIStyle:UpdateItemColor(itemwindow)
         stack = LootManager.current_box.contents[index]
     end
 
-    if not stack then
-        error("Stack not found " .. tostring(cat) .. " " .. tostring(index))
-        return
-    end
-
     local colors = button:GetDataBool("dropping") and self.colors.dropping or InventoryUIStyle.colors.default
 
     local text = itemwindow:FindChildByName("text", true)
+
+    local stack_name = stack and stack:GetProperty("name") or "empty"
 
     text:SetTextColor(colors.text)
 
@@ -152,7 +149,7 @@ function cInventoryUIStyle:UpdateItemColor(itemwindow)
     else
         -- Make item normal color
         self:SetBorderColor(itemwindow, self.colors.hover.border)
-        itemwindow:FindChildByName("button_bg", true):SetColor(self:GetItemColorByName(stack:GetProperty("name")))
+        itemwindow:FindChildByName("button_bg", true):SetColor(self:GetItemColorByName(stack_name))
     end
 
     local hovered = button:GetDataBool("hovered")

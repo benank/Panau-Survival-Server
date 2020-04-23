@@ -32,7 +32,7 @@ StashAccessModeStrings =
 
 Lootbox.Stashes = 
 {
-    [Lootbox.Types.BarrelStash] = {capacity = 12, name = "Barrel Stash", health = 500, default_access = StashAccessMode.Everyone},
+    [Lootbox.Types.BarrelStash] = {capacity = 10, name = "Barrel Stash", health = 500, default_access = StashAccessMode.Everyone},
     [Lootbox.Types.GarbageStash] = {capacity = 12, name = "Garbage Stash", health = 1000, default_access = StashAccessMode.Everyone},
     [Lootbox.Types.LockedStash] = {capacity = 12, name = "Locked Stash", health = 1500, default_access = StashAccessMode.OnlyMe},
 }

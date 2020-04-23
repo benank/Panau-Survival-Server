@@ -151,7 +151,7 @@ end
 function sLootbox:TryOpenBox(args, player)
 
     if not IsValid(player) then return end
-    if #self.contents == 0 then return end
+    if count_table(self.contents) == 0 and not self.is_stash then return end
     if player:GetHealth() <= 0 then return end
     if player:GetPosition():Distance(self.position) > Lootbox.Distances.Can_Open + 1 then return end
 
@@ -164,10 +164,18 @@ function sLootbox:TryOpenBox(args, player)
 
 end
 
+function sLootbox:GetContentsSyncData()
+    local data = {contents = self:GetContentsData()}
+    if self.is_stash then
+        data.stash = self.stash:GetSyncData()
+    end
+    return data
+end
+
 function sLootbox:Open(player)
     
     self.players_opened[tostring(player:GetSteamId().id)] = player
-    Network:Send(player, "Inventory/LootboxOpen", {contents = self:GetContentsData()})
+    Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
     self:StartDespawnTimer()
 
@@ -314,7 +322,7 @@ end
 
 -- Update contents to anyone who has it open
 function sLootbox:UpdateToPlayers()
-    Network:SendToPlayers(self.players_opened, "Inventory/LootboxSync", {contents = self:GetContentsData()})
+    Network:SendToPlayers(self.players_opened, "Inventory/LootboxSync", self:GetContentsSyncData())
 end
 
 function sLootbox:GetContentsData()

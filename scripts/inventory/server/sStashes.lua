@@ -196,7 +196,7 @@ function sStashes:PlaceStash(position, angle, type, player)
         return
     end
 
-    self:AddStash({
+    local lootbox = self:AddStash({
         id = result[1].id,
         owner_id = steamID,
         position = position,
@@ -204,10 +204,17 @@ function sStashes:PlaceStash(position, angle, type, player)
         contents = {},
         health = result[1].health,
         tier = type,
-        access_mode = result[1].access_mode,
-        name = result[1].name
-    }):Sync()
+        name = lootbox_data.name,
+        access_mode = lootbox_data.default_access
+    })
 
+    lootbox:Sync()
+
+    local player_stashes = player:GetValue("Stashes")
+    player_stashes[lootbox.stash.id] = lootbox.stash:GetSyncData()
+
+    player:SetValue("Stashes", player_stashes)
+    self:SyncStashesToPlayer(player)
 end
 
 function sStashes:SerializeAngle(ang)

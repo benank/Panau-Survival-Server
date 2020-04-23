@@ -29,7 +29,8 @@ function cInventoryUI:__init()
     self.inv_dimensions = 
     {
         padding = self.padding, -- Padding on all sides is the same
-        text_size = 20,
+        text_size = math.min(20, Render.Size.y / 54),
+        category_title_text_size = 16,
         button_size = Vector2(
             (self.window:GetSize().x - self.padding * #Inventory.config.categories) / #Inventory.config.categories, 40),
         cat_offsets = {} -- Per category offsets
@@ -168,13 +169,18 @@ function cInventoryUI:PopulateEntry(args)
 
     local stack
 
-    if not args.loot then
+    if not args.loot and not args.empty then
         stack = Inventory.contents[args.cat][args.index]
-    elseif args.loot and LootManager.current_box and LootManager.current_box.contents[args.index] then
+    elseif args.loot and LootManager.current_box and LootManager.current_box.contents[args.index] and not args.empty then
         stack = LootManager.current_box.contents[args.index]
     end
 
-    local cat = args.loot and "loot" or (args.cat or stack:GetProperty("category"))
+    local cat = "none"
+    
+    if args.loot then cat = "loot"
+    elseif args.cat then cat = args.cat
+    else cat = stack:GetProperty("category") end
+
     local itemwindow = window:FindChildByName("itemwindow_"..cat..args.index, true)
 
     itemwindow:SetDataBool("loot", args.loot == true)
@@ -186,49 +192,51 @@ function cInventoryUI:PopulateEntry(args)
     local equip_outer = itemwindow:FindChildByName("equip_outer", true)
     local equip_inner = itemwindow:FindChildByName("equip_inner", true)
 
-    if not stack then -- No item found, hide the entry
-        itemwindow:Hide()
-        return
-    else
-        itemwindow:Show()
-    end
+    if not args.empty then
 
-    local item_name = stack:GetProperty("name")
+        if not stack then -- No item found, hide the entry
+            itemwindow:Hide()
+            return
+        else
+            itemwindow:Show()
+        end
 
-    button:GetParent():FindChildByName("text"):SetText(self:GetItemNameWithAmount(stack, args.index))
-    button:GetParent():FindChildByName("text_shadow"):SetText(self:GetItemNameWithAmount(stack, args.index))
-    --[[button_bg:SetColor(
-        stack.contents[1].equipped and self.bg_colors.Equipped 
-        or (stack:GetOneEquipped() and self.bg_colors.Equipped_Under or self.bg_colors.None))--]]
-    
-    --[[if stack:GetOneEquipped() then
+        local item_name = stack:GetProperty("name")
 
-        equip_inner:SetColor(
-            stack.contents[1].equipped and self.bg_colors.Equipped 
-            or (stack:GetOneEquipped() and self.bg_colors.Equipped_Under or self.bg_colors.None)
-        )
-        equip_outer:Show()
+        button:GetParent():FindChildByName("text"):SetText(self:GetItemNameWithAmount(stack, args.index))
+        button:GetParent():FindChildByName("text_shadow"):SetText(self:GetItemNameWithAmount(stack, args.index))
+        
+        if stack:GetProperty("durable") then
 
-    else
+            durability:SetSizeAutoRel(Vector2(math.min(1, stack.contents[1].durability / stack.contents[1].max_durability) * 0.9, 0.1))
+            durability:SetColor(self:GetDurabilityColor(stack.contents[1].durability / stack.contents[1].max_durability))
+            durability:Show()
 
-        equip_outer:Hide()
+        else
 
-    end]]
+            durability:Hide()
 
-    
-    if stack:GetProperty("durable") then
+        end
 
-        durability:SetSizeAutoRel(Vector2(math.min(1, stack.contents[1].durability / stack.contents[1].max_durability) * 0.9, 0.1))
-        durability:SetColor(self:GetDurabilityColor(stack.contents[1].durability / stack.contents[1].max_durability))
-        durability:Show()
+        InventoryUIStyle:UpdateItemColor(itemwindow)
 
     else
+        
+        local empty_text = "-- [ EMPTY ] --"
+
+        button:GetParent():FindChildByName("text"):SetText(empty_text)
+        button:GetParent():FindChildByName("text_shadow"):SetText(empty_text)
+        
+        itemwindow:SetDataBool("loot", args.loot == true)
+        itemwindow:SetDataNumber("loot_index", args.index)
 
         durability:Hide()
 
-    end
+        InventoryUIStyle:UpdateItemColor(itemwindow)
 
-    InventoryUIStyle:UpdateItemColor(itemwindow)
+        itemwindow:Show()
+
+    end
 
 end
 
@@ -304,7 +312,7 @@ end
 function cInventoryUI:CreateCategoryTitle(cat, is_shadow)
     local categoryTitle = Label.Create(self.window, "categorytitle_"..cat..(is_shadow and "shadow" or ""))
     categoryTitle:SetSize(Vector2(self.inv_dimensions.button_size.x, self.inv_dimensions.button_size.y * 0.5))
-    categoryTitle:SetTextSize(14)
+    categoryTitle:SetTextSize(self.inv_dimensions.category_title_text_size)
     categoryTitle:SetAlignment(GwenPosition.Center)
 
     if is_shadow then
@@ -366,13 +374,15 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     text_shadow:SetTextSize(self.inv_dimensions.text_size)
     text_shadow:SetTextColor(Color.Black)
     text_shadow:SetAlignment(GwenPosition.Center)
-    text_shadow:SetPosition(Vector2(1,1))
+    text_shadow:SetPosition(Vector2(2,2))
+    text_shadow:SetTextPadding(Vector2(0, 4), Vector2(0, 0))
 
     local text = Label.Create(itemWindow, "text")
     text:SetSizeAutoRel(Vector2(1, 1))
     text:SetTextSize(self.inv_dimensions.text_size)
     text:SetTextColor(Color.White)
     text:SetAlignment(GwenPosition.Center)
+    text:SetTextPadding(Vector2(0, 4), Vector2(0, 0))
 
     local colors = InventoryUIStyle.colors.default
     button:SetTextColor(colors.text)

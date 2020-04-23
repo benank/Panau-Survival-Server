@@ -77,6 +77,12 @@ function sStashPlacement:PlaceStash(args, player)
         return
     end
 
+    if count_table(player:GetValue("Stashes")) >= player:GetValue("MaxStashes") then
+        Chat:Send(player, "You already have the maximum amount of stashes!", Color.Red)
+        return
+    end
+
+
     self:TryPlaceStash(args, player)
 
 end

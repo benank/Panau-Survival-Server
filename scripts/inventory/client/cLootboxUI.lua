@@ -40,7 +40,7 @@ function cLootboxUI:LootboxSync(args)
     if not LootManager.current_box then return end
 
     LootManager:RecreateContents(args.contents)
-    self:Update({action = "full"})
+    self:Update({action = "full", stash = args.stash})
 
 end
 
@@ -51,7 +51,7 @@ function cLootboxUI:LootboxOpen(args)
 
     LootManager:RecreateContents(args.contents)
 
-    self:Update({action = "full"})
+    self:Update({action = "full", stash = args.stash})
 
 end
 
@@ -72,23 +72,29 @@ function cLootboxUI:Update(args)
         end
 
         for i = 1, #LootManager.current_box.contents do
-            ClientInventory.ui:PopulateEntry({index = i, loot = true, window = self.window})
+            ClientInventory.ui:PopulateEntry({index = i, loot = true, stash = args.stash, window = self.window})
+        end
+        if args.stash then
+            for i = #LootManager.current_box.contents + 1, args.stash.capacity + #LootManager.current_box.contents do
+                ClientInventory.ui:PopulateEntry({index = i, loot = true, empty = true, stash = args.stash, window = self.window})
+            end
+            self:RepositionWindow(args.stash.capacity)
         end
 
     elseif args.action == "update" or args.action == "remove" then
-        ClientInventory.ui:PopulateEntry({index = args.index, loot = true, window = self.window})
+        ClientInventory.ui:PopulateEntry({index = args.index, loot = true, stash = args.stash, window = self.window})
     end
 
-    if not self.window:GetVisible() or #LootManager.current_box.contents == 0 then
-        self:RepositionWindow()
+    if not self.window:GetVisible() or (#LootManager.current_box.contents == 0 and not args.stash) then
+        self:RepositionWindow(args.stash and args.stash.capacity or nil)
         self:ToggleVisible()
     end
 
 end
 
 -- Adjusts y position of window to center it depending on how many items are in it
-function cLootboxUI:RepositionWindow()
-    local num_items = #LootManager.current_box.contents
+function cLootboxUI:RepositionWindow(capacity)
+    local num_items = capacity or #LootManager.current_box.contents
     local items_height = num_items * self.itemWindows[1]:GetHeight() + num_items * ClientInventory.ui.inv_dimensions.padding
     local center = Render.Size.y / 2
     self.window:SetPosition(Vector2(self.window:GetPosition().x, center - items_height / 2))
@@ -127,7 +133,7 @@ function cLootboxUI:ToggleVisible()
 
         self.window:Show()
         Mouse:SetPosition(Render.Size / 2)
-        self:RepositionWindow()
+        --self:RepositionWindow()
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     end
 
