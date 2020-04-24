@@ -36,7 +36,8 @@ function Place:ChatHandle(args)
 		if type(newalpha) == "string" then return end
 		if newalpha >= 0 and newalpha <= 255 then
 			alpha = newalpha
-		end
+        end
+        Events:Fire("SetAlpha", {alpha = newalpha})
 		return false
 	elseif args.text:find("/radius ") then
 		local splittext = args.text:split(" ")
@@ -45,6 +46,7 @@ function Place:ChatHandle(args)
 		if newradius >= .01 and newradius <= 175 then
 			radius = newradius
 		end
+        Events:Fire("SetRadius", {radius = newradius})
 		return false
 	elseif args.text:find("/range ") then
 		local splittext = args.text:split(" ")

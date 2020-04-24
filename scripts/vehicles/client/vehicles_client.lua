@@ -23,7 +23,21 @@ function cVehicles:__init()
 	--Events:Subscribe("SecondTick", self, self.UpdateNearVTable)
 	Events:Subscribe("Render", self, self.Render)
 	--Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInputF)
-	Network:Subscribe("UpdateVehicleTablesTemp", self, self.UpdateTemp)
+    Network:Subscribe("UpdateVehicleTablesTemp", self, self.UpdateTemp)
+    
+    self.alpha = 50
+    self.radius = 3
+
+    Events:Subscribe("SetAlpha", function(args)
+        self.alpha = args.alpha
+    end)
+
+    Events:Subscribe("SetRadius", function(args)
+        self.radius = args.radius
+    end)
+
+
+
 end
 function AddHelp()
     Events:Fire( "HelpAddItem",
@@ -127,15 +141,11 @@ function cVehicles:Render()
 				numvs = numvs + 1
 				local pos1 = LocalPlayer:GetPosition()
 				local dist = Vector3.Distance(pos1, pos)
-				if dist < 500 then
+				if dist < 1000 then
 					t = Transform3()
 					t:Translate(pos):Rotate(Angle(0,math.pi/2,0))
 					Render:SetTransform(t)
-					if vtype == "CIV_PLANE" or vtype == "MIL_PLANE" then
-						Render:FillCircle(Vector3(0,0,0), 3, Color(0,255,255,50))
-					else
-						Render:FillCircle(Vector3(0,0,0), 2, Color(0,255,255,50))
-					end
+                    Render:FillCircle(Vector3(0,0,0), self.radius, Color(0,255,255,self.alpha))
 					RenderTag(vtype, pos)
 					Render:ResetTransform()
 				end
