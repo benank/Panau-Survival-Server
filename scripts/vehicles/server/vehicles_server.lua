@@ -212,7 +212,8 @@ function VehiclesServer:ClientConfirmTransfer(args, sender)
 	Chat:Send(targetp, sender:GetName().." has transferred "..vehicle:GetName().." to you", Color(0,200,0))
 end
 function VehiclesServer:SendClientNewData(player)
-	--MAGIC VEHICLE GUI UPDATING THING
+    --MAGIC VEHICLE GUI UPDATING THING
+    if true then return end
 	local args = {}
 	args.t1 = self.vtable[player:GetSteamId().id]
 	args.t2 = {}
