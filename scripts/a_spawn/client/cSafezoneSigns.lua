@@ -17,6 +17,14 @@ function cSafezoneSigns:__init()
             image = Image.Create(AssetLocation.Resource, "Safezone_ServerBasics"),
             size = Vector2(1200, 500),
             scale = 9,
+            position = Vector3(-10284.602539, 207.755768, -2967.457031),
+            angle = Angle(0.523599 + math.pi, 0, 0)
+        },
+        ["Keybinds"] = 
+        {
+            image = Image.Create(AssetLocation.Resource, "Safezone_Keybinds"),
+            size = Vector2(1200, 500),
+            scale = 9,
             position = Vector3(-10242.552734, 207.746216, -2991.734619),
             angle = Angle(0.523599 + math.pi, 0, 0)
         },
@@ -25,8 +33,8 @@ function cSafezoneSigns:__init()
             image = Image.Create(AssetLocation.Resource, "Safezone_Rules"),
             size = Vector2(1200, 500),
             scale = 9,
-            position = Vector3(-10284.602539, 207.755768, -2967.457031),
-            angle = Angle(0.523599 + math.pi, 0, 0)
+            position = Vector3(-10244.166992, 210.923981, -3063.890869),
+            angle = Angle(2.277459 + math.pi, 0, 0)
         },
         ["Team"] = 
         {
