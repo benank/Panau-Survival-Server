@@ -50,7 +50,7 @@ end
 -- Called when a player tries to drag to swap two items in a stash
 function sLootbox:PlayerSwapStack(args, player)
 
-    if not self.players_opened[tostring(player:GetSteamId().id)] then return end
+    if not self.players_opened[tostring(player:GetSteamId())] then return end
     if not self.active then return end
     if player:GetHealth() <= 0 then return end
 
@@ -61,14 +61,26 @@ end
 -- Called when a player tries to add a stack to a stash
 function sLootbox:PlayerAddStack(stack, player)
 
-    if not self.players_opened[tostring(player:GetSteamId().id)] then return end
     if not self.active then return end
     if player:GetHealth() <= 0 then return end
 
-    
+    -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
     if self.is_stash then
-        self.stash:UpdateToDB()
+        if not self.stash:CanPlayerOpen(player) then return stack end
     end
+
+    local return_stack = self:AddStack(stack)
+
+    if self.is_stash then
+        for p in Server:GetPlayers() do
+            if self.stash:IsPlayerOwner(p) then
+                self.stash:Sync(p)
+                break
+            end
+        end
+    end
+
+    return return_stack
 
 end
 
@@ -84,14 +96,25 @@ function sLootbox:AddStack(_stack)
 
     for k, stack in pairs(self.contents) do
 
-        if stack:CanStack(_stack.contents[1]) then
+        if _stack and stack:CanStack(_stack.contents[1]) then
             _stack = stack:AddStack(_stack)
         end
 
     end
 
     if _stack and _stack:GetAmount() > 0 then
-        table.insert(self.contents, _stack)
+        if not self.is_stash then
+            table.insert(self.contents, _stack)
+            _stack = nil
+        else
+            -- This is a stash, check its capacity
+            if count_table(self.contents) < self.stash.capacity then
+                table.insert(self.contents, _stack)
+                _stack = nil
+            end
+        end
+    else
+        _stack = nil
     end
 
     self:UpdateToPlayers()
@@ -99,11 +122,13 @@ function sLootbox:AddStack(_stack)
     if self.is_stash then
         self.stash:UpdateToDB()
     end
+
+    return _stack -- Return stack in case we were not able to add them all
 end
 
 function sLootbox:TakeLootStack(args, player)
 
-    if not self.players_opened[tostring(player:GetSteamId().id)] then return end
+    if not self.players_opened[tostring(player:GetSteamId())] then return end
     if not args.index or args.index < 1 then return end
     if not self.active then return end
     if player:GetHealth() <= 0 then return end
@@ -111,8 +136,6 @@ function sLootbox:TakeLootStack(args, player)
     -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
     if self.is_stash then
         if not self.stash:CanPlayerOpen(player) then return end
-
-        self.stash:ContentsChanged(player)
     end
 
     local stack = self.contents[args.index]
@@ -174,7 +197,8 @@ end
 
 function sLootbox:Open(player)
     
-    self.players_opened[tostring(player:GetSteamId().id)] = player
+    self.players_opened[tostring(player:GetSteamId())] = player
+    player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell})
     Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
     self:StartDespawnTimer()
@@ -202,7 +226,8 @@ function sLootbox:StartDespawnTimer()
 end
 
 function sLootbox:CloseBox(args, player)
-    self.players_opened[tostring(player:GetSteamId().id)] = nil
+    player:SetValue("CurrentLootbox", nil)
+    self.players_opened[tostring(player:GetSteamId())] = nil
 end
 
 -- Refreshes loot if not all items were taken
@@ -251,6 +276,7 @@ function sLootbox:GetRespawnTime()
 end
 
 function sLootbox:ForceClose(player)
+    player:SetValue("CurrentLootbox", nil)
     if IsValid(player) then
         Network:Send(player, "Inventory/ForceCloseLootbox")
     else
@@ -287,14 +313,7 @@ function sLootbox:Remove()
 
     if self.despawn_timer then Timer.Clear(self.despawn_timer) end
 
-    for index, box in pairs(LootCells.Loot[self.cell.x][self.cell.y]) do
-
-        if box.uid == self.uid then
-            table.remove(LootCells.Loot[self.cell.x][self.cell.y], index)
-            return
-        end
-
-    end
+    LootCells.Loot[self.cell.x][self.cell.y][self.uid] = nil
 
     self.uid = nil
     self.tier = nil

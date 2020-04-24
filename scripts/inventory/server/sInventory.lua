@@ -3,6 +3,7 @@ class 'sInventory'
 function sInventory:__init(player)
 
     player:SetValue("InventoryOperationBlock", 0)
+    player:SetValue("CurrentLootbox", nil)
 
     self.player = player
     self.contents = {} -- Contents of the player's inventory
@@ -238,7 +239,7 @@ function sInventory:DropStacks(args, player)
         args.stacks[index].uid = self.contents[data.cat][data.index].uid
     end
 
-    -- Now remove items and add them to a lootbox
+    -- Now remove items and add them to a lootbox (or stash)
     local lootbox
     for _, data in pairs(args.stacks) do
         lootbox = self:DropStack(data, player, lootbox) or lootbox
@@ -279,6 +280,25 @@ function sInventory:DropStack(args, player, lootbox)
 
     if player:InVehicle() then return end -- TODO drop in vehicle storage
 
+    local dropping_in_stash = false
+    local current_lootbox_data = player:GetValue("CurrentLootbox")
+    local stash = nil
+
+    if current_lootbox_data then
+
+        local current_lootbox = LootCells.Loot[current_lootbox_data.cell.x][current_lootbox_data.cell.y][current_lootbox_data.uid]
+
+        if current_lootbox and current_lootbox.active and current_lootbox.is_stash then
+
+            stash = current_lootbox.stash
+            
+            if stash and stash:CanPlayerOpen(player) then
+                dropping_in_stash = true
+            end
+        end
+    end
+
+
     -- Not dropping the entire stack
     if args.amount < stack:GetAmount() then
 
@@ -287,19 +307,33 @@ function sInventory:DropStack(args, player, lootbox)
 
         self:CheckIfStackHasOneEquippedThenUnequip(split_stack)
 
-        if not lootbox then
-            lootbox = CreateLootbox({
-                position = player:GetPosition(),
-                angle = player:GetAngle(),
-                tier = Lootbox.Types.Dropbox,
-                active = true,
-                contents = {[1] = split_stack}
-            })
-            lootbox:Sync()
-            return lootbox
+        if dropping_in_stash then
+            -- Add to stash
+
+            local return_stack = stash.lootbox:PlayerAddStack(split_stack, player)
+
+            if return_stack then
+                self:AddStack({stack = return_stack})
+            end
+
         else
-            lootbox:AddStack(split_stack)
+
+            if not lootbox then
+                lootbox = CreateLootbox({
+                    position = player:GetPosition(),
+                    angle = player:GetAngle(),
+                    tier = Lootbox.Types.Dropbox,
+                    active = true,
+                    contents = {[1] = split_stack}
+                })
+                lootbox:Sync()
+                return lootbox
+            else
+                lootbox:AddStack(split_stack)
+            end
+
         end
+
 
     else -- Dropping the entire stack
 
@@ -307,18 +341,30 @@ function sInventory:DropStack(args, player, lootbox)
 
         self:RemoveStack({stack = stack:Copy(), index = args.index})
 
-        if not lootbox then
-            local lootbox = CreateLootbox({
-                position = player:GetPosition(),
-                angle = player:GetAngle(),
-                tier = Lootbox.Types.Dropbox,
-                active = true,
-                contents = {[1] = stack}
-            })
-            lootbox:Sync()
-            return lootbox
+        if dropping_in_stash then
+
+            local return_stack = stash.lootbox:PlayerAddStack(stack, player)
+
+            if return_stack then
+                self:AddStack({stack = return_stack})
+            end
+
         else
-            lootbox:AddStack(stack)
+
+            if not lootbox then
+                local lootbox = CreateLootbox({
+                    position = player:GetPosition(),
+                    angle = player:GetAngle(),
+                    tier = Lootbox.Types.Dropbox,
+                    active = true,
+                    contents = {[1] = stack}
+                })
+                lootbox:Sync()
+                return lootbox
+            else
+                lootbox:AddStack(stack)
+            end
+
         end
 
     end

@@ -75,7 +75,7 @@ function cLootboxUI:Update(args)
             ClientInventory.ui:PopulateEntry({index = i, loot = true, stash = args.stash, window = self.window})
         end
         if args.stash then
-            for i = #LootManager.current_box.contents + 1, args.stash.capacity + #LootManager.current_box.contents do
+            for i = #LootManager.current_box.contents + 1, args.stash.capacity do
                 ClientInventory.ui:PopulateEntry({index = i, loot = true, empty = true, stash = args.stash, window = self.window})
             end
             self:RepositionWindow(args.stash.capacity)
