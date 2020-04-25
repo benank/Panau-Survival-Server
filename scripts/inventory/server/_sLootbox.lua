@@ -293,7 +293,9 @@ function sLootbox:ForceClose(player)
         Network:SendToPlayers(self.players_opened, "Inventory/ForceCloseLootbox")
 
         for id, p in pairs(self.players_opened) do
-            p:SetValue("CurrentLootbox", nil)
+            if IsValid(p) then
+                p:SetValue("CurrentLootbox", nil)
+            end
         end
 
     end
