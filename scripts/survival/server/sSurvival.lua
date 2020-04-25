@@ -173,6 +173,7 @@ function sSurvivalManager:AdjustSurvivalStats(player)
     local survival = player:GetValue("Survival")
 
     if not survival then return end
+    if player:GetValue("InSafezone") then return end
 
     local zone_mod = config.decaymods[player:GetValue("ClimateZone")]
 

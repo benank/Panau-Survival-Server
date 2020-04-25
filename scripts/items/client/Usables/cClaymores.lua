@@ -62,7 +62,8 @@ end
 function cClaymores:StartClaymorePlacement()
 
     Events:Fire("build/StartObjectPlacement", {
-        model = 'km05.blz/gp703-a.lod'
+        model = 'km05.blz/gp703-a.lod',
+        disable_ceil = true
     })
 
     self.place_subs = 

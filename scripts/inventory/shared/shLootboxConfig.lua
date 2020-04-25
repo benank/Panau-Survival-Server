@@ -8,9 +8,33 @@ Lootbox.Types =
     Level4 = 4,
     Level5 = 5, -- Floating ones
     Dropbox = 7, -- Dropbox
-    Storage = 8,
+    Storage = 8, -- Deprecated
     VendingMachineFood = 9,
-    VendingMachineDrink = 10
+    VendingMachineDrink = 10,
+    BarrelStash = 11,
+    GarbageStash = 12,
+    LockedStash = 13,
+}
+
+StashAccessMode = 
+{
+    Everyone = 1,
+    Friends = 2,
+    OnlyMe = 3
+}
+
+StashAccessModeStrings = 
+{
+    [StashAccessMode.Everyone] = "Everyone",
+    [StashAccessMode.Friends] = "Friends",
+    [StashAccessMode.OnlyMe] = "Only Me"
+}
+
+Lootbox.Stashes = 
+{
+    [Lootbox.Types.BarrelStash] = {capacity = 10, name = "Barrel Stash", health = 500, default_access = StashAccessMode.Everyone},
+    [Lootbox.Types.GarbageStash] = {capacity = 12, name = "Garbage Stash", health = 1000, default_access = StashAccessMode.Everyone},
+    [Lootbox.Types.LockedStash] = {capacity = 12, name = "Locked Stash", health = 1500, default_access = StashAccessMode.OnlyMe},
 }
 
 Lootbox.GeneratorConfig = 
@@ -150,6 +174,26 @@ Lootbox.Models =
         model = "geo.cbb.eez/go152-a.lod",
         col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
         offset = Vector3(0, -0.025, 0)
+    },
+    [Lootbox.Types.BarrelStash] = 
+    {
+        model = "38x11.flz/go231-a.lod",
+        col = "38x11.flz/go231_lod1-a_col.pfx",
+        offset = Vector3(0, 0, 0),
+        look_offset = Vector3(0, 0.4, 0)
+    },
+    [Lootbox.Types.GarbageStash] = 
+    {
+        model = "go225-a.lod",
+        col = "go225_lod1-a_col.pfx",
+        offset = Vector3(0, 0, 0),
+        look_offset = Vector3(0, 0.4, 0)
+    },
+    [Lootbox.Types.LockedStash] = 
+    {
+        model = "areaset03.blz/go161-a1_dst.lod",
+        col = "areaset03.blz/go161_lod1-a1_dst_col.pfx",
+        offset = Vector3(0, 0, 0)
     },
     [Lootbox.Types.VendingMachineFood] = 
     {

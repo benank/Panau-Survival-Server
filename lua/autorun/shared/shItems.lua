@@ -181,6 +181,7 @@ Items =
         rarity_mod = {1,5},
         can_equip = true,
         durable = true,
+        in_loot = false,
         max_durability = 1000,
         equip_type = "body_armor"
     },
@@ -190,6 +191,7 @@ Items =
         stacklimit = 2,
         loot = {2,3},
         rarity = 0.05,
+        in_loot = false,
         rarity_mod = {1,1},
         can_use = true
     },
@@ -199,6 +201,7 @@ Items =
         stacklimit = 5,
         loot = {1,2},
         rarity = 0.05,
+        in_loot = false,
         rarity_mod = {1,1.5},
         can_use = true
     },
@@ -217,6 +220,7 @@ Items =
         stacklimit = 10,
         loot = {1,2,3},
         rarity = 0.01,
+        in_loot = false,
         rarity_mod = {5,3,2.5},
         durable = true,
         max_durability = 1000
@@ -227,6 +231,7 @@ Items =
         stacklimit = 5,
         loot = {3,4},
         rarity = 0.05,
+        in_loot = false,
         rarity_mod = {1,2},
         can_use = true
     },
@@ -236,6 +241,7 @@ Items =
         stacklimit = 5,
         loot = {1,2},
         rarity = 0.05,
+        in_loot = false,
         rarity_mod = {1,1},
         can_use = true
     },
@@ -245,6 +251,7 @@ Items =
         stacklimit = 2,
         loot = {3,4},
         rarity = 0.05,
+        in_loot = false,
         rarity_mod = {1,1},
         can_use = true
     },
@@ -254,6 +261,7 @@ Items =
         stacklimit = 2,
         loot = {3,4,5},
         rarity = 0.01,
+        in_loot = false,
         rarity_mod = {1,2,5},
         can_use = true
     },
@@ -286,6 +294,7 @@ Items =
         can_equip = true,
         equip_type = "nitro",
         durable = true,
+        in_loot = false,
         max_durability = 1000
     },
     {
@@ -294,6 +303,7 @@ Items =
         stacklimit = 10,
         loot = {1,2,3,4,5},
         rarity = 0.01,
+        in_loot = false,
         rarity_mod = {1,7.5,10,7.5,7.5},
         can_use = true
     },
@@ -303,6 +313,7 @@ Items =
         stacklimit = 5,
         loot = {1,2,3,4},
         rarity = 0.05,
+        in_loot = false,
         rarity_mod = {1,1,1.5,1.5},
         can_use = true
     },
@@ -312,6 +323,7 @@ Items =
         stacklimit = 5,
         loot = {1,2,3},
         rarity = 0.05,
+        in_loot = false,
         rarity_mod = {1,1,1.5},
         can_use = true
     },
@@ -321,7 +333,36 @@ Items =
         stacklimit = 2,
         loot = {4,5},
         rarity = 0.025,
+        in_loot = false,
         rarity_mod = {1,3},
+        can_use = true
+    },
+    {
+        name = "Barrel Stash",
+        category = "Survival",
+        stacklimit = 3,
+        loot = {2},
+        rarity = 0.01,
+        rarity_mod = {1},
+        can_use = true
+    },
+    {
+        name = "Garbage Stash",
+        category = "Survival",
+        stacklimit = 3,
+        loot = {3},
+        rarity = 0.01,
+        rarity_mod = {1},
+        can_use = true
+    },
+    {
+        name = "Locked Stash",
+        category = "Survival",
+        stacklimit = 3,
+        loot = {4},
+        rarity = 0.01,
+        in_loot = false,
+        rarity_mod = {1},
         can_use = true
     },
     {
@@ -330,6 +371,7 @@ Items =
         stacklimit = 2,
         loot = {4,5},
         rarity = 0.05,
+        in_loot = false,
         rarity_mod = {1,1},
         can_use = true
     },
@@ -366,6 +408,7 @@ Items =
         stacklimit = 5,
         loot = {3,4,5},
         rarity = 0.1,
+        in_loot = false,
         rarity_mod = {0.5,1,1},
         can_use = true
     },
@@ -587,6 +630,7 @@ Items =
         stacklimit = 1,
         loot = {2,3,4},
         rarity = 0.01,
+        in_loot = false,
         rarity_mod = {1,2.5,5},
         can_use = true
     },
@@ -615,14 +659,15 @@ Items =
         equip_type = "grapplehook"
     },
     {
-        name = "Mine Detector",
+        name = "Explosives Detector",
         category = "Supplies",
         stacklimit = 1,
-        loot = {2,3,4},
-        rarity = 0.01,
+        loot = {3,4},
+        rarity = 0.0025,
         rarity_mod = {1,2,5},
         can_equip = true,
         durable = true,
+        in_loot = false,
         max_durability = 500,
         equip_type = "detector"
     },
@@ -644,6 +689,7 @@ Items =
         stacklimit = 1,
         loot = {2,3,4},
         rarity = 0.01,
+        in_loot = false,
         rarity_mod = {1,2,5}
     },
     {
@@ -787,6 +833,7 @@ Items =
         rarity_mod = {1},
         can_equip = true,
         durable = true,
+        in_loot = false,
         max_durability = 500,
         equip_type = "grapple_upgrade"
     },
@@ -799,6 +846,7 @@ Items =
         rarity_mod = {1},
         can_equip = true,
         durable = true,
+        in_loot = false,
         max_durability = 500,
         equip_type = "wingsuit"
     },
@@ -821,6 +869,7 @@ Items =
         rarity_mod = {1},
         can_equip = true,
         durable = true,
+        in_loot = false,
         equip_type = "weapon",
     },
     {
@@ -829,6 +878,7 @@ Items =
         stacklimit = 2,
         loot = {5},
         can_use = true,
+        in_loot = false,
         rarity = 0.05,
         rarity_mod = {1}
     },
@@ -840,6 +890,7 @@ Items =
         can_equip = true,
         equip_type = "radar",
         durable = true,
+        in_loot = false,
         rarity = 0.01,
         rarity_mod = {1}
     }

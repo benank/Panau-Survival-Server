@@ -77,6 +77,8 @@ function sClaymores:PickupClaymore(args, player)
 
     if claymore.exploded then return end
 
+    if claymore.position:Distance(player:GetPosition()) > 5 then return end
+
     local num_claymores = Inventory.GetNumOfItem({player = player, item_name = "Claymore"})
 
     local item = deepcopy(Items_indexed["Claymore"])
@@ -226,7 +228,7 @@ function sClaymores:PlaceClaymore(position, angle, player)
     
     self:AddClaymore({
         id = result[1].id,
-        owner_id = steamID, -- TODO: add friends to it as well
+        owner_id = steamID,
         position = position,
         angle = angle
     }):SyncNearby(player)

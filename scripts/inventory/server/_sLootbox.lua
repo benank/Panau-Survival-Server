@@ -20,6 +20,7 @@ function sLootbox:__init(args)
     self.model_data = Lootbox.Models[args.tier]
     self.is_dropbox = args.tier == Lootbox.Types.Dropbox
     self.is_vending_machine = args.tier == Lootbox.Types.VendingMachineFood or args.tier == Lootbox.Types.VendingMachineDrink
+    self.is_stash = Lootbox.Stashes[args.tier] ~= nil
     -- Eventually add support for world specification
 
     self.players_opened = {}
@@ -46,6 +47,50 @@ function sLootbox:__init(args)
 
 end
 
+-- Called when a player tries to drag to swap two items in a stash
+function sLootbox:PlayerSwapStack(args, player)
+
+    if not self.players_opened[tostring(player:GetSteamId())] then return end
+    if not self.active then return end
+    if player:GetHealth() <= 0 then return end
+
+    -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
+    if self.is_stash then
+        if not self.stash:CanPlayerOpen(player) then return end
+    end
+
+    local inv = InventoryManager.inventories[tostring(player:GetSteamId().id)]
+    if not inv:CanPlayerPerformOperations(player) then return end
+
+
+end
+
+-- Called when a player tries to add a stack to a stash
+function sLootbox:PlayerAddStack(stack, player)
+
+    if not self.active then return end
+    if player:GetHealth() <= 0 then return end
+
+    -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
+    if self.is_stash then
+        if not self.stash:CanPlayerOpen(player) then return stack end
+    end
+
+    local return_stack = self:AddStack(stack)
+
+    if self.is_stash then
+        for p in Server:GetPlayers() do
+            if self.stash:IsPlayerOwner(p) then
+                self.stash:Sync(p)
+                break
+            end
+        end
+    end
+
+    return return_stack
+
+end
+
 function sLootbox:AddStack(_stack)
 
     if not _stack then
@@ -58,26 +103,47 @@ function sLootbox:AddStack(_stack)
 
     for k, stack in pairs(self.contents) do
 
-        if stack:CanStack(_stack.contents[1]) then
+        if _stack and stack:CanStack(_stack.contents[1]) then
             _stack = stack:AddStack(_stack)
         end
 
     end
 
     if _stack and _stack:GetAmount() > 0 then
-        table.insert(self.contents, _stack)
+        if not self.is_stash then
+            table.insert(self.contents, _stack)
+            _stack = nil
+        else
+            -- This is a stash, check its capacity
+            if count_table(self.contents) < self.stash.capacity then
+                table.insert(self.contents, _stack)
+                _stack = nil
+            end
+        end
+    else
+        _stack = nil
     end
 
     self:UpdateToPlayers()
 
+    if self.is_stash then
+        self.stash:UpdateToDB()
+    end
+
+    return _stack -- Return stack in case we were not able to add them all
 end
 
 function sLootbox:TakeLootStack(args, player)
 
-    if not self.players_opened[tostring(player:GetSteamId().id)] then return end
+    if not self.players_opened[tostring(player:GetSteamId())] then return end
     if not args.index or args.index < 1 then return end
     if not self.active then return end
     if player:GetHealth() <= 0 then return end
+
+    -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
+    if self.is_stash then
+        if not self.stash:CanPlayerOpen(player) then return end
+    end
 
     local stack = self.contents[args.index]
 
@@ -87,16 +153,14 @@ function sLootbox:TakeLootStack(args, player)
 
     if not inv then return end
 
+    if not inv:CanPlayerPerformOperations(player) then return end
+
     local return_stack = inv:AddStack({stack = stack})
 
     if return_stack then
-
         self.contents[args.index] = return_stack
-
     else
-
         table.remove(self.contents, args.index)
-
     end
 
     self:UpdateToPlayers()
@@ -105,35 +169,55 @@ function sLootbox:TakeLootStack(args, player)
 
         if self.tier == Lootbox.Types.Dropbox then
             self:Remove()
-        elseif self.tier ~= Lootbox.Types.Storage then
+        elseif not self.is_stash then
             self:HideBox()
         end
 
     end
 
+    if self.is_stash then
+        self.stash:UpdateToDB()
+    end
 end
 
 function sLootbox:TryOpenBox(args, player)
 
     if not IsValid(player) then return end
-    if #self.contents == 0 then return end
+    if count_table(self.contents) == 0 and not self.is_stash then return end
     if player:GetHealth() <= 0 then return end
     if player:GetPosition():Distance(self.position) > Lootbox.Distances.Can_Open + 1 then return end
+
+    -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
+    if self.is_stash then
+        if not self.stash:CanPlayerOpen(player) then return end
+    end
 
     self:Open(player)
 
 end
 
+function sLootbox:GetContentsSyncData()
+    local data = {contents = self:GetContentsData()}
+    if self.is_stash then
+        data.stash = self.stash:GetSyncData()
+    end
+    return data
+end
+
 function sLootbox:Open(player)
     
-    self.players_opened[tostring(player:GetSteamId().id)] = player
-    Network:Send(player, "Inventory/LootboxOpen", {contents = self:GetContentsData()})
+    self.players_opened[tostring(player:GetSteamId())] = player
+    player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell})
+    Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
     self:StartDespawnTimer()
 
 end
 
 function sLootbox:StartDespawnTimer()
+
+    -- No despawn timer for stashes
+    if self.is_stash then return end
 
     if not self.despawn_timer then
 
@@ -151,7 +235,8 @@ function sLootbox:StartDespawnTimer()
 end
 
 function sLootbox:CloseBox(args, player)
-    self.players_opened[tostring(player:GetSteamId().id)] = nil
+    player:SetValue("CurrentLootbox", nil)
+    self.players_opened[tostring(player:GetSteamId())] = nil
 end
 
 -- Refreshes loot if not all items were taken
@@ -199,8 +284,19 @@ function sLootbox:GetRespawnTime()
 
 end
 
-function sLootbox:ForceClose()
-    Network:SendToPlayers(self.players_opened, "Inventory/ForceCloseLootbox")
+function sLootbox:ForceClose(player)
+    
+    if IsValid(player) then
+        Network:Send(player, "Inventory/ForceCloseLootbox")
+        player:SetValue("CurrentLootbox", nil)
+    elseif self.players_opened and count_table(self.players_opened) > 0 then
+        Network:SendToPlayers(self.players_opened, "Inventory/ForceCloseLootbox")
+
+        for id, p in pairs(self.players_opened) do
+            p:SetValue("CurrentLootbox", nil)
+        end
+
+    end
 end
 
 -- Respawns the lootbox
@@ -227,29 +323,19 @@ end
 -- Removes completely, never to respawn again
 function sLootbox:Remove()
 
+    self:ForceClose()
+
+    if not self.cell then
+        output_table(self)
+        return
+    end
+
     self.active = false
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
 
     if self.despawn_timer then Timer.Clear(self.despawn_timer) end
 
-    for index, box in pairs(LootCells.Loot[self.cell.x][self.cell.y]) do
-
-        if box.uid == self.uid then
-            table.remove(LootCells.Loot[self.cell.x][self.cell.y], index)
-            return
-        end
-
-    end
-
-    self.uid = nil
-    self.tier = nil
-    self.position = nil
-    self.cell = nil
-    self.angle = nil
-    self.contents = nil
-    self.model_data = nil
-    self.is_dropbox = nil
-    self.players_opened = nil
+    LootCells.Loot[self.cell.x][self.cell.y][self.uid] = nil
 
     for k,v in pairs(self.network_subs) do
         Network:Unsubscribe(v)
@@ -267,7 +353,7 @@ end
 
 -- Update contents to anyone who has it open
 function sLootbox:UpdateToPlayers()
-    Network:SendToPlayers(self.players_opened, "Inventory/LootboxSync", {contents = self:GetContentsData()})
+    Network:SendToPlayers(self.players_opened, "Inventory/LootboxSync", self:GetContentsSyncData())
 end
 
 function sLootbox:GetContentsData()
@@ -284,7 +370,7 @@ end
 
 function sLootbox:GetSyncData()
 
-    return {
+    local data = {
         tier = self.tier,
         position = self.position,
         angle = self.angle,
@@ -293,5 +379,11 @@ function sLootbox:GetSyncData()
         cell = self.cell,
         uid = self.uid
     }
+
+    if self.is_stash then
+        data.stash = self.stash:GetSyncData()
+    end
+
+    return data
 
 end

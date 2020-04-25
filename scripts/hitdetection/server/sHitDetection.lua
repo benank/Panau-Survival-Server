@@ -47,6 +47,7 @@ end
 function sHitDetection:PlayerSurvivalDamage(args)
 
     if args.player:GetHealth() <= 0 then return end
+    if args.player:GetValue("InSafezone") then return end
     
     args.player:Damage(args.amount, args.type)
 

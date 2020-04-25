@@ -3,6 +3,7 @@ class 'sInventory'
 function sInventory:__init(player)
 
     player:SetValue("InventoryOperationBlock", 0)
+    player:SetValue("CurrentLootbox", nil)
 
     self.player = player
     self.contents = {} -- Contents of the player's inventory
@@ -13,7 +14,7 @@ function sInventory:__init(player)
     
     self.events = {}
     self.network_events = {}
-    
+
     table.insert(self.events, Events:Subscribe("Inventory.AddStack-" .. self.steamID, self, self.AddStackRemote))
     table.insert(self.events, Events:Subscribe("Inventory.AddItem-" .. self.steamID, self, self.AddItemRemote))
     table.insert(self.events, Events:Subscribe("Inventory.RemoveStack-" .. self.steamID, self, self.RemoveStackRemote))
@@ -238,7 +239,7 @@ function sInventory:DropStacks(args, player)
         args.stacks[index].uid = self.contents[data.cat][data.index].uid
     end
 
-    -- Now remove items and add them to a lootbox
+    -- Now remove items and add them to a lootbox (or stash)
     local lootbox
     for _, data in pairs(args.stacks) do
         lootbox = self:DropStack(data, player, lootbox) or lootbox
@@ -279,6 +280,25 @@ function sInventory:DropStack(args, player, lootbox)
 
     if player:InVehicle() then return end -- TODO drop in vehicle storage
 
+    local dropping_in_stash = false
+    local current_lootbox_data = player:GetValue("CurrentLootbox")
+    local stash = nil
+
+    if current_lootbox_data then
+
+        local current_lootbox = LootCells.Loot[current_lootbox_data.cell.x][current_lootbox_data.cell.y][current_lootbox_data.uid]
+
+        if current_lootbox and current_lootbox.active and current_lootbox.is_stash then
+
+            stash = current_lootbox.stash
+            
+            if stash and stash:CanPlayerOpen(player) then
+                dropping_in_stash = true
+            end
+        end
+    end
+
+
     -- Not dropping the entire stack
     if args.amount < stack:GetAmount() then
 
@@ -287,19 +307,33 @@ function sInventory:DropStack(args, player, lootbox)
 
         self:CheckIfStackHasOneEquippedThenUnequip(split_stack)
 
-        if not lootbox then
-            lootbox = CreateLootbox({
-                position = player:GetPosition(),
-                angle = player:GetAngle(),
-                tier = Lootbox.Types.Dropbox,
-                active = true,
-                contents = {[1] = split_stack}
-            })
-            lootbox:Sync()
-            return lootbox
+        if dropping_in_stash then
+            -- Add to stash
+
+            local return_stack = stash.lootbox:PlayerAddStack(split_stack, player)
+
+            if return_stack then
+                self:AddStack({stack = return_stack})
+            end
+
         else
-            lootbox:AddStack(split_stack)
+
+            if not lootbox then
+                lootbox = CreateLootbox({
+                    position = player:GetPosition(),
+                    angle = player:GetAngle(),
+                    tier = Lootbox.Types.Dropbox,
+                    active = true,
+                    contents = {[1] = split_stack}
+                })
+                lootbox:Sync()
+                return lootbox
+            else
+                lootbox:AddStack(split_stack)
+            end
+
         end
+
 
     else -- Dropping the entire stack
 
@@ -307,18 +341,30 @@ function sInventory:DropStack(args, player, lootbox)
 
         self:RemoveStack({stack = stack:Copy(), index = args.index})
 
-        if not lootbox then
-            local lootbox = CreateLootbox({
-                position = player:GetPosition(),
-                angle = player:GetAngle(),
-                tier = Lootbox.Types.Dropbox,
-                active = true,
-                contents = {[1] = stack}
-            })
-            lootbox:Sync()
-            return lootbox
+        if dropping_in_stash then
+
+            local return_stack = stash.lootbox:PlayerAddStack(stack, player)
+
+            if return_stack then
+                self:AddStack({stack = return_stack})
+            end
+
         else
-            lootbox:AddStack(stack)
+
+            if not lootbox then
+                local lootbox = CreateLootbox({
+                    position = player:GetPosition(),
+                    angle = player:GetAngle(),
+                    tier = Lootbox.Types.Dropbox,
+                    active = true,
+                    contents = {[1] = stack}
+                })
+                lootbox:Sync()
+                return lootbox
+            else
+                lootbox:AddStack(stack)
+            end
+
         end
 
     end
@@ -849,123 +895,11 @@ function sInventory:UpdateDB()
 end
 
 function sInventory:Serialize()
-
-    local str = '';
-    for cat_name, _ in pairs(self.contents) do
-
-        for i, stack in ipairs(self.contents[cat_name]) do
-            for j = 1, #stack.contents do
-            
-                local item = stack.contents[j]
-                str = str .. tostring(i) .. "=" .. item.name .. "=" .. tostring(item.amount)
-
-                str = (item.equipped) and str .. "=E" or str
-                str = (item.durability and item.durability > 0) and str .. "=D" .. tostring(item.durability) or str
-
-                -- If this item has at least 1 custom data
-                for k,v in pairs(item.custom_data) do
-                
-                    str = str .. "=N" .. tostring(k) .. ">" .. tostring(v)
-
-                end
-
-                str = str .. "~";
-
-            end
-
-            str = str .. "|";
-
-        end
-
-    end
-
-    return str;
-
+    return Serialize(self.contents, true)
 end
 
 function sInventory:Deserialize(data)
-
-    data = tostring(data)
-
-    local split = splitstr2(data, "|")
-    local inventory = {}
-
-    for _, cat_data in pairs(Inventory.config.categories) do
-        inventory[cat_data.name] = {}
-    end
-
-    for i = 1, #split - 1 do -- Each stack
-    
-        local split2 = splitstr2(split[i], "~")
-        local stack = nil
-        local index = 0
-
-        for j = 1, #split2 - 1 do -- Each item within the stack
-        
-            local split3 = splitstr2(split2[j], "=")
-            local item_data = {}
-
-            for k = 1, #split3 do -- Each property within the item
-
-                if (k == 1) then -- Index
-                
-                    index = tonumber(split3[k])
-                
-                elseif (k == 2) then -- Name
-                
-                    item_data.name = split3[k]
-
-                    if not CreateItem({name = item_data.name, amount = 1}) then -- Unable to find item, eg does not exist
-                        error("Unable to find item with name " .. tostring(split3[k]) .. " in sInventory:Deserialize")
-                    end
-                
-                elseif (k == 3) then -- Amount
-                
-                    item_data.amount = tonumber(split3[k])
-                
-                elseif (split3[k]:sub(1, 1) == "E" and k > 3) then -- Equipped
-                
-                    item_data.equipped = true
-                
-                elseif (split3[k]:sub(1, 1) == "D" and k > 3) then -- Durability
-                
-                    item_data.durability = tonumber(splitstr(split3[k], "D")[1])
-                
-                elseif (split3[k]:sub(1, 1) == "N" and k > 3) then -- Custom property/data
-                
-                    local replaced = split3[k]:gsub("N", "")
-                    local replaced_split = splitstr(replaced, ">")
-                    item_data.custom_data[replaced_split[0]] = replaced_split[1]
-                end
-                
-            end
-
-            local item = CreateItem(item_data) -- Create item
-
-            if (not stack) then -- If this is the first item, create the stack
-            
-                stack = shStack({contents = {item}});
-            
-            else -- Otherwise, add it to the front of the stack
-            
-                stack:AddItem(item);
-
-            end
-
-            
-        end
-
-        -- .amount for the first item goes to 2 or something and then new items are not added to the stack
-
-        if index > 0 then
-            inventory[stack:GetProperty("category")][index] = stack
-        end
-
-
-    end
-
-    self.contents = inventory
-
+    self.contents = Deserialize(data, true)
 end
 
 function sInventory:Unload()

@@ -84,6 +84,7 @@ function cLootManager:Render(args)
             local pos = Render:WorldToScreen(box.look_position + self.up)
             Render:FillCircle(pos, self.look_at_circle_size, Color.White)
             Render:FillCircle(pos, self.look_at_circle_size_inner, Lootbox.LookAtColor)
+            LocalPlayer:SetValue("LookingAtLootbox", true)
         end
 
     end
@@ -99,6 +100,8 @@ function cLootManager:Render(args)
         if ClientInventory.lootbox_ui.window:GetVisible() then
             ClientInventory.lootbox_ui:ToggleVisible()
         end
+
+        LocalPlayer:SetValue("LookingAtLootbox", false)
 
     end
 

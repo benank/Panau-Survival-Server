@@ -17,7 +17,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Health",
             percent = 0.75,
-            color = Color(191, 84, 8),
+            color = Color(155, 157, 11),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
@@ -25,7 +25,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Food",
             percent = 1.0,
-            color = Color(24, 139, 8),
+            color = Color(12, 160, 16),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
@@ -33,7 +33,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Water",
             percent = 0.25,
-            color = Color(134, 58, 124),
+            color = Color(46, 13, 161),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
@@ -48,7 +48,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Helmet",
             percent = 0.5,
-            color = Color(197, 47, 5),
+            color = Color(123, 125, 13),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = false
@@ -56,7 +56,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Vest",
             percent = 0.5,
-            color = Color(122, 115, 1),
+            color = Color(130, 97, 14),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = false
