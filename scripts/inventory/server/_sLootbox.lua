@@ -54,6 +54,13 @@ function sLootbox:PlayerSwapStack(args, player)
     if not self.active then return end
     if player:GetHealth() <= 0 then return end
 
+    -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
+    if self.is_stash then
+        if not self.stash:CanPlayerOpen(player) then return end
+    end
+
+    local inv = InventoryManager.inventories[tostring(player:GetSteamId().id)]
+    if not inv:CanPlayerPerformOperations(player) then return end
 
 
 end
@@ -145,6 +152,8 @@ function sLootbox:TakeLootStack(args, player)
     local inv = InventoryManager.inventories[tostring(player:GetSteamId().id)]
 
     if not inv then return end
+
+    if not inv:CanPlayerPerformOperations(player) then return end
 
     local return_stack = inv:AddStack({stack = stack})
 
@@ -276,11 +285,17 @@ function sLootbox:GetRespawnTime()
 end
 
 function sLootbox:ForceClose(player)
-    player:SetValue("CurrentLootbox", nil)
+    
     if IsValid(player) then
         Network:Send(player, "Inventory/ForceCloseLootbox")
-    else
+        player:SetValue("CurrentLootbox", nil)
+    elseif self.players_opened and count_table(self.players_opened) > 0 then
         Network:SendToPlayers(self.players_opened, "Inventory/ForceCloseLootbox")
+
+        for id, p in pairs(self.players_opened) do
+            p:SetValue("CurrentLootbox", nil)
+        end
+
     end
 end
 
@@ -308,22 +323,19 @@ end
 -- Removes completely, never to respawn again
 function sLootbox:Remove()
 
+    self:ForceClose()
+
+    if not self.cell then
+        output_table(self)
+        return
+    end
+
     self.active = false
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
 
     if self.despawn_timer then Timer.Clear(self.despawn_timer) end
 
     LootCells.Loot[self.cell.x][self.cell.y][self.uid] = nil
-
-    self.uid = nil
-    self.tier = nil
-    self.position = nil
-    self.cell = nil
-    self.angle = nil
-    self.contents = nil
-    self.model_data = nil
-    self.is_dropbox = nil
-    self.players_opened = nil
 
     for k,v in pairs(self.network_subs) do
         Network:Unsubscribe(v)

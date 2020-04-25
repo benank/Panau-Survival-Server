@@ -8,9 +8,54 @@ function sStashes:__init()
 
     Network:Subscribe("Stashes/DeleteStash", self, self.DeleteStash)
     Network:Subscribe("Stashes/RenameStash", self, self.RenameStash)
+    Network:Subscribe("Stashes/Dismount", self, self.DismountStash)
 
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+end
+
+function sStashes:DismountStash(args, player)
+
+    if not args.id then return end
+    args.id = tonumber(args.id)
+
+    local player_stashes = player:GetValue("Stashes")
+    local stash = player_stashes[args.id]
+
+    if not stash then return end
+
+    local stash_instance = self.stashes[args.id]
+
+    if not stash_instance then return end
+
+    local stash_item_name = Lootbox.Stashes[stash_instance.lootbox.tier].name
+    local contents = stash_instance.lootbox.contents
+
+    local item_data = deepcopy(Items_indexed[stash_item_name])
+    item_data.amount = 1
+
+    local item = CreateItem(item_data)
+    local stack = shStack({contents = {item}})
+
+    table.insert(contents, stack)
+
+    local dropbox = CreateLootbox({
+        position = stash_instance.lootbox.position,
+        angle = stash_instance.lootbox.angle,
+        tier = Lootbox.Types.Dropbox,
+        active = true,
+        contents = contents
+    })
+    dropbox:Sync()
+
+    -- Create dropbox with contents
+    stash_instance:Remove()
+    self.stashes[args.id] = nil
+
+    player_stashes[args.id] = nil
+
+    player:SetValue("Stashes", player_stashes)
+    self:SyncStashesToPlayer(player)
 end
 
 function sStashes:RenameStash(args, player)
@@ -202,7 +247,7 @@ function sStashes:PlaceStash(position, angle, type, player)
         position = position,
         angle = angle,
         contents = {},
-        health = result[1].health,
+        health = lootbox_data.health,
         tier = type,
         name = lootbox_data.name,
         access_mode = lootbox_data.default_access

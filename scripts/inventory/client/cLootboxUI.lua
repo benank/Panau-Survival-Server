@@ -19,7 +19,19 @@ function cLootboxUI:__init()
     self.lootbox_title_window = BaseWindow.Create("LootboxTitle")
     self.lootbox_title_window:SetSize(Render.Size)
     self.lootbox_title_window:SetPosition(Vector2(0,0))
+    self.lootbox_title_window:SetBackgroundVisible(false)
     self.lootbox_title_window:SendToBack()
+
+    self.stash_dismount_button = Button.Create(self.lootbox_title_window)
+    self.stash_dismount_button:SetSize(self.itemWindows[1]:GetSize())
+    self.stash_dismount_button:SetText("DISMOUNT")
+    self.stash_dismount_button:SetTextColor(Color.Red)
+    self.stash_dismount_button:SetTextNormalColor(Color.Red)
+    self.stash_dismount_button:SetTextHoveredColor(Color.Red)
+    self.stash_dismount_button:SetTextPressedColor(Color.Red)
+    self.stash_dismount_button:SetTextDisabledColor(Color.Red)
+    self.stash_dismount_button:Hide()
+    self.stash_dismount_button:Subscribe("Press", self, self.PressDismountStashButton)
 
     self.lootbox_title = ClientInventory.ui:CreateCategoryTitle("loot", false, self.lootbox_title_window)
     self.lootbox_title_shadow = ClientInventory.ui:CreateCategoryTitle("loot", true, self.lootbox_title_window)
@@ -30,6 +42,22 @@ function cLootboxUI:__init()
     Network:Subscribe(var("Inventory/LootboxOpen"):get(), self, self.LootboxOpen)
     Network:Subscribe(var("Inventory/LootboxSync"):get(), self, self.LootboxSync)
     
+end
+
+function cLootboxUI:PressDismountStashButton(btn)
+
+    local current_box = LootManager.current_box
+
+    if not current_box.stash then return end
+
+    local is_owner = current_box.stash.owner_id == tostring(LocalPlayer:GetSteamId())
+
+    if not is_owner then return end
+
+    Network:Send("Stashes/Dismount", {
+        id = current_box.stash.id
+    })
+
 end
 
 function cLootboxUI:GetLootboxTitlePosition(box)
@@ -63,6 +91,17 @@ function cLootboxUI:UpdateLootboxTitle()
         self.lootbox_title_shadow:SetText(text)
         self.lootbox_title_shadow:SetTextSize(ClientInventory.ui.inv_dimensions.text_size)
         self.lootbox_title_shadow:SetPosition(self:GetLootboxTitlePosition(current_box) + Vector2(1.5,1.5))
+
+        self.stash_dismount_button:SetPosition(
+            self.lootbox_title:GetPosition()
+            - Vector2(self.lootbox_title:GetSize().x + 20, 14))
+        self.stash_dismount_button:SetTextSize(ClientInventory.ui.inv_dimensions.text_size)
+
+        if is_owner then
+            self.stash_dismount_button:Show()
+        else
+            self.stash_dismount_button:Hide()
+        end
 
         local is_full = current_box.stash.num_items == current_box.stash.capacity
         self.lootbox_title:SetTextColor(
@@ -213,6 +252,7 @@ function cLootboxUI:KeyUp(args)
             LootManager.current_box = LootManager.current_looking_box
             Network:Send("Inventory/TryOpenBox" .. tostring(LootManager.current_looking_box.uid))
         end
+        self.lootbox_title_window:SendToBack()
 
     end
 

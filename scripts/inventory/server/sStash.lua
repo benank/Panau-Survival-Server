@@ -98,6 +98,12 @@ end
 
 -- Removes the stash from the world, DB, and owner's menu
 function sStash:Remove()
+
+    -- Create dropbox with contents
+    local cmd = SQL:Command("DELETE FROM stashes where id = ?")
+    cmd:Bind(1, self.id)
+    cmd:Execute()
+    
     self.lootbox:Remove()
 
 end
