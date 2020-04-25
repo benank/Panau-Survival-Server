@@ -17,7 +17,7 @@ function cLootmap:__init()
 end
 
 function cLootmap:ResolutionChange()
-    self.ResizeImage()
+    self:ResizeImage()
 end
 
 function cLootmap:KeyUp(args)

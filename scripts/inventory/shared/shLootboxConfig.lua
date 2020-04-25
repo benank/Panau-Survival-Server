@@ -177,15 +177,15 @@ Lootbox.Models =
     },
     [Lootbox.Types.BarrelStash] = 
     {
-        model = "38x11.flz/go231-a.lod",
-        col = "38x11.flz/go231_lod1-a_col.pfx",
+        model = "38x11.nlz/go231-a.lod",
+        col = "38x11.nlz/go231_lod1-a_col.pfx",
         offset = Vector3(0, 0, 0),
         look_offset = Vector3(0, 0.4, 0)
     },
     [Lootbox.Types.GarbageStash] = 
     {
-        model = "go225-a.lod",
-        col = "go225_lod1-a_col.pfx",
+        model = "f1t16.garbage_can.eez/go225-a.lod",
+        col = "f1t16.garbage_can.eez/go225_lod1-a_col.pfx",
         offset = Vector3(0, 0, 0),
         look_offset = Vector3(0, 0.4, 0)
     },
