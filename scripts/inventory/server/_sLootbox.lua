@@ -339,8 +339,10 @@ function sLootbox:Remove()
 
     LootCells.Loot[self.cell.x][self.cell.y][self.uid] = nil
 
-    for k,v in pairs(self.network_subs) do
-        Network:Unsubscribe(v)
+    if self.network_subs then
+        for k,v in pairs(self.network_subs) do
+            Network:Unsubscribe(v)
+        end
     end
 
     self.network_subs = nil
