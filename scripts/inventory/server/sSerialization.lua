@@ -105,16 +105,18 @@ function Deserialize(data, has_categories)
                 
             end
 
-            local item = CreateItem(item_data) -- Create item
+            if valid_item then
+                local item = CreateItem(item_data) -- Create item
 
-            if (not stack) then -- If this is the first item, create the stack
-            
-                stack = shStack({contents = {item}});
-            
-            else -- Otherwise, add it to the front of the stack
-            
-                stack:AddItem(item);
+                if (not stack) then -- If this is the first item, create the stack
+                
+                    stack = shStack({contents = {item}});
+                
+                else -- Otherwise, add it to the front of the stack
+                
+                    stack:AddItem(item);
 
+                end
             end
 
             
