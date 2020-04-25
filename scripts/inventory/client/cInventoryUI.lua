@@ -309,8 +309,8 @@ function cInventoryUI:UpdateCategoryTitle(cat)
         is_full and InventoryUIStyle.category_title_colors.Full or InventoryUIStyle.category_title_colors.Normal)
 end
 
-function cInventoryUI:CreateCategoryTitle(cat, is_shadow)
-    local categoryTitle = Label.Create(self.window, "categorytitle_"..cat..(is_shadow and "shadow" or ""))
+function cInventoryUI:CreateCategoryTitle(cat, is_shadow, parent)
+    local categoryTitle = Label.Create(parent or self.window, "categorytitle_"..cat..(is_shadow and "shadow" or ""))
     categoryTitle:SetSize(Vector2(self.inv_dimensions.button_size.x, self.inv_dimensions.button_size.y * 0.5))
     categoryTitle:SetTextSize(self.inv_dimensions.category_title_text_size)
     categoryTitle:SetAlignment(GwenPosition.Center)

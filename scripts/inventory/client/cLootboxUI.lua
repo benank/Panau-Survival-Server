@@ -6,7 +6,6 @@ function cLootboxUI:__init()
 
     self.contents = {}
 
-    
     self.window = BaseWindow.Create("Loot")
     self.window:SetSize(Vector2(ClientInventory.ui.inv_dimensions.button_size.x, Render.Size.y))
     self.window:SetPosition(Render.Size / 2 - self.window:GetSize() / 2)
@@ -16,6 +15,14 @@ function cLootboxUI:__init()
 
     self.window_created = false
     self:CreateWindow()
+
+    self.lootbox_title_window = BaseWindow.Create("LootboxTitle")
+    self.lootbox_title_window:SetSize(Render.Size)
+    self.lootbox_title_window:SetPosition(Vector2(0,0))
+    self.lootbox_title_window:SendToBack()
+
+    self.lootbox_title = ClientInventory.ui:CreateCategoryTitle("loot", false, self.lootbox_title_window)
+    self.lootbox_title_shadow = ClientInventory.ui:CreateCategoryTitle("loot", true, self.lootbox_title_window)
     
     LocalPlayer:SetValue("LootOpen", false)
 
@@ -23,6 +30,51 @@ function cLootboxUI:__init()
     Network:Subscribe(var("Inventory/LootboxOpen"):get(), self, self.LootboxOpen)
     Network:Subscribe(var("Inventory/LootboxSync"):get(), self, self.LootboxSync)
     
+end
+
+function cLootboxUI:GetLootboxTitlePosition(box)
+
+    return self.window:GetPosition() + Vector2(
+        0,
+        -ClientInventory.ui.inv_dimensions.button_size.y
+        -ClientInventory.ui.inv_dimensions.padding + self.lootbox_title:GetSize().y
+    )
+
+end
+
+-- Updates a lootbox title (stash) and hides/shows it based on current box
+function cLootboxUI:UpdateLootboxTitle()
+
+    local current_box = LootManager.current_box
+
+    if current_box.stash then
+
+        self.lootbox_title_window:Show()
+
+        local is_owner = current_box.stash.owner_id == tostring(LocalPlayer:GetSteamId())
+
+        local text = string.format("%s (%d/%d)", 
+            is_owner and current_box.stash.name or "Stash", current_box.stash.num_items, current_box.stash.capacity)
+
+        self.lootbox_title:SetText(text)
+        self.lootbox_title:SetTextSize(ClientInventory.ui.inv_dimensions.text_size)
+        self.lootbox_title:SetPosition(self:GetLootboxTitlePosition(current_box))
+
+        self.lootbox_title_shadow:SetText(text)
+        self.lootbox_title_shadow:SetTextSize(ClientInventory.ui.inv_dimensions.text_size)
+        self.lootbox_title_shadow:SetPosition(self:GetLootboxTitlePosition(current_box) + Vector2(1.5,1.5))
+
+        local is_full = current_box.stash.num_items == current_box.stash.capacity
+        self.lootbox_title:SetTextColor(
+            is_full and InventoryUIStyle.category_title_colors.Full or InventoryUIStyle.category_title_colors.Normal)
+
+    else
+
+        self.lootbox_title_window:Hide()
+
+    end
+
+
 end
 
 function cLootboxUI:ClickItemButton(btn)
@@ -65,6 +117,8 @@ function cLootboxUI:Update(args)
     if not LootManager.current_box then return end
     if not self.window_created then return end
 
+    LootManager.current_box.stash = args.stash
+
     if args.action == "full" then
 
         for i = 1, Inventory.config.max_slots_per_category do
@@ -89,6 +143,8 @@ function cLootboxUI:Update(args)
         self:RepositionWindow(args.stash and args.stash.capacity or nil)
         self:ToggleVisible()
     end
+
+    self:UpdateLootboxTitle()
 
 end
 
@@ -124,6 +180,7 @@ function cLootboxUI:ToggleVisible()
 
     if self.window:GetVisible() then
         self.window:Hide()
+        self.lootbox_title_window:Hide()
         Events:Unsubscribe(self.LPI)
         self.LPI = nil
         if LootManager.current_box then
@@ -132,6 +189,7 @@ function cLootboxUI:ToggleVisible()
     else
 
         self.window:Show()
+        self.lootbox_title_window:Show()
         Mouse:SetPosition(Render.Size / 2)
         --self:RepositionWindow()
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
