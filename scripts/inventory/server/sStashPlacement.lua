@@ -63,7 +63,7 @@ function sStashPlacement:PlaceStash(args, player)
         return
     end
 
-    if args.position < 200 then
+    if args.position.y < 200 then
         Chat:Send(player, "You cannot place this stash underwater!", Color.Red)
         return
     end
