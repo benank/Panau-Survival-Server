@@ -76,6 +76,9 @@ end
 function cVehicleManager:LocalPlayerInput(args)
 
     if self.block_actions[args.input] and not LocalPlayer:InVehicle() then
+
+        if LocalPlayer:GetValue("LookingAtLootbox") then return false end
+
         local closest_vehicle, closest_dist = nil, 99
         local pos = LocalPlayer:GetPosition()
         for v in Client:GetVehicles() do
