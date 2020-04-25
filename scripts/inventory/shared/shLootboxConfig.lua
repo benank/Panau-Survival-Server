@@ -177,8 +177,8 @@ Lootbox.Models =
     },
     [Lootbox.Types.BarrelStash] = 
     {
-        model = "38x11.nlz/go231-a.lod",
-        col = "38x11.nlz/go231_lod1-a_col.pfx",
+        model = "38x11.nl/go231-a.lod",
+        col = "38x11.nl/go231_lod1-a_col.pfx",
         offset = Vector3(0, 0, 0),
         look_offset = Vector3(0, 0.4, 0)
     },
