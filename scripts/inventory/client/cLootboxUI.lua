@@ -21,6 +21,7 @@ function cLootboxUI:__init()
     self.lootbox_title_window:SetPosition(Vector2(0,0))
     self.lootbox_title_window:SetBackgroundVisible(false)
     self.lootbox_title_window:SendToBack()
+    self.lootbox_title_window:Hide()
 
     self.stash_dismount_button = Button.Create(self.lootbox_title_window)
     self.stash_dismount_button:SetSize(self.itemWindows[1]:GetSize())
