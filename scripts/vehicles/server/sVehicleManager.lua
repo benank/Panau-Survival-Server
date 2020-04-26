@@ -65,10 +65,22 @@ function sVehicleManager:__init()
             end
 
             self:CheckForDestroyedVehicles()
+            self:SaveVehicles()
 
             Timer.Sleep(1000 * 60)
         end
     end)()
+
+end
+
+-- Called every minute, saves all owned vehicles in the server
+function sVehicleManager:SaveVehicles()
+
+    for id, v in pairs(self.owned_vehicles) do
+        if IsValid(v) then 
+            self:SaveVehicle(vehicle_data.vehicle)
+        end
+    end
 
 end
 
@@ -219,6 +231,7 @@ function sVehicleManager:PlayerQuit(args)
 
     for id, vehicle_data in pairs(vehicles) do
         if IsValid(vehicle_data.vehicle) then
+            self:SaveVehicle(vehicle_data.vehicle, args.player)
             self.despawning_vehicles[id] = Timer()
         end
     end
