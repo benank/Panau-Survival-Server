@@ -110,7 +110,7 @@ function sVehicleManager:PlayerUseVehicleGuard(args)
     vehicle_data.guards = vehicle_data.guards + 1
 
     args.vehicle:SetNetworkValue("VehicleData", vehicle_data)
-    self:SaveVehicle(args.vehicle, args.player)
+    self:SaveVehicle(args.vehicle)
 
     Chat:Send(args.player, string.format("Vehicle guard equipped. (%d/%d)", vehicle_data.guards, config.max_vehicle_guards), Color.Green)
 
@@ -231,7 +231,7 @@ function sVehicleManager:PlayerQuit(args)
 
     for id, vehicle_data in pairs(vehicles) do
         if IsValid(vehicle_data.vehicle) then
-            self:SaveVehicle(vehicle_data.vehicle, args.player)
+            self:SaveVehicle(vehicle_data.vehicle)
             self.despawning_vehicles[id] = Timer()
         end
     end
@@ -244,7 +244,7 @@ function sVehicleManager:PlayerExitVehicle(args)
 
     if vehicle_data.vehicle_id then
         -- Vehicle is owned, update it
-        self:SaveVehicle(args.vehicle, args.player)
+        self:SaveVehicle(args.vehicle)
 
         -- If a friend is using the vehicle, restart the timer
         if self.despawning_vehicles[vehicle_data.vehicle_id] then
@@ -392,7 +392,7 @@ function sVehicleManager:PlayerEnterVehicle(args)
         self:TryBuyVehicle(args)
     else
         -- This is an owned vehicle, so update it in the DB
-        self:SaveVehicle(args.vehicle, args.player)
+        self:SaveVehicle(args.vehicle)
 
         -- If a friend is using the vehicle, restart the timer
         if self.despawning_vehicles[data.vehicle_id] then
