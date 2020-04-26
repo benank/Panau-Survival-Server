@@ -29,7 +29,11 @@ function NameTags:Chat(args)
         
 		Chat:Broadcast(str1, color, args.player:GetName(), args.player:GetColor(), str3, Color.White)
         
-		print(str1..str2..str3)
+        print(str1..str2..str3)
+        Events:Fire("Discord", {
+            channel = "Chat",
+            content = str1..str2..str3
+        })
         return false
         
     else
@@ -39,6 +43,10 @@ function NameTags:Chat(args)
         
 		Chat:Broadcast(args.player:GetName(), args.player:GetColor(), str3, Color.White)
 		print(str2..str3)
+        Events:Fire("Discord", {
+            channel = "Chat",
+            content = str1..str2..str3
+        })
         return false
         
 	end
