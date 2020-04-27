@@ -11,7 +11,6 @@ function sSurvivalManager:__init()
     Network:Subscribe("Survival/Ready", self, self.PlayerReady)
     Network:Subscribe("Survival/UpdateClimateZone", self, self.UpdateClimateZone)
     Events:Subscribe("PostTick", self, self.PostTick)
-    Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
     Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
 
