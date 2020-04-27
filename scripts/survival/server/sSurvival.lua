@@ -76,12 +76,6 @@ function sSurvivalManager:UseItem(args)
     
 end
 
-function sSurvivalManager:PlayerDeath(args)
-
-    args.player:SetValue("dead", true)
-
-end
-
 function sSurvivalManager:UpdateClimateZone(args, player)
 
     if args.zone and config.decaymods[args.zone] then
@@ -111,8 +105,6 @@ function sSurvivalManager:PlayerSpawn(args)
         self:UpdateDB(args.player)
 
     end
-
-    args.player:SetValue("dead", nil)
 
 end
 

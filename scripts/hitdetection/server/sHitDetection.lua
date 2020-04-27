@@ -109,6 +109,7 @@ end
 
 function sHitDetection:PlayerInsideToxicArea(args)
     if args.player:GetHealth() <= 0 then return end
+    if args.player:GetValue("Loading") then return end
 
     local attacker = nil
 
@@ -176,6 +177,7 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     
     if player:GetValue("InSafezone") then return end
     if player:GetHealth() <= 0 then return end
+    if player:GetValue("Loading") then return end
 
     local explosive_data = ExplosiveBaseDamage[args.type]
 
@@ -252,6 +254,7 @@ end
 function sHitDetection:ExplosionHit(args, player)
 
     if not IsValid(args.attacker) then return end
+    if player:GetValue("Loading") then return end
 
     if args.attacker:GetValue("InSafezone") or player:GetValue("InSafezone") then return end
     if player:GetHealth() <= 0 then return end
@@ -325,6 +328,7 @@ end
 function sHitDetection:BulletHit(args, player)
     if not args.bone or not BoneModifiers[args.bone.name] then return end
     if not IsValid(args.attacker) then return end
+    if player:GetValue("Loading") then return end
 
     if args.attacker:GetValue("InSafezone") or player:GetValue("InSafezone") then return end
     if player:GetHealth() <= 0 then return end

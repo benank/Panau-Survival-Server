@@ -140,16 +140,6 @@ function cLoader:Render(args)
 
     self.delta = self.delta + args.delta * 0.2
 
-    --[[local mod = 0.05
-    local size_rel = math.sin(self.delta * math.pi * 2) * mod + 1 + mod
-    local vec_rel = Vector2(size_rel, size_rel)
-
-    self.bg_color:SetSizeAutoRel(vec_rel)
-    self.bg_color:SetPosition(Render.Size / 2 - self.bg_color:GetSize() / 2)
-
-    self.bg_grayscale:SetSizeAutoRel(vec_rel)
-    self.bg_grayscale:SetPosition(Render.Size / 2 - self.bg_grayscale:GetSize() / 2)]]
-
 end
 
 --[[
@@ -244,7 +234,7 @@ function cLoader:Stop()
         self.window:Hide()
 
         if self.active then
-            Network:Send("LoadStatus", {status = "done"})
+            Network:Send(var("LoadStatus"):get(), {status = var("done"):get()})
         end
     
         self.active = false
@@ -283,7 +273,7 @@ function cLoader:Stop()
 
         
         LocalPlayer:SetValue("Loading", false)
-        Events:Fire("LoadingStarted")
+        Events:Fire("LoadingFinished")
 
     end)
 

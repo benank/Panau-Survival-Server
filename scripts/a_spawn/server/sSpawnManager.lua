@@ -58,6 +58,7 @@ end
 function sSpawnManager:UpdatePlayerPositionMinuteTick(player)
 
 	if not IsValid(player) then return end
+	if player:GetValue("IsOkToSavePosition") ~= 0 then return end
 	if player:GetValue("dead") or player:GetValue("Loading") or not player:GetEnabled() then return end
 
 	local steamid = tostring(player:GetSteamId().id)
@@ -75,13 +76,13 @@ end
 function sSpawnManager:PlayerQuit(args)
 
 	if args.player:GetValue("IsOkToSavePosition") ~= 0 then return end
-	if args.player:GetValue("Loading") then return end
+	if args.player:GetValue("Loading") and not args.player:GetValue("dead") then return end
 
 	local pos = args.player:GetPosition()
 	local steamid = tostring(args.player:GetSteamId().id)
 
 	if args.player:GetHealth() <= 0 or args.player:GetValue("Spawn/KilledRecently") or not args.player:GetEnabled() 
-		or (args.player:GetValue("Loading")) then
+		or (args.player:GetValue("dead")) then
 		pos = self:GetRespawnPosition(args.player)
 	end
 
