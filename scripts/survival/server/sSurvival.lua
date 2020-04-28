@@ -13,7 +13,22 @@ function sSurvivalManager:__init()
     Events:Subscribe("PostTick", self, self.PostTick)
     Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
+    Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+    Events:Subscribe("LoadStatus", self, self.LoadStatus)
 
+end
+
+-- Set player's health after the loading screen
+function sSurvivalManager:LoadStatus(args)
+    if args.status ~= false then return end
+    if not args.player:GetValue("TargetHealth") then return end
+
+    args.player:SetHealth(args.player:GetValue("TargetHealth"))
+    args.player:SetValue("TargetHealth", nil)
+end
+
+function sSurvivalManager:PlayerQuit(args)
+    self:UpdateDB(args.player)
 end
 
 function sSurvivalManager:CheckForDyingPlayer(player)
@@ -181,7 +196,7 @@ end
 
 function sSurvivalManager:PlayerReady(args, player)
 
-    local steamID = tostring(player:GetSteamId().id)
+    local steamID = tostring(player:GetSteamId())
     
 	local query = SQL:Query("SELECT * FROM survival WHERE steamID = (?) LIMIT 1")
     query:Bind(1, steamID)
@@ -197,12 +212,16 @@ function sSurvivalManager:PlayerReady(args, player)
             radiation = tonumber(result[1].radiation)
         }
 
+        -- Don't set health here because it's too early and won't work
+        player:SetValue("TargetHealth", tonumber(result[1].health))
+
         player:SetValue("Survival", data)
         
     else
         
-		local command = SQL:Command("INSERT INTO survival (steamID, hunger, thirst, radiation) VALUES (?, ?, ?, ?)")
+		local command = SQL:Command("INSERT INTO survival (steamID, health, hunger, thirst, radiation) VALUES (?, ?, ?, ?, ?)")
 		command:Bind(1, steamID)
+		command:Bind(2, 1)
 		command:Bind(2, config.defaults.hunger)
 		command:Bind(3, config.defaults.thirst)
 		command:Bind(4, config.defaults.radiation)
@@ -226,19 +245,22 @@ end
 
 function sSurvivalManager:UpdateDB(player)
 
-    local steamID = tostring(player:GetSteamId().id)
+    local steamID = tostring(player:GetSteamId())
     local survival = player:GetValue("Survival")
 
     if not survival then return end
+
+    local health = player:GetHealth()
+    if health <= 0 then health = 1 end
     
-    local update = SQL:Command("UPDATE survival SET hunger = ?, thirst = ?, radiation = ? WHERE steamID = (?)")
-	update:Bind(1, survival.hunger)
-	update:Bind(2, survival.thirst)
-	update:Bind(3, survival.radiation)
-	update:Bind(4, steamID)
-	update:Execute()
-
-
+    local update = SQL:Command("UPDATE survival SET health = ?, hunger = ?, thirst = ?, radiation = ? WHERE steamID = (?)")
+	update:Bind(1, health)
+	update:Bind(2, survival.hunger)
+	update:Bind(3, survival.thirst)
+	update:Bind(4, survival.radiation)
+	update:Bind(5, steamID)
+    update:Execute()
+    
 end
 
 function sSurvivalManager:SyncToPlayer(player)
@@ -250,6 +272,6 @@ function sSurvivalManager:SyncToPlayer(player)
 
 end
 
-SQL:Execute("CREATE TABLE IF NOT EXISTS survival (steamID VARCHAR UNIQUE, hunger REAL, thirst REAL, radiation REAL)")
+SQL:Execute("CREATE TABLE IF NOT EXISTS survival (steamID VARCHAR UNIQUE, health REAL, hunger REAL, thirst REAL, radiation REAL)")
 
 SurvivalManager = sSurvivalManager()
