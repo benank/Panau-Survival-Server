@@ -45,7 +45,7 @@ function NameTags:Chat(args)
 		print(str2..str3)
         Events:Fire("Discord", {
             channel = "Chat",
-            content = str1..str2..str3
+            content = str2..str3
         })
         return false
         
