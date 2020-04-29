@@ -194,7 +194,7 @@ function sLootbox:TakeLootStack(args, player)
         Events:Fire("Discord", {
             channel = channel,
             content = string.format("%s [%s] was not able to take the entire stack. \nRemaining stack: %s", 
-                player:GetName(), player:GetSteamId(), id, self.tier, return_stack:ToString())
+                player:GetName(), player:GetSteamId(), return_stack:ToString())
         })
 
     else
