@@ -169,7 +169,8 @@ function EquippableRocketGrapple:Render(args)
     self.grappling = base_state == AnimationState.SReelFlight or left_arm_state == AnimationState.LaSGrapple
     local parachuting = base_state == AnimationState.SParachute
 
-	local cam_pos = Camera:GetPosition()
+    local cam_pos = Camera:GetPosition()
+    if IsNaN(cam_pos.x) or IsNaN(cam_pos.y) or IsNaN(cam_pos.z) then return end
 	local ray = Physics:Raycast(cam_pos, Camera:GetAngle() * Vector3.Forward, 0, 1000)
 
 	self:RenderGrappleDistance(ray)
