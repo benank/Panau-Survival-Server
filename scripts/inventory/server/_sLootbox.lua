@@ -79,7 +79,7 @@ function sLootbox:PlayerAddStack(stack, player)
     Events:Fire("Discord", {
         channel = "Stashes",
         content = string.format("%s [%s] added stack to stash %d [Tier %d]. \nStack: %s", 
-            player:GetName(), player:GetSteamId(), self.id, self.tier, stack:ToString())
+            player:GetName(), player:GetSteamId(), self.stash.id, self.tier, stack:ToString())
     })
 
     local return_stack = self:AddStack(stack)
@@ -181,10 +181,11 @@ function sLootbox:TakeLootStack(args, player)
 
 
     local channel = self.is_stash and "Stashes" or "Inventory"
+    local id = self.is_stash and self.stash.id or self.uid
     Events:Fire("Discord", {
         channel = channel,
         content = string.format("%s [%s] took stack from lootbox %d [Tier %d]. \nStack: %s", 
-            player:GetName(), player:GetSteamId(), self.id, self.tier, stack:ToString())
+            player:GetName(), player:GetSteamId(), id, self.tier, stack:ToString())
     })
 
     if return_stack then
@@ -194,7 +195,7 @@ function sLootbox:TakeLootStack(args, player)
         Events:Fire("Discord", {
             channel = channel,
             content = string.format("%s [%s] was not able to take the entire stack. \nRemaining stack: %s", 
-                player:GetName(), player:GetSteamId(), self.id, self.tier, return_stack:ToString())
+                player:GetName(), player:GetSteamId(), id, self.tier, return_stack:ToString())
         })
 
     else
