@@ -76,7 +76,21 @@ function sLootbox:PlayerAddStack(stack, player)
         if not self.stash:CanPlayerOpen(player) then return stack end
     end
 
+    Events:Fire("Discord", {
+        channel = "Stashes",
+        content = string.format("%s [%s] added stack to stash %d [Tier %d]. \nStack: %s", 
+            player:GetName(), player:GetSteamId(), self.id, self.tier, stack:ToString())
+    })
+
     local return_stack = self:AddStack(stack)
+
+    if return_stack then
+        Events:Fire("Discord", {
+            channel = "Stashes",
+            content = string.format("%s [%s] was not able to add the entire stack. \nRemaining stack: %s", 
+                player:GetName(), player:GetSteamId(), return_stack:ToString())
+        })
+    end
 
     if self.is_stash then
         for p in Server:GetPlayers() do
@@ -157,8 +171,32 @@ function sLootbox:TakeLootStack(args, player)
 
     local return_stack = inv:AddStack({stack = stack})
 
+    if self.is_stash and not IsAFriend(player, self.stash.owner_id) and not self.stash:IsPlayerOwner(player) then
+        Events:Fire("Discord", {
+            channel = "Stashes",
+            content = string.format("**__RAID__**: %s [%s] is raiding [%s].", 
+                player:GetName(), player:GetSteamId(), self.stash.owner_id)
+        })
+    end
+
+
+    local channel = self.is_stash and "Stashes" or "Inventory"
+    Events:Fire("Discord", {
+        channel = channel,
+        content = string.format("%s [%s] took stack from lootbox %d [Tier %d]. \nStack: %s", 
+            player:GetName(), player:GetSteamId(), self.id, self.tier, stack:ToString())
+    })
+
     if return_stack then
         self.contents[args.index] = return_stack
+        
+        local channel = self.is_stash and "Stashes" or "Inventory"
+        Events:Fire("Discord", {
+            channel = channel,
+            content = string.format("%s [%s] was not able to take the entire stack. \nRemaining stack: %s", 
+                player:GetName(), player:GetSteamId(), self.id, self.tier, return_stack:ToString())
+        })
+
     else
         table.remove(self.contents, args.index)
     end

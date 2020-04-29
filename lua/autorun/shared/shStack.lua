@@ -275,3 +275,11 @@ function shStack:GetSyncObject()
     return data
 
 end
+
+function shStack:ToString()
+    local str = ""
+    for k,v in pairs(self.contents) do
+        str = str .. v:ToString() .. " "
+    end
+    return str
+end
