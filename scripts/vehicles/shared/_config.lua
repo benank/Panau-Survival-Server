@@ -28,23 +28,21 @@ config =
         ["RUR_BIK"] = {cost = 5, spawn_chance = 0.98, respawn_interval = 6},
         cost_overrides = -- Vehicle-specific price overrides (such as topa)
         {
-            [64] = 100, -- Topachula
-            [85] = 55, -- Bering
-            [75] = 30, -- tuktuk boomboom
-            [11] = 2, -- motorcycle
-            [21] = 2, -- motorcycle
-            [32] = 2, -- motorcycle
-            [36] = 2, -- motorcycle
-            [43] = 2, -- motorcycle
-            [46] = 2, -- motorcycle
-            [47] = 2, -- motorcycle
-            [61] = 2, -- motorcycle
-            [74] = 2, -- motorcycle
-            [83] = 2, -- motorcycle
-            [89] = 2, -- motorcycle
-            [90] = 2, -- motorcycle
-            [56] = 40, -- razorback tank
-            [18] = 50 -- raider/stonewall tank
+            [64] = 200,
+            [66] = 30,
+            [79] = 30,
+            [58] = 50,
+            [1] = 10,
+            [82] = 30,
+            [4] = 20,
+            [12] = 20,
+            [20] = 80,
+            [88] = 100,
+            [77] = 70,
+            [7] = 50,
+            [75] = 50,
+            [24] = 200,
+            [53] = 100,
         },
         variance = 0.15,
         health = {max = 1, min = 0.6},
