@@ -75,6 +75,11 @@ end
 
 function sSpawnManager:PlayerQuit(args)
 
+    Events:Fire("Discord", {
+        channel = "Chat",
+        content = string.format("*%s [%s] left the server.", args.player:GetName(), args.player:GetSteamId())
+    })
+
 	if args.player:GetValue("IsOkToSavePosition") ~= 0 then return end
 	if args.player:GetValue("Loading") and not args.player:GetValue("dead") then return end
 
@@ -139,7 +144,12 @@ function sSpawnManager:PlayerJoin(args)
 		command:Bind(6, 0)
 		command:Bind(7, 0)
 		command:Execute()
-	end
+    end
+    
+    Events:Fire("Discord", {
+        channel = "Chat",
+        content = string.format("*%s [%s] joined the server.", args.player:GetName(), args.player:GetSteamId())
+    })
 
 end
 
