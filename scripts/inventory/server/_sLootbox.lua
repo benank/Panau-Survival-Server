@@ -169,6 +169,14 @@ function sLootbox:TakeLootStack(args, player)
 
     if not inv:CanPlayerPerformOperations(player) then return end
 
+    local channel = self.is_stash and "Stashes" or "Inventory"
+    local id = self.is_stash and self.stash.id or self.uid
+    Events:Fire("Discord", {
+        channel = channel,
+        content = string.format("%s [%s] took stack from lootbox %d [Tier %d]. \nStack: %s", 
+            player:GetName(), player:GetSteamId(), id, self.tier, stack:ToString())
+    })
+
     local return_stack = inv:AddStack({stack = stack})
 
     if self.is_stash and not IsAFriend(player, self.stash.owner_id) and not self.stash:IsPlayerOwner(player) then
@@ -178,15 +186,6 @@ function sLootbox:TakeLootStack(args, player)
                 player:GetName(), player:GetSteamId(), self.stash.owner_id)
         })
     end
-
-
-    local channel = self.is_stash and "Stashes" or "Inventory"
-    local id = self.is_stash and self.stash.id or self.uid
-    Events:Fire("Discord", {
-        channel = channel,
-        content = string.format("%s [%s] took stack from lootbox %d [Tier %d]. \nStack: %s", 
-            player:GetName(), player:GetSteamId(), id, self.tier, stack:ToString())
-    })
 
     if return_stack then
         self.contents[args.index] = return_stack
