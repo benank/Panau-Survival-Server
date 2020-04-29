@@ -33,12 +33,18 @@ function sHitDetection:VehicleGuardActivate(args)
         args.player:Damage(VehicleGuardDamage, DamageEntity.VehicleGuard)
     end
 
-    print(string.format("%s [%s] was damaged by vehicle guard for %s damage [Source: %s]",
+    local msg = string.format("%s [%s] was damaged by vehicle guard for %s damage [Source: %s]",
         args.player:GetName(), 
         tostring(args.player:GetSteamId()),
         tostring(VehicleGuardDamage), 
         args.attacker_id, 
-        DamageEntityNames[DamageEntity.VehicleGuard]))
+        DamageEntityNames[DamageEntity.VehicleGuard])
+
+    print(msg)
+    Events:Fire("Discord", {
+        channel = "Hitdetection",
+        content = msg
+    })
 
     self:SetPlayerLastDamaged(args.player, DamageEntityNames[DamageEntity.VehicleGuard], args.attacker_id)
 
@@ -51,12 +57,17 @@ function sHitDetection:PlayerSurvivalDamage(args)
     
     args.player:Damage(args.amount, args.type)
 
-    print(string.format("%s [%s] was damaged by survival for %s damage [%s]",
+    local msg = string.format("%s [%s] was damaged by survival for %s damage [%s]",
         args.player:GetName(), 
         tostring(args.player:GetSteamId()),
         tostring(args.amount), 
-        DamageEntityNames[args.type]))
+        DamageEntityNames[args.type])
 
+    print(msg)
+    Events:Fire("Discord", {
+        channel = "Hitdetection",
+        content = msg
+    })
 end
 
 function sHitDetection:PlayerDeath(args)
@@ -76,12 +87,12 @@ function sHitDetection:PlayerDeath(args)
             killer_name = "???"
         end
 
-        print(string.format("%s [%s] was killed by %s [%s] [%s]", 
+        local msg = string.format("%s [%s] was killed by %s [%s] [%s]", 
             args.player:GetName(),
             tostring(args.player:GetSteamId()),
             killer_name,
             last_damaged.steam_id,
-            DamageEntityNames[args.reason]))
+            DamageEntityNames[args.reason])
 
         Chat:Send(args.player, string.format("You were killed by %s [%s]", 
             killer_name, last_damaged.damage_type), Color.Red)
@@ -92,16 +103,27 @@ function sHitDetection:PlayerDeath(args)
             color = Color.Red
         })
 
+        print(msg)
+        Events:Fire("Discord", {
+            channel = "Hitdetection",
+            content = msg
+        })
+
     else
         -- Player died on their own without anyone else, like drowning or falling from too high
 
-        print(string.format("%s [%s] died [%s]", 
+        local msg = string.format("%s [%s] died [%s]", 
             args.player:GetName(),
             tostring(args.player:GetSteamId()),
-            DamageEntityNames[args.reason]))
+            DamageEntityNames[args.reason])
 
         Chat:Send(args.player, string.format("You died [Reason: %s]", DamageEntityNames[args.reason]), Color.Red)
         
+        print(msg)
+        Events:Fire("Discord", {
+            channel = "Hitdetection",
+            content = msg
+        })
     end
 
     args.player:SetValue("LastDamaged", nil)
@@ -126,14 +148,20 @@ function sHitDetection:PlayerInsideToxicArea(args)
         args.player:Damage(ToxicDamagePerSecond, DamageEntity.ToxicGrenade)
     end
 
-    print(string.format("%s [%s] was damaged by toxic gas for %s damage [Source: %s] [%s]",
+    local msg = string.format("%s [%s] was damaged by toxic gas for %s damage [Source: %s] [%s]",
         args.player:GetName(), 
         tostring(args.player:GetSteamId()),
         tostring(ToxicDamagePerSecond), 
         args.attacker_id, 
-        DamageEntityNames[DamageEntity.ToxicGrenade]))
+        DamageEntityNames[DamageEntity.ToxicGrenade])
 
     self:SetPlayerLastDamaged(args.player, DamageEntityNames[DamageEntity.ToxicGrenade], args.attacker_id)
+
+    print(msg)
+    Events:Fire("Discord", {
+        channel = "Hitdetection",
+        content = msg
+    })
 
 end
 
@@ -160,14 +188,20 @@ function sHitDetection:SecondTick()
                 p:Damage(FireDamagePerSecond, DamageEntity.Molotov)
             end
 
-            print(string.format("%s [%s] was damaged by fire for %s damage [Source: %s] [%s]",
+            local msg = string.format("%s [%s] was damaged by fire for %s damage [Source: %s] [%s]",
                 p:GetName(), 
                 tostring(p:GetSteamId()),
                 tostring(FireDamagePerSecond), 
                 attacker_id, 
-                DamageEntityNames[DamageEntity.Molotov]))
+                DamageEntityNames[DamageEntity.Molotov])
         
             self:SetPlayerLastDamaged(p, DamageEntityNames[DamageEntity.Molotov], attacker_id)
+
+            print(msg)
+            Events:Fire("Discord", {
+                channel = "Hitdetection",
+                content = msg
+            })
         end
     end
 
@@ -217,8 +251,8 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
         player:Damage(damage / 100, args.type)
     end
 
-    print(string.format("%s [%s] was exploded for %s damage [Source: %s] [%s]",
-        player:GetName(), tostring(player:GetSteamId()), tostring(damage), tostring(args.attacker_id), DamageEntityNames[args.type]))
+    local msg = string.format("%s [%s] was exploded for %s damage [Source: %s] [%s]",
+        player:GetName(), tostring(player:GetSteamId()), tostring(damage), tostring(args.attacker_id), DamageEntityNames[args.type])
 
     Events:Fire("HitDetection/PlayerExplosionItemHit", {
         player = player,
@@ -234,6 +268,12 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     if args.attacker_id then
         self:SetPlayerLastDamaged(player, DamageEntityNames[args.type], args.attacker_id)
     end
+
+    print(msg)
+    Events:Fire("Discord", {
+        channel = "Hitdetection",
+        content = msg
+    })
 
 end
 
@@ -286,13 +326,13 @@ function sHitDetection:ExplosionHit(args, player)
     player:SetValue("LastHealth", old_hp)
     player:Damage(damage / 100, DamageEntity.Explosion, args.attacker)
 
-    print(string.format("%s [%s] shot %s [%s] for %s damage [%s]",
-    args.attacker:GetName(), 
-    tostring(args.attacker:GetSteamId()),
-    player:GetName(), 
-    tostring(player:GetSteamId()),
-    tostring(damage), 
-    tostring(GetWeaponName(weapon.id))))
+    local msg = string.format("%s [%s] shot %s [%s] for %s damage [%s]",
+        args.attacker:GetName(), 
+        tostring(args.attacker:GetSteamId()),
+        player:GetName(), 
+        tostring(player:GetSteamId()),
+        tostring(damage), 
+        tostring(GetWeaponName(weapon.id)))
 
     Events:Fire("HitDetection/PlayerExplosionHit", {
         player = player,
@@ -302,6 +342,11 @@ function sHitDetection:ExplosionHit(args, player)
 
     self:SetPlayerLastDamaged(player, GetWeaponName(weapon.id), tostring(args.attacker:GetSteamId()))
 
+    print(msg)
+    Events:Fire("Discord", {
+        channel = "Hitdetection",
+        content = msg
+    })
     --self:CheckHealth(player, damage)
 
 end
@@ -347,13 +392,13 @@ function sHitDetection:BulletHit(args, player)
     player:SetValue("LastHealth", old_hp)
     player:Damage(damage / 100, DamageEntity.Bullet, args.attacker)
 
-    print(string.format("%s [%s] shot %s [%s] for %s damage [%s]",
+    local msg = string.format("%s [%s] shot %s [%s] for %s damage [%s]",
         args.attacker:GetName(), 
         tostring(args.attacker:GetSteamId()),
         player:GetName(), 
         tostring(player:GetSteamId()),
         tostring(damage), 
-        tostring(GetWeaponName(weapon.id))))
+        tostring(GetWeaponName(weapon.id)))
 
     Events:Fire("HitDetection/PlayerBulletHit", {
         player = player,
@@ -363,6 +408,11 @@ function sHitDetection:BulletHit(args, player)
 
     self:SetPlayerLastDamaged(player, GetWeaponName(weapon.id), tostring(args.attacker:GetSteamId()))
 
+    print(msg)
+    Events:Fire("Discord", {
+        channel = "Hitdetection",
+        content = msg
+    })
     -- If their health doesn't change after being shot
     --self:CheckHealth(player, damage)
 

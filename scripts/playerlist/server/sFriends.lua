@@ -89,6 +89,13 @@ function sFriends:AddFriend(args, player)
     Chat:Send(player, "Added " .. adding_player:GetName() .. " as a friend.", Color.Green)
     Chat:Send(adding_player, player:GetName() .. " added you as a friend.", Color.Green)
 
+    local msg = string.format("%s [%s] added %s [%s] as a friend", 
+        player:GetName(), player:GetSteamId(), adding_player:GetName(), adding_player:GetSteamId())
+    Events:Fire("Discord", {
+        channel = "Friends",
+        content = msg
+    })
+
 end
 
 function sFriends:RemoveFriend(args, player)
@@ -126,6 +133,13 @@ function sFriends:RemoveFriend(args, player)
 
     Chat:Send(player, "Removed " .. removing_player:GetName() .. " as a friend.", Color.Red)
     Chat:Send(removing_player, player:GetName() .. " removed you as a friend.", Color.Red)
+
+    local msg = string.format("%s [%s] removed %s [%s] as a friend", 
+        player:GetName(), player:GetSteamId(), removing_player:GetName(), removing_player:GetSteamId())
+    Events:Fire("Discord", {
+        channel = "Friends",
+        content = msg
+    })
 
 end
 

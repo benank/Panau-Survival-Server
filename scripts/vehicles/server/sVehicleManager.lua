@@ -114,6 +114,13 @@ function sVehicleManager:PlayerUseVehicleGuard(args)
 
     Chat:Send(args.player, string.format("Vehicle guard equipped. (%d/%d)", vehicle_data.guards, config.max_vehicle_guards), Color.Green)
 
+    local msg = string.format("Player %s [%s] added vehicle guard to vehicle %d", 
+        args.player:GetName(), args.player:GetSteamId(), vehicle_data.vehicle_id)
+    Events:Fire("Discord", {
+        channel = "Vehicles",
+        content = msg
+    })
+
 end
 
 function sVehicleManager:GivePlayerVehicleGuard(player)
@@ -314,6 +321,13 @@ function sVehicleManager:TransferVehicle(args, player)
     Chat:Send(target_player, string.format("%s transferred %s to you. (%d/%d)", 
         player:GetName(), vehicle_name, count_table(target_owned_vehicles) + 1, config.player_max_vehicles), Color.Green)
 
+    local msg = string.format("Player %s [%s] transferred vehicle %d to %s [%s]", 
+        player:GetName(), player:GetSteamId(), vehicle_data.vehicle_id, target_player:GetName(), target_player:GetSteamId())
+    Events:Fire("Discord", {
+        channel = "Vehicles",
+        content = msg
+    })
+
 end
 
 function sVehicleManager:PlayerSpawnVehicle(args, player)
@@ -347,6 +361,13 @@ function sVehicleManager:PlayerSpawnVehicle(args, player)
 
     self:SyncPlayerOwnedVehicles(player)
 
+    local msg = string.format("Player %s [%s] spawned vehicle %d", 
+        player:GetName(), player:GetSteamId(), args.vehicle_id)
+    Events:Fire("Discord", {
+        channel = "Vehicles",
+        content = msg
+    })
+
 end
 
 function sVehicleManager:PlayerDeleteVehicle(args, player)
@@ -377,6 +398,13 @@ function sVehicleManager:PlayerDeleteVehicle(args, player)
 
     Chat:Send(player, string.format("Vehicle deleted. (%s/%s)", 
         tostring(count_table(player_owned_vehicles)), tostring(config.player_max_vehicles)), Color.Green)
+
+    local msg = string.format("Player %s [%s] deleted vehicle %d", 
+        player:GetName(), player:GetSteamId(), args.vehicle_id)
+    Events:Fire("Discord", {
+        channel = "Vehicles",
+        content = msg
+    })
 
 end
 
@@ -427,6 +455,7 @@ function sVehicleManager:TryBuyVehicle(args)
         return
     end
 
+    local orig_cost = args.data.cost
 
     local item_cost = CreateItem({
         name = "Lockpick",
@@ -479,6 +508,13 @@ function sVehicleManager:TryBuyVehicle(args)
         Chat:Send(args.player, string.format("Vehicle successfully purchased! (%s/%s)", 
             tostring(count_table(owned_vehicles) + 1), tostring(config.player_max_vehicles)), Color.Green)
     
+        local msg = string.format("Player %s [%s] purchased %s for %d", 
+            args.player:GetName(), args.player:GetSteamId(), args.vehicle:GetName(), orig_cost)
+        Events:Fire("Discord", {
+            channel = "Vehicles",
+            content = msg
+        })
+    
     elseif args.data.vehicle_id then
         
         -- Remove vehicle from old owner's list
@@ -508,6 +544,14 @@ function sVehicleManager:TryBuyVehicle(args)
             tostring(count_table(owned_vehicles)), tostring(config.player_max_vehicles)), Color.Green)
     
         self.despawning_vehicles[args.data.vehicle_id] = nil
+
+        local msg = string.format("Player %s [%s] stole vehicle %d [%s] from [%s] for %d", 
+            args.player:GetName(), args.player:GetSteamId(), args.data.vehicle_id, args.vehicle:GetName(), 
+            args.data.owner_steamid, orig_cost)
+        Events:Fire("Discord", {
+            channel = "Vehicles",
+            content = msg
+        })
     end
 
     -- Now buy the vehicle
