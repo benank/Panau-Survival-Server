@@ -654,6 +654,11 @@ function sVehicleManager:ParseVehicle(line)
     local angle  = Angle(tonumber(tokens[4]),tonumber(tokens[5]),tonumber(tokens[6]))
 
     -- Save to table
+    if not self.spawns[tokens[7]] then
+        print("Unable to find vehicle type " .. tokens[7])
+        return
+    end
+
     insert(self.spawns[tokens[7]], {position = vector, angle = angle, spawned = false, respawn_timer = Timer()})
 	
 end

@@ -2,15 +2,30 @@ config =
 {
     spawn = 
     {
-        ["CIV_GROUND"] = {cost = 4, spawn_chance = 0.9, respawn_interval = 15}, -- base cost + chance of spawning at beginning + per hour/respawn
-        ["CIV_WATER"] = {cost = 7, spawn_chance = 0.8, respawn_interval = 20},
-        ["CIV_HELI"] = {cost = 15, spawn_chance = 0.7, respawn_interval = 30},
-        ["CIV_PLANE"] = {cost = 13, spawn_chance = 0.8, respawn_interval = 30},
-        ["CIV_PLANE_LARGE"] = {cost = 16, spawn_chance = 0.3, respawn_interval = 60},
-        ["MIL_GROUND"] = {cost = 10, spawn_chance = 0.7, respawn_interval = 40},
-        ["MIL_WATER"] = {cost = 20, spawn_chance = 0.7, respawn_interval = 40},
-        ["MIL_HELI"] = {cost = 30, spawn_chance = 0.5, respawn_interval = 120},
-        ["MIL_PLANE"] = {cost = 40, spawn_chance = 0.5, respawn_interval = 120},
+        ["MIL_HEL"] = {cost = 100, spawn_chance = 0.5, respawn_interval = 120}, -- base cost + chance of spawning at beginning + per hour/respawn
+        ["MIL_PLA_L"] = {cost = 100, spawn_chance = 0.5, respawn_interval = 120},
+        ["MIL_PLA_M"] = {cost = 75, spawn_chance = 0.63, respawn_interval = 90},
+        ["URB_HEL"] = {cost = 60, spawn_chance = 0.7, respawn_interval = 72},
+        ["URB_PLA_M"] = {cost = 50, spawn_chance = 0.75, respawn_interval = 60},
+        ["MIL_SEA_L"] = {cost = 50, spawn_chance = 0.75, respawn_interval = 60},
+        ["URB_PLA_S"] = {cost = 50, spawn_chance = 0.75, respawn_interval = 60},
+        ["MIL_SEA_M"] = {cost = 40, spawn_chance = 0.8, respawn_interval = 48},
+        ["MIL_CAR_L"] = {cost = 40, spawn_chance = 0.8, respawn_interval = 48},
+        ["URB_PLA_L"] = {cost = 40, spawn_chance = 0.8, respawn_interval = 48},
+        ["MIL_CAR_M"] = {cost = 30, spawn_chance = 0.85, respawn_interval = 36},
+        ["URB_SEA"] = {cost = 30, spawn_chance = 0.85, respawn_interval = 36},
+        ["URB_CAR_M"] = {cost = 25, spawn_chance = 0.88, respawn_interval = 30},
+        ["RUR_PLA"] = {cost = 25, spawn_chance = 0.88, respawn_interval = 30},
+        ["MIL_BIK"] = {cost = 15, spawn_chance = 0.93, respawn_interval = 18},
+        ["URB_CAR_L"] = {cost = 15, spawn_chance = 0.93, respawn_interval = 18},
+        ["URB_CAR_S"] = {cost = 13, spawn_chance = 0.94, respawn_interval = 16},
+        ["URB_BIK"] = {cost = 13, spawn_chance = 0.94, respawn_interval = 16},
+        ["RUR_CAR_M"] = {cost = 10, spawn_chance = 0.95, respawn_interval = 12},
+        ["RUR_CAR_L"] = {cost = 8, spawn_chance = 0.96, respawn_interval = 10},
+        ["RUR_SEA_L"] = {cost = 5, spawn_chance = 0.98, respawn_interval = 6},
+        ["RUR_SEA_M"] = {cost = 5, spawn_chance = 0.98, respawn_interval = 6},
+        ["RUR_CAR_S"] = {cost = 5, spawn_chance = 0.98, respawn_interval = 6},
+        ["RUR_BIK"] = {cost = 5, spawn_chance = 0.98, respawn_interval = 6},
         cost_overrides = -- Vehicle-specific price overrides (such as topa)
         {
             [64] = 100, -- Topachula
