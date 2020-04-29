@@ -40,10 +40,13 @@ function cHitDetection:Explosion(args)
 
         local knockback_effect = explosive_data.knockback * percent_modifier
 
+        local base_state = LocalPlayer:GetBaseState()
+
         if in_fov and not LocalPlayer:InVehicle() 
         and not LocalPlayer:GetValue("StuntingVehicle")
-        and LocalPlayer:GetBaseState() ~= AnimationState.SReeledInIdle
-        and LocalPlayer:GetBaseState() ~= AnimationState.SHangstuntIdle then
+        and base_state ~= AnimationState.SReeledInIdle
+        and base_state ~= AnimationState.SReelFlight
+        and base_state ~= AnimationState.SHangstuntIdle then
             LocalPlayer:SetRagdollLinearVelocity(
                 LocalPlayer:GetLinearVelocity() + ((args.local_position - args.position):Normalized() + Vector3(0, 1.5, 0)) * knockback_effect)
         end
