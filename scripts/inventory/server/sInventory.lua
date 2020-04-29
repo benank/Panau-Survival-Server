@@ -318,6 +318,11 @@ function sInventory:DropStack(args, player, lootbox)
 
         else
 
+            Events:Fire("Discord", {
+                channel = "Inventory",
+                content = string.format("%s [%s] dropped stack: %s", self.player:GetName(), self.player:GetSteamId(), split_stack:ToString())
+            })
+
             if not lootbox then
                 lootbox = CreateLootbox({
                     position = player:GetPosition(),
@@ -350,6 +355,11 @@ function sInventory:DropStack(args, player, lootbox)
             end
 
         else
+
+            Events:Fire("Discord", {
+                channel = "Inventory",
+                content = string.format("%s [%s] dropped stack: %s", self.player:GetName(), self.player:GetSteamId(), stack:ToString())
+            })
 
             if not lootbox then
                 local lootbox = CreateLootbox({
