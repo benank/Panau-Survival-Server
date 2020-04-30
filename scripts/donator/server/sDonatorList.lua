@@ -3,7 +3,7 @@ Donators =
     --[[["STEAM_0:1:31147722"] = {
         steam_id = "STEAM_0:1:31147722", 
         name = "Lord Farquaad", 
-        level = DonatorLevel.GhostRider
+        level = DonatorLevel.Colorful
     },]]
     ["STEAM_0:0:55981424"] = {
         steam_id = "STEAM_0:0:55981424", 
