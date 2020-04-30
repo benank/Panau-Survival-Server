@@ -13,7 +13,7 @@ Donators =
     ["STEAM_0:0:84092293"] = {
         steam_id = "STEAM_0:0:84092293", 
         name = "Spag33ti", 
-        level = DonatorLevel.GhostRider
+        level = DonatorLevel.Colorful
     },
     ["STEAM_0:0:53948518"] = {
         steam_id = "STEAM_0:0:53948518", 
@@ -49,5 +49,10 @@ Donators =
         steam_id = "STEAM_0:0:78672551", 
         name = "Teddy Beard", 
         level = DonatorLevel.Donator
+    },
+    ["STEAM_0:0:2530799"] = {
+        steam_id = "STEAM_0:0:2530799", 
+        name = "Nordnatur", 
+        level = DonatorLevel.GhostRider
     }
 }
