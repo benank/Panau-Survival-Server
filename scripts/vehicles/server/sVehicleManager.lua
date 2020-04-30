@@ -558,6 +558,7 @@ function sVehicleManager:TryBuyVehicle(args)
     args.data.owner_steamid = tostring(args.player:GetSteamId())
 
     args.vehicle:SetNetworkValue("VehicleData", args.data)
+    args.vehicle:SetStreamDistance(1000)
 
     self:SaveVehicle(args.vehicle, args.player)
 
@@ -722,6 +723,7 @@ function sVehicleManager:SpawnNaturalVehicle(spawn_type, index)
 
     local vehicle = self:SpawnVehicle(spawn_args)
     vehicle:SetHealth(config.spawn.health.min + (config.spawn.health.max - config.spawn.health.min) * random())
+    vehicle:SetStreamDistance(500)
 
     local vehicle_data = self:GenerateVehicleData(spawn_args)
     vehicle_data.health = vehicle:GetHealth()
