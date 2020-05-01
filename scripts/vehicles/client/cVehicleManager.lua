@@ -24,11 +24,6 @@ function cVehicleManager:__init()
         [Action.PickupWithRightHand] = true,
         [Action.ActivateBlackMarketBeacon] = true,
         [Action.EnterVehicle] = true,
-        [Action.StuntJump] = true,
-        [Action.EnterVehicle] = true,
-        [Action.EnterVehicle] = true,
-        [Action.EnterVehicle] = true,
-        [Action.EnterVehicle] = true,
         [Action.StuntposEnterVehicle] = true
     }
 

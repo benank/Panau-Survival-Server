@@ -126,7 +126,9 @@ elseif Server then
             error("Failed to Inventory.Get because args.player was invalid")
             return
         end
-        
+
+        if not args.player:GetValue("Inventory") then return end
+
         local contents_array = args.player:GetValue("Inventory").contents
         local contents = {}
 
