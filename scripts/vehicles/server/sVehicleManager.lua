@@ -753,19 +753,15 @@ end
 
 function sVehicleManager:GetVehicleCost(args)
 
-    if config.spawn.cost_overrides[args.model_id] then
-        return random(
-            math.round(config.spawn.cost_modifier * config.spawn.cost_overrides[args.model_id] * (1 - config.spawn.variance)), 
-            math.round(config.spawn.cost_modifier * config.spawn.cost_overrides[args.model_id] * (1 + config.spawn.variance)))
-    elseif config.spawn[args.spawn_type] then
-        return random(
-            math.round(config.spawn.cost_modifier * config.spawn[args.spawn_type].cost * (1 - config.spawn.variance)), 
-            math.round(config.spawn.cost_modifier * config.spawn[args.spawn_type].cost * (1 + config.spawn.variance)))
-    end
+    local base_cost = config.spawn.cost_overrides[args.model_id] or config.spawn[args.spawn_type].cost
+    local cost = base_cost * config.spawn.cost_modifier
 
-    for k,v in pairs(args) do print(k,v) end
-    error("Could not determine valid spawn type for: ")
-    return 999
+    local sign = random() > 0.5 and -1 or 1
+
+    cost = cost * (1 + (sign * config.spawn.variance))
+    cost = math.ceil(cost)
+
+    return cost
 
 end
 
