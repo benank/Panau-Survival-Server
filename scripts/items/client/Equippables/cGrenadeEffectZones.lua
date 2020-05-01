@@ -21,7 +21,7 @@ function GrenadeEffectZones:Render(args)
             self.active_zones[id] = nil
         end
 
-        if zone.inside_zone and zone.type == "Slow" then
+        if zone.inside_zone and zone.type == "Slow" and not LocalPlayer:GetValue("InSafezone") then
 
             local entity = LocalPlayer
             if entity:InVehicle() then
