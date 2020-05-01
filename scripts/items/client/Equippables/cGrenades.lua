@@ -117,7 +117,10 @@ function Grenades:InputPoll()
         
         if not self.override_animation and not LocalPlayer:InVehicle() then
 
-            if LocalPlayer:GetBaseState() ~= AnimationState.SParachute then
+            local base_state = LocalPlayer:GetBaseState()
+
+            if base_state ~= AnimationState.SParachute
+            and LocalPlayer:GetState() == PlayerState.OnFoot then
                 Input:SetValue(Action.TurnLeft, 0)
                 Input:SetValue(Action.TurnRight, 0)
                 Input:SetValue(Action.LookLeft, 0)
@@ -128,10 +131,12 @@ function Grenades:InputPoll()
                 LocalPlayer:SetAngle(Angle(Camera:GetAngle().yaw, LocalPlayer:GetAngle().pitch, LocalPlayer:GetAngle().roll))
             end
 
-            if self.thrownUnder then
-                LocalPlayer:SetLeftArmState(AnimationState.LaSUnderThrowGrenade)
-            else
-                LocalPlayer:SetLeftArmState(AnimationState.LaSOverThrowGrenade)
+            if base_state ~= AnimationState.SSkydive then
+                if self.thrownUnder then
+                    LocalPlayer:SetLeftArmState(AnimationState.LaSUnderThrowGrenade)
+                else
+                    LocalPlayer:SetLeftArmState(AnimationState.LaSOverThrowGrenade)
+                end
             end
 
         end
