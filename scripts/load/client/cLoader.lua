@@ -56,7 +56,6 @@ function cLoader:__init()
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("GameLoad", self, self.GameLoad)
     Events:Subscribe("LocalPlayerDeath", self, self.LocalPlayerDeath)
-    Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
     -- Fire event for when modules reload
     Timer.SetTimeout(1000, function()
@@ -72,19 +71,11 @@ function cLoader:StartLoad()
 
 end
 
-function cLoader:ModulesLoad()
-
-    Events:Fire("LoaderReady")
-
-end
-
 function cLoader:ModuleLoad()
 
-    self.resources_needed = 
-        Game:GetState() == GUIState.Loading and self.resources_needed + self.resources_for_gameload 
-        or self.resources_needed
+    self.resources_needed = self.resources_needed + self.resources_for_gameload 
 
-    self.can_add_resources = Game:GetState() == GUIState.Loading
+    self.can_add_resources = true
 
     self:UpdateResourceCount()
     self:Start()
