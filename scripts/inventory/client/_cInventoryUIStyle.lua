@@ -81,6 +81,8 @@ function cInventoryUIStyle:__init()
         ["Molotov"] = self.item_colors.blue,
         ["Smoke Grenade"] = self.item_colors.blue,
         ["Toxic Grenade"] = self.item_colors.blue,
+        ["AntiGrav Grenade"] = self.item_colors.blue,
+        ["Warp Grenade"] = self.item_colors.blue,
         ["Flashbang"] = self.item_colors.blue,
         ["Apple Juice"] = self.item_colors.darkgreen,
         ["Can of Beans"] = self.item_colors.darkgreen,

@@ -41,6 +41,12 @@ function Grenades:GrenadeExploded(args, player)
             player = player
         })
     end
+
+    if args.type == "Warp Grenade" then
+        Network:Send(player, "items/WarpEffect", {position = player:GetPosition()})
+        Network:SendNearby(player, "items/WarpEffect", {position = player:GetPosition()})
+        player:SetPosition(args.position)
+    end
 end
 
 function Grenades:StartThrowingGrenade(args, player)

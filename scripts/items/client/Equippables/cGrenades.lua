@@ -77,6 +77,15 @@ function Grenades:__init()
 	Events:Subscribe(var("PostRender"):get(), self, self.PostRender)
     Network:Subscribe(var("items/GrenadeTossed"):get(), self, self.GrenadeTossed)
     Network:Subscribe(var("items/ToggleEquippedGrenade"):get(), self, self.ToggleEquippedGrenade)
+    Network:Subscribe("items/WarpEffect", self, self.WarpEffect)
+end
+
+function Grenades:WarpEffect(args)
+    ClientEffect.Play(AssetLocation.Game, {
+        position = args.position,
+        effect_id = 250,
+        angle = Angle()
+    })
 end
 
 function Grenades:ToggleEquippedGrenade(args)

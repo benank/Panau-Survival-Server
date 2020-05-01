@@ -481,6 +481,28 @@ Items =
         equip_type = "held"
     },
     {
+        name = "AntiGrav Grenade",
+        category = "Explosives",
+        stacklimit = 10,
+        loot = {3,4},
+        rarity = 0.1,
+        rarity_mod = {0.5,1},
+        can_equip = true,
+        in_loot = false,
+        equip_type = "held"
+    },
+    {
+        name = "Warp Grenade",
+        category = "Explosives",
+        stacklimit = 10,
+        loot = {3,4},
+        rarity = 0.02,
+        rarity_mod = {0.5,1},
+        can_equip = true,
+        in_loot = false,
+        equip_type = "held"
+    },
+    {
         name = "Flashbang",
         category = "Explosives",
         stacklimit = 10,

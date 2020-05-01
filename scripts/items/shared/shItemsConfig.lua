@@ -51,6 +51,8 @@ ItemsConfig =
             ["Toxic Grenade"] = DamageEntity.ToxicGrenade,
             ["Flashbang"] = DamageEntity.None,
             ["Flares"] = DamageEntity.None,
+            ["AntiGrav Grenade"] = DamageEntity.None,
+            ["Warp Grenade"] = DamageEntity.None,
             ["Laser Grenade"] = DamageEntity.LaserGrenade,
         }
     }
