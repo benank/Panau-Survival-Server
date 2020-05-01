@@ -49,11 +49,12 @@ function cLoader:__init()
 
     self.delta = 0
 
+    self:InitialLoad()
+
     Events:Subscribe("loader/RegisterResource", self, self.RegisterResource)
     Events:Subscribe("loader/CompleteResource", self, self.CompleteResource)
     Events:Subscribe("loader/StartLoad", self, self.StartLoad) -- Call this to restart load, aka changing dimensions
 
-    Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("GameLoad", self, self.GameLoad)
     Events:Subscribe("LocalPlayerDeath", self, self.LocalPlayerDeath)
 
@@ -71,7 +72,7 @@ function cLoader:StartLoad()
 
 end
 
-function cLoader:ModuleLoad()
+function cLoader:InitialLoad()
 
     self.resources_needed = self.resources_needed + self.resources_for_gameload 
 
