@@ -78,6 +78,13 @@ function cLoader:InitialLoad()
 
     self.can_add_resources = true
 
+    -- Fallback
+    Timer.SetTimeout(10 * 1000, function()
+        if not self.game_loaded then
+            self:GameLoad()
+        end
+    end)
+
     self:UpdateResourceCount()
     self:Start()
 
@@ -86,6 +93,7 @@ end
 function cLoader:GameLoad()
 
     Timer.SetTimeout(3000, function()
+        self.game_loaded = true
         self.resources_loaded = self.resources_loaded + self.resources_for_gameload
         self:UpdateResourceCount()
         self:Stop()
