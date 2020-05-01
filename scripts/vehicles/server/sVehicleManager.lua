@@ -721,10 +721,12 @@ function sVehicleManager:SpawnNaturalVehicle(spawn_type, index)
     spawn_args.tone1 = self:GetColorFromHSV(config.colors.default)
     spawn_args.tone2 = spawn_args.tone1 -- Matching tones here so cars look normal. 
 
+    local health = config.spawn.health.min + (config.spawn.health.max - config.spawn.health.min) * random()
     local vehicle = self:SpawnVehicle(spawn_args)
-    vehicle:SetHealth(config.spawn.health.min + (config.spawn.health.max - config.spawn.health.min) * random())
+    vehicle:SetHealth(health)
     vehicle:SetStreamDistance(500)
 
+    spawn_args.health = health
     local vehicle_data = self:GenerateVehicleData(spawn_args)
     vehicle_data.health = vehicle:GetHealth()
     vehicle_data.position = vehicle:GetPosition()
@@ -759,6 +761,7 @@ function sVehicleManager:GetVehicleCost(args)
     local sign = random() > 0.5 and -1 or 1
 
     cost = cost * (1 + (sign * config.spawn.variance))
+    cost = cost * args.health -- Scale cost based on health
     cost = math.ceil(cost)
 
     return cost

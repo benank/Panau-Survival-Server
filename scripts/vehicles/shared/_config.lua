@@ -45,7 +45,7 @@ config =
             [53] = 100,
         },
         variance = 0.05,
-        health = {max = 1, min = 0.8},
+        health = {max = 1, min = 0.7},
         cost_modifier = 1 -- Global cost modifier for all vehicles (integer)
     },
     cost_multiplier_on_purchase = 3, -- Cost multiplier after purchasing an unowned vehicle
