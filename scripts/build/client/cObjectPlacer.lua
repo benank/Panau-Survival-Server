@@ -116,11 +116,12 @@ function cObjectPlacer:Render(args)
     local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(self.rotation_yaw / 180 * math.pi, 0, 0) * self.angle_offset
     self.object:SetAngle(ang)
 
+    local pitch = math.abs(ang.pitch)
     local roll = math.abs(ang.roll)
 
-    if self.disable_walls and roll > math.pi / 6 then
+    if self.disable_walls and (pitch > math.pi / 6 or roll > math.pi / 6) then
         can_place_here = false
-    elseif self.disable_ceil and roll > math.pi * 0.6 then
+    elseif self.disable_ceil and (pitch > math.pi * 0.6 or roll > math.pi * 0.6) then
         can_place_here = false
     end
 

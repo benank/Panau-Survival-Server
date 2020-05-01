@@ -74,10 +74,11 @@ function sStashPlacement:PlaceStash(args, player)
         return
     end
 
+    local pitch = math.abs(args.angle.pitch)
     local roll = math.abs(args.angle.roll)
 
     -- Trying to place on a wall or something
-    if roll > math.pi / 6 then
+    if pitch > math.pi / 6 or roll > math.pi / 6 then
         Chat:Send(player, "Cannot place stash here!", Color.Red)
         return
     end
