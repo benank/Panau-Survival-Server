@@ -44,7 +44,7 @@ config =
             [24] = 200,
             [53] = 100,
         },
-        variance = 0.10,
+        variance = 0.05,
         health = {max = 1, min = 0.8},
         cost_modifier = 1 -- Global cost modifier for all vehicles (integer)
     },
