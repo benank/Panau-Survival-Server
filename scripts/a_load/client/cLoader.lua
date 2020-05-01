@@ -55,6 +55,7 @@ function cLoader:__init()
     Events:Subscribe("loader/CompleteResource", self, self.CompleteResource)
     Events:Subscribe("loader/StartLoad", self, self.StartLoad) -- Call this to restart load, aka changing dimensions
 
+    Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
     Events:Subscribe("GameLoad", self, self.GameLoad)
     Events:Subscribe("LocalPlayerDeath", self, self.LocalPlayerDeath)
 
@@ -63,6 +64,10 @@ function cLoader:__init()
         Events:Fire("LoaderReady")
     end)
 
+end
+
+function cLoader:ModulesLoad()
+    Events:Fire("LoaderReady")
 end
 
 -- Call this event to allow RegisterResource so you can have a load screen for different dimensions
