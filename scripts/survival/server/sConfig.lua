@@ -8,8 +8,8 @@ config =
     },
     respawn = 
     {
-        hunger = 75,
-        thirst = 75
+        hunger = 100,
+        thirst = 100
     },
     decay = 
     {
