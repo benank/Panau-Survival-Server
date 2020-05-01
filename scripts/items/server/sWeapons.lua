@@ -54,6 +54,8 @@ end
 -- Called when a player fires a weapon
 function sWeaponManager:FireWeapon(args, player)
 
+    if player:GetValue("dead") or player:GetHealth() <= 0 then return end
+
     local weapon = player:GetEquippedWeapon()
     if not weapon then return end
 

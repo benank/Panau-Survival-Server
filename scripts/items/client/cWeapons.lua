@@ -43,7 +43,12 @@ function WeaponManager:__init()
     Network:Subscribe(var("items/ForceWeaponSwitch"):get(), self, self.ForceWeaponSwitch)
     Events:Subscribe(var("PostTick"):get(), self, self.PostTick)
     Events:Subscribe(var("LocalPlayerInput"):get(), self, self.LocalPlayerInput)
+    Events:Subscribe(var("LocalPlayerDeath"):get(), self, self.LocalPlayerDeath)
     Events:Subscribe(var("InputPoll"):get(), self, self.InputPoll)
+end
+
+function WeaponManager:LocalPlayerDeath()
+    self.ready = false
 end
 
 function WeaponManager:IsCurrentWeaponOutOfAmmo()
