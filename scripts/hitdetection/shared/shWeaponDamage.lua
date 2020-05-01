@@ -15,6 +15,7 @@ WeaponBaseDamage =
 
 FireDamagePerSecond = 0.05
 ToxicDamagePerSecond = 0.08
+WarpGrenadeDamage = 0.25
 
 VehicleGuardDamage = 1.0 -- Instakill
 

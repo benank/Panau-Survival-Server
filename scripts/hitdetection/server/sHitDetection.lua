@@ -11,9 +11,27 @@ function sHitDetection:__init()
     Events:Subscribe("HitDetection/PlayerSurvivalDamage", self, self.PlayerSurvivalDamage)
 
     Events:Subscribe("HitDetection/VehicleGuardActivate", self, self.VehicleGuardActivate)
+    Events:Subscribe("HitDetection/WarpGrenade", self, self.WarpGrenade)
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
+end
+
+function sHitDetection:WarpGrenade(args)
+
+    args.player:Damage(WarpGrenadeDamage, DamageEntity.WarpGrenade)
+
+    local msg = string.format("%s [%s] was damaged by warp grenade for %s damage",
+        args.player:GetName(), 
+        tostring(args.player:GetSteamId()),
+        tostring(WarpGrenadeDamage))
+
+    print(msg)
+    Events:Fire("Discord", {
+        channel = "Hitdetection",
+        content = msg
+    })
+
 end
 
 function sHitDetection:VehicleGuardActivate(args)
