@@ -11,10 +11,17 @@ function sSpawnManager:__init()
 	Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
 	Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
 	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
-	Events:Subscribe("PostTick", self, self.PostTick)
+    Events:Subscribe("PostTick", self, self.PostTick)
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
 	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
 
+end
+
+function sSpawnManager:ModuleUnload()
+    for p in Server:GetPlayers() do
+        self:UpdatePlayer(p)
+    end
 end
 
 function sSpawnManager:EnterExitSafezone(args, player)
@@ -57,19 +64,7 @@ end
 
 function sSpawnManager:UpdatePlayerPositionMinuteTick(player)
 
-	if not IsValid(player) then return end
-	if player:GetValue("IsOkToSavePosition") ~= 0 then return end
-	if player:GetValue("dead") or player:GetValue("Loading") or not player:GetEnabled() then return end
-
-	local steamid = tostring(player:GetSteamId().id)
-	local pos = player:GetPosition()
-
-	local command = SQL:Command("UPDATE positions SET x = ?, y = ?, z = ? WHERE steamID = (?)")
-	command:Bind(1, pos.x)
-	command:Bind(2, pos.y)
-	command:Bind(3, pos.z)
-	command:Bind(4, steamid)
-	command:Execute()
+	self:UpdatePlayer(player)
 
 end
 
@@ -80,15 +75,22 @@ function sSpawnManager:PlayerQuit(args)
         content = string.format("*%s [%s] left the server.*", args.player:GetName(), args.player:GetSteamId())
     })
 
-	if args.player:GetValue("IsOkToSavePosition") ~= 0 then return end
-	if args.player:GetValue("Loading") and not args.player:GetValue("dead") then return end
+    self:UpdatePlayer(args.player)
 
-	local pos = args.player:GetPosition()
-	local steamid = tostring(args.player:GetSteamId().id)
+end
 
-	if args.player:GetHealth() <= 0 or args.player:GetValue("Spawn/KilledRecently") or not args.player:GetEnabled() 
-		or (args.player:GetValue("dead")) then
-		pos = self:GetRespawnPosition(args.player)
+function sSpawnManager:UpdatePlayer(player)
+
+    if not IsValid(player) then return end
+	if player:GetValue("IsOkToSavePosition") ~= 0 then return end
+	if player:GetValue("Loading") and not player:GetValue("dead") then return end
+
+	local pos = player:GetPosition()
+	local steamid = tostring(player:GetSteamId().id)
+
+	if player:GetHealth() <= 0 or player:GetValue("Spawn/KilledRecently") or not player:GetEnabled() 
+		or (player:GetValue("dead")) then
+		pos = self:GetRespawnPosition(player)
 	end
 
 	local command = SQL:Command("UPDATE positions SET x = ?, y = ?, z = ? WHERE steamID = (?)")
