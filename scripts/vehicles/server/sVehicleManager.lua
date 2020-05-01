@@ -760,8 +760,12 @@ function sVehicleManager:GetVehicleCost(args)
 
     local sign = random() > 0.5 and -1 or 1
 
-    cost = cost * (1 + (sign * config.spawn.variance))
     cost = cost * args.health -- Scale cost based on health
+
+    if random() < config.spawn.half_off_chance then
+        cost = cost * 0.5
+    end
+
     cost = math.ceil(cost)
 
     return cost
