@@ -1,39 +1,80 @@
-Events:Subscribe("Inventory/ToggleEquipped", function(args)
+class 'sWeaponManager'
+
+function sWeaponManager:__init()
+
+
+    Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
+    Events:Subscribe("InventoryUpdated", self, self.InventoryUpdated)
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
+
+    Network:Subscribe("Items/FireWeapon", self, self.FireWeapon)
+end
+
+function sWeaponManager:PlayerJoin(args)
+    args.player:ClearInventory()
+    args.player:SetValue("EquippedWeapons", {})
+end
+
+function sWeaponManager:ModuleUnload()
+    for player in Server:GetPlayers() do
+        player:ClearInventory()
+    end
+end
+
+function sWeaponManager:ToggleEquipped(args)
 
     if not args.item or not IsValid(args.player) then return end
     if not ItemsConfig.equippables.weapons[args.item.name] then return end
 
     UpdateEquippedItem(args.player, args.item.name, args.item)
-    RefreshEquippedWeapons(args.player)
+    self:RefreshEquippedWeapons(args.player)
 
     Network:Send(args.player, "items/ToggleWeaponEquipped", {equipped = args.item.equipped == true})
-end)
 
-Events:Subscribe("InventoryUpdated", function(args)
-    local weapon = args.player:GetEquippedWeapon()
-    if not weapon then return end
+    local item_equipped_config = ItemsConfig.equippables.weapons[args.item.name]
 
-    local weapon_name = GetWeaponNameFromId(weapon.id)
-    if not weapon_name then return end
+end
 
-    if args.player:GetValue("WeaponAmmo") ~= GetWeaponAmmo({weapon_name = weapon_name, player = args.player}) then
-        -- Dropped or gained ammo, so refresh their gun
-        RefreshEquippedWeapons(args.player)
+function sWeaponManager:InventoryUpdated(args)
+
+    for weapon_name, data in pairs(args.player:GetValue("EquippedWeapons")) do
+
+        if data.ammo ~= self:GetWeaponAmmo({weapon_name = weapon_name, player = args.player}) then
+            -- Dropped or gained ammo, so refresh their gun
+
+            -- TODO: fix it always going back to right hand weapon instead of back to old equipped slot
+            self:RefreshEquippedWeapons(args.player)
+            break
+        end
+        
     end
-end)
+end
 
-function FireWeapon(args, player)
+-- Called when a player fires a weapon
+function sWeaponManager:FireWeapon(args, player)
 
     local weapon = player:GetEquippedWeapon()
     if not weapon then return end
 
-    local weapon_name = GetWeaponNameFromId(weapon.id)
+    local weapon_name = self:GetWeaponNameFromId(weapon.id)
     if not weapon_name then return end
 
     local ammo_name = Items_ammo_types[weapon_name]
-    local ammo_amount = GetWeaponAmmo({weapon_name = weapon_name, player = player})
+    local ammo_amount = self:GetWeaponAmmo({weapon_name = weapon_name, player = player})
 
-    if not args.ammo or ammo_amount ~= args.ammo then
+    local player_weapons = player:GetValue("EquippedWeapons")
+    
+    if not player_weapons[weapon_name] then
+        Events:Fire("KickPlayer", {
+            player = player,
+            reason = string.format("Weapon mismatch. Player has does not have weapon %s equipped", weapon_name),
+            p_reason = "Weapon mismatch"
+        })
+        return
+    end
+
+    if not args.ammo or args.ammo > ammo_amount then
         Events:Fire("KickPlayer", {
             player = player,
             reason = string.format("Ammo mismatch. Current ammo %s, last known ammo: %s", 
@@ -45,22 +86,23 @@ function FireWeapon(args, player)
 
     if ammo_amount == 0 then
         -- They are firing a gun they do not have ammo for
-        -- ban
         Events:Fire("KickPlayer", {
             player = player,
-            reason = string.format("Weapon mismatch. No ammo found for weapon: %s", 
+            reason = string.format("Ammo mismatch. No ammo found for weapon: %s", 
                 tostring(weapon_name)),
-            p_reason = "Weapon mismatch"
+            p_reason = "Ammo mismatch"
         })
 
     else
-        player:SetValue("InventoryOperationBlock", player:GetValue("InventoryOperationBlock") + 1)
+
         -- Remove ammo from inventory and decrease weapon durability
         local item_data = Items_indexed[ammo_name]
         item_data.amount = 1
         local ammo_item = shItem(item_data)
 
-        player:SetValue("WeaponAmmo", ammo_amount - 1)
+        player_weapons[weapon_name].ammo = player_weapons[weapon_name].ammo - 1
+        player:SetValue("EquippedWeapons", player_weapons)
+        
         Inventory.RemoveItem({player = player, item = ammo_item:GetSyncObject()})
 
         -- Now decrease equipped weapon durability
@@ -68,14 +110,12 @@ function FireWeapon(args, player)
 
         if not equipped_item then
             -- Shooting a weapon that they do not have equipped
-            -- ban
-            --[[Events:Fire("KickPlayer", {
+            Events:Fire("KickPlayer", {
                 player = player,
                 reason = string.format("Weapon mismatch. Not equipped: %s", 
                     tostring(weapon_name)),
                 p_reason = "Weapon mismatch"
-            })]]
-
+            })
             return
         end
 
@@ -83,28 +123,20 @@ function FireWeapon(args, player)
         Inventory.ModifyDurability({player = player, item = equipped_item})
         UpdateEquippedItem(player, equipped_item.name, equipped_item)
 
-        Timer.SetTimeout(500, function()
-            if IsValid(player) then
-                player:SetValue("InventoryOperationBlock", player:GetValue("InventoryOperationBlock") - 1)
-            end
-        end)
-
     end
-
 
 end
 
-Network:Subscribe("Items/FireWeapon", FireWeapon)
-
-function GetWeaponNameFromId(weapon_id)
+function sWeaponManager:GetWeaponNameFromId(weapon_id)
     for name,v in pairs(ItemsConfig.equippables.weapons) do
         if v.weapon_id == weapon_id then return name end
     end
 end
 
-function RefreshEquippedWeapons(player)
-
+function sWeaponManager:RefreshEquippedWeapons(player)
+    
     local player_equipped = player:GetValue("EquippedItems")
+    local equipped_weapons = player:GetValue("EquippedWeapons")
 
     player:ClearInventory()
 
@@ -112,9 +144,10 @@ function RefreshEquippedWeapons(player)
 
         local item_equipped_config = ItemsConfig.equippables.weapons[v.name]
 
-        if v.equip_type == "weapon" and item_equipped_config and item_equipped_config.weapon_id then
+        if (v.equip_type == "weapon_1h" or v.equip_type == "weapon_2h")
+         and item_equipped_config and item_equipped_config.weapon_id then
 
-            local ammo = GetWeaponAmmo({weapon_name = v.name, player = player})
+            local ammo = self:GetWeaponAmmo({weapon_name = v.name, player = player})
             player:SetValue("WeaponAmmo", ammo)
 
             player:GiveWeapon(item_equipped_config.equip_slot, Weapon(
@@ -123,24 +156,28 @@ function RefreshEquippedWeapons(player)
                 ammo
             ))
 
+            equipped_weapons[v.name] = {
+                id = item_equipped_config.weapon_id,
+                ammo = ammo
+            }
+
             Network:Send(player, "items/ForceWeaponSwitch", 
             {
                 slot = item_equipped_config.equip_slot,
                 weapon = item_equipped_config.weapon_id,
                 ammo = ammo
             })
-            -- Force input on player so the guns appear correctly and not under their feet
-
-            return
 
         end
 
     end
 
+    player:SetValue("EquippedWeapons", equipped_weapons)
+
 end
 
 -- Needs weapon_name and player
-function GetWeaponAmmo(args)
+function sWeaponManager:GetWeaponAmmo(args)
 
     if not args.weapon_name or not IsValid(args.player) then return 0 end
 
@@ -164,12 +201,4 @@ function GetWeaponAmmo(args)
 
 end
 
-Events:Subscribe("ModuleUnload", function()
-    for player in Server:GetPlayers() do
-        player:ClearInventory()
-    end
-end)
-
-Events:Subscribe("ClientModuleLoad", function(args)
-    args.player:ClearInventory()
-end)
+sWeaponManager = sWeaponManager()

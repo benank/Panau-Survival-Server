@@ -702,7 +702,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_2h"
     },
     {
         name = "Bubble Gun",
@@ -714,7 +714,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Grenade Launcher",
@@ -726,7 +726,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Handgun",
@@ -738,7 +738,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Machine Gun",
@@ -750,7 +750,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_2h"
     },
     {
         name = "Revolver",
@@ -762,7 +762,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Rocket Launcher",
@@ -774,7 +774,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_2h"
     },
     {
         name = "Sawn-Off Shotgun",
@@ -786,7 +786,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Shotgun",
@@ -798,7 +798,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_2h"
     },
     {
         name = "SMG",
@@ -810,7 +810,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Sniper Rifle",
@@ -822,7 +822,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_2h"
     },
     {
         name = "SMRT-GRP",
@@ -870,7 +870,7 @@ Items =
         can_equip = true,
         durable = true,
         in_loot = false,
-        equip_type = "weapon",
+        equip_type = "weapon_1h",
     },
     {
         name = "EMP", -- Sets off a blast that disables all electronics within a range

@@ -1,6 +1,6 @@
-local blacklist = {
+--[[local blacklist = {
     [Action.NextWeapon] = true,
-    --[Action.PrevWeapon] = true,
+    [Action.PrevWeapon] = true,
     [Action.SwitchWeapon] = true,
     [Action.Weapon0] = true,
     [Action.Weapon1] = true,
@@ -28,4 +28,4 @@ Events:Subscribe("LocalPlayerInput", function(args)
 
     if blacklist[args.input] then return false end
 
-end)
+end)]]
