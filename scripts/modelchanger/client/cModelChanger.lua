@@ -73,6 +73,16 @@ function cModelChanger:__init()
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("SecondTick", self, self.SecondTick)
+    Events:Subscribe("LocalPlayerDeath", self, self.LocalPlayerDeath)
+end
+
+function cModelChanger:LocalPlayerDeath()
+    
+    for k,v in pairs(self.model_change_areas) do
+        v:Remove()
+    end
+    
+    self.model_change_areas = {}
 end
 
 function cModelChanger:PressButton(button)
@@ -135,11 +145,13 @@ function cModelChanger:SecondTick()
         local dist = player_pos:Distance(zone_data.pos)
 
         if dist < self.streaming_dist and not self.model_change_areas[name] then
+            print("CREATE ZONE")
             self.model_change_areas[name] = cModelChangeArea({
                 position = zone_data.pos,
                 name = name
             })
         elseif dist > self.streaming_dist and self.model_change_areas[name] then
+            print("REMOVE ZONE")
             self.model_change_areas[name]:Remove()
             self.model_change_areas[name] = nil
         end
