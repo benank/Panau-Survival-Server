@@ -44,7 +44,7 @@ config =
             [24] = 200,
             [53] = 100,
         },
-        half_off_chance = 0.05,
+        half_off_chance = 0.02,
         health = {max = 1, min = 0.7},
         cost_modifier = 1 -- Global cost modifier for all vehicles (integer)
     },
