@@ -11,7 +11,6 @@ function sBans:__init()
 end
 
 function sBans:PlayerAuthenticate(args)
-    print(tostring(args.player:GetSteamId()))
     if self.pending_bans[tostring(args.player:GetSteamId())] then
         args.player:Ban("Banned")
 
