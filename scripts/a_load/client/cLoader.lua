@@ -60,9 +60,7 @@ function cLoader:__init()
     Events:Subscribe("LocalPlayerDeath", self, self.LocalPlayerDeath)
 
     -- Fire event for when modules reload
-    Timer.SetTimeout(1000, function()
-        Events:Fire("LoaderReady")
-    end)
+    Events:Fire("LoaderReady")
 
 end
 

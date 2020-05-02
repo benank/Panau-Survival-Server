@@ -12,7 +12,7 @@ function sDonator:__init()
         ["/tagcolor"] = {level = DonatorLevel.Colorful, msg = "Allows you to set your [Donator] tag color (or custom tag color)."},
         ["/togglestreak"] = {level = DonatorLevel.Colorful, msg = "Turns your color streak on/off."},
         ["/toggleghostrider"] = {level = DonatorLevel.GhostRider, msg = "Turns your Ghost Rider head and flame on/off."},
-        ["/tagname"] = {level = DonatorLevel.GhostRider, msg = "Sets your [Donator] tag name to something else."},
+        ["Custom Nametag"] = {level = DonatorLevel.GhostRider, msg = "To get a custom tag instead of [Donator], please contact Lord Farquaad."},
         ["/togglewings"] = {level = DonatorLevel.ShadowWings, msg = "Turns your Shadow Wings on/off."},
     }
 
@@ -40,7 +40,33 @@ function sDonator:DonatorSetColor(args, player)
 
 end
 
+function sDonator:ParseCustomNametag(args)
+
+    if not IsAdmin(args.player) then return end
+    
+    local words = args.text:split(" ")
+
+    if words[1] == "/tagname" and words[2] then
+        local tag_name = ""
+        for i = 3, #words do
+            tag_name = tag_name .. words[i] .. " "
+        end
+        tag_name = tag_name:trim()
+
+        local command = SQL:Command("UPDATE donators SET DonatorTagName = ? WHERE steamID = (?)")
+        command:Bind(1, tag_name)
+        command:Bind(2, tostring(words[2]))
+        command:Execute()
+
+        Chat:Send(args.player, string.format("Updated donator tag name to %s for [%s]", tag_name, words[2]), Color.Yellow)
+
+    end
+end
+
 function sDonator:PlayerChat(args)
+
+    self:ParseCustomNametag(args)
+
     local benefits = args.player:GetValue("DonatorBenefits")
 
     local words = args.text:split(" ")
@@ -56,7 +82,7 @@ function sDonator:PlayerChat(args)
         Chat:Send(args.player, "Donator commands:", color)
         for name, cmd_data in pairs(self.commands) do
             if name ~= "/donator" and benefits.level >= cmd_data.level then
-                Chat:Send(args.player, string.format("%s - %s", name, cmd_data.msg), color)
+                Chat:Send(args.player, string.format("%s", name), Color.Yellow, string.format(" - %s", cmd_data.msg), color)
             end
         end
         return
@@ -118,6 +144,7 @@ function sDonator:ClientModuleLoad(args)
 
     if count_table(result) > 0 and tonumber(donator_data.level) == tonumber(result[1].level) then -- if already in DB and level did not change
 
+        output_table(donator_benefits)
         for benefit_name, benefit_value in pairs(result[1]) do
             donator_benefits[benefit_name] = self:Deserialize(benefit_name, benefit_value)
         end
@@ -196,12 +223,12 @@ end
 
 function sDonator:Deserialize(type, data)
     if type:find("Enabled") then
-        return data == 1 and true or false
+        return tonumber(data) == 1 and true or false
     elseif type == "NameColor" or type == "DonatorTagColor" then
         local split = data:split(",")
         return Color(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]))
     end
-    return data
+    return tostring(data)
 end
 
 function sDonator:Serialize(data)
