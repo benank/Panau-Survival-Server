@@ -57,7 +57,7 @@ function WeaponManager:IsCurrentWeaponOutOfAmmo()
     local cweapon = self.weapons[weapon.id]
     if not cweapon then return true end
 
-    return cweapon.ammo == 0
+    return cweapon:GetAmmo() == 0
 end
 
 function WeaponManager:InputPoll(args)
@@ -74,7 +74,8 @@ function WeaponManager:LocalPlayerInput(args)
         
         -- Stop action when out of ammo to fix JC2MP sync bug
         -- You can fire rockets when 0 ammo because it appears on other clients' screens
-        if self:IsCurrentWeaponOutOfAmmo() == 0 then return false end
+        print()
+        if self:IsCurrentWeaponOutOfAmmo() then return false end
     end
 end
 
