@@ -6,7 +6,7 @@ local func = coroutine.wrap(function()
         
         local time_diff = os.time() - start_time
         local diff = math.abs(timer:GetSeconds() - time_diff)
-        if diff > 2 then
+        if diff > 1 then
             Network:Send(var("Anticheat/Speedhack"):get(), {diff = diff})
         end
 
