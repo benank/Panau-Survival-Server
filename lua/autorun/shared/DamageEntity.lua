@@ -24,5 +24,6 @@ DamageEntityNames =
     [DamageEntity.LaserGrenade] = "Laser Grenade",
     [DamageEntity.Hunger] = "Hunger",
     [DamageEntity.Thirst] = "Thirst",
+    [DamageEntity.VehicleGuard] = "Vehicle Guard",
     [DamageEntity.WarpGrenade] = "Warp Grenade",
 }
