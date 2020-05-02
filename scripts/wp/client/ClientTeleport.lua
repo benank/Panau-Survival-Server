@@ -1,5 +1,5 @@
 function SendWaypoint(args)
-    if not (IsTest or IsStaff(player)) then return end
+    if not (IsTest or IsAdmin(player)) then return end
 	if args.key == string.byte("P") and not LocalPlayer:GetValue("Talking") then
 		
 		if Waypoint:GetPosition() ~= Vector3(0, 0, 0) then
