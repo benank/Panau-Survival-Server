@@ -144,7 +144,6 @@ function sDonator:ClientModuleLoad(args)
 
     if count_table(result) > 0 and tonumber(donator_data.level) == tonumber(result[1].level) then -- if already in DB and level did not change
 
-        output_table(donator_benefits)
         for benefit_name, benefit_value in pairs(result[1]) do
             donator_benefits[benefit_name] = self:Deserialize(benefit_name, benefit_value)
         end
