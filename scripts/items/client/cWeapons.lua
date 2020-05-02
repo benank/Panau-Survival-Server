@@ -74,7 +74,6 @@ function WeaponManager:LocalPlayerInput(args)
         
         -- Stop action when out of ammo to fix JC2MP sync bug
         -- You can fire rockets when 0 ammo because it appears on other clients' screens
-        print()
         if self:IsCurrentWeaponOutOfAmmo() then return false end
     end
 end
