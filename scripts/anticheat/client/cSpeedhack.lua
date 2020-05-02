@@ -9,6 +9,9 @@ local func = coroutine.wrap(function()
         if diff > 1 then
             Network:Send(var("Anticheat/Speedhack"):get(), {diff = diff})
         end
+        
+        timer:Restart()
+        start_time = os.time()
 
         Timer.Sleep(1000)
     end
