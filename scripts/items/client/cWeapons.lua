@@ -182,13 +182,12 @@ function WeaponManager:ForceInputWeaponSwitch(slot)
         elseif slot == WeaponSlot.Right then
             Input:SetValue(Action.EquipRightSlot, 1)
         end
-
-    end)
-
-    Timer.SetTimeout(250, function()
+        
         Events:Unsubscribe(self.weapon_switch_input_sub)
         self.weapon_switch_input_sub = nil
+
     end)
+
 end
 
 WeaponManager = WeaponManager()
