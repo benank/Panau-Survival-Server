@@ -103,9 +103,14 @@ function cLoader:GameLoad()
 
     if not self.game_loaded then
         self.game_loaded = true
-        self.resources_loaded = self.resources_loaded + self.resources_for_gameload
+        self.resources_loaded = self.resources_loaded + self.resources_for_gameload / 2
         self:UpdateResourceCount()
-        self:Stop()
+        Timer.SetTimeout(3000, function()
+            self.game_loaded = true
+            self.resources_loaded = self.resources_loaded + self.resources_for_gameload / 2
+            self:UpdateResourceCount()
+            self:Stop()
+        end)
     end
 
 end
