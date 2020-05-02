@@ -80,13 +80,19 @@ function cLoader:InitialLoad()
     self.resources_needed = self.resources_needed + self.resources_for_gameload 
 
     self.can_add_resources = true
+    
+    local func = coroutine.wrap(function()
+        while not self.game_loaded do
 
-    -- Fallback
-    Timer.SetTimeout(10 * 1000, function()
-        if not self.game_loaded then
-            self:GameLoad()
+            if Game:GetState() == GUIState.Game then
+                self:GameLoad()
+                self.game_loaded = true
+            end
+
+            Timer.Sleep(100)
         end
-    end)
+    end)()
+
 
     self:UpdateResourceCount()
     self:Start()
@@ -95,12 +101,12 @@ end
 
 function cLoader:GameLoad()
 
-    Timer.SetTimeout(3000, function()
+    if not self.game_loaded then
         self.game_loaded = true
         self.resources_loaded = self.resources_loaded + self.resources_for_gameload
         self:UpdateResourceCount()
         self:Stop()
-    end)
+    end
 
 end
 
@@ -108,6 +114,7 @@ function cLoader:LocalPlayerDeath()
 
     self.resources_needed = 0
     self.resources_loaded = 0
+    self.game_loaded = false
 
     Timer.SetTimeout(5000, function()
         self.resources_needed = self.resources_needed + self.resources_for_gameload
@@ -264,8 +271,10 @@ function cLoader:Stop()
         Game:FireEvent("ply.unpause")
         Game:FireEvent("ply.vulnerable")
 
-        for k,v in pairs(self.subs) do
-            Events:Unsubscribe(v)
+        if self.subs then
+            for k,v in pairs(self.subs) do
+                Events:Unsubscribe(v)
+            end
         end
 
         self.can_add_resources = false
