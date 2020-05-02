@@ -77,6 +77,9 @@ function AssetManagerMenu:UpdateVehicleSecondTick()
             pos = vehicle_data.data.vehicle:GetPosition()
         end
 
+        -- Also update position in data table
+        self.categories["Vehicles"].vehicles[id].data.position = pos
+
         vehicle_data.item:SetCellText( 2, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(pos)) )
         
         local health = IsValid(vehicle_data.data.vehicle) and vehicle_data.data.vehicle:GetHealth() or vehicle_data.data.health
