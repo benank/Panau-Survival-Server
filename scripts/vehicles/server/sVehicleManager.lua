@@ -437,12 +437,14 @@ function sVehicleManager:TryBuyVehicle(args)
     local owned_vehicles = args.player:GetValue("OwnedVehicles")
 
     if player_lockpicks < args.data.cost then
+        Chat:Send(args.player, "You do not have enough lockpicks to purchase this vehicle!", Color.Red)
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
         return
     end
 
     if count_table(owned_vehicles) >= config.player_max_vehicles then
+        Chat:Send(args.player, "You already own the maximum amount of vehicles!", Color.Red)
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
         return
