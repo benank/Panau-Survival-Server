@@ -97,15 +97,10 @@ function sAntiCheat:LagCheck(args, player)
 
     local diff = Server:GetElapsedSeconds() - last_check
 
-    Events:Fire("Discord", {
-        channel = "Errors",
-        content = msg
-    })
-
     if diff < 2 then
         Events:Fire("Discord", {
             channel = "Errors",
-            reason = string.format("Lag check invalid [%s %s] - response sent too quickly (%.2f seconds)", 
+            content = string.format("Lag check invalid [%s %s] - response sent too quickly (%.2f seconds)", 
                 player:GetName(), player:GetSteamId(), diff)
         })
         player:SetValue("LagStrikes", player:GetValue("LagStrikes") + 1)
@@ -115,7 +110,7 @@ function sAntiCheat:LagCheck(args, player)
     if diff > 7 then
         Events:Fire("Discord", {
             channel = "Errors",
-            reason = string.format("Lag check invalid [%s %s] - response sent too late (%.2f seconds)", 
+            content = string.format("Lag check invalid [%s %s] - response sent too late (%.2f seconds)", 
                 player:GetName(), player:GetSteamId(), diff)
         })
         player:SetValue("LagStrikes", player:GetValue("LagStrikes") + 1)
