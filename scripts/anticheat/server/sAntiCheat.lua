@@ -41,18 +41,22 @@ function sAntiCheat:CheckServerHealth()
 
                 local players_msg = "Players Online:"
 
-                for id, p in pairs(players_history[tostring(string.format("%.0f", last_time))]) do
-                    if IsValid(p) then
-                        players_msg = players_msg .. "\n" .. string.format("%s [%s] [%s]", p:GetName(), p:GetSteamId(), p:GetIP())
+                local last_players = players_history[tostring(string.format("%.0f", last_time))]
+
+                if last_players then
+                    for id, p in pairs(last_players) do
+                        if IsValid(p) then
+                            players_msg = players_msg .. "\n" .. string.format("%s [%s] [%s]", p:GetName(), p:GetSteamId(), p:GetIP())
+                        end
                     end
+
+                    print(players_msg)
+
+                    Events:Fire("Discord", {
+                        channel = "Errors",
+                        content = players_msg
+                    })
                 end
-
-                print(players_msg)
-
-                Events:Fire("Discord", {
-                    channel = "Errors",
-                    content = msg
-                })
 
             end
 
