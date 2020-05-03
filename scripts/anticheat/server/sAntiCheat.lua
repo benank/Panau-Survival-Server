@@ -108,7 +108,7 @@ function sAntiCheat:LagCheck(args, player)
             reason = string.format("Lag check invalid [%s %s] - response sent too quickly (%.2f seconds)", 
                 player:GetName(), player:GetSteamId(), diff)
         })
-        args.player:SetValue("LagStrikes", args.player:GetValue("LagStrikes") + 1)
+        player:SetValue("LagStrikes", player:GetValue("LagStrikes") + 1)
         return
     end
 
@@ -118,13 +118,13 @@ function sAntiCheat:LagCheck(args, player)
             reason = string.format("Lag check invalid [%s %s] - response sent too late (%.2f seconds)", 
                 player:GetName(), player:GetSteamId(), diff)
         })
-        args.player:SetValue("LagStrikes", args.player:GetValue("LagStrikes") + 1)
+        player:SetValue("LagStrikes", player:GetValue("LagStrikes") + 1)
         return
     end
 
     player:SetValue("LastLagCheck", Server:GetElapsedSeconds())
 
-    if args.player:GetValue("LagStrikes") >= self.max_lag_strikes then
+    if player:GetValue("LagStrikes") >= self.max_lag_strikes then
         Events:Fire("KickPlayer", {
             player = player,
             reason = string.format("Max lag strikes reached.", diff),
