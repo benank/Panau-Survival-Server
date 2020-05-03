@@ -56,10 +56,10 @@ Events:Subscribe("Inventory/UseItem", function(args)
         player_iu.timeout = Timer.SetTimeout(use_time * 1000, function()
             local player_iu2 = args.player:GetValue("ItemUse")
 
-            if player_iu2.using --[[and player_iu2.health <= args.player:GetHealth()]] then
-                player_iu2.completed = true;
+            if player_iu2.using then
+                player_iu2.completed = true
             else
-                player_iu2.using = false;
+                player_iu2.using = false
             end
             args.player:SetValue("ItemUse", player_iu2)
         end)

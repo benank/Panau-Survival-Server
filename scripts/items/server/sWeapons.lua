@@ -62,9 +62,10 @@ function sWeaponManager:CheckPendingShots()
             if count_table(self.pending_fire) > 0 then
                 local data = table.remove(self.pending_fire)
                 self:ProcessWeaponShot(data.args, data.player)
+                Timer.Sleep(1)
             end
 
-            Timer.Sleep(5)
+            Timer.Sleep(10)
         end
     end)()
 

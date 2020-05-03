@@ -5,13 +5,21 @@ class 'sSpawnManager'
 
 function sSpawnManager:__init()
 
-	self.timer = Timer()
+    self.timer = Timer()
+    
+    local func = coroutine.wrap(function()
+        for player in Server:GetPlayers() do
+            self:UpdatePlayerPositionMinuteTick(player)
+            Timer.Sleep(3)
+        end
+        Timer.Sleep(1000)
+    end)()
+    
 
 	Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
 	Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
 	Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
 	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
-    Events:Subscribe("PostTick", self, self.PostTick)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
 	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
@@ -42,22 +50,6 @@ function sSpawnManager:EnterExitSafezone(args, player)
 		player:EnableCollision(CollisionGroup.Vehicle, CollisionGroup.Player)
 		player:EnableCollision(CollisionGroup.Vehicle, CollisionGroup.Vehicle)
 		player:EnableCollision(CollisionGroup.Player, CollisionGroup.Player)
-    end
-
-end
-
-function sSpawnManager:PostTick()
-
-    if self.timer:GetSeconds() > 60 then
-
-        for player in Server:GetPlayers() do
-
-            self:UpdatePlayerPositionMinuteTick(player)
-
-		end
-		
-		self.timer:Restart()
-
     end
 
 end

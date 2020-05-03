@@ -4,13 +4,12 @@ class 'sSurvivalManager'
 function sSurvivalManager:__init()
 
     self.players_dying = {} -- Players who are dying from hunger or thirst being 0
-    self.timer = Timer()
-    self.damage_timer = Timer()
     self.damage_interval = 5 -- Every 5 seconds, dying players are damaged
+
+    self:SetupIntervals()
 
     Network:Subscribe("Survival/Ready", self, self.PlayerReady)
     Network:Subscribe("Survival/UpdateClimateZone", self, self.UpdateClimateZone)
-    Events:Subscribe("PostTick", self, self.PostTick)
     Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
@@ -82,9 +81,6 @@ function sSurvivalManager:UseItem(args)
 
     end
 
-
-    -- TODO CHECK IF THEY WERE DYING FROM HUNGER OR THIRST BEING 0
-
     self:SyncToPlayer(args.player)
     self:UpdateDB(args.player)
     
@@ -122,26 +118,27 @@ function sSurvivalManager:PlayerSpawn(args)
 
 end
 
-function sSurvivalManager:PostTick(args)
+function sSurvivalManager:SetupIntervals()
 
-    if self.timer:GetSeconds() > 60 then
+    local func = coroutine.wrap(function()
+        while true do
 
-        for player in Server:GetPlayers() do
-
-            self:AdjustSurvivalStats(player)
+            for player in Server:GetPlayers() do
+                self:AdjustSurvivalStats(player)
+                Timer.Sleep(5)
+            end
+            
+            Timer.Sleep(1000 * 60)
 
         end
-        
-        self.timer:Restart()
+    end)()
 
-    end
-
-    if self.damage_timer:GetSeconds() > self.damage_interval then
-
-        self:DamageDyingPlayers()
-
-        self.damage_timer:Restart()
-    end
+    local func2 = coroutine.wrap(function()
+        while true do
+            self:DamageDyingPlayers()
+            Timer.Sleep(1000 * self.damage_interval)
+        end
+    end)()
 
 end
 

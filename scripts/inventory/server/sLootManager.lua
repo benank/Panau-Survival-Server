@@ -19,12 +19,14 @@ function sLootManager:__init()
 end
 
 function sLootManager:ClientModuleLoad(args)
-    if not self.ready then
-        args.player:Kick("The server is still starting. Please wait before connecting.")
-        return
-    end
+
+    local func = coroutine.wrap(function()
+        while not self.ready do
+            Timer.Sleep(500)
+        end
+        Events:Fire("ForcePlayerUpdateCell", {player = args.player, cell_size = Lootbox.Cell_Size})
+    end)()
     
-    Events:Fire("ForcePlayerUpdateCell", {player = args.player, cell_size = Lootbox.Cell_Size})
 end
 
 function sLootManager:PlayerQuit(args)

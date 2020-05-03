@@ -24,7 +24,7 @@ function sVehicleManager:__init()
     Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
     Events:Subscribe("PlayerEnterVehicle", self, self.PlayerEnterVehicle)
 
-    Events:Subscribe("TimeChange", self, self.TimeChange)
+    Events:Subscribe("MinuteTick", self, self.MinuteTick)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
     Events:Subscribe("Items/PlayerUseVehicleGuard", self, self.PlayerUseVehicleGuard)
@@ -207,7 +207,7 @@ function sVehicleManager:Tick500()
     -- Every 500 ms, heal vehicles that are at gas stations
 end
 
-function sVehicleManager:TimeChange()
+function sVehicleManager:MinuteTick()
     for id, timer in pairs(self.despawning_vehicles) do
 
         if count_table(self.owned_vehicles[id]:GetOccupants()) > 0 then
