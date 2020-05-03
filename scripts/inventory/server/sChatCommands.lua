@@ -24,19 +24,23 @@ Events:Subscribe("PlayerChat", function(args)
             return
         end
 
-        for i = 1, amount do
+        local func = coroutine.wrap(function()
+            for i = 1, amount do
 
-            Inventory.AddItem({
-                player = args.player,
-                item = CreateItem({
-                    name = name,
-                    amount = 1
-                }):GetSyncObject()
-            })
+                Inventory.AddItem({
+                    player = args.player,
+                    item = CreateItem({
+                        name = name,
+                        amount = 1
+                    }):GetSyncObject()
+                })
 
-        end
+                Timer.Sleep(20)
 
-        Chat:Send(args.player, "Added " .. name .. " [x" .. tostring(amount) .. "]", Color.Green)
+            end
+            Chat:Send(args.player, "Added " .. name .. " [x" .. tostring(amount) .. "]", Color.Green)
+        end)()
+
 
     elseif args.text == "/box" then
 

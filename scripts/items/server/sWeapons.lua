@@ -2,6 +2,9 @@ class 'sWeaponManager'
 
 function sWeaponManager:__init()
 
+    self.pending_fire = {}
+
+    self:CheckPendingShots()
 
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
     Events:Subscribe("InventoryUpdated", self, self.InventoryUpdated)
@@ -51,10 +54,32 @@ function sWeaponManager:InventoryUpdated(args)
     end
 end
 
+function sWeaponManager:CheckPendingShots()
+    
+    local func = coroutine.wrap(function()
+        while true do
+
+            if count_table(self.pending_fire) > 0 then
+                local data = table.remove(self.pending_fire)
+                self:ProcessWeaponShot(data.args, data.player)
+            end
+
+            Timer.Sleep(5)
+        end
+    end)()
+
+end
+
 -- Called when a player fires a weapon
 function sWeaponManager:FireWeapon(args, player)
+    table.insert(self.pending_fire, {args = args, player = player})
+    -- Important to sort by timestamp so ammo matches
+    table.sort(self.pending_fire, function(a,b) return a.args.ts > b.args.ts end)
+end
 
-    if player:GetValue("dead") or player:GetHealth() <= 0 then return end
+function sWeaponManager:ProcessWeaponShot(args, player)
+
+    if not IsValid(player) or player:GetValue("dead") or player:GetHealth() <= 0 then return end
 
     local weapon = player:GetEquippedWeapon()
     if not weapon then return end
@@ -76,7 +101,9 @@ function sWeaponManager:FireWeapon(args, player)
         return
     end
 
-    if not args.ammo or args.ammo > ammo_amount then
+    local still_pending = count_table(self.pending_fire) > 0
+
+    if (not args.ammo or args.ammo > ammo_amount) and not still_pending then
         Events:Fire("KickPlayer", {
             player = player,
             reason = string.format("Ammo mismatch. Current ammo %s, last known ammo: %s", 
@@ -86,7 +113,7 @@ function sWeaponManager:FireWeapon(args, player)
         return
     end
 
-    if ammo_amount == 0 then
+    if ammo_amount == 0 and not still_pending then
         -- They are firing a gun they do not have ammo for
         Events:Fire("KickPlayer", {
             player = player,

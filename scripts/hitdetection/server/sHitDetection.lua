@@ -2,7 +2,10 @@ class 'sHitDetection'
 
 function sHitDetection:__init()
 
+    self.pending_hits = {}
     self.last_damage_timeout = 15 -- 15 seconds to clear last damaged kill attribution
+
+    self:CheckPendingHits()
 
     Network:Subscribe("HitDetectionSyncHit", self, self.SyncHit)
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
@@ -17,8 +20,36 @@ function sHitDetection:__init()
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
 end
 
+function sHitDetection:CheckPendingHits()
+    
+    local func = coroutine.wrap(function()
+        while true do
+
+            if count_table(self.pending_hits) > 0 then
+                local data = table.remove(self.pending_hits)
+
+                for _, v in pairs(data.pending) do
+
+                    if v.type == WeaponHitType.Explosive then
+                        self:ExplosionHit(v, data.player)
+                    else
+                        self:BulletHit(v, data.player)
+                    end
+
+                    Timer.Sleep(3)
+
+                end
+            end
+
+            Timer.Sleep(50)
+        end
+    end)()
+
+end
+
 function sHitDetection:WarpGrenade(args)
 
+    local old_hp = args.player:GetHealth()
     args.player:Damage(WarpGrenadeDamage, DamageEntity.WarpGrenade)
 
     local msg = string.format("%s [%s] was damaged by warp grenade for %s damage",
@@ -32,6 +63,9 @@ function sHitDetection:WarpGrenade(args)
         content = msg
     })
 
+    args.player:SetValue("Health", math.max(0, old_hp - WarpGrenadeDamage))
+    self:CheckHealth(args.player, old_hp, WarpGrenadeDamage)
+
 end
 
 function sHitDetection:VehicleGuardActivate(args)
@@ -44,6 +78,8 @@ function sHitDetection:VehicleGuardActivate(args)
             break
         end
     end
+
+    local old_hp = args.player:GetHealth()
 
     if IsValid(attacker) then
         args.player:Damage(VehicleGuardDamage, DamageEntity.VehicleGuard, attacker)
@@ -66,6 +102,9 @@ function sHitDetection:VehicleGuardActivate(args)
 
     self:SetPlayerLastDamaged(args.player, DamageEntityNames[DamageEntity.VehicleGuard], args.attacker_id)
 
+    args.player:SetValue("Health", math.max(0, old_hp - VehicleGuardDamage))
+    self:CheckHealth(args.player, old_hp, VehicleGuardDamage)
+
 end
 
 function sHitDetection:PlayerSurvivalDamage(args)
@@ -73,6 +112,7 @@ function sHitDetection:PlayerSurvivalDamage(args)
     if args.player:GetHealth() <= 0 then return end
     if args.player:GetValue("InSafezone") then return end
     
+    local old_hp = args.player:GetHealth()
     args.player:Damage(args.amount, args.type)
 
     local msg = string.format("%s [%s] was damaged by survival for %s damage [%s]",
@@ -86,6 +126,10 @@ function sHitDetection:PlayerSurvivalDamage(args)
         channel = "Hitdetection",
         content = msg
     })
+    
+    args.player:SetValue("Health", math.max(0, old_hp - args.amount))
+    self:CheckHealth(args.player, old_hp, args.amount)
+
 end
 
 function sHitDetection:PlayerDeath(args)
@@ -160,6 +204,8 @@ function sHitDetection:PlayerInsideToxicArea(args)
         end
     end
 
+    local old_hp = args.player:GetHealth()
+
     if IsValid(attacker) then
         args.player:Damage(ToxicDamagePerSecond, DamageEntity.ToxicGrenade, attacker)
     else
@@ -181,6 +227,9 @@ function sHitDetection:PlayerInsideToxicArea(args)
         content = msg
     })
 
+    args.player:SetValue("Health", math.max(0, old_hp - ToxicDamagePerSecond))
+    self:CheckHealth(args.player, old_hp, ToxicDamagePerSecond)
+
 end
 
 function sHitDetection:SecondTick()
@@ -199,6 +248,8 @@ function sHitDetection:SecondTick()
                     break
                 end
             end
+
+            local old_hp = p:GetHealth()
 
             if IsValid(attacker) then
                 p:Damage(FireDamagePerSecond, DamageEntity.Molotov, attacker)
@@ -220,6 +271,10 @@ function sHitDetection:SecondTick()
                 channel = "Hitdetection",
                 content = msg
             })
+            
+            p:SetValue("Health", math.max(0, old_hp - FireDamagePerSecond))
+            self:CheckHealth(p, old_hp, FireDamagePerSecond)
+
         end
     end
 
@@ -293,20 +348,13 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
         content = msg
     })
 
+    player:SetValue("Health", math.max(0, old_hp - damage / 100))
+    self:CheckHealth(player, old_hp, damage / 100)
+
 end
 
 function sHitDetection:SyncHit(args, player)
-
-    for _, v in pairs(args.pending) do
-
-        if v.type == WeaponHitType.Explosive then
-            self:ExplosionHit(v, player)
-        else
-            self:BulletHit(v, player)
-        end
-
-    end
-
+    table.insert(self.pending_hits, {pending = args.pending, player = player})
 end
 
 function sHitDetection:ExplosionHit(args, player)
@@ -365,30 +413,14 @@ function sHitDetection:ExplosionHit(args, player)
         channel = "Hitdetection",
         content = msg
     })
-    --self:CheckHealth(player, damage)
 
-end
-
-function sHitDetection:CheckHealth(player, damage)
-
-    local timeout = player:GetPing() * 2 + 1000
-    -- If their health doesn't change after being shot
-
-    Timer.SetTimeout(timeout, function()
-        if not IsValid(player) then return end
-        if IsValid(player) and player:GetHealth() >= player:GetValue("LastHealth") and damage > 0 and player:GetHealth() > 0 then
-            Events:Fire("KickPlayer", {
-                player = player,
-                reason = string.format("Health hacks. Current health %s, last known health: %s", 
-                    tostring(player:GetHealth()), tostring(player:GetValue("LastHealth"))),
-                p_reason = "Health hacks"
-            })
-        end
-    end)
+    player:SetValue("Health", math.max(0, old_hp - damage / 100))
+    self:CheckHealth(player, old_hp, damage / 100)
 
 end
 
 function sHitDetection:BulletHit(args, player)
+    
     if not args.bone or not BoneModifiers[args.bone.name] then return end
     if not IsValid(args.attacker) then return end
     if player:GetValue("Loading") then return end
@@ -397,9 +429,9 @@ function sHitDetection:BulletHit(args, player)
     if player:GetHealth() <= 0 then return end
 
     local weapon = args.attacker:GetEquippedWeapon()
-    if not weapon then return end
-    
-    if not WeaponBaseDamage[weapon.id] then return end
+    local base_damage = WeaponBaseDamage[weapon.id] or 0
+
+    if base_damage == 0 then return end
 
     local hit_type = BoneModifiers[args.bone.name].type
     local original_damage = WeaponBaseDamage[weapon.id] * BoneModifiers[args.bone.name].mod
@@ -431,8 +463,24 @@ function sHitDetection:BulletHit(args, player)
         channel = "Hitdetection",
         content = msg
     })
-    -- If their health doesn't change after being shot
-    --self:CheckHealth(player, damage)
+
+    player:SetValue("Health", math.max(0, old_hp - damage / 100))
+    self:CheckHealth(player, old_hp, damage / 100)
+
+end
+
+function sHitDetection:CheckHealth(player, old_hp, damage)
+
+    Timer.SetTimeout(10 * player:GetPing() + 500, function()
+        if IsValid(player) and player:GetHealth() == old_hp then
+            -- Health did not change, ban
+            Events:Fire("KickPlayer", {
+                player = player,
+                reason = string.format("Health hacking detected. Expected: %.3f Actual: %.3f", old_hp - damage, player:GetHealth()),
+                p_reason = "Error"
+            })
+        end
+    end)
 
 end
 

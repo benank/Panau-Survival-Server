@@ -107,15 +107,14 @@ function cHitDetection:PostRender(args)
     -- Sync damage every 100ms
     if self.sync_timer:GetMilliseconds() > 100 then
 
-        self.sync_timer:Restart()
-
-        if #self.pending > 0 then
+        if count_table(self.pending) > 0 then
             
             Network:Send(var("HitDetectionSyncHit"):get(), {
                 pending = self.pending
             })
 
             self.pending = {}
+            self.sync_timer:Restart()
 
         end
 
@@ -170,9 +169,6 @@ function cHitDetection:LocalPlayerBulletHit(args)
 
     if not args.bone or not BoneModifiers[args.bone.name] then return false end
     if not args.attacker then return false end
-
-    local weapon = args.attacker:GetEquippedWeapon()
-    if not weapon then return end
 
     table.insert(self.pending, {
         attacker = args.attacker,

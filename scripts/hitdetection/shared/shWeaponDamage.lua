@@ -1,5 +1,6 @@
 WeaponBaseDamage = 
 {
+    [0] = 3, -- All vehicle machine guns
     [Weapon.Handgun] = 4, -- All of these are in percents
     [Weapon.Assault] = 5,
     [Weapon.BubbleGun] = -2,
@@ -102,6 +103,7 @@ ArmorModifiers = -- Percentages subtracted, 0.2 = 20% less damage = 80% total da
 
 WeaponNames = 
 {
+    [0] = "Vehicle MG",
     [Weapon.Handgun] = "Handgun",
     [Weapon.Assault] = "Assault Rifle",
     [Weapon.BubbleGun] = "Bubble Gun",

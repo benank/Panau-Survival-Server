@@ -2,10 +2,71 @@ class 'sAntiCheat'
 
 function sAntiCheat:__init()
 
+    self:CheckServerHealth()
+
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Network:Subscribe("anticheat/collisioncheck", self, self.CollisionCheck)
     Network:Subscribe("Anticheat/LagCheck", self, self.LagCheck)
     Network:Subscribe("Anticheat/Speedhack", self, self.Speedhack)
+end
+
+function sAntiCheat:CheckServerHealth()
+    
+    -- Check to see if the server is lagging
+    local func = coroutine.wrap(function()
+        local last_time = Server:GetElapsedSeconds()
+        local players_history = {}
+        
+        while true do
+
+            Timer.Sleep(1000)
+
+            local players = {}
+
+            for p in Server:GetPlayers() do
+                players[p:GetId()] = p
+            end
+
+            local seconds_elapsed = Server:GetElapsedSeconds()
+
+            if seconds_elapsed - last_time > 2 then
+
+                local msg = string.format("**Hitch warning: Server is running %.2f seconds behind!**", seconds_elapsed - last_time)
+                print(msg)
+
+                Events:Fire("Discord", {
+                    channel = "Errors",
+                    content = msg
+                })
+
+                local players_msg = "Players Online:"
+
+                for id, p in pairs(players_history[tostring(string.format("%.0f", last_time))]) do
+                    if IsValid(p) then
+                        players_msg = players_msg .. "\n" .. string.format("%s [%s] [%s]", p:GetName(), p:GetSteamId(), p:GetIP())
+                    end
+                end
+
+                print(players_msg)
+
+                Events:Fire("Discord", {
+                    channel = "Errors",
+                    content = msg
+                })
+
+            end
+
+            -- Erase old players
+            players_history[tostring(string.format("%.0f", last_time))] = nil
+
+            last_time = seconds_elapsed
+
+            -- Add new players
+            players_history[tostring(string.format("%.0f", last_time))] = players
+
+        end
+    end)()
+
 end
 
 function sAntiCheat:Speedhack(args, player)
@@ -40,11 +101,15 @@ function sAntiCheat:LagCheck(args, player)
     end
 
     if diff > 6 then
-        Events:Fire("KickPlayer", {
-            player = player,
-            reason = string.format("Lag check invalid - there was a delay of %d before a response", diff),
-            p_reason = "The server was unable to process your request."
-        })
+        Timer.SetTimeout(2000, function()
+            if IsValid(player) then
+                Events:Fire("KickPlayer", {
+                    player = player,
+                    reason = string.format("Lag check invalid - there was a delay of %d before a response", diff),
+                    p_reason = "The server was unable to process your request."
+                })
+            end
+        end)
         return
     end
 

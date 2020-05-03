@@ -139,7 +139,7 @@ function WeaponManager:PostTick(args)
 
     -- Weapon was fired
     if weapon.id == current_weapon_id and self:GetTotalAmmoInWeapon(weapon) >= 0 and self:GetTotalAmmoInWeapon(weapon) < current_ammo then
-        Network:Send("Items/FireWeapon", {ammo = current_ammo})
+        Network:Send("Items/FireWeapon", {ammo = current_ammo, ts = Client:GetElapsedSeconds()})
         cweapon:SetAmmo(current_ammo - 1)
         self:FireWeapon()
     end
