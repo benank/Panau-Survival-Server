@@ -122,7 +122,7 @@ function sAntiCheat:LagCheck(args, player)
     if player:GetValue("LagStrikes") >= self.max_lag_strikes then
         Events:Fire("KickPlayer", {
             player = player,
-            reason = string.format("Max lag strikes reached.", diff),
+            reason = "Max lag strikes reached.",
             p_reason = "The server was unable to process your request."
         })
     end
