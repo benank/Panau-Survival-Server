@@ -98,7 +98,7 @@ function sAntiCheat:LagCheck(args, player)
     if diff < 2 then
         Events:Fire("KickPlayer", {
             player = player,
-            reason = "Lag check invalid - response sent too quickly",
+            reason = string.format("Lag check invalid - response sent too quickly (%.2f seconds)", diff),
             p_reason = "The server was unable to process your request."
         })
         return
@@ -109,7 +109,7 @@ function sAntiCheat:LagCheck(args, player)
             if IsValid(player) then
                 Events:Fire("KickPlayer", {
                     player = player,
-                    reason = string.format("Lag check invalid - there was a delay of %d before a response", diff),
+                    reason = string.format("Lag check invalid - there was a delay of %.2f before a response", diff),
                     p_reason = "The server was unable to process your request."
                 })
             end
