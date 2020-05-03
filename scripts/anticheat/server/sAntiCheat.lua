@@ -34,7 +34,7 @@ function sAntiCheat:LagCheck(args, player)
         Events:Fire("KickPlayer", {
             player = player,
             reason = "Lag check invalid - response sent too quickly",
-            p_reason = "Please check your connection"
+            p_reason = "The server was unable to process your request."
         })
         return
     end
@@ -43,7 +43,7 @@ function sAntiCheat:LagCheck(args, player)
         Events:Fire("KickPlayer", {
             player = player,
             reason = string.format("Lag check invalid - there was a delay of %d before a response", diff),
-            p_reason = "Please check your connection"
+            p_reason = "The server was unable to process your request."
         })
         return
     end
