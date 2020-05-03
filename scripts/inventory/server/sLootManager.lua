@@ -2,6 +2,7 @@ class 'sLootManager'
 
 function sLootManager:__init()
 
+    self.ready = false
     self.lootspawn_file = "lootspawns/lootspawns.txt"
     self.loot_data = {}
 
@@ -18,6 +19,11 @@ function sLootManager:__init()
 end
 
 function sLootManager:ClientModuleLoad(args)
+    if not self.ready then
+        args.player:Kick("The server is still starting. Please wait before connecting.")
+        return
+    end
+    
     Events:Fire("ForcePlayerUpdateCell", {player = args.player, cell_size = Lootbox.Cell_Size})
 end
 
@@ -176,6 +182,8 @@ function sLootManager:GenerateAllLoot()
 
         print(string.format("Spawned %s/%s lootboxes.",
             tostring(self:GetNumSpawnedBoxes()), tostring(#self.loot_data)))
+
+        self.ready = true
     end)()
 
 end
