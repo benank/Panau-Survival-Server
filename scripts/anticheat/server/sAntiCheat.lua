@@ -2,6 +2,7 @@ class 'sAntiCheat'
 
 function sAntiCheat:__init()
 
+    self.max_lag_strikes = 5
     self:CheckServerHealth()
 
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
@@ -85,6 +86,7 @@ end
 
 function sAntiCheat:ClientModuleLoad(args)
     args.player:SetValue("LastLagCheck", Server:GetElapsedSeconds())
+    args.player:SetValue("LagStrikes", 0)
 end
 
 function sAntiCheat:LagCheck(args, player)
@@ -95,29 +97,40 @@ function sAntiCheat:LagCheck(args, player)
 
     local diff = Server:GetElapsedSeconds() - last_check
 
+    Events:Fire("Discord", {
+        channel = "Errors",
+        content = msg
+    })
+
     if diff < 2 then
-        Events:Fire("KickPlayer", {
-            player = player,
-            reason = string.format("Lag check invalid - response sent too quickly (%.2f seconds)", diff),
-            p_reason = "The server was unable to process your request."
+        Events:Fire("Discord", {
+            channel = "Errors",
+            reason = string.format("Lag check invalid [%s %s] - response sent too quickly (%.2f seconds)", 
+                player:GetName(), player:GetSteamId(), diff)
         })
+        args.player:SetValue("LagStrikes", args.player:GetValue("LagStrikes") + 1)
         return
     end
 
-    if diff > 6 then
-        Timer.SetTimeout(2000, function()
-            if IsValid(player) then
-                Events:Fire("KickPlayer", {
-                    player = player,
-                    reason = string.format("Lag check invalid - there was a delay of %.2f before a response", diff),
-                    p_reason = "The server was unable to process your request."
-                })
-            end
-        end)
+    if diff > 7 then
+        Events:Fire("Discord", {
+            channel = "Errors",
+            reason = string.format("Lag check invalid [%s %s] - response sent too late (%.2f seconds)", 
+                player:GetName(), player:GetSteamId(), diff)
+        })
+        args.player:SetValue("LagStrikes", args.player:GetValue("LagStrikes") + 1)
         return
     end
 
     player:SetValue("LastLagCheck", Server:GetElapsedSeconds())
+
+    if args.player:GetValue("LagStrikes") >= self.max_lag_strikes then
+        Events:Fire("KickPlayer", {
+            player = player,
+            reason = string.format("Max lag strikes reached.", diff),
+            p_reason = "The server was unable to process your request."
+        })
+    end
 
 end
 
