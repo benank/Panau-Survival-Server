@@ -136,3 +136,11 @@ function Deserialize(data, has_categories)
     return contents
 
 end
+
+function splitstr2(s, delimiter)
+    result = {};
+    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match);
+    end
+    return result;
+end
