@@ -161,8 +161,6 @@ end
 -- Checks for item overflow when a backpack is unequipped
 function sInventory:CheckForOverflow()
 
-    local func = coroutine.wrap(function()
-
     local stacks_to_drop = {}
 
     for cat, data in pairs(self.contents) do
@@ -179,7 +177,6 @@ function sInventory:CheckForOverflow()
 
             table.insert(stacks_to_drop, stack)
 
-            Timer.Sleep(1)
         end
 
     end
@@ -211,8 +208,6 @@ function sInventory:CheckForOverflow()
         self:Sync({sync_full = true})
     end
     
-    end)()
-
 end
 
 function sInventory:UseItem(args, player)
@@ -232,8 +227,6 @@ end
 
 function sInventory:DropStacks(args, player)
 
-    local func = coroutine.wrap(function()
-    
     if player:InVehicle() then return end
     if not args.stacks then return end
     if count_table(args.stacks) == 0 then return end
@@ -256,12 +249,9 @@ function sInventory:DropStacks(args, player)
     local lootbox
     for _, data in pairs(args.stacks) do
         lootbox = self:DropStack(data, player, lootbox) or lootbox
-        Timer.Sleep(1)
     end
 
     self.operation_block = self.operation_block - 1
-
-    end)()
 
 end
 
@@ -577,8 +567,6 @@ end
 
 function sInventory:ModifyDurabilityRemote(args)
 
-    local func = coroutine.wrap(function()
-
     if args.player ~= self.player then
         error("sInventory:ModifyDurabilityRemote failed: player does not match")
         return
@@ -605,8 +593,6 @@ function sInventory:ModifyDurabilityRemote(args)
             end
 
         end
-
-        Timer.Sleep(1)
 
     end
 
@@ -644,8 +630,6 @@ end
 -- Syncs automatically
 function sInventory:AddStack(args)
 
-    local func = coroutine.wrap(function()
-
     local cat = args.stack:GetProperty("category")
 
     -- Try to stack it in a specific place
@@ -660,11 +644,9 @@ function sInventory:AddStack(args)
         end 
 
         local return_item = istack:AddItem(args.stack:RemoveItem(nil, 1))
-        Timer.Sleep(1)
 
         if return_item then
             args.stack:AddItem(return_item)
-            Timer.Sleep(1)
         end
 
         self:Sync({index = args.index, stack = istack, sync_stack = true})
@@ -691,11 +673,9 @@ function sInventory:AddStack(args)
                 and args.stack:GetAmount() > 0 do
 
                     local return_item = istack:AddItem(args.stack:RemoveItem(nil, 1))
-                    Timer.Sleep(1)
 
                     if return_item then
                         args.stack:AddItem(return_item)
-                        Timer.Sleep(1)
                     end
 
                     self:Sync({index = i, stack = istack, sync_stack = true})
@@ -715,7 +695,6 @@ function sInventory:AddStack(args)
         self.contents[cat][index] = args.stack:Copy()
         args.stack.contents = {} -- Clear stack contents
         self:Sync({index = index, stack = self.contents[cat][index], sync_stack = true})
-        Timer.Sleep(1)
     
     end
 
@@ -723,8 +702,6 @@ function sInventory:AddStack(args)
         Chat:Send(self.player, string.format("%s category is full!", cat), Color.Red)
         return args.stack
     end
-
-    end)()
 
 end
 

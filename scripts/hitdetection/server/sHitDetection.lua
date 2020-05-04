@@ -49,6 +49,7 @@ end
 
 function sHitDetection:WarpGrenade(args)
 
+    if not IsValid(args.player) then return end
     local old_hp = args.player:GetHealth()
     args.player:Damage(WarpGrenadeDamage, DamageEntity.WarpGrenade)
 
@@ -69,6 +70,8 @@ function sHitDetection:WarpGrenade(args)
 end
 
 function sHitDetection:VehicleGuardActivate(args)
+
+    if not IsValid(args.player) then return end
 
     local attacker = nil
 
@@ -109,6 +112,7 @@ end
 
 function sHitDetection:PlayerSurvivalDamage(args)
 
+    if not IsValid(args.player) then return end
     if args.player:GetHealth() <= 0 then return end
     if args.player:GetValue("InSafezone") then return end
     
@@ -133,6 +137,7 @@ function sHitDetection:PlayerSurvivalDamage(args)
 end
 
 function sHitDetection:PlayerDeath(args)
+
     args.player:SetNetworkValue("OnFire", false)
 
     local last_damaged = args.player:GetValue("LastDamaged")
@@ -192,6 +197,8 @@ function sHitDetection:PlayerDeath(args)
 end
 
 function sHitDetection:PlayerInsideToxicArea(args)
+    
+    if not IsValid(args.player) then return end
     if args.player:GetHealth() <= 0 then return end
     if args.player:GetValue("Loading") then return end
 
@@ -282,6 +289,7 @@ end
 
 function sHitDetection:HitDetectionSyncExplosion(args, player)
     
+    if not IsValid(player) then return end
     if player:GetValue("InSafezone") then return end
     if player:GetHealth() <= 0 then return end
     if player:GetValue("Loading") then return end
@@ -359,6 +367,7 @@ end
 
 function sHitDetection:ExplosionHit(args, player)
 
+    if not IsValid(player) then return end
     if not IsValid(args.attacker) then return end
     if player:GetValue("Loading") then return end
 
@@ -421,6 +430,7 @@ end
 
 function sHitDetection:BulletHit(args, player)
     
+    if not IsValid(player) then return end
     if not args.bone or not BoneModifiers[args.bone.name] then return end
     if not IsValid(args.attacker) then return end
     if player:GetValue("Loading") then return end
@@ -472,7 +482,7 @@ end
 function sHitDetection:CheckHealth(player, old_hp, damage)
 
     Timer.SetTimeout(10 * player:GetPing() + 500, function()
-        if IsValid(player) and player:GetHealth() == old_hp then
+        if IsValid(player) and player:GetHealth() >= old_hp then
             -- Health did not change, ban
             Events:Fire("KickPlayer", {
                 player = player,
