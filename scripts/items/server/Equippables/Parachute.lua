@@ -52,19 +52,21 @@ local func2 = coroutine.wrap(function()
 
         for player in Server:GetPlayers() do
 
-            local parachuting_value = player:GetValue("ParachutingValue")
+            if IsValid(player) then
+                local parachuting_value = player:GetValue("ParachutingValue")
 
-            if parachuting_value and parachuting_value > 0 then
-                local item = GetEquippedItem("Parachute", player)
-                if not item then return end
-                item.durability = item.durability - parachuting_value
-                Inventory.ModifyDurability({
-                    player = player,
-                    item = item
-                })
-                UpdateEquippedItem(player, "Parachute", item)
-                player:SetValue("ParachutingValue", 0)
+                if parachuting_value and parachuting_value > 0 then
+                    local item = GetEquippedItem("Parachute", player)
+                    if not item then return end
+                    item.durability = item.durability - parachuting_value
+                    Inventory.ModifyDurability({
+                        player = player,
+                        item = item
+                    })
+                    UpdateEquippedItem(player, "Parachute", item)
+                    player:SetValue("ParachutingValue", 0)
 
+                end
             end
 
             Timer.Sleep(5)
