@@ -596,8 +596,6 @@ function sInventory:ModifyDurabilityRemote(args)
 
     end
 
-    end)()
-
 end
 
 -- Called when an item runs out of durability and breaks
