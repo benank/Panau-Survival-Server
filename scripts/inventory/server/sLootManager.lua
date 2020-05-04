@@ -24,7 +24,9 @@ function sLootManager:ClientModuleLoad(args)
         while not self.ready do
             Timer.Sleep(500)
         end
-        Events:Fire("ForcePlayerUpdateCell", {player = args.player, cell_size = Lootbox.Cell_Size})
+        if IsValid(args.player) then
+            Events:Fire("ForcePlayerUpdateCell", {player = args.player, cell_size = Lootbox.Cell_Size})
+        end
     end)()
     
 end
