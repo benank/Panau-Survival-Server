@@ -8,6 +8,7 @@ DamageEntity.Hunger = 11
 DamageEntity.Thirst = 12
 DamageEntity.VehicleGuard = 13
 DamageEntity.WarpGrenade = 14
+DamageEntity.Suicide = 15
 
 DamageEntityNames = 
 {
@@ -26,4 +27,5 @@ DamageEntityNames =
     [DamageEntity.Thirst] = "Thirst",
     [DamageEntity.VehicleGuard] = "Vehicle Guard",
     [DamageEntity.WarpGrenade] = "Warp Grenade",
+    [DamageEntity.Suicide] = "Suicide",
 }

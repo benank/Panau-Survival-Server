@@ -18,6 +18,45 @@ function sHitDetection:__init()
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
+
+    Events:Subscribe("PlayerChat", self, self.PlayerChat)
+end
+
+function sHitDetection:PlayerChat(args)
+    if args.text == "/suicide" then
+
+        local old_hp = args.player:GetHealth()
+        if old_hp <= 0 then return end
+        if args.player:GetValue("Loading") then return end
+
+        args.player:Damage(SuicideDamage, DamageEntity.Suicide)
+
+        local msg = string.format("%s [%s] suicided",
+            args.player:GetName(), 
+            tostring(args.player:GetSteamId()))
+
+        print(msg)
+        Events:Fire("Discord", {
+            channel = "Hitdetection",
+            content = msg
+        })
+
+        args.player:SetValue("Health", 0)
+        self:CheckHealth(args.player, old_hp, 0)
+
+        local last_damaged = args.player:GetValue("LastDamaged")
+
+        if last_damaged then
+            if last_damaged.timer:GetSeconds() > self.last_damage_timeout then
+                args.player:SetValue("Suicided", true)
+            else
+                args.player:SetValue("Suicided", nil)
+            end
+        else
+            args.player:SetValue("Suicided", true)
+        end
+
+    end
 end
 
 function sHitDetection:CheckPendingHits()
@@ -41,7 +80,7 @@ function sHitDetection:CheckPendingHits()
                 end
             end
 
-            Timer.Sleep(50)
+            Timer.Sleep(10)
         end
     end)()
 
@@ -193,6 +232,11 @@ function sHitDetection:PlayerDeath(args)
         })
     end
 
+    if not args.player:GetValue("Suicided") then
+        Events:Fire("PlayerKilled", {player = args.player})
+    end
+
+    args.player:SetValue("Suicided", nil)
     args.player:SetValue("LastDamaged", nil)
 end
 

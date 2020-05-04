@@ -20,6 +20,8 @@ WarpGrenadeDamage = 0.25
 
 VehicleGuardDamage = 1.0 -- Instakill
 
+SuicideDamage = 999
+
 ExplosiveBaseDamage = 
 {
     [DamageEntity.Mine] = {damage = 200, radius = 10, knockback = 10},
