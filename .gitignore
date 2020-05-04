@@ -11,6 +11,7 @@ minidumps
 /liblua.so
 Jcmp-Server
 logs
+db_backups
 steamapps
 _CommonRedist
 appcache
