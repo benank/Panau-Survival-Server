@@ -4,7 +4,7 @@ function sWeaponManager:__init()
 
     self.pending_fire = {}
 
-    --self:CheckPendingShots()
+    self:CheckPendingShots()
 
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
     Events:Subscribe("InventoryUpdated", self, self.InventoryUpdated)

@@ -112,8 +112,6 @@ end
 
 function sInventory:ToggleEquipped(args, player)
 
-    --local func = coroutine.wrap(function()
-    
     if not self:CanPlayerPerformOperations(player) then return end
     if not args.index or not args.cat then return end
     if not self.contents[args.cat] or not self.contents[args.cat][args.index] then return end
@@ -152,8 +150,6 @@ function sInventory:ToggleEquipped(args, player)
 
     Events:Fire("Inventory/ToggleEquipped", 
         {player = self.player, index = index, item = self.contents[args.cat][index].contents[1]:Copy():GetSyncObject()})
-
-    --end)()
 
 end
 
