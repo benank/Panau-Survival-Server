@@ -139,7 +139,6 @@ function sInventory:ToggleEquipped(args, player)
                 end
 
             end
-            Timer.Sleep(1)
         end
     end
     
