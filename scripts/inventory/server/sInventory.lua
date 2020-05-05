@@ -274,10 +274,15 @@ function sInventory:DropStacks(args, player)
     -- Now remove items and add them to a lootbox (or stash)
     local contents = {}
     for _, data in pairs(args.stacks) do
-        table.insert(contents, self:DropStack(data, player))
+        local stack = self:DropStack(data, player)
+        if stack then
+            table.insert(contents, self:DropStack(data, player))
+        end
     end
 
-    self:SpawnDropbox(contents)
+    if count_table(contents) > 0 then
+        self:SpawnDropbox(contents)
+    end
 
     self.operation_block = self.operation_block - 1
 
