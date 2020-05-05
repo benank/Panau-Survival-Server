@@ -201,7 +201,6 @@ Items =
         stacklimit = 5,
         loot = {1,2},
         rarity = 0.05,
-        in_loot = false,
         rarity_mod = {1,1.5},
         can_use = true
     },
