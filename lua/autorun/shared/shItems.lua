@@ -525,8 +525,8 @@ Items =
         category = "Survival",
         stacklimit = 5,
         loot = {9,1},
-        rarity = 0.02,
-        rarity_mod = {1,1},
+        rarity = 0.01,
+        rarity_mod = {1,0.5},
         can_use = true
     },
     {
@@ -534,8 +534,8 @@ Items =
         category = "Survival",
         stacklimit = 5,
         loot = {9,1},
-        rarity = 0.02,
-        rarity_mod = {1,1},
+        rarity = 0.01,
+        rarity_mod = {1,0.5},
         can_use = true
     },
     {
@@ -543,8 +543,8 @@ Items =
         category = "Survival",
         stacklimit = 5,
         loot = {9,1},
-        rarity = 0.02,
-        rarity_mod = {1,1},
+        rarity = 0.01,
+        rarity_mod = {1,0.5},
         can_use = true
     },
     {
