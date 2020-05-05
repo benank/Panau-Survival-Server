@@ -276,7 +276,7 @@ function sInventory:DropStacks(args, player)
     for _, data in pairs(args.stacks) do
         local stack = self:DropStack(data, player)
         if stack then
-            table.insert(contents, self:DropStack(data, player))
+            table.insert(contents, stack)
         end
     end
 
