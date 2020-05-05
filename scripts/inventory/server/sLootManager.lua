@@ -20,14 +20,19 @@ end
 
 function sLootManager:ClientModuleLoad(args)
 
-    local func = coroutine.wrap(function()
-        while not self.ready do
-            Timer.Sleep(500)
-        end
-        if IsValid(args.player) then
+    if not self.ready then
+        args.player:Kick("The server is still loading, please wait.")
+        return
+    end
+
+    --local func = coroutine.wrap(function()
+    --    while not self.ready do
+    --        Timer.Sleep(500)
+    --    end
+    --    if IsValid(args.player) then
             Events:Fire("ForcePlayerUpdateCell", {player = args.player, cell_size = Lootbox.Cell_Size})
-        end
-    end)()
+    --    end
+    --end)()
     
 end
 

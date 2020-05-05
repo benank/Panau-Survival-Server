@@ -26,6 +26,8 @@ function sLoader:PlayerSpawn(args)
 end
 
 function sLoader:LoadStatus(args, player)
+    if not IsValid(player) then return end
+
     if args and args.status == "done" then
 
         player:SetValue("dead", nil)
