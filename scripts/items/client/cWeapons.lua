@@ -147,7 +147,7 @@ function WeaponManager:PostTick(args)
 end
 
 function WeaponManager:FireWeapon()
-    Events:Fire("FireWeapon")
+    Events:Fire(var("FireWeapon"):get())
 end
 
 function WeaponManager:GetTotalAmmoInWeapon(weapon)

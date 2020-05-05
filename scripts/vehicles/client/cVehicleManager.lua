@@ -30,15 +30,15 @@ function cVehicleManager:__init()
     -- TODO update with levels
     LocalPlayer:SetValue("MaxVehicles", config.player_max_vehicles)
 
-    Events:Fire("Vehicles/ResetVehiclesMenu")
+    Events:Fire(var("Vehicles/ResetVehiclesMenu"):get())
 
-    Events:Subscribe("Vehicles/SpawnVehicle", self, self.SpawnVehicle)
-    Events:Subscribe("Vehicles/DeleteVehicle", self, self.DeleteVehicle)
-    Events:Subscribe("Vehicles/TransferVehicle", self, self.TransferVehicle)
+    Events:Subscribe(var("Vehicles/SpawnVehicle"):get(), self, self.SpawnVehicle)
+    Events:Subscribe(var("Vehicles/DeleteVehicle"):get(), self, self.DeleteVehicle)
+    Events:Subscribe(var("Vehicles/TransferVehicle"):get(), self, self.TransferVehicle)
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
-    Network:Subscribe("Vehicles/SyncOwnedVehicles", self, self.SyncOwnedVehicles)
-    Network:Subscribe("Vehicles/VehicleGuardActivate", self, self.VehicleGuardActivate)
+    Network:Subscribe(var("Vehicles/SyncOwnedVehicles"):get(), self, self.SyncOwnedVehicles)
+    Network:Subscribe(var("Vehicles/VehicleGuardActivate"):get(), self, self.VehicleGuardActivate)
 
 end
 
@@ -51,21 +51,21 @@ function cVehicleManager:VehicleGuardActivate(args)
 end
 
 function cVehicleManager:TransferVehicle(args)
-    Network:Send("Vehicles/TransferVehicle", {id = args.id, vehicle_id = args.vehicle_id})
+    Network:Send(var("Vehicles/TransferVehicle"):get(), {id = args.id, vehicle_id = args.vehicle_id})
 end
 
 function cVehicleManager:SpawnVehicle(args)
-    Network:Send("Vehicles/SpawnVehicle", args)
+    Network:Send(var("Vehicles/SpawnVehicle"):get(), args)
 end
 
 function cVehicleManager:DeleteVehicle(args)
-    Network:Send("Vehicles/DeleteVehicle", args)
+    Network:Send(var("Vehicles/DeleteVehicle"):get(), args)
 end
 
 function cVehicleManager:SyncOwnedVehicles(vehicles)
     self.owned_vehicles = vehicles
 
-    Events:Fire("Vehicles/OwnedVehiclesUpdate", vehicles)
+    Events:Fire(var("Vehicles/OwnedVehiclesUpdate"):get(), vehicles)
 end
 
 function cVehicleManager:LocalPlayerInput(args)

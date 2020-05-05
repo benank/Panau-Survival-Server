@@ -20,7 +20,7 @@ function EquippableGrapplehook:__init()
     self:ToggleEnabled(false)
 
     Events:Subscribe("Render", self, self.Render)
-    Network:Subscribe("items/ToggleEquippedGrapplehook", self, self.ToggleEquipped)
+    Network:Subscribe(var("items/ToggleEquippedGrapplehook"):get(), self, self.ToggleEquipped)
 end
 
 function EquippableGrapplehook:Render(args)

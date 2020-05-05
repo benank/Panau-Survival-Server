@@ -51,21 +51,21 @@ function cLoader:__init()
 
     self:InitialLoad()
 
-    Events:Subscribe("loader/RegisterResource", self, self.RegisterResource)
-    Events:Subscribe("loader/CompleteResource", self, self.CompleteResource)
-    Events:Subscribe("loader/StartLoad", self, self.StartLoad) -- Call this to restart load, aka changing dimensions
+    Events:Subscribe(var("loader/RegisterResource"):get(), self, self.RegisterResource)
+    Events:Subscribe(var("loader/CompleteResource"):get(), self, self.CompleteResource)
+    Events:Subscribe(var("loader/StartLoad"):get(), self, self.StartLoad) -- Call this to restart load, aka changing dimensions
 
-    Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
-    Events:Subscribe("GameLoad", self, self.GameLoad)
-    Events:Subscribe("LocalPlayerDeath", self, self.LocalPlayerDeath)
+    Events:Subscribe(var("ModulesLoad"):get(), self, self.ModulesLoad)
+    Events:Subscribe(var("GameLoad"):get(), self, self.GameLoad)
+    Events:Subscribe(var("LocalPlayerDeath"):get(), self, self.LocalPlayerDeath)
 
     -- Fire event for when modules reload
-    Events:Fire("LoaderReady")
+    Events:Fire(var("LoaderReady"):get())
 
 end
 
 function cLoader:ModulesLoad()
-    Events:Fire("LoaderReady")
+    Events:Fire(var("LoaderReady"):get())
 end
 
 -- Call this event to allow RegisterResource so you can have a load screen for different dimensions
@@ -178,7 +178,7 @@ function cLoader:Start()
     Game:FireEvent("ply.invulnerable")
 
     if not self.active then
-        Network:Send("LoadStatus")
+        Network:Send(var("LoadStatus"):get())
     end
 
     self.active = true
@@ -199,7 +199,7 @@ function cLoader:Start()
     end
     
     LocalPlayer:SetValue("Loading", true)
-    Events:Fire("LoadingStarted")
+    Events:Fire(var("LoadingStarted"):get())
 
 end
 
@@ -290,7 +290,7 @@ function cLoader:Stop()
 
         
         LocalPlayer:SetValue("Loading", false)
-        Events:Fire("LoadingFinished")
+        Events:Fire(var("LoadingFinished"):get())
 
     end)
 

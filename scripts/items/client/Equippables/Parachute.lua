@@ -15,7 +15,7 @@ function EquippableParachute:__init()
 
     self:ToggleEnabled(false)
 
-    Network:Subscribe("items/ToggleEquippedParachute", self, self.ToggleEquipped)
+    Network:Subscribe(var("items/ToggleEquippedParachute"):get(), self, self.ToggleEquipped)
 end
 
 function EquippableParachute:GetEquipped()

@@ -20,7 +20,7 @@ function EquippableRocketGrapple:__init()
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("Render", self, self.Render)
 
-	Network:Subscribe("items/ToggleEquippedRocketGrapple", self, self.ToggleEquippedRocketGrapple)
+	Network:Subscribe(var("items/ToggleEquippedRocketGrapple"):get(), self, self.ToggleEquippedRocketGrapple)
 end
 
 function EquippableRocketGrapple:GetEquipped()

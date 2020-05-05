@@ -48,7 +48,7 @@ function cItemUse:__init()
     })
     
 
-    Network:Subscribe("items/UseItem", self, self.StartUsage)
+    Network:Subscribe(var("items/UseItem"):get(), self, self.StartUsage)
 
 end
 
