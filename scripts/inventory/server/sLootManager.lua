@@ -142,7 +142,7 @@ end
 
 function sLootManager:GenerateAllLoot()
 
-    local func = coroutine.wrap(function()
+    --local func = coroutine.wrap(function()
         local rand = math.random
 
         local sz_position = Vector3(-10291, 202.5, -3019)
@@ -178,9 +178,9 @@ function sLootManager:GenerateAllLoot()
 
             cnt = cnt + 1
 
-            if cnt % 100 == 0 then
-                Timer.Sleep(1)
-            end
+            --if cnt % 100 == 0 then
+            --    Timer.Sleep(1)
+            --end
 
         end
 
@@ -188,7 +188,7 @@ function sLootManager:GenerateAllLoot()
             tostring(self:GetNumSpawnedBoxes()), tostring(#self.loot_data)))
 
         self.ready = true
-    end)()
+    --end)()
 
 end
 
