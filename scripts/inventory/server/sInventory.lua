@@ -26,6 +26,8 @@ function sInventory:__init(player)
 
     table.insert(self.events, Events:Subscribe("Inventory.ToggleBackpackEquipped-" .. self.steamID, self, self.ToggleBackpackEquipped))
 
+    table.insert(self.events, Events:Subscribe("PlayerKilled", self, self.PlayerKilled))
+
     table.insert(self.network_events, Network:Subscribe("Inventory/Shift" .. self.steamID, self, self.ShiftStack))
     table.insert(self.network_events, Network:Subscribe("Inventory/ToggleEquipped" .. self.steamID, self, self.ToggleEquipped))
     table.insert(self.network_events, Network:Subscribe("Inventory/Use" .. self.steamID, self, self.UseItem))
@@ -73,6 +75,16 @@ function sInventory:Load()
     self:Sync({sync_full = true})
 
     self.initial_sync = true
+
+end
+
+function sInventory:PlayerKilled(args)
+
+    if not IsValid(args.player) then return end
+    if args.player ~= self.player then return end
+
+    -- Player died, so spawn dropbox
+    
 
 end
 
@@ -153,6 +165,32 @@ function sInventory:ToggleEquipped(args, player)
 
 end
 
+function sInventory:SpawnDropbox(contents)
+
+    -- Request ground data
+    Network:Send(self.player, "Inventory/GetGroundData")
+
+    -- Receive ground data
+    local sub
+    sub = Network:Subscribe("Inventory/GroundData" .. self.steamID, function(args, player)
+        if player ~= self.player then return end
+        if not args.position or not args.angle then return end
+
+        local dropbox = CreateLootbox({
+            position = args.position,
+            angle = args.angle,
+            tier = Lootbox.Types.Dropbox,
+            active = true,
+            contents = contents
+        })
+        dropbox:Sync()
+
+        Network:Unsubscribe(sub)
+
+    end)
+
+end
+
 -- Checks for item overflow when a backpack is unequipped
 function sInventory:CheckForOverflow()
 
@@ -190,14 +228,7 @@ function sInventory:CheckForOverflow()
 
         Chat:Send(self.player, chat_msg, Color.Red)
 
-        local dropbox = CreateLootbox({
-            position = self.player:GetPosition(),
-            angle = self.player:GetAngle(),
-            tier = Lootbox.Types.Dropbox,
-            active = true,
-            contents = stacks_to_drop
-        })
-        dropbox:Sync()
+        self:SpawnDropbox(stacks_to_drop)
 
         -- Full sync in case they dropped from multiple categories
         self:Sync({sync_full = true})
@@ -241,10 +272,12 @@ function sInventory:DropStacks(args, player)
     end
 
     -- Now remove items and add them to a lootbox (or stash)
-    local lootbox
+    local contents = {}
     for _, data in pairs(args.stacks) do
-        lootbox = self:DropStack(data, player, lootbox) or lootbox
+        table.insert(contents, self:DropStack(data, player))
     end
+
+    self:SpawnDropbox(contents)
 
     self.operation_block = self.operation_block - 1
 
@@ -261,7 +294,7 @@ function sInventory:FindIndexFromUID(cat, uid)
     return 0
 end
 
-function sInventory:DropStack(args, player, lootbox)
+function sInventory:DropStack(args, player)
 
     if player ~= self.player then return end
 
@@ -324,19 +357,7 @@ function sInventory:DropStack(args, player, lootbox)
                 content = string.format("%s [%s] dropped stack: %s", self.player:GetName(), self.player:GetSteamId(), split_stack:ToString())
             })
 
-            if not lootbox then
-                lootbox = CreateLootbox({
-                    position = player:GetPosition(),
-                    angle = player:GetAngle(),
-                    tier = Lootbox.Types.Dropbox,
-                    active = true,
-                    contents = {[1] = split_stack}
-                })
-                lootbox:Sync()
-                return lootbox
-            else
-                lootbox:AddStack(split_stack)
-            end
+            return split_stack
 
         end
 
@@ -362,19 +383,7 @@ function sInventory:DropStack(args, player, lootbox)
                 content = string.format("%s [%s] dropped stack: %s", self.player:GetName(), self.player:GetSteamId(), stack:ToString())
             })
 
-            if not lootbox then
-                local lootbox = CreateLootbox({
-                    position = player:GetPosition(),
-                    angle = player:GetAngle(),
-                    tier = Lootbox.Types.Dropbox,
-                    active = true,
-                    contents = {[1] = stack}
-                })
-                lootbox:Sync()
-                return lootbox
-            else
-                lootbox:AddStack(stack)
-            end
+            return stack
 
         end
 

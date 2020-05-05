@@ -7,11 +7,23 @@ function cInventory:__init()
     Network:Send(var("InventoryRequest"):get())
 
     Network:Subscribe(var("InventoryUpdated"):get(), self, self.InventoryUpdated)
+    Network:Subscribe(var("Inventory/GetGroundData"):get(), self, self.GetGroundData)
 
     Events:Fire("loader/CompleteResource", {count = 1})
 
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
+end
+
+function cInventory:GetGroundData()
+    local ray = Physics:Raycast(LocalPlayer:GetBonePosition("ragdoll_Spine"), Vector3.Down, 0, 1000)
+
+    local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(math.random() * math.pi * 2, 0, 0)
+
+    Network:Send(var("Inventory/GroundData" .. tostring(LocalPlayer:GetSteamId().id)):get(), {
+        position = ray.position,
+        angle = ang
+    })
 end
 
 function cInventory:ModulesLoad()
