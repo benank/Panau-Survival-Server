@@ -20,11 +20,6 @@ end
 
 function sLootManager:ClientModuleLoad(args)
 
-    if not self.ready then
-        args.player:Kick("The server is still loading, please wait.")
-        return
-    end
-
     --local func = coroutine.wrap(function()
     --    while not self.ready do
     --        Timer.Sleep(500)
