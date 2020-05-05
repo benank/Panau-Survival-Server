@@ -11,7 +11,7 @@ const interval = 12; // DB backups once every 12 hours
 setInterval(() => {
     fs.createReadStream('server.db').pipe(fs.createWriteStream(`${dir}/${GetLogDate()}.db`));
     console.log(`Created backup at ${GetLogDate()}`);
-}, interval * 1000 * 60);
+}, interval * 1000 * 60 * 60);
 
 console.log("Backups started.")
 
