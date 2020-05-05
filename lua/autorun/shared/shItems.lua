@@ -525,27 +525,27 @@ Items =
         name = "Can of Beans",
         category = "Survival",
         stacklimit = 5,
-        loot = {9},
+        loot = {9,1},
         rarity = 0.02,
-        rarity_mod = {1},
+        rarity_mod = {1,1},
         can_use = true
     },
     {
         name = "Can of Ham",
         category = "Survival",
         stacklimit = 5,
-        loot = {9},
+        loot = {9,1},
         rarity = 0.02,
-        rarity_mod = {1},
+        rarity_mod = {1,1},
         can_use = true
     },
     {
         name = "Can of Peaches",
         category = "Survival",
         stacklimit = 5,
-        loot = {9},
+        loot = {9,1},
         rarity = 0.02,
-        rarity_mod = {1},
+        rarity_mod = {1,1},
         can_use = true
     },
     {
