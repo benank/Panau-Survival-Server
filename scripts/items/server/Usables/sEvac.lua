@@ -29,6 +29,8 @@ function sEvac:UseItem(args, player)
             end_position = args.waypoint + Vector3(0, 12, 0)
         })
 
+        Chat:Send(player, "EVAC called. Grapple onto the side when it arrives.", Color.Yellow)
+
     end
     
 end
