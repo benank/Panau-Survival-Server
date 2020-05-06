@@ -54,6 +54,8 @@ Events:Subscribe("Inventory/UseItem", function(args)
         Network:Send(args.player, "items/UseItem", {name = args.item.name, time = use_time, in_vehicle = in_vehicle})
         
         player_iu.timeout = Timer.SetTimeout(use_time * 1000, function()
+            if not IsValid(args.player) then return end
+            
             local player_iu2 = args.player:GetValue("ItemUse")
 
             if player_iu2.using then

@@ -10,6 +10,7 @@ ItemsConfig =
         ["Vehicle Repair"] = {use_time = 5, range = 5},
         ["Vehicle Guard"] = {use_time = 3, range = 5},
         ["BackTrack"] = {use_time = 3},
+        ["EVAC"] = {use_time = 5},
     },
     equippables = -- Use equip
     {
