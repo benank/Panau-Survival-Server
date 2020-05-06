@@ -30,7 +30,7 @@ function sAntiCheat:CheckServerHealth()
 
             local seconds_elapsed = Server:GetElapsedSeconds()
 
-            if seconds_elapsed - last_time > 2 then
+            if seconds_elapsed - last_time > 3 then
 
                 local msg = string.format("**Hitch warning: Server is running %.2f seconds behind!**", seconds_elapsed - last_time)
                 print(msg)
