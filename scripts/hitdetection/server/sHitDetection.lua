@@ -125,6 +125,7 @@ function sHitDetection:VehicleGuardActivate(args)
 
     if IsValid(attacker) then
         args.player:Damage(VehicleGuardDamage, DamageEntity.VehicleGuard, attacker)
+        Network:Send(attacker, "HitDetection/DealDamage")
     else
         args.player:Damage(VehicleGuardDamage, DamageEntity.VehicleGuard)
     end
@@ -215,6 +216,18 @@ function sHitDetection:PlayerDeath(args)
             content = msg
         })
 
+        local killer = nil
+        for p in Server:GetPlayers() do
+            if tostring(p:GetSteamId()) == last_damaged.steam_id then
+                killer = p
+                break
+            end
+        end
+
+        if IsValid(killer) then
+            Network:Send(killer, "HitDetection/DealDamage", {red = true})
+        end
+
     else
         -- Player died on their own without anyone else, like drowning or falling from too high
 
@@ -259,6 +272,7 @@ function sHitDetection:PlayerInsideToxicArea(args)
 
     if IsValid(attacker) then
         args.player:Damage(ToxicDamagePerSecond, DamageEntity.ToxicGrenade, attacker)
+        Network:Send(attacker, "HitDetection/DealDamage")
     else
         args.player:Damage(ToxicDamagePerSecond, DamageEntity.ToxicGrenade)
     end
@@ -304,6 +318,7 @@ function sHitDetection:SecondTick()
 
             if IsValid(attacker) then
                 p:Damage(FireDamagePerSecond, DamageEntity.Molotov, attacker)
+                Network:Send(attacker, "HitDetection/DealDamage")
             else
                 p:Damage(FireDamagePerSecond, DamageEntity.Molotov)
             end
@@ -372,6 +387,7 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
 
     if IsValid(attacker) then
         player:Damage(damage / 100, args.type, attacker)
+        Network:Send(attacker, "HitDetection/DealDamage")
     else
         player:Damage(damage / 100, args.type)
     end
@@ -445,6 +461,8 @@ function sHitDetection:ExplosionHit(args, player)
     player:SetValue("LastHealth", old_hp)
     player:Damage(damage / 100, DamageEntity.Explosion, args.attacker)
 
+    Network:Send(args.attacker, "HitDetection/DealDamage")
+
     local msg = string.format("%s [%s] shot %s [%s] for %s damage [%s]",
         args.attacker:GetName(), 
         tostring(args.attacker:GetSteamId()),
@@ -495,6 +513,8 @@ function sHitDetection:BulletHit(args, player)
     local old_hp = player:GetHealth()
     player:SetValue("LastHealth", old_hp)
     player:Damage(damage / 100, DamageEntity.Bullet, args.attacker)
+
+    Network:Send(args.attacker, "HitDetection/DealDamage")
 
     local msg = string.format("%s [%s] shot %s [%s] for %s damage [%s]",
         args.attacker:GetName(), 
