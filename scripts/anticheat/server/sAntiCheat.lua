@@ -96,6 +96,7 @@ function sAntiCheat:LagCheck(args, player)
     if not last_check then return end
 
     local diff = Server:GetElapsedSeconds() - last_check
+    player:SetValue("LastLagCheck", Server:GetElapsedSeconds())
 
     if diff < 2 then
         Events:Fire("Discord", {
@@ -116,8 +117,6 @@ function sAntiCheat:LagCheck(args, player)
         player:SetValue("LagStrikes", player:GetValue("LagStrikes") + 1)
         return
     end
-
-    player:SetValue("LastLagCheck", Server:GetElapsedSeconds())
 
     if player:GetValue("LagStrikes") >= self.max_lag_strikes then
         Events:Fire("KickPlayer", {
