@@ -61,6 +61,7 @@ function WeaponManager:IsCurrentWeaponOutOfAmmo()
 end
 
 function WeaponManager:InputPoll(args)
+    if Game:GetState() ~= GUIState.Game then return end
     if self:IsCurrentWeaponOutOfAmmo() and not LocalPlayer:InVehicle() then
         for action, _ in pairs(self.firing_actions) do
             Input:SetValue(action, 0)
