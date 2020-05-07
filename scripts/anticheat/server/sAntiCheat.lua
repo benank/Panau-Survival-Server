@@ -98,7 +98,7 @@ function sAntiCheat:LagCheck(args, player)
     local diff = Server:GetElapsedSeconds() - last_check
     player:SetValue("LastLagCheck", Server:GetElapsedSeconds())
 
-    if diff < 1.7 then
+    if diff < 1.5 then
         Events:Fire("Discord", {
             channel = "Errors",
             content = string.format("Lag check invalid [%s %s] - response sent too quickly (%.2f seconds)", 
