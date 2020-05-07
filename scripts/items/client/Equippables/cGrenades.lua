@@ -67,6 +67,32 @@ function Grenades:__init()
     self.override_animation = false
     LocalPlayer:SetValue("ThrowingGrenade", false)
 
+    self.on_foot_states = {
+        [AnimationState.SUprightIdle] = true,
+        [AnimationState.SUprightIdleVaried] = true,
+        [AnimationState.SUprightRotateCcw] = true,
+        [AnimationState.SUprightRotateCcwInterupt] = true,
+        [AnimationState.SUprightRotateCw] = true,
+        [AnimationState.SUprightRotateCwInterupt] = true,
+        [AnimationState.SUprightSprintForwardStop] = true,
+        [AnimationState.SUprightStart] = true,
+        [AnimationState.SUprightStop] = true,
+        [AnimationState.SUprightStrafe] = true,
+        [AnimationState.SUprightTurn180] = true,
+        [AnimationState.SWalk] = true,
+        [AnimationState.SRunStrafeLeftTurn] = true,
+        [AnimationState.SRunStrafeLeftTurnInterrupt] = true,
+        [AnimationState.SRunStrafeRightTurn] = true,
+        [AnimationState.SRunStrafeRightTurnInterrupt] = true,
+        [AnimationState.SDash] = true,
+        [AnimationState.SDashStop] = true,
+        [AnimationState.SDashTurn180] = true,
+        [AnimationState.STurningLeft] = true,
+        [AnimationState.SParachute] = true,
+        [AnimationState.SUprightBasicNavigation] = true,
+        [AnimationState.STurningRight] = true
+    }
+
 	Events:Subscribe(var("ModuleUnload"):get(), self, self.ModuleUnload)
 	Events:Subscribe(var("InputPoll"):get(), self, self.InputPoll)
 	Events:Subscribe(var("KeyUp"):get(), self, self.KeyUp)
@@ -110,6 +136,7 @@ function Grenades:ModuleUnload()
 end
 
 function Grenades:InputPoll()
+    if Game:GetState() ~= GUIState.Game then return end
 	if not self.thrown then
 		if not self.thrownTimer then
 			self.thrownTimer = Timer()
@@ -119,8 +146,7 @@ function Grenades:InputPoll()
 
             local base_state = LocalPlayer:GetBaseState()
 
-            if base_state ~= AnimationState.SParachute
-            and LocalPlayer:GetState() == PlayerState.OnFoot then
+            if self.on_foot_states[base_state] and base_state ~= AnimationState.SParachute then
                 Input:SetValue(Action.TurnLeft, 0)
                 Input:SetValue(Action.TurnRight, 0)
                 Input:SetValue(Action.LookLeft, 0)
@@ -131,7 +157,7 @@ function Grenades:InputPoll()
                 LocalPlayer:SetAngle(Angle(Camera:GetAngle().yaw, LocalPlayer:GetAngle().pitch, LocalPlayer:GetAngle().roll))
             end
 
-            if base_state ~= AnimationState.SSkydive then
+            if self.on_foot_states[base_state] then
                 if self.thrownUnder then
                     LocalPlayer:SetLeftArmState(AnimationState.LaSUnderThrowGrenade)
                 else
