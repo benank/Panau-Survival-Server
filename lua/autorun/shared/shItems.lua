@@ -5,7 +5,7 @@ Items =
         category = "Supplies",
         stacklimit = 100,
         loot = {2,3,4},
-        rarity = 0.05,
+        rarity = 0.08,
         rarity_mod = {1,1.5,1.5}
     },
     {
@@ -21,7 +21,7 @@ Items =
         category = "Supplies",
         stacklimit = 25,
         loot = {1,2},
-        rarity = 0.1,
+        rarity = 0.15,
         rarity_mod = {1,0.75}
     },
     {
@@ -29,7 +29,7 @@ Items =
         category = "Supplies",
         stacklimit = 2,
         loot = {4,5},
-        rarity = 0.05,
+        rarity = 0.03,
         rarity_mod = {1,1.5}
     },
     {
@@ -37,7 +37,7 @@ Items =
         category = "Supplies",
         stacklimit = 25,
         loot = {1,2},
-        rarity = 0.1,
+        rarity = 0.15,
         rarity_mod = {1,0.75}
     },
     {
@@ -45,7 +45,7 @@ Items =
         category = "Supplies",
         stacklimit = 100,
         loot = {2,3,4},
-        rarity = 0.01,
+        rarity = 0.015,
         rarity_mod = {5,7.5,1}
     },
     {
@@ -53,7 +53,7 @@ Items =
         category = "Supplies",
         stacklimit = 50,
         loot = {2,3,4},
-        rarity = 0.075,
+        rarity = 0.1,
         rarity_mod = {1,1,1}
     },
     {
@@ -61,7 +61,7 @@ Items =
         category = "Supplies",
         stacklimit = 25,
         loot = {3,4,5},
-        rarity = 0.1,
+        rarity = 0.12,
         rarity_mod = {0.75,1,1}
     },
     {
@@ -77,7 +77,7 @@ Items =
         category = "Supplies",
         stacklimit = 25,
         loot = {1,2},
-        rarity = 0.1,
+        rarity = 0.15,
         rarity_mod = {0.75,1}
     },
     {
@@ -85,7 +85,7 @@ Items =
         category = "Supplies",
         stacklimit = 50,
         loot = {1,2,3},
-        rarity = 0.1,
+        rarity = 0.08,
         rarity_mod = {1,1,0.5}
     },
     {
@@ -117,7 +117,7 @@ Items =
         category = "Survival",
         stacklimit = 2,
         loot = {1,2},
-        rarity = 0.01,
+        rarity = 0.015,
         rarity_mod = {0.5,1},
         can_equip = true,
         durable = true,
@@ -210,7 +210,8 @@ Items =
         category = "Survival",
         stacklimit = 5,
         loot = {1,2},
-        rarity = 0.075,
+        rarity = 0.1,
+        max_loot = 1,
         rarity_mod = {1,1},
         can_use = true
     },
@@ -282,7 +283,7 @@ Items =
         category = "Survival",
         stacklimit = 2,
         loot = {1,2,3},
-        rarity = 0.01,
+        rarity = 0.012,
         rarity_mod = {1.5,5,7.5},
         can_use = true
     },
