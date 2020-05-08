@@ -55,6 +55,7 @@ end
 function cHitDetection:Explosion(args)
 
     if LocalPlayer:GetValue(var("InSafezone"):get()) then return end
+    if LocalPlayer:GetValue("Invincible") then return end
 
     local explosive_data = ExplosiveBaseDamage[args.type]
 
@@ -143,6 +144,8 @@ end
 
 function cHitDetection:LocalPlayerExplosionHit(args)
 
+    if LocalPlayer:GetValue("Invincible") then return false end
+
     if args.attacker then
 
         local weapon = args.attacker:GetEquippedWeapon()
@@ -166,6 +169,8 @@ function cHitDetection:LocalPlayerDeath(args)
 end
 
 function cHitDetection:LocalPlayerBulletHit(args)
+
+    if LocalPlayer:GetValue("Invincible") then return false end
 
     if not args.bone or not BoneModifiers[args.bone.name] then return false end
     if not args.attacker then return false end
