@@ -29,7 +29,7 @@ Items =
         category = "Supplies",
         stacklimit = 2,
         loot = {4,5},
-        rarity = 0.01,
+        rarity = 0.04,
         rarity_mod = {1,1.5}
     },
     {
@@ -93,7 +93,7 @@ Items =
         category = "Survival",
         stacklimit = 1,
         loot = {3,4,5},
-        rarity = 0.015,
+        rarity = 0.01,
         rarity_mod = {0.5,1,2},
         can_equip = true,
         durable = true,
@@ -105,7 +105,7 @@ Items =
         category = "Survival",
         stacklimit = 1,
         loot = {3,4,5},
-        rarity = 0.015,
+        rarity = 0.01,
         rarity_mod = {0.5,1,2},
         can_equip = true,
         durable = true,
@@ -417,21 +417,21 @@ Items =
         name = "C4",
         category = "Explosives",
         stacklimit = 5,
-        loot = {3,4,5},
-        rarity = 0.1,
+        loot = {3,4},
+        rarity = 0.025,
         max_loot = 1,
         in_loot = false,
-        rarity_mod = {0.5,1,1},
+        rarity_mod = {1,2},
         can_use = true
     },
     {
         name = "Claymore",
         category = "Explosives",
         stacklimit = 5,
-        loot = {2,3,4},
+        loot = {2,3},
         max_loot = 1,
-        rarity = 0.02,
-        rarity_mod = {1,2,2},
+        rarity = 0.025,
+        rarity_mod = {1,2},
         can_use = true
     },
     {
@@ -460,9 +460,9 @@ Items =
         name = "Mine",
         category = "Explosives",
         stacklimit = 5,
-        loot = {1,2,3},
-        rarity = 0.05,
-        rarity_mod = {1,2,2},
+        loot = {1,2},
+        rarity = 0.025,
+        rarity_mod = {1,2},
         can_use = true
     },
     {
@@ -663,10 +663,10 @@ Items =
         name = "Lockpick",
         category = "Supplies",
         stacklimit = 100,
-        loot = {1,2,3,4},
-        rarity = 0.01,
-        max_loot = 5,
-        rarity_mod = {1,1.5,1,0.75}
+        loot = {1,2},
+        rarity = 0.02,
+        max_loot = 4,
+        rarity_mod = {1,1.5}
     },
     {
         name = "Binoculars",
