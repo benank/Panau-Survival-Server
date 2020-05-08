@@ -89,6 +89,7 @@ end
 function sHitDetection:WarpGrenade(args)
 
     if not IsValid(args.player) then return end
+    if args.player:GetValue("Invincible") then return end
     local old_hp = args.player:GetHealth()
     args.player:Damage(WarpGrenadeDamage, DamageEntity.WarpGrenade)
 
@@ -111,6 +112,7 @@ end
 function sHitDetection:VehicleGuardActivate(args)
 
     if not IsValid(args.player) then return end
+    if args.player:GetValue("Invincible") then return end
 
     local attacker = nil
 
@@ -155,6 +157,7 @@ function sHitDetection:PlayerSurvivalDamage(args)
     if not IsValid(args.player) then return end
     if args.player:GetHealth() <= 0 then return end
     if args.player:GetValue("InSafezone") then return end
+    if args.player:GetValue("Invincible") then return end
     
     local old_hp = args.player:GetHealth()
     args.player:Damage(args.amount, args.type)
@@ -245,7 +248,7 @@ function sHitDetection:PlayerDeath(args)
         })
     end
 
-    if not args.player:GetValue("Suicided") then
+    if not args.player:GetValue("Suicided") and not args.player:GetValue("Invisible") and not args.player:GetValue("Invincible") then
         Events:Fire("PlayerKilled", {player = args.player})
     end
 
@@ -258,6 +261,7 @@ function sHitDetection:PlayerInsideToxicArea(args)
     if not IsValid(args.player) then return end
     if args.player:GetHealth() <= 0 then return end
     if args.player:GetValue("Loading") then return end
+    if args.player:GetValue("Invincible") then return end
 
     local attacker = nil
 
@@ -302,7 +306,7 @@ function sHitDetection:SecondTick()
     for p in Server:GetPlayers() do
         if p:GetValue("OnFire") and (p:GetPosition().y < 199.5 or p:GetValue("InSafezone")) then
             p:SetNetworkValue("OnFire", false)
-        elseif p:GetValue("OnFire") and p:GetHealth() >= 0 then
+        elseif p:GetValue("OnFire") and p:GetHealth() >= 0 and not p:GetValue("Invincible") then
 
             local attacker = nil
             local attacker_id = p:GetValue("FireAttackerId")
@@ -352,6 +356,7 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     if player:GetValue("InSafezone") then return end
     if player:GetHealth() <= 0 then return end
     if player:GetValue("Loading") then return end
+    if player:GetValue("Invincible") then return end
 
     local explosive_data = ExplosiveBaseDamage[args.type]
 
@@ -430,6 +435,7 @@ function sHitDetection:ExplosionHit(args, player)
     if not IsValid(player) then return end
     if not IsValid(args.attacker) then return end
     if player:GetValue("Loading") then return end
+    if player:GetValue("Invincible") then return end
 
     if args.attacker:GetValue("InSafezone") or player:GetValue("InSafezone") then return end
     if player:GetHealth() <= 0 then return end
@@ -496,6 +502,7 @@ function sHitDetection:BulletHit(args, player)
     if not args.bone or not BoneModifiers[args.bone.name] then return end
     if not IsValid(args.attacker) then return end
     if player:GetValue("Loading") then return end
+    if player:GetValue("Invincible") then return end
 
     if args.attacker:GetValue("InSafezone") or player:GetValue("InSafezone") then return end
     if player:GetHealth() <= 0 then return end

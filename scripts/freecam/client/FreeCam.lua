@@ -31,7 +31,11 @@ function FreeCam:__init()
 
 	Events:Subscribe("ModuleLoad", self, self.ModulesLoad)
 	Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
-	Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    
+    Events:Subscribe("SetFreecamPosition", function(args)
+        self.position = args.position
+    end)
 
 	-- Load trajectory
 	Network:Subscribe("FreeCamStore", function(args)
@@ -151,6 +155,7 @@ function FreeCam:CalcView()
 end
 
 function FreeCam:Activate()
+    if not LocalPlayer:GetValue("Admin") then return end
 	self.active = true 
 	self.position = LocalPlayer:GetBonePosition("ragdoll_Head")
 	self.angle = LocalPlayer:GetAngle()

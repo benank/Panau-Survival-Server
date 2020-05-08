@@ -15,8 +15,9 @@ ItemsConfig =
     equippables = -- Use equip
     {
         ["Grapplehook"] = {dura_per_sec = 1},
-        ["RocketGrapple"] = {dura_per_sec = 2},
+        ["RocketGrapple"] = {dura_per_sec = 3},
         ["Parachute"] = {dura_per_sec = 1},
+        ["Explosives Detector"] = {dura_per_sec = 2, dura_per_activation = 50, battery_dura_per_sec = 14},
         weapons = 
         {
             ["Handgun"] = {dura_per_use = 1, weapon_id = Weapon.Handgun, equip_slot = WeaponSlot.Right},

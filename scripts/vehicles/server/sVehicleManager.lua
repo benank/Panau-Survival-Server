@@ -19,6 +19,12 @@ function sVehicleManager:__init()
     self:ReadVehicleSpawnData("spawns/spawns.txt")
     self:SpawnVehicles()
 
+    Events:Subscribe("PlayerChat", function(args)
+        if args.text == "/explode" then
+            args.player:GetVehicle():SetHealth(0.01)
+        end
+    end)
+
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
@@ -64,10 +70,27 @@ function sVehicleManager:__init()
 
             end
 
+            Timer.Sleep(1000 * 60 * 60)
+        end
+    end)()
+
+    local func = coroutine.wrap(function()
+        while true do
+
             self:CheckForDestroyedVehicles()
+
+            Timer.Sleep(1000 * 30)
+
+        end
+    end)()
+
+    local func = coroutine.wrap(function()
+        while true do
+
             self:SaveVehicles()
 
             Timer.Sleep(1000 * 60)
+
         end
     end)()
 
@@ -80,6 +103,7 @@ function sVehicleManager:SaveVehicles()
         if IsValid(v) then 
             self:SaveVehicle(vehicle_data.vehicle)
         end
+        Timer.Sleep(1)
     end
 
 end
@@ -135,6 +159,67 @@ function sVehicleManager:GivePlayerVehicleGuard(player)
 
 end
 
+function sVehicleManager:VehicleDestroyed(vehicle, vehicle_data_input)
+
+    -- If vehicle was not passed in, then vehicle_data was passed in
+    local vehicle_data = IsValid(vehicle) and vehicle:GetValue("VehicleData") or vehicle_data_input
+    vehicle_data.name = Vehicle.GetNameByModelId(vehicle_data.model_id)
+
+    -- If this vehicle was owned by someone
+    if vehicle_data.vehicle_id then
+
+        self.despawning_vehicles[vehicle_data.vehicle_id] = nil
+        self.owned_vehicles[vehicle_data.vehicle_id] = nil
+
+        local cmd = SQL:Command("DELETE FROM vehicles WHERE vehicle_id = (?)")
+        cmd:Bind(1, vehicle_data.vehicle_id)
+        cmd:Execute()
+
+
+        local owner = nil
+
+        for p in Server:GetPlayers() do
+            if tostring(p:GetSteamId()) == vehicle_data.owner_steamid then
+                owner = p
+                break
+            end
+        end
+
+        -- Owner is online
+        if IsValid(owner) then
+
+            local player_owned_vehicles = owner:GetValue("OwnedVehicles")
+            player_owned_vehicles[vehicle_data.vehicle_id] = nil
+            owner:SetValue("OwnedVehicles", player_owned_vehicles)
+        
+            self.owned_vehicles[vehicle_data.vehicle_id] = nil
+        
+            self:SyncPlayerOwnedVehicles(owner)
+
+        end
+        
+        if IsValid(vehicle) then
+            Events:Fire("SendPlayerPersistentMessage", {
+                steam_id = vehicle_data.owner_steamid,
+                message = string.format("Your vehicle was destroyed [%s]", vehicle_data.name),
+                color = Color.Red
+            })
+        end
+
+    else
+
+        -- Add to respawn list if not owned
+        self.spawns[vehicle_data.spawn_type][vehicle_data.spawn_index].spawned = false
+        self.spawns[vehicle_data.spawn_type][vehicle_data.spawn_index].respawn_timer:Restart()
+
+    end
+
+    if IsValid(vehicle) then
+        vehicle:Remove()
+    end
+
+end
+
 function sVehicleManager:CheckForDestroyedVehicles()
 
     for id, vehicle in pairs(self.vehicles) do
@@ -143,58 +228,8 @@ function sVehicleManager:CheckForDestroyedVehicles()
             vehicle:SetValue("Remove", true)
         elseif IsValid(vehicle) and vehicle:GetValue("Remove") then
             -- Remove vehicle
-            local vehicle_data = vehicle:GetValue("VehicleData")
-
-            -- If this vehicle was owned by someone
-            if vehicle_data.vehicle_id then
-
-                self.despawning_vehicles[vehicle_data.vehicle_id] = nil
-                self.owned_vehicles[vehicle_data.vehicle_id] = nil
-
-                local cmd = SQL:Command("DELETE FROM vehicles WHERE vehicle_id = (?)")
-                cmd:Bind(1, vehicle_data.vehicle_id)
-                cmd:Execute()
-
-
-                local owner = nil
-
-                for p in Server:GetPlayers() do
-                    if tostring(p:GetSteamId()) == vehicle_data.owner_steamid then
-                        owner = p
-                        break
-                    end
-                end
-
-                -- Owner is online
-                if IsValid(owner) then
-
-                    local player_owned_vehicles = owner:GetValue("OwnedVehicles")
-                    player_owned_vehicles[vehicle_data.vehicle_id] = nil
-                    owner:SetValue("OwnedVehicles", player_owned_vehicles)
-                
-                    self.owned_vehicles[vehicle_data.vehicle_id] = nil
-                
-                    self:SyncPlayerOwnedVehicles(owner)
-
-                end
-                
-                Events:Fire("SendPlayerPersistentMessage", {
-                    steam_id = vehicle_data.owner_steamid,
-                    message = string.format("Your vehicle was destroyed [%s]", vehicle:GetName()),
-                    color = Color.Red
-                })
-
-            else
-
-                -- Add to respawn list if not owned
-                self.spawns[vehicle_data.spawn_type][vehicle_data.spawn_index].spawned = false
-                self.spawns[vehicle_data.spawn_type][vehicle_data.spawn_index].respawn_timer:Restart()
-
-            end
-
-            vehicle:Remove()
+            self:VehicleDestroyed(vehicle)
             self.vehicles[id] = nil
-
         end
 
         Timer.Sleep(1)
@@ -359,7 +394,10 @@ function sVehicleManager:PlayerSpawnVehicle(args, player)
     player:SetValue("OwnedVehicles", player_owned_vehicles)
     self.vehicles[vehicle:GetId()] = vehicle
 
-    self:SyncPlayerOwnedVehicles(player)
+    Timer.SetTimeout(3000, function()
+        self:SyncPlayerOwnedVehicles(player)
+    end)
+    
 
     local msg = string.format("Player %s [%s] spawned vehicle %d", 
         player:GetName(), player:GetSteamId(), args.vehicle_id)
@@ -826,6 +864,9 @@ function sVehicleManager:SaveVehicle(vehicle, player, vehicle_data)
 
     local vehicle_data = vehicle_data or vehicle:GetValue("VehicleData") -- Vehicle data will always exist
     if not vehicle_data then return end
+
+    local health = IsValid(vehicle) and vehicle:GetHealth() or vehicle_data.health
+    if health <= 0.2 then return end
 
     local cmd = SQL:Command("UPDATE vehicles SET model_id = ?, pos = ?, angle = ?, col1 = ?, col2 = ?, decal = ?, template = ?, owner_steamid = ?, health = ?, cost = ?, guards = ? where vehicle_id = ?")
     if not vehicle_data.vehicle_id and player then -- New vehicle
