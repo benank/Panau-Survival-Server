@@ -1,2 +1,0 @@
-general.blz/go063-a1.lod
-general.blz/go063_lod1-a1_col.pfx

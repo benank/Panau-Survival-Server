@@ -1,2 +1,0 @@
-general.blz/ffar-a.lod
-general.blz/ffar_lod1-a_col.pfx

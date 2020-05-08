@@ -1,2 +1,0 @@
-km00_00.seq.blz/sidewindercustscene-a.lod
-km00_00.seq.blz/sidewindercustscene_lod1-a_col.pfx

@@ -1,0 +1,18 @@
+{
+  "info": {
+    "author": "",
+    "author_url": "",
+    "description": "Auto-generated",
+    "name": "spawn"
+  },
+  "resources":
+  {
+    "Safezone_Lootboxes": "https://i.imgur.com/xyykOyX.png",
+    "Safezone_ServerBasics": "https://i.imgur.com/NO3BfCJ.png",
+    "Safezone_Rules": "https://i.imgur.com/UG4YAuW.png",
+    "Safezone_Team": "https://i.imgur.com/iJKX2rx.png",
+    "Safezone_Welcome": "https://i.imgur.com/8UqoFpN.png",
+    "Safezone_Keybinds": "https://i.imgur.com/IJYs3Fr.png",
+    "Safezone_GetConnected": "https://i.imgur.com/gvgn0bJ.png"
+  }
+}

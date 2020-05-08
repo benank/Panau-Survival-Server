@@ -1,2 +1,0 @@
-arve.v114_jumbojet.eez/v114-wing_cl1_m.lod
-arve.v114_jumbojet.eez/v114_lod1-wing_cl1_m_col.pfx

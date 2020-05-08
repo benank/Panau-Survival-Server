@@ -6,84 +6,123 @@ function cLootboxUI:__init()
 
     self.contents = {}
 
-    self.window = Window.Create("Loot")
-    self.window:DisableResizing()
-    self.window:SetClosable(false)
-    self.window:SetSize(Vector2(Render.Size.x * 0.2, Render.Size.y * 0.4))
+    self.window = BaseWindow.Create("Loot")
+    self.window:SetSize(Vector2(ClientInventory.ui.inv_dimensions.button_size.x, Render.Size.y))
     self.window:SetPosition(Render.Size / 2 - self.window:GetSize() / 2)
-    self.window:SetTitle("Loot")
     self.window:Hide()
+    self.window:Focus()
+    self.window:SetBackgroundVisible(false)
 
-    self.itemWindows = {}
-
-    self.scrollControl = ScrollControl.Create(self.window, "scroll")
-    self.scrollControl:SetSizeAutoRel(Vector2(1, 1))
-    self.scrollControl:SetScrollable(false, true)
-
-    self.tooltip = Rectangle.Create()
-    self.tooltip:SetColor(Color(0, 0, 0, 150))
-    self.tooltip_label = Label.Create(self.tooltip, "title")
-    self.tooltip_label:SetTextSize(18)
-    self.tooltip_label:SetAlignment(GwenPosition.Center)
-    self.tooltip_label:SetPadding(Vector2(Render.Size.x * 0.003, Render.Size.x * 0.003), 
-    Vector2(Render.Size.x * 0.003, Render.Size.x * 0.003))
-    self.tooltip_label:SetTextPadding(Vector2(10,10), Vector2(10, 10))
-    self.tooltip:Hide()
-
-
-    self.num_rows = 10
-    self.items_per_row = 3
-
+    self.window_created = false
     self:CreateWindow()
+
+    self.lootbox_title_window = BaseWindow.Create("LootboxTitle")
+    self.lootbox_title_window:SetSize(Render.Size)
+    self.lootbox_title_window:SetPosition(Vector2(0,0))
+    self.lootbox_title_window:SetBackgroundVisible(false)
+    self.lootbox_title_window:SendToBack()
+    self.lootbox_title_window:Hide()
+
+    self.stash_dismount_button = Button.Create(self.lootbox_title_window)
+    self.stash_dismount_button:SetSize(self.itemWindows[1]:GetSize())
+    self.stash_dismount_button:SetText("DISMOUNT")
+    self.stash_dismount_button:SetTextColor(Color.Red)
+    self.stash_dismount_button:SetTextNormalColor(Color.Red)
+    self.stash_dismount_button:SetTextHoveredColor(Color.Red)
+    self.stash_dismount_button:SetTextPressedColor(Color.Red)
+    self.stash_dismount_button:SetTextDisabledColor(Color.Red)
+    self.stash_dismount_button:Hide()
+    self.stash_dismount_button:Subscribe("Press", self, self.PressDismountStashButton)
+
+    self.lootbox_title = ClientInventory.ui:CreateCategoryTitle("loot", false, self.lootbox_title_window)
+    self.lootbox_title_shadow = ClientInventory.ui:CreateCategoryTitle("loot", true, self.lootbox_title_window)
     
     LocalPlayer:SetValue("LootOpen", false)
 
-    self.blockedActions = {
-        [Action.FireLeft] = true,
-        [Action.FireRight] = true,
-        [Action.McFire] = true,
-        [Action.LookDown] = true,
-        [Action.LookLeft] = true,
-        [Action.LookRight] = true,
-        [Action.LookUp] = true,
-        [Action.HeliTurnRight] = true,
-        [Action.HeliTurnLeft] = true,
-        [Action.VehicleFireLeft] = true,
-        [Action.ThrowGrenade] = true,
-        [Action.VehicleFireRight] = true,
-        [Action.Reverse] = true,
-        [Action.UseItem] = true,
-        [Action.GuiPDAToggleAOI] = true,
-        [Action.GrapplingAction] = true,
-        [Action.PickupWithLeftHand] = true,
-        [Action.PickupWithRightHand] = true,
-        [Action.ActivateBlackMarketBeacon] = true,
-        [Action.GuiPDAZoomOut] = true,
-        [Action.GuiPDAZoomIn] = true,
-        [Action.NextWeapon] = true,
-        [Action.PrevWeapon] = true,
-        [Action.ExitVehicle] = true
-
-    }
-
-    Events:Subscribe("KeyUp", self, self.KeyUp)
-    Network:Subscribe("Inventory/LootboxOpen", self, self.LootboxOpen)
-    Network:Subscribe("Inventory/LootboxSync", self, self.LootboxSync)
+    Events:Subscribe(var("KeyUp"):get(), self, self.KeyUp)
+    Network:Subscribe(var("Inventory/LootboxOpen"):get(), self, self.LootboxOpen)
+    Network:Subscribe(var("Inventory/LootboxSync"):get(), self, self.LootboxSync)
     
+end
+
+function cLootboxUI:PressDismountStashButton(btn)
+
+    local current_box = LootManager.current_box
+
+    if not current_box.stash then return end
+
+    local is_owner = current_box.stash.owner_id == tostring(LocalPlayer:GetSteamId())
+
+    if not is_owner then return end
+
+    Network:Send("Stashes/Dismount", {
+        id = current_box.stash.id
+    })
+
+end
+
+function cLootboxUI:GetLootboxTitlePosition(box)
+
+    return self.window:GetPosition() + Vector2(
+        0,
+        -ClientInventory.ui.inv_dimensions.button_size.y
+        -ClientInventory.ui.inv_dimensions.padding + self.lootbox_title:GetSize().y
+    )
+
+end
+
+-- Updates a lootbox title (stash) and hides/shows it based on current box
+function cLootboxUI:UpdateLootboxTitle()
+
+    local current_box = LootManager.current_box
+
+    if current_box.stash then
+
+        self.lootbox_title_window:Show()
+
+        local is_owner = current_box.stash.owner_id == tostring(LocalPlayer:GetSteamId())
+
+        local text = string.format("%s (%d/%d)", 
+            is_owner and current_box.stash.name or "Stash", current_box.stash.num_items, current_box.stash.capacity)
+
+        self.lootbox_title:SetText(text)
+        self.lootbox_title:SetTextSize(ClientInventory.ui.inv_dimensions.text_size)
+        self.lootbox_title:SetPosition(self:GetLootboxTitlePosition(current_box))
+
+        self.lootbox_title_shadow:SetText(text)
+        self.lootbox_title_shadow:SetTextSize(ClientInventory.ui.inv_dimensions.text_size)
+        self.lootbox_title_shadow:SetPosition(self:GetLootboxTitlePosition(current_box) + Vector2(1.5,1.5))
+
+        self.stash_dismount_button:SetPosition(
+            self.lootbox_title:GetPosition()
+            - Vector2(self.lootbox_title:GetSize().x + 20, 14))
+        self.stash_dismount_button:SetTextSize(ClientInventory.ui.inv_dimensions.text_size)
+
+        if is_owner then
+            self.stash_dismount_button:Show()
+        else
+            self.stash_dismount_button:Hide()
+        end
+
+        local is_full = current_box.stash.num_items == current_box.stash.capacity
+        self.lootbox_title:SetTextColor(
+            is_full and InventoryUIStyle.category_title_colors.Full or InventoryUIStyle.category_title_colors.Normal)
+
+    else
+
+        self.lootbox_title_window:Hide()
+
+    end
+
+
 end
 
 function cLootboxUI:ClickItemButton(btn)
 
     local index = btn:GetDataNumber("stack_index")
-
     if not index or not LootManager.current_box.contents[index] then return end
 
     Network:Send("Inventory/TakeLootStack"..tostring(LootManager.current_box.uid), {index = index})
-
-    -- If there's an item to the right, populate the tooltip with its info
-    ClientInventory.ui:PopulateTooltip(
-        {button = btn, index = index + 1, tooltip = self.tooltip, tooltip_label = self.tooltip_label, loot = true})
-
 
 end
 
@@ -93,7 +132,7 @@ function cLootboxUI:LootboxSync(args)
     if not LootManager.current_box then return end
 
     LootManager:RecreateContents(args.contents)
-    self:Update({action = "full"})
+    self:Update({action = "full", stash = args.stash})
 
 end
 
@@ -104,231 +143,109 @@ function cLootboxUI:LootboxOpen(args)
 
     LootManager:RecreateContents(args.contents)
 
-    self:Update({action = "full"})
-    self:ToggleVisible()
+    self:Update({action = "full", stash = args.stash})
 
 end
 
 function cLootboxUI:WindowClosed()
-
     self:ToggleVisible()
-
 end
 
 
 function cLootboxUI:Update(args)
 
     if not LootManager.current_box then return end
+    if not self.window_created then return end
+
+    LootManager.current_box.stash = args.stash
 
     if args.action == "full" then
 
+        for i = 1, Inventory.config.max_slots_per_category do
+            self.itemWindows[i]:Hide()
+        end
+
         for i = 1, #LootManager.current_box.contents do
-
-            ClientInventory.ui:PopulateEntry({index = i, loot = true, window = self.itemWindows[i]})
-
+            ClientInventory.ui:PopulateEntry({index = i, loot = true, stash = args.stash, window = self.window})
+        end
+        --[[if args.stash then
+            for i = #LootManager.current_box.contents + 1, args.stash.capacity do
+                ClientInventory.ui:PopulateEntry({index = i, loot = true, empty = true, stash = args.stash, window = self.window})
+            end
+            self:RepositionWindow(args.stash.capacity)
+        end]]
+        if args.stash and #LootManager.current_box.contents == 0 then
+            ClientInventory.ui:PopulateEntry({index = 1, loot = true, empty = true, stash = args.stash, window = self.window})
         end
 
     elseif args.action == "update" or args.action == "remove" then
-
-        ClientInventory.ui:PopulateEntry({index = args.index, loot = true, window = self.itemWindows[args.index]})
-
+        ClientInventory.ui:PopulateEntry({index = args.index, loot = true, stash = args.stash, window = self.window})
     end
 
-    self:ResizeWindow()
-
-end
-
--- Call this to hide/unhide boxes and resize it! wohoo
-function cLootboxUI:ResizeWindow()
-
-    local total = 1
-    local num_used_rows = 1
-
-    for row = 1, self.num_rows do
-
-        for i = 0, self.items_per_row - 1 do
-
-            local window = self.itemWindows[total]
-
-            if window and LootManager.current_box and total <= #LootManager.current_box.contents then
-                window:Show()
-                num_used_rows = row
-            elseif window then
-                window:Hide()
-            end
-    
-            total = total + 1
-        end
-
+    if not self.window:GetVisible() or (#LootManager.current_box.contents == 0 and not args.stash) then
+        --self:RepositionWindow(args.stash and args.stash.capacity or nil)
+        self:RepositionWindow()
+        self:ToggleVisible()
     end
 
-    -- Todo fix this so that the scroll bar doesn't always appear
-    self.table:SizeToContents()
+    self:UpdateLootboxTitle()
 
 end
 
-function cLootboxUI:HoverEnterButton(button)
-
-    self.tooltip_render = Events:Subscribe("Render", self, self.TooltipRender)
-    self.tooltip_button = button
-
-    ClientInventory.ui:PopulateTooltip(
-        {button = button, index = button:GetDataNumber("stack_index"), tooltip = self.tooltip, tooltip_label = self.tooltip_label, loot = true})
-
-end
-
-function cLootboxUI:HoverLeaveButton(button)
-
-    if self.tooltip_render then
-        Events:Unsubscribe(self.tooltip_render)
-        self.tooltip_render = nil
-    end
-
-    self.tooltip_button = nil
-
-    self.tooltip:Hide()
-
-end
-
-function cLootboxUI:TooltipRender(args)
-
-    self.tooltip:SetPosition(Mouse:GetPosition() - Vector2(self.tooltip:GetWidth() / 2, self.tooltip:GetHeight() * 1.25))
-    self.tooltip:BringToFront()
-
+-- Adjusts y position of window to center it depending on how many items are in it
+function cLootboxUI:RepositionWindow(capacity)
+    local num_items = capacity or #LootManager.current_box.contents
+    local items_height = num_items * self.itemWindows[1]:GetHeight() + num_items * ClientInventory.ui.inv_dimensions.padding
+    local center = Render.Size.y / 2
+    self.window:SetPosition(Vector2(self.window:GetPosition().x, center - items_height / 2))
 end
 
 function cLootboxUI:CreateWindow()
 
-    local table = Table.Create(self.scrollControl, "table")
-    table:SetSizeRel(Vector2(1,1))
-    table:SetColumnCount(self.items_per_row)
+    self.itemWindows = {}
 
-    self.table = table
-    self.tableRows = {}
-    local total_index = 1
-
-    for row = 1, self.num_rows do
-
-        self.tableRows[row] = TableRow.Create(table, "tablerow"..tostring(row))
-        self.tableRows[row]:SetSizeAutoRel(Vector2(1,1))
-        table:AddRow(self.tableRows[row])
-        self.tableRows[row]:SetMargin(Vector2(Render.Size.x * 0.005, Render.Size.x * 0.005), Vector2(0, 0))
-    
-        for i = 0, self.items_per_row - 1 do
-            --table:SetColumnWidth(i, Render.Size.x * 0.05)
-            local index = total_index
-
-            local name = "lootitem" .. tostring(index)
-    
-            local itemWindow = BaseWindow.Create(self.scrollControl, name)
-            itemWindow:SetSize(Vector2(Render.Size.x * 0.05, Render.Size.x * 0.05))
-            itemWindow:SetMargin(Vector2(Render.Size.x * 0.01, Render.Size.x * 0.01), Vector2(Render.Size.x * 0.01, Render.Size.x * 0.01))
-    
-            local button_bg = Rectangle.Create(itemWindow, "button_bg")
-            button_bg:SetSizeAutoRel(Vector2(1, 1))
-            button_bg:SetColor(ClientInventory.ui.bg_colors.None)
-    
-            local button = Button.Create(itemWindow, "button")
-            button:SetSizeAutoRel(Vector2(1, 1))
-            button:SetBackgroundVisible(false)
-    
-            local durability_outer = Rectangle.Create(itemWindow, "dura_outer")
-            durability_outer:SetSizeAutoRel(Vector2(0.0575, 0.9))
-            durability_outer:SetPositionRel(Vector2(1, 0.5) - Vector2(durability_outer:GetSizeRel().x * 1.5, durability_outer:GetSizeRel().y / 2))
-            durability_outer:SetColor(Color.Green)
-            durability_outer:Hide()
-    
-            local equip_outer = Rectangle.Create(itemWindow, "equip_outer")
-            equip_outer:SetSizeAutoRel(Vector2(0.15, 0.15))
-            equip_outer:SetPositionRel(Vector2(1, 0.05) - Vector2(equip_outer:GetSizeRel().x * 2, 0))
-            equip_outer:SetColor(Color.Black)
-    
-            local equip_inner = Rectangle.Create(equip_outer, "equip_inner")
-            equip_inner:SetSizeAutoRel(Vector2(0.75, 0.75))
-            equip_inner:SetPositionRel(Vector2(0.5, 0.5) - Vector2(0.75, 0.75) / 2.5)
-            equip_inner:SetColor(Color.Green)
-    
-            equip_outer:Hide()
-    
-            local durability_inner = Rectangle.Create(durability_outer, "dura_inner")
-            durability_inner:SetColor(Color.Black)
-    
-            local amount = Label.Create(itemWindow, "amount")
-            amount:SetSizeAutoRel(Vector2(1, 1))
-            amount:SetPadding(Vector2(Render.Size.x * 0.003, Render.Size.x * 0.003), 
-                Vector2(Render.Size.x * 0.003, Render.Size.x * 0.003))
-            amount:SetTextSize(12)
-    
-            local imagePanel = ImagePanel.Create(button_bg, "imagepanel")
-            imagePanel:SetSizeAutoRel(Vector2(0.7, 0.7))
-            imagePanel:SetPositionRel(Vector2(0.5, 0.5) - imagePanel:GetSizeRel() / 2)
-    
-            button:SetDataNumber("stack_index", index)
-            button:Subscribe("Press", self, self.ClickItemButton)
-            button:Subscribe("HoverEnter", self, self.HoverEnterButton)
-            button:Subscribe("HoverLeave", self, self.HoverLeaveButton)
-
-    
-            self.tableRows[row]:SetCellContents(i, itemWindow)
-    
-            button:BringToFront()
-
-            self.itemWindows[index] = itemWindow
-            total_index = total_index + 1
-
-        end
-    
-
+    -- Create entries for each item
+    for i = 1, Inventory.config.max_slots_per_category do -- Pre-create all itemWindows and utilize as needed
+        local itemWindow = ClientInventory.ui:CreateItemWindow("loot", i, self.window)
+        self.itemWindows[i] = itemWindow
     end
 
-    table:SizeToContents()
+    self.window_created = true
 
 end
 
 function cLootboxUI:LocalPlayerInput(args)
 
-    if self.blockedActions[args.input] then return false end
-    self:ToggleVisible()
+    if ClientInventory.ui.blockedActions[args.input] then return false end
 
 end
 
 function cLootboxUI:ToggleVisible()
 
     if self.window:GetVisible() then
-        self.tooltip:Hide()
         self.window:Hide()
-        ClientInventory.ui.tooltip:Hide()
+        self.lootbox_title_window:Hide()
         Events:Unsubscribe(self.LPI)
         self.LPI = nil
         if LootManager.current_box then
             Network:Send("Inventory/CloseBox" .. tostring(LootManager.current_box.uid)) -- Send event to close box
         end
     else
+
         self.window:Show()
+        self.lootbox_title_window:Show()
         Mouse:SetPosition(Render.Size / 2)
-        self.window:SetPosition(Render.Size / 2 - self.window:GetSize() / 2)
+        --self:RepositionWindow()
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     end
 
-    Mouse:SetVisible(self.window:GetVisible())
+    if not ClientInventory.ui.window:GetVisible() then
+        Mouse:SetVisible(self.window:GetVisible())
+    end
+
     LocalPlayer:SetValue("LootOpen", self.window:GetVisible())
 
 end
-
-function cLootboxUI:GetCategoryFromIndex(index)
-
-    local slots = 0
-    
-    for k,v in pairs(Inventory.config.categories) do
-
-        slots = slots + v.slots
-
-        if index <= slots and index > 0 then return v.name end
-
-    end
-
-end
-
 
 function cLootboxUI:KeyUp(args)
 
@@ -336,10 +253,11 @@ function cLootboxUI:KeyUp(args)
 
         if self.window:GetVisible() then
             self:ToggleVisible()
-        elseif IsValid(LootManager.current_looking_box) then
+        elseif IsValid(LootManager.current_looking_box) and not self.window:GetVisible() then
             LootManager.current_box = LootManager.current_looking_box
             Network:Send("Inventory/TryOpenBox" .. tostring(LootManager.current_looking_box.uid))
         end
+        self.lootbox_title_window:SendToBack()
 
     end
 

@@ -1,2 +1,0 @@
-arve.v010_personal_propellerplane.eez/v010-windowcockpit_fu1.lod
-arve.v010_personal_propellerplane.eez/v010_lod1-windowcockpit_fu1_col.pfx

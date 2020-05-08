@@ -1,2 +1,0 @@
-km01_01.seq.blz/wea28_gunmount-d.lod
-km01_01.seq.blz/wea28_gunmount_lod1-d_col.pfx

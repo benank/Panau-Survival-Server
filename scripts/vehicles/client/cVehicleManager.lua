@@ -2,21 +2,18 @@ class 'cVehicleManager'
 
 function cVehicleManager:__init()
 
+    self.owned_vehicles = {} -- My owned vehicles
+    self.in_gas_station = false
+
     self.text = 
     {
-        size = 40,
+        size = 17,
         color = Color.White,
         locked_color = Color(214,30,30),
         unlocked_color = Color(30,214,30),
         shadow_adj = Vector2(1, 1),
         offset = Vector2(25,0)
     }
-
-    self.info_circle = CircleBar(Vector2(), self.text.size * 1, 
-	{
-		[1] = {max_amount = 100, amount = 50, color = self.text.locked_color}
-	})
-
 
     self.block_actions = 
     {
@@ -27,21 +24,56 @@ function cVehicleManager:__init()
         [Action.PickupWithRightHand] = true,
         [Action.ActivateBlackMarketBeacon] = true,
         [Action.EnterVehicle] = true,
-        [Action.StuntJump] = true,
-        [Action.EnterVehicle] = true,
-        [Action.EnterVehicle] = true,
-        [Action.EnterVehicle] = true,
-        [Action.EnterVehicle] = true,
         [Action.StuntposEnterVehicle] = true
     }
 
-    Events:Subscribe("SecondTick", self, self.SecondTick)
+    -- TODO update with levels
+    LocalPlayer:SetValue("MaxVehicles", config.player_max_vehicles)
 
+    Events:Fire(var("Vehicles/ResetVehiclesMenu"):get())
+
+    Events:Subscribe(var("Vehicles/SpawnVehicle"):get(), self, self.SpawnVehicle)
+    Events:Subscribe(var("Vehicles/DeleteVehicle"):get(), self, self.DeleteVehicle)
+    Events:Subscribe(var("Vehicles/TransferVehicle"):get(), self, self.TransferVehicle)
+
+    Events:Subscribe("SecondTick", self, self.SecondTick)
+    Network:Subscribe(var("Vehicles/SyncOwnedVehicles"):get(), self, self.SyncOwnedVehicles)
+    Network:Subscribe(var("Vehicles/VehicleGuardActivate"):get(), self, self.VehicleGuardActivate)
+
+end
+
+function cVehicleManager:VehicleGuardActivate(args)
+    ClientEffect.Play(AssetLocation.Game, {
+        position = args.position,
+        angle = Angle(),
+        effect_id = 92
+    })
+end
+
+function cVehicleManager:TransferVehicle(args)
+    Network:Send(var("Vehicles/TransferVehicle"):get(), {id = args.id, vehicle_id = args.vehicle_id})
+end
+
+function cVehicleManager:SpawnVehicle(args)
+    Network:Send(var("Vehicles/SpawnVehicle"):get(), args)
+end
+
+function cVehicleManager:DeleteVehicle(args)
+    Network:Send(var("Vehicles/DeleteVehicle"):get(), args)
+end
+
+function cVehicleManager:SyncOwnedVehicles(vehicles)
+    self.owned_vehicles = vehicles
+
+    Events:Fire(var("Vehicles/OwnedVehiclesUpdate"):get(), vehicles)
 end
 
 function cVehicleManager:LocalPlayerInput(args)
 
     if self.block_actions[args.input] and not LocalPlayer:InVehicle() then
+
+        if LocalPlayer:GetValue("LookingAtLootbox") then return false end
+
         local closest_vehicle, closest_dist = nil, 99
         local pos = LocalPlayer:GetPosition()
         for v in Client:GetVehicles() do
@@ -54,11 +86,13 @@ function cVehicleManager:LocalPlayerInput(args)
 
         if closest_vehicle then
             local data = closest_vehicle:GetValue("VehicleData")
-            local credits = Inventory.GetNumCredits()
+            local lockpicks = Inventory.GetNumOfItem({item_name = "Lockpick"})
 
-            -- TODO check if friends
-            if data.owner_id ~= tostring(LocalPlayer:GetSteamId().id) then 
-                if credits < data.cost or #closest_vehicle:GetOccupants() > 0 then
+            if not data then return false end
+
+            if data.owner_steamid ~= tostring(LocalPlayer:GetSteamId())
+            and not IsAFriend(LocalPlayer, data.owner_steamid) then 
+                if lockpicks < data.cost or (IsValid(closest_vehicle) and count_table(closest_vehicle:GetOccupants()) > 0) then
                     return false
                 end
             end
@@ -72,7 +106,13 @@ function cVehicleManager:LocalPlayerInput(args)
     local v = LocalPlayer:GetVehicle()
 	if IsValid(v) then
         local forwardvelocity = math.abs((v:GetAngle() * v:GetLinearVelocity()).z)
-        if planes[v:GetModelId()] and args.input == Action.PlaneDecTrust and v:GetDriver() == LocalPlayer and forwardvelocity < 5 then
+        local backwardvelocity = -forwardvelocity
+        if planes[v:GetModelId()] 
+        and args.input == Action.PlaneDecTrust 
+        and v:GetDriver() == LocalPlayer 
+        and forwardvelocity < 5
+        and backwardvelocity > -2
+        then
             v:SetLinearVelocity(v:GetLinearVelocity() + v:GetAngle() * Vector3.Backward * 0.25)
         end
     end
@@ -86,58 +126,14 @@ function cVehicleManager:Render(args)
     local aim = LocalPlayer:GetAimTarget()
 
     if aim.entity and aim.entity.__type == "Vehicle" then
-        self:RenderVehicleDataMinimal(aim.entity)
+        self:RenderVehicleDataClassic(aim.entity)
     end
-
-end
-
-function cVehicleManager:RenderVehicleDataMinimal(v)
-
-    local data = v:GetValue("VehicleData")
-    if not data then return end
-
-    local pos = v:GetPosition() + Vector3(0,1,0)
-    local bb_min, bb_max = v:GetBoundingBox()
-    local v_size = bb_min:Distance(bb_max)
-    
-    if pos:Distance(LocalPlayer:GetPosition()) > v_size then return end
-
-    local color = self.text.color
-    local circle_color = self.text.locked_color
-    
-    if tostring(data.owner_id) == tostring(LocalPlayer:GetSteamId().id) then -- If this player owns it
-        circle_color = self.text.unlocked_color
-    elseif false then--string.find(tostring(LocalPlayer:GetValue("Friends")), tostring(data.owner_id))false then
-        circle_color = self.text.unlocked_color -- Owned by friend
-    end
-
-    local cost_str = string.format("%d", data.cost)
-    local cost_str_size = Render:GetTextSize(cost_str, self.text.size)
-
-    local credits_str = "CREDITS"
-    local credits_size = self.text.size * 0.28
-    local credits_str_size = Render:GetTextSize(credits_str, credits_size)
-
-    if self.info_circle.data[1].amount ~= v:GetHealth() * 100 or self.info_circle.data[1].color ~= circle_color then
-        self.info_circle.data[1].amount = v:GetHealth() * 100
-        self.info_circle.data[1].color = circle_color
-        self.info_circle:Update()
-    end
-
-    local pos_2d = Render:WorldToScreen(pos)
-    
-    local t = Transform2():Translate(pos_2d)
-    Render:SetTransform(t)
-
-    self.info_circle:Render(args)
-    self:DrawShadowedText(-cost_str_size / 2, cost_str, self.text.color, self.text.size)
-    self:DrawShadowedText(-credits_str_size / 2 + Vector2(0, cost_str_size.y * 0.55), credits_str, self.text.color, credits_size)
-
-	Render:ResetTransform()
 
 end
 
 function cVehicleManager:RenderVehicleDataClassic(v)
+
+    if v:GetHealth() <= 0 then return end
 
     local data = v:GetValue("VehicleData")
     if not data then return end
@@ -148,17 +144,17 @@ function cVehicleManager:RenderVehicleDataClassic(v)
 
     local color = self.text.color
     local circle_color = self.text.locked_color
+
+    local friendly_vehicle = tostring(data.owner_steamid) == tostring(LocalPlayer:GetSteamId()) or IsAFriend(LocalPlayer, data.owner_steamid)
     
-    if tostring(data.owner_id) == tostring(LocalPlayer:GetSteamId().id) then -- If this player owns it
+    if friendly_vehicle then
         circle_color = self.text.unlocked_color
-    elseif false then--string.find(tostring(LocalPlayer:GetValue("Friends")), tostring(data.owner_id))false then
-        circle_color = self.text.unlocked_color -- Owned by friend
     end
 
     local vehicle_name = tostring(v)
     local vehicle_name_height = Render:GetTextHeight(vehicle_name, self.text.size)
 
-    local cost_str = string.format("Cost: %d Credits", data.cost)
+    local cost_str = string.format("Cost: %d Lockpicks", data.cost)
     local cost_str_height = Render:GetTextHeight(vehicle_name, self.text.size)
 
     local health_str = string.format("Health: %.0f%%", v:GetHealth() * 100)
@@ -167,9 +163,15 @@ function cVehicleManager:RenderVehicleDataClassic(v)
     
     local t = Transform2():Translate(pos_2d)
     Render:SetTransform(t)
-    self:DrawShadowedText(-Vector2(0, vehicle_name_height * 1.5) + self.text.offset, vehicle_name, self.text.color, self.text.size)
-    self:DrawShadowedText(-Vector2(0, vehicle_name_height * 0.5) + self.text.offset, cost_str, self.text.color, self.text.size)
-    self:DrawShadowedText(Vector2(0, cost_str_height * 0.5) + self.text.offset, health_str, self.text.color, self.text.size)
+
+    if friendly_vehicle then
+        self:DrawShadowedText(-Vector2(0, vehicle_name_height * 1) + self.text.offset, vehicle_name, self.text.color, self.text.size)
+        self:DrawShadowedText(Vector2(0, vehicle_name_height * 0) + self.text.offset, health_str, self.text.color, self.text.size)
+    else
+        self:DrawShadowedText(-Vector2(0, vehicle_name_height * 1.5) + self.text.offset, vehicle_name, self.text.color, self.text.size)
+        self:DrawShadowedText(-Vector2(0, vehicle_name_height * 0.5) + self.text.offset, health_str, self.text.color, self.text.size)
+        self:DrawShadowedText(Vector2(0, cost_str_height * 0.5) + self.text.offset, cost_str, self.text.color, self.text.size)
+    end
 
     local circle_size = self.text.size * 3 / 2 * 0.8
     local circle_pos = -Vector2(circle_size * 1.3, 0)
@@ -203,6 +205,29 @@ function cVehicleManager:SecondTick()
         self.render = nil
         Events:Unsubscribe(self.lpi)
         self.lpi = nil
+    end
+
+    if LocalPlayer:InVehicle() then
+        local v = LocalPlayer:GetVehicle()
+        if v:GetDriver() == LocalPlayer then
+
+            local vehicle_pos = v:GetPosition()
+            local in_gas_station = false
+
+            for _, pos in pairs(gasStations) do
+                if pos:Distance(vehicle_pos) < config.gas_station_radius then
+                    in_gas_station = true
+                end
+            end
+
+            if self.in_gas_station and not in_gas_station then
+                Network:Send("Vehicles/ExitGasStation")
+            elseif not self.in_gas_station and in_gas_station then
+                Network:Send("Vehicles/EnterGasStation")
+            end
+                
+            self.in_gas_station = in_gas_station
+        end
     end
 
 end

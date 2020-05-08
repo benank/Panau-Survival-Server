@@ -1,2 +1,0 @@
-general.blz/wea02-wea02.lod
-general.blz/wea02_lod1-wea02_col.pfx

@@ -1,1 +1,1 @@
-SQL:Execute("CREATE TABLE IF NOT EXISTS inventory (steamID VARCHAR UNIQUE, contents VARCHAR, hotbar VARCHAR)")
+SQL:Execute("CREATE TABLE IF NOT EXISTS inventory (steamID VARCHAR UNIQUE, contents VARCHAR)")

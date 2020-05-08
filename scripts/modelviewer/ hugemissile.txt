@@ -1,2 +1,0 @@
-f1m07.bomb.eez/gp040-a.lod
-f1m07.bomb.eez/gp040_lod1-a_col.pfx

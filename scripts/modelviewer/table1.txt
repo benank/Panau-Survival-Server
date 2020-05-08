@@ -1,2 +1,0 @@
-f2t04emp.flz/go221-b.lod
-f2t04emp.flz/go221_lod1-b_col.pfx

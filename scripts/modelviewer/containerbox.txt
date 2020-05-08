@@ -1,2 +1,0 @@
-38x12.flz/go005-h.lod
-38x12.flz/go005_lod1-h_col.pfx

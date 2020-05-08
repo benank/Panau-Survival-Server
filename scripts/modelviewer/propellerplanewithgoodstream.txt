@@ -1,2 +1,0 @@
-arve.v010_personal_propellerplane.eez/v010-body_m.lod
-arve.v010_personal_propellerplane.eez/v010_lod1-body_m_col.pfx

@@ -1,2 +1,0 @@
-37x08.flz/go300-b.lod
-37x08.flz/go300_lod1-b_col.pfx

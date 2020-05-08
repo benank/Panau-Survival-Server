@@ -15,7 +15,7 @@ function CircleBar:__init(pos, size, data) -- Make a circle bar with as many sec
 	self.data = data
 
 	self.resolution = self.size * 10
-	self.inner_radius = 0
+	self.inner_radius = 0.75
 	self.background_color = Color(0,0,0,120)
 	self.outline_enabled = false
 	self.visible = true -- Set to false to disable rendering

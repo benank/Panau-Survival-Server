@@ -1,2 +1,0 @@
-arve.v061_attackheli.eez/v061-body_m.lod
-arve.v061_attackheli.eez/v061_lod1-body_m_col.pfx

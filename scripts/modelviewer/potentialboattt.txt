@@ -1,2 +1,0 @@
-seve.v104_attack_boat.eez/v104-body_m.lod
-seve.v104_attack_boat.eez/v104_lod1-body_m_col.pfx

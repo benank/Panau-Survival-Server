@@ -1,2 +1,0 @@
-sharkatron.3000.eez/go701-a.lod
-sharkatron.3000.eez/go701_lod1-a_col.pfx

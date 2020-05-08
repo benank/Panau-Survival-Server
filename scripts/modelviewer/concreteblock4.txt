@@ -1,2 +1,0 @@
-f2m05.stffront.flz/gb248-a4_02_dst.lod
-f2m05.stffront.flz/gb248_lod1-a4_02_dst_col.pfx

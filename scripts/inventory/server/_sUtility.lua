@@ -2,43 +2,25 @@
 -- Must contain: position, angle, tier, contents
 function CreateLootbox(args)
 
-    if args.tier == Lootbox.Types.Dropbox then
-
-        local cell_x, cell_y = GetCell(args.position)
-
-        for _, box in pairs(LootCells.Loot[cell_x][cell_y]) do
-
-            -- If there is another dropbox close enough, use that one
-            if box.tier == Lootbox.Types.Dropbox and box.position:Distance(args.position) < 2 then
-
-                for k,v in pairs(args.contents) do
-                    box:AddStack(v)
-                    return
-                end
-                
-            end
-
-        end
-
-    end
-
     local box = sLootbox(args)
-    table.insert(LootCells.Loot[box.cell_x][box.cell_y], box)
 
-    Network:SendToPlayers(GetNearbyPlayersInCell(box.cell_x, box.cell_y), "Inventory/OneLootboxCellSync", box:GetSyncData())
+    VerifyCellExists(LootCells.Loot, box.cell)
+    LootCells.Loot[box.cell.x][box.cell.y][box.uid] = box
 
+    return box
 
 end
 
-function GetNearbyPlayersInCell(cell_x, cell_y)
+function GetNearbyPlayersInCell(cell)
 
     local nearby_players = {}
 
     -- Sync to all players in adjacent cells
-    for x = cell_x - 1, cell_x + 1 do
+    for x = cell.x - 1, cell.x + 1 do
 
-        for y = cell_y - 1, cell_y + 1 do
+        for y = cell.y - 1, cell.y + 1 do
 
+            VerifyCellExists(LootCells.Player, {x = x, y = y})
             for _, player in pairs(LootCells.Player[x][y]) do
 
                 if IsValid(player) then
@@ -58,26 +40,22 @@ end
 
 function CreateItem(args)
 
-    --for k,v in pairs(args) do print(k,v) end
-
     if not args.name or not args.amount or args.amount < 1 then
         print("CreateItem failed: missing name or amount")
-        --print(debug.traceback())
         return nil
     end
 
     if not Items_indexed[args.name] then
         print("CreateItem failed: item was not found: " .. args.name)
-        --print(debug.traceback())
         return nil
     end
 
-    local data = Items_indexed[args.name]
+    local data = deepcopy(Items_indexed[args.name])
 
     if data.durable then
 
         data.max_durability = data.max_durability and data.max_durability or Items.Config.default_durability
-        data.durability = randy(
+        data.durability = args.max_dura and data.max_durability or randy(
             math.ceil(Items.Config.min_durability_percent * data.max_durability),
             math.ceil(Items.Config.max_durability_percent * data.max_durability)
         )
@@ -102,7 +80,21 @@ function GenerateDefaultInventory()
 
     for k,v in pairs(Inventory.config.default_inv) do 
         
-        table.insert(items, shStack({contents = {CreateItem(v)}}))
+        local item = CreateItem(v)
+        local contents = {item}
+
+        if item.durable or item.can_equip then
+            contents = {}
+            for i = 1, v.amount do
+                table.insert(contents, CreateItem({
+                    name = v.name,
+                    amount = 1,
+                    max_dura = true
+                }))
+            end
+        end
+
+        table.insert(items, shStack({contents = contents}))
         
     end
 
@@ -110,6 +102,7 @@ function GenerateDefaultInventory()
 
 end
 
+-- Used only for chat commands
 function GetLootName(lootstring)
     local split = splitstr(lootstring, " ")
 
@@ -123,19 +116,13 @@ function GetLootName(lootstring)
 
 end
 
+-- Used only for chat commands
 function GetLootAmount(lootstring)
     local split = splitstr(lootstring, " ")
 	return tonumber(split[#split])
 end
 
 local random = math.random
-
-function ConvertTier(original_tier)
-    return random() < Lootbox.GeneratorConfig.tier_conversion[original_tier][1].chance
-    and Lootbox.GeneratorConfig.tier_conversion[original_tier][1].tier
-    or Lootbox.GeneratorConfig.tier_conversion[original_tier][2].tier
-
-end
 
 function randy(_min, _max, _seed)
     --math.randomseed(_seed and _seed or os.time())

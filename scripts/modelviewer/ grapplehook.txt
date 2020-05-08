@@ -1,2 +1,0 @@
-general.blz/wea04-grapplinghook.lod
-general.blz/wea04_lod1-grapplinghook_col.pfx

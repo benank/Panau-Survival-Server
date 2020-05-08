@@ -4,9 +4,10 @@ function cInventoryUI:__init()
 
     self.open_key = 'G'
     self.steam_id = tostring(LocalPlayer:GetSteamId().id)
-
-    self.icons = {}
-    self:LoadIcons()
+    self.dropping_counter = 0 -- Amount of stacks the player is trying to drop. If > 0, then drop items on inventory close
+    self.dropping_items = {} -- Table of items (cat + index + amount) that the player is trying to drop
+    self.hovered_button = nil -- Button in inventory currently hovered
+    self.pressed_button = nil -- Button that the mouse is currently left clicking
 
     self.bg_colors = 
     {
@@ -16,76 +17,26 @@ function cInventoryUI:__init()
         Use = Color(200,200,200,100)
     }
 
-    self.window = Window.Create("Inventory")
-    self.window:SetSize(Render.Size * 0.5)
-    self.window:SetPosition(Render.Size / 2 - self.window:GetSize() / 2)
-    self.window:SetTitle("Inventory")
+    self.padding = 4
+
+    self.window = BaseWindow.Create("Inventory")
+    self.window:SetSize(Vector2(math.min(Render.Size.x * 0.9, InventoryUIStyle.default_inv_size), Render.Size.y))
+    self.window:SetPosition(Render.Size - self.window:GetSize())
     self.window:Hide()
     self.window:Focus()
+    self.window:SetBackgroundVisible(false)
 
-    self.tabControl = TabControl.Create(self.window, "TabControl")
-    self.tabControl:SetSizeAutoRel(Vector2(1, 1))
-    --self.tabControl:SetReorderAllowed(true)
-    --self.tabControl:SetTabStripPosition(2) -- Make the tabs go on the side
-    self:CreateTabs()
-
-    self.rightClickMenuBackground = Button.Create()
-    self.rightClickMenuBackground:SetPosition(Vector2.Zero)
-    self.rightClickMenuBackground:SetSize(Render.Size)
-    self.rightClickMenuBackground:SetBackgroundVisible(false)
-    self.rightClickMenuBackground:Subscribe("DoubleClick", self, self.CloseMenus)
-    self.rightClickMenuBackground:Subscribe("Press", self, self.CloseMenus)
-    self.rightClickMenuBackground:Subscribe("RightPress", self, self.CloseMenus)
-    self.rightClickMenuBackground:Hide()
-
-    self.rightClickMenu = Rectangle.Create()
-    self.rightClickMenu:SetSize(Vector2(Render.Size.x * 0.03, Render.Size.x * 0.1))
-    self.rightClickMenu:SetColor(Color(0, 0, 0, 0))
-    self.rightClickMenu:Hide()
-    self.rightClickMenuCnt = 0
-
-    self.rightClickMenuSubs = {}
-
-    self.tooltip = Rectangle.Create()
-    self.tooltip:SetColor(Color(0, 0, 0, 150))
-    self.tooltip_label = Label.Create(self.tooltip, "title")
-    self.tooltip_label:SetTextSize(18)
-    self.tooltip_label:SetAlignment(GwenPosition.Center)
-    self.tooltip_label:SetPadding(Vector2(Render.Size.x * 0.003, Render.Size.x * 0.003), 
-    Vector2(Render.Size.x * 0.003, Render.Size.x * 0.003))
-    self.tooltip_label:SetTextPadding(Vector2(10,10), Vector2(10, 10))
-    self.tooltip:Hide()
-
-    self.input_count = 0
-    self.input = Rectangle.Create()
-    self.input:SetSize(Vector2(Render.Size.x * 0.2, Render.Size.y * 0.15))
-    self.input:SetPosition(Render.Size / 2 - self.input:GetSize() / 2)
-    self.input:SetColor(Color(0,0,0,100))
-    self.input_slider = HorizontalSlider.Create(self.input)
-    self.input_slider:SetSizeAutoRel(Vector2(1,0.2))
-    self.input_slider:SetPositionRel(Vector2(0.5, 0.5) - self.input_slider:GetSizeRel() / 2)
-    self.input_slider:Subscribe("ValueChanged", self, self.SliderValueChanged)
-    self.input_button = Button.Create(self.input)
-    self.input_button:SetText("Drop")
-    self.input_button:SetTextSize(16)
-    self.input_button:SetSizeAutoRel(Vector2(1,0.25))
-    self.input_button:SetPositionRel(Vector2(0, 1 - self.input_button:GetSizeRel().y))
-    self.input_button:Subscribe("Press", self, self.ConfirmAmountButtonPress)
-    self.input_label = Label.Create(self.input)
-    self.input_label:SetText("This is item")
-    self.input_label:SetTextSize(20)
-    self.input_label:SetAlignment(GwenPosition.Center)
-    self.input_label:SetSizeAutoRel(Vector2(1,0.5))
-    self.input_label:SetPositionRel(Vector2(0, 0))
-    self.input_label:SetPadding(Vector2(Render.Size.x * 0.0015, Render.Size.x * 0.0015), 
-    Vector2(Render.Size.x * 0.0015, Render.Size.x * 0.0015))
-    self.input_label:SetTextPadding(Vector2(10,10), Vector2(10, 10))
-
-    self.input:Hide()
-
-    self.hotbar = {}
-
-    self:CreateHotbar()
+    self.inv_dimensions = 
+    {
+        padding = self.padding, -- Padding on all sides is the same
+        text_size = math.min(20, Render.Size.y / 54),
+        category_title_text_size = 16,
+        button_size = Vector2(
+            (self.window:GetSize().x - self.padding * #Inventory.config.categories) / #Inventory.config.categories, 40),
+        cat_offsets = {} -- Per category offsets
+    }
+    
+    self:CreateInventory()
 
     LocalPlayer:SetValue("InventoryOpen", false)
 
@@ -100,22 +51,28 @@ function cInventoryUI:__init()
         [Action.HeliTurnRight] = true,
         [Action.HeliTurnLeft] = true,
         [Action.VehicleFireLeft] = true,
+        [Action.ThrowGrenade] = true,
         [Action.VehicleFireRight] = true,
-        [Action.ThrowGrenade] = true
+        [Action.Reverse] = true,
+        [Action.UseItem] = true,
+        [Action.GuiPDAToggleAOI] = true,
+        [Action.GrapplingAction] = true,
+        [Action.PickupWithLeftHand] = true,
+        [Action.PickupWithRightHand] = true,
+        [Action.ActivateBlackMarketBeacon] = true,
+        [Action.GuiPDAZoomOut] = true,
+        [Action.GuiPDAZoomIn] = true,
+        [Action.NextWeapon] = true,
+        [Action.PrevWeapon] = true,
+        [Action.ExitVehicle] = true
     }
 
-    self.hotbar_keys = {}
-
-    -- Initialize hotbar keys
-    for i = 0, 9 do
-        self.hotbar_keys[string.byte(tostring(i < 9 and i + 1 or 0))] = i + 1
-    end
-
-    Events:Subscribe("KeyUp", self, self.KeyUp)
-    Events:Subscribe("SetInventoryState", self, self.SetInventoryState)
+    Events:Subscribe(var("KeyUp"):get(), self, self.KeyUp)
+    Events:Subscribe(var("KeyDown"):get(), self, self.KeyDown)
+    Events:Subscribe(var("MouseScroll"):get(), self, self.MouseScroll)
+    self.window:Subscribe(var("PostRender"):get(), self, self.WindowRender)
+    Events:Subscribe(var("SetInventoryState"):get(), self, self.SetInventoryState)
     
-    self.window:Subscribe("WindowClosed", self, self.WindowClosed)
-
 end
 
 function cInventoryUI:SetInventoryState(open)
@@ -128,96 +85,79 @@ function cInventoryUI:SetInventoryState(open)
 
 end
 
-function cInventoryUI:CloseMenus()
-
-    self.rightClickMenuBackground:Hide()
-    self.rightClickMenu:Hide()
-    self.input:Hide()
-
-end
-
-function cInventoryUI:SliderValueChanged()
-
-    if self.input_slider:GetDataString("action") == "Hotbar" then
-        self.input_button:SetText("Assign to slot " .. round(self.input_slider:GetValue()))
-    else
-        local index = self.current_right_clicked:GetDataNumber("stack_index")
-        local stack = Inventory.contents[index]
-        local val = round(self.input_slider:GetValue())
-        if IsNaN(val) then
-            val = 1
-        end
-        self.input_button:SetText(self.input_slider:GetDataString("action") .. " " .. val)
-    end
-
-end
-
-function cInventoryUI:UpdateHotbar(args)
-
-    -- First, reset all old hotbar values
-    for hotbar_index, inventory_index in pairs(self.hotbar) do
-
-        local itemwindow = self.window:FindChildByName("itemwindow"..inventory_index, true)
-
-        if itemwindow then
-
-            if itemwindow:GetDataNumber("hotbar_link") > 0 then
-
-                local hotbaritem = self.hotbar_window:FindChildByName("hotbaritem"..hotbar_index, true)
-                hotbaritem:SetDataNumber("inv_link", 0)
-                self:PopulateEntry(
-                    {window = hotbaritem, index = 0, hotbar = true})
-
-            end
-
-            itemwindow:SetDataNumber("hotbar_link", 0)
-        end
-
-    end
-
-    self.hotbar = args
-
-    -- Then, reinitialize new hotbar values
-    for hotbar_index, inventory_index in pairs(self.hotbar) do
-
-        local itemwindow = self.window:FindChildByName("itemwindow"..inventory_index, true)
-
-        if itemwindow then
-            itemwindow:SetDataNumber("hotbar_link", hotbar_index)
-
-            local hotbaritem = self.hotbar_window:FindChildByName("hotbaritem"..hotbar_index, true)
-            hotbaritem:SetDataNumber("inv_link", inventory_index)
-
-            self:PopulateEntry({index = inventory_index})
-        end
-
-    end
-
-end
-
 function cInventoryUI:Update(args)
 
     if args.action == "full" then
-
-        local slots = GetInventoryNumSlots()
-        for i = 1, slots do
-
-            self:PopulateEntry({index = i})
-
+        for cat, _ in pairs(Inventory.contents) do
+            for i = 1, Inventory.config.max_slots_per_category do
+                self:PopulateEntry({index = i, cat = cat})
+            end
         end
-
+        self:UpdateAllCategoryTitles()
     elseif args.action == "update" or args.action == "remove" then
+        self:PopulateEntry({index = args.index, cat = args.cat})
+        self:UpdateAllCategoryTitles()
+    elseif args.action == "slots" then
+        self:UpdateAllCategoryTitles()
+    elseif args.action == "cat" then
+        for i = 1, Inventory.config.max_slots_per_category do
+            self:PopulateEntry({index = i, cat = args.cat})
+        end
+        self:UpdateAllCategoryTitles()
+    end
 
-        self:PopulateEntry({index = args.index})
+end
 
+function cInventoryUI:WindowRender()
+
+    if not self.window:GetVisible() then return end
+    if not Inventory.contents then return end
+
+    local base_pos = self.window:GetPosition()
+    local icon = InventoryUIStyle.equipped_icon
+
+    for category, _ in pairs(Inventory.contents) do
+        for index, stack in pairs(Inventory.contents[category]) do
+            local itemWindow = self.itemWindows[category][index]
+
+            if itemWindow then
+                
+                local position = itemWindow:GetPosition() + base_pos + icon.position
+
+                if stack.contents[1].equipped then
+                    -- Top item in stack is equipped
+                    Render:FillCircle(position, icon.radius, icon.color)
+                elseif stack:GetOneEquipped() then
+                    -- An item in the stack is equipped
+                    Render:FillCircle(position, icon.radius, icon.color_under)
+                end
+            end
+        end
     end
 
 end
 
 function cInventoryUI:GetDurabilityColor(percent)
-
     return Color.FromHSV(120 * percent, 0.85, 0.85)
+end
 
+-- Gets formatted stack name for inventory/loot, like: Lockpick (50)
+function cInventoryUI:GetItemNameWithAmount(stack, index)
+    return stack:GetAmount() > 1 and 
+        string.format("%s (%s)", stack:GetProperty("name"), tostring(self:GetItemButtonStackAmount(stack, index))) or
+        string.format("%s", stack:GetProperty("name"))
+end
+
+-- Returns 5/10 if dropping, otherwise returns the amount in the stack
+function cInventoryUI:GetItemButtonStackAmount(stack, index)
+    local itemWindow = self.window:FindChildByName("itemwindow_"..stack:GetProperty("category")..index, true)
+    local button = itemWindow:FindChildByName("button", true)
+
+    if button:GetDataBool("dropping") then -- If they are dropping this stack
+        return string.format("%i/%i", button:GetDataNumber("drop_amount"), stack:GetAmount())
+    else -- Otherwise
+        return stack:GetAmount()
+    end
 end
 
 -- Updates an entry in the inventory so it matches the current inventory
@@ -225,724 +165,565 @@ end
 -- the loot, and set args.loot to true
 function cInventoryUI:PopulateEntry(args)
 
-    local itemwindow = args.window
-
-    if not itemwindow then
-
-        itemwindow = self.window:FindChildByName("itemwindow"..args.index, true)
-
-    end
+    local window = args.window or self.window
 
     local stack
 
-    if not args.loot then
-
-        stack = Inventory.contents[args.index]
-
-    elseif args.loot and LootManager.current_box and LootManager.current_box.contents[args.index] then
-
+    if not args.loot and not args.empty then
+        stack = Inventory.contents[args.cat][args.index]
+    elseif args.loot and LootManager.current_box and LootManager.current_box.contents[args.index] and not args.empty then
         stack = LootManager.current_box.contents[args.index]
-
     end
 
+    local cat = "none"
+    
+    if args.loot then cat = "loot"
+    elseif args.cat then cat = args.cat
+    else cat = stack:GetProperty("category") end
+
+    local itemwindow = window:FindChildByName("itemwindow_"..cat..args.index, true)
+
+    itemwindow:SetDataBool("loot", args.loot == true)
+    itemwindow:SetDataNumber("loot_index", args.index)
+
     local button = itemwindow:FindChildByName("button", true)
-    local imagePanel = itemwindow:FindChildByName("imagepanel", true)
-    local amount = itemwindow:FindChildByName("amount", true)
     local button_bg = itemwindow:FindChildByName("button_bg", true)
-    local dura_outer = itemwindow:FindChildByName("dura_outer", true)
-    local dura_inner = itemwindow:FindChildByName("dura_inner", true)
+    local durability = itemwindow:FindChildByName("dura", true)
     local equip_outer = itemwindow:FindChildByName("equip_outer", true)
     local equip_inner = itemwindow:FindChildByName("equip_inner", true)
 
-    if stack then
+    if not args.empty then
 
-        local item_name = stack:GetProperty("name")
-        imagePanel:SetImage(self.icons["item_"..item_name] and self.icons["item_"..item_name] or self.icons["item_Unknown"])
-        amount:SetText(tostring(stack:GetAmount())) 
-        --[[button_bg:SetColor(
-            stack.contents[1].equipped and self.bg_colors.Equipped 
-            or (stack:GetOneEquipped() and self.bg_colors.Equipped_Under or self.bg_colors.None))--]]
-        
-        if stack:GetOneEquipped() then
-
-            equip_inner:SetColor(
-                stack.contents[1].equipped and self.bg_colors.Equipped 
-                or (stack:GetOneEquipped() and self.bg_colors.Equipped_Under or self.bg_colors.None)
-            )
-            equip_outer:Show()
-
+        if not stack then -- No item found, hide the entry
+            itemwindow:Hide()
+            return
         else
-
-            equip_outer:Hide()
-
+            itemwindow:Show()
         end
 
+        local item_name = stack:GetProperty("name")
+
+        button:GetParent():FindChildByName("text"):SetText(self:GetItemNameWithAmount(stack, args.index))
+        button:GetParent():FindChildByName("text_shadow"):SetText(self:GetItemNameWithAmount(stack, args.index))
         
         if stack:GetProperty("durable") then
 
-            dura_inner:SetSizeAutoRel(Vector2(1, 1 - (stack.contents[1].durability / stack.contents[1].max_durability)))
-            dura_outer:SetColor(self:GetDurabilityColor(stack.contents[1].durability / stack.contents[1].max_durability))
-            dura_outer:Show()
+            durability:SetSizeAutoRel(Vector2(math.min(1, stack.contents[1].durability / stack.contents[1].max_durability) * 0.9, 0.1))
+            durability:SetColor(self:GetDurabilityColor(stack.contents[1].durability / stack.contents[1].max_durability))
+            durability:Show()
 
         else
 
-            dura_outer:Hide()
+            durability:Hide()
 
         end
+
+        InventoryUIStyle:UpdateItemColor(itemwindow)
 
     else
-        imagePanel:SetImage(self.icons["item_None"])
-        amount:SetText("")
-        button_bg:SetColor(self.bg_colors.None)
-        dura_outer:Hide()
-        equip_outer:Hide()
-    end
-
-
-    if args.hotbar or args.loot then return end
-
-    local hotbar_link = itemwindow:GetDataNumber("hotbar_link")
-
-    if hotbar_link > 0 then
-        self:PopulateEntry({window = self.hotbar_window:FindChildByName("hotbaritem"..hotbar_link, true), index = args.index, hotbar = true})
-    end
-
-end
-
-function cInventoryUI:WindowClosed()
-
-    self:ToggleVisible()
-
-end
-
-function cInventoryUI:ShowRightClickMenu()
-
-    self.rightClickMenuBackground:BringToFront()
-    self.rightClickMenuBackground:Show()
-    self.rightClickMenu:BringToFront()
-    self.rightClickMenu:Show()
-
-end
-
-function cInventoryUI:ShowInputMenu()
-
-    self.rightClickMenuBackground:BringToFront()
-    self.rightClickMenuBackground:Show()
-    self.input:BringToFront()
-    self.input:Show()
-
-end
-
-function cInventoryUI:LoadIcons()
-
-    local loading_icons = {}
-
-    -- Start loading all the icons
-    --Events:Fire("loader/RegisterResource", {count = #Inventory.config.icons})
-
-    for index, icon_name in pairs(Inventory.config.icons) do
-
-        self.icons[icon_name] = Image.Create(AssetLocation.Resource, icon_name)
         
+        local empty_text = "-- [ EMPTY ] --"
+
+        button:GetParent():FindChildByName("text"):SetText(empty_text)
+        button:GetParent():FindChildByName("text_shadow"):SetText(empty_text)
+        
+        itemwindow:SetDataBool("loot", args.loot == true)
+        itemwindow:SetDataNumber("loot_index", args.index)
+
+        durability:Hide()
+
+        InventoryUIStyle:UpdateItemColor(itemwindow)
+
+        itemwindow:Show()
+
     end
-
-    for k,v in pairs(self.icons) do loading_icons[k] = true end
-
-    self.resource_loader = Timer.SetInterval(250, function()
-
-        for icon_name, v in pairs(loading_icons) do
-
-            if not self.icons[icon_name]:GetFailed() then
-                --Events:Fire("loader/CompleteResource", {count = 1})
-                --print("finish icon " .. icon_name)
-
-                loading_icons[icon_name] = nil
-
-                -- Finished loading icons
-                if #loading_icons == 0 and self.resource_loader then
-
-                    Timer.Clear(self.resource_loader)
-                    self.resource_loader = nil
-
-                end
-            end
-
-        end
-
-
-    end)
 
 end
 
-function cInventoryUI:CreateTabs()
+function cInventoryUI:CreateInventory()
 
-    self.tabButtons = {}
     self.itemWindows = {}
+    self.categoryTitles = {}
 
     local contents = Inventory.contents
 
-    local total_index = 1
+    for index, cat_data in ipairs(Inventory.config.categories) do
+        self.itemWindows[cat_data.name] = {}
+        self.inv_dimensions[cat_data.name] = Vector2(
+            self.inv_dimensions.button_size.x * (index - 1) +
+            self.inv_dimensions.padding * (index + 1), 0) 
+    end
 
-    for index, tab_data in ipairs(Inventory.config.categories) do
+    self.inv_dimensions["loot"] = Vector2(0, 0)
 
-        local tab_name = tab_data.name
-        local slots = tab_data.slots
-
-        local tab = self.tabControl:AddPage(tab_name)
-        table.insert(self.tabButtons, tab)
-
-        local scrollControl = ScrollControl.Create(tab:GetPage())
-        scrollControl:SetSizeAutoRel(Vector2(1, 1))
-        scrollControl:SetScrollable(false, true)
-
-        local table = Table.Create(scrollControl)
-        table:SetColumnCount(8)
-        table:SetSizeAutoRel(Vector2(1, 1))
-
-        self.itemWindows[tab_name] = {}
-        local slots_left = slots - 1
-
-        for j = 1, round(slots / 8) do
-
-            local tableRow = TableRow.Create(table)
-            tableRow:SetMargin(Vector2(0, 0), Vector2(0, Render.Size.x * 0.01))
-            table:AddRow(tableRow)
-
-            for i = 0, math.min(slots_left, 7) do
-                local itemWindow = BaseWindow.Create(scrollControl, "itemwindow"..total_index)
-                itemWindow:SetSize(Vector2(Render.Size.x * 0.05, Render.Size.x * 0.05))
-                itemWindow:SetDataNumber("hotbar_link", 0)
-
-                local button_bg = Rectangle.Create(itemWindow, "button_bg")
-                button_bg:SetSizeAutoRel(Vector2(1, 1))
-                button_bg:SetColor(self.bg_colors.None)
-
-                local button = Button.Create(itemWindow, "button")
-                button:SetSizeAutoRel(Vector2(1, 1))
-                button:SetBackgroundVisible(false)
-
-                local durability_outer = Rectangle.Create(itemWindow, "dura_outer")
-                durability_outer:SetSizeAutoRel(Vector2(0.0575, 0.9))
-                durability_outer:SetPositionRel(Vector2(1, 0.5) - Vector2(durability_outer:GetSizeRel().x * 1.5, durability_outer:GetSizeRel().y / 2))
-                durability_outer:SetColor(Color.Green)
-                durability_outer:Hide()
-
-                local equip_outer = Rectangle.Create(itemWindow, "equip_outer")
-                equip_outer:SetSizeAutoRel(Vector2(0.15, 0.15))
-                equip_outer:SetPositionRel(Vector2(1, 0.05) - Vector2(equip_outer:GetSizeRel().x * 2, 0))
-                equip_outer:SetColor(Color.Black)
-
-                local equip_inner = Rectangle.Create(equip_outer, "equip_inner")
-                equip_inner:SetSizeAutoRel(Vector2(0.75, 0.75))
-                equip_inner:SetPositionRel(Vector2(0.5, 0.5) - Vector2(0.75, 0.75) / 2.5)
-                equip_inner:SetColor(Color.Green)
-
-                equip_outer:Hide()
-
-                local durability_inner = Rectangle.Create(durability_outer, "dura_inner")
-                durability_inner:SetColor(Color.Black)
-
-                local amount = Label.Create(itemWindow, "amount")
-                amount:SetSizeAutoRel(Vector2(1, 1))
-                amount:SetPadding(Vector2(Render.Size.x * 0.003, Render.Size.x * 0.003), 
-                    Vector2(Render.Size.x * 0.003, Render.Size.x * 0.003))
-                amount:SetTextSize(12)
-
-                local stack = contents[total_index]
-
-                local imagePanel = ImagePanel.Create(button_bg, "imagepanel")
-                imagePanel:SetSizeAutoRel(Vector2(0.7, 0.7))
-                imagePanel:SetPositionRel(Vector2(0.5, 0.5) - imagePanel:GetSizeRel() / 2)
-
-                self:PopulateEntry({index = total_index})
-
-                button:SetDataNumber("stack_index", total_index)
-
-                tableRow:SetCellContents(i, itemWindow)
-
-                button:Subscribe("Press", self, self.LeftClickItemButton)
-                button:Subscribe("RightPress", self, self.RightClickItemButton)
-                button:Subscribe("HoverEnter", self, self.HoverEnterButton)
-                button:Subscribe("HoverLeave", self, self.HoverLeaveButton)
-
-                button:BringToFront()
-
-                self.itemWindows[tab_name][i] = itemWindow
-                slots_left = slots_left - 1
-                total_index = total_index + 1
-            end
-
+    -- Create entries for each item
+    for _, cat_data in pairs(Inventory.config.categories) do
+        self.categoryTitles[cat_data.name] = 
+            {text = self:CreateCategoryTitle(cat_data.name), shadow = self:CreateCategoryTitle(cat_data.name, true)}
+        for i = 1, Inventory.config.max_slots_per_category do -- Pre-create all itemWindows and utilize as needed
+            local itemWindow = self:CreateItemWindow(cat_data.name, i)
+            self.itemWindows[cat_data.name][i] = itemWindow
         end
-
     end
 
 end
 
-function cInventoryUI:CreateHotbar()
+-- Updates all category titles in the inventory. Should be called when number of available slots changes (level up, items added/removed)
+function cInventoryUI:UpdateAllCategoryTitles()
+    for cat, _ in pairs(Inventory.contents) do
+        self:UpdateCategoryTitle(cat)
+    end
+end
 
-    self.hotbar_window = Rectangle.Create("hotbar")
-    self.hotbar_window:SetColor(Color(0,0,0,0))
-    self.hotbar_window:SetSize(Vector2(Render.Size.x * 0.425, Render.Size.y * 0.085))
-    self.hotbar_window:SetPosition(
-        Vector2(Render.Size.x / 2, Render.Size.y) - Vector2(self.hotbar_window:GetSize().x / 2, self.hotbar_window:GetSize().y * 1.5))
+-- TODO: make this method shared
+function cInventoryUI:GetNumSlotsInCategory(cat)
+    if not Inventory.slots then return end
+    assert(Inventory.slots[cat] ~= nil, "cInventoryUI:GetNumSlotsInCategory failed: category was invalid (given: " .. cat .. ")")
+    local total = 0
+
+    for slot_type, amount in pairs(Inventory.slots[cat]) do
+        total = total + amount
+    end
+
+    return total
+end
+
+function cInventoryUI:GetCategoryTitleText(cat)
+    return string.format("%s %i/%i%s",
+        cat,
+        #Inventory.contents[cat],
+        self:GetNumSlotsInCategory(cat) or 0,
+        Inventory.slots[cat].backpack > 0 and " (+" .. tostring(Inventory.slots[cat].backpack) .. ")" or ""
+    )
+end
+
+function cInventoryUI:UpdateCategoryTitle(cat)
+    self.categoryTitles[cat].text:SetText(self:GetCategoryTitleText(cat))
+    self.categoryTitles[cat].text:SetPosition(self:GetCategoryTitlePosition(cat))
+
+    self.categoryTitles[cat].shadow:SetText(self:GetCategoryTitleText(cat))
+    self.categoryTitles[cat].shadow:SetPosition(self:GetCategoryTitlePosition(cat) + Vector2(1,1))
+
+    local is_full = #Inventory.contents[cat] == self:GetNumSlotsInCategory(cat)
+    self.categoryTitles[cat].text:SetTextColor(
+        is_full and InventoryUIStyle.category_title_colors.Full or InventoryUIStyle.category_title_colors.Normal)
+end
+
+function cInventoryUI:CreateCategoryTitle(cat, is_shadow, parent)
+    local categoryTitle = Label.Create(parent or self.window, "categorytitle_"..cat..(is_shadow and "shadow" or ""))
+    categoryTitle:SetSize(Vector2(self.inv_dimensions.button_size.x, self.inv_dimensions.button_size.y * 0.5))
+    categoryTitle:SetTextSize(self.inv_dimensions.category_title_text_size)
+    categoryTitle:SetAlignment(GwenPosition.Center)
+
+    if is_shadow then
+        categoryTitle:SetTextColor(Color.Black)
+        categoryTitle:SendToBack()
+    end
+
+    return categoryTitle
+end
+
+function cInventoryUI:GetCategoryTitlePosition(cat)
+    local index = Inventory.contents and #Inventory.contents[cat] or 0
+    return Vector2(
+        self.inv_dimensions[cat].x - self.inv_dimensions.padding * 2,
+        self.window:GetSize().y - (self.inv_dimensions.button_size.y * index)
+        - self.inv_dimensions.padding * (index + 1) - self.categoryTitles[cat].text:GetSize().y
+    )
+end
+
+function cInventoryUI:GetItemWindowPosition(cat, index)
+    if cat == "loot" then
+        return Vector2(
+            0,
+            self.inv_dimensions.button_size.y * (index - 1) + (self.inv_dimensions.padding * index)
+        )
+    else
+        return Vector2(
+            self.inv_dimensions[cat].x - self.inv_dimensions.padding * 2,
+            self.window:GetSize().y - (self.inv_dimensions.button_size.y * index)
+            - self.inv_dimensions.padding * index
+        )
+    end
+end
+
+-- Creates and returns a new item window. Can be used for loot and inventory
+function cInventoryUI:CreateItemWindow(cat, index, parent)
+
+    local itemWindow = BaseWindow.Create(parent or self.window, "itemwindow_"..cat..index)
+    itemWindow:SetSize(self.inv_dimensions.button_size)
+    itemWindow:SetPosition(self:GetItemWindowPosition(cat, index))
+
+    local button_bg = Rectangle.Create(itemWindow, "button_bg")
+    button_bg:SetSizeAutoRel(Vector2(1, 1))
+    button_bg:SetColor(InventoryUIStyle.colors.default.background)
+
+    local button_bg_2 = Rectangle.Create(itemWindow, "button_bg_2")
+    button_bg_2:SetSizeAutoRel(Vector2(1, 1))
+    button_bg_2:SetColor(InventoryUIStyle.colors.hover.background)
+    button_bg_2:Hide()
+
+    local button = Button.Create(itemWindow, "button")
+    button:SetSizeAutoRel(Vector2(1, 1))
+    button:SetBackgroundVisible(false)
+    button:SetTextSize(self.inv_dimensions.text_size)
+    button:SetTextPadding(Vector2(500,500), Vector2(500,500))
+
+    local text_shadow = Label.Create(itemWindow, "text_shadow")
+    text_shadow:SetSizeAutoRel(Vector2(1, 1))
+    text_shadow:SetTextSize(self.inv_dimensions.text_size)
+    text_shadow:SetTextColor(Color.Black)
+    text_shadow:SetAlignment(GwenPosition.Center)
+    text_shadow:SetPosition(Vector2(2,2))
+    text_shadow:SetTextPadding(Vector2(0, 4), Vector2(0, 0))
+
+    local text = Label.Create(itemWindow, "text")
+    text:SetSizeAutoRel(Vector2(1, 1))
+    text:SetTextSize(self.inv_dimensions.text_size)
+    text:SetTextColor(Color.White)
+    text:SetAlignment(GwenPosition.Center)
+    text:SetTextPadding(Vector2(0, 4), Vector2(0, 0))
+
+    local colors = InventoryUIStyle.colors.default
+    button:SetTextColor(colors.text)
+    button:SetTextNormalColor(colors.text)
+    button:SetTextHoveredColor(colors.text_hover)
+    button:SetTextPressedColor(colors.text_hover)
+
+    local durability = Rectangle.Create(itemWindow, "dura")
+    durability:SetPositionRel(Vector2(0.05, 0.75))
+    durability:Hide()
+
+    local equip_outer = Rectangle.Create(itemWindow, "equip_outer")
+    equip_outer:SetSize(Vector2(10, 10))
+    equip_outer:SetPosition(Vector2(4, 4))
+    equip_outer:SetColor(Color.Black)
+
+    local equip_inner = Rectangle.Create(equip_outer, "equip_inner")
+    equip_inner:SetSizeAutoRel(Vector2(0.9, 0.9))
+    equip_inner:SetPositionRel(Vector2(0.5, 0.5) - equip_inner:GetSizeRel() / 2)
+    equip_inner:SetColor(Color.Green)
+
+    local border_container = Rectangle.Create(itemWindow, "border_container")
+    border_container:SetSizeAutoRel(Vector2(1, 1))
+    border_container:SetColor(Color(0, 0, 0, 0))
+    border_container:Hide()
+
+    local border_top = Rectangle.Create(border_container, "border_top")
+    border_top:SetSizeAutoRel(Vector2(1, 0))
+    border_top:SetHeight(InventoryUIStyle.border_size)
+    border_top:SetPosition(Vector2(0, 0))
+
+    local border_right = Rectangle.Create(border_container, "border_right")
+    border_right:SetSizeAutoRel(Vector2(0, 1))
+    border_right:SetWidth(InventoryUIStyle.border_size)
+    border_right:SetPosition(Vector2(border_container:GetWidth() - InventoryUIStyle.border_size, 0))
+
+    local border_bottom = Rectangle.Create(border_container, "border_bottom")
+    border_bottom:SetSizeAutoRel(Vector2(1, 0))
+    border_bottom:SetHeight(InventoryUIStyle.border_size)
+    border_bottom:SetPosition(Vector2(0, border_container:GetHeight() - InventoryUIStyle.border_size))
+
+    local border_left = Rectangle.Create(border_container, "border_left")
+    border_left:SetSizeAutoRel(Vector2(0, 1))
+    border_left:SetWidth(InventoryUIStyle.border_size)
+    border_left:SetPosition(Vector2(0, 0))
+
+    equip_outer:Hide()
+
+    button:SetDataNumber("stack_index", index)
+    button:SetDataString("stack_category", cat)
+    button:SetDataBool("dropping", false)
+    button:SetDataBool("hovered", false)
+    button:SetDataNumber("drop_amount", 0)
+    itemWindow:Hide()
+
+    button:Subscribe("Press", self, self.LeftClickItemButton)
+    button:Subscribe("Down", self, self.LeftClickItemButtonDown)
+    button:Subscribe("Up", self, self.LeftClickItemButtonUp)
+    button:Subscribe("RightPress", self, self.RightClickItemButton)
+    button:Subscribe("HoverEnter", self, self.HoverEnterButton)
+    button:Subscribe("HoverLeave", self, self.HoverLeaveButton)
+
+    text_shadow:BringToFront()
+    text:BringToFront()
+    button:BringToFront()
 
 
-    local table = Table.Create(self.hotbar_window)
-    table:SetSizeAutoRel(Vector2(1, 1))
-    table:SetColumnCount(10)
+    return itemWindow
 
-    local tableRow = TableRow.Create(table)
-    tableRow:SetSizeAutoRel(Vector2(1,1))
-    table:AddRow(tableRow)
+end
 
-    for i = 0, 9 do
-        table:SetColumnWidth(i, Render.Size.x * 0.0425)
+function cInventoryUI:LeftClickItemButtonDown(button)
+    self.pressed_button = button
+    
+    if button:GetDataString("stack_category") == "loot" then
+        return
+    end
 
-        local itemWindow = BaseWindow.Create(self.hotbar_window, "hotbaritem"..i+1)
-        itemWindow:SetSize(Vector2(Render.Size.x * 0.04, Render.Size.x * 0.04))
-        itemWindow:SetMargin(Vector2(Render.Size.x * 0.01, Render.Size.x * 0.01), Vector2(Render.Size.x * 0.01, Render.Size.x * 0.01))
-        itemWindow:SetDock(GwenPosition.Center)
-        itemWindow:SetDataNumber("inv_link", 0)
+end
 
-        local button_bg = Rectangle.Create(itemWindow, "button_bg")
-        button_bg:SetSizeAutoRel(Vector2(1, 1))
-        button_bg:SetColor(self.bg_colors.None)
-
-        local button = Button.Create(itemWindow, "button")
-        button:SetSizeAutoRel(Vector2(1, 1))
-        button:SetBackgroundVisible(false)
-
-        local durability_outer = Rectangle.Create(itemWindow, "dura_outer")
-        durability_outer:SetSizeAutoRel(Vector2(0.0575, 0.9))
-        durability_outer:SetPositionRel(Vector2(1, 0.5) - Vector2(durability_outer:GetSizeRel().x * 1.5, durability_outer:GetSizeRel().y / 2))
-        durability_outer:SetColor(Color.Green)
-        durability_outer:Hide()
-
-        local equip_outer = Rectangle.Create(itemWindow, "equip_outer")
-        equip_outer:SetSizeAutoRel(Vector2(0.15, 0.15))
-        equip_outer:SetPositionRel(Vector2(1, 0.05) - Vector2(equip_outer:GetSizeRel().x * 2, 0))
-        equip_outer:SetColor(Color.Black)
-
-        local equip_inner = Rectangle.Create(equip_outer, "equip_inner")
-        equip_inner:SetSizeAutoRel(Vector2(0.85, 0.85))
-        equip_inner:SetPositionRel(Vector2(0.5, 0.5) - Vector2(0.85, 0.85) / 2.5)
-        equip_inner:SetColor(Color.Green)
-
-        equip_outer:Hide()
-
-        local durability_inner = Rectangle.Create(durability_outer, "dura_inner")
-        durability_inner:SetColor(Color.Black)
-
-        local amount = Label.Create(itemWindow, "amount")
-        amount:SetSizeAutoRel(Vector2(1, 1))
-        amount:SetPadding(Vector2(Render.Size.x * 0.003, Render.Size.x * 0.003), 
-            Vector2(Render.Size.x * 0.003, Render.Size.x * 0.003))
-        amount:SetTextSize(10)
-
-        local imagePanel = ImagePanel.Create(button_bg, "imagepanel")
-        imagePanel:SetSizeAutoRel(Vector2(0.7, 0.7))
-        imagePanel:SetPositionRel(Vector2(0.5, 0.5) - imagePanel:GetSizeRel() / 2)
-
-        self:PopulateEntry({window = itemWindow, hotbar = true})
-
-        button:SetDataNumber("stack_index", i+1)
-
-        tableRow:SetCellContents(i, itemWindow)
-
-        button:BringToFront()
-
+function cInventoryUI:LeftClickItemButtonUp(button)
+    self.pressed_button = nil
+    
+    if button:GetDataString("stack_category") == "loot" then
+        return
     end
 
 end
 
 function cInventoryUI:HoverEnterButton(button)
+    -- Called when the mouse hovers over a button
+    self.hovered_button = button
+    button:SetDataBool("hovered", true)
+    
+    InventoryUIStyle:UpdateItemColor(button:GetParent())
 
-    self.tooltip_render = Events:Subscribe("Render", self, self.TooltipRender)
-    self.tooltip_button = button
-
-    self:PopulateTooltip({button = button, tooltip = self.tooltip, tooltip_label = self.tooltip_label})
+    if button:GetDataString("stack_category") == "loot" then
+        return
+    end
 
 end
 
 function cInventoryUI:HoverLeaveButton(button)
+    -- Called when the mouse stops hovering over a button
+    self.hovered_button = nil
+    button:SetDataBool("hovered", false)
 
-    if self.tooltip_render then
-        Events:Unsubscribe(self.tooltip_render)
-        self.tooltip_render = nil
+    InventoryUIStyle:UpdateItemColor(button:GetParent())
+
+    if button:GetDataString("stack_category") == "loot" then
+        return
     end
 
-    self.tooltip_button = nil
+    if self.pressed_button and self.dropping_counter == 0 then -- Can't move items if dropping one
+        -- If they are holding an item to try to move it
+        local abs_btn_pos = self.pressed_button:GetParent():GetPosition() + self.window:GetPosition()
+        local diff = Mouse:GetPosition().y - abs_btn_pos.y
+        local swap_dir = diff < 0 and 1 or -1 -- Direction of swap
 
-    self.tooltip:Hide()
+        local cat = self.pressed_button:GetDataString("stack_category")
+        local index = self.pressed_button:GetDataNumber("stack_index")
 
-end
+        if index + swap_dir < 0 then return end
+        if not Inventory.contents[cat] or not Inventory.contents[cat][index + swap_dir] then return end
 
--- button, tooltip, tooltip_label, loot
-function cInventoryUI:PopulateTooltip(args)
+        Network:Send("Inventory/Swap" .. self.steam_id, {cat = cat, from = index, to = index + swap_dir})
 
-    local stack = Inventory.contents[args.button:GetDataNumber("stack_index")]
-
-    if args.loot then
-        stack = LootManager.current_box.contents[args.index]
+        self.pressed_button = nil
     end
-
-    if not stack then return end
-
-    args.tooltip_label:SetText(stack:GetProperty("name"))
-    args.tooltip_label:SizeToContents()
-
-    args.tooltip:SizeToChildren()
-    args.tooltip:Show()
-    args.tooltip:BringToFront()
-
-end
-
-function cInventoryUI:TooltipRender(args)
-
-    self.tooltip:SetPosition(Mouse:GetPosition() - Vector2(self.tooltip:GetWidth() / 2, self.tooltip:GetHeight() * 1.25))
-    self.tooltip:BringToFront()
-
 end
 
 function cInventoryUI:RightClickItemButton(button)
 
-    self.rightClickMenu:SetPosition(Mouse:GetPosition() - Vector2(5, 5))
-    self:PopulateRightClickMenu(button)
-    self.current_right_clicked = button
-
-end
-
--- Add buttons to the menu based on what item was right clicked
-function cInventoryUI:PopulateRightClickMenu(button)
-
-    local stack = Inventory.contents[button:GetDataNumber("stack_index")]
-
-    if not stack then return end
-
-    -- Remove all existing children
-    self.rightClickMenu:RemoveAllChildren()
-
-    local options = {}
-
-    if stack:GetProperty("can_equip") then
-        table.insert(options, stack:GetProperty("equipped") and "Unequip" or "Equip")
-    elseif stack:GetProperty("can_use") then
-        table.insert(options, "Use")
+    if button:GetDataString("stack_category") == "loot" then
+        return
     end
 
-    if stack:GetAmount() > 1 then
+    -- Called when a button is right clicked
+    local cat = button:GetDataString("stack_category")
+    local index = button:GetDataNumber("stack_index")
 
-        table.insert(options, "Split")
-        if stack:GetProperty("can_equip") or stack:GetProperty("durable") then
-            table.insert(options, "Shift")
-        end
-
+    if not Inventory.contents[cat][index] then
+        error("cInventoryUI:RightClickItemButton failed: no stack was found")
     end
 
-    -- THESE THINGS STOP WORKING AFTER CONSUMABLES CATEGORY
-    if self:GetCategoryFromIndex(button:GetDataNumber("stack_index") - 1) == stack:GetProperty("category") then
-        table.insert(options, "Move Left")
-    end
-    
-    if self:GetCategoryFromIndex(button:GetDataNumber("stack_index") + 1) == stack:GetProperty("category") then
-        table.insert(options, "Move Right")
-    end
-    
-
-    if stack:GetProperty("can_equip") or stack:GetProperty("can_use") then
-        table.insert(options, "Hotbar")
-    end
-
-    
-    if stack:GetAmount() < stack:GetProperty("stacklimit") then
-        table.insert(options, "Merge")
-    end
-
-    if not LocalPlayer:InVehicle() then -- TODO change this so they can drop items to vehicle storage
-        table.insert(options, "Drop")
-    end
-
-    local button_size = Vector2(Render.Size.x * 0.04, 0)
-    self.rightClickMenu:SetSize(Vector2(button_size.x, button_size.y * #options))
-
-    local table = Table.Create(self.rightClickMenu)
-    table:SetColumnCount(1)
-    table:SetSizeAutoRel(Vector2(1, 1))
-
-    -- For as many options as we have
-    for i = 1, #options do
-
-        -- Add a table row and a button
-        local tableRow = TableRow.Create(table)
-        tableRow:SetSize(button_size)
-        tableRow:SetMargin(Vector2(0,0), Vector2(0,-3))
-        table:AddRow(tableRow)
-
-        local buttonWindow = BaseWindow.Create(tableRow)
-        buttonWindow:SetSize(button_size)
-        buttonWindow:SetMargin(Vector2(0, 0), Vector2(0, 0))
-        buttonWindow:SetPadding(Vector2(0, 0), Vector2(0, 0))
-
-        local button = Button.Create(buttonWindow)
-        button:SetText(options[i])
-        --button:SetTextSize(16)
-        button:SetPadding(Vector2(Render.Size.x * 0.005, Render.Size.x * 0.005), Vector2(Render.Size.x * 0.005, Render.Size.x * 0.005))
-        button:SizeToContents()
-        button:SetWidthRel(1)
-        button:SetMargin(Vector2(0, 0), Vector2(0, 0))
-
-        button:Subscribe("Press", self, self.ClickRightClickMenuButton)
-
-        buttonWindow:SizeToChildren()
-        tableRow:SetCellContents(0, buttonWindow)
-        tableRow:SizeToContents()
-
-    end
-
-    table:SizeToContents()
-    self.rightClickMenu:SizeToChildren()
-    self:ShowRightClickMenu()
-
-end
-
-function cInventoryUI:PopulateInput(args)
-
-    local index = args.button:GetDataNumber("stack_index")
-    local stack = Inventory.contents[index]
-
-    self.input_slider:SetDataString("action", args.action)
-
-    if args.action == "Drop" then
-
-        self.input_slider:SetRange(1, stack:GetAmount())
-        self.input_slider:SetNotchCount(stack:GetAmount() - 1)
-        self.input_slider:SetValue(round(stack:GetAmount()))
-        self.input_button:SetText(self.input_slider:GetDataString("action") .. " " .. round(stack:GetAmount()))
-        self.input_label:SetText(stack:GetProperty("name"))
-
-    elseif args.action == "Split" then
-
-        self.input_slider:SetRange(1, stack:GetAmount() - 1)
-        self.input_slider:SetNotchCount(stack:GetAmount() - 2)
-        self.input_slider:SetValue(math.ceil((stack:GetAmount() - 1) / 2))
-        self.input_button:SetText(self.input_slider:GetDataString("action") .. " " .. math.ceil((stack:GetAmount() - 1) / 2))
-        self.input_label:SetText(stack:GetProperty("name"))
-
-    elseif args.action == "Hotbar" then
-
-        self.input_slider:SetRange(1, 10)
-        self.input_slider:SetNotchCount(10)
-        self.input_slider:SetValue(1, true)
-        self.input_button:SetText("Assign to slot 1")
-        self.input_label:SetText("Assign to Hotbar")
-
-    end
-
-    self.input_slider:SetClampToNotches(true)
-    self.input:BringToFront()
-
-end
-
-function cInventoryUI:ConfirmAmountButtonPress(button)
-
-    if not self.current_right_clicked then return end
-
-    self:CloseMenus()
-
-    local index = self.current_right_clicked:GetDataNumber("stack_index")
-    local amount = round(self.input_slider:GetValue())
-
-    if self.rightClickMenuAction ~= "Hotbar" then
-
-        local stack = Inventory.contents[index]
+    -- Splitting stacks / recombining stacks
+    if button:GetDataBool("dropping") and Key:IsDown(VirtualKey.LShift) then
+        local stack = Inventory.contents[cat][index]
         if not stack then return end
 
-        if amount < 1 or amount > stack:GetAmount() then return end
+        local drop_amount = button:GetDataNumber("drop_amount")
 
-        Network:Send("Inventory/" .. self.rightClickMenuAction .. self.steam_id, {index = index, amount = amount})
-
-    else
-
-        Network:Send("Inventory/" .. self.rightClickMenuAction .. self.steam_id, {index = index, hotbar_index = amount})
-
+        Network:Send("Inventory/Split" .. self.steam_id, {cat = cat, index = index, amount = drop_amount})
     end
 
+    local amount = Inventory.contents[cat][index]:GetAmount()
+    button:SetDataNumber("drop_amount", amount) -- Reset dropping amount when they right click it
+    self:ToggleDroppingItemButton(button)
 
+    self.dropping_counter = button:GetDataBool("dropping") and self.dropping_counter + 1 or self.dropping_counter - 1
+        
+    -- Add or remove from self.dropping_items depending on if they are dropping it or not
+    self.dropping_items[cat .. tostring(index)] = button:GetDataBool("dropping") and {cat = cat, index = index, amount = amount} or nil
+
+end
+
+function cInventoryUI:ToggleDroppingItemButton(button)
+
+    button:SetDataBool("dropping", not button:GetDataBool("dropping"))
+    local colors = button:GetDataBool("dropping") and InventoryUIStyle.colors.dropping or InventoryUIStyle.colors.default
+
+    local cat = button:GetDataString("stack_category")
+    local index = button:GetDataNumber("stack_index")
+    local amount = Inventory.contents[cat][index]:GetAmount()
+    button:SetDataNumber("drop_amount", amount) -- Reset dropping amount when they right click it
+
+    button:GetParent():FindChildByName("text"):SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+    button:GetParent():FindChildByName("text_shadow"):SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+
+    InventoryUIStyle:UpdateItemColor(button:GetParent())
+
+end
+
+function cInventoryUI:ShiftStack(button)
+    
+    -- Trying to shift a stack
+    local cat = button:GetDataString("stack_category")
+    local index = button:GetDataNumber("stack_index")
+    local stack = Inventory.contents[cat][index]
+    if not stack then return end
+    if stack:GetAmount() == 1 then return end
+
+    Network:Send("Inventory/Shift" .. self.steam_id, {cat = cat, index = index})
+    
+end
+
+function cInventoryUI:MouseScroll(args)
+
+    if not self.hovered_button then return end -- Not hovering over a button
+
+    if self.hovered_button:GetDataString("stack_category") == "loot" then
+        return
+    end
+
+    if self.dropping_counter == 0 then
+        -- Shifting through stack
+        self:ShiftStack(self.hovered_button)
+
+    else
+        -- Dropping items
+        if not self.hovered_button then return end -- Not hovering over a button
+        if not self.hovered_button:GetDataBool("dropping") then return end -- Not scrolling on an item they are dropping
+
+        local cat = self.hovered_button:GetDataString("stack_category")
+        local index = self.hovered_button:GetDataNumber("stack_index")
+
+        local change = args.delta < 0 and -1 or 1 -- Normalizing the change
+        local new_drop_amount = self.hovered_button:GetDataNumber("drop_amount") + change
+
+        -- Bounds on dropping the item
+        if new_drop_amount == 0 then
+            new_drop_amount = Inventory.contents[cat][index]:GetAmount()
+        elseif new_drop_amount > Inventory.contents[cat][index]:GetAmount() then
+            new_drop_amount = 1
+        end
+
+        self.hovered_button:SetDataNumber("drop_amount", new_drop_amount)
+
+        local parent = self.hovered_button:GetParent()
+        parent:FindChildByName("text"):SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+        parent:FindChildByName("text_shadow"):SetText(self:GetItemNameWithAmount(Inventory.contents[cat][index], index))
+
+        -- Update dropping amount
+        self.dropping_items[cat .. tostring(index)].amount = new_drop_amount
+
+    end
 end
 
 function cInventoryUI:LeftClickItemButton(button)
 
-    local index = button:GetDataNumber("stack_index")
-    local stack = Inventory.contents[index]
-    if not stack then return end
-    
-    if stack:GetProperty("can_equip") then
+    if self.hovered_button ~= button then return end -- Only hovered button receives mouse clicks
 
-        Network:Send("Inventory/ToggleEquipped" .. self.steam_id, {index = index})
-        self:CloseMenus()
-        self.rightClickMenu:Hide()
-
-    elseif stack:GetProperty("can_use") then
-
-        Network:Send("Inventory/Use" .. self.steam_id, {index = index})
-        self:CloseMenus()
-        self.rightClickMenu:Hide()
-
+    -- Clicking on an item in loot
+    if button:GetDataString("stack_category") == "loot" then
+        ClientInventory.lootbox_ui:ClickItemButton(button)
+        return
     end
 
-end
+    if button:GetDataBool("dropping") then
+        -- Adjusting the drop amount
+        self:MouseScroll({delta = 1}) -- Simulate mousescroll to change drop amount
+    else
+        if Key:IsDown(VirtualKey.LShift) then
+            -- Trying to shift a stack
+            self:ShiftStack(button)
+        else
+            -- Equipping or using an item
+            local cat = button:GetDataString("stack_category")
+            local index = button:GetDataNumber("stack_index")
+            if not Inventory.contents[cat] then return end
+            local stack = Inventory.contents[cat][index]
+            if not stack then return end
 
-function cInventoryUI:ClickRightClickMenuButton(button)
-
-    if not self.current_right_clicked then return end
-
-    local index = self.current_right_clicked:GetDataNumber("stack_index")
-    local stack = Inventory.contents[index]
-    if not stack then return end
-
-    local action = button:GetText()
-    self.rightClickMenuAction = action
-
-    if action == "Drop" then
-
-        Mouse:SetPosition(Render.Size / 2)
-        self:PopulateInput({button = self.current_right_clicked, action = action})
-        self:ShowInputMenu()
-        self.rightClickMenu:Hide()
-
-    elseif action == "Split" then
-
-        Mouse:SetPosition(Render.Size / 2)
-        self:PopulateInput({button = self.current_right_clicked, action = action})
-        self:ShowInputMenu()
-        self.rightClickMenu:Hide()
-
-    elseif action == "Shift" then
-
-        Network:Send("Inventory/Shift" .. self.steam_id, {index = index})
-        self:CloseMenus()
-        self.rightClickMenu:Hide()
-
-    elseif action == "Equip" or action == "Unequip" then
-
-        Network:Send("Inventory/ToggleEquipped" .. self.steam_id, {index = index})
-        self:CloseMenus()
-        self.rightClickMenu:Hide()
-
-    elseif action == "Use" then
-
-        Network:Send("Inventory/Use" .. self.steam_id, {index = index})
-        self:CloseMenus()
-        self.rightClickMenu:Hide()
-
-    elseif action == "Move Left" then
-
-        Network:Send("Inventory/Swap" .. self.steam_id, {from = index, to = index - 1})
-        self:CloseMenus()
-        self.rightClickMenu:Hide()
-
-    elseif action == "Move Right" then
-
-        Network:Send("Inventory/Swap" .. self.steam_id, {from = index, to = index + 1})
-        self:CloseMenus()
-        self.rightClickMenu:Hide()
-
-    elseif action == "Merge" then
-
-        Network:Send("Inventory/Combine" .. self.steam_id, {index = index})
-        self:CloseMenus()
-        self.rightClickMenu:Hide()
-
-    elseif action == "Hotbar" then
-
-        Mouse:SetPosition(Render.Size / 2)
-        self:PopulateInput({button = self.current_right_clicked, action = action})
-        self:ShowInputMenu()
-        self.rightClickMenu:Hide()
-
+            if stack:GetProperty("can_equip") then
+                Network:Send("Inventory/ToggleEquipped" .. self.steam_id, {cat = cat, index = index})
+            else
+                Network:Send("Inventory/Use" .. self.steam_id, {cat = cat, index = index})
+            end
+        end
+        
     end
-
 
 end
 
 function cInventoryUI:LocalPlayerInput(args)
-
     if self.blockedActions[args.input] then return false end
+end
+
+-- Called when the inventory is closed
+function cInventoryUI:InventoryClosed()
+
+    -- If we're trying to drop something
+    if self.dropping_counter > 0 then
+        self.dropping_counter = 0
+
+        -- If there are actually items to drop
+        if count_table(self.dropping_items) > 0 then
+
+            -- Reset UI
+            for _, data in pairs(self.dropping_items) do
+                self:ToggleDroppingItemButton(
+                    self.window:FindChildByName("itemwindow_"..data.cat..tostring(data.index), true):FindChildByName("button", true))
+            end
+
+            if not LocalPlayer:InVehicle() then
+                -- Send to server to drop
+                Network:Send("Inventory/Drop" .. self.steam_id, {stacks = self.dropping_items})
+            end
+
+        end
+
+        self.dropping_items = {}
+        -- loop through all items, find those that were marked for dropping (with amounts)
+    end
 
 end
 
 function cInventoryUI:ToggleVisible()
 
-    if self.window:GetVisible() then
+    if self.window:GetVisible() then -- Close inventory
         self.window:Hide()
-        self.rightClickMenu:Hide()
-        self.tooltip:Hide()
-        self.input_count = 0
-        self:CloseMenus()
         Events:Unsubscribe(self.LPI)
         self.LPI = nil
-    else
+        self:InventoryClosed()
+    else -- Open inventory
         self.window:Show()
-        Mouse:SetPosition(Render.Size / 2)
+        Mouse:SetPosition(Render.Size * 0.75)
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     end
 
-    Mouse:SetVisible(self.window:GetVisible())
+    if not ClientInventory.lootbox_ui.window:GetVisible() then
+        Mouse:SetVisible(self.window:GetVisible())
+    end
+    
     LocalPlayer:SetValue("InventoryOpen", self.window:GetVisible())
 
 end
 
-function cInventoryUI:GetCategoryFromIndex(index)
-
-    local slots = 0
-    
-    for k,v in ipairs(Inventory.config.categories) do
-
-        slots = slots + v.slots
-
-        if index <= slots and index > 0 then return v.name end
-
-    end
-
-end
-
-
 function cInventoryUI:KeyUp(args)
 
     if args.key == string.byte(self.open_key) then
-        
         self:ToggleVisible()
-
-    elseif self.hotbar_keys[args.key] then
-
-        local hotbarwindow = self.hotbar_window:FindChildByName("hotbaritem"..self.hotbar_keys[args.key], true)
-        local hotbar_bg = hotbarwindow:FindChildByName("button_bg", true)
-        hotbar_bg:SetColor(self.bg_colors.Use)
-
-        Timer.SetTimeout(100, function()
-            hotbar_bg:SetColor(self.bg_colors.None)
-        end)
-
-        if hotbarwindow:GetDataNumber("inv_link") > 0 then
-            Network:Send("Inventory/HotbarUse" .. self.steam_id, {index = self.hotbar_keys[args.key]})
-        end
-
-    end
-
-    if Game:GetState() ~= GUIState.Game then
-        self.hotbar_window:Hide()
-    else
-        self.hotbar_window:Show()
     end
 
 end
 
-function round(num, numDecimalPlaces)
-    local mult = 10^(numDecimalPlaces or 0)
-    return math.floor(num * mult + 0.5) / mult
+function cInventoryUI:KeyDown(args)
+
+    if args.key == string.byte(self.open_key) and not self.window:GetVisible() then
+        self:ToggleVisible()
+    end
+
 end
-
-
-
-
 

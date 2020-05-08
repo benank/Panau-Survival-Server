@@ -1,2 +1,0 @@
-40x11.flz/gb010-a.lod
-40x11.flz/gb010_lod1-a_col.pfx

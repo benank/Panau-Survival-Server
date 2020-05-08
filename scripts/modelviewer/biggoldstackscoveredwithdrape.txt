@@ -1,2 +1,0 @@
-km07.submarine.eez/key014_02-gold_cover.lod
-km07.submarine.eez/key014_02_lod1-gold_cover_col.pfx

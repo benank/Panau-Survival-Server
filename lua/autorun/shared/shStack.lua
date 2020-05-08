@@ -211,7 +211,8 @@ end
 -- Splits a stack into two stacks based on the amount specified and returns the new stack
 function shStack:Split(amount)
 
-    if amount < 1 or amount >= self:GetAmount() then return end
+    if amount < 1 or amount > self:GetAmount() then return end
+    if amount == self:GetAmount() then return self end
 
     local removed_items = {}
 
@@ -273,4 +274,12 @@ function shStack:GetSyncObject()
 
     return data
 
+end
+
+function shStack:ToString()
+    local str = ""
+    for k,v in pairs(self.contents) do
+        str = str .. v:ToString() .. " "
+    end
+    return str
 end

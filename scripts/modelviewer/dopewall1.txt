@@ -1,2 +1,0 @@
-km01.base.flz/key004_01-e.lod
-km01.base.flz/key004_01_lod1-e_col.pfx

@@ -1,2 +1,0 @@
-areaset05.blz/gb001-f2_dst.lod
-areaset05.blz/gb001_lod1-f2_dst_col.pfx

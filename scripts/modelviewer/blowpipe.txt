@@ -1,2 +1,0 @@
-km03_01a.seq.blz/blowpipe-a.lod
-km03_01a.seq.blz/blowpipe_lod1-a_col.pfx

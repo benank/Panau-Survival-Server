@@ -1,2 +1,0 @@
-km07.submarine.eez/key014_02-treasure_06.lod
-km07.submarine.eez/key014_02_lod1-treasure_06_col.pfx

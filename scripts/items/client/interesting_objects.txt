@@ -1,0 +1,61 @@
+skull on stick
+Model: geo.csk.eez/pu01-a.lod
+15:29:05 | [info ] | [modelviewer] Collision: geo.csk.eez/pu01_lod1-a_col.pfx
+
+c4
+Model: f1t05bomb01.eez/key019_01-z.lod
+15:33:38 | [info ] | [modelviewer] Collision: f1t05bomb01.eez/key019_01_lod1-z_col.pfx
+
+garbage can
+Model: f1t16.garbage_can.eez/go225-a.lod
+15:33:54 | [info ] | [modelviewer] Collision: f1t16.garbage_can.eez/go225_lod1-a_col.pfx
+
+rockets
+Model: km07.rocket.babypanay.eez/gp0-a.lod
+15:35:25 | [info ] | [modelviewer] Collision: km07.rocket.babypanay.eez/gp0_lod1-a_col.pfx
+15:35:33 | [info ] | [modelviewer] Model: km07.rocket.eez/gp0-a2.lod
+15:35:33 | [info ] | [modelviewer] Collision: km07.rocket.eez/gp0_lod1-a2_col.pfx
+15:35:35 | [info ] | [modelviewer] Model: km07.rocket.eez/gp0-a3.lod
+15:35:35 | [info ] | [modelviewer] Collision: km07.rocket.eez/gp0_lod1-a3_col.pfx
+15:35:36 | [info ] | [modelviewer] Model: km07.rocket.eez/gp0-a4.lod
+15:35:36 | [info ] | [modelviewer] Collision: km07.rocket.eez/gp0_lod1-a4_col.pfx
+
+wall?
+Model: obj.jumpgarbage.eez/gb206-g.lod
+15:35:55 | [info ] | [modelviewer] Collision: obj.jumpgarbage.eez/gb206_lod1-g_col.pfx
+
+old tv
+Model: cutscenetv2.eez/cutscene_prop_tv-a.lod
+15:36:53 | [info ] | [modelviewer] Collision: cutscenetv2.eez/cutscene_prop_tv_lod1-a_col.pfx
+
+large rocket
+Model: f1m07.bomb.eez/gp040-a.lod
+15:37:25 | [info ] | [modelviewer] Collision: f1m07.bomb.eez/gp040_lod1-a_col.pfx
+
+large silo
+Model: km07.silotallshort.b.eez/key014_01-z.lod
+15:38:51 | [info ] | [modelviewer] Collision: km07.silotallshort.b.eez/key014_01_lod1-z_col.pfx
+
+evac ball
+km07.submarine.eez/key014_02-v.lod
+15:40:59 | [info ] | [modelviewer] Collision: km07.submarine.eez/key014_02_lod1-v_col.pfx
+
+bad mine model
+Model: general.blz/go063-b2.lod
+15:48:58 | [info ] | [modelviewer] Collision: general.blz/go063_lod1-b2_col.pfx
+
+grenade
+Model: general.blz/wea33-wea33.lod
+15:56:19 | [info ] | [modelviewer] Collision: general.blz/wea33_lod1-wea33_col.pfx
+
+tnt
+Model: general.blz/wea35-tte.lod
+15:56:31 | [info ] | [modelviewer] Collision: general.blz/wea35_lod1-tte_col.pfx
+
+rocket
+Model: general.blz/wea51-a.lod
+15:57:09 | [info ] | [modelviewer] Collision: general.blz/wea51_lod1-a_col.pfx
+
+cardboard box
+Model: km01_01.seq.blz/v062cutscene_agency-box.lod
+11:57:26 | [info ] | [modelviewer] Collision: km01_01.seq.blz/v062cutscene_agency_lod1-box_col.pfx

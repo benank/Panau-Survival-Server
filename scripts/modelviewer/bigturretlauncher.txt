@@ -1,2 +1,0 @@
-general.blz/wea31-c.lod
-general.blz/wea31_lod1-c_col.pfx

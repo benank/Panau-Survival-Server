@@ -1,2 +1,0 @@
-arve.v067_speedplane.eez/v067-flap_cr.lod
-arve.v067_speedplane.eez/v067_lod1-flap_cr_col.pfx

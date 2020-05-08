@@ -1,2 +1,0 @@
-cutscene_bird_skinned.eez/cutscene_bird-base1.lod
-cutscene_bird_skinned.eez/cutscene_bird_lod1-base1_col.pfx

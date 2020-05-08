@@ -1,1 +1,0 @@
-Detects if a module was unloaded and will begin to display a message in chat.

@@ -1,2 +1,0 @@
-40x11.flz/gb215-f.lod
-40x11.flz/gb215_lod1-f_col.pfx

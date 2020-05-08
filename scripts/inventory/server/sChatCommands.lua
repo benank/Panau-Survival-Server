@@ -1,5 +1,7 @@
 Events:Subscribe("PlayerChat", function(args)
 
+    if not (IsTest or IsAdmin(args.player)) then return end
+
     local split = args.text:split(" ")
 
     if args.text:sub(1, 5) == "/item" then
@@ -22,19 +24,23 @@ Events:Subscribe("PlayerChat", function(args)
             return
         end
 
-        for i = 1, amount do
+        local func = coroutine.wrap(function()
+            for i = 1, amount do
 
-            Inventory.AddItem({
-                player = args.player,
-                item = CreateItem({
-                    name = name,
-                    amount = 1
-                }):GetSyncObject()
-            })
+                Inventory.AddItem({
+                    player = args.player,
+                    item = CreateItem({
+                        name = name,
+                        amount = 1
+                    }):GetSyncObject()
+                })
 
-        end
+                Timer.Sleep(20)
 
-        Chat:Send(args.player, "Added " .. name .. " [x" .. tostring(amount) .. "]", Color.Green)
+            end
+            Chat:Send(args.player, "Added " .. name .. " [x" .. tostring(amount) .. "]", Color.Green)
+        end)()
+
 
     elseif args.text == "/box" then
 
@@ -79,6 +85,20 @@ Events:Subscribe("PlayerChat", function(args)
         --end
 
         Chat:Send(args.player, "Removed " .. name .. " [x" .. tostring(amount) .. "]", Color.Green)
+
+    elseif split[1] == "/loot" and tonumber(split[2]) then
+
+        local tier = tonumber(split[2])
+
+        local loot = ItemGenerator:GetLoot(tier)
+        print("Level " .. tostring(tier) .. " Loot")
+    
+        CreateLootbox({
+            position = args.player:GetPosition(),
+            angle = args.player:GetAngle(),
+            tier = tier,
+            contents = loot
+        })
 
     end
     

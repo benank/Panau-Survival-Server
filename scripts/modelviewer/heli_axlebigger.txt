@@ -1,2 +1,0 @@
-general.blz/rotor1-rotoraxel.lod
-general.blz/rotor1_lod1-rotoraxel_col.pfx

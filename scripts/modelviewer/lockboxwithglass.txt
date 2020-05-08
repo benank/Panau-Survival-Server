@@ -1,2 +1,0 @@
-areaset03.blz/go161-a.lod
-areaset03.blz/go161_lod1-a_col.pfx

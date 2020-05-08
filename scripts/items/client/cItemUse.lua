@@ -48,7 +48,7 @@ function cItemUse:__init()
     })
     
 
-    Network:Subscribe("items/UseItem", self, self.StartUsage)
+    Network:Subscribe(var("items/UseItem"):get(), self, self.StartUsage)
 
 end
 
@@ -66,7 +66,8 @@ function cItemUse:StartUsage(args)
     table.insert(self.events, Events:Subscribe("LocalPlayerBulletHit", self, self.CancelUsage))
     table.insert(self.events, Events:Subscribe("LocalPlayerDeath", self, self.CancelUsage))
 
-    if LocalPlayer:GetBaseState() ~= AnimationState.SUprightIdle then
+    if LocalPlayer:GetBaseState() ~= AnimationState.SUprightIdle
+    and LocalPlayer:GetBaseState() ~= AnimationState.SSwimIdle then
         self:CancelUsage()
     end
 
@@ -81,7 +82,13 @@ end
 
 function cItemUse:CompleteUsage()
 
-    Network:Send("items/CompleteItemUsage")
+    local ray = Physics:Raycast(LocalPlayer:GetPosition(), Vector3.Down, 0, 5)
+    if ray.entity and ray.entity.__type == "ClientStaticObject" then ray.entity = nil end
+
+    local forward_ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 500)
+    if forward_ray.entity and forward_ray.entity.__type == "ClientStaticObject" then forward_ray.entity = nil end
+
+    Network:Send("items/CompleteItemUsage", {ray = ray, forward_ray = forward_ray, waypoint = Waypoint:GetPosition()})
     self:UnsubscribeEvents()
 
 end
@@ -93,7 +100,7 @@ function cItemUse:LocalPlayerInput(args)
 end
 
 function cItemUse:InputPoll(args)
-    Input:SetValue(Action.Crouch, 1)
+    Input:SetValue(Action.Crouch, 1.0)
 end
 
 function cItemUse:UnsubscribeEvents()
@@ -130,7 +137,7 @@ function cItemUse:RenderCountdown(args)
     local text_size = Render:GetTextSize(text, font_size)
     Render:DrawText(Render.Size / 2 - text_size / 2 + self.offset, text, Color.Black, font_size)
     Render:DrawText(Render.Size / 2 - text_size / 2, text, Color.White, font_size)
-
+    
 end
 
 function cItemUse:RenderInfo(args)

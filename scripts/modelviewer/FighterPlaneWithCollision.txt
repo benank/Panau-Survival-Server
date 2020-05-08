@@ -1,2 +1,0 @@
-arve.v076_jet_blackplane.eez/v076-body.lod
-arve.v076_jet_blackplane.eez/v076_lod1-body_col.pfx

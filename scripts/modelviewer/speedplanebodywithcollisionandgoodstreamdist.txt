@@ -1,2 +1,0 @@
-arve.v067_speedplane.eez/v067-body.lod
-arve.v067_speedplane.eez/v067_lod1-body_col.pfx

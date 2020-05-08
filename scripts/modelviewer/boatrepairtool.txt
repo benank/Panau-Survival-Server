@@ -1,2 +1,0 @@
-general.blz/jungle_g14_corals-whole.lod
-general.blz/jungle_g14_corals_lod1-whole_col.pfx

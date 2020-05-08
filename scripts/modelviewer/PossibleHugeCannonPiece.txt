@@ -1,2 +1,0 @@
-bargepart.eez/wea34-c.lod
-bargepart.eez/wea34_lod1-c_col.pfx

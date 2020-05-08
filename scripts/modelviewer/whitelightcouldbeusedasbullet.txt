@@ -1,2 +1,0 @@
-general.blz/halo_01-a.lod
-general.blz/halo_01_lod1-a_col.pfx

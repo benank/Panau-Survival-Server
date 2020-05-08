@@ -2,101 +2,171 @@ class 'cSurvivalHUD'
 
 function cSurvivalHUD:__init()
 
-    -- TODO enable dynamic circle generation on upper level for parachute/wingsuit dura
+    self.small_element_size = Vector2(140, 12)
+    self.large_element_size = Vector2(300, 18)
 
-	self.circle_size = Render.Size.x * 0.02
-    self.circle_basepos = Vector2(Render.Size.x - self.circle_size * 8.5, Render.Size.y - self.circle_size * 1.5)
-    
-    self.images = {}
-    self:LoadIcons()
+    self.start_pos = Vector2(Render.Size.x - 14, 50)
+    self.small_margin = 10
+    self.window_color = Color(0, 0, 0, 150)
+    self.window_margin = Vector2(6, 6)
+    self.border_size = Vector2(2,2)
+    self.border_color = Color(200, 200, 200)
 
-    self.circles = {}
-    self:CreateCircles()
-    
-    self.windows = {}
-    self:CreateIconWindows()
+    self.hud_elements = 
+    {
+        cSurvivalHUDElement({
+            name = "Health",
+            percent = 0.75,
+            color = Color(155, 157, 11),
+            small_size = self.small_element_size,
+            large_size = self.large_element_size,
+            visible = true
+        }),
+        cSurvivalHUDElement({
+            name = "Food",
+            percent = 1.0,
+            color = Color(12, 160, 16),
+            small_size = self.small_element_size,
+            large_size = self.large_element_size,
+            visible = true
+        }),
+        cSurvivalHUDElement({
+            name = "Water",
+            percent = 0.25,
+            color = Color(46, 13, 161),
+            small_size = self.small_element_size,
+            large_size = self.large_element_size,
+            visible = true
+        }),
+        cSurvivalHUDElement({
+            type = "separator",
+            color = self.border_color,
+            small_size = Vector2(self.small_element_size.x + self.border_size.x, self.border_size.y),
+            large_size = Vector2(self.large_element_size.x, self.border_size.y),
+            visible = false
+        }),
+        cSurvivalHUDElement({
+            name = "Helmet",
+            percent = 0.5,
+            color = Color(123, 125, 13),
+            small_size = self.small_element_size,
+            large_size = self.large_element_size,
+            visible = false
+        }),
+        cSurvivalHUDElement({
+            name = "Vest",
+            percent = 0.5,
+            color = Color(130, 97, 14),
+            small_size = self.small_element_size,
+            large_size = self.large_element_size,
+            visible = false
+        }),
+    }
 
     Network:Subscribe("Survival/Update", self, self.Update)
+    Events:Subscribe("NetworkObjectValueChange", self, self.NetworkObjectValueChange)
+
+    -- Refresh on reload
+    self:NetworkObjectValueChange({
+        object = LocalPlayer, 
+        value = LocalPlayer:GetValue("EquippedHelmet"),
+        key = "EquippedHelmet"
+    })
+
+    self:NetworkObjectValueChange({
+        object = LocalPlayer, 
+        value = LocalPlayer:GetValue("EquippedVest"),
+        key = "EquippedVest"
+    })
+end
+
+function cSurvivalHUD:NetworkObjectValueChange(args)
+    if args.object.__type ~= "LocalPlayer" then return end
+
+    local item = args.value
+
+    if args.key == "EquippedHelmet" then
+        self.hud_elements[5].visible = item ~= nil
+        if item then
+            self.hud_elements[5].percent = item.durability / item.max_durability
+        end
+    elseif args.key == "EquippedVest" then
+        self.hud_elements[6].visible = item ~= nil
+        if item then
+            self.hud_elements[6].percent = item.durability / item.max_durability
+        end
+    end
+
+    self.hud_elements[4].visible = self.hud_elements[5].visible or self.hud_elements[6].visible
 
 end
 
 function cSurvivalHUD:Update(data)
 
-    for k,v in pairs(self.circles) do
-
-        v.data[1].amount = data[k]
-        v:Update()
-
-        v.visible = not (k == "radiation" and tonumber(data[k]) <= 0.01)
-
-    end
+    self.hud_elements[2].percent = data.hunger / 100
+    self.hud_elements[3].percent = data.thirst / 100
 
 end
 
-function cSurvivalHUD:CreateIconWindows()
-
-    for k,v in pairs(self.images) do
-
-        local imagePanel = ImagePanel.Create()
-        imagePanel:SetPosition(self.circles[k].pos - Vector2(self.circle_size / 2, self.circle_size / 2))
-        imagePanel:SetSize(Vector2(self.circle_size, self.circle_size))
-        imagePanel:SetImage(v)
-        imagePanel:SendToBack()
-
-        self.windows[k] = imagePanel
-
+function cSurvivalHUD:GetNumVisibleElements()
+    local count = 0
+    for _, element in ipairs(self.hud_elements) do
+        if element.visible and element.type ~= "separator" then
+            count = count + 1
+        end
     end
-
-
-end
-
-function cSurvivalHUD:LoadIcons()
-
-    self.images.hunger = Image.Create(AssetLocation.Resource, "icon_Hunger")
-    self.images.thirst = Image.Create(AssetLocation.Resource, "icon_Thirst")
-    --self.images.Energy = Image.Create(AssetLocation.Resource, "icon_Energy")
-    self.images.radiation = Image.Create(AssetLocation.Resource, "icon_Radiation")
-
+    return count
 end
 
 function cSurvivalHUD:Render(args)
 
-    if Game:GetState() ~= GUIState.Game then
-        for k,v in pairs(self.windows) do v:Hide() end
-        return
-    else
-        for k,v in pairs(self.windows) do if self.circles[k].visible then v:Show() else v:Hide() end end
-    end
-        
-	for name, circle in pairs(self.circles) do
+    if Game:GetState() ~= GUIState.Game then return end
 
-        circle:Render(args)
+    local inventory_open = LocalPlayer:GetValue("InventoryOpen")
 
+    self.hud_elements[1].percent = LocalPlayer:GetHealth()
+
+    local t = Transform2():Translate(self.start_pos)
+
+    local translate = inventory_open and Vector2(-self.large_element_size.x, 0) or Vector2(-self.small_element_size.x, 0)
+    t = t:Translate(translate)
+
+    Render:SetTransform(t)
+
+    local window_size = inventory_open and
+        Vector2(
+            self.large_element_size.x + self.window_margin.x + self.border_size.x, 
+            self:GetNumVisibleElements() * (self.large_element_size.y + self.small_margin) + (self.hud_elements[4].visible and (self.hud_elements[4].large_size.y + self.small_margin) or 0)) - self.border_size
+        or
+        Vector2(
+            self.small_element_size.x + self.window_margin.x + self.border_size.x, 
+            self:GetNumVisibleElements() * (self.small_element_size.y + self.small_margin) + (self.hud_elements[4].visible and (self.hud_elements[4].small_size.y + self.small_margin) or 0)) - self.border_size
+
+    Render:FillArea(-self.window_margin, window_size + self.window_margin, self.window_color)
+    self:DrawBorder(-self.window_margin, window_size, self.border_color)
+
+    for index, element in ipairs(self.hud_elements) do
+
+        if element.visible then
+            if inventory_open then
+                element:RenderLarge(args)
+                Render:SetTransform(t:Translate(Vector2(0, element.large_size.y + self.small_margin)))
+            else
+                element:RenderSmall(args)
+                Render:SetTransform(t:Translate(Vector2(0, element.small_size.y + self.small_margin)))
+            end
+        end
     end
-    
 
 end
 
-function cSurvivalHUD:CreateCircles()
+function cSurvivalHUD:DrawBorder(pos1, pos2)
+    pos1 = pos1 - self.border_size
+    --pos2 = pos2 + self.border_size
+    local size = pos2 - pos1
 
-	self.circles.hunger = CircleBar(self.circle_basepos, self.circle_size, 
-	{
-		[1] = {max_amount = 100, amount = 450, color = Color(184,18,18)}
-	})
-
-	self.circles.thirst = CircleBar(self.circle_basepos - Vector2(self.circle_size * 2.25,0), self.circle_size, 
-	{
-		[1] = {max_amount = 100, amount = 65, color = Color(16,124,179)}
-	})
-
-	--[[self.circles.Energy = CircleBar(self.circle_basepos - Vector2(self.circle_size * 4.5,0), self.circle_size, 
-	{
-		[1] = {max_amount = 100, amount = 25, color = Color(224,123,20)}
-	})--]]
-
-	self.circles.radiation = CircleBar(self.circle_basepos - Vector2(self.circle_size * 4.5,0), self.circle_size, 
-	{
-		[1] = {max_amount = 100, amount = 10, color = Color(235,217,19)}
-	})
-
+    Render:FillArea(pos1, Vector2(size.x, self.border_size.y), self.border_color) -- Top
+    Render:FillArea(pos1 + Vector2(0, size.y), Vector2(size.x, self.border_size.y), self.border_color) -- Bottom
+    Render:FillArea(pos1, Vector2(self.border_size.x, size.y), self.border_color) -- Left
+    Render:FillArea(pos1 + Vector2(size.x, 0), Vector2(self.border_size.x, size.y + self.border_size.y), self.border_color) -- Right
 end

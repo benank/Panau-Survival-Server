@@ -6,16 +6,20 @@ function cLootbox:__init(args)
     self.position = args.position
     self.angle = args.angle
     self.tier = args.tier
+    self.active = args.active
     self.model_data = args.model_data
     self.static_objects = {}
     self.contents = {}
 
-    self:CreateModel()
+    Timer.SetTimeout(100, function()
+        self:CreateModel()
+    end)
 
 end
 
 function cLootbox:Remove()
 
+    self.active = false
     for _, obj in pairs(self.static_objects) do
         if IsValid(obj) then 
             obj:Remove()
@@ -26,11 +30,10 @@ end
 
 function cLootbox:CreateModel()
 
-    local position = self.position + self.model_data.offset
+    if not self.active then return end
 
-    if self.model_data.offset2 then
-        position = position + self.angle * self.model_data.offset2
-    end
+    local position = self.position + self.model_data.offset
+    self.look_position = self.position + self.angle * (self.model_data.look_offset and self.model_data.look_offset or Vector3())
 
     table.insert(self.static_objects, 
         ClientStaticObject.Create({
@@ -44,7 +47,7 @@ function cLootbox:CreateModel()
 
         table.insert(self.static_objects, 
             ClientStaticObject.Create({
-                position = position,
+                position = position + self.angle * self.model_data.offset2,
                 angle = self.angle,
                 model = self.model_data.top_model,
                 collision = self.model_data.top_col

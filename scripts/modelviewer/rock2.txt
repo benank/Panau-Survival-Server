@@ -1,2 +1,0 @@
-vegetation_0.blz/Jungle_G03_MossyRocksM-Whole.lod
-vegetation_0.blz/Jungle_G03_MossyRocksM_lod1-Whole_col.pfx

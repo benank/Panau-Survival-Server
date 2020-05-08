@@ -57,7 +57,7 @@ function shItem:__init(args)
         self.can_equip = args.can_equip
 
         if args.equip_type == nil then
-            error("shItem:__init failed: equip_type was not given for an equippable item")
+            error("shItem:__init failed: equip_type was not given for an equippable item: " .. tostring(self.name))
         end
 
         self.equip_type = args.equip_type
@@ -135,10 +135,8 @@ end
 
 function shItem:ToString()
 
-    return self.name .. " [x" .. self.amount .. "] " .. self.uid .. " " .. self.category .. " "
-    .. self.stacklimit .. " " .. concat_bool(self.durability) .. " " .. concat_bool(self.max_durability) .. " " 
-    .. concat_bool(self.can_equip) .. " " .. concat_bool(self.can_use) .. " " .. concat_bool(self.equipped) .. " " .. concat_bool(self.equip_type)
-
+    return self.name .. " [x" .. self.amount .. "] "
+    .. "SL: " .. self.stacklimit .. " Dura: " .. tostring(self.durability) .. "/" .. tostring(self.max_durability) .. " Equipped: " .. tostring(self.equipped)
 end
 
 function concat_bool(b)

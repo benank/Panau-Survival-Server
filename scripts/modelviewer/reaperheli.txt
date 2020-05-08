@@ -1,2 +1,0 @@
-f3s01.seq.blz/v062cutscene_reap-heli.lod
-f3s01.seq.blz/v062cutscene_reap_lod1-heli_col.pfx

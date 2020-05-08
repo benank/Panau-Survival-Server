@@ -1,2 +1,0 @@
-lave.v012_military_tank_small.eez/v012-weapon.lod
-lave.v012_military_tank_small.eez/v012_lod1-weapon_col.pfx
