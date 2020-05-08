@@ -666,7 +666,7 @@ Items =
         loot = {1,2,3,4},
         rarity = 0.01,
         max_loot = 5,
-        rarity_mod = {10,15,10,7.5}
+        rarity_mod = {1,1.5,1,0.75}
     },
     {
         name = "Binoculars",
