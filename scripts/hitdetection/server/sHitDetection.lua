@@ -576,7 +576,7 @@ end
 function sHitDetection:CheckHealth(player, old_hp, damage)
 
     Timer.SetTimeout(10 * player:GetPing() + 500, function()
-        if IsValid(player) and player:GetHealth() >= old_hp then
+        if IsValid(player) and player:GetHealth() >= old_hp and player:GetHealth() > 0 then
             -- Health did not change, ban
             Events:Fire("KickPlayer", {
                 player = player,
