@@ -34,7 +34,7 @@ function cExplosivesDetector:CheckForNearbyExplosives()
 
     for id, obj in pairs(cClaymores.CSO_register) do
         local dist = obj.position:Distance(local_pos)
-        if dist < self.range then
+        if dist < self.range and IsValid(obj.object) then
             nearby_explosives[id] = {
                 pos = obj.position, 
                 name = "Claymore", 
@@ -46,7 +46,7 @@ function cExplosivesDetector:CheckForNearbyExplosives()
 
     for id, obj in pairs(cMines.CSO_register) do
         local dist = obj.position:Distance(local_pos)
-        if dist < self.range then
+        if dist < self.range and IsValid(obj.object) then
             nearby_explosives[id] = {
                 pos = obj.position, 
                 name = "Mine", 
