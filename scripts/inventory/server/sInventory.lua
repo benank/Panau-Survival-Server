@@ -872,6 +872,7 @@ function sInventory:Sync(args)
                             Events:Fire("Inventory/ToggleEquipped", {
                                 player = self.player, 
                                 index = _,
+                                initial = true,
                                 item = item:Copy():GetSyncObject()})
                         end
                     end

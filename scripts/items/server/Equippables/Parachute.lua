@@ -1,5 +1,4 @@
-local timer = Timer()
-local timer2 = Timer()
+
 local players_with_parachutes = {}
 
 Events:Subscribe("Inventory/ToggleEquipped", function(args)
