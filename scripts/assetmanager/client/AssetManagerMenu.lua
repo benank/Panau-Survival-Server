@@ -241,6 +241,7 @@ function AssetManagerMenu:PressVehicleButton(btn)
         Events:Fire("Vehicles/SpawnVehicle", {
             vehicle_id = vehicle_data.data.vehicle_id
         })
+        btn:Hide()
 
     elseif type == "Waypoint" then
 
@@ -256,6 +257,7 @@ function AssetManagerMenu:PressVehicleButton(btn)
         Events:Fire("Vehicles/DeleteVehicle", {
             vehicle_id = vehicle_data.data.vehicle_id
         })
+        btn:Hide()
 
     end
 end
