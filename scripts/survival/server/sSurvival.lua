@@ -177,6 +177,7 @@ function sSurvivalManager:AdjustSurvivalStats(player)
 
     if not survival then return end
     if player:GetValue("InSafezone") then return end
+    if player:GetValue("Invincible") then return end
 
     local zone_mod = config.decaymods[player:GetValue("ClimateZone")]
 
