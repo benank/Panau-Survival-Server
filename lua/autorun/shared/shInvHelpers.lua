@@ -104,6 +104,8 @@ if Client then
             error("Failed to Inventory.GetNumOfItem because item was invalid")
             return
         end
+
+        if not inv or not inv[item.category] then return 0 end
     
         local count = 0
         for index, stack in pairs(inv[item.category]) do
