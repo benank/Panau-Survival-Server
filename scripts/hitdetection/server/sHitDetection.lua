@@ -16,10 +16,33 @@ function sHitDetection:__init()
     Events:Subscribe("HitDetection/VehicleGuardActivate", self, self.VehicleGuardActivate)
     Events:Subscribe("HitDetection/WarpGrenade", self, self.WarpGrenade)
 
+    Events:Subscribe("Hitdetection/AdminKill", self, self.AdminKill)
+
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
+end
+
+function sHitDetection:AdminKill(args)
+    
+    if not IsValid(args.player) then return end
+    local old_hp = args.player:GetHealth()
+    args.player:Damage(9999, DamageEntity.AdminKill, args.attacker)
+
+    local msg = string.format("%s [%s] was killed by admin [%s]",
+        args.player:GetName(), 
+        tostring(args.player:GetSteamId()),
+        tostring(args.attacker:GetSteamId()))
+
+    print(msg)
+    Events:Fire("Discord", {
+        channel = "Hitdetection",
+        content = msg
+    })
+
+    args.player:SetValue("Health", 0)
+
 end
 
 function sHitDetection:PlayerChat(args)
