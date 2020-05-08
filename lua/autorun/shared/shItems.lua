@@ -664,7 +664,7 @@ Items =
         category = "Supplies",
         stacklimit = 100,
         loot = {1,2},
-        rarity = 0.02,
+        rarity = 0.015,
         max_loot = 4,
         rarity_mod = {1,1.5}
     },
