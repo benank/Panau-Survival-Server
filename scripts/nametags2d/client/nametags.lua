@@ -387,7 +387,8 @@ function Nametags:Render()
     end
 
     -- Create some prerequisite variables
-    local local_pos = LocalPlayer:GetPosition()
+    --local local_pos = LocalPlayer:GetPosition()
+    local local_pos = Camera:GetPosition()
 
     self.highlighted_vehicle = nil
 
