@@ -663,10 +663,9 @@ Items =
         name = "Lockpick",
         category = "Supplies",
         stacklimit = 100,
-        loot = {1,2},
+        loot = {1,2,3,4},
         rarity = 0.015,
-        max_loot = 4,
-        rarity_mod = {1,1.5}
+        rarity_mod = {1,1.5,0.4,0.2}
     },
     {
         name = "Binoculars",
