@@ -21,6 +21,7 @@ function sLootbox:__init(args)
     self.is_dropbox = args.tier == Lootbox.Types.Dropbox
     self.is_vending_machine = args.tier == Lootbox.Types.VendingMachineFood or args.tier == Lootbox.Types.VendingMachineDrink
     self.is_stash = Lootbox.Stashes[args.tier] ~= nil
+    self.has_been_opened = false
     -- Eventually add support for world specification
 
     self.players_opened = {}
@@ -248,7 +249,11 @@ function sLootbox:Open(player)
     player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell})
     Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
+    Events:Fire("PlayerOpenLootbox", {player = player, has_been_opened = self.has_been_opened, tier = self.tier})
+
     self:StartDespawnTimer()
+
+    self.has_been_opened = true
 
 end
 

@@ -50,7 +50,7 @@ config =
     },
     cost_multiplier_on_purchase = 3, -- Cost multiplier after purchasing an unowned vehicle
     max_vehicle_guards = 5, -- Maximum vehicle guards per vehicle
-    player_max_vehicles = 10, -- Maximum 10 vehicles owned at a time TODO: add levels into max vehicles owned
+    player_max_vehicles = 3, -- Maximum 10 vehicles owned at a time TODO: add levels into max vehicles owned
     owned_despawn_time = 10, -- Minutes it takes for vehicles to despawn after owner leaves
     gas_station_radius = 15,
     decals = -- List of all possible vehicle decals

@@ -47,6 +47,8 @@ function sInventory:Load()
         self.slots[cat_info.name] = {default = cat_info.slots, level = 0, backpack = 0}
     end
 
+    self:UpdateNumSlotsBasedOnLevel()
+
 	local query = SQL:Query("SELECT contents FROM inventory WHERE steamID = (?) LIMIT 1")
     query:Bind(1, self.steamID)
     
@@ -75,6 +77,17 @@ function sInventory:Load()
     self:Sync({sync_full = true})
 
     self.initial_sync = true
+
+end
+
+-- Updates the number of slots in each category based on level
+function sInventory:UpdateNumSlotsBasedOnLevel()
+
+    local level = self.player:GetValue("Exp").level
+
+    for cat_name, slot_data in pairs(self.slots) do
+        self.slots[cat_name].level = GetNumSlotsInCategory(cat_name, level)
+    end
 
 end
 

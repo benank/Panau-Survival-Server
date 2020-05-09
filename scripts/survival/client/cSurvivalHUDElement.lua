@@ -9,10 +9,20 @@ function cSurvivalHUDElement:__init(args)
     self.type = args.type
     self.visible = args.visible
     self.dual = args.dual
-    self.level = args.level
 
     self.large_size = args.large_size
     self.small_size = args.small_size
+
+    if self.dual then
+        self.level = 0
+        Events:Subscribe("PlayerExpUpdated", function(args)
+            local exp_data = LocalPlayer:GetValue("Exp")
+
+            self.percent = exp_data.combat_exp / exp_data.combat_max_exp
+            self.percent2 = exp_data.explore_exp / exp_data.explore_max_exp
+            self.level = exp_data.level
+        end)
+    end
 end
 
 -- Renders the large version of the element
@@ -29,12 +39,12 @@ function cSurvivalHUDElement:RenderLarge()
     local text = string.format("%s:", self.name)
 
     if self.level then
-        text = string.format("%s %d:", self.name, 15) -- TODO: add level here
+        text = string.format("%s %s:", self.name, self.level)
     end
 
     Render:DrawText(Vector2.Zero, text, Color.White, 18)
 
-    local text_size = Vector2(80, 0)
+    local text_size = Vector2(self.level == 100 and 90 or 80, 0)
     local percent_size = Vector2(50, 0)
     local margin = 4
 

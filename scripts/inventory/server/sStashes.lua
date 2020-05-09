@@ -76,7 +76,7 @@ end
 
 function sStashes:ClientModuleLoad(args)
 
-    args.player:SetNetworkValue("MaxStashes", 10) -- TODO: update with level
+    args.player:SetNetworkValue("MaxStashes", 3) -- TODO: update with level
     
     local player_stashes = {}
     local steam_id = tostring(args.player:GetSteamId())

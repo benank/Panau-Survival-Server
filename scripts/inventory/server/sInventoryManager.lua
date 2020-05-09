@@ -8,7 +8,7 @@ function sInventoryManager:__init()
     Events:Subscribe("ModuleUnload", self, self.Unload)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
-    Network:Subscribe("InventoryRequest", self, self.InventoryRequest)
+    Events:Subscribe("PlayerExpLoaded", self, self.PlayerExpLoaded)
 
 end
 
@@ -31,14 +31,14 @@ function sInventoryManager:Unload()
 
 end
 
-function sInventoryManager:InventoryRequest(args, player)
+function sInventoryManager:PlayerExpLoaded(args)
 
-    if self.inventories[tostring(player:GetSteamId().id)] then
-        self.inventories[tostring(player:GetSteamId().id)]:Unload()
-        self.inventories[tostring(player:GetSteamId().id)] = nil
+    if self.inventories[tostring(args.player:GetSteamId().id)] then
+        self.inventories[tostring(args.player:GetSteamId().id)]:Unload()
+        self.inventories[tostring(args.player:GetSteamId().id)] = nil
     end
 
-    self.inventories[tostring(player:GetSteamId().id)] = sInventory(player)
+    self.inventories[tostring(args.player:GetSteamId().id)] = sInventory(args.player)
 
 end
 
