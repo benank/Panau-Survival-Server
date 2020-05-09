@@ -4,10 +4,10 @@ Inventory.config =
 {
     categories = 
     {
-        [1] = {name = "Weapons", slots = 4},
-        [2] = {name = "Explosives", slots = 6},
-        [3] = {name = "Supplies", slots = 6},
-        [4] = {name = "Survival", slots = 8}
+        [1] = {name = "Weapons", slots = 2},
+        [2] = {name = "Explosives", slots = 3},
+        [3] = {name = "Supplies", slots = 4},
+        [4] = {name = "Survival", slots = 4}
     },
     max_slots_per_category = 20,
     uid = 0,

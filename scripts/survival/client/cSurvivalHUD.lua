@@ -12,6 +12,14 @@ function cSurvivalHUD:__init()
     self.border_size = Vector2(2,2)
     self.border_color = Color(200, 200, 200)
 
+    self.HealthIndex = 1
+    self.FoodIndex = 2
+    self.WaterIndex = 3
+    self.LevelIndex = 5
+    self.SeparatorIndex = 5
+    self.HelmetIndex = 6
+    self.VestIndex = 7
+
     self.hud_elements = 
     {
         cSurvivalHUDElement({
@@ -34,6 +42,18 @@ function cSurvivalHUD:__init()
             name = "Water",
             percent = 0.25,
             color = Color(46, 13, 161),
+            small_size = self.small_element_size,
+            large_size = self.large_element_size,
+            visible = true
+        }),
+        cSurvivalHUDElement({
+            name = "Level",
+            percent = 0.75,
+            percent2 = 0.50,
+            color = Color(170, 36, 35), -- Combat
+            color2 = Color(35, 139, 170), -- Exploration
+            dual = true,
+            level = true,
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
@@ -86,25 +106,25 @@ function cSurvivalHUD:NetworkObjectValueChange(args)
     local item = args.value
 
     if args.key == "EquippedHelmet" then
-        self.hud_elements[5].visible = item ~= nil
+        self.hud_elements[self.HelmetIndex].visible = item ~= nil
         if item then
-            self.hud_elements[5].percent = item.durability / item.max_durability
+            self.hud_elements[self.HelmetIndex].percent = item.durability / item.max_durability
         end
     elseif args.key == "EquippedVest" then
-        self.hud_elements[6].visible = item ~= nil
+        self.hud_elements[self.VestIndex].visible = item ~= nil
         if item then
-            self.hud_elements[6].percent = item.durability / item.max_durability
+            self.hud_elements[self.VestIndex].percent = item.durability / item.max_durability
         end
     end
 
-    self.hud_elements[4].visible = self.hud_elements[5].visible or self.hud_elements[6].visible
+    self.hud_elements[self.SeparatorIndex].visible = self.hud_elements[self.HelmetIndex].visible or self.hud_elements[self.VestIndex].visible
 
 end
 
 function cSurvivalHUD:Update(data)
 
-    self.hud_elements[2].percent = data.hunger / 100
-    self.hud_elements[3].percent = data.thirst / 100
+    self.hud_elements[self.FoodIndex].percent = data.hunger / 100
+    self.hud_elements[self.WaterIndex].percent = data.thirst / 100
 
 end
 
@@ -124,7 +144,7 @@ function cSurvivalHUD:Render(args)
 
     local inventory_open = LocalPlayer:GetValue("InventoryOpen")
 
-    self.hud_elements[1].percent = LocalPlayer:GetHealth()
+    self.hud_elements[self.HealthIndex].percent = LocalPlayer:GetHealth()
 
     local t = Transform2():Translate(self.start_pos)
 
@@ -136,11 +156,11 @@ function cSurvivalHUD:Render(args)
     local window_size = inventory_open and
         Vector2(
             self.large_element_size.x + self.window_margin.x + self.border_size.x, 
-            self:GetNumVisibleElements() * (self.large_element_size.y + self.small_margin) + (self.hud_elements[4].visible and (self.hud_elements[4].large_size.y + self.small_margin) or 0)) - self.border_size
+            self:GetNumVisibleElements() * (self.large_element_size.y + self.small_margin) + (self.hud_elements[self.SeparatorIndex].visible and (self.hud_elements[self.SeparatorIndex].large_size.y + self.small_margin) or 0)) - self.border_size
         or
         Vector2(
             self.small_element_size.x + self.window_margin.x + self.border_size.x, 
-            self:GetNumVisibleElements() * (self.small_element_size.y + self.small_margin) + (self.hud_elements[4].visible and (self.hud_elements[4].small_size.y + self.small_margin) or 0)) - self.border_size
+            self:GetNumVisibleElements() * (self.small_element_size.y + self.small_margin) + (self.hud_elements[self.SeparatorIndex].visible and (self.hud_elements[self.SeparatorIndex].small_size.y + self.small_margin) or 0)) - self.border_size
 
     Render:FillArea(-self.window_margin, window_size + self.window_margin, self.window_color)
     self:DrawBorder(-self.window_margin, window_size, self.border_color)

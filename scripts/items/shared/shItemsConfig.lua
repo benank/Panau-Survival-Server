@@ -42,9 +42,9 @@ ItemsConfig =
         },
         backpacks = 
         {
-            ["Combat Backpack"] = {dura_per_hit = 2,    slots = {Weapons = 2, Explosives = 4, Supplies = 4, Survival = 0}},
-            ["Explorer Backpack"] = {dura_per_hit = 2,  slots = {Weapons = 1, Explosives = 1, Supplies = 4, Survival = 4}},
-            ["Military Vest"] = {dura_per_hit = 2,      slots = {Weapons = 1, Explosives = 1, Supplies = 0, Survival = 0}}
+            ["Combat Backpack"] = {     dura_per_hit = 2,   slots = {Weapons = 2, Explosives = 2, Supplies = 0, Survival = 1}},
+            ["Explorer Backpack"] = {   dura_per_hit = 2,   slots = {Weapons = 0, Explosives = 0, Supplies = 2, Survival = 3}},
+            ["Military Vest"] = {       dura_per_hit = 2,   slots = {Weapons = 1, Explosives = 1, Supplies = 0, Survival = 0}}
         },
         grenades = 
         {
