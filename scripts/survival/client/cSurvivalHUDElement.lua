@@ -54,6 +54,22 @@ function cSurvivalHUDElement:RenderLarge()
             text_size + Vector2(fill_size * self.percent, 0), 
             Vector2(fill_size * self.percent2, self.large_size.y), 
             self.color2)
+
+        if self.percent2 == 1 then
+            Render:DrawLine(
+                text_size + Vector2(fill_size * self.percent, 0) + Vector2(fill_size * self.percent2, 0),
+                text_size + Vector2(fill_size * self.percent, 0) + Vector2(fill_size * self.percent2, self.large_size.y),
+                Color.Yellow
+            )
+        end
+
+        if self.percent == 1 then
+            Render:DrawLine(
+                text_size + Vector2(fill_size * self.percent, 0),
+                text_size + Vector2(fill_size * self.percent, self.large_size.y),
+                Color.Yellow
+            )
+        end
     end
 
 

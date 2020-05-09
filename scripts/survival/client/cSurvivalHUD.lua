@@ -48,8 +48,8 @@ function cSurvivalHUD:__init()
         }),
         cSurvivalHUDElement({
             name = "Level",
-            percent = 0.75,
-            percent2 = 0.50,
+            percent = 0.5,
+            percent2 = 0.5,
             color = Color(170, 36, 35), -- Combat
             color2 = Color(35, 139, 170), -- Exploration
             dual = true,
