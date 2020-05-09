@@ -83,18 +83,9 @@ end
 function sItemGenerator:GetItemAmount(item, max_loot, tier)
 
     -- Get random amount
-    local amount = math.ceil(item.stacklimit * 
-        (math.random() * (Lootbox.GeneratorConfig.stack.max_percent - Lootbox.GeneratorConfig.stack.min_percent)
-        + Lootbox.GeneratorConfig.stack.min_percent)
-        )
+    local limit = max_loot or math.min(item.stacklimit, Lootbox.GeneratorConfig.stack.max)
 
-    -- Clamp it
-    amount = math.clamp(
-        amount, 
-        Lootbox.GeneratorConfig.stack.min,
-        math.min(math.random(Lootbox.GeneratorConfig.stack.max), max_loot or 999))
-
-        -- TODO: use self:GetRandomNumberOfLockpicks(tier) for lootboxes
+    local amount = math.random(limit)
 
     if item.name == "Lockpick" then
         amount = self:GetRandomNumberOfLockpicks(tier)
