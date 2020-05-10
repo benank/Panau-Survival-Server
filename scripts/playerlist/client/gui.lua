@@ -138,9 +138,10 @@ function ListGUI:LocalPlayerInput( args )
 end
 
 function ListGUI:UpdatePings( list )
-	for ID, ping in pairs(list) do
+	for ID, data in pairs(list) do
 		if self.Rows[ID] ~= nil then
-			self.Rows[ID]:SetCellText( 2, tostring(ping) )
+			self.Rows[ID]:SetCellText( 2, tostring(data.ping) )
+			self.Rows[ID]:SetCellText( 3, tostring(data.level) )
 		end
 	end
 

@@ -41,18 +41,6 @@ Inventory.config =
     max_grapple_upgrades = 4
 }
 
-function GetInventoryNumSlots()
-
-    local slots = 0
-
-    for k,v in pairs(Inventory.config.categories) do
-        slots = slots + v.slots
-    end
-
-    return slots
-
-end
-
 function CategoryExists(cat)
 
     for k,v in pairs(Inventory.config.categories) do

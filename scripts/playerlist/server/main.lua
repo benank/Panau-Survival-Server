@@ -7,7 +7,10 @@ function ListHandler:__init()
     local func = coroutine.wrap(function()
         while true do
             for player in Server:GetPlayers() do
-                self.PingList[tostring(player:GetSteamId())] = player:GetPing()
+                self.PingList[tostring(player:GetSteamId())] = {
+                    ping = player:GetPing(), 
+                    level = player:GetValue("Exp") and player:GetValue("Exp").level or "..."
+                }
             end
             Timer.Sleep(4000)
         end

@@ -4,10 +4,10 @@ Exp =
     Max_Level = 100,
     Lootbox = 
     {
-        [1] = 1,
-        [2] = 2,
-        [3] = 5,
-        [4] = 10,
+        [1] = 2,
+        [2] = 4,
+        [3] = 10,
+        [4] = 20,
         [5] = 50
     },    
     Kill = 
@@ -30,15 +30,24 @@ Exp =
         [DamageEntity.Suicide] = 30,
         [DamageEntity.AdminKill] = 0
     },
-    KillExpireTime = 60 * 60 * 24 -- Timer for killing the same person. If killed again before this timer expires, no exp is given
+    KillExpireTime = 60 * 60 * 24, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
+    Level0ExpCutoffLevel = 5 -- Level where you stop getting exp for killing level 0 players
 }
 
 
 function GetMaximumExp(level)
-    return 200 + level * 500
+    return math.round(500000 * math.exp(0.04354 * level) * (math.exp(0.04354) - 1) / (math.exp(4.354) - 1))
 end
 
 -- Gets an exp modifier based on the difference in the killer and killed players' levels
 function GetKillLevelModifier(killer_level, killed_level)
-    return math.min(2, (killed_level + 1) / (killer_level + 1))
+    if killed_level == 0 and killer_level >= Exp.Level0ExpCutoffLevel then
+        return 0
+    else
+        return math.pow(10, (killed_level - killer_level) / Exp.Max_Level)
+    end
+end
+
+function GetExpLostOnDeath(level)
+    return 50 * level
 end

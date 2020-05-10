@@ -10,18 +10,35 @@ function sExp:__init()
 
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
     Events:Subscribe("PlayerKilled", self, self.PlayerKilled)
+    Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
 end
 
+function sExp:ModulesLoad()
+    for p in Server:GetPlayers() do
+        if p:GetValue("Exp") then
+            Events:Fire("PlayerExpLoaded", {player = p})
+        end
+    end
+end
+
 function sExp:PlayerKilled(args)
 
+    -- Give killer exp
     if args.killer then
         self:AwardExpToKillerOnKill(args)
     end
 
-    -- TODO subtract exp from player who died
+    -- Subtract exp from player who died
+    local exp_data = args.player:GetValue("Exp")
+    exp_data.combat_exp = math.max(0, exp_data.combat_exp - GetExpLostOnDeath(exp_data.level))
+    exp_data.explore_exp = math.max(0, exp_data.explore_exp - GetExpLostOnDeath(exp_data.level))
+
+    args.player:SetNetworkValue("Exp", exp_data)
+    self:UpdateDB(tostring(args.player:GetSteamId()), exp_data)
+
 
 end
 
@@ -100,7 +117,7 @@ function sExp:AwardExpToKillerOnKill(args)
     if count_table(killer_exp) > 0 then
 
         local exp_earned = math.ceil(exp_earned * GetKillLevelModifier(killer_exp.level, killed_exp.level))
-        local exp_data = self:GivePlayerExp(exp_earned, ExpType.Combat, killer_id, killer_exp)
+        local exp_data = self:GivePlayerExp(exp_earned, ExpType.Combat, killer_id, killer_exp, killer)
 
         if IsValid(killer) then
             killer:SetNetworkValue("Exp", exp_data)
@@ -117,11 +134,9 @@ function sExp:PlayerChat(args)
     local words = args.text:split(" ")
 
     if words[1] == "/expe" and words[2] then
-        local exp = self:GivePlayerExp(tonumber(words[2]), ExpType.Exploration, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"))
-        args.player:SetNetworkValue("Exp", exp)
+        self:GivePlayerExp(tonumber(words[2]), ExpType.Exploration, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
     elseif words[1] == "/expc" and words[2] then
-        local exp = self:GivePlayerExp(tonumber(words[2]), ExpType.Combat, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"))
-        args.player:SetNetworkValue("Exp", exp)
+        self:GivePlayerExp(tonumber(words[2]), ExpType.Combat, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
     end
 
 end
@@ -133,12 +148,11 @@ function sExp:PlayerOpenLootbox(args)
     local exp_earned = Exp.Lootbox[args.tier]
     if not exp_earned then return end
 
-    local exp_data = self:GivePlayerExp(exp_earned, ExpType.Exploration, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"))
-    args.player:SetNetworkValue("Exp", exp_data)
+    self:GivePlayerExp(exp_earned, ExpType.Exploration, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
 
 end
 
-function sExp:GivePlayerExp(exp, type, steamID, exp_data)
+function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
 
     if exp <= 0 then return end
     print(string.format("[%s] got %d exp (Source: %d)", steamID, exp, type))
@@ -160,7 +174,10 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data)
 
     self:UpdateDB(steamID, exp_data)
 
-    return exp_data
+    if IsValid(player) then
+        player:SetNetworkValue("Exp", exp_data)
+        Events:Fire("PlayerExpUpdated", {player = player})
+    end
 
 end
 

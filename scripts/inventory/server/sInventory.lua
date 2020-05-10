@@ -27,6 +27,7 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.ToggleBackpackEquipped-" .. self.steamID, self, self.ToggleBackpackEquipped))
 
     table.insert(self.events, Events:Subscribe("PlayerKilled", self, self.PlayerKilled))
+    table.insert(self.events, Events:Subscribe("PlayerExpUpdated", self, self.PlayerExpUpdated))
 
     table.insert(self.network_events, Network:Subscribe("Inventory/Shift" .. self.steamID, self, self.ShiftStack))
     table.insert(self.network_events, Network:Subscribe("Inventory/ToggleEquipped" .. self.steamID, self, self.ToggleEquipped))
@@ -40,6 +41,8 @@ function sInventory:__init(player)
 end
 
 function sInventory:Load()
+
+    if self.initial_sync then return end
 
     -- Initialize subtables of categories
     for index, cat_info in pairs(Inventory.config.categories) do
@@ -77,6 +80,14 @@ function sInventory:Load()
     self:Sync({sync_full = true})
 
     self.initial_sync = true
+
+end
+
+function sInventory:PlayerExpUpdated(args)
+    if args.player ~= self.player then return end
+
+    self:UpdateNumSlotsBasedOnLevel()
+    self:Sync({sync_slots = true})
 
 end
 
