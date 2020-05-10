@@ -49,5 +49,5 @@ function GetKillLevelModifier(killer_level, killed_level)
 end
 
 function GetExpLostOnDeath(level)
-    return 20 * level
+    return 5 * level
 end
