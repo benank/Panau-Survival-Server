@@ -27,6 +27,7 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.ToggleBackpackEquipped-" .. self.steamID, self, self.ToggleBackpackEquipped))
 
     table.insert(self.events, Events:Subscribe("PlayerKilled", self, self.PlayerKilled))
+    table.insert(self.events, Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated))
 
     table.insert(self.network_events, Network:Subscribe("Inventory/Shift" .. self.steamID, self, self.ShiftStack))
     table.insert(self.network_events, Network:Subscribe("Inventory/ToggleEquipped" .. self.steamID, self, self.ToggleEquipped))
@@ -41,11 +42,15 @@ end
 
 function sInventory:Load()
 
+    if self.initial_sync then return end
+
     -- Initialize subtables of categories
     for index, cat_info in pairs(Inventory.config.categories) do
         self.contents[cat_info.name] = {}
         self.slots[cat_info.name] = {default = cat_info.slots, level = 0, backpack = 0}
     end
+
+    self:UpdateNumSlotsBasedOnLevel()
 
 	local query = SQL:Query("SELECT contents FROM inventory WHERE steamID = (?) LIMIT 1")
     query:Bind(1, self.steamID)
@@ -75,6 +80,32 @@ function sInventory:Load()
     self:Sync({sync_full = true})
 
     self.initial_sync = true
+
+end
+
+function sInventory:PlayerLevelUpdated(args)
+    if args.player ~= self.player then return end
+
+    local old_slots = deepcopy(self.slots)
+    self:UpdateNumSlotsBasedOnLevel()
+    self:Sync({sync_slots = true})
+
+    for cat_name, slot_data in pairs(self.slots) do
+        if slot_data.level ~= old_slots[cat_name].level then
+            Chat:Send(self.player, string.format("Inventory space increased! You now have %d %s slots.", self:GetNumSlotsInCategory(cat_name), cat_name), Color(0, 255, 255))
+        end
+    end
+
+end
+
+-- Updates the number of slots in each category based on level
+function sInventory:UpdateNumSlotsBasedOnLevel()
+
+    local level = self.player:GetValue("Exp").level
+
+    for cat_name, slot_data in pairs(self.slots) do
+        self.slots[cat_name].level = GetNumSlotsInCategoryFromLevel(cat_name, level)
+    end
 
 end
 

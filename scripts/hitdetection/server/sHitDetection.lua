@@ -272,7 +272,7 @@ function sHitDetection:PlayerDeath(args)
     end
 
     if not args.player:GetValue("Suicided") and not args.player:GetValue("Invisible") and not args.player:GetValue("Invincible") then
-        Events:Fire("PlayerKilled", {player = args.player})
+        Events:Fire("PlayerKilled", {player = args.player, killer = last_damaged and last_damaged.steam_id, reason = args.reason})
     end
 
     args.player:SetValue("Suicided", nil)

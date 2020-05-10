@@ -4,8 +4,6 @@ function cInventory:__init()
 
     Events:Fire("loader/RegisterResource", {count = 2})
 
-    Network:Send(var("InventoryRequest"):get())
-
     Network:Subscribe(var("InventoryUpdated"):get(), self, self.InventoryUpdated)
     Network:Subscribe(var("Inventory/GetGroundData"):get(), self, self.GetGroundData)
 
