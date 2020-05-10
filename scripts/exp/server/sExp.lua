@@ -254,7 +254,6 @@ function sExp:ClientModuleLoad(args)
     exp_data.combat_max_exp = GetMaximumExp(exp_data.level) -- TODO: divide by two
     exp_data.explore_max_exp = GetMaximumExp(exp_data.level)
 
-    output_table(exp_data)
     args.player:SetNetworkValue("Exp", exp_data)
     Events:Fire("PlayerExpLoaded", {player = args.player})
 
