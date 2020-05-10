@@ -114,7 +114,7 @@ function sExp:AwardExpToKillerOnKill(args)
 
     end
 
-    if count_table(killer_exp) > 0 then
+    if count_table(killer_exp) > 0 and killed_exp then
 
         local exp_earned = math.ceil(exp_earned * GetKillLevelModifier(killer_exp.level, killed_exp.level))
         local exp_data = self:GivePlayerExp(exp_earned, ExpType.Combat, killer_id, killer_exp, killer)
@@ -154,6 +154,7 @@ end
 
 function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
 
+    if not exp_data then return end
     if exp <= 0 then return end
     print(string.format("[%s] got %d exp (Source: %d)", steamID, exp, type))
 
@@ -253,6 +254,7 @@ function sExp:ClientModuleLoad(args)
     exp_data.combat_max_exp = GetMaximumExp(exp_data.level) -- TODO: divide by two
     exp_data.explore_max_exp = GetMaximumExp(exp_data.level)
 
+    output_table(exp_data)
     args.player:SetNetworkValue("Exp", exp_data)
     Events:Fire("PlayerExpLoaded", {player = args.player})
 
