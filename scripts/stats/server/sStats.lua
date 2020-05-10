@@ -1,4 +1,4 @@
-class 'sStats'
+--[[class 'sStats'
 
 function sStats:__init()
 
@@ -6,4 +6,4 @@ function sStats:__init()
 
 end
 
-sStats = sStats()
+sStats = sStats()]]
