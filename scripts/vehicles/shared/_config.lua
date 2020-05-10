@@ -79,7 +79,7 @@ config =
         [96] = 27,
         [100] = 28
     },
-    owned_despawn_time = 10, -- Minutes it takes for vehicles to despawn after owner leaves
+    owned_despawn_time = 5, -- Minutes it takes for vehicles to despawn after owner leaves
     gas_station_radius = 15,
     decals = -- List of all possible vehicle decals
     {
