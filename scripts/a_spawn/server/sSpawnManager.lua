@@ -14,6 +14,12 @@ function sSpawnManager:__init()
         end
         Timer.Sleep(1000)
     end)()
+
+    for p in Server:GetPlayers() do
+        if not p:GetValue("Loading") then
+            p:SetValue("FirstSpawn", true)
+        end
+    end
     
 
 	Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
