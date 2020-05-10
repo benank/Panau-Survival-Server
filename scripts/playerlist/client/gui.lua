@@ -22,8 +22,6 @@ function ListGUI:__init()
 	self.list:AddColumn( "Name" )
 	self.list:AddColumn( "Ping", 64 )
 	self.list:AddColumn( "Level", 64 )
-	self.list:AddColumn( "Kills", 64 )
-	self.list:AddColumn( "Deaths", 64 )
 	self.list:AddColumn( "Friends", 128 )
     self.list:SetButtonsVisible( true )
 
@@ -175,10 +173,8 @@ function ListGUI:AddPlayer( player )
 	item:SetCellText( 1, player:GetName() )
 	item:SetCellText( 2, "..." )
 	item:SetCellText( 3, "..." )
-	item:SetCellText( 4, "..." )
-    item:SetCellText( 5, "..." )
 
-    for i = 0, 6 do
+    for i = 0, 4 do
         item:GetCellContents(i):SetTextSize(20)
         item:GetCellContents(i):SetPadding(Vector2(4,4), Vector2(4,4))
 
@@ -186,7 +182,7 @@ function ListGUI:AddPlayer( player )
             item:GetCellContents(i):SetAlignment(GwenPosition.Center)
         end
 
-        if i == 6 and player ~= LocalPlayer then
+        if i == 4 and player ~= LocalPlayer then
             local btn = Button.Create(item, "button")
             btn:SetText("Add")
             btn:SetTextSize(16)
