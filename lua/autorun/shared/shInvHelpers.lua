@@ -34,6 +34,8 @@ if Client then
                 items[i] = shItem(j)
             end
 
+            if not Inventory.contents or not Inventory.contents[args.cat] then return end
+
             Inventory.contents[args.cat][args.index] = shStack({contents = items, uid = args.stack.uid})
 
         elseif args.action == "remove" then

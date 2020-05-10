@@ -127,8 +127,8 @@ function sInventory:ToggleBackpackEquipped(args)
             self.slots[cat].backpack = self.slots[cat].backpack - slots_to_add
         end
 
+        -- No need to check for overflow here because sync does it
         self:Sync({sync_slots = true})
-        self:CheckForOverflow()
 
     else
 

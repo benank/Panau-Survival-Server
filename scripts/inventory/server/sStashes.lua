@@ -10,7 +10,6 @@ function sStashes:__init()
     Network:Subscribe("Stashes/RenameStash", self, self.RenameStash)
     Network:Subscribe("Stashes/Dismount", self, self.DismountStash)
 
-    Events:Subscribe("PlayerExpLoaded", self, self.PlayerExpLoaded)
     Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 end
@@ -86,7 +85,7 @@ function sStashes:RenameStash(args, player)
     stash_instance:ChangeName(args.name, player)
 end
 
-function sStashes:PlayerExpLoaded(args)
+function sStashes:ClientModuleLoad(args)
 
     args.player:SetNetworkValue("MaxStashes", GetMaxFromLevel(args.player:GetValue("Exp").level, Stashes_Per_Level))
     

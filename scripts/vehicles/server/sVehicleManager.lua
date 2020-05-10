@@ -26,6 +26,7 @@ function sVehicleManager:__init()
     end)
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerExpLoaded", self, self.PlayerExpLoaded)
     Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
     Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
@@ -631,7 +632,19 @@ function sVehicleManager:RestoreOldDriverIfExists(args)
 end
 
 function sVehicleManager:PlayerExpLoaded(args)
+    if args.player:GetValue("VehiclesWaitingForExp") then
+        args.player:GetValue("VehiclesWaitingForExp", false)
+        self:ClientModuleLoad(args)
+    end
+end
 
+function sVehicleManager:ClientModuleLoad(args)
+
+    if not args.player:GetValue("Exp") then
+        args.player:SetValue("InventoryWaitingForExp", true)
+        return
+    end
+    
     args.player:SetNetworkValue("MaxVehicles", GetMaxFromLevel(args.player:GetValue("Exp").level, config.player_max_vehicles))
 
     local result = SQL:Query("SELECT * FROM vehicles WHERE owner_steamid = (?)")
