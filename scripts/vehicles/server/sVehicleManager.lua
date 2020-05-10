@@ -27,7 +27,7 @@ function sVehicleManager:__init()
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("PlayerExpLoaded", self, self.PlayerExpLoaded)
-    Events:Subscribe("PlayerExpUpdated", self, self.PlayerExpUpdated)
+    Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
     Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
     Events:Subscribe("PlayerEnterVehicle", self, self.PlayerEnterVehicle)
 
@@ -97,8 +97,15 @@ function sVehicleManager:__init()
 
 end
 
-function sVehicleManager:PlayerExpUpdated(args)
-    args.player:SetNetworkValue("MaxVehicles", GetMaxFromLevel(args.player:GetValue("Exp").level, config.player_max_vehicles))
+function sVehicleManager:PlayerLevelUpdated(args)
+    local old_max_vehicles = args.player:GetValue("MaxVehicles")
+    local new_max_vehicles = GetMaxFromLevel(args.player:GetValue("Exp").level, config.player_max_vehicles)
+
+    if old_max_vehicles ~= new_max_vehicles then
+        Chat:Send(args.player, string.format("You can now own up to %d vehicles!", new_max_vehicles), Color(0, 255, 255))
+    end
+
+    args.player:SetNetworkValue("MaxVehicles", new_max_vehicles)
 end
 
 -- Called every minute, saves all owned vehicles in the server

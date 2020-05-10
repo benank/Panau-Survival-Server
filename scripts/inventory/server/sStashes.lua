@@ -11,12 +11,19 @@ function sStashes:__init()
     Network:Subscribe("Stashes/Dismount", self, self.DismountStash)
 
     Events:Subscribe("PlayerExpLoaded", self, self.PlayerExpLoaded)
-    Events:Subscribe("PlayerExpUpdated", self, self.PlayerExpUpdated)
+    Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 end
 
-function sStashes:PlayerExpUpdated(args)
-    args.player:SetNetworkValue("MaxStashes", GetMaxFromLevel(args.player:GetValue("Exp").level, Stashes_Per_Level))
+function sStashes:PlayerLevelUpdated(args)
+    local old_max_stashes = args.player:GetValue("MaxStashes")
+    local new_max_stashes = GetMaxFromLevel(args.player:GetValue("Exp").level, Stashes_Per_Level)
+
+    if old_max_stashes ~= new_max_stashes then
+        Chat:Send(args.player, string.format("You can place up to %d stashes!", new_max_stashes), Color(0, 255, 255))
+    end
+
+    args.player:SetNetworkValue("MaxStashes", new_max_stashes)
 end
 
 function sStashes:DismountStash(args, player)

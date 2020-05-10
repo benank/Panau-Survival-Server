@@ -27,7 +27,7 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.ToggleBackpackEquipped-" .. self.steamID, self, self.ToggleBackpackEquipped))
 
     table.insert(self.events, Events:Subscribe("PlayerKilled", self, self.PlayerKilled))
-    table.insert(self.events, Events:Subscribe("PlayerExpUpdated", self, self.PlayerExpUpdated))
+    table.insert(self.events, Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated))
 
     table.insert(self.network_events, Network:Subscribe("Inventory/Shift" .. self.steamID, self, self.ShiftStack))
     table.insert(self.network_events, Network:Subscribe("Inventory/ToggleEquipped" .. self.steamID, self, self.ToggleEquipped))
@@ -83,11 +83,18 @@ function sInventory:Load()
 
 end
 
-function sInventory:PlayerExpUpdated(args)
+function sInventory:PlayerLevelUpdated(args)
     if args.player ~= self.player then return end
 
+    local old_slots = deepcopy(self.slots)
     self:UpdateNumSlotsBasedOnLevel()
     self:Sync({sync_slots = true})
+
+    for cat_name, slot_data in pairs(self.slots) do
+        if slot_data.level ~= old_slots[cat_name].level then
+            Chat:Send(self.player, string.format("Inventory space increased! You now have %d %s slots.", self:GetNumSlotsInCategory(cat_name), cat_name), Color(0, 255, 255))
+        end
+    end
 
 end
 
@@ -97,7 +104,7 @@ function sInventory:UpdateNumSlotsBasedOnLevel()
     local level = self.player:GetValue("Exp").level
 
     for cat_name, slot_data in pairs(self.slots) do
-        self.slots[cat_name].level = GetNumSlotsInCategory(cat_name, level)
+        self.slots[cat_name].level = GetNumSlotsInCategoryFromLevel(cat_name, level)
     end
 
 end

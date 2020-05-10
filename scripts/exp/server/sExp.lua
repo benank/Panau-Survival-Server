@@ -167,9 +167,19 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
 
     end
 
+    local gained_level = false
+
     if exp_data.combat_exp == exp_data.combat_max_exp
     and exp_data.explore_exp == exp_data.explore_max_exp then
         exp_data = self:PlayerGainLevel(exp_data)
+
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = steamID,
+            message = string.format("Level up! You are now level %d!", exp_data.level),
+            color = Color.Yellow
+        })
+        
+        gained_level = true
     end
 
     self:UpdateDB(steamID, exp_data)
@@ -177,6 +187,10 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
     if IsValid(player) then
         player:SetNetworkValue("Exp", exp_data)
         Events:Fire("PlayerExpUpdated", {player = player})
+
+        if gained_level then
+            Events:Fire("PlayerLevelUpdated", {player = player})
+        end
     end
 
 end

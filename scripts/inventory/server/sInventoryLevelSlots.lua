@@ -35,7 +35,7 @@ local slot_amounts =
     }
 }
 
-function GetNumSlotsInCategory(category, level)
+function GetNumSlotsInCategoryFromLevel(category, level)
     if not slot_amounts[category] then
         print(string.format("Category %s not found in GetNumSlotsInCategory", category))
         return 0
