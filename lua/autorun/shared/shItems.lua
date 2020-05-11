@@ -53,7 +53,7 @@ Items =
         category = "Supplies",
         stacklimit = 50,
         loot = {2,3,4},
-        rarity = 0.1,
+        rarity = 0.2,
         rarity_mod = {1,1,1}
     },
     {
