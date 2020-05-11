@@ -13,6 +13,8 @@ Network:Subscribe("items/CompleteItemUsage", function(args, player)
             player = player
         })
 
+        player:SetValue("RecentHealTime", Server:GetElapsedSeconds())
+
     end
 
 end)
