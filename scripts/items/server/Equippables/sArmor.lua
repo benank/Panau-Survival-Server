@@ -14,6 +14,7 @@ end)
 
 Events:Subscribe("HitDetection/ArmorDamaged", function(args)
 
+    if not IsValid(args.player) then return end
     local item = GetEquippedItem(args.armor_name, args.player)
     if not item then return end
     local change = args.damage_diff

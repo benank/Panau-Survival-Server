@@ -754,7 +754,7 @@ function sInventory:RemoveStack(args)
 
     if args.index and not self.contents[cat][args.index] then return end
 
-    if args.index then
+    if args.index and self.contents[cat][args.index]:GetProperty("name") == args.stack:GetProperty("name") then
 
         -- If we are not removing the entire stack
         if args.stack:GetAmount() < self.contents[cat][args.index]:GetAmount() then

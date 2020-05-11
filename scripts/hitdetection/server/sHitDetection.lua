@@ -5,6 +5,8 @@ function sHitDetection:__init()
     self.pending_hits = {}
     self.last_damage_timeout = 15 -- 15 seconds to clear last damaged kill attribution
 
+    self.pending_armor_aggregation = {}
+
     self:CheckPendingHits()
 
     Network:Subscribe("HitDetectionSyncHit", self, self.SyncHit)
@@ -104,6 +106,30 @@ function sHitDetection:CheckPendingHits()
             end
 
             Timer.Sleep(10)
+        end
+    end)()
+
+    
+    local func = coroutine.wrap(function()
+        while true do
+            if count_table(self.pending_armor_aggregation) > 0 then
+
+                for steam_id, data in pairs(self.pending_armor_aggregation) do
+                    for armor_name, hit_data in pairs(data) do
+                        print("process armor")
+                        Events:Fire("HitDetection/ArmorDamaged", hit_data)
+                        Timer.Sleep(300)
+                        self.pending_armor_aggregation[steam_id][armor_name] = nil
+                    end
+
+                    if count_table(self.pending_armor_aggregation[steam_id]) == 0 then
+                        self.pending_armor_aggregation[steam_id] = nil
+                    end
+                end
+            end
+
+            Timer.Sleep(1000)
+
         end
     end)()
 
@@ -599,11 +625,25 @@ function sHitDetection:GetArmorMod(player, hit_type, damage, original_damage)
 
             -- If the armor prevented some damage, then modify its durability
             if ArmorModifiers[armor_name][hit_type] > 0 then
-                Events:Fire("HitDetection/ArmorDamaged", {
-                    player = player,
-                    armor_name = armor_name,
-                    damage_diff = original_damage - original_damage * (1 - ArmorModifiers[armor_name][hit_type])
-                })
+                
+                local steam_id = tostring(player:GetSteamId())
+
+                if not self.pending_armor_aggregation[steam_id] then
+                    self.pending_armor_aggregation[steam_id] = {}
+                end
+
+                if not self.pending_armor_aggregation[steam_id][armor_name] then
+                    self.pending_armor_aggregation[steam_id][armor_name] = 
+                    {
+                        player = player,
+                        armor_name = armor_name,
+                        damage_diff = original_damage - original_damage * (1 - ArmorModifiers[armor_name][hit_type])
+                    }
+                else
+                    self.pending_armor_aggregation[steam_id][armor_name].damage_diff = 
+                        self.pending_armor_aggregation[steam_id][armor_name].damage_diff +
+                        original_damage - original_damage * (1 - ArmorModifiers[armor_name][hit_type])
+                end
             end
 
         end

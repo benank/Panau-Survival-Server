@@ -45,6 +45,24 @@ function sLootbox:__init(args)
         self:Remove()
     end)
 
+    if self.is_dropbox then
+        for index, stack in pairs(self.contents) do
+            for item_index, item in pairs(stack.contents) do
+                if item.durability and item.durability <= 0 then
+                    stack:RemoveItem(item, item_index)
+                end
+            end
+
+            if count_table(stack.contents) == 0 then
+                table.remove(self.contents, index)
+            end
+        end
+
+        if count_table(self.contents) == 0 then
+            self:Remove()
+            return
+        end
+    end
 
 end
 
