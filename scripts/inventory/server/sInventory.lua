@@ -115,8 +115,73 @@ function sInventory:PlayerKilled(args)
     if args.player ~= self.player then return end
 
     -- Player died, so spawn dropbox
+    local level = args.player:GetValue("Exp").level
+
+    local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+
+    -- Level 0 within financial district, don't drop items
+    if level == 0 and args.player:Distance(sz_config.safezone.position) < 800 then return end
+
+    local num_slots_to_drop = GetNumSlotsDroppedOnDeath(level)
+
+    if num_slots_to_drop == 0 then return end
+
+    local stacks_to_drop = {}
+    local categories = {"Weapons", "Explosives", "Supplies", "Survival"}
+
+    while self:GetNumUsedSlots() > 0 and num_slots_to_drop > 0 do
+
+        local cat = categories[math.random(#categories)]
+
+        while count_table(self.contents[cat]) == 0 do
+            cat = categories[math.random(#categories)]
+        end
+
+        local index_to_remove = math.random(#self.contents[cat])
+        local stack = table.remove(self.contents[cat], index_to_remove)
+        
+        self:CheckIfStackHasOneEquippedThenUnequip(stack)
+
+        table.insert(stacks_to_drop, stack)
+
+        num_slots_to_drop = num_slots_to_drop - 1
+
+    end
+
+    -- If they overflowed, drop the items
+    if #stacks_to_drop > 0 then
+
+        -- Send the player a chat message
+        local chat_msg = "Death drop: "
+        for index, stack in pairs(stacks_to_drop) do
+            chat_msg = chat_msg .. string.format("%s (%s)", tostring(stack:GetProperty("name")), tostring(stack:GetAmount()))
+            if index < #stacks_to_drop then
+                chat_msg = chat_msg .. ", "
+            end
+        end
+
+        Chat:Send(self.player, chat_msg, Color.Red)
+
+        Events:Fire("Discord", {
+            channel = "Inventory",
+            content = string.format("%s [%s] death drop: %s", self.player:GetName(), tostring(self.player:GetSteamId()), chat_msg)
+        })
+
+        self:SpawnDropbox(stacks_to_drop)
+
+        -- Full sync in case they dropped from multiple categories
+        self:Sync({sync_full = true})
+    end
     
 
+end
+
+function sInventory:GetNumUsedSlots()
+    local slots_used = 0
+    for cat_name, data in pairs(self.contents) do
+        slots_used = slots_used + count_table(data)
+    end
+    return slots_used
 end
 
 function sInventory:ToggleBackpackEquipped(args)
@@ -367,7 +432,6 @@ function sInventory:DropStack(args, player)
             end
         end
     end
-
 
     -- Not dropping the entire stack
     if args.amount < stack:GetAmount() then
