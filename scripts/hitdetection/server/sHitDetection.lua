@@ -116,7 +116,6 @@ function sHitDetection:CheckPendingHits()
 
                 for steam_id, data in pairs(self.pending_armor_aggregation) do
                     for armor_name, hit_data in pairs(data) do
-                        print("process armor")
                         Events:Fire("HitDetection/ArmorDamaged", hit_data)
                         Timer.Sleep(300)
                         self.pending_armor_aggregation[steam_id][armor_name] = nil

@@ -92,10 +92,12 @@ function sWeaponManager:FireWeapon(args, player)
     local weapon = player:GetEquippedWeapon()
     if not weapon then return end
 
-    if not self.pending_fire[steam_id][weapon.id] then
+    local weapon_name = self:GetWeaponNameFromId(weapon.id)
+    if not weapon_name then return end
 
-        local weapon_name = self:GetWeaponNameFromId(weapon.id)
-        if not weapon_name then return end
+    local equipped_weapons = player:GetValue("EquippedWeapons")
+
+    if not self.pending_fire[steam_id][weapon.id] then
 
         local weapon_ammo = weapon.ammo_clip + weapon.ammo_reserve
 
@@ -128,9 +130,12 @@ function sWeaponManager:FireWeapon(args, player)
             adjusted_ammo = ammo_amount - 1,
             player = player
         }
+
+        equipped_weapons[weapon_name].ammo = ammo_amount - 1
     else
         self.pending_fire[steam_id][weapon.id].ammo = args.ammo
         self.pending_fire[steam_id][weapon.id].adjusted_ammo = self.pending_fire[steam_id][weapon.id].adjusted_ammo - 1
+        equipped_weapons[weapon_name].ammo = self.pending_fire[steam_id][weapon.id].adjusted_ammo - 1
     end
 
 end

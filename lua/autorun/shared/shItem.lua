@@ -136,7 +136,7 @@ end
 function shItem:ToString()
 
     return self.name .. " [x" .. self.amount .. "] "
-    .. "SL: " .. self.stacklimit .. " Dura: " .. tostring(self.durability) .. "/" .. tostring(self.max_durability) .. " Equipped: " .. tostring(self.equipped)
+    .. "SL: " .. self.stacklimit .. " Dura: " .. tostring(self.durability) .. "/" .. tostring(self.max_durability)
 end
 
 function concat_bool(b)

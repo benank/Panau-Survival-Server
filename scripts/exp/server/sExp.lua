@@ -33,13 +33,18 @@ function sExp:PlayerKilled(args)
 
     -- Subtract exp from player who died
     local exp_data = args.player:GetValue("Exp")
-    exp_data.combat_exp = math.max(0, exp_data.combat_exp - GetExpLostOnDeath(exp_data.level))
-    exp_data.explore_exp = math.max(0, exp_data.explore_exp - GetExpLostOnDeath(exp_data.level))
+    local exp_lost = GetExpLostOnDeath(exp_data.level)
+    exp_data.combat_exp = math.max(0, exp_data.combat_exp - exp_lost)
+    exp_data.explore_exp = math.max(0, exp_data.explore_exp - exp_lost)
 
     args.player:SetNetworkValue("Exp", exp_data)
     self:UpdateDB(tostring(args.player:GetSteamId()), exp_data)
 
-
+    Events:Fire("Discord", {
+        channel = "Experience",
+        content = string.format("%s [%s] was killed and lost %d exp.", args.player:GetName(), tostring(args.player:GetSteamId()), exp_lost)
+    })
+    
 end
 
 function sExp:AwardExpToKillerOnKill(args)
@@ -119,6 +124,12 @@ function sExp:AwardExpToKillerOnKill(args)
         local exp_earned = math.ceil(exp_earned * GetKillLevelModifier(killer_exp.level, killed_exp.level))
         self:GivePlayerExp(exp_earned, ExpType.Combat, killer_id, killer_exp, killer)
 
+        Events:Fire("Discord", {
+            channel = "Experience",
+            content = string.format("[%s] [Level %d] killed %s [%s] [Level %d] and gained %d exp.", 
+                killer_id, killer_exp.level, args.player:GetName(), player_id, killed_exp.level, exp_earned)
+        })
+        
     end
 
 end
@@ -146,6 +157,12 @@ function sExp:PlayerOpenLootbox(args)
 
     self:GivePlayerExp(exp_earned, ExpType.Exploration, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
 
+    Events:Fire("Discord", {
+        channel = "Experience",
+        content = string.format("%s [%s] opened a tier %d lootbox and gained %d exp.", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), args.tier, exp_earned)
+    })
+    
 end
 
 function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
@@ -174,6 +191,11 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
             steam_id = steamID,
             message = string.format("Level up! You are now level %d!", exp_data.level),
             color = Color.Yellow
+        })
+
+        Events:Fire("Discord", {
+            channel = "Experience",
+            content = string.format("[%s] gained a new level! They are now level %d.", steamID, exp_data.level)
         })
         
         gained_level = true
