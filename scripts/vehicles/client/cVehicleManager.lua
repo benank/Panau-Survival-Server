@@ -93,6 +93,8 @@ function cVehicleManager:LocalPlayerInput(args)
                     return false
                 end
             end
+        elseif args.input == Action.UseItem then
+            return false -- Block healthpacks
         end
 
     end
