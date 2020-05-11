@@ -85,7 +85,7 @@ Items =
         category = "Supplies",
         stacklimit = 50,
         loot = {1,2,3},
-        rarity = 0.05,
+        rarity = 0.02,
         rarity_mod = {1,1,0.5}
     },
     {
@@ -222,7 +222,6 @@ Items =
         loot = {1,2,3},
         rarity = 0.01,
         max_loot = 2,
-        in_loot = false,
         rarity_mod = {5,3,2.5},
         durable = true,
         max_durability = 1000
@@ -481,7 +480,7 @@ Items =
         category = "Explosives",
         stacklimit = 10,
         loot = {1,2},
-        rarity = 0.1,
+        rarity = 0.25,
         max_loot = 2,
         rarity_mod = {1,2},
         can_equip = true,
