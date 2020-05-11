@@ -120,7 +120,7 @@ function sInventory:PlayerKilled(args)
     local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
     -- Level 0 within financial district, don't drop items
-    if level == 0 and args.player:GetPosition():Distance(sz_config.safezone.position) < 800 then return end
+    if level == 0 and args.player:GetPosition():Distance(sz_config.safezone.position) < 1200 then return end
 
     local num_slots_to_drop = GetNumSlotsDroppedOnDeath(level)
 
