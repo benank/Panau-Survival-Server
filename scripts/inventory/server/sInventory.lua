@@ -250,6 +250,12 @@ function sInventory:ToggleEquipped(args, player)
     
     local index = self:FindIndexFromUID(args.cat, uid)
 
+    if not self.contents[args.cat]
+    or not self.contents[args.cat][index]
+    or not self.contents[args.cat][index].contents[1] then
+        return
+    end
+
     -- Equip/unequip the item
     self.contents[args.cat][index].contents[1].equipped = not self.contents[args.cat][index].contents[1].equipped
 
