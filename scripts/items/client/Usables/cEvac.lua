@@ -2,8 +2,8 @@ class 'cEvac'
 
 function cEvac:__init()
 
-    self.vertical_speed = 200
-    self.horizontal_speed = 600
+    self.vertical_speed = 150
+    self.horizontal_speed = 500
     self.objects = {}
     self.fx = {}
 
