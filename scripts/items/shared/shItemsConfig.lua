@@ -5,7 +5,7 @@ ItemsConfig =
         ["Mine"] = {use_time = 3, trigger_radius = 1.5, cell_size = 256, trigger_time = 1.5},
         ["Claymore"] = {trigger_range = 3, cell_size = 256},
         ["Bandages"] = {restore_hp = 0.2, use_time = 3},
-        ["Healthpack"] = {restore_hp = 1.0, use_time = 5},
+        ["Healthpack"] = {restore_hp = 1.0, use_time = 10},
         ["Woet"] = {use_time = 1, range = 5},
         ["Vehicle Repair"] = {use_time = 5, range = 5},
         ["Vehicle Guard"] = {use_time = 3, range = 5},
