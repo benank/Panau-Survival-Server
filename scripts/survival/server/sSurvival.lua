@@ -177,6 +177,7 @@ function sSurvivalManager:AdjustSurvivalStats(player)
 
     if not survival then return end
     if player:GetValue("InSafezone") then return end
+    if player:GetValue("Invincible") then return end
 
     local zone_mod = config.decaymods[player:GetValue("ClimateZone")]
 
@@ -219,9 +220,9 @@ function sSurvivalManager:PlayerReady(args, player)
 		local command = SQL:Command("INSERT INTO survival (steamID, health, hunger, thirst, radiation) VALUES (?, ?, ?, ?, ?)")
 		command:Bind(1, steamID)
 		command:Bind(2, 1)
-		command:Bind(2, config.defaults.hunger)
-		command:Bind(3, config.defaults.thirst)
-		command:Bind(4, config.defaults.radiation)
+		command:Bind(3, config.defaults.hunger)
+		command:Bind(4, config.defaults.thirst)
+		command:Bind(5, config.defaults.radiation)
         command:Execute()
 
         local data = 

@@ -32,3 +32,4 @@ vstdlib_s.dll
 *.vdf
 bans.txt
 kicks.txt
+libstdc++.so.6

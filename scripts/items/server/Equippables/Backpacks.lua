@@ -16,6 +16,8 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
 end)
 
+local backpack_hits = {}
+
 function ModifyBackpackDurability(args)
 
     local item
@@ -36,15 +38,57 @@ function ModifyBackpackDurability(args)
     -- If it is armor, durability will be subtracted in sArmor.lua
     if ItemsConfig.equippables.armor[item.name] then return end
 
-    item.durability = item.durability - change * ItemsConfig.equippables.backpacks[item.name].dura_per_hit
-    Inventory.ModifyDurability({
-        player = args.player,
-        item = item
-    })
+    local steam_id = tostring(args.player:GetSteamId())
+    if not backpack_hits[steam_id] then
+        backpack_hits[steam_id] = {}
+    end
 
-    UpdateEquippedItem(args.player, item.name, item)
+    if not backpack_hits[steam_id][item.name] then
+        backpack_hits[steam_id][item.name] = {
+            player = args.player,
+            dura = change * ItemsConfig.equippables.backpacks[item.name].dura_per_hit,
+            item = item
+        }
+    else
+        backpack_hits[steam_id][item.name].dura = backpack_hits[steam_id][item.name].dura +
+            change * ItemsConfig.equippables.backpacks[item.name].dura_per_hit
+        backpack_hits[steam_id][item.name].item = item
+    end
 
 end
 
 Events:Subscribe("HitDetection/PlayerExplosionHit", function(args) ModifyBackpackDurability(args) end)
 Events:Subscribe("HitDetection/PlayerBulletHit", function(args) ModifyBackpackDurability(args) end)
+
+
+local func = coroutine.wrap(function()
+    while true do
+        for steam_id, data in pairs(backpack_hits) do
+            for item_name, item_hits in pairs(data) do
+
+                if IsValid(item_hits.player) then
+                    local item = item_hits.item
+
+                    item.durability = item.durability - item_hits.dura
+                    Inventory.ModifyDurability({
+                        player = item_hits.player,
+                        item = item
+                    })
+
+                    UpdateEquippedItem(item_hits.player, item.name, item)
+
+                end
+
+                backpack_hits[steam_id][item_name] = nil
+                Timer.Sleep(500)
+
+            end
+
+            if count_table(backpack_hits[steam_id]) == 0 then
+                backpack_hits[steam_id] = nil
+            end
+        end
+
+        Timer.Sleep(500)
+    end
+end)()

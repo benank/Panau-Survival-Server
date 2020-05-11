@@ -17,7 +17,7 @@ ItemsConfig =
         ["Grapplehook"] = {dura_per_sec = 1},
         ["RocketGrapple"] = {dura_per_sec = 3},
         ["Parachute"] = {dura_per_sec = 1},
-        ["Explosives Detector"] = {dura_per_sec = 2, dura_per_activation = 50, battery_dura_per_sec = 14},
+        ["Explosives Detector"] = {dura_per_sec = 1, dura_per_activation = 30, battery_dura_per_sec = 5},
         weapons = 
         {
             ["Handgun"] = {dura_per_use = 1, weapon_id = Weapon.Handgun, equip_slot = WeaponSlot.Right},
@@ -42,9 +42,9 @@ ItemsConfig =
         },
         backpacks = 
         {
-            ["Combat Backpack"] = {dura_per_hit = 2,    slots = {Weapons = 2, Explosives = 4, Supplies = 4, Survival = 0}},
-            ["Explorer Backpack"] = {dura_per_hit = 2,  slots = {Weapons = 1, Explosives = 1, Supplies = 4, Survival = 4}},
-            ["Military Vest"] = {dura_per_hit = 2,      slots = {Weapons = 1, Explosives = 1, Supplies = 0, Survival = 0}}
+            ["Combat Backpack"] = {     dura_per_hit = 2,   slots = {Weapons = 2, Explosives = 2, Supplies = 0, Survival = 1}},
+            ["Explorer Backpack"] = {   dura_per_hit = 2,   slots = {Weapons = 0, Explosives = 0, Supplies = 2, Survival = 3}},
+            ["Military Vest"] = {       dura_per_hit = 2,   slots = {Weapons = 1, Explosives = 1, Supplies = 0, Survival = 0}}
         },
         grenades = 
         {

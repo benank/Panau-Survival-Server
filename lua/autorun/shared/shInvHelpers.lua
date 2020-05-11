@@ -34,6 +34,8 @@ if Client then
                 items[i] = shItem(j)
             end
 
+            if not Inventory.contents or not Inventory.contents[args.cat] then return end
+
             Inventory.contents[args.cat][args.index] = shStack({contents = items, uid = args.stack.uid})
 
         elseif args.action == "remove" then
@@ -92,7 +94,7 @@ if Client then
     Inventory.GetNumOfItem = function(args)
 
         if not args.item_name then
-            error("Failed to Inventory.GetNumOfItem because args.item_name was invalid")
+            print("Failed to Inventory.GetNumOfItem because args.item_name was invalid")
             return
         end
 
@@ -101,9 +103,11 @@ if Client then
 
         local item = Items_indexed[args.item_name]
         if not item then
-            error("Failed to Inventory.GetNumOfItem because item was invalid")
+            print("Failed to Inventory.GetNumOfItem because item was invalid")
             return
         end
+
+        if not inv or not inv[item.category] then return 0 end
     
         local count = 0
         for index, stack in pairs(inv[item.category]) do
@@ -123,7 +127,7 @@ elseif Server then
     Inventory.Get = function(args)
     
         if not IsValid(args.player) then
-            error("Failed to Inventory.Get because args.player was invalid")
+            print("Failed to Inventory.Get because args.player was invalid")
             return
         end
 
@@ -154,7 +158,7 @@ elseif Server then
     Inventory.GetSlotsInCategory = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.GetSlotsInCategory because args.player was invalid")
+            print("Failed to Inventory.GetSlotsInCategory because args.player was invalid")
             return
         end
 
@@ -170,12 +174,12 @@ elseif Server then
     Inventory.AddStack = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.AddStack because args.player was invalid")
+            print("Failed to Inventory.AddStack because args.player was invalid")
             return
         end
 
         if not args.stack then
-            error("Failed to Inventory.AddStack because args.stack was invalid")
+            print("Failed to Inventory.AddStack because args.stack was invalid")
             return
         end
 
@@ -186,12 +190,12 @@ elseif Server then
     Inventory.RemoveStack = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.RemoveStack because args.player was invalid")
+            print("Failed to Inventory.RemoveStack because args.player was invalid")
             return
         end
 
         if not args.stack then
-            error("Failed to Inventory.RemoveStack because args.stack was invalid")
+            print("Failed to Inventory.RemoveStack because args.stack was invalid")
             return
         end
 
@@ -202,12 +206,12 @@ elseif Server then
     Inventory.RemoveItem = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.RemoveItem because args.player was invalid")
+            print("Failed to Inventory.RemoveItem because args.player was invalid")
             return
         end
 
         if not args.item then
-            error("Failed to Inventory.RemoveItem because args.item was invalid")
+            print("Failed to Inventory.RemoveItem because args.item was invalid")
             return
         end
 
@@ -218,12 +222,12 @@ elseif Server then
     Inventory.AddItem = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.AddItem because args.player was invalid")
+            print("Failed to Inventory.AddItem because args.player was invalid")
             return
         end
 
         if not args.item then
-            error("Failed to Inventory.AddItem because args.item was invalid")
+            print("Failed to Inventory.AddItem because args.item was invalid")
             return
         end
 
@@ -235,12 +239,12 @@ elseif Server then
     Inventory.HasItem = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.HasItem because args.player was invalid")
+            print("Failed to Inventory.HasItem because args.player was invalid")
             return
         end
 
         if not args.item then
-            error("Failed to Inventory.HasItem because args.item was invalid")
+            print("Failed to Inventory.HasItem because args.item was invalid")
             return
         end
 
@@ -263,17 +267,17 @@ elseif Server then
     Inventory.SetItemEquipped = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.SetItemEquipped because args.player was invalid")
+            print("Failed to Inventory.SetItemEquipped because args.player was invalid")
             return
         end
 
         if not args.item then
-            error("Failed to Inventory.SetItemEquipped because args.item was invalid")
+            print("Failed to Inventory.SetItemEquipped because args.item was invalid")
             return
         end
 
         if not args.index then
-            error("Failed to Inventory.SetItemEquipped because args.index was invalid")
+            print("Failed to Inventory.SetItemEquipped because args.index was invalid")
             return
         end
 
@@ -284,17 +288,17 @@ elseif Server then
     Inventory.ModifyStack = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.ModifyStack because args.player was invalid")
+            print("Failed to Inventory.ModifyStack because args.player was invalid")
             return
         end
 
         if not args.stack then
-            error("Failed to Inventory.ModifyStack because args.stack was invalid")
+            print("Failed to Inventory.ModifyStack because args.stack was invalid")
             return
         end
 
         if not args.index then
-            error("Failed to Inventory.ModifyStack because args.index was invalid")
+            print("Failed to Inventory.ModifyStack because args.index was invalid")
             return
         end
 
@@ -305,12 +309,12 @@ elseif Server then
     Inventory.ModifyDurability = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.ModifyDurability because args.player was invalid")
+            print("Failed to Inventory.ModifyDurability because args.player was invalid")
             return
         end
 
         if not args.item then
-            error("Failed to Inventory.ModifyDurability because args.item was invalid")
+            print("Failed to Inventory.ModifyDurability because args.item was invalid")
             return
         end
 
@@ -321,12 +325,12 @@ elseif Server then
     Inventory.OperationBlock = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.OperationBlock because args.player was invalid")
+            print("Failed to Inventory.OperationBlock because args.player was invalid")
             return
         end
 
         if not args.change then
-            error("Failed to Inventory.OperationBlock because args.change was invalid")
+            print("Failed to Inventory.OperationBlock because args.change was invalid")
             return
         end
 
@@ -337,12 +341,12 @@ elseif Server then
     Inventory.GetNumOfItem = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.GetNumOfItem because args.player was invalid")
+            print("Failed to Inventory.GetNumOfItem because args.player was invalid")
             return
         end
 
         if not args.item_name then
-            error("Failed to Inventory.GetNumOfItem because args.item_name was invalid")
+            print("Failed to Inventory.GetNumOfItem because args.item_name was invalid")
             return
         end
 
@@ -351,7 +355,7 @@ elseif Server then
 
         local item = Items_indexed[args.item_name]
         if not item then
-            error("Failed to Inventory.GetNumOfItem because item was invalid")
+            print("Failed to Inventory.GetNumOfItem because item was invalid")
             return
         end
     
@@ -369,7 +373,7 @@ elseif Server then
     Inventory.print = function(args)
 
         if not IsValid(args.player) then
-            error("Failed to Inventory.print because args.player was invalid")
+            print("Failed to Inventory.print because args.player was invalid")
             return
         end
 

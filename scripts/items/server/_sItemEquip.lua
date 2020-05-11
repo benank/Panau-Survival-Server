@@ -24,7 +24,7 @@ function UpdateEquippedItem(player, name, value)
 end
 
 function GetEquippedItem(name, player)
-
+    if not IsValid(player) then return end
     return player:GetValue("EquippedItems")[name]
 
 end

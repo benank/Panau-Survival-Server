@@ -21,6 +21,7 @@ function sLootbox:__init(args)
     self.is_dropbox = args.tier == Lootbox.Types.Dropbox
     self.is_vending_machine = args.tier == Lootbox.Types.VendingMachineFood or args.tier == Lootbox.Types.VendingMachineDrink
     self.is_stash = Lootbox.Stashes[args.tier] ~= nil
+    self.has_been_opened = false
     -- Eventually add support for world specification
 
     self.players_opened = {}
@@ -44,6 +45,24 @@ function sLootbox:__init(args)
         self:Remove()
     end)
 
+    if self.is_dropbox then
+        for index, stack in pairs(self.contents) do
+            for item_index, item in pairs(stack.contents) do
+                if item.durability and item.durability <= 0 then
+                    stack:RemoveItem(item, item_index)
+                end
+            end
+
+            if count_table(stack.contents) == 0 then
+                table.remove(self.contents, index)
+            end
+        end
+
+        if count_table(self.contents) == 0 then
+            self:Remove()
+            return
+        end
+    end
 
 end
 
@@ -248,7 +267,11 @@ function sLootbox:Open(player)
     player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell})
     Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
+    Events:Fire("PlayerOpenLootbox", {player = player, has_been_opened = self.has_been_opened, tier = self.tier})
+
     self:StartDespawnTimer()
+
+    self.has_been_opened = true
 
 end
 

@@ -14,6 +14,12 @@ function sSpawnManager:__init()
         end
         Timer.Sleep(1000)
     end)()
+
+    for p in Server:GetPlayers() do
+        if not p:GetValue("Loading") then
+            p:SetValue("FirstSpawn", true)
+        end
+    end
     
 
 	Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
@@ -96,7 +102,8 @@ end
 
 function sSpawnManager:PlayerJoin(args)
 
-	local steamid = tostring(args.player:GetSteamId().id)
+    local steamid = tostring(args.player:GetSteamId().id)
+    args.player:SetValue("FirstSpawn", false)
 
 	local qry = SQL:Query("SELECT steamID FROM positions WHERE steamID = (?) LIMIT 1")
 	qry:Bind(1, steamid)
@@ -175,19 +182,24 @@ end
 
 function sSpawnManager:PlayerSpawn(args)
     args.player:SetValue("Spawn/KilledRecently", false)
+    
+    if args.player:GetValue("FirstSpawn") then
+        args.player:SetPosition(self:GetRespawnPosition(args.player))
+    else
+        args.player:SetPosition(args.player:GetValue("SpawnPosition"))
+    end
+
     self:EnterExitSafezone({
         in_sz = true
     }, args.player)
+
+    args.player:SetValue("FirstSpawn", true)
+
 	return false
 end
 
 function sSpawnManager:PlayerDeath(args)
 	args.player:SetValue("Spawn/KilledRecently", true)
-	Timer.SetTimeout(5000, function()
-		if IsValid(args.player) then
-            args.player:SetPosition(self:GetRespawnPosition(args.player))
-		end
-	end)
 end
 
 sSpawnManager = sSpawnManager()

@@ -17,7 +17,7 @@ function CWeapon:GetAmmo()
 end
 
 function CWeapon:SetAmmo(ammo)
-    self.ammo = var(ammo)
+    self.ammo:set(ammo)
 end
 
 function WeaponManager:__init()
@@ -112,9 +112,6 @@ function WeaponManager:PostTick(args)
     if not self.equipped then return end
 
     if weapon.id ~= current_weapon_id 
-    --and weapon.id ~= self.default_weapon 
-    --and weapon.id ~= Weapon.Grapplinghook
-    --and weapon.id ~= 0
     and self.cheat_timer:GetSeconds() > 1 then
         -- kick for weapon hax
         Network:Send("items/Cheating", 
@@ -140,7 +137,7 @@ function WeaponManager:PostTick(args)
 
     -- Weapon was fired
     if weapon.id == current_weapon_id and self:GetTotalAmmoInWeapon(weapon) >= 0 and self:GetTotalAmmoInWeapon(weapon) < current_ammo then
-        Network:Send("Items/FireWeapon", {ammo = current_ammo, ts = Client:GetElapsedSeconds()})
+        Network:Send("Items/FireWeapon", {ammo = current_ammo})
         cweapon:SetAmmo(current_ammo - 1)
         self:FireWeapon()
     end

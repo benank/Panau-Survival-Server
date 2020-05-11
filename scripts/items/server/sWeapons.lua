@@ -60,12 +60,21 @@ function sWeaponManager:CheckPendingShots()
         while true do
 
             if count_table(self.pending_fire) > 0 then
-                local data = table.remove(self.pending_fire)
-                self:ProcessWeaponShot(data.args, data.player)
-                Timer.Sleep(1)
+
+                for steam_id, data in pairs(self.pending_fire) do
+                    for weapon_id, ammo_data in pairs(data) do
+                        self:ProcessWeaponShot(ammo_data)
+                        self.pending_fire[steam_id][weapon_id] = nil
+                        Timer.Sleep(100)
+                    end
+
+                    if count_table(self.pending_fire[steam_id]) == 0 then
+                        self.pending_fire[steam_id] = nil
+                    end
+                end
             end
 
-            Timer.Sleep(10)
+            Timer.Sleep(100)
         end
     end)()
 
@@ -73,87 +82,103 @@ end
 
 -- Called when a player fires a weapon
 function sWeaponManager:FireWeapon(args, player)
-    table.insert(self.pending_fire, {args = args, player = player})
-    -- Important to sort by timestamp so ammo matches
-    table.sort(self.pending_fire, function(a,b) return a.args.ts > b.args.ts end)
-end
 
-function sWeaponManager:ProcessWeaponShot(args, player)
+    local steam_id = tostring(player:GetSteamId())
 
-    if not IsValid(player) or player:GetValue("dead") or player:GetHealth() <= 0 then return end
+    if not self.pending_fire[steam_id] then
+        self.pending_fire[steam_id] = {}
+    end
 
     local weapon = player:GetEquippedWeapon()
+    if not weapon then return end
+
+    if not self.pending_fire[steam_id][weapon.id] then
+
+        local weapon_name = self:GetWeaponNameFromId(weapon.id)
+        if not weapon_name then return end
+
+        local weapon_ammo = weapon.ammo_clip + weapon.ammo_reserve
+
+        local ammo_name = Items_ammo_types[weapon_name]
+        local ammo_amount = self:GetWeaponAmmo({weapon_name = weapon_name, player = player})
+
+        if args.ammo > ammo_amount + 2 then
+            Events:Fire("KickPlayer", {
+                player = player,
+                reason = string.format("Ammo mismatch. Client sent more ammo than in inventory. Client: %d Ammo: %d", args.ammo, ammo_amount),
+                p_reason = "Ammo mismatch"
+            })
+            return
+        end
+
+        local weapon_ammo = weapon.ammo_clip + weapon.ammo_reserve
+
+        if weapon_ammo > ammo_amount + 2 then
+            Events:Fire("KickPlayer", {
+                player = player,
+                reason = string.format("Ammo mismatch. Player has more ammo in gun than in inventory. Gun: %d Ammo: %d", weapon_ammo, ammo_amount),
+                p_reason = "Ammo mismatch"
+            })
+            return
+        end
+    
+        self.pending_fire[steam_id][weapon.id] = {
+            ammo = args.ammo,
+            initial_ammo = ammo_amount,
+            adjusted_ammo = ammo_amount - 1,
+            player = player
+        }
+    else
+        self.pending_fire[steam_id][weapon.id].ammo = args.ammo
+        self.pending_fire[steam_id][weapon.id].adjusted_ammo = self.pending_fire[steam_id][weapon.id].adjusted_ammo - 1
+    end
+
+end
+
+function sWeaponManager:ProcessWeaponShot(args)
+
+    if not IsValid(args.player) then return end
+
+    local weapon = args.player:GetEquippedWeapon()
     if not weapon then return end
 
     local weapon_name = self:GetWeaponNameFromId(weapon.id)
     if not weapon_name then return end
 
     local ammo_name = Items_ammo_types[weapon_name]
-    local ammo_amount = self:GetWeaponAmmo({weapon_name = weapon_name, player = player})
+    local ammo_amount = self:GetWeaponAmmo({weapon_name = weapon_name, player = args.player})
 
-    local player_weapons = player:GetValue("EquippedWeapons")
+    local ammo_used = math.max(0, args.initial_ammo - args.adjusted_ammo)
+
+    -- Remove ammo from inventory and decrease weapon durability
+    local item_data = Items_indexed[ammo_name]
+    item_data.amount = ammo_used
+    local ammo_item = shItem(item_data)
+
+    local player_weapons = args.player:GetValue("EquippedWeapons")
+
+    player_weapons[weapon_name].ammo = player_weapons[weapon_name].ammo - ammo_used
+    args.player:SetValue("EquippedWeapons", player_weapons)
     
-    if not player_weapons[weapon_name] then
+    Inventory.RemoveItem({player = args.player, item = ammo_item:GetSyncObject()})
+
+    -- Now decrease equipped weapon durability
+    local equipped_item = GetEquippedItem(weapon_name, args.player)
+
+    if not equipped_item then
+        -- Shooting a weapon that they do not have equipped
         Events:Fire("KickPlayer", {
-            player = player,
-            reason = string.format("Weapon mismatch. Player has does not have weapon %s equipped", weapon_name),
+            player = args.player,
+            reason = string.format("Weapon mismatch. Not equipped: %s", 
+                tostring(weapon_name)),
             p_reason = "Weapon mismatch"
         })
         return
     end
 
-    local still_pending = count_table(self.pending_fire) > 0
-
-    if (not args.ammo or args.ammo > ammo_amount) and not still_pending then
-        Events:Fire("KickPlayer", {
-            player = player,
-            reason = string.format("Ammo mismatch. Current ammo %s, last known ammo: %s", 
-                tostring(args.ammo), tostring(ammo_amount)),
-            p_reason = "Ammo mismatch"
-        })
-        return
-    end
-
-    if ammo_amount == 0 and not still_pending then
-        -- They are firing a gun they do not have ammo for
-        Events:Fire("KickPlayer", {
-            player = player,
-            reason = string.format("Ammo mismatch. No ammo found for weapon: %s", 
-                tostring(weapon_name)),
-            p_reason = "Ammo mismatch"
-        })
-
-    else
-
-        -- Remove ammo from inventory and decrease weapon durability
-        local item_data = Items_indexed[ammo_name]
-        item_data.amount = 1
-        local ammo_item = shItem(item_data)
-
-        player_weapons[weapon_name].ammo = player_weapons[weapon_name].ammo - 1
-        player:SetValue("EquippedWeapons", player_weapons)
-        
-        Inventory.RemoveItem({player = player, item = ammo_item:GetSyncObject()})
-
-        -- Now decrease equipped weapon durability
-        local equipped_item = GetEquippedItem(weapon_name, player)
-
-        if not equipped_item then
-            -- Shooting a weapon that they do not have equipped
-            Events:Fire("KickPlayer", {
-                player = player,
-                reason = string.format("Weapon mismatch. Not equipped: %s", 
-                    tostring(weapon_name)),
-                p_reason = "Weapon mismatch"
-            })
-            return
-        end
-
-        equipped_item.durability = equipped_item.durability - ItemsConfig.equippables.weapons[weapon_name].dura_per_use
-        Inventory.ModifyDurability({player = player, item = equipped_item})
-        UpdateEquippedItem(player, equipped_item.name, equipped_item)
-
-    end
+    equipped_item.durability = equipped_item.durability - ItemsConfig.equippables.weapons[weapon_name].dura_per_use * ammo_used
+    Inventory.ModifyDurability({player = args.player, item = equipped_item})
+    UpdateEquippedItem(args.player, equipped_item.name, equipped_item)
 
 end
 

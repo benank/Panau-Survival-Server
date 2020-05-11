@@ -27,6 +27,8 @@ function sVehicleManager:__init()
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("PlayerExpLoaded", self, self.PlayerExpLoaded)
+    Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
     Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
     Events:Subscribe("PlayerEnterVehicle", self, self.PlayerEnterVehicle)
 
@@ -94,6 +96,17 @@ function sVehicleManager:__init()
         end
     end)()
 
+end
+
+function sVehicleManager:PlayerLevelUpdated(args)
+    local old_max_vehicles = args.player:GetValue("MaxVehicles")
+    local new_max_vehicles = GetMaxFromLevel(args.player:GetValue("Exp").level, config.player_max_vehicles)
+
+    if old_max_vehicles ~= new_max_vehicles then
+        Chat:Send(args.player, string.format("You can now own up to %d vehicles!", new_max_vehicles), Color(0, 255, 255))
+    end
+
+    args.player:SetNetworkValue("MaxVehicles", new_max_vehicles)
 end
 
 -- Called every minute, saves all owned vehicles in the server
@@ -320,7 +333,7 @@ function sVehicleManager:TransferVehicle(args, player)
 
     local vehicle_data = player_owned_vehicles[args.vehicle_id]
 
-    if count_table(target_owned_vehicles) > config.player_max_vehicles then
+    if count_table(target_owned_vehicles) > target_player:GetValue("MaxVehicles") then
         Chat:Send(player, "Vehicle transfer failed. Target player has too many vehicles!", Color.Red)
         return
     end
@@ -351,10 +364,10 @@ function sVehicleManager:TransferVehicle(args, player)
     local vehicle_name = Vehicle.GetNameByModelId(vehicle_data.model_id)
 
     Chat:Send(player, string.format("Successfully transferred %s to %s. (%d/%d)", 
-    vehicle_name, target_player:GetName(), count_table(player_owned_vehicles), config.player_max_vehicles), Color.Green)
+    vehicle_name, target_player:GetName(), count_table(player_owned_vehicles), player:GetValue("MaxVehicles")), Color.Green)
 
     Chat:Send(target_player, string.format("%s transferred %s to you. (%d/%d)", 
-        player:GetName(), vehicle_name, count_table(target_owned_vehicles) + 1, config.player_max_vehicles), Color.Green)
+        player:GetName(), vehicle_name, count_table(target_owned_vehicles) + 1, target_player:GetValue("MaxVehicles")), Color.Green)
 
     local msg = string.format("Player %s [%s] transferred vehicle %d to %s [%s]", 
         player:GetName(), player:GetSteamId(), vehicle_data.vehicle_id, target_player:GetName(), target_player:GetSteamId())
@@ -435,7 +448,7 @@ function sVehicleManager:PlayerDeleteVehicle(args, player)
     self:SyncPlayerOwnedVehicles(player)
 
     Chat:Send(player, string.format("Vehicle deleted. (%s/%s)", 
-        tostring(count_table(player_owned_vehicles)), tostring(config.player_max_vehicles)), Color.Green)
+        tostring(count_table(player_owned_vehicles)), tostring(player:GetValue("MaxVehicles"))), Color.Green)
 
     local msg = string.format("Player %s [%s] deleted vehicle %d", 
         player:GetName(), player:GetSteamId(), args.vehicle_id)
@@ -481,7 +494,7 @@ function sVehicleManager:TryBuyVehicle(args)
         return
     end
 
-    if count_table(owned_vehicles) >= config.player_max_vehicles then
+    if count_table(owned_vehicles) >= args.player:GetValue("MaxVehicles") then
         Chat:Send(args.player, "You already own the maximum amount of vehicles!", Color.Red)
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
@@ -546,7 +559,7 @@ function sVehicleManager:TryBuyVehicle(args)
         args.data.cost = args.data.cost * config.cost_multiplier_on_purchase
 
         Chat:Send(args.player, string.format("Vehicle successfully purchased! (%s/%s)", 
-            tostring(count_table(owned_vehicles) + 1), tostring(config.player_max_vehicles)), Color.Green)
+            tostring(count_table(owned_vehicles) + 1), tostring(args.player:GetValue("MaxVehicles"))), Color.Green)
     
         local msg = string.format("Player %s [%s] purchased %s for %d", 
             args.player:GetName(), args.player:GetSteamId(), args.vehicle:GetName(), orig_cost)
@@ -581,7 +594,7 @@ function sVehicleManager:TryBuyVehicle(args)
         })
 
         Chat:Send(args.player, string.format("Vehicle successfully stolen! (%s/%s)", 
-            tostring(count_table(owned_vehicles)), tostring(config.player_max_vehicles)), Color.Green)
+            tostring(count_table(owned_vehicles)), tostring(args.player:GetValue("MaxVehicles"))), Color.Green)
     
         self.despawning_vehicles[args.data.vehicle_id] = nil
 
@@ -618,7 +631,21 @@ function sVehicleManager:RestoreOldDriverIfExists(args)
     if args.old_driver then args.old_driver:EnterVehicle(args.vehicle, VehicleSeat.Driver) end
 end
 
+function sVehicleManager:PlayerExpLoaded(args)
+    if args.player:GetValue("VehiclesWaitingForExp") then
+        args.player:GetValue("VehiclesWaitingForExp", false)
+        self:ClientModuleLoad(args)
+    end
+end
+
 function sVehicleManager:ClientModuleLoad(args)
+
+    if not args.player:GetValue("Exp") then
+        args.player:SetValue("InventoryWaitingForExp", true)
+        return
+    end
+    
+    args.player:SetNetworkValue("MaxVehicles", GetMaxFromLevel(args.player:GetValue("Exp").level, config.player_max_vehicles))
 
     local result = SQL:Query("SELECT * FROM vehicles WHERE owner_steamid = (?)")
     result:Bind(1, tostring(args.player:GetSteamId()))

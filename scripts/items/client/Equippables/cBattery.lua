@@ -40,6 +40,8 @@ function cBattery:SecondTick()
         return
     end
 
+    if not item.category or not inv[item.category] then return end
+
     for index, stack in pairs(inv[item.category]) do
         if stack:GetProperty("name") == item.name then
             self.battery_dura = stack.contents[1].durability / stack.contents[1].max_durability
