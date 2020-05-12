@@ -18,6 +18,7 @@ ItemsConfig =
         ["RocketGrapple"] = {dura_per_sec = 3},
         ["Parachute"] = {dura_per_sec = 1},
         ["Explosives Detector"] = {dura_per_sec = 1, dura_per_activation = 15, battery_dura_per_sec = 5},
+        ["Cloud Strider Boots"] = {dura_per_5_sec = 1},
         weapons = 
         {
             ["Handgun"] = {dura_per_use = 1, weapon_id = Weapon.Handgun, equip_slot = WeaponSlot.Right},

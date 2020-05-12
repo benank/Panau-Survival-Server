@@ -275,6 +275,8 @@ function sExp:ClientModuleLoad(args)
     args.player:SetNetworkValue("Exp", exp_data)
     Events:Fire("PlayerExpLoaded", {player = args.player})
 
+    Events:Fire("LoadFlowAdd", args)
+
 end
 
 sExp = sExp()
