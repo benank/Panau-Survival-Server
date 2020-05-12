@@ -9,7 +9,7 @@ if (!fs.existsSync(dir)) {
 const interval = 12; // DB backups once every 12 hours
 
 setInterval(() => {
-    fs.createReadStream('server.db').pipe(fs.createWriteStream(`${dir}/${GetLogDate()}.db`));
+    CreateBackup();
     console.log(`Created backup at ${GetLogDate()}`);
 }, interval * 1000 * 60 * 60);
 
