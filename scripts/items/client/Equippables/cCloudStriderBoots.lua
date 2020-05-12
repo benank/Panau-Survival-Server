@@ -53,6 +53,7 @@ function cCloudStriderBoots:KeyUp(args)
                 self.current_movement = Vector3(0, 20, 0)
             else
                 self.current_movement = Vector3(self.current_movement.x, -20, self.current_movement.z)
+                self.obj:SetPosition(Vector3())
             end
         end
 
