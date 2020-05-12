@@ -199,7 +199,7 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
         })
 
         if IsValid(player) then
-            Chat:Broadcast(string.format("%s is now level %d!", player:GetName(), exp_data.level), Color(252, 220, 113))
+            Chat:Broadcast("[BROADCAST] ", Color.Red, string.format("%s is now level %d!", player:GetName(), exp_data.level), Color.Yellow)
         end
         
         gained_level = true
