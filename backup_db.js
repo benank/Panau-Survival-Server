@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const child_process = require('child_process');
+
 const dir = './db_backups';
 
 if (!fs.existsSync(dir)) {
@@ -11,14 +13,11 @@ const interval = 12; // DB backups once every 12 hours
 setInterval(() => {
     CreateBackup();
     console.log(`Created backup at ${GetLogDate()}`);
-}, interval * 1000 * 60 * 60);
+}, interval * 60 * 1000 * 60);
 
 function CreateBackup()
 {
-    execute('sqlite3');
-    execute('.open server.db');
-    execute(`.backup ${dir}/${GetLogDate()}.db`);
-    execute('.exit');
+    console.log(execute(`sqlite3 server.db -cmd ".backup ${dir}/${GetLogDate()}.db" ".exit"`));
 }
 
 function execute(command)
@@ -51,7 +50,7 @@ function GetTime()
     let sec  = date.getSeconds();
     sec = (sec < 10 ? "0" : "") + sec;
 
-    return ` ${hour}-${min}-${sec}`;
+    return `${hour}-${min}-${sec}`;
 }
 
 /**
