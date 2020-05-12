@@ -26,8 +26,7 @@ function sVehicleManager:__init()
     end)
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
-    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
-    Events:Subscribe("PlayerExpLoaded", self, self.PlayerExpLoaded)
+    Events:Subscribe("LoadFlowFinish", self, self.LoadFlowFinish)
     Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
     Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
     Events:Subscribe("PlayerEnterVehicle", self, self.PlayerEnterVehicle)
@@ -631,14 +630,7 @@ function sVehicleManager:RestoreOldDriverIfExists(args)
     if args.old_driver then args.old_driver:EnterVehicle(args.vehicle, VehicleSeat.Driver) end
 end
 
-function sVehicleManager:PlayerExpLoaded(args)
-    if args.player:GetValue("VehiclesWaitingForExp") then
-        args.player:GetValue("VehiclesWaitingForExp", false)
-        self:ClientModuleLoad(args)
-    end
-end
-
-function sVehicleManager:ClientModuleLoad(args)
+function sVehicleManager:LoadFlowFinish(args)
 
     if not args.player:GetValue("Exp") then
         args.player:SetValue("InventoryWaitingForExp", true)

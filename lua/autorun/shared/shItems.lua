@@ -934,6 +934,19 @@ Items =
         in_loot = false,
         rarity = 0.01,
         rarity_mod = {1}
+    },
+    {
+        name = "Cloud Strider Boots",
+        category = "Survival",
+        stacklimit = 1,
+        loot = {5},
+        can_equip = true,
+        equip_type = "boots",
+        durable = true,
+        in_loot = false,
+        rarity = 0.001,
+        max_durability = 1000,
+        rarity_mod = {1}
     }
 }
 
