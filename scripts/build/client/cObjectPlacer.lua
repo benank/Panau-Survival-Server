@@ -194,7 +194,7 @@ function cObjectPlacer:Render(args)
         self.object:SetPosition(Vector3())
     end
 
-    can_place_here = can_place_here and self:CheckBoundingBox()
+    can_place_here = self:CheckBoundingBox() and can_place_here
     self.can_place_here = can_place_here
     self:RenderText(can_place_here)
 
@@ -214,10 +214,11 @@ function cObjectPlacer:CheckBoundingBox()
     end
 
     if self.vertices then
-        local object_pos = self.object:GetPosition() + self.object:GetAngle() * Vector3(0, 0.2, 0)
+        local angle = self.object:GetAngle()
+        local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.2, 0)
         for i = 1, #self.vertices, 2 do
-            local p1 = self.vertices[i].position + object_pos
-            local p2 = self.vertices[i+1].position + object_pos
+            local p1 = angle * self.vertices[i].position + object_pos
+            local p2 = angle * self.vertices[i+1].position + object_pos
 
             local diff = p2 - p1
             local len = diff:Length()
