@@ -95,6 +95,59 @@ function cObjectPlacer:StartObjectPlacement(args)
 
 end
 
+function cObjectPlacer:CreateModel()
+    
+    local bb1, bb2 = self.object:GetBoundingBox()
+
+    local size = bb2 - bb1
+    local color = Color.Red
+
+    offset = bb1 - self.object:GetPosition()
+
+    local vertices = {}
+
+    table.insert(vertices, Vertex(offset, color))
+    table.insert(vertices, Vertex(offset + Vector3(0, size.y, 0), color))
+
+    table.insert(vertices, Vertex(offset + Vector3(size.x, 0, 0), color))
+    table.insert(vertices, Vertex(offset + Vector3(size.x, size.y, 0), color))
+
+    table.insert(vertices, Vertex(offset + Vector3(size.x, 0, size.z), color))
+    table.insert(vertices, Vertex(offset + size, color))
+
+    table.insert(vertices, Vertex(offset + Vector3(0, 0, size.z), color))
+    table.insert(vertices, Vertex(offset + Vector3(0, size.y, size.z), color))
+
+    table.insert(vertices, Vertex(offset, color))
+    table.insert(vertices, Vertex(offset + Vector3(size.x, 0, 0), color))
+    
+    table.insert(vertices, Vertex(offset + Vector3(size.x, 0, 0), color))
+    table.insert(vertices, Vertex(offset + Vector3(size.x, 0, size.z), color))
+    
+    table.insert(vertices, Vertex(offset + Vector3(size.x, 0, size.z), color))
+    table.insert(vertices, Vertex(offset + Vector3(0, 0, size.z), color))
+    
+    table.insert(vertices, Vertex(offset + Vector3(0, 0, size.z), color))
+    table.insert(vertices, Vertex(offset, color))
+    
+    table.insert(vertices, Vertex(offset + Vector3(0, size.y, 0), color))
+    table.insert(vertices, Vertex(offset + Vector3(size.x, size.y, 0), color))
+    
+    table.insert(vertices, Vertex(offset + Vector3(size.x, size.y, 0), color))
+    table.insert(vertices, Vertex(offset + size, color))
+    
+    table.insert(vertices, Vertex(offset + size, color))
+    table.insert(vertices, Vertex(offset + Vector3(0, size.y, size.z), color))
+    
+    table.insert(vertices, Vertex(offset + Vector3(0, size.y, size.z), color))
+    table.insert(vertices, Vertex(offset + Vector3(0, size.y, 0), color))
+
+    self.model = Model.Create(vertices)
+    self.model:SetTopology(Topology.LineList)
+
+    self.vertices = vertices
+end
+
 function cObjectPlacer:LocalPlayerInput(args)
     if self.blockedActions[args.input] then return false end
 end
@@ -119,6 +172,10 @@ function cObjectPlacer:Render(args)
     local pitch = math.abs(ang.pitch)
     local roll = math.abs(ang.roll)
 
+    if not self.model then
+        self:CreateModel()
+    end
+
     if self.disable_walls and (pitch > math.pi / 6 or roll > math.pi / 6) then
         can_place_here = false
     elseif self.disable_ceil and (pitch > math.pi * 0.6 or roll > math.pi * 0.6) then
@@ -131,6 +188,7 @@ function cObjectPlacer:Render(args)
         self.object:SetPosition(Vector3())
     end
 
+    can_place_here = can_place_here and self:CheckBoundingBox()
     self.can_place_here = can_place_here
     self:RenderText(can_place_here)
 
@@ -138,6 +196,37 @@ function cObjectPlacer:Render(args)
     Events:Fire("ObjectPlacerRender", {
         object = self.object
     })
+end
+
+function cObjectPlacer:CheckBoundingBox()
+
+    if self.model and self.display_bb then
+        local t = Transform3():Translate(self.object:GetPosition()):Rotate(self.object:GetAngle())
+        Render:SetTransform(t)
+        self.model:Draw()
+        Render:ResetTransform()
+    end
+
+    if self.vertices then
+        local object_pos = self.object:GetPosition()
+        for i = 1, #self.vertices, 2 do
+            local p1 = self.vertices[i].position + object_pos
+            local p2 = self.vertices[i+1].position + object_pos
+
+            local diff = p2 - p1
+            local len = diff:Length()
+
+            local ray = Physics:Raycast(p1, diff, 0, len)
+
+            if ray.distance < len then
+                return false
+            end
+        end
+    else
+        return false
+    end
+
+    return true
 end
 
 function cObjectPlacer:RenderText(can_place_here)
@@ -222,6 +311,8 @@ function cObjectPlacer:StopObjectPlacement()
     end
 
     self.subs = {}
+    self.model = nil
+    self.vertices = nil
 end
 
 function cObjectPlacer:ModuleUnload()
