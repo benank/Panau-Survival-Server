@@ -14,6 +14,31 @@ function AssetManagerMenu:__init()
     self.window:SetTitle( "Asset Manager" )
     self.window:Subscribe( "WindowClosed", self, self.Close )
 
+    self.delete_confirm_menu = Window.Create()
+    self.delete_confirm_menu:SetTitle("Are you sure you want to delete?")
+    self.delete_confirm_menu:SetSize(Vector2(400, 140))
+    self.delete_confirm_menu:SetPosition(Render.Size / 2 - self.delete_confirm_menu:GetSize() / 2)
+    self.delete_confirm_menu:SetClampMovement(false)
+    
+    local delete_text = Label.Create(self.delete_confirm_menu)
+    delete_text:SetText("Are you sure you want to delete?\nThis action cannot be undone.")
+    delete_text:SetTextSize(20)
+    delete_text:SetSize( Vector2(self.delete_confirm_menu:GetSize().x, 40) )
+    delete_text:SetMargin(Vector2(0, 10), Vector2(0, 0))
+    delete_text:SetAlignment(GwenPosition.Center)
+    delete_text:SetDock( GwenPosition.Top )
+
+    local delete_btn = Button.Create(self.delete_confirm_menu)
+    delete_btn:SetText("Delete")
+    delete_btn:SetTextColor(Color.Red)
+    delete_btn:SetTextSize(20)
+    delete_btn:SetSize( Vector2(self.delete_confirm_menu:GetSize().x, 40) )
+    delete_btn:SetMargin(Vector2(0, 10), Vector2(0, 0))
+    delete_btn:SetDock( GwenPosition.Bottom )
+    delete_btn:Subscribe("Press", self, self.ConfirmDeleteButton)
+
+    self.delete_confirm_menu:Hide()
+
     self.tab_control = TabControl.Create( self.window )
     self.tab_control:SetDock( GwenPosition.Fill )
 
@@ -262,12 +287,30 @@ function AssetManagerMenu:PressVehicleButton(btn)
 
     elseif type == "Delete" then
 
-        Events:Fire("Vehicles/DeleteVehicle", {
-            vehicle_id = vehicle_data.data.vehicle_id
-        })
-        btn:Hide()
+        self.deleting = {type = "vehicle", id = vehicle_data.data.vehicle_id, btn = btn}
+        self.delete_confirm_menu:Show()
 
     end
+end
+
+function AssetManagerMenu:ConfirmDeleteButton(btn)
+    if self.deleting.type == "vehicle" then
+
+        Events:Fire("Vehicles/DeleteVehicle", {
+            vehicle_id = self.deleting.id
+        })
+
+    elseif self.deleting.type == "stash" then
+
+        Events:Fire("Stashes/DeleteStash", {
+            id = self.deleting.id
+        })
+
+    end
+
+    self.deleting.btn:Hide()
+    self.delete_confirm_menu:Hide()
+
 end
 
 function AssetManagerMenu:CreateVehiclesMenu()
@@ -344,6 +387,7 @@ function AssetManagerMenu:AddStash(data)
     {
         [4] = "Rename",
         [5] = "Waypoint",
+        [6] = "Delete"
     }
     
     for index, name in pairs(button_names) do
@@ -385,6 +429,11 @@ function AssetManagerMenu:PressStashButton(btn)
 
         Waypoint:SetPosition(stash_data.data.position)
 
+    elseif type == "Delete" then
+
+        self.deleting = {type = "stash", id = tonumber(btn:GetDataString("stash_id")), btn = btn}
+        self.delete_confirm_menu:Show()
+
     end
 end
 
@@ -398,6 +447,7 @@ function AssetManagerMenu:CreateStashesMenu()
 	list:AddColumn( "Distance", 100 )
 	list:AddColumn( "Rename", 80 )
 	list:AddColumn( "Waypoint", 80 )
+	list:AddColumn( "Delete", 80 )
     list:SetButtonsVisible( true )
     list:SetPadding(Vector2(0,0), Vector2(0,0))
 
@@ -506,6 +556,7 @@ function AssetManagerMenu:SetActive( active )
         Mouse:SetVisible( self.active )
         VehiclePlayerTransferMenu:SetActive(false)
         self.stash_rename_menu:Hide()
+        self.delete_confirm_menu:Hide()
     end
 end
 
