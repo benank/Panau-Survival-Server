@@ -332,7 +332,7 @@ function sVehicleManager:TransferVehicle(args, player)
 
     local vehicle_data = player_owned_vehicles[args.vehicle_id]
 
-    if count_table(target_owned_vehicles) > target_player:GetValue("MaxVehicles") then
+    if count_table(target_owned_vehicles) >= target_player:GetValue("MaxVehicles") then
         Chat:Send(player, "Vehicle transfer failed. Target player has too many vehicles!", Color.Red)
         return
     end
