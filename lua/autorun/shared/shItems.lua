@@ -664,7 +664,7 @@ Items =
         stacklimit = 100,
         loot = {1,2,3,4},
         rarity = 0.08,
-        rarity_mod = {1.5,2,0.7,0.4}
+        rarity_mod = {1.5,2,0.01,0.01}
     },
     {
         name = "Binoculars",

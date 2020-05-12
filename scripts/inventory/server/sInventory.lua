@@ -167,7 +167,7 @@ function sInventory:PlayerKilled(args)
             content = string.format("%s [%s] death drop: %s", self.player:GetName(), tostring(self.player:GetSteamId()), chat_msg)
         })
 
-        self:SpawnDropbox(stacks_to_drop)
+        self:SpawnDropbox(stacks_to_drop, true)
 
         -- Full sync in case they dropped from multiple categories
         self:Sync({sync_full = true})
@@ -267,7 +267,7 @@ function sInventory:ToggleEquipped(args, player)
 
 end
 
-function sInventory:SpawnDropbox(contents)
+function sInventory:SpawnDropbox(contents, is_death_drop)
 
     -- Request ground data
     Network:Send(self.player, "Inventory/GetGroundData")
@@ -288,6 +288,10 @@ function sInventory:SpawnDropbox(contents)
         dropbox:Sync()
 
         Network:Unsubscribe(sub)
+
+        if is_death_drop then
+            Events:Fire("Inventory/SetDeathDropPosition", {player = self.player, position = args.position})
+        end
 
     end)
 

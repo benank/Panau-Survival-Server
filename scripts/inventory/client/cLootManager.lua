@@ -87,10 +87,12 @@ function cLootManager:Render(args)
 
         if not ClientInventory.lootbox_ui.window:GetVisible() then
             -- Draw circle to indicate that it can be opened
-            local pos = Render:WorldToScreen(box.look_position + self.up)
-            Render:FillCircle(pos, self.look_at_circle_size, Color.White)
-            Render:FillCircle(pos, self.look_at_circle_size_inner, Lootbox.LookAtColor)
-            LocalPlayer:SetValue("LookingAtLootbox", true)
+            if box.look_position and self.up then
+                local pos = Render:WorldToScreen(box.look_position + self.up)
+                Render:FillCircle(pos, self.look_at_circle_size, Color.White)
+                Render:FillCircle(pos, self.look_at_circle_size_inner, Lootbox.LookAtColor)
+                LocalPlayer:SetValue("LookingAtLootbox", true)
+            end
         end
 
     end

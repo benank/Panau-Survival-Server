@@ -14,7 +14,8 @@ function EquippableGrapplehook:__init()
         [Action.IncGrappleDistance] = true,
         [Action.ReeledInJumpAction] = true,
         [Action.ReeledInReleaseAction] = true,
-        [Action.DeployParachuteWhileReelingAction] = true
+        [Action.DeployParachuteWhileReelingAction] = true,
+        [Action.Kick] = true
     }
     
     self:ToggleEnabled(false)

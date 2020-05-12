@@ -1,7 +1,7 @@
 local death_positions = {}
 
-Events:Subscribe("PlayerDeath", function(args)
-    death_positions[tostring(args.player:GetSteamId())] = args.player:GetPosition()
+Events:Subscribe("Inventory/SetDeathDropPosition", function(args)
+    death_positions[tostring(args.player:GetSteamId())] = args.position
 end)
 
 Network:Subscribe("items/CompleteItemUsage", function(args, player)

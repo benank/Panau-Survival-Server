@@ -93,8 +93,18 @@ function cVehicleManager:LocalPlayerInput(args)
                     return false
                 end
             end
+        elseif args.input == Action.UseItem then
+            return false -- Block healthpacks
         end
 
+    end
+
+    -- Block health packs
+    if args.input == Action.UseItem and not LocalPlayer:InVehicle() then
+        local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 3)
+        if not IsValid(ray.entity) then
+            return false
+        end
     end
 
     -- todo block grappling onto motorcycles

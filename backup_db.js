@@ -13,6 +13,23 @@ setInterval(() => {
     console.log(`Created backup at ${GetLogDate()}`);
 }, interval * 1000 * 60 * 60);
 
+function CreateBackup()
+{
+    execute('sqlite3');
+    execute('.open server.db');
+    execute(`.backup ${dir}/${GetLogDate()}.db`);
+    execute('.exit');
+}
+
+function execute(command)
+{
+    try {
+        return child_process.execSync(command, {stdio: [null, null, null]}).toString();
+    } catch (e) {
+        return e.toString();
+    }
+}
+
 console.log("Backups started.")
 
 /**
