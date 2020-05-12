@@ -208,7 +208,7 @@ function cObjectPlacer:CheckBoundingBox()
     end
 
     if self.vertices then
-        local object_pos = self.object:GetPosition()
+        local object_pos = self.object:GetPosition() + self.object:GetAngle() * Vector3(0, 0.2, 0)
         for i = 1, #self.vertices, 2 do
             local p1 = self.vertices[i].position + object_pos
             local p2 = self.vertices[i+1].position + object_pos
@@ -218,7 +218,7 @@ function cObjectPlacer:CheckBoundingBox()
 
             local ray = Physics:Raycast(p1, diff, 0, len)
 
-            if ray.distance < len then
+            if ray.distance < len or ray.position.y <= 200 then
                 return false
             end
         end
