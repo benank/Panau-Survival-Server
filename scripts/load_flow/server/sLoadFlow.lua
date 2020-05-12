@@ -27,7 +27,7 @@ function sLoadFlow:LoadFlowAdd(args)
     end
 
     if self.loads[steam_id].count == self.load_needed then
-        Events:Fire("LoadFlowFinish", {player = self.loads[steam_id].player})
+        Events:Fire("LoadFlowFinish", {player = args.player})
         self.loads[steam_id] = nil
     end
 end
