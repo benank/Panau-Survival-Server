@@ -118,9 +118,9 @@ function cVehicleManager:LocalPlayerInput(args)
         and args.input == Action.PlaneDecTrust 
         and v:GetDriver() == LocalPlayer 
         and forwardvelocity < 5
-        and backwardvelocity > -2
+        and backwardvelocity > -1.5
         then
-            v:SetLinearVelocity(v:GetLinearVelocity() + v:GetAngle() * Vector3.Backward * 0.25)
+            v:SetLinearVelocity(v:GetLinearVelocity() + v:GetAngle() * Vector3.Backward * 0.2)
         end
     end
 
