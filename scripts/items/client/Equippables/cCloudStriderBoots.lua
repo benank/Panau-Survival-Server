@@ -69,7 +69,7 @@ function cCloudStriderBoots:ToggleEquippedCloudStriderBoots(args)
             position = LocalPlayer:GetPosition() - Vector3(0,5,0), 
             angle = Angle(),
             model = " ",
-            collision = "f3m06.lift01.flz/key020_03_lod1-concrete_plates_04_col.pfx"
+            collision = "34x09.flz/go003_lod1-a_col.pfx"
         })
         self.lpi = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     elseif not self.enabled and IsValid(self.obj) and self.lpi then
@@ -106,7 +106,7 @@ function cCloudStriderBoots:Render(args)
             speed = speed * self.shift_mod
         end
 
-        local velo = Camera:GetAngle() * self.current_movement:Normalized() * speed
+        local velo = self.current_movement:Normalized() * speed
         LocalPlayer:SetLinearVelocity(velo)
 
         self.current_movement = Vector3()
@@ -120,11 +120,11 @@ function cCloudStriderBoots:Render(args)
         LocalPlayer:SetAngle(angle)
         
         -- Put object under so camera doesn't go crazy
-        if IsValid(self.obj) then self.obj:SetPosition(LocalPlayer:GetPosition() - Vector3(0,5,0)) end
+        if IsValid(self.obj) then self.obj:SetPosition(LocalPlayer:GetPosition() - Vector3(0,1.5,0)) end
 
-        local ray = Physics:Raycast(LocalPlayer:GetPosition(), Vector3.Down, 0, 0.1)
+        local ray = Physics:Raycast(LocalPlayer:GetPosition(), Vector3.Down, 0, 0.2)
 
-        if ray.distance < 0.1 then
+        if ray.distance < 0.2 then
             self.flying = false
         end
 
@@ -138,7 +138,11 @@ end
 
 function cCloudStriderBoots:LocalPlayerInput(args)
     if self.movement[args.input] then
-        self.current_movement = self.current_movement + self.movement[args.input]
+        if args.input ~= Action.Jump and args.input ~= Action.Crouch then
+            self.current_movement = self.current_movement + Camera:GetAngle() * self.movement[args.input]
+        else
+            self.current_movement = self.current_movement + self.movement[args.input]
+        end
     end
 end
 

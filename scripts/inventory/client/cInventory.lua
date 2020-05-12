@@ -14,7 +14,16 @@ function cInventory:__init()
 end
 
 function cInventory:GetGroundData()
-    local ray = Physics:Raycast(LocalPlayer:GetBonePosition("ragdoll_Spine"), Vector3.Down, 0, 1000)
+    local start_pos = LocalPlayer:GetBonePosition("ragdoll_Spine")
+
+    local ray = Physics:Raycast(start_pos, Vector3.Down, 0, 1000)
+
+    if LocalPlayer:GetValue("CloudStriderBootsEquipped") and IsValid(ray.entity) then
+        if ray.entity.__type == "ClientStaticObject" and ray.entity:GetCollision() == "34x09.flz/go003_lod1-a_col.pfx" then
+            start_pos = start_pos - Vector3(0, 4, 0)
+            ray = Physics:Raycast(start_pos, Vector3.Down, 0, 1000)
+        end
+    end
 
     local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(math.random() * math.pi * 2, 0, 0)
 
