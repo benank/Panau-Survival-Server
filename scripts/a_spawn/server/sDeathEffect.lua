@@ -1,3 +1,3 @@
-Events:Subscribe("PlayerDeath", function(args)
+Events:Subscribe("PlayerKilled", function(args)
     Network:Broadcast("PlayerDiedEffect")
 end)
