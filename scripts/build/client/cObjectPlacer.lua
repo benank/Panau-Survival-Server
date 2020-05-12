@@ -182,6 +182,12 @@ function cObjectPlacer:Render(args)
         can_place_here = false
     end
 
+    for _, data in pairs(BlacklistedAreas) do
+        if data.pos:Distance(ray.position) < data.size then
+            can_place_here = false
+        end
+    end
+
     if in_range then
         self.object:SetPosition(ray.position)
     else
