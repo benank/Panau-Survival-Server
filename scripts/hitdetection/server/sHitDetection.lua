@@ -160,7 +160,7 @@ function sHitDetection:AdminKill(args)
 
     if not IsValid(args.player) then return end
 
-    self:ApplyDamage(args.player, 9999, DamageEntity.AdminKill, args.attacker)
+    self:ApplyDamage(args.player, 9999, DamageEntity.AdminKill, tostring(args.attacker:GetSteamId()))
 
 end
 
