@@ -107,8 +107,6 @@ function cVehicleManager:LocalPlayerInput(args)
         end
     end
 
-    -- todo block grappling onto motorcycles
-
     -- Plane reverse
     local v = LocalPlayer:GetVehicle()
 	if IsValid(v) then
@@ -138,6 +136,21 @@ function cVehicleManager:Render(args)
 
 end
 
+function cVehicleManager:InBoundingBox(v)
+
+    local bb1, bb2 = v:GetBoundingBox()
+    local local_pos = LocalPlayer:GetPosition()
+
+    if local_pos.x >= bb1.x and local_pos.x <= bb2.x
+    and local_pos.y >= bb1.y and local_pos.y <= bb2.y
+    and local_pos.z >= bb1.z and local_pos.z <= bb2.z then
+        return true
+    end
+
+    return local_pos:Distance(v:GetPosition()) < 5
+
+end
+
 function cVehicleManager:RenderVehicleDataClassic(v)
 
     if v:GetHealth() <= 0 then return end
@@ -147,7 +160,7 @@ function cVehicleManager:RenderVehicleDataClassic(v)
 
     local pos = v:GetPosition() + Vector3(0,1,0)
     
-    if pos:Distance(LocalPlayer:GetPosition()) > 5 then return end
+    if not self:InBoundingBox(v) then return end
 
     local color = self.text.color
     local circle_color = self.text.locked_color
@@ -201,7 +214,22 @@ function cVehicleManager:SecondTick()
 
     for v in Client:GetVehicles() do
         near_vehicle = true
-        break
+
+        if IsValid(v) then
+
+            local data = v:GetValue("VehicleData")
+
+            -- Only allow friends or owner to sync destruction
+            if data.owner_steamid == tostring(LocalPlayer:GetSteamId())
+            or IsAFriend(LocalPlayer, data.owner_steamid) then 
+
+                if v:GetHealth() <= 0.2 and not v:GetValue("Remove") then
+                    Network:Send(var("Vehicles/VehicleDestroyed"):get(), {vehicle = v})
+                end
+
+            end
+        end
+
     end
 
     if near_vehicle and not self.render and not self.lpi then

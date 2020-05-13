@@ -282,14 +282,19 @@ function sLootbox:StartDespawnTimer()
 
     if not self.despawn_timer then
 
-        self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
+        self.despawn_timer = true
+        
+        local func = coroutine.wrap(function()
+            Timer.Sleep(Lootbox.Loot_Despawn_Time)
+            if not self.despawn_timer then return end
+
             if count_table(self.players_opened) == 0 then
                 -- Don't hide if there is someone looting it
                 self:HideBox()
             else
                 self:StartDespawnTimer()
             end
-        end)
+        end)()
 
     end
 
@@ -312,7 +317,6 @@ function sLootbox:HideBox()
     self:ForceClose()
 
     if self.despawn_timer then
-        Timer.Clear(self.despawn_timer)
         self.despawn_timer = nil
     end
 
@@ -322,10 +326,11 @@ function sLootbox:HideBox()
 
     LootManager:DespawnBox(self)
 
-    Timer.SetTimeout(self:GetRespawnTime(), function()
+    local func = coroutine.wrap(function()
+        Timer.Sleep(self:GetRespawnTime())
         -- Respawn random box from the same tier
         LootManager:RespawnBox(self.tier)
-    end)
+    end)()
 
 end
 
@@ -377,6 +382,8 @@ function sLootbox:RespawnBox()
 
     self.contents = ItemGenerator:GetLoot(self.tier)
     self.players_opened = {}
+    self.has_been_opened = false
+
 
     self.active = true
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/OneLootboxCellSync", self:GetSyncData())
@@ -396,7 +403,7 @@ function sLootbox:Remove()
     self.active = false
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
 
-    if self.despawn_timer then Timer.Clear(self.despawn_timer) end
+    if self.despawn_timer then self.despawn_timer = nil end
 
     LootCells.Loot[self.cell.x][self.cell.y][self.uid] = nil
 

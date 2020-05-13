@@ -8,6 +8,8 @@ function cInventoryUI:__init()
     self.dropping_items = {} -- Table of items (cat + index + amount) that the player is trying to drop
     self.hovered_button = nil -- Button in inventory currently hovered
     self.pressed_button = nil -- Button that the mouse is currently left clicking
+    
+    self.shift_timer = Timer()
 
     self.bg_colors = 
     {
@@ -593,6 +595,10 @@ function cInventoryUI:ToggleDroppingItemButton(button)
 end
 
 function cInventoryUI:ShiftStack(button)
+
+    if self.shift_timer:GetSeconds() < 0.2 then return end
+
+    self.shift_timer:Restart()
     
     -- Trying to shift a stack
     local cat = button:GetDataString("stack_category")

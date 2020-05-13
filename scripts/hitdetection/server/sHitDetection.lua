@@ -5,9 +5,14 @@ function sHitDetection:__init()
     self.pending_hits = {}
     self.last_damage_timeout = 15 -- 15 seconds to clear last damaged kill attribution
 
+    self.players = {}
+
     self.pending_armor_aggregation = {}
 
     self:CheckPendingHits()
+
+    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
     Network:Subscribe("HitDetectionSyncHit", self, self.SyncHit)
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
@@ -26,7 +31,15 @@ function sHitDetection:__init()
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
 end
 
-function sHitDetection:ApplyDamage(player, damage, source, attacker, attacker_id)
+function sHitDetection:ClientModuleLoad(args)
+    self.players[tostring(args.player:GetSteamId())] = args.player
+end
+
+function sHitDetection:PlayerQuit(args)
+    self.players[tostring(args.player:GetSteamId())] = nil
+end
+
+function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
 
     if player:GetValue("Loading") then return end
     if player:GetValue("Invincible") then return end
@@ -71,6 +84,8 @@ function sHitDetection:ApplyDamage(player, damage, source, attacker, attacker_id
         end
 
     end
+
+    attacker = self.players[attacker_id]
 
     local msg = ""
     
@@ -118,6 +133,12 @@ function sHitDetection:ApplyDamage(player, damage, source, attacker, attacker_id
 
         end
 
+        if attacker:InVehicle() then
+
+            msg = msg .. string.format(" [Vehicle: %s]", attacker:GetVehicle():GetName())
+
+        end
+
         Network:Send(attacker, "HitDetection/DealDamage")
 
         self:SetPlayerLastDamaged(player, DamageEntityNames[source], tostring(attacker:GetSteamId()))
@@ -139,7 +160,7 @@ function sHitDetection:AdminKill(args)
 
     if not IsValid(args.player) then return end
 
-    self:ApplyDamage(args.player, 9999, DamageEntity.AdminKill, args.attacker)
+    self:ApplyDamage(args.player, 9999, DamageEntity.AdminKill, tostring(args.attacker:GetSteamId()))
 
 end
 
@@ -227,16 +248,7 @@ function sHitDetection:VehicleGuardActivate(args)
 
     if not IsValid(args.player) then return end
 
-    local attacker = nil
-
-    for p in Server:GetPlayers() do
-        if tostring(p:GetSteamId()) == args.attacker_id then
-            attacker = p
-            break
-        end
-    end
-
-    self:ApplyDamage(args.player, VehicleGuardDamage, DamageEntity.VehicleGuard, attacker, args.attacker_id)
+    self:ApplyDamage(args.player, VehicleGuardDamage, DamageEntity.VehicleGuard, args.attacker_id)
 
 end
 
@@ -288,13 +300,7 @@ function sHitDetection:PlayerDeath(args)
             content = msg
         })
 
-        local killer = nil
-        for p in Server:GetPlayers() do
-            if tostring(p:GetSteamId()) == last_damaged.steam_id then
-                killer = p
-                break
-            end
-        end
+        local killer = self.players[last_damaged.steam_id]
 
         if IsValid(killer) then
             Network:Send(killer, "HitDetection/DealDamage", {red = true})
@@ -329,16 +335,7 @@ function sHitDetection:PlayerInsideToxicArea(args)
     
     if not IsValid(args.player) then return end
 
-    local attacker = nil
-
-    for p in Server:GetPlayers() do
-        if tostring(p:GetSteamId()) == args.attacker_id then
-            attacker = p
-            break
-        end
-    end
-
-    self:ApplyDamage(args.player, ToxicDamagePerSecond, DamageEntity.ToxicGrenade, attacker, args.attacker_id)
+    self:ApplyDamage(args.player, ToxicDamagePerSecond, DamageEntity.ToxicGrenade, args.attacker_id)
 
 end
 
@@ -354,17 +351,9 @@ function sHitDetection:SecondTick()
 
         elseif p:GetValue("OnFire") then
 
-            local attacker = nil
             local attacker_id = p:GetValue("FireAttackerId")
 
-            for p in Server:GetPlayers() do
-                if tostring(p:GetSteamId()) == attacker_id then
-                    attacker = p
-                    break
-                end
-            end
-
-            self:ApplyDamage(p, FireDamagePerSecond, DamageEntity.Molotov, attacker, attacker_id)
+            self:ApplyDamage(p, FireDamagePerSecond, DamageEntity.Molotov, attacker_id)
 
         end
     end
@@ -389,22 +378,11 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     local original_damage = explosive_data.damage * percent_modifier
     local damage = original_damage
 
-    local attacker = nil
-
-    if args.attacker_id then
-        for p in Server:GetPlayers() do
-            if tostring(p:GetSteamId()) == args.attacker_id then
-                attacker = p
-                break
-            end
-        end
-    end
-
     if not args.in_fov then return end
     
     damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 
-    self:ApplyDamage(player, damage / 100, args.type, attacker, args.attacker_id)
+    self:ApplyDamage(player, damage / 100, args.type, args.attacker_id)
 
     Events:Fire("HitDetection/PlayerExplosionItemHit", {
         player = player,
@@ -453,7 +431,7 @@ function sHitDetection:ExplosionHit(args, player)
     local damage = original_damage
     damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 
-    self:ApplyDamage(player, damage / 100, DamageEntity.Explosion, args.attacker)
+    self:ApplyDamage(player, damage / 100, DamageEntity.Explosion, tostring(args.attacker:GetSteamId()))
 
     Events:Fire("HitDetection/PlayerExplosionHit", {
         player = player,
@@ -481,7 +459,7 @@ function sHitDetection:BulletHit(args, player)
     local damage = original_damage
     damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 
-    self:ApplyDamage(player, damage / 100, DamageEntity.Bullet, args.attacker)
+    self:ApplyDamage(player, damage / 100, DamageEntity.Bullet, tostring(args.attacker:GetSteamId()))
 
     Events:Fire("HitDetection/PlayerBulletHit", {
         player = player,
