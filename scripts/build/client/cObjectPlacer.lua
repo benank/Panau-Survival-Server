@@ -215,10 +215,10 @@ function cObjectPlacer:CheckBoundingBox()
 
     if self.vertices then
         local angle = self.object:GetAngle()
-        local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.2, 0)
+        local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.25, 0)
         for i = 1, #self.vertices, 2 do
-            local p1 = angle * self.vertices[i].position + object_pos
-            local p2 = angle * self.vertices[i+1].position + object_pos
+            local p1 = angle * self.vertices[i].position * 0.7 + object_pos
+            local p2 = angle * self.vertices[i+1].position * 0.7 + object_pos
 
             local diff = p2 - p1
             local len = diff:Length()
