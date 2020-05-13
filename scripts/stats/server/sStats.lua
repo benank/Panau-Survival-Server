@@ -22,6 +22,9 @@ function sStats:PlayerKilled(args)
     query:Bind(1, args.killer)
     
     local result = query:Execute()
+
+    if #result == 0 then return end
+
     local kills = result[1].kills + 1
 
     self:UpdateStat({
