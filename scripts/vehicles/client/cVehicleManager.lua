@@ -215,9 +215,21 @@ function cVehicleManager:SecondTick()
     for v in Client:GetVehicles() do
         near_vehicle = true
 
-        if v:GetHealth() <= 0.2 and not v:GetValue("Remove") then
-            Network:Send(var("Vehicles/VehicleDestroyed"):get(), {vehicle = v})
+        if IsValid(v) then
+
+            local data = v:GetValue("VehicleData")
+
+            -- Only allow friends or owner to sync destruction
+            if data.owner_steamid == tostring(LocalPlayer:GetSteamId())
+            or IsAFriend(LocalPlayer, data.owner_steamid) then 
+
+                if v:GetHealth() <= 0.2 and not v:GetValue("Remove") then
+                    Network:Send(var("Vehicles/VehicleDestroyed"):get(), {vehicle = v})
+                end
+
+            end
         end
+
     end
 
     if near_vehicle and not self.render and not self.lpi then
