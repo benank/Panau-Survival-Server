@@ -7,8 +7,6 @@ function sMines:__init()
     self.mines = {} -- Active mines, indexed by mine id
     self.mine_cells = {} -- Active mines, organized by cell x, y, then mine id
 
-    self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
-
     Network:Subscribe("items/CompleteItemUsage", self, self.CompleteItemUsage)
     Network:Subscribe("items/StepOnMine", self, self.StepOnMine)
     Network:Subscribe("items/DestroyMine", self, self.DestroyMine)
@@ -302,6 +300,10 @@ function sMines:CompleteItemUsage(args, player)
             return
         end
 
+        if not self.sz_config then
+            self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+        end
+    
         -- If they are within sz radius * 2, we don't let them place that close
         if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
             Chat:Send(player, "Cannot place mines while near the safezone!", Color.Red)
