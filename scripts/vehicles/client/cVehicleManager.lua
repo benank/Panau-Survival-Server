@@ -18,7 +18,7 @@ function cVehicleManager:__init()
     self.block_actions = 
     {
         [Action.UseItem] = true,
-        [Action.ExitVehicle] = true,
+        --[Action.ExitVehicle] = true,
         [Action.GuiPDAToggleAOI] = true,
         [Action.PickupWithLeftHand] = true,
         [Action.PickupWithRightHand] = true,
@@ -101,7 +101,7 @@ function cVehicleManager:LocalPlayerInput(args)
 
     -- Block health packs
     if args.input == Action.UseItem and not LocalPlayer:InVehicle() then
-        local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 3)
+        local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 7)
         if not IsValid(ray.entity) then
             return false
         end
@@ -118,9 +118,9 @@ function cVehicleManager:LocalPlayerInput(args)
         and args.input == Action.PlaneDecTrust 
         and v:GetDriver() == LocalPlayer 
         and forwardvelocity < 5
-        and backwardvelocity > -2
+        and backwardvelocity > -1.5
         then
-            v:SetLinearVelocity(v:GetLinearVelocity() + v:GetAngle() * Vector3.Backward * 0.25)
+            v:SetLinearVelocity(v:GetLinearVelocity() + v:GetAngle() * Vector3.Backward * 0.2)
         end
     end
 

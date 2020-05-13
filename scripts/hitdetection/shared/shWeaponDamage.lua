@@ -14,7 +14,9 @@ WeaponBaseDamage =
     [Weapon.Shotgun] = 5,
 }
 
-FireDamagePerSecond = 0.05
+FireEffectTime = 9 -- Time it takes for fire to go out 
+
+FireDamagePerSecond = 0.09
 ToxicDamagePerSecond = 0.08
 WarpGrenadeDamage = 0.25
 

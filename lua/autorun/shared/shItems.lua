@@ -947,6 +947,18 @@ Items =
         rarity = 0.001,
         max_durability = 1000,
         rarity_mod = {1}
+    },
+    {
+        name = "Second Life",
+        category = "Survival",
+        stacklimit = 1,
+        loot = {5},
+        can_equip = true,
+        equip_type = "second_life",
+        in_loot = false,
+        rarity = 0.001,
+        max_held = 1, -- Maximum number of these that can be in the inventory at once
+        rarity_mod = {1}
     }
 }
 

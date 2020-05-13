@@ -8,7 +8,14 @@ function cStashes:__init()
     Events:Subscribe("Stashes/RenameStash", self, self.RenameStash)
     Network:Subscribe("Stashes/SyncMyStashes", self, self.SyncMyStashes)
     Network:Subscribe("Stashes/Sync", self, self.SyncStash)
+    Events:Subscribe("Stashes/DeleteStash", self, self.DeleteStash)
 
+end
+
+function cStashes:DeleteStash(args)
+    Network:Send("Stashes/DeleteStash", {
+        id = args.id
+    })
 end
 
 -- Called when one stash is synced

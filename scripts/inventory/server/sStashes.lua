@@ -129,40 +129,29 @@ function sStashes:ItemExplode(args)
 
 end
 
+-- Player deleted stash so contents are not dropped on ground
 function sStashes:DeleteStash(args, player)
-    --[[if not args.id or not self.stashes[args.id] then return end
+    
+    if not args.id then return end
+    args.id = tonumber(args.id)
 
-    local claymore = self.stashes[args.id]
+    local player_stashes = player:GetValue("Stashes")
+    local stash = player_stashes[args.id]
 
-    --if claymore.owner_id ~= tostring(player:GetSteamId()) then return end -- They do not own this claymore
+    if not stash then return end
 
-    if claymore.exploded then return end
+    local stash_instance = self.stashes[args.id]
 
-    local num_claymores = Inventory.GetNumOfItem({player = player, item_name = "Claymore"})
+    if not stash_instance then return end
 
-    local item = deepcopy(Items_indexed["Claymore"])
-    item.amount = 1
+    -- Create dropbox with contents
+    stash_instance:Remove()
+    self.stashes[args.id] = nil
 
-    Inventory.AddItem({
-        item = item,
-        player = player
-    })
+    player_stashes[args.id] = nil
 
-    -- If the number of claymores in their inventory did not go up, they did not have room for it
-    if num_claymores == Inventory.GetNumOfItem({player = player, item_name = "Claymore"}) then
-        Chat:Send(player, "Failed to pick up claymore because you do not have space for it!", Color.Red)
-        return
-    end
-
-    local cmd = SQL:Command("DELETE FROM claymores where id = ?")
-    cmd:Bind(1, args.id)
-    cmd:Execute()
-
-    -- Remove claymore
-    local cell = claymore:GetCell()
-    self.claymore_cells[cell.x][cell.y][args.id] = nil
-    self.claymores[args.id] = nil
-    claymore:Remove(player)]]
+    player:SetValue("Stashes", player_stashes)
+    self:SyncStashesToPlayer(player)
 
 end
 
