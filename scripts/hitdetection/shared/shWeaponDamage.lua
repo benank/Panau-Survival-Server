@@ -26,7 +26,7 @@ SuicideDamage = 999
 
 ExplosiveBaseDamage = 
 {
-    [DamageEntity.Mine] = {damage = 200, radius = 10, knockback = 10},
+    [DamageEntity.Mine] = {damage = 250, radius = 10, knockback = 10},
     [DamageEntity.Claymore] = {damage = 800, radius = 10, knockback = 12},
     [DamageEntity.HEGrenade] = {damage = 140, radius = 5, knockback = 5},
     [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 60}
