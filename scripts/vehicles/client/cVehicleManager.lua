@@ -138,6 +138,21 @@ function cVehicleManager:Render(args)
 
 end
 
+function cVehicleManager:InBoundingBox(v)
+
+    local bb1, bb2 = v:GetBoundingBox()
+    local local_pos = LocalPlayer:GetPosition()
+
+    if local_pos.x >= bb1.x and local_pos.x <= bb2.x
+    and local_pos.y >= bb1.y and local_pos.y <= bb2.y
+    and local_pos.z >= bb1.z and local_pos.z <= bb2.z then
+        return true
+    end
+
+    return local_pos:Distance(v:GetPosition()) < 5
+
+end
+
 function cVehicleManager:RenderVehicleDataClassic(v)
 
     if v:GetHealth() <= 0 then return end
@@ -147,7 +162,7 @@ function cVehicleManager:RenderVehicleDataClassic(v)
 
     local pos = v:GetPosition() + Vector3(0,1,0)
     
-    if pos:Distance(LocalPlayer:GetPosition()) > 5 then return end
+    if not self:InBoundingBox(v) then return end
 
     local color = self.text.color
     local circle_color = self.text.locked_color
