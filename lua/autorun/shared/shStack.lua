@@ -149,6 +149,7 @@ function shStack:RemoveItem(_item, index, only_one)
     if only_one then
 
         if self.can_equip or self.durable then -- If there are durable or equippable items in here
+            print("GO HERE")
             return table.remove(self.contents, 1)
         else
             local copy = self.contents[1]:Copy()
@@ -177,9 +178,12 @@ function shStack:RemoveItem(_item, index, only_one)
         for i = 1, self:GetAmount() do
             if self.contents[i].uid == item.uid then
                 table.remove(self.contents, i)
-                return;
+                return
             end
         end
+
+        -- Otherwise, just remove the first one
+        return table.remove(self.contents, 1)
     end
 
     if item then

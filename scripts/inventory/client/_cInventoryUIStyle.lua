@@ -108,6 +108,7 @@ function cInventoryUIStyle:__init()
         ["Wingsuit"] = self.item_colors.blue,
         ["CamelBak"] = self.item_colors.darkgreen,
         ["Cloud Strider Boots"] = self.item_colors.purple,
+        ["Second Life"] = self.item_colors.purple,
     }
 
 

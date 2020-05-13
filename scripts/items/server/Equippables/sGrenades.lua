@@ -19,6 +19,7 @@ end
 function Grenades:PlayerInsideFireGrenadeArea(args, player)
     if player:GetValue("InSafezone") then return end
     player:SetNetworkValue("OnFire", true)
+    player:SetNetworkValue("OnFireTime", Server:GetElapsedSeconds())
 
     player:SetNetworkValue("FireAttackerId", args.attacker_id)
 end

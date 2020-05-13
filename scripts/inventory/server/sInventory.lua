@@ -742,6 +742,21 @@ end
 -- Syncs automatically
 function sInventory:AddStack(args)
 
+    local item_data = Items_indexed[args.stack:GetProperty("name")]
+
+    if item_data.max_held then
+        -- If you can only hold a certain amount of this item
+
+        local num_of_this_item = Inventory.GetNumOfItem({player = self.player, item_name = args.stack:GetProperty("name")})
+
+        if num_of_this_item >= item_data.max_held then
+            Chat:Send(self.player, 
+                string.format("You can only hold %d %s at a time!", item_data.max_held, args.stack:GetProperty("name")), Color.Red)
+            return args.stack
+        end
+
+    end
+
     local cat = args.stack:GetProperty("category")
 
     -- Try to stack it in a specific place
