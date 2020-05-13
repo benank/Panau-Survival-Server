@@ -214,7 +214,10 @@ function cVehicleManager:SecondTick()
 
     for v in Client:GetVehicles() do
         near_vehicle = true
-        break
+
+        if v:GetHealth() <= 0.2 and not v:GetValue("Remove") then
+            Network:Send(var("Vehicles/VehicleDestroyed"):get(), {vehicle = v})
+        end
     end
 
     if near_vehicle and not self.render and not self.lpi then

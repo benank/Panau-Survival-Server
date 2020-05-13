@@ -40,6 +40,8 @@ function sVehicleManager:__init()
     Network:Subscribe("Vehicles/DeleteVehicle", self, self.PlayerDeleteVehicle)
     Network:Subscribe("Vehicles/TransferVehicle", self, self.TransferVehicle)
 
+    Network:Subscribe("Vehicles/VehicleDestroyed", self, self.VehicleDestroyed)
+
     local func = coroutine.wrap(function()
         while true do
 
@@ -80,7 +82,7 @@ function sVehicleManager:__init()
 
             self:CheckForDestroyedVehicles()
 
-            Timer.Sleep(1000 * 10)
+            Timer.Sleep(1000 * 15)
 
         end
     end)()
@@ -230,6 +232,14 @@ function sVehicleManager:VehicleDestroyed(vehicle, vehicle_data_input)
         vehicle:Remove()
     end
 
+end
+
+function sVehicleManager:VehicleDestroyed(args, player)
+    local vehicle = args.vehicle
+
+    if not IsValid(vehicle) or vehicle:GetValue("Remove") then return end
+
+    vehicle:SetNetworkValue("Remove", true)
 end
 
 function sVehicleManager:CheckForDestroyedVehicles()
