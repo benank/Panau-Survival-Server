@@ -8,7 +8,7 @@ function Nametags:__init()
     self.vehicle_enabled    = false
     self.minimap_enabled    = true
 
-    self.player_limit       = 500 -- TODO: update this when inside sz
+    self.player_limit       = 500
     self.vehicle_limit      = 500
     self:UpdateLimits()
 

@@ -107,8 +107,6 @@ function cVehicleManager:LocalPlayerInput(args)
         end
     end
 
-    -- todo block grappling onto motorcycles
-
     -- Plane reverse
     local v = LocalPlayer:GetVehicle()
 	if IsValid(v) then
