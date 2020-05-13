@@ -80,7 +80,7 @@ function sVehicleManager:__init()
 
             self:CheckForDestroyedVehicles()
 
-            Timer.Sleep(1000 * 30)
+            Timer.Sleep(1000 * 10)
 
         end
     end)()
