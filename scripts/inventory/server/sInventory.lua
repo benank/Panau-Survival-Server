@@ -309,7 +309,7 @@ function sInventory:CheckForOverflow()
         -- If there is an overflow
         while #self.contents[cat] > max_slots do
 
-            local index_to_remove = #self.contents[cat]
+            local index_to_remove = math.random(#self.contents[cat])
             local stack = table.remove(self.contents[cat], index_to_remove)
             
             self:CheckIfStackHasOneEquippedThenUnequip(stack)
