@@ -346,7 +346,7 @@ function sLootbox:GetRespawnTime()
 
     local base = Lootbox.GeneratorConfig.box[self.tier].respawn * 60 * 1000
 
-    return math.max(math.ceil(base / 2), base - num_nearby_players) -- Maximum half of normal time
+    return math.max(math.ceil(base * Lootbox.Min_Respawn_Modifier), base - num_nearby_players)
 
 end
 
