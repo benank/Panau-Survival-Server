@@ -15,6 +15,9 @@ function sInventory:__init(player)
     self.events = {}
     self.network_events = {}
 
+    self.invsee_source = nil
+    self.invsee = {}
+
     table.insert(self.events, Events:Subscribe("Inventory.AddStack-" .. self.steamID, self, self.AddStackRemote))
     table.insert(self.events, Events:Subscribe("Inventory.AddItem-" .. self.steamID, self, self.AddItemRemote))
     table.insert(self.events, Events:Subscribe("Inventory.RemoveStack-" .. self.steamID, self, self.RemoveStackRemote))
@@ -570,7 +573,7 @@ function sInventory:CanPlayerPerformOperations(player)
     -- eventually modify this so that admins can do stuff if they clone the inv
     return IsValid(player) and IsValid(self.player) and player == self.player and self.operation_block == 0
         and not player:GetValue("Loading") and player:GetEnabled() and player:GetValue("InventoryOperationBlock") == 0
-        and player:GetHealth() > 0 and not player:GetValue("dead")
+        and player:GetHealth() > 0 and not player:GetValue("dead") and not self.invsee_source
 
 end
 
@@ -1021,9 +1024,16 @@ function sInventory:Sync(args)
     end
 
     -- If initial sync was done already, then update the database with the new info
-    if self.initial_sync then
+    if self.initial_sync and not self.invsee_source then
         self:UpdateDB()
         Events:Fire("InventoryUpdated", {player = self.player})
+    end
+
+    for _, inventory in pairs(self.invsee) do
+        inventory.contents = self.contents
+        inventory.slots = self.slots
+        
+        inventory:Sync(args)
     end
 
 end
