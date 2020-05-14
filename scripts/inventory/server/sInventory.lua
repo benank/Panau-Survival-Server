@@ -1030,10 +1030,15 @@ function sInventory:Sync(args)
     end
 
     for _, inventory in pairs(self.invsee) do
-        inventory.contents = self.contents
-        inventory.slots = self.slots
-        
-        inventory:Sync(args)
+
+        if IsValid(inventory.player) then
+            inventory.contents = self.contents
+            inventory.slots = self.slots
+            
+            inventory:Sync(args)
+        else
+            slef.invsee[_] = nil
+        end
     end
 
 end
