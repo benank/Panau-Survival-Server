@@ -480,9 +480,9 @@ Items =
         category = "Explosives",
         stacklimit = 10,
         loot = {1,2},
-        rarity = 0.25,
+        rarity = 0.225,
         max_loot = 2,
-        rarity_mod = {1,2},
+        rarity_mod = {1,1},
         can_equip = true,
         equip_type = "held"
     },
