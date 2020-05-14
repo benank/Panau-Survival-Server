@@ -19,7 +19,7 @@ Items =
     {
         name = "Handgun Ammo",
         category = "Supplies",
-        stacklimit = 25,
+        stacklimit = 60,
         loot = {1,2},
         rarity = 0.15,
         rarity_mod = {1,0.75}
@@ -35,7 +35,7 @@ Items =
     {
         name = "Revolver Ammo",
         category = "Supplies",
-        stacklimit = 25,
+        stacklimit = 60,
         loot = {1,2},
         rarity = 0.15,
         rarity_mod = {1,0.75}
@@ -43,7 +43,7 @@ Items =
     {
         name = "Shotgun Ammo",
         category = "Supplies",
-        stacklimit = 100,
+        stacklimit = 30,
         loot = {2,3,4},
         rarity = 0.0125,
         rarity_mod = {5,7.5,1}
@@ -51,7 +51,7 @@ Items =
     {
         name = "SMG Ammo",
         category = "Supplies",
-        stacklimit = 50,
+        stacklimit = 90,
         loot = {2,3,4},
         rarity = 0.2,
         rarity_mod = {1,1,1}
@@ -75,7 +75,7 @@ Items =
     {
         name = "Sawn-Off Ammo",
         category = "Supplies",
-        stacklimit = 25,
+        stacklimit = 60,
         loot = {1,2},
         rarity = 0.15,
         rarity_mod = {0.75,1}
