@@ -1037,7 +1037,7 @@ function sInventory:Sync(args)
             
             inventory:Sync(args)
         else
-            slef.invsee[_] = nil
+            self.invsee[_] = nil
         end
     end
 
