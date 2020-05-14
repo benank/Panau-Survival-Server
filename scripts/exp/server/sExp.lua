@@ -169,7 +169,6 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
 
     if not exp_data then return end
     if exp <= 0 then return end
-    print(string.format("[%s] got %d exp (Source: %d)", steamID, exp, type))
 
     if type == ExpType.Combat then
 
