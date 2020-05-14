@@ -235,6 +235,7 @@ function cLootboxUI:ToggleVisible()
         self.window:Show()
         self.lootbox_title_window:Show()
         Mouse:SetPosition(Render.Size / 2)
+        self.window:BringToFront()
         --self:RepositionWindow()
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     end
