@@ -93,7 +93,7 @@ function cVehicleManager:LocalPlayerInput(args)
                     return false
                 end
             end
-        elseif args.input == Action.UseItem then
+        elseif args.input == Action.UseItem and not LocalPlayer:GetValue("Stunting") then
             return false -- Block healthpacks
         end
 
