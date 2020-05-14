@@ -25,7 +25,9 @@ function sInventoryManager:PlayerChat(args)
         -- First disable invsee if it exists
         local old_invsee_id = self.inventories[player_id].invsee_source
         if old_invsee_id then
-            self.inventories[old_invsee_id].invsee[player_id] = nil
+            if self.inventories[old_invsee_id] then
+                self.inventories[old_invsee_id].invsee[player_id] = nil
+            end
             self.inventories[player_id].invsee_source = nil
             self.inventories[player_id].contents = self.inventories[player_id].invsee_old_data.contents
             self.inventories[player_id].slots = self.inventories[player_id].invsee_old_data.slots

@@ -25,7 +25,7 @@ function FreeCam:__init()
 	Events:Subscribe("PostTick", self, self.UpdateCamera)
 	Events:Subscribe("KeyUp", self, self.KeyUp)
 	Events:Subscribe("MouseDown", self, self.MouseDown)
-	Events:Subscribe("LocalPlayerChat", self, self.TrajectorySaver)	
+	--Events:Subscribe("LocalPlayerChat", self, self.TrajectorySaver)	
 	Events:Subscribe("LocalPlayerInput", self, self.PlayerInput)
 	Events:Subscribe("InputPoll", self, self.ResetPressed)
 

@@ -19,12 +19,6 @@ function sVehicleManager:__init()
     self:ReadVehicleSpawnData("spawns/spawns.txt")
     self:SpawnVehicles()
 
-    Events:Subscribe("PlayerChat", function(args)
-        if args.text == "/explode" then
-            args.player:GetVehicle():SetHealth(0.01)
-        end
-    end)
-
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("LoadFlowFinish", self, self.LoadFlowFinish)
     Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)

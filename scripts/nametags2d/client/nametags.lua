@@ -21,7 +21,7 @@ function Nametags:__init()
 
     -- Subscribe to events
     Events:Subscribe( "Render", self, self.Render )
-    Events:Subscribe( "LocalPlayerChat", self, self.LocalPlayerChat )
+    --Events:Subscribe( "LocalPlayerChat", self, self.LocalPlayerChat )
     Events:Subscribe( "LocalPlayerInput", self, self.LocalPlayerInput )
     Events:Subscribe( "ModuleLoad", self, self.ModulesLoad )
     Events:Subscribe( "ModulesLoad", self, self.ModulesLoad )
