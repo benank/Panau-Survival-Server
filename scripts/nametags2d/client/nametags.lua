@@ -293,7 +293,8 @@ function Nametags:DrawPlayer( player_data )
     -- Do not render tags if they are not a friend, not in sz, or not staff
     if not IsAFriend(LocalPlayer, tostring(p:GetSteamId()))
     and not LocalPlayer:GetValue("InSafezone")
-    and not IsAdmin(LocalPlayer) then return end
+    and not IsAdmin(LocalPlayer)
+    and not p:GetValue("Admin") then return end
 
     local dist      = player_data[2]
 
