@@ -286,6 +286,10 @@ function sExp:ClientModuleLoad(args)
 
     Events:Fire("LoadFlowAdd", args)
 
+    if self.global_multiplier > 1 then
+        Chat:Send(args.player, string.format("Global EXP multiplier is currently set to %.2f!", self.global_multiplier), Color(0, 255, 0))
+    end
+
 end
 
 sExp = sExp()
