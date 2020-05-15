@@ -41,9 +41,13 @@ end
 
 function sWeaponManager:InventoryUpdated(args)
 
+    local equipped_weapons = args.player:GetValue("EquippedWeapons")
     for weapon_name, data in pairs(args.player:GetValue("EquippedWeapons")) do
 
-        if data.ammo ~= self:GetWeaponAmmo({weapon_name = weapon_name, player = args.player}) then
+        if not GetEquippedItem(weapon_name, args.player) then
+            equipped_weapons[weapon_name] = nil
+            args.player:SetValue("EquippedWeapons", equipped_weapons)
+        elseif data.ammo ~= self:GetWeaponAmmo({weapon_name = weapon_name, player = args.player}) then
             -- Dropped or gained ammo, so refresh their gun
 
             -- TODO: fix it always going back to right hand weapon instead of back to old equipped slot
@@ -194,20 +198,20 @@ function sWeaponManager:GetWeaponNameFromId(weapon_id)
 end
 
 function sWeaponManager:RefreshEquippedWeapons(player)
-    
+
     local player_equipped = player:GetValue("EquippedItems")
     local equipped_weapons = player:GetValue("EquippedWeapons")
 
     player:ClearInventory()
 
-    for k,v in pairs(player_equipped) do
+    for name,v in pairs(player_equipped) do
 
-        local item_equipped_config = ItemsConfig.equippables.weapons[v.name]
+        local item_equipped_config = ItemsConfig.equippables.weapons[name]
 
         if (v.equip_type == "weapon_1h" or v.equip_type == "weapon_2h")
          and item_equipped_config and item_equipped_config.weapon_id then
 
-            local ammo = self:GetWeaponAmmo({weapon_name = v.name, player = player})
+            local ammo = self:GetWeaponAmmo({weapon_name = name, player = player})
             player:SetValue("WeaponAmmo", ammo)
 
             player:GiveWeapon(item_equipped_config.equip_slot, Weapon(
@@ -216,7 +220,7 @@ function sWeaponManager:RefreshEquippedWeapons(player)
                 ammo
             ))
 
-            equipped_weapons[v.name] = {
+            equipped_weapons[name] = {
                 id = item_equipped_config.weapon_id,
                 ammo = ammo
             }

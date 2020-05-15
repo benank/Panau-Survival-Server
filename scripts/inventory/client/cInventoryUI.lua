@@ -733,6 +733,7 @@ function cInventoryUI:ToggleVisible()
         self.window:Show()
         Mouse:SetPosition(Render.Size * 0.75)
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
+        self.window:BringToFront()
     end
 
     if not ClientInventory.lootbox_ui.window:GetVisible() then

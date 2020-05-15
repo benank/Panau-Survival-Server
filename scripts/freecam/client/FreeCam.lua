@@ -25,7 +25,7 @@ function FreeCam:__init()
 	Events:Subscribe("PostTick", self, self.UpdateCamera)
 	Events:Subscribe("KeyUp", self, self.KeyUp)
 	Events:Subscribe("MouseDown", self, self.MouseDown)
-	Events:Subscribe("LocalPlayerChat", self, self.TrajectorySaver)	
+	Events:Subscribe("LocalPlayerChat", self, self.LocalPlayerChat)	
 	Events:Subscribe("LocalPlayerInput", self, self.PlayerInput)
 	Events:Subscribe("InputPoll", self, self.ResetPressed)
 
@@ -35,6 +35,7 @@ function FreeCam:__init()
     
     Events:Subscribe("SetFreecamPosition", function(args)
         self.position = args.position
+        self.player = args.player
     end)
 
 	-- Load trajectory
@@ -150,7 +151,18 @@ end
 function FreeCam:CalcView()
 	if Game:GetState() ~= GUIState.Game or not self.active then return end
 	Camera:SetAngle(self.angle)
-	Camera:SetPosition(self.position)
+    Camera:SetPosition(self.position)
+    
+    if IsValid(self.player) then
+        local angle = self.player:GetAngle()
+        angle.roll = 0
+        angle.pitch = -math.pi * 0.05
+        local dist = self.player:InVehicle() and 10 or 5
+        self.angle = Angle.Slerp(Camera:GetAngle(), angle, 0.1)
+        local ray = Physics:Raycast(self.player:GetPosition() + Vector3.Up * 2 + angle * Vector3.Backward, angle * Vector3.Backward, 0, dist)
+        self.position = math.lerp(Camera:GetPosition(), ray.position, 0.15)
+    end
+
 	return false
 end
 
@@ -257,45 +269,10 @@ end
 
 ---------- TRAJECTORY ----------
 
-function FreeCam:TrajectorySaver(args)
-	if args.text:sub(1, 1) ~= "/" then return true end
-	local msg = args.text:sub(2):split(" ")
-	if msg[1] == "freecam" then
-		if #msg < 4 then
-			Chat:Print(string.format("%s Usage: /freecam <save/load/delete> <trajectory|position> <name>", Config.name), Config.color)
-		else
-			table.remove(msg, 1)
-			local command = table.remove(msg, 1)
-			local command2 = table.remove(msg, 1)
-			local name = table.concat(msg):gsub("[^%a%d]", "")
-			if command == "save" then
-				if command2 == "trajectory" then
-					Network:Send("FreeCamStore", {["type"] = "save",
-													["name"] = name,
-													["trajectory"] = self.trajectory})
-				elseif command2 == "position" then
-					if not self.active then
-						self.position = LocalPlayer:GetBonePosition("ragdoll_Head")
-					end
-					Network:Send("FreeCamStore", {["type"] = "save",
-													  ["name"] = name,
-													  ["position"] = self.position})
-				end
-			elseif command == "load" then
-				if command2 == "trajectory" then
-					Network:Send("FreeCamStore", {["type"] = "load",
-												  ["name"] = name})
-				end
-			elseif command == "delete" then
-				if command2 == "trajectory" then
-					Network:Send("FreeCamStore", {["type"] = "delete",
-												  ["name"] = name})
-				end
-			end
-		end
-		return false
-	end
-	return true
+function FreeCam:LocalPlayerChat(args)
+    if args.text == "/stopspec" and self.player then
+        self.player = nil
+    end
 end
 
 function FreeCam:ResetTrajectory()

@@ -93,14 +93,14 @@ function cVehicleManager:LocalPlayerInput(args)
                     return false
                 end
             end
-        elseif args.input == Action.UseItem then
+        elseif args.input == Action.UseItem and not LocalPlayer:GetValue("StuntingVehicle") then
             return false -- Block healthpacks
         end
 
     end
 
     -- Block health packs
-    if args.input == Action.UseItem and not LocalPlayer:InVehicle() then
+    if args.input == Action.UseItem and not LocalPlayer:InVehicle() and not LocalPlayer:GetValue("StuntingVehicle") then
         local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 7)
         if not IsValid(ray.entity) then
             return false

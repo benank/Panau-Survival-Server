@@ -26,8 +26,8 @@ Events:Subscribe("PlayerChat", function(args)
         local target_player = Player.GetById(tonumber(words[2]))
 
         if IsValid(target_player) then
-            Network:Send(args.player, "SetCameraPos", {pos = target_player:GetPosition() + Vector3.Up * 3})
-            Chat:Send(args.player, "Camera position set to " .. target_player:GetName(), Color.Yellow)
+            Network:Send(args.player, "SetCameraPos", {pos = target_player:GetPosition() + Vector3.Up * 3, player = target_player})
+            Chat:Send(args.player, "Now spectating " .. target_player:GetName(), Color.Yellow)
         else
             Chat:Send(args.player, string.format("Player with id %d not found", tonumber(words[2])), Color.Yellow)
         end
