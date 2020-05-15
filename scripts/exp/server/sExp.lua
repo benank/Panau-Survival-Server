@@ -174,7 +174,7 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
     if not exp_data then return end
     if exp <= 0 then return end
 
-    exp = exp * self.global_multiplier
+    exp = math.ceil(exp * self.global_multiplier)
 
     if type == ExpType.Combat then
 
