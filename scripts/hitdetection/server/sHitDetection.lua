@@ -165,7 +165,7 @@ function sHitDetection:AdminKill(args)
 end
 
 function sHitDetection:PlayerChat(args)
-    if args.text == "/suicide" then
+    if args.text == "/respawn" then
 
         if args.player:GetValue("Loading") then return end
 

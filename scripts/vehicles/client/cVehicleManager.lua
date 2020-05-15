@@ -66,7 +66,7 @@ function cVehicleManager:SyncOwnedVehicles(vehicles)
 end
 
 function cVehicleManager:LocalPlayerInput(args)
-
+    
     if self.block_actions[args.input] and not LocalPlayer:InVehicle() then
 
         if LocalPlayer:GetValue("LookingAtLootbox") then return false end
