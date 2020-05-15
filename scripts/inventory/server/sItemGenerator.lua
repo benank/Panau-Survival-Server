@@ -83,7 +83,7 @@ end
 function sItemGenerator:GetItemAmount(item, max_loot, tier)
 
     -- Get random amount
-    local limit = math.min(math.min(item.stacklimit * 0.25, Lootbox.GeneratorConfig.stack.max), max_loot or 999)
+    local limit = math.min(math.min(item.stacklimit * 0.2, Lootbox.GeneratorConfig.stack.max), max_loot or 999)
 
     local amount = math.ceil(math.random() * limit)
 
