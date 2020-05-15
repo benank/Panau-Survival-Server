@@ -5,6 +5,7 @@ function sExp:__init()
     SQL:Execute("CREATE TABLE IF NOT EXISTS exp (steamID VARCHAR(20), level INTEGER, combat_exp INTEGER, explore_exp INTEGER)")
 
     self.recent_killers = {} -- Players who have been killed recently by another player
+    self.global_multiplier = 1
 
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
 
@@ -144,6 +145,9 @@ function sExp:PlayerChat(args)
         self:GivePlayerExp(tonumber(words[2]), ExpType.Exploration, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
     elseif words[1] == "/expc" and words[2] then
         self:GivePlayerExp(tonumber(words[2]), ExpType.Combat, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
+    elseif words[1] == "/expmod" and words[2] then
+        self.global_multiplier = tonumber(words[2])
+        Chat:Broadcast(string.format("Global EXP multiplier set to %.2f!", self.global_multiplier), Color(0, 255, 0))
     end
 
 end
@@ -169,6 +173,8 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
 
     if not exp_data then return end
     if exp <= 0 then return end
+
+    exp = exp * self.global_multiplier
 
     if type == ExpType.Combat then
 
