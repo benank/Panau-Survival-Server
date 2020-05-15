@@ -6,6 +6,7 @@ Items =
         stacklimit = 100,
         loot = {2,3,4},
         rarity = 0.08,
+        max_loot = 5,
         rarity_mod = {1,1.5,1.5}
     },
     {
@@ -14,6 +15,7 @@ Items =
         stacklimit = 10,
         loot = {3,4,5},
         rarity = 0.01,
+        max_loot = 1,
         rarity_mod = {1,5,7.5}
     },
     {
@@ -22,6 +24,7 @@ Items =
         stacklimit = 60,
         loot = {1,2},
         rarity = 0.15,
+        max_loot = 4,
         rarity_mod = {1,0.75}
     },
     {
@@ -30,6 +33,7 @@ Items =
         stacklimit = 2,
         loot = {4,5},
         rarity = 0.02,
+        max_loot = 1,
         rarity_mod = {1,1.5}
     },
     {
@@ -38,6 +42,7 @@ Items =
         stacklimit = 60,
         loot = {1,2},
         rarity = 0.15,
+        max_loot = 4,
         rarity_mod = {1,0.75}
     },
     {
@@ -46,6 +51,7 @@ Items =
         stacklimit = 30,
         loot = {2,3,4},
         rarity = 0.0125,
+        max_loot = 3,
         rarity_mod = {5,7.5,1}
     },
     {
@@ -54,6 +60,7 @@ Items =
         stacklimit = 90,
         loot = {2,3,4},
         rarity = 0.2,
+        max_loot = 5,
         rarity_mod = {1,1,1}
     },
     {
@@ -62,6 +69,7 @@ Items =
         stacklimit = 25,
         loot = {3,4,5},
         rarity = 0.12,
+        max_loot = 2,
         rarity_mod = {0.75,1,1}
     },
     {
@@ -70,6 +78,7 @@ Items =
         stacklimit = 100,
         loot = {4,5},
         rarity = 0.1,
+        max_loot = 5,
         rarity_mod = {0.75,1}
     },
     {
@@ -78,6 +87,7 @@ Items =
         stacklimit = 60,
         loot = {1,2},
         rarity = 0.15,
+        max_loot = 3,
         rarity_mod = {0.75,1}
     },
     {
@@ -480,7 +490,7 @@ Items =
         category = "Explosives",
         stacklimit = 10,
         loot = {1,2},
-        rarity = 0.2,
+        rarity = 0.225,
         max_loot = 2,
         rarity_mod = {1,1},
         can_equip = true,
@@ -663,7 +673,7 @@ Items =
         category = "Supplies",
         stacklimit = 100,
         loot = {1,2,3,4},
-        rarity = 0.08,
+        rarity = 0.06,
         rarity_mod = {1.5,2,0.01,0.01}
     },
     {
