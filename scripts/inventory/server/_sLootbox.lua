@@ -293,6 +293,7 @@ function sLootbox:StartDespawnTimer()
                 self:HideBox()
             else
                 self:StartDespawnTimer()
+                self.despawn_timer = false
             end
         end)()
 
@@ -344,9 +345,9 @@ function sLootbox:GetRespawnTime()
         num_nearby_players = num_nearby_players + #LootCells.Player[cell.x][cell.y]
     end
 
-    local base = Lootbox.GeneratorConfig.box[self.tier].respawn * 60 * 1000
+    local base = Lootbox.GeneratorConfig.box[self.tier].respawn
 
-    return math.max(math.ceil(base * Lootbox.Min_Respawn_Modifier), base - num_nearby_players)
+    return math.max(math.ceil(base * Lootbox.Min_Respawn_Modifier), base - num_nearby_players) * 60 * 1000
 
 end
 
