@@ -40,10 +40,14 @@ function EquippableParachute:ToggleEnabled(enabled)
 end
 
 function EquippableParachute:LocalPlayerInput(args)
-    if self.blocked_actions[args.input] and not self.equipped and not LocalPlayer:GetValue("StuntingVehicle") then
+
+    if not self.equipped then
         if LocalPlayer:GetBaseState() == AnimationState.SParachute then
-            LocalPlayer:SetBaseState(AnimationState.Idle)
+            LocalPlayer:SetBaseState(AnimationState.SFall)
         end
+    end
+
+    if self.blocked_actions[args.input] and not self.equipped and not LocalPlayer:GetValue("StuntingVehicle") then
         return false
     end
 end
