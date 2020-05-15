@@ -490,9 +490,9 @@ Items =
         category = "Explosives",
         stacklimit = 10,
         loot = {1,2},
-        rarity = 0.225,
+        rarity = 0.25,
         max_loot = 2,
-        rarity_mod = {1,1},
+        rarity_mod = {1,2},
         can_equip = true,
         equip_type = "held"
     },
@@ -673,7 +673,7 @@ Items =
         category = "Supplies",
         stacklimit = 100,
         loot = {1,2,3,4},
-        rarity = 0.06,
+        rarity = 0.08,
         rarity_mod = {1.5,2,0.01,0.01}
     },
     {
