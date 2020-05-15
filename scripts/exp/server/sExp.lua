@@ -128,7 +128,7 @@ function sExp:AwardExpToKillerOnKill(args)
         Events:Fire("Discord", {
             channel = "Experience",
             content = string.format("[%s] [Level %d] killed %s [%s] [Level %d] and gained %d exp.", 
-                killer_id, killer_exp.level, args.player:GetName(), player_id, killed_exp.level, exp_earned)
+                killer_id, killer_exp.level, args.player:GetName(), player_id, killed_exp.level, exp_earned * self.global_multiplier)
         })
         
     end
@@ -164,7 +164,7 @@ function sExp:PlayerOpenLootbox(args)
     Events:Fire("Discord", {
         channel = "Experience",
         content = string.format("%s [%s] opened a tier %d lootbox and gained %d exp.", 
-            args.player:GetName(), tostring(args.player:GetSteamId()), args.tier, exp_earned)
+            args.player:GetName(), tostring(args.player:GetSteamId()), args.tier, exp_earned * self.global_multiplier)
     })
     
 end
