@@ -29,9 +29,11 @@ function sLootbox:__init(args)
     -- Dropboxes despawn after a while
     if self.is_dropbox then
 
-        self.despawn_timer = Timer.SetTimeout(Lootbox.Dropbox_Despawn_Time, function()
+        self.respawn_timer = true
+        local func = coroutine.wrap(function()
+            Timer.Sleep(Lootbox.Dropbox_Despawn_Time)
             self:Remove()
-        end)
+        end)()
 
     end
 
@@ -269,32 +271,34 @@ function sLootbox:Open(player)
 
     Events:Fire("PlayerOpenLootbox", {player = player, has_been_opened = self.has_been_opened, tier = self.tier})
 
-    self:StartDespawnTimer()
+    self:StartRespawnTimer()
 
     self.has_been_opened = true
 
 end
 
-function sLootbox:StartDespawnTimer()
+function sLootbox:StartRespawnTimer()
 
     -- No despawn timer for stashes
     if self.is_stash then return end
+    if self.is_dropbox then return end
 
-    if not self.despawn_timer then
+    if not self.respawn_timer then
 
-        self.despawn_timer = true
+        self.respawn_timer = true
         
         local func = coroutine.wrap(function()
-            Timer.Sleep(Lootbox.Loot_Despawn_Time)
-            if not self.despawn_timer then return end
-
-            if count_table(self.players_opened) == 0 then
-                -- Don't hide if there is someone looting it
-                self:HideBox()
+            Timer.Sleep(self:GetRespawnTime())
+            if count_table(self.players_opened) > 0 then
+                self:StartRespawnTimer()
+                self.respawn_timer = false
             else
-                self:StartDespawnTimer()
-                self.despawn_timer = false
+                LootManager:RespawnBox(self.tier)
             end
+
+
+            -- Respawn random box from the same tier
+            
         end)()
 
     end
@@ -308,7 +312,7 @@ end
 
 -- Refreshes loot if not all items were taken
 function sLootbox:RefreshBox()
-    self.despawn_timer = nil
+    self.respawn_timer = nil
     self:RespawnBox()
 end
 
@@ -317,8 +321,8 @@ function sLootbox:HideBox()
 
     self:ForceClose()
 
-    if self.despawn_timer then
-        self.despawn_timer = nil
+    if self.respawn_timer then
+        self.respawn_timer = nil
     end
 
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
@@ -326,12 +330,6 @@ function sLootbox:HideBox()
     self.players_opened = {}
 
     LootManager:DespawnBox(self)
-
-    local func = coroutine.wrap(function()
-        Timer.Sleep(self:GetRespawnTime())
-        -- Respawn random box from the same tier
-        LootManager:RespawnBox(self.tier)
-    end)()
 
 end
 
@@ -342,7 +340,9 @@ function sLootbox:GetRespawnTime()
     local num_nearby_players = 0
 
     for _, cell in pairs(adjacent) do
-        num_nearby_players = num_nearby_players + #LootCells.Player[cell.x][cell.y]
+        if LootCells.Player[cell.x] and LootCells.Player[cell.x][cell.y] then
+            num_nearby_players = num_nearby_players + #LootCells.Player[cell.x][cell.y]
+        end
     end
 
     local base = Lootbox.GeneratorConfig.box[self.tier].respawn
@@ -373,7 +373,7 @@ function sLootbox:RespawnBox()
 
     -- Don't respawn box if someone is looting it
     --[[if count_table(self.players_opened) > 0 then
-        self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
+        self.respawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
             self:RefreshBox()
         end)
         return
@@ -394,6 +394,8 @@ end
 -- Removes completely, never to respawn again
 function sLootbox:Remove()
 
+    if not self.active then return end
+
     self:ForceClose()
 
     if not self.cell then
@@ -404,7 +406,7 @@ function sLootbox:Remove()
     self.active = false
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
 
-    if self.despawn_timer then self.despawn_timer = nil end
+    if self.respawn_timer then self.respawn_timer = nil end
 
     LootCells.Loot[self.cell.x][self.cell.y][self.uid] = nil
 
