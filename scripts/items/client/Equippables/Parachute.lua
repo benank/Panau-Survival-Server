@@ -8,7 +8,7 @@ function EquippableParachute:__init()
     {
         [Action.DeployParachuteWhileReelingAction] = true,
         [Action.ExitToStuntposParachute] = true,
-        [Action.ParachuteOpenClose] = true,
+        --[Action.ParachuteOpenClose] = true,
         [Action.StuntposToParachute] = true,
         [Action.ActivateParachuteThrusters] = true
     }
@@ -40,7 +40,12 @@ function EquippableParachute:ToggleEnabled(enabled)
 end
 
 function EquippableParachute:LocalPlayerInput(args)
-    if self.blocked_actions[args.input] and not self.equipped then return false end
+    if self.blocked_actions[args.input] and not self.equipped and not LocalPlayer:GetValue("StuntingVehicle") then
+        if LocalPlayer:GetBaseState() == AnimationState.SParachute then
+            LocalPlayer:SetBaseState(AnimationState.Idle)
+        end
+        return false
+    end
 end
 
 EquippableParachute = EquippableParachute()
