@@ -73,7 +73,7 @@ Lootbox.GeneratorConfig =
             max_items = 2,
             respawn = 15,
             min_lockpicks = 1,
-            max_lockpicks = 5,
+            max_lockpicks = 3,
             max_spawned = 1.0
         },
         [Lootbox.Types.Level3] = 
@@ -81,8 +81,8 @@ Lootbox.GeneratorConfig =
             min_items = 1,
             max_items = 3,
             respawn = 25,
-            min_lockpicks = 3,
-            max_lockpicks = 5,
+            min_lockpicks = 1,
+            max_lockpicks = 4,
             max_spawned = 1.0
         },
         [Lootbox.Types.Level4] = 
@@ -90,8 +90,8 @@ Lootbox.GeneratorConfig =
             min_items = 1,
             max_items = 4,
             respawn = 45,
-            min_lockpicks = 5,
-            max_lockpicks = 10,
+            min_lockpicks = 3,
+            max_lockpicks = 8,
             max_spawned = 1.0
         },
         [Lootbox.Types.Level5] = 
