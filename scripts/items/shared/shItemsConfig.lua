@@ -11,6 +11,7 @@ ItemsConfig =
         ["Vehicle Guard"] = {use_time = 3, range = 5},
         ["BackTrack"] = {use_time = 3},
         ["EVAC"] = {use_time = 5},
+        ["Respawner"] = {use_time = 3}, -- Temp
     },
     equippables = -- Use equip
     {
