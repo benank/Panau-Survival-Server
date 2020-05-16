@@ -582,10 +582,11 @@ function cInventoryUI:ToggleDroppingItemButton(button)
     button:SetDataBool("dropping", not button:GetDataBool("dropping"))
     local colors = button:GetDataBool("dropping") and InventoryUIStyle.colors.dropping or InventoryUIStyle.colors.default
 
-    if not Inventory.contents[cat][index] then return end
-
     local cat = button:GetDataString("stack_category")
     local index = button:GetDataNumber("stack_index")
+
+    if not Inventory.contents[cat][index] then return end
+
     local amount = Inventory.contents[cat][index]:GetAmount()
     button:SetDataNumber("drop_amount", amount) -- Reset dropping amount when they right click it
 
