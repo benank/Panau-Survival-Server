@@ -119,6 +119,8 @@ function cLootManager:RecreateContents(_contents)
 
     local contents = {}
 
+    local index = 1
+
     -- Create new shItem and shStack instances for the client
     for k,v in pairs(_contents) do
 
@@ -128,7 +130,10 @@ function cLootManager:RecreateContents(_contents)
             items[i] = shItem(j)
         end
 
-        contents[k] = shStack({contents = items, uid = v.uid})
+        if count_table(items) > 0 then
+            contents[index] = shStack({contents = items, uid = v.uid})
+            index = index + 1
+        end
 
     end
 
