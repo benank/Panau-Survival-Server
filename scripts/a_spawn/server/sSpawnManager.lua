@@ -27,8 +27,24 @@ function sSpawnManager:__init()
 	Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
 	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("SetHomePosition", self, self.SetHomePosition)
 
 	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
+
+end
+
+function sSpawnManager:SetHomePosition(args)
+
+    local steamid = tostring(args.player:GetSteamId().id)
+
+	local command = SQL:Command("UPDATE positions SET homeX = ?, homeY = ?, homeZ = ? WHERE steamID = (?)")
+	command:Bind(1, args.pos.x)
+	command:Bind(2, args.pos.y)
+	command:Bind(3, args.pos.z)
+	command:Bind(4, steamid)
+    command:Execute()
+    
+    args.player:SetValue("HomePosition", args.pos)
 
 end
 

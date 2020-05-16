@@ -32,7 +32,7 @@ Items =
         category = "Supplies",
         stacklimit = 2,
         loot = {4,5},
-        rarity = 0.02,
+        rarity = 0.005,
         max_loot = 1,
         rarity_mod = {1,1.5}
     },
@@ -969,6 +969,15 @@ Items =
         rarity = 0.001,
         max_held = 1, -- Maximum number of these that can be in the inventory at once
         rarity_mod = {1}
+    },
+    {
+        name = "Respawner",
+        category = "Survival",
+        stacklimit = 3,
+        loot = {3,4},
+        can_use = true,
+        rarity = 0.01,
+        rarity_mod = {1,0.5}
     }
 }
 
