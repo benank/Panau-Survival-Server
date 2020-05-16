@@ -285,13 +285,17 @@ function sLootbox:StartRespawnTimer()
 
     if not self.respawn_timer then
 
-        self.respawn_timer = true
+        self.respawn_timer = Server:GetElapsedSeconds()
+        local respawn_time = self.respawn_timer
         
         local func = coroutine.wrap(function()
             Timer.Sleep(self:GetRespawnTime())
+
+            if self.respawn_timer ~= respawn_time then return end
+
             if count_table(self.players_opened) > 0 then
+                self.respawn_timer = nil
                 self:StartRespawnTimer()
-                self.respawn_timer = false
             else
                 LootManager:RespawnBox(self.tier)
             end
@@ -319,11 +323,9 @@ end
 -- Hides the lootbox until it's ready to respawn
 function sLootbox:HideBox()
 
-    self:ForceClose()
+    if not self.active then return end
 
-    if self.respawn_timer then
-        self.respawn_timer = nil
-    end
+    self:ForceClose()
 
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
     self.active = false
