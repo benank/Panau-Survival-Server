@@ -20,8 +20,8 @@ function cSafezone:__init()
         [Action.VehicleFireRight] = true
     }
 
-    Events:Subscribe("SecondTick", self, self.SecondTick)
-    Events:Subscribe("GameRenderOpaque", self, self.Render)
+    Events:Subscribe(var("SecondTick"):get(), self, self.SecondTick)
+    Events:Subscribe(var("GameRenderOpaque"):get(), self, self.Render)
 
 end
 
@@ -72,7 +72,7 @@ function cSafezone:Render(args)
         self.in_safezone = LocalPlayer:GetPosition():Distance(config.safezone.position) < config.safezone.radius
 
         if self.in_safezone ~= old_in_safezone then
-            Network:Send("EnterExitSafezone", {in_sz = self.in_safezone})
+            Network:Send(var("EnterExitSafezone"):get(), {in_sz = self.in_safezone})
             if self.in_safezone then 
                 Events:Fire("EnterSafezone")
                 self:EnterSafezone()         

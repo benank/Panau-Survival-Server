@@ -1,5 +1,4 @@
-local timer = Timer()
-local timer2 = Timer()
+
 local players_with_parachutes = {}
 
 Events:Subscribe("Inventory/ToggleEquipped", function(args)
@@ -25,9 +24,10 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
 end)
 
-Events:Subscribe("PostTick", function()
 
-    if timer:GetSeconds() > 1 then
+local func = coroutine.wrap(function()
+
+    while true do
 
         for k,v in pairs(players_with_parachutes) do
             if IsValid(v) then
@@ -39,32 +39,40 @@ Events:Subscribe("PostTick", function()
             end
         end
 
-        timer:Restart()
+        Timer.Sleep(1000)
 
     end
+end)()
 
-    if timer2:GetSeconds() > 3 then
+
+local func2 = coroutine.wrap(function()
+
+    while true do
 
         for player in Server:GetPlayers() do
 
-            local parachuting_value = player:GetValue("ParachutingValue")
+            if IsValid(player) then
+                local parachuting_value = player:GetValue("ParachutingValue")
 
-            if parachuting_value and parachuting_value > 0 then
-                local item = GetEquippedItem("Parachute", player)
-                if not item then return end
-                item.durability = item.durability - parachuting_value
-                Inventory.ModifyDurability({
-                    player = player,
-                    item = item
-                })
-                UpdateEquippedItem(player, "Parachute", item)
-                player:SetValue("ParachutingValue", 0)
+                if parachuting_value and parachuting_value > 0 then
+                    local item = GetEquippedItem("Parachute", player)
+                    if not item then return end
+                    item.durability = item.durability - parachuting_value
+                    Inventory.ModifyDurability({
+                        player = player,
+                        item = item
+                    })
+                    UpdateEquippedItem(player, "Parachute", item)
+                    player:SetValue("ParachutingValue", 0)
 
+                end
             end
+
+            Timer.Sleep(5)
         end
 
-        timer2:Restart()
+        Timer.Sleep(3000)
 
     end
 
-end)
+end)()

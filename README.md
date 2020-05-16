@@ -24,4 +24,6 @@ There are a few things that aren't open source because of privacy and exploitati
  - Server database
  - Loot spawns
  - Vehicle spawns
+ - Player model locations
+ - Discord module
 

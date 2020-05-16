@@ -48,7 +48,8 @@ function cInventoryUIStyle:__init()
         yellow = Color(155, 145, 29, self.background_alpha), -- landclaim, ping, bping, evac, vehicle repair, backtrak, stashhacker, woet
         darkgreen = Color(24, 99, 24, self.background_alpha), -- food/drink items
         green = Color(20, 155, 22, self.background_alpha), -- healing items
-        lightblue = Color(11, 118, 137, self.background_alpha) -- build items
+        lightblue = Color(11, 118, 137, self.background_alpha), -- build items
+        purple = Color(84, 55, 229, self.background_alpha), -- boss drop items
     }
 
     self.item_color_map = 
@@ -81,6 +82,8 @@ function cInventoryUIStyle:__init()
         ["Molotov"] = self.item_colors.blue,
         ["Smoke Grenade"] = self.item_colors.blue,
         ["Toxic Grenade"] = self.item_colors.blue,
+        ["AntiGrav Grenade"] = self.item_colors.blue,
+        ["Warp Grenade"] = self.item_colors.blue,
         ["Flashbang"] = self.item_colors.blue,
         ["Apple Juice"] = self.item_colors.darkgreen,
         ["Can of Beans"] = self.item_colors.darkgreen,
@@ -103,7 +106,9 @@ function cInventoryUIStyle:__init()
         ["Radio"] = self.item_colors.blue,
         ["SMRT-GRP"] = self.item_colors.blue,
         ["Wingsuit"] = self.item_colors.blue,
-        ["CamelBak"] = self.item_colors.darkgreen
+        ["CamelBak"] = self.item_colors.darkgreen,
+        ["Cloud Strider Boots"] = self.item_colors.purple,
+        ["Second Life"] = self.item_colors.purple,
     }
 
 

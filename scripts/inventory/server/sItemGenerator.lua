@@ -9,7 +9,7 @@ function sItemGenerator:__init()
     -- Test command for generating loot
     Console:Subscribe("loot", function()
     
-        local tier = 2
+        local tier = 4
 
         local loot = ItemGenerator:GetLoot(tier)
         print("Level " .. tostring(tier) .. " Loot")
@@ -33,7 +33,7 @@ function sItemGenerator:GetLoot(tier)
     local stack = shStack({contents = {item}})
     table.insert(contents, stack)]]
 
-    local num_items = math.ceil(Lootbox.GeneratorConfig.box[tier].min_items + 
+    local num_items = math.round(Lootbox.GeneratorConfig.box[tier].min_items + 
         math.random() * (Lootbox.GeneratorConfig.box[tier].max_items - Lootbox.GeneratorConfig.box[tier].min_items))
 
     for i = 1, num_items do
@@ -55,7 +55,7 @@ function sItemGenerator:GetStack(tier)
     end
 
     local target = self.computed_rarity_sums[tier] * math.random()
-    
+
     local item_data = self:FindTargetItem(target, tier)
     item_data.amount = 1
 
@@ -83,19 +83,14 @@ end
 function sItemGenerator:GetItemAmount(item, max_loot, tier)
 
     -- Get random amount
-    local amount = math.ceil(item.stacklimit * 
-        (math.random() * (Lootbox.GeneratorConfig.stack.max_percent - Lootbox.GeneratorConfig.stack.min_percent)
-        + Lootbox.GeneratorConfig.stack.min_percent)
-        )
+    local limit = math.min(math.min(item.stacklimit * 0.2, Lootbox.GeneratorConfig.stack.max), max_loot or 999)
 
-    -- Clamp it
-    amount = math.clamp(
-        amount, 
-        Lootbox.GeneratorConfig.stack.min,
-        math.min(math.random(Lootbox.GeneratorConfig.stack.max), max_loot or 999))
+    local amount = math.ceil(math.random() * limit)
 
-        -- TODO: use self:GetRandomNumberOfLockpicks(tier) for lootboxes
-
+    if math.random() < 0.8 then
+        amount = math.ceil(amount / 2)
+    end
+    
     if item.name == "Lockpick" then
         amount = self:GetRandomNumberOfLockpicks(tier)
     end

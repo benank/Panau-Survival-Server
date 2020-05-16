@@ -73,6 +73,16 @@ function cModelChanger:__init()
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("SecondTick", self, self.SecondTick)
+    Events:Subscribe("LocalPlayerDeath", self, self.LocalPlayerDeath)
+end
+
+function cModelChanger:LocalPlayerDeath()
+    
+    for k,v in pairs(self.model_change_areas) do
+        v:Remove()
+    end
+    
+    self.model_change_areas = {}
 end
 
 function cModelChanger:PressButton(button)

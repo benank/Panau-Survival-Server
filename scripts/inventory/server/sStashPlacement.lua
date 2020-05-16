@@ -9,7 +9,13 @@ local StashNameToType =
 
 function sStashPlacement:__init()
 
-    self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+    
+    local func = coroutine.wrap(function()
+        while not SharedObject.GetByName("SafezoneConfig") do
+            Timer.Sleep(500)
+        end
+        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+    end)()
 
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
 
@@ -74,10 +80,11 @@ function sStashPlacement:PlaceStash(args, player)
         return
     end
 
+    local pitch = math.abs(args.angle.pitch)
     local roll = math.abs(args.angle.roll)
 
     -- Trying to place on a wall or something
-    if roll > math.pi / 6 then
+    if pitch > math.pi / 6 or roll > math.pi / 6 then
         Chat:Send(player, "Cannot place stash here!", Color.Red)
         return
     end

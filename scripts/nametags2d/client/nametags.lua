@@ -8,7 +8,7 @@ function Nametags:__init()
     self.vehicle_enabled    = false
     self.minimap_enabled    = true
 
-    self.player_limit       = 500 -- TODO: update this when inside sz
+    self.player_limit       = 500
     self.vehicle_limit      = 500
     self:UpdateLimits()
 
@@ -21,7 +21,7 @@ function Nametags:__init()
 
     -- Subscribe to events
     Events:Subscribe( "Render", self, self.Render )
-    Events:Subscribe( "LocalPlayerChat", self, self.LocalPlayerChat )
+    --Events:Subscribe( "LocalPlayerChat", self, self.LocalPlayerChat )
     Events:Subscribe( "LocalPlayerInput", self, self.LocalPlayerInput )
     Events:Subscribe( "ModuleLoad", self, self.ModulesLoad )
     Events:Subscribe( "ModulesLoad", self, self.ModulesLoad )
@@ -181,7 +181,7 @@ function Nametags:DrawHealthbar( pos_2d, scale, width, height, health, min, max,
     Render:FillArea( pos_2d, Vector2( width * health, height ), col )
 end
 
-function Nametags:DrawNametag( pos_3d, text, colour, scale, alpha, health, draw_healthbar, nametag )
+function Nametags:DrawNametag( pos_3d, text, colour, scale, alpha, health, draw_healthbar, nametag, level )
     -- Calculate the 2D position on-screen from the 3D position
     local pos_2d, success = Render:WorldToScreen( pos_3d )
 
@@ -193,6 +193,10 @@ function Nametags:DrawNametag( pos_3d, text, colour, scale, alpha, health, draw_
         local tag_width = Render:GetTextWidth( nametag and nametag.name or "", self.size, scale )
         local tag_height = Render:GetTextHeight( nametag and nametag.name or "", self.size, scale )
 
+        local level_str = string.format("Level %s", tostring(level))
+        local level_width = Render:GetTextWidth( level_str, self.size, scale )
+        local level_height = Render:GetTextHeight( level_str, self.size, scale )
+
         -- Subtract half of the text size from both axis' so that the text is
         -- centered
 
@@ -200,6 +204,16 @@ function Nametags:DrawNametag( pos_3d, text, colour, scale, alpha, health, draw_
             -- Draw the nametag
             local nametag_pos_2d = pos_2d - Vector2( tag_width / 2, tag_height / 2 )
             self:DrawShadowedText( nametag_pos_2d - Vector2(0, tag_height), nametag.name, nametag.color, scale, alpha )
+
+
+            local level_pos_2d = pos_2d - Vector2( level_width / 2, level_height / 2 )
+            self:DrawShadowedText( level_pos_2d - Vector2(0, level_height * 2), level_str, Color.Yellow, scale, alpha )
+
+        else
+
+            local level_pos_2d = pos_2d - Vector2( level_width / 2, level_height / 2 )
+            self:DrawShadowedText( level_pos_2d - Vector2(0, level_height), level_str, Color.Yellow, scale, alpha )
+
         end
 
         pos_2d = pos_2d - Vector2( width / 2, height / 2 )
@@ -248,7 +262,7 @@ function Nametags:DrawCircle( pos_3d, scale, alpha, colour )
     Render:FillCircle( pos_2d, radius, colour )
 end
 
-function Nametags:DrawFullTag( pos, name, dist, colour, health, nametag )
+function Nametags:DrawFullTag( pos, name, dist, colour, health, nametag, level )
      -- Calculate the alpha for the player nametag
     local scale         = Nametags:CalculateAlpha(  dist, 
                                                     self.player_bias,
@@ -261,7 +275,7 @@ function Nametags:DrawFullTag( pos, name, dist, colour, health, nametag )
     local alpha = scale * 255
 
     -- Draw the player nametag!
-    self:DrawNametag( pos, name, colour, scale, alpha, health, true, nametag )
+    self:DrawNametag( pos, name, colour, scale, alpha, health, true, nametag, level )
 end
 
 function Nametags:DrawCircleTag( pos, dist, colour )
@@ -276,8 +290,11 @@ end
 function Nametags:DrawPlayer( player_data )
     local p         = player_data[1]
 
-    -- Do not render tags if they are not a friend
-    if not IsAFriend(LocalPlayer, tostring(p:GetSteamId())) then return end
+    -- Do not render tags if they are not a friend, not in sz, or not staff
+    if not IsAFriend(LocalPlayer, tostring(p:GetSteamId()))
+    and not LocalPlayer:GetValue("InSafezone")
+    and not IsAdmin(LocalPlayer)
+    and not p:GetValue("Admin") then return end
 
     local dist      = player_data[2]
 
@@ -298,12 +315,15 @@ function Nametags:DrawPlayer( player_data )
         end
     end
 
+    local exp = p:GetValue("Exp")
+    local level = exp and exp.level or ""
+
     if self.player_count <= 20 then
         if  self:AimingAt( pos ) < 0.1 or
             (LocalPlayer:InVehicle() and p:GetVehicle() == LocalPlayer:GetVehicle()) or
             self.player_count <= 10 then
 
-            self:DrawFullTag( pos, p:GetName(), dist, colour, p:GetHealth(), p:GetValue("NameTag") )
+            self:DrawFullTag( pos, p:GetName(), dist, colour, p:GetHealth(), p:GetValue("NameTag"), level )
 
         elseif not (IsValid(self.highlighted_vehicle) and p:InVehicle() and
                     self.highlighted_vehicle == p:GetVehicle()) then
@@ -312,7 +332,7 @@ function Nametags:DrawPlayer( player_data )
         end
     else
         if self:AimingAt( pos ) < 0.005 then
-            self:DrawFullTag( pos, p:GetName(), dist, colour, p:GetHealth(), p:GetValue("NameTag") )
+            self:DrawFullTag( pos, p:GetName(), dist, colour, p:GetHealth(), p:GetValue("NameTag"), level )
         else
             self:DrawCircleTag( pos, dist, colour )
         end
@@ -385,7 +405,8 @@ function Nametags:Render()
     end
 
     -- Create some prerequisite variables
-    local local_pos = LocalPlayer:GetPosition()
+    --local local_pos = LocalPlayer:GetPosition()
+    local local_pos = Camera:GetPosition()
 
     self.highlighted_vehicle = nil
 

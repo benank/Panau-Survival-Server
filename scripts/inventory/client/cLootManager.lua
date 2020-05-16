@@ -61,7 +61,13 @@ function cLootManager:Render(args)
 
     if not ClientInventory or not ClientInventory.lootbox_ui then return end
 
-    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 6.5)
+    local cam_pos = Camera:GetPosition()
+    local cam_ang = Camera:GetAngle()
+
+    if IsNaN(cam_pos.x) or IsNaN(cam_pos.y) or IsNaN(cam_pos.z) then return end
+    if IsNaN(cam_ang.pitch) or IsNaN(cam_ang.yaw) or IsNaN(cam_ang.roll) then return end
+
+    local ray = Physics:Raycast(cam_pos, cam_ang * Vector3.Forward, 0, 6.5)
     local found_box = false
 
     if ray.entity and ray.entity.__type == "ClientStaticObject" then
@@ -81,10 +87,12 @@ function cLootManager:Render(args)
 
         if not ClientInventory.lootbox_ui.window:GetVisible() then
             -- Draw circle to indicate that it can be opened
-            local pos = Render:WorldToScreen(box.look_position + self.up)
-            Render:FillCircle(pos, self.look_at_circle_size, Color.White)
-            Render:FillCircle(pos, self.look_at_circle_size_inner, Lootbox.LookAtColor)
-            LocalPlayer:SetValue("LookingAtLootbox", true)
+            if box.look_position and self.up then
+                local pos = Render:WorldToScreen(box.look_position + self.up)
+                Render:FillCircle(pos, self.look_at_circle_size, Color.White)
+                Render:FillCircle(pos, self.look_at_circle_size_inner, Lootbox.LookAtColor)
+                LocalPlayer:SetValue("LookingAtLootbox", true)
+            end
         end
 
     end

@@ -2,11 +2,21 @@ class 'ListHandler'
 
 function ListHandler:__init()
 	self.PingList = {}
-	self.LastTick = 0
+    self.LastTick = 0
+    
+    local func = coroutine.wrap(function()
+        while true do
+            for player in Server:GetPlayers() do
+                self.PingList[tostring(player:GetSteamId())] = {
+                    ping = player:GetPing(), 
+                    level = player:GetValue("Exp") and player:GetValue("Exp").level or "..."
+                }
+            end
+            Timer.Sleep(4000)
+        end
+    end)()
 
 	Network:Subscribe("SendPingList", self, self.SendPingList)
-
-	Events:Subscribe("PostTick", self, self.PostTick)
 	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 end
 
@@ -16,16 +26,6 @@ end
 
 function ListHandler:SendPingList(player)
 	Network:Send(player, "UpdatePings", self.PingList)
-end
-
-function ListHandler:PostTick(args)
-	if Server:GetElapsedSeconds() - self.LastTick >= 4 then
-		for player in Server:GetPlayers() do
-			self.PingList[tostring(player:GetSteamId())] = player:GetPing()
-		end
-
-		self.LastTick = Server:GetElapsedSeconds()
-	end
 end
 
 handler = ListHandler()

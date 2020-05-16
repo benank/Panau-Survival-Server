@@ -73,7 +73,7 @@ Lootbox.GeneratorConfig =
             max_items = 2,
             respawn = 15,
             min_lockpicks = 1,
-            max_lockpicks = 5,
+            max_lockpicks = 3,
             max_spawned = 1.0
         },
         [Lootbox.Types.Level3] = 
@@ -81,8 +81,8 @@ Lootbox.GeneratorConfig =
             min_items = 1,
             max_items = 3,
             respawn = 25,
-            min_lockpicks = 3,
-            max_lockpicks = 5,
+            min_lockpicks = 1,
+            max_lockpicks = 4,
             max_spawned = 1.0
         },
         [Lootbox.Types.Level4] = 
@@ -90,8 +90,8 @@ Lootbox.GeneratorConfig =
             min_items = 1,
             max_items = 4,
             respawn = 45,
-            min_lockpicks = 5,
-            max_lockpicks = 10,
+            min_lockpicks = 3,
+            max_lockpicks = 8,
             max_spawned = 1.0
         },
         [Lootbox.Types.Level5] = 
@@ -177,8 +177,8 @@ Lootbox.Models =
     },
     [Lootbox.Types.BarrelStash] = 
     {
-        model = "38x11.nlz/go231-a.lod",
-        col = "38x11.nlz/go231_lod1-a_col.pfx",
+        model = "38x11.nl/go231-a.lod",
+        col = "38x11.nl/go231_lod1-a_col.pfx",
         offset = Vector3(0, 0, 0),
         look_offset = Vector3(0, 0.4, 0)
     },
@@ -228,6 +228,7 @@ Lootbox.Dropbox_Despawn_Time = 10 * 60 * 1000
 Lootbox.Loot_Despawn_Time = 10 * 60 * 1000 -- How long it takes for an opened lootbox to despawn
 Lootbox.uid = 0
 Lootbox.Max_Items_In_Dropbox = 6
+Lootbox.Min_Respawn_Modifier = 0.25 -- Minimum percentage of respawn time a lootbox resapwns at given nearby players
 
 
 LootCells = 

@@ -2,43 +2,84 @@ config =
 {
     spawn = 
     {
-        ["CIV_GROUND"] = {cost = 4, spawn_chance = 0.9, respawn_interval = 15}, -- base cost + chance of spawning at beginning + per hour/respawn
-        ["CIV_WATER"] = {cost = 7, spawn_chance = 0.8, respawn_interval = 20},
-        ["CIV_HELI"] = {cost = 15, spawn_chance = 0.7, respawn_interval = 30},
-        ["CIV_PLANE"] = {cost = 13, spawn_chance = 0.8, respawn_interval = 30},
-        ["CIV_PLANE_LARGE"] = {cost = 16, spawn_chance = 0.3, respawn_interval = 60},
-        ["MIL_GROUND"] = {cost = 10, spawn_chance = 0.7, respawn_interval = 40},
-        ["MIL_WATER"] = {cost = 20, spawn_chance = 0.7, respawn_interval = 40},
-        ["MIL_HELI"] = {cost = 30, spawn_chance = 0.5, respawn_interval = 120},
-        ["MIL_PLANE"] = {cost = 40, spawn_chance = 0.5, respawn_interval = 120},
+        ["MIL_HEL"] = {cost = 100, spawn_chance = 0.5, respawn_interval = 120}, -- base cost + chance of spawning at beginning + per hour/respawn
+        ["MIL_PLA_L"] = {cost = 100, spawn_chance = 0.5, respawn_interval = 120},
+        ["MIL_PLA_M"] = {cost = 75, spawn_chance = 0.63, respawn_interval = 90},
+        ["URB_HEL"] = {cost = 60, spawn_chance = 0.7, respawn_interval = 72},
+        ["URB_PLA_M"] = {cost = 50, spawn_chance = 0.75, respawn_interval = 60},
+        ["MIL_SEA_L"] = {cost = 50, spawn_chance = 0.75, respawn_interval = 60},
+        ["URB_PLA_S"] = {cost = 50, spawn_chance = 0.75, respawn_interval = 60},
+        ["MIL_SEA_M"] = {cost = 40, spawn_chance = 0.8, respawn_interval = 48},
+        ["MIL_CAR_L"] = {cost = 40, spawn_chance = 0.8, respawn_interval = 48},
+        ["URB_PLA_L"] = {cost = 40, spawn_chance = 0.8, respawn_interval = 48},
+        ["MIL_CAR_M"] = {cost = 30, spawn_chance = 0.85, respawn_interval = 36},
+        ["URB_SEA"] = {cost = 30, spawn_chance = 0.85, respawn_interval = 36},
+        ["URB_CAR_M"] = {cost = 25, spawn_chance = 0.88, respawn_interval = 30},
+        ["RUR_PLA"] = {cost = 25, spawn_chance = 0.88, respawn_interval = 30},
+        ["MIL_BIK"] = {cost = 15, spawn_chance = 0.93, respawn_interval = 18},
+        ["URB_CAR_L"] = {cost = 15, spawn_chance = 0.93, respawn_interval = 18},
+        ["URB_CAR_S"] = {cost = 13, spawn_chance = 0.94, respawn_interval = 16},
+        ["URB_BIK"] = {cost = 13, spawn_chance = 0.94, respawn_interval = 16},
+        ["RUR_CAR_M"] = {cost = 10, spawn_chance = 0.95, respawn_interval = 12},
+        ["RUR_CAR_L"] = {cost = 8, spawn_chance = 0.96, respawn_interval = 10},
+        ["RUR_SEA_L"] = {cost = 5, spawn_chance = 0.98, respawn_interval = 6},
+        ["RUR_SEA_M"] = {cost = 5, spawn_chance = 0.98, respawn_interval = 6},
+        ["RUR_CAR_S"] = {cost = 5, spawn_chance = 0.98, respawn_interval = 6},
+        ["RUR_BIK"] = {cost = 5, spawn_chance = 0.98, respawn_interval = 6},
         cost_overrides = -- Vehicle-specific price overrides (such as topa)
         {
-            [64] = 100, -- Topachula
-            [85] = 55, -- Bering
-            [75] = 30, -- tuktuk boomboom
-            [11] = 2, -- motorcycle
-            [21] = 2, -- motorcycle
-            [32] = 2, -- motorcycle
-            [36] = 2, -- motorcycle
-            [43] = 2, -- motorcycle
-            [46] = 2, -- motorcycle
-            [47] = 2, -- motorcycle
-            [61] = 2, -- motorcycle
-            [74] = 2, -- motorcycle
-            [83] = 2, -- motorcycle
-            [89] = 2, -- motorcycle
-            [90] = 2, -- motorcycle
-            [56] = 40, -- razorback tank
-            [18] = 50 -- raider/stonewall tank
+            [64] = 200,
+            [66] = 30,
+            [79] = 30,
+            [58] = 50,
+            [1] = 10,
+            [82] = 30,
+            [4] = 20,
+            [12] = 20,
+            [20] = 80,
+            [88] = 100,
+            [77] = 70,
+            [7] = 50,
+            [75] = 50,
+            [24] = 200,
+            [53] = 100,
         },
-        variance = 0.15,
-        health = {max = 1, min = 0.6},
+        half_off_chance = 0.002,
+        health = {max = 1, min = 0.7},
         cost_modifier = 1 -- Global cost modifier for all vehicles (integer)
     },
     cost_multiplier_on_purchase = 3, -- Cost multiplier after purchasing an unowned vehicle
     max_vehicle_guards = 5, -- Maximum vehicle guards per vehicle
-    player_max_vehicles = 10, -- Maximum 10 vehicles owned at a time TODO: add levels into max vehicles owned
-    owned_despawn_time = 10, -- Minutes it takes for vehicles to despawn after owner leaves
+    player_max_vehicles =  -- Maximum 10 vehicles owned at a time
+    {
+        [0] = 3,
+        [4] = 4,
+        [8] = 5,
+        [12] = 6,
+        [16] = 7,
+        [20] = 8,
+        [24] = 9,
+        [28] = 10,
+        [32] = 11,
+        [36] = 12,
+        [40] = 13,
+        [44] = 14,
+        [48] = 15,
+        [52] = 16,
+        [56] = 17,
+        [60] = 18,
+        [64] = 19,
+        [68] = 20,
+        [72] = 21,
+        [76] = 22,
+        [80] = 23,
+        [84] = 24,
+        [88] = 25,
+        [92] = 26,
+        [96] = 27,
+        [100] = 28
+    },
+    owned_despawn_time = 5, -- Minutes it takes for vehicles to despawn after owner leaves
     gas_station_radius = 15,
     decals = -- List of all possible vehicle decals
     {

@@ -4,17 +4,17 @@ Inventory.config =
 {
     categories = 
     {
-        [1] = {name = "Weapons", slots = 4},
-        [2] = {name = "Explosives", slots = 6},
-        [3] = {name = "Supplies", slots = 6},
-        [4] = {name = "Survival", slots = 8}
+        [1] = {name = "Weapons", slots = 2},
+        [2] = {name = "Explosives", slots = 3},
+        [3] = {name = "Supplies", slots = 4},
+        [4] = {name = "Survival", slots = 4}
     },
     max_slots_per_category = 20,
     uid = 0,
     default_inv = 
     {
         {
-            name = "Can of Peaches",
+            name = "Bandages",
             amount = 3
         },
         {
@@ -22,64 +22,24 @@ Inventory.config =
             amount = 3
         },
         {
-            name = "Handgun Ammo",
-            amount = 25
+            name = "Can of Beans",
+            amount = 3
         },
         {
-            name = "Handgun",
-            amount = 1,
-            max_dura = true
-        },
-        {
-            name = "Parachute",
-            amount = 1,
-            max_dura = true
-        },
-        {
-            name = "HE Grenade",
-            amount = 10
-        },
-        {
-            name = "Toxic Grenade",
-            amount = 10
-        },
-        {
-            name = "Flares",
-            amount = 10
-        },
-        {
-            name = "Smoke Grenade",
-            amount = 10
-        },
-        {
-            name = "Molotov",
-            amount = 10
+            name = "Lockpick",
+            amount = 2
         },
         {
             name = "Flashbang",
-            amount = 10
+            amount = 2
         },
         {
-            name = "Grapplehook",
-            amount = 1,
-            max_dura = true
-        },
-        
+            name = "HE Grenade",
+            amount = 1
+        }
     },
     max_grapple_upgrades = 4
 }
-
-function GetInventoryNumSlots()
-
-    local slots = 0
-
-    for k,v in pairs(Inventory.config.categories) do
-        slots = slots + v.slots
-    end
-
-    return slots
-
-end
 
 function CategoryExists(cat)
 

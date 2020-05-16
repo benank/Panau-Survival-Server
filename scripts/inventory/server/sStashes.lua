@@ -10,8 +10,19 @@ function sStashes:__init()
     Network:Subscribe("Stashes/RenameStash", self, self.RenameStash)
     Network:Subscribe("Stashes/Dismount", self, self.DismountStash)
 
-    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+end
+
+function sStashes:PlayerLevelUpdated(args)
+    local old_max_stashes = args.player:GetValue("MaxStashes")
+    local new_max_stashes = GetMaxFromLevel(args.player:GetValue("Exp").level, Stashes_Per_Level)
+
+    if old_max_stashes ~= new_max_stashes then
+        Chat:Send(args.player, string.format("You can place up to %d stashes!", new_max_stashes), Color(0, 255, 255))
+    end
+
+    args.player:SetNetworkValue("MaxStashes", new_max_stashes)
 end
 
 function sStashes:DismountStash(args, player)
@@ -76,7 +87,7 @@ end
 
 function sStashes:ClientModuleLoad(args)
 
-    args.player:SetNetworkValue("MaxStashes", 10) -- TODO: update with level
+    args.player:SetNetworkValue("MaxStashes", GetMaxFromLevel(args.player:GetValue("Exp").level, Stashes_Per_Level))
     
     local player_stashes = {}
     local steam_id = tostring(args.player:GetSteamId())
@@ -118,40 +129,29 @@ function sStashes:ItemExplode(args)
 
 end
 
+-- Player deleted stash so contents are not dropped on ground
 function sStashes:DeleteStash(args, player)
-    --[[if not args.id or not self.stashes[args.id] then return end
+    
+    if not args.id then return end
+    args.id = tonumber(args.id)
 
-    local claymore = self.stashes[args.id]
+    local player_stashes = player:GetValue("Stashes")
+    local stash = player_stashes[args.id]
 
-    --if claymore.owner_id ~= tostring(player:GetSteamId()) then return end -- They do not own this claymore
+    if not stash then return end
 
-    if claymore.exploded then return end
+    local stash_instance = self.stashes[args.id]
 
-    local num_claymores = Inventory.GetNumOfItem({player = player, item_name = "Claymore"})
+    if not stash_instance then return end
 
-    local item = deepcopy(Items_indexed["Claymore"])
-    item.amount = 1
+    -- Create dropbox with contents
+    stash_instance:Remove()
+    self.stashes[args.id] = nil
 
-    Inventory.AddItem({
-        item = item,
-        player = player
-    })
+    player_stashes[args.id] = nil
 
-    -- If the number of claymores in their inventory did not go up, they did not have room for it
-    if num_claymores == Inventory.GetNumOfItem({player = player, item_name = "Claymore"}) then
-        Chat:Send(player, "Failed to pick up claymore because you do not have space for it!", Color.Red)
-        return
-    end
-
-    local cmd = SQL:Command("DELETE FROM claymores where id = ?")
-    cmd:Bind(1, args.id)
-    cmd:Execute()
-
-    -- Remove claymore
-    local cell = claymore:GetCell()
-    self.claymore_cells[cell.x][cell.y][args.id] = nil
-    self.claymores[args.id] = nil
-    claymore:Remove(player)]]
+    player:SetValue("Stashes", player_stashes)
+    self:SyncStashesToPlayer(player)
 
 end
 

@@ -7,8 +7,6 @@ function sClaymores:__init()
     self.claymores = {} -- Active claymores, indexed by claymore id
     self.claymore_cells = {} -- Active claymores, organized by cell x, y, then claymore id
 
-    self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
-
     Network:Subscribe("items/CancelClaymorePlacement", self, self.CancelClaymorePlacement)
     Network:Subscribe("items/PlaceClaymore", self, self.FinishClaymorePlacement)
     Network:Subscribe("items/StepOnClaymore", self, self.StepOnClaymore)
@@ -290,6 +288,10 @@ function sClaymores:FinishClaymorePlacement(args, player)
     if args.position:Distance(player:GetPosition()) > 7 then
         Chat:Send(player, "Placing claymore failed!", Color.Red)
         return
+    end
+
+    if not self.sz_config then
+        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
     end
 
     -- If they are within sz radius * 2, we don't let them place that close

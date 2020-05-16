@@ -48,7 +48,7 @@ function cItemUse:__init()
     })
     
 
-    Network:Subscribe("items/UseItem", self, self.StartUsage)
+    Network:Subscribe(var("items/UseItem"):get(), self, self.StartUsage)
 
 end
 
@@ -66,7 +66,8 @@ function cItemUse:StartUsage(args)
     table.insert(self.events, Events:Subscribe("LocalPlayerBulletHit", self, self.CancelUsage))
     table.insert(self.events, Events:Subscribe("LocalPlayerDeath", self, self.CancelUsage))
 
-    if LocalPlayer:GetBaseState() ~= AnimationState.SUprightIdle then
+    if LocalPlayer:GetBaseState() ~= AnimationState.SUprightIdle
+    and LocalPlayer:GetBaseState() ~= AnimationState.SSwimIdle then
         self:CancelUsage()
     end
 
@@ -87,7 +88,7 @@ function cItemUse:CompleteUsage()
     local forward_ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 500)
     if forward_ray.entity and forward_ray.entity.__type == "ClientStaticObject" then forward_ray.entity = nil end
 
-    Network:Send("items/CompleteItemUsage", {ray = ray, forward_ray = forward_ray})
+    Network:Send("items/CompleteItemUsage", {ray = ray, forward_ray = forward_ray, waypoint = Waypoint:GetPosition()})
     self:UnsubscribeEvents()
 
 end
@@ -99,7 +100,7 @@ function cItemUse:LocalPlayerInput(args)
 end
 
 function cItemUse:InputPoll(args)
-    Input:SetValue(Action.Crouch, 1)
+    Input:SetValue(Action.Crouch, 1.0)
 end
 
 function cItemUse:UnsubscribeEvents()
@@ -123,8 +124,6 @@ function cItemUse:Render(args)
     self.progress_circle.data[1].amount = (self.progress.current / self.progress.max) * 100
     self.progress_circle:Update()
 
-    LocalPlayer:SetBaseState(AnimationState.SCrouch)
-    
     if self.progress.current >= self.progress.max then
         self:CompleteUsage()
     end

@@ -3,6 +3,7 @@ class 'GrenadeEffectZones'
 function GrenadeEffectZones:__init()
 
     self.active_zones = {}
+    self.delta = 0
 
     Events:Subscribe(var("ShapeTriggerEnter"):get(), self, self.ShapeTriggerEnter)
     Events:Subscribe(var("ShapeTriggerExit"):get(), self, self.ShapeTriggerExit)
@@ -12,10 +13,30 @@ function GrenadeEffectZones:__init()
 end
 
 function GrenadeEffectZones:Render(args)
+
+    self.delta = self.delta + args.delta
     for id, zone in pairs(self.active_zones) do
         if zone.timer:GetSeconds() >= zone.timeout then
             zone.trigger:Remove()
             self.active_zones[id] = nil
+        end
+
+        if zone.inside_zone and zone.type == "Slow" and not LocalPlayer:GetValue("InSafezone") then
+
+            local entity = LocalPlayer
+            if entity:InVehicle() then
+                entity = entity:GetVehicle()
+            end
+
+            local velocity = entity:GetLinearVelocity()
+            local magnitude = velocity:Length()
+
+            if magnitude > 5 then
+                velocity = velocity * 0.5
+            end
+
+            entity:SetLinearVelocity(velocity + Vector3(0, 1, 0))
+
         end
     end 
 end
@@ -36,6 +57,7 @@ function GrenadeEffectZones:SecondTick()
                 })
                 inside_toxic_zone = true
             end
+            
         end
 
     end

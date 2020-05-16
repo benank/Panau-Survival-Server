@@ -2,6 +2,7 @@ class 'sLootManager'
 
 function sLootManager:__init()
 
+    self.ready = false
     self.lootspawn_file = "lootspawns/lootspawns.txt"
     self.loot_data = {}
 
@@ -18,7 +19,16 @@ function sLootManager:__init()
 end
 
 function sLootManager:ClientModuleLoad(args)
-    Events:Fire("ForcePlayerUpdateCell", {player = args.player, cell_size = Lootbox.Cell_Size})
+
+    --local func = coroutine.wrap(function()
+    --    while not self.ready do
+    --        Timer.Sleep(500)
+    --    end
+    --    if IsValid(args.player) then
+            Events:Fire("ForcePlayerUpdateCell", {player = args.player, cell_size = Lootbox.Cell_Size})
+    --    end
+    --end)()
+    
 end
 
 function sLootManager:PlayerQuit(args)
@@ -132,44 +142,53 @@ end
 
 function sLootManager:GenerateAllLoot()
 
-    local rand = math.random
+    --local func = coroutine.wrap(function()
+        local rand = math.random
 
-    local sz_position = Vector3(-10291, 202.5, -3019)
-    local sz_radius = 75
+        local sz_position = Vector3(-10291, 202.5, -3019)
+        local sz_radius = 75
 
-    -- Init active and inactive loot tables to track spawned loot
-    for tier, _ in pairs(Lootbox.GeneratorConfig.spawnable) do
-        self.active_lootboxes[tier] = {}
-        self.inactive_lootboxes[tier] = {}
-    end
-
-    for _, lootbox_data in pairs(self.loot_data) do
-
-        -- TODO: don't spawn all loot at once
-
-        -- TODO: get this info from spawn module
-        local in_sz = lootbox_data.pos:Distance(sz_position) < sz_radius
-        local active = rand() <= Lootbox.GeneratorConfig.box[lootbox_data.tier].max_spawned
-
-        local box = CreateLootbox({
-            position = lootbox_data.pos,
-            angle = lootbox_data.ang,
-            tier = lootbox_data.tier,
-            active = active or in_sz,
-            contents = in_sz and {} or ItemGenerator:GetLoot(lootbox_data.tier)
-        })
-
-        -- Separate active & inactive boxes
-        if active then
-            self.active_lootboxes[box.tier][box.uid] = box
-        else
-            self.inactive_lootboxes[box.tier][box.uid] = box
+        -- Init active and inactive loot tables to track spawned loot
+        for tier, _ in pairs(Lootbox.GeneratorConfig.spawnable) do
+            self.active_lootboxes[tier] = {}
+            self.inactive_lootboxes[tier] = {}
         end
 
-    end
+        local cnt = 0
 
-    print(string.format("Spawned %s/%s lootboxes.",
-        tostring(self:GetNumSpawnedBoxes()), tostring(#self.loot_data)))
+        for _, lootbox_data in pairs(self.loot_data) do
+
+            local in_sz = lootbox_data.pos:Distance(sz_position) < sz_radius
+            local active = rand() <= Lootbox.GeneratorConfig.box[lootbox_data.tier].max_spawned
+
+            local box = CreateLootbox({
+                position = lootbox_data.pos,
+                angle = lootbox_data.ang,
+                tier = lootbox_data.tier,
+                active = active or in_sz,
+                contents = in_sz and {} or ItemGenerator:GetLoot(lootbox_data.tier)
+            })
+
+            -- Separate active & inactive boxes
+            if active then
+                self.active_lootboxes[box.tier][box.uid] = box
+            else
+                self.inactive_lootboxes[box.tier][box.uid] = box
+            end
+
+            cnt = cnt + 1
+
+            --if cnt % 100 == 0 then
+            --    Timer.Sleep(1)
+            --end
+
+        end
+
+        print(string.format("Spawned %s/%s lootboxes.",
+            tostring(self:GetNumSpawnedBoxes()), tostring(#self.loot_data)))
+
+        self.ready = true
+    --end)()
 
 end
 

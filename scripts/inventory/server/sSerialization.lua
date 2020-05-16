@@ -59,6 +59,7 @@ function Deserialize(data, has_categories)
 
     for i = 1, #split - 1 do -- Each stack
     
+        local valid_item = true
         local split2 = splitstr2(split[i], "~")
         local stack = nil
         local index = 0
@@ -79,7 +80,8 @@ function Deserialize(data, has_categories)
                     item_data.name = split3[k]
 
                     if not CreateItem({name = item_data.name, amount = 1}) then -- Unable to find item, eg does not exist
-                        error("Unable to find item with name " .. tostring(split3[k]) .. " in sInventory:Deserialize")
+                        print("Unable to find item with name " .. tostring(split3[k]) .. " in sInventory:Deserialize")
+                        valid_item = false
                     end
                 
                 elseif (k == 3) then -- Amount
@@ -103,25 +105,29 @@ function Deserialize(data, has_categories)
                 
             end
 
-            local item = CreateItem(item_data) -- Create item
+            if valid_item then
+                local item = CreateItem(item_data) -- Create item
 
-            if (not stack) then -- If this is the first item, create the stack
-            
-                stack = shStack({contents = {item}});
-            
-            else -- Otherwise, add it to the front of the stack
-            
-                stack:AddItem(item);
+                if (not stack) then -- If this is the first item, create the stack
+                
+                    stack = shStack({contents = {item}});
+                
+                else -- Otherwise, add it to the front of the stack
+                
+                    stack:AddItem(item);
 
+                end
             end
 
             
         end
 
-        if index > 0 and has_categories then
-            contents[stack:GetProperty("category")][index] = stack
-        elseif index > 0 and not has_categories then
-            contents[index] = stack
+        if valid_item then
+            if index > 0 and has_categories then
+                contents[stack:GetProperty("category")][index] = stack
+            elseif index > 0 and not has_categories then
+                contents[index] = stack
+            end
         end
 
 
@@ -129,4 +135,12 @@ function Deserialize(data, has_categories)
 
     return contents
 
+end
+
+function splitstr2(s, delimiter)
+    result = {};
+    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+        table.insert(result, match);
+    end
+    return result;
 end

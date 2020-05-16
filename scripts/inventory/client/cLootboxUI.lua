@@ -168,11 +168,14 @@ function cLootboxUI:Update(args)
         for i = 1, #LootManager.current_box.contents do
             ClientInventory.ui:PopulateEntry({index = i, loot = true, stash = args.stash, window = self.window})
         end
-        if args.stash then
+        --[[if args.stash then
             for i = #LootManager.current_box.contents + 1, args.stash.capacity do
                 ClientInventory.ui:PopulateEntry({index = i, loot = true, empty = true, stash = args.stash, window = self.window})
             end
             self:RepositionWindow(args.stash.capacity)
+        end]]
+        if args.stash and #LootManager.current_box.contents == 0 then
+            ClientInventory.ui:PopulateEntry({index = 1, loot = true, empty = true, stash = args.stash, window = self.window})
         end
 
     elseif args.action == "update" or args.action == "remove" then
@@ -180,7 +183,8 @@ function cLootboxUI:Update(args)
     end
 
     if not self.window:GetVisible() or (#LootManager.current_box.contents == 0 and not args.stash) then
-        self:RepositionWindow(args.stash and args.stash.capacity or nil)
+        --self:RepositionWindow(args.stash and args.stash.capacity or nil)
+        self:RepositionWindow()
         self:ToggleVisible()
     end
 
@@ -231,6 +235,7 @@ function cLootboxUI:ToggleVisible()
         self.window:Show()
         self.lootbox_title_window:Show()
         Mouse:SetPosition(Render.Size / 2)
+        self.window:BringToFront()
         --self:RepositionWindow()
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     end

@@ -18,32 +18,24 @@ function cVehicleManager:__init()
     self.block_actions = 
     {
         [Action.UseItem] = true,
-        [Action.ExitVehicle] = true,
+        --[Action.ExitVehicle] = true,
         [Action.GuiPDAToggleAOI] = true,
         [Action.PickupWithLeftHand] = true,
         [Action.PickupWithRightHand] = true,
         [Action.ActivateBlackMarketBeacon] = true,
         [Action.EnterVehicle] = true,
-        [Action.StuntJump] = true,
-        [Action.EnterVehicle] = true,
-        [Action.EnterVehicle] = true,
-        [Action.EnterVehicle] = true,
-        [Action.EnterVehicle] = true,
         [Action.StuntposEnterVehicle] = true
     }
 
-    -- TODO update with levels
-    LocalPlayer:SetValue("MaxVehicles", config.player_max_vehicles)
+    Events:Fire(var("Vehicles/ResetVehiclesMenu"):get())
 
-    Events:Fire("Vehicles/ResetVehiclesMenu")
-
-    Events:Subscribe("Vehicles/SpawnVehicle", self, self.SpawnVehicle)
-    Events:Subscribe("Vehicles/DeleteVehicle", self, self.DeleteVehicle)
-    Events:Subscribe("Vehicles/TransferVehicle", self, self.TransferVehicle)
+    Events:Subscribe(var("Vehicles/SpawnVehicle"):get(), self, self.SpawnVehicle)
+    Events:Subscribe(var("Vehicles/DeleteVehicle"):get(), self, self.DeleteVehicle)
+    Events:Subscribe(var("Vehicles/TransferVehicle"):get(), self, self.TransferVehicle)
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
-    Network:Subscribe("Vehicles/SyncOwnedVehicles", self, self.SyncOwnedVehicles)
-    Network:Subscribe("Vehicles/VehicleGuardActivate", self, self.VehicleGuardActivate)
+    Network:Subscribe(var("Vehicles/SyncOwnedVehicles"):get(), self, self.SyncOwnedVehicles)
+    Network:Subscribe(var("Vehicles/VehicleGuardActivate"):get(), self, self.VehicleGuardActivate)
 
 end
 
@@ -56,25 +48,25 @@ function cVehicleManager:VehicleGuardActivate(args)
 end
 
 function cVehicleManager:TransferVehicle(args)
-    Network:Send("Vehicles/TransferVehicle", {id = args.id, vehicle_id = args.vehicle_id})
+    Network:Send(var("Vehicles/TransferVehicle"):get(), {id = args.id, vehicle_id = args.vehicle_id})
 end
 
 function cVehicleManager:SpawnVehicle(args)
-    Network:Send("Vehicles/SpawnVehicle", args)
+    Network:Send(var("Vehicles/SpawnVehicle"):get(), args)
 end
 
 function cVehicleManager:DeleteVehicle(args)
-    Network:Send("Vehicles/DeleteVehicle", args)
+    Network:Send(var("Vehicles/DeleteVehicle"):get(), args)
 end
 
 function cVehicleManager:SyncOwnedVehicles(vehicles)
     self.owned_vehicles = vehicles
 
-    Events:Fire("Vehicles/OwnedVehiclesUpdate", vehicles)
+    Events:Fire(var("Vehicles/OwnedVehiclesUpdate"):get(), vehicles)
 end
 
 function cVehicleManager:LocalPlayerInput(args)
-
+    
     if self.block_actions[args.input] and not LocalPlayer:InVehicle() then
 
         if LocalPlayer:GetValue("LookingAtLootbox") then return false end
@@ -101,11 +93,19 @@ function cVehicleManager:LocalPlayerInput(args)
                     return false
                 end
             end
+        elseif args.input == Action.UseItem and not LocalPlayer:GetValue("StuntingVehicle") then
+            return false -- Block healthpacks
         end
 
     end
 
-    -- todo block grappling onto motorcycles
+    -- Block health packs
+    if args.input == Action.UseItem and not LocalPlayer:InVehicle() and not LocalPlayer:GetValue("StuntingVehicle") then
+        local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 7)
+        if not IsValid(ray.entity) then
+            return false
+        end
+    end
 
     -- Plane reverse
     local v = LocalPlayer:GetVehicle()
@@ -116,9 +116,9 @@ function cVehicleManager:LocalPlayerInput(args)
         and args.input == Action.PlaneDecTrust 
         and v:GetDriver() == LocalPlayer 
         and forwardvelocity < 5
-        and backwardvelocity > -2
+        and backwardvelocity > -1.5
         then
-            v:SetLinearVelocity(v:GetLinearVelocity() + v:GetAngle() * Vector3.Backward * 0.25)
+            v:SetLinearVelocity(v:GetLinearVelocity() + v:GetAngle() * Vector3.Backward * 0.2)
         end
     end
 
@@ -136,6 +136,21 @@ function cVehicleManager:Render(args)
 
 end
 
+function cVehicleManager:InBoundingBox(v)
+
+    local bb1, bb2 = v:GetBoundingBox()
+    local local_pos = LocalPlayer:GetPosition()
+
+    if local_pos.x >= bb1.x and local_pos.x <= bb2.x
+    and local_pos.y >= bb1.y and local_pos.y <= bb2.y
+    and local_pos.z >= bb1.z and local_pos.z <= bb2.z then
+        return true
+    end
+
+    return local_pos:Distance(v:GetPosition()) < 5
+
+end
+
 function cVehicleManager:RenderVehicleDataClassic(v)
 
     if v:GetHealth() <= 0 then return end
@@ -145,7 +160,7 @@ function cVehicleManager:RenderVehicleDataClassic(v)
 
     local pos = v:GetPosition() + Vector3(0,1,0)
     
-    if pos:Distance(LocalPlayer:GetPosition()) > 5 then return end
+    if not self:InBoundingBox(v) then return end
 
     local color = self.text.color
     local circle_color = self.text.locked_color
@@ -199,7 +214,22 @@ function cVehicleManager:SecondTick()
 
     for v in Client:GetVehicles() do
         near_vehicle = true
-        break
+
+        if IsValid(v) then
+
+            local data = v:GetValue("VehicleData")
+
+            -- Only allow friends or owner to sync destruction
+            if data.owner_steamid == tostring(LocalPlayer:GetSteamId())
+            or IsAFriend(LocalPlayer, data.owner_steamid) then 
+
+                if v:GetHealth() <= 0.2 and not v:GetValue("Remove") then
+                    Network:Send(var("Vehicles/VehicleDestroyed"):get(), {vehicle = v})
+                end
+
+            end
+        end
+
     end
 
     if near_vehicle and not self.render and not self.lpi then

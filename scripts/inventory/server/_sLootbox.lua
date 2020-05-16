@@ -21,6 +21,7 @@ function sLootbox:__init(args)
     self.is_dropbox = args.tier == Lootbox.Types.Dropbox
     self.is_vending_machine = args.tier == Lootbox.Types.VendingMachineFood or args.tier == Lootbox.Types.VendingMachineDrink
     self.is_stash = Lootbox.Stashes[args.tier] ~= nil
+    self.has_been_opened = false
     -- Eventually add support for world specification
 
     self.players_opened = {}
@@ -28,9 +29,11 @@ function sLootbox:__init(args)
     -- Dropboxes despawn after a while
     if self.is_dropbox then
 
-        self.despawn_timer = Timer.SetTimeout(Lootbox.Dropbox_Despawn_Time, function()
+        self.respawn_timer = true
+        local func = coroutine.wrap(function()
+            Timer.Sleep(Lootbox.Dropbox_Despawn_Time)
             self:Remove()
-        end)
+        end)()
 
     end
 
@@ -44,6 +47,24 @@ function sLootbox:__init(args)
         self:Remove()
     end)
 
+    if self.is_dropbox then
+        for index, stack in pairs(self.contents) do
+            for item_index, item in pairs(stack.contents) do
+                if item.durability and item.durability <= 0 then
+                    stack:RemoveItem(item, item_index)
+                end
+            end
+
+            if count_table(stack.contents) == 0 then
+                table.remove(self.contents, index)
+            end
+        end
+
+        if count_table(self.contents) == 0 then
+            self:Remove()
+            return
+        end
+    end
 
 end
 
@@ -76,7 +97,21 @@ function sLootbox:PlayerAddStack(stack, player)
         if not self.stash:CanPlayerOpen(player) then return stack end
     end
 
+    Events:Fire("Discord", {
+        channel = "Stashes",
+        content = string.format("%s [%s] added stack to stash %d [Tier %d]. \nStack: %s", 
+            player:GetName(), player:GetSteamId(), self.stash.id, self.tier, stack:ToString())
+    })
+
     local return_stack = self:AddStack(stack)
+
+    if return_stack then
+        Events:Fire("Discord", {
+            channel = "Stashes",
+            content = string.format("%s [%s] was not able to add the entire stack. \nRemaining stack: %s", 
+                player:GetName(), player:GetSteamId(), return_stack:ToString())
+        })
+    end
 
     if self.is_stash then
         for p in Server:GetPlayers() do
@@ -155,10 +190,34 @@ function sLootbox:TakeLootStack(args, player)
 
     if not inv:CanPlayerPerformOperations(player) then return end
 
+    local channel = self.is_stash and "Stashes" or "Inventory"
+    local id = self.is_stash and self.stash.id or self.uid
+    Events:Fire("Discord", {
+        channel = channel,
+        content = string.format("%s [%s] took stack from lootbox %d [Tier %d]. \nStack: %s", 
+            player:GetName(), player:GetSteamId(), id, self.tier, stack:ToString())
+    })
+
     local return_stack = inv:AddStack({stack = stack})
+
+    if self.is_stash and not IsAFriend(player, self.stash.owner_id) and not self.stash:IsPlayerOwner(player) then
+        Events:Fire("Discord", {
+            channel = "Stashes",
+            content = string.format("**__RAID__**: %s [%s] is raiding [%s].", 
+                player:GetName(), player:GetSteamId(), self.stash.owner_id)
+        })
+    end
 
     if return_stack then
         self.contents[args.index] = return_stack
+        
+        local channel = self.is_stash and "Stashes" or "Inventory"
+        Events:Fire("Discord", {
+            channel = channel,
+            content = string.format("%s [%s] was not able to take the entire stack. \nRemaining stack: %s", 
+                player:GetName(), player:GetSteamId(), return_stack:ToString())
+        })
+
     else
         table.remove(self.contents, args.index)
     end
@@ -210,25 +269,37 @@ function sLootbox:Open(player)
     player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell})
     Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
-    self:StartDespawnTimer()
+    Events:Fire("PlayerOpenLootbox", {player = player, has_been_opened = self.has_been_opened, tier = self.tier})
+
+    self:StartRespawnTimer()
+
+    self.has_been_opened = true
 
 end
 
-function sLootbox:StartDespawnTimer()
+function sLootbox:StartRespawnTimer()
 
     -- No despawn timer for stashes
     if self.is_stash then return end
+    if self.is_dropbox then return end
 
-    if not self.despawn_timer then
+    if not self.respawn_timer then
 
-        self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
-            if count_table(self.players_opened) == 0 then
-                -- Don't hide if there is someone looting it
-                self:HideBox()
+        self.respawn_timer = true
+        
+        local func = coroutine.wrap(function()
+            Timer.Sleep(self:GetRespawnTime())
+            if count_table(self.players_opened) > 0 then
+                self:StartRespawnTimer()
+                self.respawn_timer = false
             else
-                self:StartDespawnTimer()
+                LootManager:RespawnBox(self.tier)
             end
-        end)
+
+
+            -- Respawn random box from the same tier
+            
+        end)()
 
     end
 
@@ -241,7 +312,7 @@ end
 
 -- Refreshes loot if not all items were taken
 function sLootbox:RefreshBox()
-    self.despawn_timer = nil
+    self.respawn_timer = nil
     self:RespawnBox()
 end
 
@@ -250,9 +321,8 @@ function sLootbox:HideBox()
 
     self:ForceClose()
 
-    if self.despawn_timer then
-        Timer.Clear(self.despawn_timer)
-        self.despawn_timer = nil
+    if self.respawn_timer then
+        self.respawn_timer = nil
     end
 
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
@@ -260,11 +330,6 @@ function sLootbox:HideBox()
     self.players_opened = {}
 
     LootManager:DespawnBox(self)
-
-    Timer.SetTimeout(self:GetRespawnTime(), function()
-        -- Respawn random box from the same tier
-        LootManager:RespawnBox(self.tier)
-    end)
 
 end
 
@@ -275,12 +340,14 @@ function sLootbox:GetRespawnTime()
     local num_nearby_players = 0
 
     for _, cell in pairs(adjacent) do
-        num_nearby_players = num_nearby_players + #LootCells.Player[cell.x][cell.y]
+        if LootCells.Player[cell.x] and LootCells.Player[cell.x][cell.y] then
+            num_nearby_players = num_nearby_players + #LootCells.Player[cell.x][cell.y]
+        end
     end
 
-    local base = Lootbox.GeneratorConfig.box[self.tier].respawn * 60 * 1000
+    local base = Lootbox.GeneratorConfig.box[self.tier].respawn
 
-    return math.max(math.ceil(base / 2), base - num_nearby_players) -- Maximum half of normal time
+    return math.max(math.ceil(base * Lootbox.Min_Respawn_Modifier), base - num_nearby_players) * 60 * 1000
 
 end
 
@@ -306,7 +373,7 @@ function sLootbox:RespawnBox()
 
     -- Don't respawn box if someone is looting it
     --[[if count_table(self.players_opened) > 0 then
-        self.despawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
+        self.respawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
             self:RefreshBox()
         end)
         return
@@ -316,6 +383,8 @@ function sLootbox:RespawnBox()
 
     self.contents = ItemGenerator:GetLoot(self.tier)
     self.players_opened = {}
+    self.has_been_opened = false
+
 
     self.active = true
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/OneLootboxCellSync", self:GetSyncData())
@@ -324,6 +393,8 @@ end
 
 -- Removes completely, never to respawn again
 function sLootbox:Remove()
+
+    if not self.active then return end
 
     self:ForceClose()
 
@@ -335,12 +406,14 @@ function sLootbox:Remove()
     self.active = false
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
 
-    if self.despawn_timer then Timer.Clear(self.despawn_timer) end
+    if self.respawn_timer then self.respawn_timer = nil end
 
     LootCells.Loot[self.cell.x][self.cell.y][self.uid] = nil
 
-    for k,v in pairs(self.network_subs) do
-        Network:Unsubscribe(v)
+    if self.network_subs then
+        for k,v in pairs(self.network_subs) do
+            Network:Unsubscribe(v)
+        end
     end
 
     self.network_subs = nil

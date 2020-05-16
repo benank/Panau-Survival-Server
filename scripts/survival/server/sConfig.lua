@@ -8,13 +8,13 @@ config =
     },
     respawn = 
     {
-        hunger = 75,
-        thirst = 75
+        hunger = 100,
+        thirst = 100
     },
     decay = 
     {
-        hunger = 1.1,
-        thirst = 1.5,
+        hunger = 0.6,
+        thirst = 0.85,
         radiation = 0
     },
     decaymods = 

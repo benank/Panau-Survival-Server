@@ -70,6 +70,11 @@ function sFriends:AddFriend(args, player)
     if not IsValid(adding_player) then return end
     if IsFriend(player, adding_steam_id) then return end -- Already friends
 
+    if not player:GetValue("Friends") or not adding_player:GetValue("FriendsAddedMe") then
+        Chat:Send(player, "Failed to add friend.", Color.Red)
+        return
+    end
+
     local cmd = SQL:Command("INSERT INTO FRIENDS (steam_id, friend_steamid) VALUES (?, ?)")
     cmd:Bind(1, player_steam_id)
     cmd:Bind(2, adding_steam_id)
@@ -88,6 +93,13 @@ function sFriends:AddFriend(args, player)
 
     Chat:Send(player, "Added " .. adding_player:GetName() .. " as a friend.", Color.Green)
     Chat:Send(adding_player, player:GetName() .. " added you as a friend.", Color.Green)
+
+    local msg = string.format("%s [%s] added %s [%s] as a friend", 
+        player:GetName(), player:GetSteamId(), adding_player:GetName(), adding_player:GetSteamId())
+    Events:Fire("Discord", {
+        channel = "Friends",
+        content = msg
+    })
 
 end
 
@@ -126,6 +138,13 @@ function sFriends:RemoveFriend(args, player)
 
     Chat:Send(player, "Removed " .. removing_player:GetName() .. " as a friend.", Color.Red)
     Chat:Send(removing_player, player:GetName() .. " removed you as a friend.", Color.Red)
+
+    local msg = string.format("%s [%s] removed %s [%s] as a friend", 
+        player:GetName(), player:GetSteamId(), removing_player:GetName(), removing_player:GetSteamId())
+    Events:Fire("Discord", {
+        channel = "Friends",
+        content = msg
+    })
 
 end
 

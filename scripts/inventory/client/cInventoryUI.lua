@@ -8,6 +8,8 @@ function cInventoryUI:__init()
     self.dropping_items = {} -- Table of items (cat + index + amount) that the player is trying to drop
     self.hovered_button = nil -- Button in inventory currently hovered
     self.pressed_button = nil -- Button that the mouse is currently left clicking
+    
+    self.shift_timer = Timer()
 
     self.bg_colors = 
     {
@@ -19,23 +21,9 @@ function cInventoryUI:__init()
 
     self.padding = 4
 
-    self.window = BaseWindow.Create("Inventory")
-    self.window:SetSize(Vector2(math.min(Render.Size.x * 0.9, InventoryUIStyle.default_inv_size), Render.Size.y))
-    self.window:SetPosition(Render.Size - self.window:GetSize())
-    self.window:Hide()
-    self.window:Focus()
-    self.window:SetBackgroundVisible(false)
+    self:CreateWindow()
 
-    self.inv_dimensions = 
-    {
-        padding = self.padding, -- Padding on all sides is the same
-        text_size = math.min(20, Render.Size.y / 54),
-        category_title_text_size = 16,
-        button_size = Vector2(
-            (self.window:GetSize().x - self.padding * #Inventory.config.categories) / #Inventory.config.categories, 40),
-        cat_offsets = {} -- Per category offsets
-    }
-    
+    self:RecalculateInventoryResolution()
     self:CreateInventory()
 
     LocalPlayer:SetValue("InventoryOpen", false)
@@ -72,7 +60,47 @@ function cInventoryUI:__init()
     Events:Subscribe(var("MouseScroll"):get(), self, self.MouseScroll)
     self.window:Subscribe(var("PostRender"):get(), self, self.WindowRender)
     Events:Subscribe(var("SetInventoryState"):get(), self, self.SetInventoryState)
+    Events:Subscribe(var("ResolutionChanged"):get(), self, self.ResolutionChanged)
     
+end
+
+function cInventoryUI:CreateWindow()
+
+    if self.window then self.window:Remove() end
+
+    self.window = BaseWindow.Create("Inventory")
+    self.window:SetSize(Vector2(math.min(Render.Size.x * 0.9, InventoryUIStyle.default_inv_size), Render.Size.y))
+    self.window:SetPosition(Render.Size - self.window:GetSize())
+    self.window:Hide()
+    self.window:Focus()
+    self.window:SetBackgroundVisible(false)
+
+end
+
+function cInventoryUI:RecalculateInventoryResolution()
+
+    self.inv_dimensions = 
+    {
+        padding = self.padding, -- Padding on all sides is the same
+        text_size = math.min(20, Render.Size.y / 54),
+        category_title_text_size = 16,
+        button_size = Vector2(
+            (self.window:GetSize().x - self.padding * #Inventory.config.categories) / #Inventory.config.categories, 40),
+        cat_offsets = {} -- Per category offsets
+    }
+
+    self.inv_dimensions.text_size = self.inv_dimensions.button_size.x * 0.0785
+    self.inv_dimensions.category_title_text_size = self.inv_dimensions.button_size.x * 0.065
+
+end
+
+function cInventoryUI:ResolutionChanged()
+
+    self:RecalculateInventoryResolution()
+    self:CreateInventory()
+
+    self:Update({action = "full"})
+
 end
 
 function cInventoryUI:SetInventoryState(open)
@@ -567,6 +595,10 @@ function cInventoryUI:ToggleDroppingItemButton(button)
 end
 
 function cInventoryUI:ShiftStack(button)
+
+    if self.shift_timer:GetSeconds() < 0.2 then return end
+
+    self.shift_timer:Restart()
     
     -- Trying to shift a stack
     local cat = button:GetDataString("stack_category")
@@ -701,6 +733,7 @@ function cInventoryUI:ToggleVisible()
         self.window:Show()
         Mouse:SetPosition(Render.Size * 0.75)
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
+        self.window:BringToFront()
     end
 
     if not ClientInventory.lootbox_ui.window:GetVisible() then

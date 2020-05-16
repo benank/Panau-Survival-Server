@@ -5,7 +5,8 @@ Items =
         category = "Supplies",
         stacklimit = 100,
         loot = {2,3,4},
-        rarity = 0.05,
+        rarity = 0.08,
+        max_loot = 5,
         rarity_mod = {1,1.5,1.5}
     },
     {
@@ -14,14 +15,16 @@ Items =
         stacklimit = 10,
         loot = {3,4,5},
         rarity = 0.01,
+        max_loot = 1,
         rarity_mod = {1,5,7.5}
     },
     {
         name = "Handgun Ammo",
         category = "Supplies",
-        stacklimit = 25,
+        stacklimit = 60,
         loot = {1,2},
-        rarity = 0.1,
+        rarity = 0.15,
+        max_loot = 4,
         rarity_mod = {1,0.75}
     },
     {
@@ -29,31 +32,35 @@ Items =
         category = "Supplies",
         stacklimit = 2,
         loot = {4,5},
-        rarity = 0.05,
+        rarity = 0.02,
+        max_loot = 1,
         rarity_mod = {1,1.5}
     },
     {
         name = "Revolver Ammo",
         category = "Supplies",
-        stacklimit = 25,
+        stacklimit = 60,
         loot = {1,2},
-        rarity = 0.1,
+        rarity = 0.15,
+        max_loot = 4,
         rarity_mod = {1,0.75}
     },
     {
         name = "Shotgun Ammo",
         category = "Supplies",
-        stacklimit = 100,
+        stacklimit = 30,
         loot = {2,3,4},
-        rarity = 0.01,
+        rarity = 0.0125,
+        max_loot = 3,
         rarity_mod = {5,7.5,1}
     },
     {
         name = "SMG Ammo",
         category = "Supplies",
-        stacklimit = 50,
+        stacklimit = 90,
         loot = {2,3,4},
-        rarity = 0.075,
+        rarity = 0.2,
+        max_loot = 5,
         rarity_mod = {1,1,1}
     },
     {
@@ -61,7 +68,8 @@ Items =
         category = "Supplies",
         stacklimit = 25,
         loot = {3,4,5},
-        rarity = 0.1,
+        rarity = 0.12,
+        max_loot = 2,
         rarity_mod = {0.75,1,1}
     },
     {
@@ -70,14 +78,16 @@ Items =
         stacklimit = 100,
         loot = {4,5},
         rarity = 0.1,
+        max_loot = 5,
         rarity_mod = {0.75,1}
     },
     {
         name = "Sawn-Off Ammo",
         category = "Supplies",
-        stacklimit = 25,
+        stacklimit = 60,
         loot = {1,2},
-        rarity = 0.1,
+        rarity = 0.15,
+        max_loot = 3,
         rarity_mod = {0.75,1}
     },
     {
@@ -85,16 +95,16 @@ Items =
         category = "Supplies",
         stacklimit = 50,
         loot = {1,2,3},
-        rarity = 0.1,
+        rarity = 0.02,
         rarity_mod = {1,1,0.5}
     },
     {
         name = "Combat Backpack",
         category = "Survival",
         stacklimit = 1,
-        loot = {4,5},
-        rarity = 0.01,
-        rarity_mod = {1,2},
+        loot = {3,4},
+        rarity = 0.05,
+        rarity_mod = {1,0.25},
         can_equip = true,
         durable = true,
         max_durability = 1000,
@@ -104,9 +114,9 @@ Items =
         name = "Explorer Backpack",
         category = "Survival",
         stacklimit = 1,
-        loot = {4,5},
-        rarity = 0.01,
-        rarity_mod = {1,2},
+        loot = {3,4},
+        rarity = 0.05,
+        rarity_mod = {1,0.25},
         can_equip = true,
         durable = true,
         max_durability = 1000,
@@ -117,7 +127,7 @@ Items =
         category = "Survival",
         stacklimit = 2,
         loot = {1,2},
-        rarity = 0.01,
+        rarity = 0.015,
         rarity_mod = {0.5,1},
         can_equip = true,
         durable = true,
@@ -154,7 +164,7 @@ Items =
         stacklimit = 1,
         loot = {3,4},
         rarity = 0.01,
-        rarity_mod = {1,5},
+        rarity_mod = {1,2},
         can_equip = true,
         durable = true,
         max_durability = 1000,
@@ -165,7 +175,7 @@ Items =
         category = "Survival",
         stacklimit = 1,
         loot = {4,5},
-        rarity = 0.01,
+        rarity = 0.002,
         rarity_mod = {1,5},
         can_equip = true,
         durable = true,
@@ -200,8 +210,8 @@ Items =
         category = "Survival",
         stacklimit = 5,
         loot = {1,2},
-        rarity = 0.05,
-        in_loot = false,
+        rarity = 0.02,
+        max_loot = 1,
         rarity_mod = {1,1.5},
         can_use = true
     },
@@ -210,17 +220,18 @@ Items =
         category = "Survival",
         stacklimit = 5,
         loot = {1,2},
-        rarity = 0.075,
+        rarity = 0.1,
+        max_loot = 1,
         rarity_mod = {1,1},
         can_use = true
     },
     {
         name = "Battery",
-        category = "Survival",
+        category = "Supplies",
         stacklimit = 10,
         loot = {1,2,3},
         rarity = 0.01,
-        in_loot = false,
+        max_loot = 2,
         rarity_mod = {5,3,2.5},
         durable = true,
         max_durability = 1000
@@ -231,6 +242,7 @@ Items =
         stacklimit = 5,
         loot = {3,4},
         rarity = 0.05,
+        max_loot = 1,
         in_loot = false,
         rarity_mod = {1,2},
         can_use = true
@@ -241,6 +253,7 @@ Items =
         stacklimit = 5,
         loot = {1,2},
         rarity = 0.05,
+        max_loot = 1,
         in_loot = false,
         rarity_mod = {1,1},
         can_use = true
@@ -260,8 +273,7 @@ Items =
         category = "Supplies",
         stacklimit = 2,
         loot = {3,4,5},
-        rarity = 0.01,
-        in_loot = false,
+        rarity = 0.005,
         rarity_mod = {1,2,5},
         can_use = true
     },
@@ -280,7 +292,7 @@ Items =
         category = "Survival",
         stacklimit = 2,
         loot = {1,2,3},
-        rarity = 0.01,
+        rarity = 0.012,
         rarity_mod = {1.5,5,7.5},
         can_use = true
     },
@@ -313,6 +325,7 @@ Items =
         stacklimit = 5,
         loot = {1,2,3,4},
         rarity = 0.05,
+        max_loot = 1,
         in_loot = false,
         rarity_mod = {1,1,1.5,1.5},
         can_use = true
@@ -323,6 +336,7 @@ Items =
         stacklimit = 5,
         loot = {1,2,3},
         rarity = 0.05,
+        max_loot = 1,
         in_loot = false,
         rarity_mod = {1,1,1.5},
         can_use = true
@@ -342,7 +356,8 @@ Items =
         category = "Survival",
         stacklimit = 3,
         loot = {2},
-        rarity = 0.01,
+        max_loot = 1,
+        rarity = 0.03,
         rarity_mod = {1},
         can_use = true
     },
@@ -351,7 +366,8 @@ Items =
         category = "Survival",
         stacklimit = 3,
         loot = {3},
-        rarity = 0.01,
+        max_loot = 1,
+        rarity = 0.005,
         rarity_mod = {1},
         can_use = true
     },
@@ -360,6 +376,7 @@ Items =
         category = "Survival",
         stacklimit = 3,
         loot = {4},
+        max_loot = 1,
         rarity = 0.01,
         in_loot = false,
         rarity_mod = {1},
@@ -380,6 +397,7 @@ Items =
         category = "Supplies",
         stacklimit = 5,
         loot = {1,2},
+        max_loot = 1,
         rarity = 0.05,
         rarity_mod = {1,0.5},
         can_use = true
@@ -389,6 +407,7 @@ Items =
         category = "Supplies",
         stacklimit = 5,
         loot = {1,2},
+        max_loot = 1,
         rarity = 0.1,
         rarity_mod = {1,0.5},
         can_use = true
@@ -398,6 +417,7 @@ Items =
         category = "Supplies",
         stacklimit = 5,
         loot = {1,2},
+        max_loot = 1,
         rarity = 0.1,
         rarity_mod = {1,0.5},
         can_use = true
@@ -406,19 +426,21 @@ Items =
         name = "C4",
         category = "Explosives",
         stacklimit = 5,
-        loot = {3,4,5},
-        rarity = 0.1,
+        loot = {3,4},
+        rarity = 0.025,
+        max_loot = 1,
         in_loot = false,
-        rarity_mod = {0.5,1,1},
+        rarity_mod = {1,2},
         can_use = true
     },
     {
         name = "Claymore",
         category = "Explosives",
         stacklimit = 5,
-        loot = {2,3,4},
-        rarity = 0.05,
-        rarity_mod = {1,2,2},
+        loot = {2,3},
+        max_loot = 1,
+        rarity = 0.025,
+        rarity_mod = {1,2},
         can_use = true
     },
     {
@@ -427,6 +449,7 @@ Items =
         stacklimit = 10,
         loot = {3,4},
         rarity = 0.1,
+        max_loot = 2,
         rarity_mod = {1,2},
         can_equip = true,
         equip_type = "held"
@@ -436,7 +459,8 @@ Items =
         category = "Explosives",
         stacklimit = 5,
         loot = {4},
-        rarity = 0.05,
+        rarity = 0.0001,
+        max_loot = 1,
         rarity_mod = {1},
         can_equip = true,
         equip_type = "held"
@@ -445,9 +469,9 @@ Items =
         name = "Mine",
         category = "Explosives",
         stacklimit = 5,
-        loot = {1,2,3},
-        rarity = 0.05,
-        rarity_mod = {1,2,2},
+        loot = {1,2},
+        rarity = 0.015,
+        rarity_mod = {1,2},
         can_use = true
     },
     {
@@ -456,6 +480,7 @@ Items =
         stacklimit = 10,
         loot = {3,4},
         rarity = 0.1,
+        max_loot = 2,
         rarity_mod = {1,2},
         can_equip = true,
         equip_type = "held"
@@ -465,7 +490,8 @@ Items =
         category = "Explosives",
         stacklimit = 10,
         loot = {1,2},
-        rarity = 0.1,
+        rarity = 0.25,
+        max_loot = 2,
         rarity_mod = {1,2},
         can_equip = true,
         equip_type = "held"
@@ -476,8 +502,33 @@ Items =
         stacklimit = 10,
         loot = {2,3},
         rarity = 0.1,
+        max_loot = 2,
         rarity_mod = {1,2},
         can_equip = true,
+        equip_type = "held"
+    },
+    {
+        name = "AntiGrav Grenade",
+        category = "Explosives",
+        stacklimit = 10,
+        loot = {3,4},
+        rarity = 0.01,
+        max_loot = 2,
+        rarity_mod = {0.5,1},
+        can_equip = true,
+        in_loot = false,
+        equip_type = "held"
+    },
+    {
+        name = "Warp Grenade",
+        category = "Explosives",
+        stacklimit = 10,
+        loot = {3,4},
+        rarity = 0.02,
+        max_loot = 2,
+        rarity_mod = {0.5,1},
+        can_equip = true,
+        in_loot = false,
         equip_type = "held"
     },
     {
@@ -486,6 +537,7 @@ Items =
         stacklimit = 10,
         loot = {2,3},
         rarity = 0.1,
+        max_loot = 2,
         rarity_mod = {1,2},
         can_equip = true,
         equip_type = "held"
@@ -503,27 +555,27 @@ Items =
         name = "Can of Beans",
         category = "Survival",
         stacklimit = 5,
-        loot = {9},
-        rarity = 0.02,
-        rarity_mod = {1},
+        loot = {9,3},
+        rarity = 0.01,
+        rarity_mod = {1,0.1},
         can_use = true
     },
     {
         name = "Can of Ham",
         category = "Survival",
         stacklimit = 5,
-        loot = {9},
-        rarity = 0.02,
-        rarity_mod = {1},
+        loot = {9,3},
+        rarity = 0.01,
+        rarity_mod = {1,0.1},
         can_use = true
     },
     {
         name = "Can of Peaches",
         category = "Survival",
         stacklimit = 5,
-        loot = {9},
-        rarity = 0.02,
-        rarity_mod = {1},
+        loot = {9,3},
+        rarity = 0.01,
+        rarity_mod = {1,0.1},
         can_use = true
     },
     {
@@ -621,8 +673,8 @@ Items =
         category = "Supplies",
         stacklimit = 100,
         loot = {1,2,3,4},
-        rarity = 0.01,
-        rarity_mod = {10,15,10,7.5}
+        rarity = 0.065,
+        rarity_mod = {1,1.5,0.01,0.01}
     },
     {
         name = "Binoculars",
@@ -639,7 +691,7 @@ Items =
         category = "Supplies",
         stacklimit = 2,
         loot = {2,3},
-        rarity = 0.075,
+        rarity = 0.04,
         rarity_mod = {1,0.75},
         can_equip = true,
         durable = true,
@@ -651,7 +703,7 @@ Items =
         category = "Supplies",
         stacklimit = 2,
         loot = {4,5},
-        rarity = 0.015,
+        rarity = 0.005,
         rarity_mod = {1,0.8},
         can_equip = true,
         durable = true,
@@ -662,22 +714,21 @@ Items =
         name = "Explosives Detector",
         category = "Supplies",
         stacklimit = 1,
-        loot = {3,4},
+        loot = {3,4,5},
         rarity = 0.0025,
         rarity_mod = {1,2,5},
         can_equip = true,
         durable = true,
-        in_loot = false,
-        max_durability = 500,
+        max_durability = 1000,
         equip_type = "detector"
     },
     {
         name = "Parachute",
         category = "Supplies",
         stacklimit = 2,
-        loot = {3,4},
-        rarity = 0.05,
-        rarity_mod = {1,1.5},
+        loot = {4,5},
+        rarity = 0.003,
+        rarity_mod = {1,2},
         can_equip = true,
         durable = true,
         max_durability = 2500,
@@ -696,133 +747,133 @@ Items =
         name = "Assault Rifle",
         category = "Weapons",
         stacklimit = 1,
-        loot = {1,2,3,4},
-        rarity = 0.01,
-        rarity_mod = {1,5,7.5,10},
+        loot = {3,4},
+        rarity = 0.005,
+        rarity_mod = {1,2},
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_2h"
     },
     {
         name = "Bubble Gun",
         category = "Weapons",
         stacklimit = 1,
-        loot = {1,2,3,4},
+        loot = {1,2},
         rarity = 0.01,
-        rarity_mod = {1,1,1,1},
+        rarity_mod = {1,0.5},
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Grenade Launcher",
         category = "Weapons",
         stacklimit = 1,
         loot = {3,4,5},
-        rarity = 0.01,
-        rarity_mod = {1,7.5,10},
+        rarity = 0.005,
+        rarity_mod = {1,2,5},
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Handgun",
         category = "Weapons",
         stacklimit = 1,
         loot = {1,2},
-        rarity = 0.05,
-        rarity_mod = {2,1},
+        rarity = 0.015,
+        rarity_mod = {1,2},
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Machine Gun",
         category = "Weapons",
         stacklimit = 1,
         loot = {4,5},
-        rarity = 0.1,
+        rarity = 0.005,
         rarity_mod = {0.75,1},
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_2h"
     },
     {
         name = "Revolver",
         category = "Weapons",
         stacklimit = 1,
         loot = {1,2},
-        rarity = 0.05,
-        rarity_mod = {1,1},
+        rarity = 0.015,
+        rarity_mod = {2,1},
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Rocket Launcher",
         category = "Weapons",
         stacklimit = 1,
         loot = {4,5},
-        rarity = 0.01,
+        rarity = 0.002,
         rarity_mod = {2,7.5},
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_2h"
     },
     {
         name = "Sawn-Off Shotgun",
         category = "Weapons",
         stacklimit = 1,
         loot = {1,2},
-        rarity = 0.01,
-        rarity_mod = {5,7.5},
+        rarity = 0.015,
+        rarity_mod = {0.5,0.75},
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Shotgun",
         category = "Weapons",
         stacklimit = 1,
-        loot = {2,3,4},
-        rarity = 0.01,
-        rarity_mod = {5,7.5,10},
+        loot = {3,4},
+        rarity = 0.005,
+        rarity_mod = {1,4},
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_2h"
     },
     {
         name = "SMG",
         category = "Weapons",
         stacklimit = 1,
-        loot = {1,2,3,4},
-        rarity = 0.01,
-        rarity_mod = {1,5,7.5,10},
+        loot = {1,2,3},
+        rarity = 0.0075,
+        rarity_mod = {1,2,3},
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_1h"
     },
     {
         name = "Sniper Rifle",
         category = "Weapons",
         stacklimit = 1,
         loot = {3,4},
-        rarity = 0.05,
-        rarity_mod = {1,1.5},
+        rarity = 0.0075,
+        rarity_mod = {1,2},
         can_equip = true,
         durable = true,
         max_durability = 500,
-        equip_type = "weapon"
+        equip_type = "weapon_2h"
     },
     {
         name = "SMRT-GRP",
@@ -855,7 +906,7 @@ Items =
         category = "Survival",
         stacklimit = 1,
         loot = {3},
-        rarity = 0.05,
+        rarity = 0.03,
         rarity_mod = {1},
         can_use = true,
         durable = true
@@ -865,12 +916,12 @@ Items =
         category = "Weapons",
         stacklimit = 1,
         loot = {5},
-        rarity = 0.001,
+        rarity = 0.0001,
         rarity_mod = {1},
         can_equip = true,
         durable = true,
         in_loot = false,
-        equip_type = "weapon",
+        equip_type = "weapon_1h",
     },
     {
         name = "EMP", -- Sets off a blast that disables all electronics within a range
@@ -892,6 +943,31 @@ Items =
         durable = true,
         in_loot = false,
         rarity = 0.01,
+        rarity_mod = {1}
+    },
+    {
+        name = "Cloud Strider Boots",
+        category = "Survival",
+        stacklimit = 1,
+        loot = {5},
+        can_equip = true,
+        equip_type = "boots",
+        durable = true,
+        in_loot = false,
+        rarity = 0.001,
+        max_durability = 1000,
+        rarity_mod = {1}
+    },
+    {
+        name = "Second Life",
+        category = "Survival",
+        stacklimit = 1,
+        loot = {5},
+        can_equip = true,
+        equip_type = "second_life",
+        in_loot = false,
+        rarity = 0.001,
+        max_held = 1, -- Maximum number of these that can be in the inventory at once
         rarity_mod = {1}
     }
 }

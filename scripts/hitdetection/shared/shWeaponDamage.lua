@@ -1,10 +1,11 @@
 WeaponBaseDamage = 
 {
+    [0] = 3, -- All vehicle machine guns
     [Weapon.Handgun] = 4, -- All of these are in percents
     [Weapon.Assault] = 5,
     [Weapon.BubbleGun] = -2,
     [Weapon.GrenadeLauncher] = 50,
-    [Weapon.MachineGun] = 10,
+    [Weapon.MachineGun] = 7,
     [Weapon.Revolver] = 10,
     [Weapon.RocketLauncher] = 100,
     [Weapon.SMG] = 5,
@@ -13,14 +14,19 @@ WeaponBaseDamage =
     [Weapon.Shotgun] = 5,
 }
 
-FireDamagePerSecond = 0.05
+FireEffectTime = 9 -- Time it takes for fire to go out 
+
+FireDamagePerSecond = 0.09
 ToxicDamagePerSecond = 0.08
+WarpGrenadeDamage = 0.25
 
 VehicleGuardDamage = 1.0 -- Instakill
 
+SuicideDamage = 999
+
 ExplosiveBaseDamage = 
 {
-    [DamageEntity.Mine] = {damage = 200, radius = 10, knockback = 10},
+    [DamageEntity.Mine] = {damage = 250, radius = 10, knockback = 10},
     [DamageEntity.Claymore] = {damage = 800, radius = 10, knockback = 12},
     [DamageEntity.HEGrenade] = {damage = 140, radius = 5, knockback = 5},
     [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 60}
@@ -101,6 +107,7 @@ ArmorModifiers = -- Percentages subtracted, 0.2 = 20% less damage = 80% total da
 
 WeaponNames = 
 {
+    [0] = "Vehicle MG",
     [Weapon.Handgun] = "Handgun",
     [Weapon.Assault] = "Assault Rifle",
     [Weapon.BubbleGun] = "Bubble Gun",

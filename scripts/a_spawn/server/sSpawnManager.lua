@@ -5,16 +5,37 @@ class 'sSpawnManager'
 
 function sSpawnManager:__init()
 
-	self.timer = Timer()
+    self.timer = Timer()
+    
+    local func = coroutine.wrap(function()
+        for player in Server:GetPlayers() do
+            self:UpdatePlayerPositionMinuteTick(player)
+            Timer.Sleep(3)
+        end
+        Timer.Sleep(1000)
+    end)()
+
+    for p in Server:GetPlayers() do
+        if not p:GetValue("Loading") then
+            p:SetValue("FirstSpawn", true)
+        end
+    end
+    
 
 	Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
 	Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
 	Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
 	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
-	Events:Subscribe("PostTick", self, self.PostTick)
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
 	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
 
+end
+
+function sSpawnManager:ModuleUnload()
+    for p in Server:GetPlayers() do
+        self:UpdatePlayer(p)
+    end
 end
 
 function sSpawnManager:EnterExitSafezone(args, player)
@@ -39,50 +60,35 @@ function sSpawnManager:EnterExitSafezone(args, player)
 
 end
 
-function sSpawnManager:PostTick()
-
-    if self.timer:GetSeconds() > 60 then
-
-        for player in Server:GetPlayers() do
-
-            self:UpdatePlayerPositionMinuteTick(player)
-
-		end
-		
-		self.timer:Restart()
-
-    end
-
-end
-
 function sSpawnManager:UpdatePlayerPositionMinuteTick(player)
 
-	if not IsValid(player) then return end
-	if player:GetValue("dead") or player:GetValue("Loading") or not player:GetEnabled() then return end
-
-	local steamid = tostring(player:GetSteamId().id)
-	local pos = player:GetPosition()
-
-	local command = SQL:Command("UPDATE positions SET x = ?, y = ?, z = ? WHERE steamID = (?)")
-	command:Bind(1, pos.x)
-	command:Bind(2, pos.y)
-	command:Bind(3, pos.z)
-	command:Bind(4, steamid)
-	command:Execute()
+	self:UpdatePlayer(player)
 
 end
 
 function sSpawnManager:PlayerQuit(args)
 
-	if args.player:GetValue("IsOkToSavePosition") ~= 0 then return end
-	if args.player:GetValue("Loading") then return end
+    Events:Fire("Discord", {
+        channel = "Chat",
+        content = string.format("*%s [%s] left the server.*", args.player:GetName(), args.player:GetSteamId())
+    })
 
-	local pos = args.player:GetPosition()
-	local steamid = tostring(args.player:GetSteamId().id)
+    self:UpdatePlayer(args.player)
 
-	if args.player:GetHealth() <= 0 or args.player:GetValue("Spawn/KilledRecently") or not args.player:GetEnabled() 
-		or (args.player:GetValue("Loading")) then
-		pos = self:GetRespawnPosition(args.player)
+end
+
+function sSpawnManager:UpdatePlayer(player)
+
+    if not IsValid(player) then return end
+	if player:GetValue("IsOkToSavePosition") ~= 0 then return end
+	if player:GetValue("Loading") and not player:GetValue("dead") then return end
+
+	local pos = player:GetPosition()
+	local steamid = tostring(player:GetSteamId().id)
+
+	if player:GetHealth() <= 0 or player:GetValue("Spawn/KilledRecently") or not player:GetEnabled() 
+		or (player:GetValue("dead")) then
+		pos = self:GetRespawnPosition(player)
 	end
 
 	local command = SQL:Command("UPDATE positions SET x = ?, y = ?, z = ? WHERE steamID = (?)")
@@ -96,7 +102,8 @@ end
 
 function sSpawnManager:PlayerJoin(args)
 
-	local steamid = tostring(args.player:GetSteamId().id)
+    local steamid = tostring(args.player:GetSteamId().id)
+    args.player:SetValue("FirstSpawn", false)
 
 	local qry = SQL:Query("SELECT steamID FROM positions WHERE steamID = (?) LIMIT 1")
 	qry:Bind(1, steamid)
@@ -138,7 +145,12 @@ function sSpawnManager:PlayerJoin(args)
 		command:Bind(6, 0)
 		command:Bind(7, 0)
 		command:Execute()
-	end
+    end
+    
+    Events:Fire("Discord", {
+        channel = "Chat",
+        content = string.format("*%s [%s] joined the server.*", args.player:GetName(), args.player:GetSteamId())
+    })
 
 end
 
@@ -170,19 +182,24 @@ end
 
 function sSpawnManager:PlayerSpawn(args)
     args.player:SetValue("Spawn/KilledRecently", false)
+    
+    if args.player:GetValue("FirstSpawn") then
+        args.player:SetPosition(self:GetRespawnPosition(args.player))
+    else
+        args.player:SetPosition(args.player:GetValue("SpawnPosition"))
+    end
+
     self:EnterExitSafezone({
         in_sz = true
     }, args.player)
+
+    args.player:SetValue("FirstSpawn", true)
+
 	return false
 end
 
 function sSpawnManager:PlayerDeath(args)
 	args.player:SetValue("Spawn/KilledRecently", true)
-	Timer.SetTimeout(5000, function()
-		if IsValid(args.player) then
-            args.player:SetPosition(self:GetRespawnPosition(args.player))
-		end
-	end)
 end
 
 sSpawnManager = sSpawnManager()

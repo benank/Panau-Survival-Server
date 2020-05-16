@@ -19,6 +19,7 @@ end
 function Grenades:PlayerInsideFireGrenadeArea(args, player)
     if player:GetValue("InSafezone") then return end
     player:SetNetworkValue("OnFire", true)
+    player:SetNetworkValue("OnFireTime", Server:GetElapsedSeconds())
 
     player:SetNetworkValue("FireAttackerId", args.attacker_id)
 end
@@ -38,6 +39,15 @@ function Grenades:GrenadeExploded(args, player)
         Events:Fire("items/ItemExplode", {
             position = args.position,
             radius = args.radius,
+            player = player
+        })
+    end
+
+    if args.type == "Warp Grenade" then
+        Network:Send(player, "items/WarpEffect", {position = player:GetPosition()})
+        Network:SendNearby(player, "items/WarpEffect", {position = player:GetPosition()})
+        player:SetPosition(args.position)
+        Events:Fire("HitDetection/WarpGrenade", {
             player = player
         })
     end

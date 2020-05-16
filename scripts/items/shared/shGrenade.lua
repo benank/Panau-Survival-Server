@@ -40,6 +40,19 @@ Grenade.Types = {
         ["angle"] = Angle(0, math.pi / 2, 0),
         ["effect_time"] = 5
 	},
+	["Warp Grenade"] = {
+		["effect_id"] = 251,
+        ["trail_effect_id"] = 61,
+		["weight"] = 0.5,
+        ["drag"] = 0.11,
+        ["trigger_explosives"] = true,
+		["restitution"] = 0.3,
+		["radius"] = 8,
+        ["model"] = "general.blz/wea33-wea33.lod",
+        ["offset"] = Vector3(-0.32, 0, 0.03),
+        ["angle"] = Angle(0, math.pi / 2, 0),
+        ["effect_time"] = 5
+	},
 	["Flashbang"] = {
 		["effect_id"] = 19,
         ["trail_effect_id"] = 61,
@@ -91,6 +104,57 @@ Grenade.Types = {
                 color = Color(64, 200, 28),
                 multiplier = 1,
                 radius = 22,
+                timeout = grenade.type.effect_time
+            })
+        end,
+        ["model"] = "general.blz/wea33-wea33.lod",
+        ["offset"] = Vector3(-0.32, 0, 0.03),
+        ["angle"] = Angle(0, math.pi / 2, 0),
+        ["effect_time"] = 30 -- default effect time for this effect is 15
+	},
+	["AntiGrav Grenade"] = {
+		["effect_id"] = 135,
+        ["trail_effect_id"] = 61,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
+		["restitution"] = 0.3,
+        ["radius"] = 12,
+        ["custom_func"] = function(grenade)
+
+            GrenadeEffectZones:Add({
+                position = grenade.position, 
+                grenade_type = grenade.grenade_type, 
+                type = "Slow",
+                timeout = grenade.type.effect_time,
+                owner_id = grenade.owner_id
+            })
+
+            local timer = Timer()
+            
+            local function createfx()
+                ClientParticleSystem.Play(AssetLocation.Game, {
+                    position = grenade.position,
+                    timeout = 3,
+                    angle = Angle(),
+                    path = "fx_f2m06_emptoweractive_05.psmb"
+                })
+
+                if timer:GetSeconds() < grenade.type.effect_time then
+                    Timer.SetTimeout(2 * 1000, function()
+                        createfx()
+                    end)
+                end
+
+            end
+
+            createfx()
+
+            ClientLight.Play({
+                position = grenade.position + Vector3(0, 10, 0),
+                angle = Angle(),
+                color = Color(255, 255, 255),
+                multiplier = 3,
+                radius = 15,
                 timeout = grenade.type.effect_time
             })
         end,
@@ -359,7 +423,8 @@ function Grenade:Detonate()
         if self.is_mine and Grenade.Types[self.grenade_type].trigger_explosives then
             Network:Send(var("items/GrenadeExploded"):get(), {
                 position = self.object:GetPosition(),
-                radius = self.type.radius
+                radius = self.type.radius,
+                type = self.grenade_type
             })
         end
 

@@ -15,6 +15,9 @@ function sInventory:__init(player)
     self.events = {}
     self.network_events = {}
 
+    self.invsee_source = nil
+    self.invsee = {}
+
     table.insert(self.events, Events:Subscribe("Inventory.AddStack-" .. self.steamID, self, self.AddStackRemote))
     table.insert(self.events, Events:Subscribe("Inventory.AddItem-" .. self.steamID, self, self.AddItemRemote))
     table.insert(self.events, Events:Subscribe("Inventory.RemoveStack-" .. self.steamID, self, self.RemoveStackRemote))
@@ -25,6 +28,9 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.SetItemEquipped-" .. self.steamID, self, self.SetItemEquippedRemote))
 
     table.insert(self.events, Events:Subscribe("Inventory.ToggleBackpackEquipped-" .. self.steamID, self, self.ToggleBackpackEquipped))
+
+    table.insert(self.events, Events:Subscribe("PlayerKilled", self, self.PlayerKilled))
+    table.insert(self.events, Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated))
 
     table.insert(self.network_events, Network:Subscribe("Inventory/Shift" .. self.steamID, self, self.ShiftStack))
     table.insert(self.network_events, Network:Subscribe("Inventory/ToggleEquipped" .. self.steamID, self, self.ToggleEquipped))
@@ -39,11 +45,15 @@ end
 
 function sInventory:Load()
 
+    if self.initial_sync then return end
+
     -- Initialize subtables of categories
     for index, cat_info in pairs(Inventory.config.categories) do
         self.contents[cat_info.name] = {}
         self.slots[cat_info.name] = {default = cat_info.slots, level = 0, backpack = 0}
     end
+
+    self:UpdateNumSlotsBasedOnLevel()
 
 	local query = SQL:Query("SELECT contents FROM inventory WHERE steamID = (?) LIMIT 1")
     query:Bind(1, self.steamID)
@@ -76,6 +86,107 @@ function sInventory:Load()
 
 end
 
+function sInventory:PlayerLevelUpdated(args)
+    if args.player ~= self.player then return end
+
+    local old_slots = deepcopy(self.slots)
+    self:UpdateNumSlotsBasedOnLevel()
+    self:Sync({sync_slots = true})
+
+    for cat_name, slot_data in pairs(self.slots) do
+        if slot_data.level ~= old_slots[cat_name].level then
+            Chat:Send(self.player, string.format("Inventory space increased! You now have %d %s slots.", self:GetNumSlotsInCategory(cat_name), cat_name), Color(0, 255, 255))
+        end
+    end
+
+end
+
+-- Updates the number of slots in each category based on level
+function sInventory:UpdateNumSlotsBasedOnLevel()
+
+    local level = self.player:GetValue("Exp").level
+
+    for cat_name, slot_data in pairs(self.slots) do
+        self.slots[cat_name].level = GetNumSlotsInCategoryFromLevel(cat_name, level)
+    end
+
+end
+
+function sInventory:PlayerKilled(args)
+
+    if not IsValid(args.player) then return end
+    if args.player ~= self.player then return end
+
+    -- Player died, so spawn dropbox
+    local level = args.player:GetValue("Exp").level
+
+    local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+
+    -- Level 0 within financial district, don't drop items
+    if level == 0 and args.player:GetPosition():Distance(sz_config.safezone.position) < 1200 then return end
+
+    local num_slots_to_drop = GetNumSlotsDroppedOnDeath(level)
+
+    if num_slots_to_drop == 0 then return end
+
+    local stacks_to_drop = {}
+    local categories = {"Weapons", "Explosives", "Supplies", "Survival"}
+
+    while self:GetNumUsedSlots() > 0 and num_slots_to_drop > 0 do
+
+        local cat = categories[math.random(#categories)]
+
+        while count_table(self.contents[cat]) == 0 do
+            cat = categories[math.random(#categories)]
+        end
+
+        local index_to_remove = math.random(#self.contents[cat])
+        local stack = table.remove(self.contents[cat], index_to_remove)
+        
+        self:CheckIfStackHasOneEquippedThenUnequip(stack)
+
+        table.insert(stacks_to_drop, stack)
+
+        num_slots_to_drop = num_slots_to_drop - 1
+
+    end
+
+    -- If they overflowed, drop the items
+    if #stacks_to_drop > 0 then
+
+        -- Send the player a chat message
+        local chat_msg = "Death drop: "
+        for index, stack in pairs(stacks_to_drop) do
+            chat_msg = chat_msg .. string.format("%s (%s)", tostring(stack:GetProperty("name")), tostring(stack:GetAmount()))
+            if index < #stacks_to_drop then
+                chat_msg = chat_msg .. ", "
+            end
+        end
+
+        Chat:Send(self.player, chat_msg, Color.Red)
+
+        Events:Fire("Discord", {
+            channel = "Inventory",
+            content = string.format("%s [%s] death drop: %s", self.player:GetName(), tostring(self.player:GetSteamId()), chat_msg)
+        })
+
+        self:SpawnDropbox(stacks_to_drop, true)
+
+        -- Full sync in case they dropped from multiple categories
+        self:Sync({sync_full = true})
+    end
+    
+
+end
+
+function sInventory:GetNumUsedSlots()
+    local slots_used = 0
+    for cat_name, data in pairs(self.contents) do
+        slots_used = slots_used + count_table(data)
+    end
+    return slots_used
+end
+
 function sInventory:ToggleBackpackEquipped(args)
 
     if not args.equipped then
@@ -84,8 +195,8 @@ function sInventory:ToggleBackpackEquipped(args)
             self.slots[cat].backpack = self.slots[cat].backpack - slots_to_add
         end
 
+        -- No need to check for overflow here because sync does it
         self:Sync({sync_slots = true})
-        self:CheckForOverflow()
 
     else
 
@@ -133,6 +244,7 @@ function sInventory:ToggleEquipped(args, player)
                     Events:Fire("Inventory/ToggleEquipped", 
                         {index = stack_index, player = self.player, item = self.contents[cat][stack_index].contents[1]:Copy():GetSyncObject()})
 
+                    --Timer.Sleep(1)
                 end
 
             end
@@ -140,6 +252,12 @@ function sInventory:ToggleEquipped(args, player)
     end
     
     local index = self:FindIndexFromUID(args.cat, uid)
+
+    if not self.contents[args.cat]
+    or not self.contents[args.cat][index]
+    or not self.contents[args.cat][index].contents[1] then
+        return
+    end
 
     -- Equip/unequip the item
     self.contents[args.cat][index].contents[1].equipped = not self.contents[args.cat][index].contents[1].equipped
@@ -149,6 +267,36 @@ function sInventory:ToggleEquipped(args, player)
 
     Events:Fire("Inventory/ToggleEquipped", 
         {player = self.player, index = index, item = self.contents[args.cat][index].contents[1]:Copy():GetSyncObject()})
+
+end
+
+function sInventory:SpawnDropbox(contents, is_death_drop)
+
+    -- Request ground data
+    Network:Send(self.player, "Inventory/GetGroundData")
+
+    -- Receive ground data
+    local sub
+    sub = Network:Subscribe("Inventory/GroundData" .. self.steamID, function(args, player)
+        if player ~= self.player then return end
+        if not args.position or not args.angle then return end
+
+        local dropbox = CreateLootbox({
+            position = args.position,
+            angle = args.angle,
+            tier = Lootbox.Types.Dropbox,
+            active = true,
+            contents = contents
+        })
+        dropbox:Sync()
+
+        Network:Unsubscribe(sub)
+
+        if is_death_drop then
+            Events:Fire("Inventory/SetDeathDropPosition", {player = self.player, position = args.position})
+        end
+
+    end)
 
 end
 
@@ -189,19 +337,12 @@ function sInventory:CheckForOverflow()
 
         Chat:Send(self.player, chat_msg, Color.Red)
 
-        local dropbox = CreateLootbox({
-            position = self.player:GetPosition(),
-            angle = self.player:GetAngle(),
-            tier = Lootbox.Types.Dropbox,
-            active = true,
-            contents = stacks_to_drop
-        })
-        dropbox:Sync()
+        self:SpawnDropbox(stacks_to_drop)
 
         -- Full sync in case they dropped from multiple categories
         self:Sync({sync_full = true})
     end
-
+    
 end
 
 function sInventory:UseItem(args, player)
@@ -220,7 +361,7 @@ function sInventory:UseItem(args, player)
 end
 
 function sInventory:DropStacks(args, player)
-    
+
     if player:InVehicle() then return end
     if not args.stacks then return end
     if count_table(args.stacks) == 0 then return end
@@ -240,9 +381,16 @@ function sInventory:DropStacks(args, player)
     end
 
     -- Now remove items and add them to a lootbox (or stash)
-    local lootbox
+    local contents = {}
     for _, data in pairs(args.stacks) do
-        lootbox = self:DropStack(data, player, lootbox) or lootbox
+        local stack = self:DropStack(data, player)
+        if stack then
+            table.insert(contents, stack)
+        end
+    end
+
+    if count_table(contents) > 0 then
+        self:SpawnDropbox(contents)
     end
 
     self.operation_block = self.operation_block - 1
@@ -260,7 +408,7 @@ function sInventory:FindIndexFromUID(cat, uid)
     return 0
 end
 
-function sInventory:DropStack(args, player, lootbox)
+function sInventory:DropStack(args, player)
 
     if player ~= self.player then return end
 
@@ -298,7 +446,6 @@ function sInventory:DropStack(args, player, lootbox)
         end
     end
 
-
     -- Not dropping the entire stack
     if args.amount < stack:GetAmount() then
 
@@ -318,19 +465,12 @@ function sInventory:DropStack(args, player, lootbox)
 
         else
 
-            if not lootbox then
-                lootbox = CreateLootbox({
-                    position = player:GetPosition(),
-                    angle = player:GetAngle(),
-                    tier = Lootbox.Types.Dropbox,
-                    active = true,
-                    contents = {[1] = split_stack}
-                })
-                lootbox:Sync()
-                return lootbox
-            else
-                lootbox:AddStack(split_stack)
-            end
+            Events:Fire("Discord", {
+                channel = "Inventory",
+                content = string.format("%s [%s] dropped stack: %s", self.player:GetName(), self.player:GetSteamId(), split_stack:ToString())
+            })
+
+            return split_stack
 
         end
 
@@ -351,19 +491,12 @@ function sInventory:DropStack(args, player, lootbox)
 
         else
 
-            if not lootbox then
-                local lootbox = CreateLootbox({
-                    position = player:GetPosition(),
-                    angle = player:GetAngle(),
-                    tier = Lootbox.Types.Dropbox,
-                    active = true,
-                    contents = {[1] = stack}
-                })
-                lootbox:Sync()
-                return lootbox
-            else
-                lootbox:AddStack(stack)
-            end
+            Events:Fire("Discord", {
+                channel = "Inventory",
+                content = string.format("%s [%s] dropped stack: %s", self.player:GetName(), self.player:GetSteamId(), stack:ToString())
+            })
+
+            return stack
 
         end
 
@@ -440,7 +573,7 @@ function sInventory:CanPlayerPerformOperations(player)
     -- eventually modify this so that admins can do stuff if they clone the inv
     return IsValid(player) and IsValid(self.player) and player == self.player and self.operation_block == 0
         and not player:GetValue("Loading") and player:GetEnabled() and player:GetValue("InventoryOperationBlock") == 0
-        and player:GetHealth() > 0 and not player:GetValue("dead")
+        and player:GetHealth() > 0 and not player:GetValue("dead") and not self.invsee_source
 
 end
 
@@ -526,7 +659,7 @@ end
 function sInventory:SetItemEquippedRemote(args)
 
     if args.player ~= self.player then
-        error("sInventory:ModifyDurabilityRemote failed: player does not match")
+        error("sInventory:SetItemEquippedRemote failed: player does not match")
         return
     end
 
@@ -612,6 +745,21 @@ end
 -- Syncs automatically
 function sInventory:AddStack(args)
 
+    local item_data = Items_indexed[args.stack:GetProperty("name")]
+
+    if item_data.max_held then
+        -- If you can only hold a certain amount of this item
+
+        local num_of_this_item = Inventory.GetNumOfItem({player = self.player, item_name = args.stack:GetProperty("name")})
+
+        if num_of_this_item >= item_data.max_held then
+            Chat:Send(self.player, 
+                string.format("You can only hold %d %s at a time!", item_data.max_held, args.stack:GetProperty("name")), Color.Red)
+            return args.stack
+        end
+
+    end
+
     local cat = args.stack:GetProperty("category")
 
     -- Try to stack it in a specific place
@@ -683,7 +831,6 @@ function sInventory:AddStack(args)
     if args.stack:GetAmount() > 0 then
         Chat:Send(self.player, string.format("%s category is full!", cat), Color.Red)
         return args.stack
-        --error("sInventory:AddStack failed: there were some items left over")
     end
 
 end
@@ -699,7 +846,7 @@ function sInventory:RemoveStack(args)
 
     if args.index and not self.contents[cat][args.index] then return end
 
-    if args.index then
+    if args.index and self.contents[cat][args.index]:GetProperty("name") == args.stack:GetProperty("name") then
 
         -- If we are not removing the entire stack
         if args.stack:GetAmount() < self.contents[cat][args.index]:GetAmount() then
@@ -787,7 +934,7 @@ function sInventory:RemoveStack(args)
 
 
                 end
-        
+
             end
 
         end
@@ -848,6 +995,7 @@ function sInventory:Sync(args)
                             Events:Fire("Inventory/ToggleEquipped", {
                                 player = self.player, 
                                 index = _,
+                                initial = true,
                                 item = item:Copy():GetSyncObject()})
                         end
                     end
@@ -876,9 +1024,21 @@ function sInventory:Sync(args)
     end
 
     -- If initial sync was done already, then update the database with the new info
-    if self.initial_sync then
+    if self.initial_sync and not self.invsee_source then
         self:UpdateDB()
         Events:Fire("InventoryUpdated", {player = self.player})
+    end
+
+    for _, inventory in pairs(self.invsee) do
+
+        if IsValid(inventory.player) then
+            inventory.contents = self.contents
+            inventory.slots = self.slots
+            
+            inventory:Sync(args)
+        else
+            self.invsee[_] = nil
+        end
     end
 
 end

@@ -15,7 +15,7 @@ function EquippableParachute:__init()
 
     self:ToggleEnabled(false)
 
-    Network:Subscribe("items/ToggleEquippedParachute", self, self.ToggleEquipped)
+    Network:Subscribe(var("items/ToggleEquippedParachute"):get(), self, self.ToggleEquipped)
 end
 
 function EquippableParachute:GetEquipped()
@@ -40,7 +40,10 @@ function EquippableParachute:ToggleEnabled(enabled)
 end
 
 function EquippableParachute:LocalPlayerInput(args)
-    if self.blocked_actions[args.input] and not self.equipped then return false end
+
+    if self.blocked_actions[args.input] and not self.equipped and not LocalPlayer:GetValue("StuntingVehicle") then
+        return false
+    end
 end
 
 EquippableParachute = EquippableParachute()

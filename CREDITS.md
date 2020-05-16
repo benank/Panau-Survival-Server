@@ -6,4 +6,4 @@
 
 [Trix: original playerlist script](https://github.com/jc2mp/playerlist)
 
-[Jasonmrc: TimeChange script](https://github.com/Jasonmrc/TimeChange)
+[SinisterRectus: original Discord Bridge script](https://github.com/SinisterRectus/JC2MP-DiscordBridge)
