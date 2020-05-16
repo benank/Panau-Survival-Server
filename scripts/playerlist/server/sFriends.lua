@@ -70,6 +70,11 @@ function sFriends:AddFriend(args, player)
     if not IsValid(adding_player) then return end
     if IsFriend(player, adding_steam_id) then return end -- Already friends
 
+    if not player:GetValue("Friends") or not adding_player:GetValue("FriendsAddedMe") then
+        Chat:Send(player, "Failed to add friend.", Color.Red)
+        return
+    end
+
     local cmd = SQL:Command("INSERT INTO FRIENDS (steam_id, friend_steamid) VALUES (?, ?)")
     cmd:Bind(1, player_steam_id)
     cmd:Bind(2, adding_steam_id)
