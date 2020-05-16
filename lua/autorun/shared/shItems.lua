@@ -977,7 +977,8 @@ Items =
         loot = {3,4},
         can_use = true,
         rarity = 0.01,
-        rarity_mod = {1,0.5}
+        rarity_mod = {1,0.5},
+        max_held = 3, -- Maximum number of these that can be in the inventory at once
     }
 }
 
