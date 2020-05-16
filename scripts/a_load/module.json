@@ -4,9 +4,5 @@
     "author_url": "",
     "description": "Auto-generated",
     "name": "load" 
-  },
-    "resources": {
-      "bg_image_grayscale": "https://i.imgur.com/4JLP0WK.png",
-      "bg_image_color": "https://i.imgur.com/MKpGdYg.png"
-    }
+  }
 }
