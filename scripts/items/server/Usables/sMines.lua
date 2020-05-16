@@ -305,7 +305,7 @@ function sMines:TryPlaceMine(args, player)
     args.ray.position = Vector3(args.ray.position.x, math.max(args.ray.position.y, player:GetPosition().y), args.ray.position.z)
     local angle = Angle.FromVectors(Vector3.Down, args.ray.normal) * Angle(0, math.pi / 2, 0)
 
-    local player_iu = player:GetValue("ItemUse")
+    local player_iu = args.player_iu
 
     if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed
         and player_iu.item.name == "Mine" then
@@ -380,6 +380,7 @@ function sMines:CompleteItemUsage(args, player)
     
         args.position = args.ray.position
         args.player = player
+        args.player_iu = deepcopy(player_iu)
         Events:Fire("CheckIsTooCloseToLoot", args)
     
     end
