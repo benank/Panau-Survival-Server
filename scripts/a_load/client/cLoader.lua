@@ -8,8 +8,8 @@ function cLoader:__init()
     self.first_load = true
     self.can_add_resources = true
 
-    self.bg_image_grayscale = Image.Create(AssetLocation.Resource, "bg_image_grayscale")
-    self.bg_image_color = Image.Create(AssetLocation.Resource, "bg_image_color")
+    --self.bg_image_grayscale = Image.Create(AssetLocation.Resource, "bg_image_grayscale")
+    --self.bg_image_color = Image.Create(AssetLocation.Resource, "bg_image_color")
 
     self.window = BaseWindow.Create()
     self.window:SetSize(Render.Size)
@@ -27,14 +27,14 @@ function cLoader:__init()
     self.load_text_dots = 0;
     self.max_load_text_dots = 3
 
-    self.bg_grayscale = ImagePanel.Create(self.window)
-    self.bg_grayscale:SetImage(self.bg_image_grayscale)
-    self.bg_grayscale:SetSizeAutoRel(Vector2(1,1))
+    --self.bg_grayscale = ImagePanel.Create(self.window)
+    --self.bg_grayscale:SetImage(self.bg_image_grayscale)
+    --self.bg_grayscale:SetSizeAutoRel(Vector2(1,1))
     
-    self.bg_color = ImagePanel.Create(self.window)
-    self.bg_image_color:SetAlpha(0)
-    self.bg_color:SetImage(self.bg_image_color)
-    self.bg_color:SetSizeAutoRel(Vector2(1,1))
+    --self.bg_color = ImagePanel.Create(self.window)
+    --self.bg_image_color:SetAlpha(0)
+    --self.bg_color:SetImage(self.bg_image_color)
+    --self.bg_color:SetSizeAutoRel(Vector2(1,1))
 
     self.progressBar = ProgressBar.Create(self.window)
     self.progressBar:SetSize(Vector2(Render.Size.x * 0.925, Render.Size.y * 0.015))
@@ -147,8 +147,8 @@ function cLoader:Render(args)
         local add = math.ceil(((self.target_value - val) * args.delta * 1.75) * 1000) / 1000
         self.progressBar:SetValue(val + add)
 
-        self.bg_image_color:SetAlpha(self.progressBar:GetValue())
-        self.bg_color:SetImage(self.bg_image_color)
+        --self.bg_image_color:SetAlpha(self.progressBar:GetValue())
+        --self.bg_color:SetImage(self.bg_image_color)
     elseif math.ceil(val * 100) == 100 then
         self:Stop()
     end
