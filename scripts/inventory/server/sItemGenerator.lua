@@ -129,20 +129,17 @@ end
 
 function sItemGenerator:ComputeRaritySums()
 
-    for _, item in pairs(Items_indexed) do
+    for tier, tier_data in pairs(LootItems) do
 
-        if item.in_loot ~= false then
-            for index, tier in pairs(item.loot) do
+        for _, item_data in pairs(tier_data) do
 
-                if not self.computed_rarity_sums[tier] then
-                    self.computed_rarity_sums[tier] = 0
-                end
-
-                -- Sum up all the rarities per tier
-                self.computed_rarity_sums[tier] = self.computed_rarity_sums[tier] + 
-                    item.rarity * item.rarity_mod[index] 
-
+            if not self.computed_rarity_sums[tier] then
+                self.computed_rarity_sums[tier] = 0
             end
+
+            -- Sum up all the rarities per tier
+            self.computed_rarity_sums[tier] = self.computed_rarity_sums[tier] + item_data.rarity
+
         end
 
     end
