@@ -374,7 +374,7 @@ function sMines:CompleteItemUsage(args, player)
     
             end
     
-            self:TryPlaceMine(args, player)
+            self:TryPlaceMine(args, args.player)
 
         end)
     
