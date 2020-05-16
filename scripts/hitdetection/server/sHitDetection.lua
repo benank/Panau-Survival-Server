@@ -473,11 +473,13 @@ function sHitDetection:CheckHealth(player, old_hp, damage)
 
     Timer.SetTimeout(10 * player:GetPing() + 500, function()
         -- If they healed recently, disregard
+        if not IsValid(player) then return end 
+
         if player:GetValue("RecentHealTime") and Server:GetElapsedSeconds() - player:GetValue("RecentHealTime") < 15 then
             return
         end
         
-        if IsValid(player) and player:GetHealth() >= old_hp and player:GetHealth() > 0 then
+        if player:GetHealth() >= old_hp and player:GetHealth() > 0 then
             -- Health did not change, ban
             Events:Fire("KickPlayer", {
                 player = player,
