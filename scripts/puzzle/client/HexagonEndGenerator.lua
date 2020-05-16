@@ -47,8 +47,20 @@ function EndGenerator:__init()
 	-- 5 4 3
 	--  7 6 
 
-	self.hexagons = {}
+    self.hexagons = {}
+
+    -- Number of connections that each difficulty level can have
+    self.difficulty_num_connects = -- Max connections = 12
+    {
+        [1] = {min = 2, max = 3}, -- Easiest difficulty
+        [2] = {min = 3, max = 5},
+        [3] = {min = 5, max = 8} -- Hardest difficulty
+    }
 	
+end
+
+function EndGenerator:GetMaxEnds(index)
+    return count_table(self.n_connects[index])
 end
 
 function EndGenerator:GenerateEnds(difficulty, hexagons)

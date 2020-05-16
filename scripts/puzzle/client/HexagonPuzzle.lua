@@ -2,8 +2,6 @@ class 'HexagonPuzzle'
 
 function HexagonPuzzle:__init()
 
-
-	--BANK 35 IS GOOD FOR SFX
 	self.active = true
 	self.space = 1.025 -- Space between hexagons
 	self.size = 0.075
@@ -78,18 +76,14 @@ function HexagonPuzzle:CheckConnected()
     local f = string.format
 	for index, hexagon in pairs(self.hexagons) do
         
-        print(f("Hexagon %d: num ends: %d", index, hexagon:GetNumEnds()))
 		total_connections_needed = total_connections_needed + hexagon:GetNumEnds()
 		
 		for _, pair_index in pairs(EG:GetConnections(index)) do
             
-            print(f("Connection %d: Needs hexagon %d for connection", _, pair_index))
 			for _, pair_index2 in pairs(EG:GetConnections(pair_index)) do
             
-                print(f("Checking connection for pair %d (index %d)", pair_index2, _))
 				if pair_index2 == index then
                     
-                    print(f("Connection on index %d pair_index %d", index, pair_index))
 					total_connections_made = total_connections_made + 1
 						
 				end
@@ -102,19 +96,16 @@ function HexagonPuzzle:CheckConnected()
 	
 	if total_connections_made == total_connections_needed and not self.complete then
 	
-		--Chat:Print("PUZZLE DONE WOO", Color.Yellow)
 		for index, hexagon in pairs(self.hexagons) do
 			hexagon:SetDone(true)
 		end
 		self.complete = true
-		local sound = ClientSound.Create(AssetLocation.Game, {
+		ClientSound.Play(AssetLocation.Game, {
 			bank_id = 19,
 			sound_id = 15,
-			position = LocalPlayer:GetPosition(),
+			position = Camera:GetPosition(),
 			angle = Angle()
 			})
-
-		sound:SetParameter(0,1)
 		
 	end
 		
@@ -130,14 +121,12 @@ function HexagonPuzzle:Render(args)
 			if self.time < 0 then
 				self.time = 0
 				self.active = false
-				local sound = ClientSound.Create(AssetLocation.Game, {
+				ClientSound.Play(AssetLocation.Game, {
 					bank_id = 19,
 					sound_id = 16,
-					position = LocalPlayer:GetPosition(),
+					position = Camera:GetPosition(),
 					angle = Angle()
 				})
-
-				sound:SetParameter(0,1)
 
 			end
 		end
