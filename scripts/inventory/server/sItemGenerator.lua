@@ -28,13 +28,7 @@ function sItemGenerator:GetLoot(tier)
 
     local contents = {}
 
-    -- Always have lockpicks in there
-    --[[local item = CreateItem({name = "Lockpick", amount = self:GetRandomNumberOfLockpicks(tier)})
-    local stack = shStack({contents = {item}})
-    table.insert(contents, stack)]]
-
-    local num_items = math.round(Lootbox.GeneratorConfig.box[tier].min_items + 
-        math.random() * (Lootbox.GeneratorConfig.box[tier].max_items - Lootbox.GeneratorConfig.box[tier].min_items))
+    local num_items = math.random(Lootbox.GeneratorConfig.box[tier].min_items, Lootbox.GeneratorConfig.box[tier].max_items)
 
     for i = 1, num_items do
         table.insert(contents, self:GetStack(tier))
@@ -42,10 +36,6 @@ function sItemGenerator:GetLoot(tier)
 
     return contents
 
-end
-
-function sItemGenerator:GetRandomNumberOfLockpicks(tier)
-    return math.random(Lootbox.GeneratorConfig.box[tier].min_lockpicks, Lootbox.GeneratorConfig.box[tier].max_lockpicks)
 end
 
 function sItemGenerator:GetStack(tier)
@@ -56,17 +46,19 @@ function sItemGenerator:GetStack(tier)
 
     local target = self.computed_rarity_sums[tier] * math.random()
 
-    local item_data = self:FindTargetItem(target, tier)
-    item_data.amount = 1
+    local item_name = self:FindTargetItem(target, tier)
 
-    if item_data then
+    if item_name then
+
+        local item_data = Items_indexed[item_name]
+        item_data.amount = 1
 
         local item = CreateItem(item_data)
         local stack = shStack({contents = {item}})
-        local amount = self:GetItemAmount(item, item_data.max_loot, tier)
+        local amount = self:GetItemAmount(item.name, tier)
 
         -- Add items to stack like this so it handles all the dirty work for us
-        for i = 1, amount - 1 do
+        for i = 1, amount - 1 do -- Amount - 1 because there is already one item in there
             stack:AddItem(CreateItem(item_data))
         end
 
@@ -74,28 +66,15 @@ function sItemGenerator:GetStack(tier)
 
     else
         -- I don't really know why it wouldn't find an item, but hey try again if it happens
-        return sItemGenerator:GetStack(tier)
+        return self:GetStack(tier)
 
     end
 
 end
 
-function sItemGenerator:GetItemAmount(item, max_loot, tier)
+function sItemGenerator:GetItemAmount(item, tier)
 
-    -- Get random amount
-    local limit = math.min(math.min(item.stacklimit * 0.2, Lootbox.GeneratorConfig.stack.max), max_loot or 999)
-
-    local amount = math.ceil(math.random() * limit)
-
-    if math.random() < 0.8 then
-        amount = math.ceil(amount / 2)
-    end
-    
-    if item.name == "Lockpick" then
-        amount = self:GetRandomNumberOfLockpicks(tier)
-    end
-
-    return amount
+    return math.random(LootItems[tier][item].min, LootItems[tier][item].max)
 
 end
 
@@ -103,24 +82,12 @@ function sItemGenerator:FindTargetItem(target, tier)
 
     local sum = 0
 
-    -- TODO: optimize this with weighted tables
+    for item_name, item_data in pairs(LootItems[tier]) do
 
-    for _, item in pairs(Items_indexed) do
+        sum = sum + item_data.rarity
 
-        if item.in_loot ~= false then
-            for index, _tier in pairs(item.loot) do
-
-                if tier == _tier then
-
-                    sum = sum + item.rarity * item.rarity_mod[index]
-
-                    if target <= sum then
-                        return item
-                    end
-
-                end
-
-            end
+        if target <= sum then
+            return item_name
         end
 
     end
@@ -143,7 +110,6 @@ function sItemGenerator:ComputeRaritySums()
         end
 
     end
-
 
 end
 
