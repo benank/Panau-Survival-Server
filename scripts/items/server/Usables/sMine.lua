@@ -40,6 +40,7 @@ function sMine:GetCell()
 end
 
 function sMine:Remove(player)
+    if not IsValid(player) then return end
     Network:Send(player, "items/RemoveMine", {id = self.id, cell = self.cell})
     Network:SendNearby(player, "items/RemoveMine", {id = self.id, cell = self.cell})
 end
