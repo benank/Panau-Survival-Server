@@ -99,7 +99,7 @@ function sLootManager:RespawnBox(tier)
     self.inactive_lootboxes[tier][box.uid] = nil
     self.active_lootboxes[tier][box.uid] = box
 
-    box:RefreshBox()
+    box:RespawnBox()
 
 end
 
