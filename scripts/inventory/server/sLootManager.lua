@@ -79,7 +79,7 @@ function sLootManager:PlayerCellUpdate(args)
     Network:Send(args.player, "Inventory/LootboxCellsSync", {lootbox_data = lootbox_data})
 end
 
-function sLootManager:DespawnBox(box)
+--[[function sLootManager:DespawnBox(box)
     self.active_lootboxes[box.tier][box.uid] = nil
     self.inactive_lootboxes[box.tier][box.uid] = box
 end
@@ -101,7 +101,7 @@ function sLootManager:RespawnBox(tier)
 
     box:RespawnBox()
 
-end
+end]]
 
 function sLootManager:LoadFromFile()
 

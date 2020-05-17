@@ -285,17 +285,12 @@ function sLootbox:StartRespawnTimer()
 
     if self.respawn_timer then return end
 
-    self.respawn_timer = Timer.SetTimeout(self:GetRespawnTime(), function()
-        
-        self.respawn_timer = nil
-
-        if count_table(self.players_opened) > 0 then
-            self:StartRespawnTimer()
-        else
-            LootManager:RespawnBox(self.tier)
-        end
+    self.respawn_timer = true
     
-    end)
+    local func = coroutine.wrap(function()
+        Timer.Sleep(self:GetRespawnTime())
+        self:RespawnBox()
+    end)()
 
 end
 
@@ -314,8 +309,6 @@ function sLootbox:HideBox()
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
     self.active = false
     self.players_opened = {}
-
-    LootManager:DespawnBox(self)
 
 end
 
