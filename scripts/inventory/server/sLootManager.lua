@@ -166,6 +166,7 @@ function sLootManager:GenerateAllLoot()
                 angle = lootbox_data.ang,
                 tier = lootbox_data.tier,
                 active = active or in_sz,
+                in_sz = in_sz,
                 contents = in_sz and {} or ItemGenerator:GetLoot(lootbox_data.tier)
             })
 

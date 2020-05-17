@@ -11,6 +11,7 @@ function sLootbox:__init(args)
     end
 
     self.uid = GetLootboxUID()
+    self.in_sz = args.in_sz
     self.active = args.active == true
     self.tier = args.tier
     self.position = args.position
@@ -282,6 +283,7 @@ function sLootbox:StartRespawnTimer()
     -- No despawn timer for stashes
     if self.is_stash then return end
     if self.is_dropbox then return end
+    if self.in_sz then return end
 
     if self.respawn_timer then return end
 
