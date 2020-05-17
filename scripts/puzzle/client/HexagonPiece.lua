@@ -55,11 +55,16 @@ end
 
 function HexagonPiece:Initialize()
 
-	self.target_rot = 0--math.pi * 2 / 6 * math.random(6)
+    local rotation = math.random(6)
+	self.target_rot = math.pi * 2 / 6 * rotation
 	self.rot = self.target_rot
 	self.has_ends = self:HasAnyEnds()
     self:InitConnections()
-    self:PrintEnds()
+    --self:PrintEnds()
+
+    for i = 1, rotation do
+        self:RotateConnections(1)
+    end
 
 end
 
@@ -84,7 +89,7 @@ function HexagonPiece:InitConnections()
 		self.connected[index] = active
     end
     
-    self:RotateConnections(-1)
+    --self:RotateConnections(-1)
 
     --for k,v in pairs(self.connected) do print(k,v) end
     
@@ -168,7 +173,7 @@ function HexagonPiece:Render(args)
 		local t = Transform2()
 		t:Translate(pos)
 		t:Translate(Vector2(0,self.move))
-		t:Rotate(-math.pi * 2 / 6 * i + math.pi / 6)
+		t:Rotate(math.pi * 2 / 6 * i + math.pi / 6 + math.pi)
 		t:Rotate(self.rot)
 		t:Scale(1)
 		t:Translate(Vector2(0, line_size))

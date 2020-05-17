@@ -6,7 +6,7 @@ function HexagonPuzzle:__init(difficulty)
 	self.active = true
 	self.space = 1.025 -- Space between hexagons
 	self.size = 0.075
-	self.time = 15999
+	self.time = 10
 	self.complete = false
 	self.hexagons = {}
 	
@@ -106,7 +106,11 @@ function HexagonPuzzle:CheckConnected()
 			sound_id = 15,
 			position = Camera:GetPosition(),
 			angle = Angle()
-			})
+            })
+            
+        Mouse:SetVisible(false)
+
+        Events:Fire(var("StashHackerPuzzleComplete"):get())
 		
 	end
 		
@@ -117,6 +121,10 @@ function HexagonPuzzle:Render(args)
 
 	if self.active then
 	
+        if not Mouse:GetVisible() and not self.complete then
+            Mouse:SetVisible(true)
+        end
+		
 		if not self.complete then
 			self.time = self.time - args.delta
 			if self.time < 0 then
@@ -127,7 +135,9 @@ function HexagonPuzzle:Render(args)
 					sound_id = 16,
 					position = Camera:GetPosition(),
 					angle = Angle()
-				})
+                })
+                
+                Mouse:SetVisible(false)
 
 			end
 		end
@@ -139,10 +149,6 @@ function HexagonPuzzle:Render(args)
 		Render:DrawText(text_pos + Vector2(text_width * 0.015, text_width * 0.015), text, Color.Black, text_size)
 		Render:DrawText(text_pos, text, Color.Red, text_size)
 		
-		if not Mouse:GetVisible() then
-			Mouse:SetVisible(true)
-		end
-
 		for index, piece in pairs(self.hexagons) do
 		
 			piece:Render(args)
@@ -150,12 +156,8 @@ function HexagonPuzzle:Render(args)
 				self.active = false
 			end
 			
-		end
-		
-	elseif Mouse:GetVisible() then
-	
-		Mouse:SetVisible(false)
-		
+        end
+        
 	end
 		
 
@@ -165,9 +167,14 @@ function chat(args)
 
 	if args.text == "/puzzle" then
 		
-		HexagonPuzzle(1)
+		HexagonPuzzle(3)
 		
 	end
 	
 end
 Events:Subscribe("LocalPlayerChat", chat)
+
+Events:Subscribe(var("StartStashHackerPuzzle"):get(), function()
+    HexagonPuzzle(3)
+    Mouse:SetVisible(true)
+end)
