@@ -53,6 +53,10 @@ function NameTags:Chat(args)
         else
             Chat:Broadcast(str1, color, args.player:GetName(), args.player:GetColor(), str3, Color.White)
         end
+
+        if args.player:GetValue("LocalChat") then
+            str1 = "[LOCAL] " .. str1
+        end
         
         print(str1..str2..str3)
         Events:Fire("Discord", {
