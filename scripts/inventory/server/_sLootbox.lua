@@ -283,41 +283,25 @@ function sLootbox:StartRespawnTimer()
     if self.is_stash then return end
     if self.is_dropbox then return end
 
-    if not self.respawn_timer then
+    if self.respawn_timer then return end
 
-        self.respawn_timer = Server:GetElapsedSeconds()
-        local respawn_time = self.respawn_timer
+    self.respawn_timer = Timer.SetTimeout(self:GetRespawnTime(), function()
         
-        local func = coroutine.wrap(function()
-            Timer.Sleep(self:GetRespawnTime())
+        self.respawn_timer = nil
 
-            if self.respawn_timer ~= respawn_time then return end
-
-            if count_table(self.players_opened) > 0 then
-                self.respawn_timer = nil
-                self:StartRespawnTimer()
-            else
-                LootManager:RespawnBox(self.tier)
-            end
-
-
-            -- Respawn random box from the same tier
-            
-        end)()
-
-    end
+        if count_table(self.players_opened) > 0 then
+            self:StartRespawnTimer()
+        else
+            LootManager:RespawnBox(self.tier)
+        end
+    
+    end)
 
 end
 
 function sLootbox:CloseBox(args, player)
     player:SetValue("CurrentLootbox", nil)
     self.players_opened[tostring(player:GetSteamId())] = nil
-end
-
--- Refreshes loot if not all items were taken
-function sLootbox:RefreshBox()
-    self.respawn_timer = nil
-    self:RespawnBox()
 end
 
 -- Hides the lootbox until it's ready to respawn
@@ -373,20 +357,13 @@ end
 -- Respawns the lootbox
 function sLootbox:RespawnBox()
 
-    -- Don't respawn box if someone is looting it
-    --[[if count_table(self.players_opened) > 0 then
-        self.respawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
-            self:RefreshBox()
-        end)
-        return
-    end]]
-
     self:ForceClose()
 
     self.contents = ItemGenerator:GetLoot(self.tier)
     self.players_opened = {}
     self.has_been_opened = false
 
+    self.respawn_timer = nil
 
     self.active = true
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/OneLootboxCellSync", self:GetSyncData())
