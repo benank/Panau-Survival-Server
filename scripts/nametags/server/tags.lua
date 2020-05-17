@@ -33,11 +33,11 @@ function NameTags:Chat(args)
 
             local func = coroutine.wrap(function()
                 local nearby_players = {}
-                local pos = args.player:GetCameraPosition()
+                local pos = args.player:GetPosition()
 
                 for p in Server:GetPlayers() do
 
-                    if p:GetPosition():Distance(pos) < self.local_chat_distance then
+                    if p:GetCameraPosition():Distance(pos) < self.local_chat_distance then
                         table.insert(nearby_players, p)
                     end
                     Timer.Sleep(1)
