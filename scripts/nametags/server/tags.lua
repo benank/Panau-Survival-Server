@@ -33,7 +33,7 @@ function NameTags:Chat(args)
 
             local func = coroutine.wrap(function()
                 local nearby_players = {}
-                local pos = args.player:GetPosition()
+                local pos = args.player:GetCameraPosition()
 
                 for p in Server:GetPlayers() do
 
