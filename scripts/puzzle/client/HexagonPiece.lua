@@ -53,14 +53,28 @@ function HexagonPiece:GetNumEnds()
 
 end
 
-function HexagonPiece:SetEnds(ends)
+function HexagonPiece:Initialize()
 
-	self.ends = ends
 	self.target_rot = 0--math.pi * 2 / 6 * math.random(6)
 	self.rot = self.target_rot
 	self.has_ends = self:HasAnyEnds()
     self:InitConnections()
-    
+    self:PrintEnds()
+
+end
+
+function HexagonPiece:PrintEnds()
+    local str = ""
+    for index, active in pairs(self.ends) do
+        str = str .. string.format("End %d is %s", index, tostring(active)) 
+    end
+    debug(str)
+end
+
+function HexagonPiece:SetEnds(ends)
+
+	self.ends = ends
+    self:Initialize()
 	
 end
 

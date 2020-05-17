@@ -54,7 +54,7 @@ function EndGenerator:__init()
     {
         [1] = {min = 2, max = 3}, -- Easiest difficulty
         [2] = {min = 3, max = 5},
-        [3] = {min = 5, max = 8} -- Hardest difficulty
+        [3] = {min = 5, max = 10} -- Hardest difficulty
     }
 	
 end
@@ -65,12 +65,57 @@ end
 
 function EndGenerator:GenerateEnds(difficulty, hexagons)
 
-	self.hexagons = hexagons
-	self:lvl_1_3()
+    self.hexagons = hexagons
+    self.num_connects = math.random(self.difficulty_num_connects[difficulty].min, self.difficulty_num_connects[difficulty].max)
+    
+    local current_hexagon = math.random(7)
+
+    local total_num_connects = 0
+    while total_num_connects < self.num_connects do
+
+        while self.hexagons[current_hexagon]:GetNumEnds() == self:GetMaxEnds(current_hexagon) do
+            current_hexagon = math.random(7)
+        end
+
+        output_table(self.n_connects[current_hexagon])
+
+        local side = random_table_key(self.n_connects[current_hexagon])
+
+        while EG.hexagons[current_hexagon].ends[side] do
+            side = random_table_key(self.n_connects[current_hexagon])
+        end
+
+        self.hexagons[current_hexagon].ends[side] = true
+
+        local connected_hexagon = self.n_connects[current_hexagon][side]
+        local connected_side = nil
+
+        for side, connected in pairs(self.n_connects[connected_hexagon]) do
+            if connected == current_hexagon then
+                connected_side = side
+                break
+            end
+        end
+
+        self.hexagons[connected_hexagon].ends[connected_side] = true
+
+        debug(string.format("Hex %d to %d: connect side %d to %d", current_hexagon, connected_hexagon, side, connected_side))
+
+        current_hexagon = connected_hexagon
+
+        total_num_connects = total_num_connects + 1
+
+    end
+
+    for i = 1, 7 do
+        self.hexagons[i]:Initialize()
+    end
+
+    return self.hexagons
 
 end
 
-function EndGenerator:GetRandomEnds1()
+--[[function EndGenerator:GetRandomEnds1()
 
 	local ends = {
 		[1] = true,
@@ -166,12 +211,10 @@ function EndGenerator:lvl_1_3()
 		[6] = true
 		})
 	
-end
+end]]
 
--- Does not work properly. 
 function EndGenerator:GetConnections(i)
 
-    print(string.format("EndGenerator:GetConnections Hexagon: %d", i))
 	local connections = {}
 	for index, connected in pairs(EG.hexagons[i].connected) do
 		if connected and self.n_connects[i][index] then

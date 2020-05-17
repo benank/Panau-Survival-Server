@@ -1,7 +1,8 @@
 class 'HexagonPuzzle'
 
-function HexagonPuzzle:__init()
+function HexagonPuzzle:__init(difficulty)
 
+    self.difficulty = difficulty
 	self.active = true
 	self.space = 1.025 -- Space between hexagons
 	self.size = 0.075
@@ -41,7 +42,7 @@ end
 
 function HexagonPuzzle:GenerateEndsForAll()
 
-	EG:GenerateEnds(self.difficulty, self.hexagons)
+	self.hexagons = EG:GenerateEnds(self.difficulty, self.hexagons)
 	self:CheckConnected()
 
 end
@@ -164,7 +165,7 @@ function chat(args)
 
 	if args.text == "/puzzle" then
 		
-		HexagonPuzzle()
+		HexagonPuzzle(1)
 		
 	end
 	
