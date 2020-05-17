@@ -3,6 +3,8 @@ function NameTags:__init()
 
 	Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerChat", self, self.Chat)
+
+    self.local_chat_distance = 200
     
 end
 function NameTags:Chat(args)
@@ -25,9 +27,36 @@ function NameTags:Chat(args)
 		local color = args.player:GetValue("NameTag").color
 		local str1 = "[" .. tag .. "] "
 		local str2 = args.player:GetName()
-		local str3 = ": "..args.text
+        local str3 = ": "..args.text
         
-		Chat:Broadcast(str1, color, args.player:GetName(), args.player:GetColor(), str3, Color.White)
+        if args.player:GetValue("LocalChat") then
+
+            local func = coroutine.wrap(function()
+                local nearby_players = {}
+                local pos = args.player:GetPosition()
+
+                for p in Server:GetPlayers() do
+
+                    if p:GetPosition():Distance(pos) < self.local_chat_distance then
+                        table.insert(nearby_players, p)
+                    end
+                    Timer.Sleep(1)
+
+                end
+
+                for _, p in pairs(nearby_players) do
+                    if IsValid(p) then
+                        Chat:Send(p, "[LOCAL] ", Color.Yellow, str1, color, args.player:GetName(), args.player:GetColor(), str3, Color.White)
+                    end
+                end
+            end)()
+        else
+            Chat:Broadcast(str1, color, args.player:GetName(), args.player:GetColor(), str3, Color.White)
+        end
+
+        if args.player:GetValue("LocalChat") then
+            str1 = "[LOCAL] " .. str1
+        end
         
         print(str1..str2..str3)
         Events:Fire("Discord", {

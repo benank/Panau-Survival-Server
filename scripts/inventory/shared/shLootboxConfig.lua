@@ -71,7 +71,7 @@ Lootbox.GeneratorConfig =
         {
             min_items = 1,
             max_items = 2,
-            respawn = 15,
+            respawn = 20,
             min_lockpicks = 1,
             max_lockpicks = 3,
             max_spawned = 1.0
@@ -80,7 +80,7 @@ Lootbox.GeneratorConfig =
         {
             min_items = 1,
             max_items = 3,
-            respawn = 25,
+            respawn = 30,
             min_lockpicks = 1,
             max_lockpicks = 4,
             max_spawned = 1.0
@@ -89,7 +89,7 @@ Lootbox.GeneratorConfig =
         {
             min_items = 1,
             max_items = 4,
-            respawn = 45,
+            respawn = 60,
             min_lockpicks = 3,
             max_lockpicks = 8,
             max_spawned = 1.0
