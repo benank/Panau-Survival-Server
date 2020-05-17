@@ -37,6 +37,9 @@ function cWingManager:CheckPlayer(p)
     --DonatorBenefits
 
     local benefits = p:GetValue("DonatorBenefits")
+
+    if not benefits then return end
+
     local shadow_wings_enabled = benefits.ShadowWingsEnabled and benefits.level >= DonatorLevel.ShadowWings
 
     if shadow_wings_enabled and not self.wings[p:GetId()] then
