@@ -242,7 +242,7 @@ end
 function sLootbox:TryOpenBox(args, player)
 
     if not IsValid(player) then return end
-    if count_table(self.contents) == 0 and not self.is_stash then return end
+    --if count_table(self.contents) == 0 and not self.is_stash then return end
     if player:GetHealth() <= 0 then return end
     if player:GetPosition():Distance(self.position) > Lootbox.Distances.Can_Open + 1 then return end
 
