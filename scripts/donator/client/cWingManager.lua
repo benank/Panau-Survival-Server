@@ -4,23 +4,7 @@ function cWingManager:__init()
 
 	self.wings = {} --player id, wing class
 	
-	self.default_speed = 51
-	self.max_speed = 100
-	self.min_speed = 1
-	self.timer = Timer()
-	
-	self.speed = self.default_speed
-	
 	Events:Subscribe("SecondTick", self, self.CheckForWings)
-	--Events:Subscribe("LocalPlayerChat", self, self.Chat)
-end
-
-function cWingManager:Chat(args)
-	
-	--if args.text == "/anim" then
-	--	self.wings[LocalPlayer:GetId()]:SetAnimation("TAKEOFF")
-	--end
-	
 end
 
 function cWingManager:CheckForWings()
