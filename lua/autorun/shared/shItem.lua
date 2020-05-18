@@ -8,7 +8,6 @@ function shItem:__init(args)
     not args.amount or 
     args.amount < 1 or
     not args.category or 
-    not args.rarity or 
     not args.stacklimit 
     then
         error("shItem:__init failed: missing a key piece of information")
@@ -24,7 +23,6 @@ function shItem:__init(args)
     self.name = args.name
     self.amount = args.amount
     self.category = args.category
-    self.rarity = args.rarity
     self.stacklimit = args.stacklimit
     self.durable = args.durable
     self.custom_data = args.custom_data or {}
@@ -81,7 +79,6 @@ function shItem:Equals(item)
         self.name == item.name and
         self.amount == item.amount and
         self.category == item.category and
-        self.rarity == item.rarity and
         self.stacklimit == item.stacklimit and
         self.can_use == item.can_use and
         self.equip_type == item.equip_type and
@@ -118,7 +115,6 @@ function shItem:GetSyncObject()
         name = self.name,
         amount = self.amount,
         category = self.category,
-        rarity = self.rarity,
         stacklimit = self.stacklimit,
         durable = self.durable,
         durability = self.durability,
