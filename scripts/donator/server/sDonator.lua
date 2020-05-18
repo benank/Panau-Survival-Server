@@ -122,6 +122,14 @@ function sDonator:PlayerChat(args)
         return
     end
 
+    if words[1] == "/togglewings" and benefits.level >= self.commands["/togglewings"].level then
+        benefits.ShadowWingsEnabled = not benefits.ShadowWingsEnabled
+        Chat:Send(args.player, string.format("Donator shadow wings turned %s.", benefits.ShadowWingsEnabled and "on" or "off"), color)
+        self:UpdatePlayer(args.player, benefits)
+        self:UpdateDB(args.player)
+        return
+    end
+
 
 end
 

@@ -4,5 +4,9 @@
     "author_url": "",
     "description": "Auto-generated",
     "name": "donator"
+  },
+  "resources": {
+	"WingTexture_IMG": "http://paradigm.mp/resources/wings.png"
+
   }
 }

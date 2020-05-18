@@ -11,6 +11,7 @@ function sLootbox:__init(args)
     end
 
     self.uid = GetLootboxUID()
+    self.in_sz = args.in_sz
     self.active = args.active == true
     self.tier = args.tier
     self.position = args.position
@@ -242,7 +243,7 @@ end
 function sLootbox:TryOpenBox(args, player)
 
     if not IsValid(player) then return end
-    if count_table(self.contents) == 0 and not self.is_stash then return end
+    --if count_table(self.contents) == 0 and not self.is_stash then return end
     if player:GetHealth() <= 0 then return end
     if player:GetPosition():Distance(self.position) > Lootbox.Distances.Can_Open + 1 then return end
 
@@ -282,42 +283,22 @@ function sLootbox:StartRespawnTimer()
     -- No despawn timer for stashes
     if self.is_stash then return end
     if self.is_dropbox then return end
+    if self.in_sz then return end
 
-    if not self.respawn_timer then
+    if self.respawn_timer then return end
 
-        self.respawn_timer = Server:GetElapsedSeconds()
-        local respawn_time = self.respawn_timer
-        
-        local func = coroutine.wrap(function()
-            Timer.Sleep(self:GetRespawnTime())
-
-            if self.respawn_timer ~= respawn_time then return end
-
-            if count_table(self.players_opened) > 0 then
-                self.respawn_timer = nil
-                self:StartRespawnTimer()
-            else
-                LootManager:RespawnBox(self.tier)
-            end
-
-
-            -- Respawn random box from the same tier
-            
-        end)()
-
-    end
+    self.respawn_timer = true
+    
+    local func = coroutine.wrap(function()
+        Timer.Sleep(self:GetRespawnTime())
+        self:RespawnBox()
+    end)()
 
 end
 
 function sLootbox:CloseBox(args, player)
     player:SetValue("CurrentLootbox", nil)
     self.players_opened[tostring(player:GetSteamId())] = nil
-end
-
--- Refreshes loot if not all items were taken
-function sLootbox:RefreshBox()
-    self.respawn_timer = nil
-    self:RespawnBox()
 end
 
 -- Hides the lootbox until it's ready to respawn
@@ -330,8 +311,6 @@ function sLootbox:HideBox()
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
     self.active = false
     self.players_opened = {}
-
-    LootManager:DespawnBox(self)
 
 end
 
@@ -373,20 +352,13 @@ end
 -- Respawns the lootbox
 function sLootbox:RespawnBox()
 
-    -- Don't respawn box if someone is looting it
-    --[[if count_table(self.players_opened) > 0 then
-        self.respawn_timer = Timer.SetTimeout(Lootbox.Loot_Despawn_Time, function()
-            self:RefreshBox()
-        end)
-        return
-    end]]
-
     self:ForceClose()
 
     self.contents = ItemGenerator:GetLoot(self.tier)
     self.players_opened = {}
     self.has_been_opened = false
 
+    self.respawn_timer = nil
 
     self.active = true
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/OneLootboxCellSync", self:GetSyncData())

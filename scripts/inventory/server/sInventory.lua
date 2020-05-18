@@ -1031,7 +1031,7 @@ function sInventory:Sync(args)
 
     for _, inventory in pairs(self.invsee) do
 
-        if IsValid(inventory.player) then
+        if IsValid(inventory.player) and inventory.player ~= self.player then
             inventory.contents = self.contents
             inventory.slots = self.slots
             
