@@ -828,10 +828,8 @@ end
 
 function sVehicleManager:GetVehicleCost(args)
 
-    local base_cost = config.spawn.cost_overrides[args.model_id] or config.spawn[args.spawn_type].cost
+    local base_cost = vCosts[args.model_id] or 999
     local cost = base_cost * config.spawn.cost_modifier
-
-    local sign = random() > 0.5 and -1 or 1
 
     cost = cost * args.health -- Scale cost based on health
 
