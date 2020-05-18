@@ -14,20 +14,21 @@ function sSpawnManager:__init()
 
 	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
 
-    local func = coroutine.wrap(function()
-        for player in Server:GetPlayers() do
-            self:UpdatePlayerPositionMinuteTick(player)
-            Timer.Sleep(3)
-        end
-        Timer.Sleep(1000)
-    end)()
-
     for p in Server:GetPlayers() do
         if not p:GetValue("Loading") then
             p:SetValue("FirstSpawn", true)
         end
     end
     
+    local func = coroutine.wrap(function()
+        while true do
+            for player in Server:GetPlayers() do
+                self:UpdatePlayerPositionMinuteTick(player)
+            end
+            Timer.Sleep(60 * 1000)
+        end
+    end)()
+
 end
 
 function sSpawnManager:SetHomePosition(args)
@@ -75,7 +76,6 @@ end
 
 function sSpawnManager:UpdatePlayerPositionMinuteTick(player)
 
-    print("update minute tick")
 	self:UpdatePlayer(player)
 
 end
