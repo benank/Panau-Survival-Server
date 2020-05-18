@@ -9,7 +9,7 @@ function sItemGenerator:__init()
     -- Test command for generating loot
     Console:Subscribe("loot", function()
     
-        local tier = 4
+        local tier = 1
 
         local loot = ItemGenerator:GetLoot(tier)
         print("Level " .. tostring(tier) .. " Loot")
@@ -28,45 +28,46 @@ function sItemGenerator:GetLoot(tier)
 
     local contents = {}
 
-    -- Always have lockpicks in there
-    --[[local item = CreateItem({name = "Lockpick", amount = self:GetRandomNumberOfLockpicks(tier)})
-    local stack = shStack({contents = {item}})
-    table.insert(contents, stack)]]
-
-    local num_items = math.round(Lootbox.GeneratorConfig.box[tier].min_items + 
-        math.random() * (Lootbox.GeneratorConfig.box[tier].max_items - Lootbox.GeneratorConfig.box[tier].min_items))
+    local num_items = math.random(Lootbox.GeneratorConfig.box[tier].min_items, Lootbox.GeneratorConfig.box[tier].max_items)
+    local groups = {}
 
     for i = 1, num_items do
-        table.insert(contents, self:GetStack(tier))
+        table.insert(contents, self:GetStack(tier, groups))
     end
 
     return contents
 
 end
 
-function sItemGenerator:GetRandomNumberOfLockpicks(tier)
-    return math.random(Lootbox.GeneratorConfig.box[tier].min_lockpicks, Lootbox.GeneratorConfig.box[tier].max_lockpicks)
-end
-
-function sItemGenerator:GetStack(tier)
+function sItemGenerator:GetStack(tier, groups)
 
     if not Lootbox.GeneratorConfig.spawnable[tier] then
         error("sItemGenerator:GetItem failed: invalid tier specified")
     end
 
-    local target = self.computed_rarity_sums[tier] * math.random()
+    local group = self:FindGroupName(tier)
 
-    local item_data = self:FindTargetItem(target, tier)
-    item_data.amount = 1
+    while groups[group] and count_table(LootItems[tier]) > 1 do
+        group = self:FindGroupName(tier)
+    end
 
-    if item_data then
+    groups[group] = true
+
+    local target = self.computed_rarity_sums[tier][group] * math.random()
+
+    local item_name = self:FindTargetItem(target, tier, group)
+
+    if item_name then
+
+        local item_data = Items_indexed[item_name]
+        item_data.amount = 1
 
         local item = CreateItem(item_data)
         local stack = shStack({contents = {item}})
-        local amount = self:GetItemAmount(item, item_data.max_loot, tier)
+        local amount = self:GetItemAmount(LootItems[tier][group].items[item_name], tier)
 
         -- Add items to stack like this so it handles all the dirty work for us
-        for i = 1, amount - 1 do
+        for i = 1, amount - 1 do -- Amount - 1 because there is already one item in there
             stack:AddItem(CreateItem(item_data))
         end
 
@@ -74,79 +75,72 @@ function sItemGenerator:GetStack(tier)
 
     else
         -- I don't really know why it wouldn't find an item, but hey try again if it happens
-        return sItemGenerator:GetStack(tier)
+        return self:GetStack(tier)
 
     end
 
 end
 
-function sItemGenerator:GetItemAmount(item, max_loot, tier)
+function sItemGenerator:GetItemAmount(item, tier)
 
-    -- Get random amount
-    local limit = math.min(math.min(item.stacklimit * 0.2, Lootbox.GeneratorConfig.stack.max), max_loot or 999)
-
-    local amount = math.ceil(math.random() * limit)
-
-    if math.random() < 0.8 then
-        amount = math.ceil(amount / 2)
-    end
-    
-    if item.name == "Lockpick" then
-        amount = self:GetRandomNumberOfLockpicks(tier)
-    end
-
-    return amount
+    return math.random(item.min, item.max)
 
 end
 
-function sItemGenerator:FindTargetItem(target, tier)
+function sItemGenerator:FindTargetItem(target, tier, group)
 
     local sum = 0
 
-    -- TODO: optimize this with weighted tables
+    for item_name, item_data in pairs(LootItems[tier][group].items) do
 
-    for _, item in pairs(Items_indexed) do
+        sum = sum + item_data.rarity
 
-        if item.in_loot ~= false then
-            for index, _tier in pairs(item.loot) do
-
-                if tier == _tier then
-
-                    sum = sum + item.rarity * item.rarity_mod[index]
-
-                    if target <= sum then
-                        return item
-                    end
-
-                end
-
-            end
+        if target <= sum then
+            return item_name
         end
 
     end
+
+end
+
+function sItemGenerator:FindGroupName(tier)
+    
+    local random = math.random()
+    local sum = 0
+
+    for group_name, group_data in pairs(LootItems[tier]) do
+
+        sum = sum + group_data.rarity
+
+        if random <= sum then
+            return group_name
+        end
+
+    end
+
+    error("No group name found in sItemGenerator:FindGroupName! Did you make the rarities absolute?")
 
 end
 
 function sItemGenerator:ComputeRaritySums()
 
-    for _, item in pairs(Items_indexed) do
+    for tier, tier_data in pairs(LootItems) do
 
-        if item.in_loot ~= false then
-            for index, tier in pairs(item.loot) do
+        self.computed_rarity_sums[tier] = {}
 
-                if not self.computed_rarity_sums[tier] then
-                    self.computed_rarity_sums[tier] = 0
-                end
+        for group_name, group_data in pairs(tier_data) do
+
+            self.computed_rarity_sums[tier][group_name] = 0
+
+            for _, item_data in pairs(group_data.items) do
 
                 -- Sum up all the rarities per tier
-                self.computed_rarity_sums[tier] = self.computed_rarity_sums[tier] + 
-                    item.rarity * item.rarity_mod[index] 
+                self.computed_rarity_sums[tier][group_name] = self.computed_rarity_sums[tier][group_name] + item_data.rarity
 
             end
         end
 
     end
-
 
 end
 
