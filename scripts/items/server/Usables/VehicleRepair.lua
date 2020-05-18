@@ -28,10 +28,11 @@ Network:Subscribe("items/CompleteItemUsage", function(args, player)
         end
 
 
-        --entity:SetHealth(1)
+        entity:SetHealth(1)
         entity:SetSpawnPosition(entity:GetPosition())
         entity:SetSpawnAngle(entity:GetAngle())
         entity:Respawn()
+        entity:SetHealth(1)
 
         Inventory.RemoveItem({
             item = player_iu.item,
