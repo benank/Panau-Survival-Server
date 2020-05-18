@@ -88,14 +88,14 @@ Lootbox.GeneratorConfig =
         [Lootbox.Types.VendingMachineFood] = 
         {
             min_items = 1,
-            max_items = 3,
+            max_items = 2,
             respawn = 15,
             max_spawned = 1.0
         },
         [Lootbox.Types.VendingMachineDrink] = 
         {
             min_items = 1,
-            max_items = 3,
+            max_items = 2,
             respawn = 15,
             max_spawned = 1.0
         },
