@@ -230,7 +230,7 @@ function cLootboxUI:ToggleVisible()
         Events:Unsubscribe(self.LPI)
         self.LPI = nil
         if LootManager.current_box then
-            Network:Send("Inventory/CloseBox" .. tostring(LootManager.current_box.uid)) -- Send event to close box
+            Network:Send(var("Inventory/CloseBox" .. tostring(LootManager.current_box.uid)):get()) -- Send event to close box
         end
     else
 

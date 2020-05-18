@@ -1,3 +1,14 @@
+local natural_loot_tiers = 
+{
+    [Lootbox.Types.Level1] = true,
+    [Lootbox.Types.Level2] = true,
+    [Lootbox.Types.Level3] = true,
+    [Lootbox.Types.Level4] = true,
+    [Lootbox.Types.Level5] = true,
+    [Lootbox.Types.VendingMachineFood] = true,
+    [Lootbox.Types.VendingMachineDrink] = true
+}
+
 Events:Subscribe("CheckIsTooCloseToLoot", function(args)
 
     local func = coroutine.wrap(function()
@@ -10,7 +21,7 @@ Events:Subscribe("CheckIsTooCloseToLoot", function(args)
         if LootCells.Loot[cell.x] and LootCells.Loot[cell.x][cell.y] then
             for _, lootbox in pairs(LootCells.Loot[cell.x][cell.y]) do
 
-                if lootbox.position:Distance(pos) < Lootbox.Safe_Place_Radius then
+                if natural_loot_tiers[lootbox.tier] and lootbox.position:Distance(pos) < Lootbox.Safe_Place_Radius then
                     too_close = true
                     break
                 end

@@ -74,9 +74,10 @@ end
 
 function sInventoryManager:PlayerQuit(args)
 
-    if self.inventories[tostring(args.player:GetSteamId().id)] then
-        self.inventories[tostring(args.player:GetSteamId().id)]:Unload()
-        self.inventories[tostring(args.player:GetSteamId().id)] = nil
+    local id = tostring(args.player:GetSteamId().id)
+    if self.inventories[id] then
+        self.inventories[id]:Unload()
+        self.inventories[id] = nil
     end
 
 end
