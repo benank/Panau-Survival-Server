@@ -54,28 +54,28 @@ Lootbox.GeneratorConfig =
         [Lootbox.Types.Level1] = 
         {
             min_items = 1,
-            max_items = 2,
+            max_items = 1,
             respawn = 10,
             max_spawned = 1.0 -- % of total boxes spawned at once, between 0 and 1
         },
         [Lootbox.Types.Level2] = 
         {
             min_items = 1,
-            max_items = 2,
+            max_items = 1,
             respawn = 15,
             max_spawned = 1.0
         },
         [Lootbox.Types.Level3] = 
         {
             min_items = 1,
-            max_items = 3,
+            max_items = 2,
             respawn = 25,
             max_spawned = 1.0
         },
         [Lootbox.Types.Level4] = 
         {
             min_items = 1,
-            max_items = 4,
+            max_items = 2,
             respawn = 45,
             max_spawned = 1.0
         },
