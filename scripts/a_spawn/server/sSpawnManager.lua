@@ -5,8 +5,15 @@ class 'sSpawnManager'
 
 function sSpawnManager:__init()
 
-    self.timer = Timer()
-    
+	Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
+	Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
+	Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
+	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("SetHomePosition", self, self.SetHomePosition)
+
+	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
+
     local func = coroutine.wrap(function()
         for player in Server:GetPlayers() do
             self:UpdatePlayerPositionMinuteTick(player)
@@ -21,16 +28,6 @@ function sSpawnManager:__init()
         end
     end
     
-
-	Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
-	Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
-	Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
-	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
-    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
-    Events:Subscribe("SetHomePosition", self, self.SetHomePosition)
-
-	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
-
 end
 
 function sSpawnManager:SetHomePosition(args)
@@ -78,6 +75,7 @@ end
 
 function sSpawnManager:UpdatePlayerPositionMinuteTick(player)
 
+    print("update minute tick")
 	self:UpdatePlayer(player)
 
 end
