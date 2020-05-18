@@ -286,6 +286,7 @@ function sInventory:SpawnDropbox(contents, is_death_drop)
             angle = args.angle,
             tier = Lootbox.Types.Dropbox,
             active = true,
+            is_deathdrop = is_death_drop,
             contents = contents
         })
         dropbox:Sync()

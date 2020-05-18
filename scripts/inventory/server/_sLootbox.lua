@@ -32,7 +32,7 @@ function sLootbox:__init(args)
 
         self.respawn_timer = true
         local func = coroutine.wrap(function()
-            Timer.Sleep(Lootbox.Dropbox_Despawn_Time)
+            Timer.Sleep(args.is_deathdrop and Lootbox.Deathdrop_Despawn_Time or Lootbox.Dropbox_Despawn_Time)
             self:Remove()
         end)()
 
