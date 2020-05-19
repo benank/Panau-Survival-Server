@@ -362,6 +362,7 @@ LootItems =
                 ["Can of Ham"] = {rarity = 0.125, min = 1, max = 2},
                 ["Can of Peaches"] = {rarity = 0.125, min = 1, max = 2},
                 ["Chips"] = {rarity = 0.125, min = 1, max = 2},
+                ["Spicy Chips"] = {rarity = 0.005, min = 1, max = 5},
                 ["Macadamia Nuts"] = {rarity = 0.001, min = 1, max = 1},
             }
         },

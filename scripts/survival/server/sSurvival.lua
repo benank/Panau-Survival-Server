@@ -55,7 +55,7 @@ function sSurvivalManager:UseItem(args)
     survival.thirst = math.max(0, math.min(survival.thirst + restore_data.thirst, 100))
 
     if restore_data.health then -- If this food item restores health, like Energy Drink
-        args.player:Damage(-restore_data.health / 100)
+        args.player:Damage(-restore_data.health / 100, DamageEntity.Food)
     end
 
     args.player:SetValue("Survival", survival)
