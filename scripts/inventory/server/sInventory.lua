@@ -286,6 +286,7 @@ function sInventory:SpawnDropbox(contents, is_death_drop)
             angle = args.angle,
             tier = Lootbox.Types.Dropbox,
             active = true,
+            is_deathdrop = is_death_drop,
             contents = contents
         })
         dropbox:Sync()
@@ -1031,7 +1032,7 @@ function sInventory:Sync(args)
 
     for _, inventory in pairs(self.invsee) do
 
-        if IsValid(inventory.player) then
+        if IsValid(inventory.player) and inventory.player ~= self.player then
             inventory.contents = self.contents
             inventory.slots = self.slots
             

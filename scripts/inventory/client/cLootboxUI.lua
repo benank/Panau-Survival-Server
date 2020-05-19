@@ -176,6 +176,8 @@ function cLootboxUI:Update(args)
         end]]
         if args.stash and #LootManager.current_box.contents == 0 then
             ClientInventory.ui:PopulateEntry({index = 1, loot = true, empty = true, stash = args.stash, window = self.window})
+        elseif not args.stash and #LootManager.current_box.contents == 0 then 
+            ClientInventory.ui:PopulateEntry({index = 1, loot = true, empty = true, window = self.window})
         end
 
     elseif args.action == "update" or args.action == "remove" then
@@ -228,7 +230,7 @@ function cLootboxUI:ToggleVisible()
         Events:Unsubscribe(self.LPI)
         self.LPI = nil
         if LootManager.current_box then
-            Network:Send("Inventory/CloseBox" .. tostring(LootManager.current_box.uid)) -- Send event to close box
+            Network:Send(var("Inventory/CloseBox" .. tostring(LootManager.current_box.uid)):get()) -- Send event to close box
         end
     else
 

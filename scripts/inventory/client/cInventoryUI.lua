@@ -584,6 +584,9 @@ function cInventoryUI:ToggleDroppingItemButton(button)
 
     local cat = button:GetDataString("stack_category")
     local index = button:GetDataNumber("stack_index")
+
+    if not Inventory.contents[cat][index] then return end
+
     local amount = Inventory.contents[cat][index]:GetAmount()
     button:SetDataNumber("drop_amount", amount) -- Reset dropping amount when they right click it
 
@@ -729,9 +732,10 @@ function cInventoryUI:ToggleVisible()
         Events:Unsubscribe(self.LPI)
         self.LPI = nil
         self:InventoryClosed()
+        self.mouse_pos = Mouse:GetPosition()
     else -- Open inventory
         self.window:Show()
-        Mouse:SetPosition(Render.Size * 0.75)
+        Mouse:SetPosition(self.mouse_pos or Render.Size * 0.75)
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
         self.window:BringToFront()
     end

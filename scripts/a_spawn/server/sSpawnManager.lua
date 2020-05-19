@@ -5,15 +5,14 @@ class 'sSpawnManager'
 
 function sSpawnManager:__init()
 
-    self.timer = Timer()
-    
-    local func = coroutine.wrap(function()
-        for player in Server:GetPlayers() do
-            self:UpdatePlayerPositionMinuteTick(player)
-            Timer.Sleep(3)
-        end
-        Timer.Sleep(1000)
-    end)()
+	Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
+	Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
+	Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
+	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("SetHomePosition", self, self.SetHomePosition)
+
+	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
 
     for p in Server:GetPlayers() do
         if not p:GetValue("Loading") then
@@ -21,14 +20,29 @@ function sSpawnManager:__init()
         end
     end
     
+    local func = coroutine.wrap(function()
+        while true do
+            for player in Server:GetPlayers() do
+                self:UpdatePlayerPositionMinuteTick(player)
+            end
+            Timer.Sleep(60 * 1000)
+        end
+    end)()
 
-	Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
-	Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
-	Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
-	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
-    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+end
 
-	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
+function sSpawnManager:SetHomePosition(args)
+
+    local steamid = tostring(args.player:GetSteamId().id)
+
+	local command = SQL:Command("UPDATE positions SET homeX = ?, homeY = ?, homeZ = ? WHERE steamID = (?)")
+	command:Bind(1, args.pos.x)
+	command:Bind(2, args.pos.y)
+	command:Bind(3, args.pos.z)
+	command:Bind(4, steamid)
+    command:Execute()
+    
+    args.player:SetValue("HomePosition", args.pos)
 
 end
 

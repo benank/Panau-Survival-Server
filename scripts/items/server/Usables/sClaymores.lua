@@ -7,6 +7,8 @@ function sClaymores:__init()
     self.claymores = {} -- Active claymores, indexed by claymore id
     self.claymore_cells = {} -- Active claymores, organized by cell x, y, then claymore id
 
+    Console:Subscribe("clearbadclaymores", self, self.ClearBadClaymores)
+
     Network:Subscribe("items/CancelClaymorePlacement", self, self.CancelClaymorePlacement)
     Network:Subscribe("items/PlaceClaymore", self, self.FinishClaymorePlacement)
     Network:Subscribe("items/StepOnClaymore", self, self.StepOnClaymore)
@@ -17,6 +19,55 @@ function sClaymores:__init()
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(ItemsConfig.usables.Claymore.cell_size), self, self.PlayerCellUpdate)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+end
+
+function sClaymores:ClearBadClaymores()
+
+    local func = coroutine.wrap(function()
+        print("Clearing bad claymores...")
+        for id, claymore in pairs(self.claymores) do
+
+            local waiting = true
+
+            local sub = nil
+            sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(id), function(args)
+            
+                Events:Unsubscribe(sub)
+                sub = nil
+
+                if args.too_close then
+
+                    local cmd = SQL:Command("DELETE FROM claymores where id = ?")
+                    cmd:Bind(1, id)
+                    cmd:Execute()
+
+                    -- Remove mine
+                    local cell = claymore:GetCell()
+                    self.claymore_cells[cell.x][cell.y][args.id] = nil
+                    self.claymores[args.id] = nil
+                    claymore:Remove()
+                    
+                end
+
+                waiting = false
+
+            end)
+
+            args = {}
+
+            args.position = claymore.position
+            args.id = tostring(id)
+            Events:Fire("CheckIsTooCloseToLoot", args)
+
+            while waiting do
+                Timer.Sleep(10)
+            end
+
+        end
+
+        print("All bad claymores cleared.")
+    end)()
+
 end
 
 function sClaymores:ItemExplode(args)
@@ -300,8 +351,25 @@ function sClaymores:FinishClaymorePlacement(args, player)
         return
     end
 
+    local sub = nil
+    sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(player:GetSteamId()), function(args)
+    
+        Events:Unsubscribe(sub)
+        sub = nil
 
-    self:TryPlaceClaymore(args, player)
+        if args.too_close then
+
+            Chat:Send(player, "Cannot place claymores too close to loot!", Color.Red)
+            return
+
+        end
+
+        self:TryPlaceClaymore(args, args.player)
+        
+    end)
+
+    args.player = player
+    Events:Fire("CheckIsTooCloseToLoot", args)
 
 end
 

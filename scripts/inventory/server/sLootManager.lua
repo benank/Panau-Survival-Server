@@ -79,7 +79,7 @@ function sLootManager:PlayerCellUpdate(args)
     Network:Send(args.player, "Inventory/LootboxCellsSync", {lootbox_data = lootbox_data})
 end
 
-function sLootManager:DespawnBox(box)
+--[[function sLootManager:DespawnBox(box)
     self.active_lootboxes[box.tier][box.uid] = nil
     self.inactive_lootboxes[box.tier][box.uid] = box
 end
@@ -99,9 +99,9 @@ function sLootManager:RespawnBox(tier)
     self.inactive_lootboxes[tier][box.uid] = nil
     self.active_lootboxes[tier][box.uid] = box
 
-    box:RefreshBox()
+    box:RespawnBox()
 
-end
+end]]
 
 function sLootManager:LoadFromFile()
 
@@ -166,6 +166,7 @@ function sLootManager:GenerateAllLoot()
                 angle = lootbox_data.ang,
                 tier = lootbox_data.tier,
                 active = active or in_sz,
+                in_sz = in_sz,
                 contents = in_sz and {} or ItemGenerator:GetLoot(lootbox_data.tier)
             })
 

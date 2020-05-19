@@ -7,6 +7,8 @@ function sMines:__init()
     self.mines = {} -- Active mines, indexed by mine id
     self.mine_cells = {} -- Active mines, organized by cell x, y, then mine id
 
+    Console:Subscribe("clearbadmines", self, self.ClearBadMines)
+
     Network:Subscribe("items/CompleteItemUsage", self, self.CompleteItemUsage)
     Network:Subscribe("items/StepOnMine", self, self.StepOnMine)
     Network:Subscribe("items/DestroyMine", self, self.DestroyMine)
@@ -15,6 +17,55 @@ function sMines:__init()
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(ItemsConfig.usables.Mine.cell_size), self, self.PlayerCellUpdate)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+end
+
+function sMines:ClearBadMines()
+
+    local func = coroutine.wrap(function()
+        print("Clearing bad mines...")
+        for id, mine in pairs(self.mines) do
+
+            local waiting = true
+
+            local sub = nil
+            sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(id), function(args)
+            
+                Events:Unsubscribe(sub)
+                sub = nil
+
+                if args.too_close then
+
+                    local cmd = SQL:Command("DELETE FROM mines where id = ?")
+                    cmd:Bind(1, id)
+                    cmd:Execute()
+
+                    -- Remove mine
+                    local cell = mine:GetCell()
+                    self.mine_cells[cell.x][cell.y][args.id] = nil
+                    self.mines[args.id] = nil
+                    mine:Remove()
+                    
+                end
+
+                waiting = false
+
+            end)
+
+            args = {}
+
+            args.position = mine.position
+            args.id = tostring(id)
+            Events:Fire("CheckIsTooCloseToLoot", args)
+
+            while waiting do
+                Timer.Sleep(10)
+            end
+
+        end
+
+        print("All bad mines cleared.")
+    end)()
+
 end
 
 function sMines:ItemExplode(args)
@@ -254,7 +305,7 @@ function sMines:TryPlaceMine(args, player)
     args.ray.position = Vector3(args.ray.position.x, math.max(args.ray.position.y, player:GetPosition().y), args.ray.position.z)
     local angle = Angle.FromVectors(Vector3.Down, args.ray.normal) * Angle(0, math.pi / 2, 0)
 
-    local player_iu = player:GetValue("ItemUse")
+    local player_iu = args.player_iu
 
     if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed
         and player_iu.item.name == "Mine" then
@@ -310,9 +361,29 @@ function sMines:CompleteItemUsage(args, player)
             return
         end
 
-    end
+        local sub = nil
+        sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(player:GetSteamId()), function(args)
+        
+            Events:Unsubscribe(sub)
+            sub = nil
+    
+            if args.too_close then
+    
+                Chat:Send(player, "Cannot place mines too close to loot!", Color.Red)
+                return
+    
+            end
+    
+            self:TryPlaceMine(args, args.player)
 
-    self:TryPlaceMine(args, player)
+        end)
+    
+        args.position = args.ray.position
+        args.player = player
+        args.player_iu = deepcopy(player_iu)
+        Events:Fire("CheckIsTooCloseToLoot", args)
+    
+    end
 
 end
 

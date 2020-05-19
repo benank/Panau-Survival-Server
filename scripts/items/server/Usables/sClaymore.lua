@@ -39,6 +39,7 @@ function sClaymore:GetCell()
 end
 
 function sClaymore:Remove(player)
+    if not IsValid(player) then return end
     Network:Send(player, "items/RemoveClaymore", {id = self.id, cell = self.cell})
     Network:SendNearby(player, "items/RemoveClaymore", {id = self.id, cell = self.cell})
 end

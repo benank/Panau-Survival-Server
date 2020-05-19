@@ -28,6 +28,6 @@ DamageEntityNames =
     [DamageEntity.Thirst] = "Thirst",
     [DamageEntity.VehicleGuard] = "Vehicle Guard",
     [DamageEntity.WarpGrenade] = "Warp Grenade",
-    [DamageEntity.Suicide] = "Suicide",
+    [DamageEntity.Suicide] = "Respawn",
     [DamageEntity.AdminKill] = "Admin Kill",
 }
