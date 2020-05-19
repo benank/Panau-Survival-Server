@@ -22,6 +22,8 @@ function cClaymore:Render()
     local angle = self.angle * Angle(math.pi / 2, 0, 0)
     local start_ray_pos = self.position + angle * Vector3(0, 0.25, 0)
 
+    if IsNaN(angle) then return end
+
     local ray = Physics:Raycast(start_ray_pos, angle * Vector3.Forward, 0, ItemsConfig.usables.Claymore.trigger_range, false)
 
     local end_ray_pos = ray.position
