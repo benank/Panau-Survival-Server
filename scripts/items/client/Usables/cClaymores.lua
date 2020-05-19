@@ -79,9 +79,14 @@ end
 function cClaymores:PlaceObject(args)
     if not self.placing_claymore then return end
 
+    if args.entity and args.entity.__type == "ClientStaticObject" then
+        args.model = args.entity:GetModel()
+    end
+
     Network:Send("items/PlaceClaymore", {
         position = args.position,
-        angle = args.angle
+        angle = args.angle,
+        model = args.model
     })
     self:StopPlacement()
 end

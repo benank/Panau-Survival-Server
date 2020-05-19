@@ -354,6 +354,11 @@ function sMines:CompleteItemUsage(args, player)
         if not self.sz_config then
             self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
         end
+
+        if args.ray.model and DisabledPlacementModels[args.ray.model] then
+            Chat:Send(player, "Placing mine failed!", Color.Red)
+            return
+        end
     
         -- If they are within sz radius * 2, we don't let them place that close
         if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
