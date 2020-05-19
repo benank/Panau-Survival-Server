@@ -120,7 +120,7 @@ function sExp:AwardExpToKillerOnKill(args)
 
     end
 
-    if count_table(killer_exp) > 0 and killed_exp then
+    if killer_exp and count_table(killer_exp) > 0 and killed_exp then
 
         local exp_earned = math.ceil(exp_earned * GetKillLevelModifier(killer_exp.level, killed_exp.level))
         self:GivePlayerExp(exp_earned, ExpType.Combat, killer_id, killer_exp, killer)
