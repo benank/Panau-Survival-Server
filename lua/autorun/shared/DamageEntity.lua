@@ -11,6 +11,7 @@ DamageEntity.WarpGrenade = 14
 DamageEntity.Suicide = 15
 DamageEntity.AdminKill = 16
 DamageEntity.C4 = 17
+DamageEntity.Food = 18
 
 DamageEntityNames = 
 {
@@ -32,4 +33,5 @@ DamageEntityNames =
     [DamageEntity.Suicide] = "Respawn",
     [DamageEntity.AdminKill] = "Admin Kill",
     [DamageEntity.C4] = "C4",
+    [DamageEntity.Food] = "Food"
 }

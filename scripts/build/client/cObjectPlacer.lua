@@ -165,6 +165,7 @@ function cObjectPlacer:Render(args)
 
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, self.range)
     self.forward_ray = ray
+    self.entity = ray.entity
 
     local in_range = ray.distance < self.range
     local can_place_here = in_range
@@ -299,7 +300,8 @@ function cObjectPlacer:MouseUp(args)
                 model = self.object:GetModel(),
                 position = self.object:GetPosition(),
                 angle = self.object:GetAngle(),
-                forward_ray = self.forward_ray
+                forward_ray = self.forward_ray,
+                entity = self.entity
             })
             self:StopObjectPlacement()
         end

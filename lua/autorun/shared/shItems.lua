@@ -375,6 +375,12 @@ Items =
         can_use = true
     },
     {
+        name = "Spicy Chips",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true
+    },
+    {
         name = "Chocolate",
         category = "Survival",
         stacklimit = 5,
