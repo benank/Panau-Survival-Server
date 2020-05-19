@@ -74,6 +74,12 @@ function sStashPlacement:PlaceStash(args, player)
         return
     end
 
+    if args.model and DisabledPlacementModels[args.model] then
+        Chat:Send(player, "Placing stash failed!", Color.Red)
+        return
+    end
+
+
     -- If they are within sz radius * 2, we don't let them place that close
     if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
         Chat:Send(player, "Cannot place stashes while near the safezone!", Color.Red)
@@ -124,3 +130,9 @@ end
 
 
 sStashPlacement = sStashPlacement()
+
+
+DisabledPlacementModels = 
+{
+    ["geo.cbb.eez/go152-a.lod"] = true
+}
