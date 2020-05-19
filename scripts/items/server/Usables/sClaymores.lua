@@ -243,8 +243,7 @@ function sClaymores:LoadAllClaymores()
             local split = claymore_data.position:split(",")
             local pos = Vector3(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]))
 
-            local split2 = claymore_data.angle:split(",")
-            local angle = Angle(tonumber(split2[1]), tonumber(split2[2]), tonumber(split2[3]))
+            local angle = self:DeserializeAngle(claymore_data.angle)
 
             self:AddClaymore({
                 id = claymore_data.id,
@@ -258,13 +257,22 @@ function sClaymores:LoadAllClaymores()
 
 end
 
+function sClaymores:SerializeAngle(ang)
+    return math.round(ang.x, 5) .. "," .. math.round(ang.y, 5) .. "," .. math.round(ang.z, 5) .. "," .. math.round(ang.w, 5)
+end
+
+function sClaymores:DeserializeAngle(ang)
+    local split = ang:split(",")
+    return Angle(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]), tonumber(split[4]) or 0)
+end
+
 function sClaymores:PlaceClaymore(position, angle, player)
 
     local steamID = tostring(player:GetSteamId())
     local cmd = SQL:Command("INSERT INTO claymores (steamID, position, angle) VALUES (?, ?, ?)")
     cmd:Bind(1, steamID)
     cmd:Bind(2, tostring(position))
-    cmd:Bind(3, tostring(angle))
+    cmd:Bind(3, self:SerializeAngle(angle))
     cmd:Execute()
 
 	cmd = SQL:Query("SELECT last_insert_rowid() as id FROM claymores")
