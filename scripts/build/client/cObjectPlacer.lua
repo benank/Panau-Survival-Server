@@ -158,6 +158,7 @@ function cObjectPlacer:Render(args)
     if not IsValid(self.object) then return end
 
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, self.range)
+    self.entity = ray.entity
 
     local in_range = ray.distance < self.range
     local can_place_here = in_range
@@ -291,7 +292,8 @@ function cObjectPlacer:MouseUp(args)
             Events:Fire("build/PlaceObject", {
                 model = self.object:GetModel(),
                 position = self.object:GetPosition(),
-                angle = self.object:GetAngle()
+                angle = self.object:GetAngle(),
+                entity = self.entity
             })
             self:StopObjectPlacement()
         end
