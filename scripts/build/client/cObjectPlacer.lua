@@ -79,6 +79,7 @@ function cObjectPlacer:StartObjectPlacement(args)
 
     self.display_bb = args.display_bb == true
     self.angle_offset = args.angle ~= nil and args.angle or Angle()
+    self.offset = args.offset or Vector3()
 
     self.disable_walls = args.disable_walls
     self.disable_ceil = args.disable_ceil
@@ -100,7 +101,7 @@ function cObjectPlacer:CreateModel()
     local bb1, bb2 = self.object:GetBoundingBox()
 
     local size = bb2 - bb1
-    local color = Color.Red
+    local color = Color(255, 0, 0, 150)
 
     offset = bb1 - self.object:GetPosition()
 
@@ -157,6 +158,10 @@ function cObjectPlacer:Render(args)
     if not self.placing then return end
     if not IsValid(self.object) then return end
 
+    if not self.model then
+        self:CreateModel()
+    end
+
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, self.range)
 
     local in_range = ray.distance < self.range
@@ -172,10 +177,6 @@ function cObjectPlacer:Render(args)
     local pitch = math.abs(ang.pitch)
     local roll = math.abs(ang.roll)
 
-    if not self.model then
-        self:CreateModel()
-    end
-
     if self.disable_walls and (pitch > math.pi / 6 or roll > math.pi / 6) then
         can_place_here = false
     elseif self.disable_ceil and (pitch > math.pi * 0.6 or roll > math.pi * 0.6) then
@@ -189,7 +190,7 @@ function cObjectPlacer:Render(args)
     end
 
     if in_range then
-        self.object:SetPosition(ray.position)
+        self.object:SetPosition(ray.position + ang * self.offset)
     else
         self.object:SetPosition(Vector3())
     end
@@ -205,13 +206,6 @@ function cObjectPlacer:Render(args)
 end
 
 function cObjectPlacer:CheckBoundingBox()
-
-    if self.model and self.display_bb then
-        local t = Transform3():Translate(self.object:GetPosition()):Rotate(self.object:GetAngle())
-        Render:SetTransform(t)
-        self.model:Draw()
-        Render:ResetTransform()
-    end
 
     if self.vertices then
         local angle = self.object:GetAngle()
@@ -263,6 +257,13 @@ function cObjectPlacer:GameRender(args)
     -- Render bounding box
     if not self.placing then return end
     if not IsValid(self.object) then return end
+
+    if self.model and self.display_bb then
+        local t = Transform3():Translate(self.object:GetPosition()):Rotate(self.object:GetAngle())
+        Render:SetTransform(t)
+        self.model:Draw()
+        Render:ResetTransform()
+    end
 
     -- Fire an event in case other modules need to render other things, like a line for claymores
     Events:Fire("ObjectPlacerGameRender", {

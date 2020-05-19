@@ -10,6 +10,7 @@ DamageEntity.VehicleGuard = 13
 DamageEntity.WarpGrenade = 14
 DamageEntity.Suicide = 15
 DamageEntity.AdminKill = 16
+DamageEntity.C4 = 17
 
 DamageEntityNames = 
 {
@@ -30,4 +31,5 @@ DamageEntityNames =
     [DamageEntity.WarpGrenade] = "Warp Grenade",
     [DamageEntity.Suicide] = "Respawn",
     [DamageEntity.AdminKill] = "Admin Kill",
+    [DamageEntity.C4] = "C4",
 }
