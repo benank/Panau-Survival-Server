@@ -369,8 +369,7 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     if not explosive_data then return end
 
     local dist = args.position:Distance(args.local_position)
-    dist = math.min(explosive_data.radius / 2, math.max(0, dist / 2))
-    local percent_modifier = math.max(0, 1 - (dist / (explosive_data.radius / 2)))
+    local percent_modifier = math.max(0, 1 - dist / explosive_data.radius)
 
     if percent_modifier == 0 then return end
 
@@ -378,7 +377,9 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     local original_damage = explosive_data.damage * percent_modifier
     local damage = original_damage
 
-    if not args.in_fov then return end
+    if not args.in_fov then
+        damage = damage * FOVDamageModifier
+    end
     
     damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 
