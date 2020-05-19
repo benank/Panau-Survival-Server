@@ -322,6 +322,22 @@ elseif Server then
 
     end
 
+    Inventory.ModifyItemCustomData = function(args)
+
+        if not IsValid(args.player) then
+            print("Failed to Inventory.ModifyItemCustomData because args.player was invalid")
+            return
+        end
+
+        if not args.item then
+            print("Failed to Inventory.ModifyItemCustomData because args.item was invalid")
+            return
+        end
+
+        Events:Fire("Inventory.ModifyItemCustomData-"..tostring(args.player:GetSteamId().id), args)
+
+    end
+
     Inventory.OperationBlock = function(args)
 
         if not IsValid(args.player) then

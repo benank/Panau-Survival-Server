@@ -9,29 +9,6 @@ function cClaymores:__init(args)
 
     self.placing_claymore = false
 
-    self.blockedActions = {
-        [Action.FireLeft] = true,
-        [Action.FireRight] = true,
-        [Action.McFire] = true,
-        [Action.HeliTurnRight] = true,
-        [Action.HeliTurnLeft] = true,
-        [Action.VehicleFireLeft] = true,
-        [Action.ThrowGrenade] = true,
-        [Action.VehicleFireRight] = true,
-        [Action.Reverse] = true,
-        [Action.UseItem] = true,
-        [Action.GuiPDAToggleAOI] = true,
-        [Action.GrapplingAction] = true,
-        [Action.PickupWithLeftHand] = true,
-        [Action.PickupWithRightHand] = true,
-        [Action.ActivateBlackMarketBeacon] = true,
-        [Action.GuiPDAZoomOut] = true,
-        [Action.GuiPDAZoomIn] = true,
-        [Action.NextWeapon] = true,
-        [Action.PrevWeapon] = true,
-        [Action.ExitVehicle] = true
-    }
-
     Events:Subscribe(var("Cells/LocalPlayerCellUpdate"):get() 
         .. tostring(ItemsConfig.usables.Claymore.cell_size), self, self.LocalPlayerCellUpdate)
 

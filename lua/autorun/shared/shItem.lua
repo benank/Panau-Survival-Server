@@ -28,7 +28,7 @@ function shItem:__init(args)
     self.custom_data = args.custom_data or {}
     self.nodrop = args.nodrop or false
 
-    self:GetCustomData();
+    self:GetCustomData()
 
     if args.equipped then
         self.equipped = args.equipped

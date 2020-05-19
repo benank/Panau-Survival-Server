@@ -25,6 +25,7 @@ function sSpawnManager:__init()
         while true do
             for player in Server:GetPlayers() do
                 self:UpdatePlayerPositionMinuteTick(player)
+                Timer.Sleep(1)
             end
             Timer.Sleep(60 * 1000)
         end
