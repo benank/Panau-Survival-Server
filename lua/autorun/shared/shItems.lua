@@ -267,8 +267,10 @@ Items =
     {
         name = "C4",
         category = "Explosives",
-        stacklimit = 5,
-        can_use = true
+        stacklimit = 1,
+        can_use = true,
+        can_stack = true,
+        non_persistent_custom_data = true
     },
     {
         name = "Claymore",

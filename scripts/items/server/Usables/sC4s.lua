@@ -8,6 +8,8 @@ function sC4s:__init()
     Network:Subscribe("items/PlaceC4", self, self.FinishC4Placement)
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+    Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
     
     -- Update attached C4s every second so they are at least nearby the entity
@@ -20,15 +22,55 @@ function sC4s:__init()
                 local attach_entity = wno:GetValue("AttachEntity")
                 if IsValid(attach_entity) then
                     wno:SetPosition(wno:GetValue("AttachEntity"):GetPosition())
-                elseif attach_entity then
+
+                    if attach_entity:GetHealth() <= 0 then
+                        self:DestroyC4({id = id})
+                    end
+
+                elseif not IsValid(attach_entity) then
                     -- Attach entity not valid, remove C4
+
+                    if IsValid(wno:GetValue("Owner")) then
+
+                        -- Set custom data with wno id
+                        Inventory.ModifyItemCustomData({
+                            player = wno:GetValue("Owner"),
+                            item = wno:GetValue("Item"),
+                            custom_data = {}
+                        })
+
+                    end
+
                     self:RemoveC4(id)
+                    
                 end
 
             end
 
         end
     end)()
+
+end
+
+function sC4s:ModuleUnload(args)
+    
+    for id, wno in pairs(self.wnos) do
+        wno:Remove()
+    end
+
+end
+
+function sC4s:PlayerQuit(args)
+
+    -- Remove all active c4s if player disconnects
+    local steamid = tostring(args.player:GetSteamId())
+
+    for id, wno in pairs(self.wnos) do
+        if wno:GetValue("owner_id") == steamid then
+            wno:Remove()
+            self.wnos[id] = nil
+        end
+    end
 
 end
 
@@ -41,15 +83,13 @@ function sC4s:RemoveC4(id)
     c4:Remove()
     self.wnos[id] = nil
 
-    -- TODO: restore customer data c4 in player inventory if they are online
-
 end
 
 function sC4s:ItemExplode(args)
 
     for id, wno in pairs(self.wnos) do
-        if wno.position:Distance(args.position) < args.radius then
-            self:DestroyC4({id = wno:GetId()}, args.player)
+        if wno:GetPosition():Distance(args.position) < args.radius then
+            self:DestroyC4({id = wno:GetId()})
         end
     end
 
@@ -60,18 +100,22 @@ function sC4s:DestroyC4(args, player)
 
     local c4 = self.wnos[args.id]
 
-    if c4:GetValue("Exploded") then return end
+    if not c4 then return end
 
     local pos = c4:GetPosition()
 
-    Network:Send(player, "items/C4Explode", {position = pos, id = c4.id, owner_id = c4.owner_id})
-    Network:SendNearby(player, "items/C4Explode", {position = pos, id = c4.id, owner_id = c4.owner_id})
+    Network:Broadcast("items/C4Explode", {position = pos, id = c4.id})
+
+    Inventory.RemoveItem({
+        item = c4:GetValue("Item"),
+        player = c4:GetValue("Owner")
+    })
 
     self:RemoveC4(args.id)
 
     Events:Fire("items/ItemExplode", {
         position = pos,
-        radius = 50,
+        radius = 30,
         player = player
     })
 
@@ -82,11 +126,21 @@ function sC4s:UseItem(args)
     if args.item.name ~= "C4" then return end
 
     -- TOOD: check if already placed. If placed, then explode
+    if args.item.custom_data.id then
+        -- Already placed, trigger it
 
-    Inventory.OperationBlock({player = args.player, change = 1}) -- Block inventory operations until they finish placing or cancel
-    args.player:SetValue("C4UsingItem", args)
+        self:DestroyC4({
+            id = args.item.custom_data.id
+        }, args.player)
 
-    Network:Send(args.player, "items/StartC4Placement")
+    else
+
+        Inventory.OperationBlock({player = args.player, change = 1}) -- Block inventory operations until they finish placing or cancel
+        args.player:SetValue("C4UsingItem", args)
+
+        Network:Send(args.player, "items/StartC4Placement")
+
+    end
 
 end
 
@@ -95,17 +149,49 @@ function sC4s:CancelC4Placement(args, player)
     Inventory.OperationBlock({player = player, change = -1})
 end
 
+function sC4s:PlaceC4(position, angle, player, entity, values, item)
+
+    local c4 = WorldNetworkObject.Create(position, {
+        enabled = false
+    })
+    c4:SetAngle(angle)
+
+    c4:SetNetworkValue("owner_id", tostring(player:GetSteamId()))
+    c4:SetNetworkValue("AttachEntity", entity)
+    c4:SetNetworkValue("Angle", angle)
+    c4:SetNetworkValue("Values", values)
+    c4:SetValue("Owner", player)
+    c4:SetValue("Item", item)
+
+    self.wnos[c4:GetId()] = c4
+
+    c4:SetEnabled(true)
+
+    return c4:GetId()
+
+end
+
 function sC4s:TryPlaceC4(args, player)
 
-    local player_iu = player:GetValue("C4UsingItem")
+    if not IsValid(player) then return end
 
-    if player_iu.item and ItemsConfig.usables[player_iu.item.name]
-        and player_iu.item.name == "C4" then
+    local c4_using = player:GetValue("C4UsingItem")
 
-        -- TODO: set custom data with WNO id
+    if c4_using then
 
         -- Now actually place the claymore
-        self:PlaceC4(args.position, args.angle, player)
+        local id = self:PlaceC4(args.position, args.angle, player, args.forward_ray.entity, args.values, c4_using.item)
+
+        -- Set custom data with wno id
+        Inventory.ModifyItemCustomData({
+            player = player,
+            item = c4_using.item,
+            custom_data = {
+                id = id
+            }
+        })
+
+        player:SetValue("C4UsingItem", nil)
 
     end
 

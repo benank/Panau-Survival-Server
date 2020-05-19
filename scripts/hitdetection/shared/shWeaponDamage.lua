@@ -14,7 +14,7 @@ WeaponBaseDamage =
     [Weapon.Shotgun] = 5,
 }
 
-FOVDamageModifier = 0.25 -- If hiding behind a wall, how much damage do you absorb 
+FOVDamageModifier = 0.20 -- If hiding behind a wall, how much damage do you absorb 
 
 FireEffectTime = 9 -- Time it takes for fire to go out 
 
@@ -30,7 +30,7 @@ ExplosiveBaseDamage =
 {
     [DamageEntity.Mine] = {damage = 250, radius = 10, knockback = 10},
     [DamageEntity.Claymore] = {damage = 500, radius = 15, knockback = 12},
-    [DamageEntity.C4] = {damage = 500, radius = 50, knockback = 30},
+    [DamageEntity.C4] = {damage = 400, radius = 50, knockback = 30},
     [DamageEntity.HEGrenade] = {damage = 140, radius = 5, knockback = 5},
     [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 60}
 }

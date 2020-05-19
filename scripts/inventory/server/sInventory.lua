@@ -24,6 +24,7 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.RemoveItem-" .. self.steamID, self, self.RemoveItemRemote))
     table.insert(self.events, Events:Subscribe("Inventory.ModifyStack-" .. self.steamID, self, self.ModifyStackRemote))
     table.insert(self.events, Events:Subscribe("Inventory.ModifyDurability-" .. self.steamID, self, self.ModifyDurabilityRemote))
+    table.insert(self.events, Events:Subscribe("Inventory.ModifyItemCustomData-" .. self.steamID, self, self.ModifyItemCustomDataRemote))
     table.insert(self.events, Events:Subscribe("Inventory.OperationBlock-" .. self.steamID, self, self.OperationBlockRemote))
     table.insert(self.events, Events:Subscribe("Inventory.SetItemEquipped-" .. self.steamID, self, self.SetItemEquippedRemote))
 
@@ -63,6 +64,17 @@ function sInventory:Load()
     if #result > 0 then -- if already in DB
         
         self:Deserialize(result[1].contents)
+
+        -- If there is non-persistent custom data, remove it (like C4 id)
+        for cat, data in pairs(self.contents) do
+            for index, stack in pairs(data) do
+                for item_index, item in pairs(stack.contents) do
+                    if Items_indexed[item.name].non_persistent_custom_data then
+                        item.custom_data = {}
+                    end
+                end
+            end
+        end
         
     else
         
@@ -683,12 +695,36 @@ function sInventory:SetItemEquippedRemote(args)
 
 end
 
-function sInventory:ModifyDurabilityRemote(args)
+function sInventory:ModifyItemCustomDataRemote(args)
 
     if args.player ~= self.player then
-        error("sInventory:ModifyDurabilityRemote failed: player does not match")
+        error("sInventory:ModifyItemCustomDataRemote failed: player does not match")
         return
     end
+
+    local cat = args.item.category
+
+    for index, stack in pairs(self.contents[cat]) do
+
+        for _, item in pairs(stack.contents) do
+
+            if item.uid == args.item.uid then
+
+                item.custom_data = args.custom_data
+                self:Sync({index = index, stack = stack, sync_stack = true})
+
+                return
+
+            end
+
+        end
+
+    end
+
+
+end
+
+function sInventory:ModifyDurabilityRemote(args)
 
     local cat = args.item.category
 

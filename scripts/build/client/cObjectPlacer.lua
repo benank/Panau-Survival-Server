@@ -80,6 +80,7 @@ function cObjectPlacer:StartObjectPlacement(args)
     self.display_bb = args.display_bb == true
     self.angle_offset = args.angle ~= nil and args.angle or Angle()
     self.offset = args.offset or Vector3()
+    self.place_entity = args.place_entity
 
     self.disable_walls = args.disable_walls
     self.disable_ceil = args.disable_ceil
@@ -163,12 +164,17 @@ function cObjectPlacer:Render(args)
     end
 
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, self.range)
+    self.forward_ray = ray
 
     local in_range = ray.distance < self.range
     local can_place_here = in_range
 
     if ray.entity then
-        can_place_here = can_place_here and ray.entity.__type == "ClientStaticObject"
+        can_place_here = can_place_here and (ray.entity.__type == "ClientStaticObject" or self.place_entity)
+
+        if self.forward_ray.entity.__type == "ClientStaticObject" then
+            self.forward_ray.entity = nil
+        end
     end
 
     local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(self.rotation_yaw / 180 * math.pi, 0, 0) * self.angle_offset
@@ -292,7 +298,8 @@ function cObjectPlacer:MouseUp(args)
             Events:Fire("build/PlaceObject", {
                 model = self.object:GetModel(),
                 position = self.object:GetPosition(),
-                angle = self.object:GetAngle()
+                angle = self.object:GetAngle(),
+                forward_ray = self.forward_ray
             })
             self:StopObjectPlacement()
         end

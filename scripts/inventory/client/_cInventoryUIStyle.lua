@@ -44,6 +44,7 @@ function cInventoryUIStyle:__init()
     {
         blue = Color(17, 84, 135, self.background_alpha), -- armor, grapples, para, grenades, radio
         red = Color(120, 10, 10, self.background_alpha), -- cruise missile, nuke, area bombing
+        brightred = Color(200, 10, 10, self.background_alpha), -- C4 selected
         pink = Color(140, 63, 140, self.background_alpha), -- backpacks, scuba gear, explosive detector
         yellow = Color(155, 145, 29, self.background_alpha), -- landclaim, ping, bping, evac, vehicle repair, backtrak, stashhacker, woet
         darkgreen = Color(24, 99, 24, self.background_alpha), -- food/drink items
@@ -114,7 +115,12 @@ function cInventoryUIStyle:__init()
 
 end
 
-function cInventoryUIStyle:GetItemColorByName(name)
+function cInventoryUIStyle:GetItemColorByName(name, item)
+
+    if name == "C4" and item.custom_data.id then
+        return self.item_colors.brightred
+    end
+    
     if self.item_color_map[name] then
         return self.item_color_map[name]
     else
@@ -154,7 +160,7 @@ function cInventoryUIStyle:UpdateItemColor(itemwindow)
     else
         -- Make item normal color
         self:SetBorderColor(itemwindow, self.colors.hover.border)
-        itemwindow:FindChildByName("button_bg", true):SetColor(self:GetItemColorByName(stack_name))
+        itemwindow:FindChildByName("button_bg", true):SetColor(self:GetItemColorByName(stack_name, stack and stack.contents[1] or nil))
     end
 
     local hovered = button:GetDataBool("hovered")
