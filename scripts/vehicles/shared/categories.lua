@@ -1,0 +1,27 @@
+v_cats = 
+{
+    ["MIL_HEL"] = true,
+    ["MIL_PLA_L"] = true,
+    ["MIL_PLA_M"] = true,
+    ["URB_HEL"] = true,
+    ["URB_PLA_M"] = true,
+    ["MIL_SEA_L"] = true,
+    ["URB_PLA_S"] = true,
+    ["MIL_SEA_M"] = true,
+    ["MIL_CAR_L"] = true,
+    ["URB_PLA_L"] = true,
+    ["MIL_CAR_M"] = true,
+    ["URB_SEA"] = true,
+    ["URB_CAR_M"] = true,
+    ["RUR_PLA"] = true,
+    ["MIL_BIK"] = true,
+    ["URB_CAR_L"] = true,
+    ["URB_CAR_S"] = true,
+    ["URB_BIK"] = true,
+    ["RUR_CAR_M"] = true,
+    ["RUR_CAR_L"] = true,
+    ["RUR_SEA_L"] = true,
+    ["RUR_SEA_M"] = true,
+    ["RUR_CAR_S"] = true,
+    ["RUR_BIK"] = true
+}

@@ -5,23 +5,12 @@ function VehiclesServer:__init()
 	self.notownedvehs = {}
 	self.vspawns = {}
 	self.vtable = {}
-	self.prices = {}
-	self.prices["CIV_GROUND"] = 500
-	self.prices["CIV_WATER"] = 700
-	self.prices["CIV_HELI"] = 800
-	self.prices["CIV_PLANE"] = 800
-	self.prices["MIL_GROUND"] = 1500
-	self.prices["MIL_WATER"] = 1700
-	self.prices["MIL_HELI"] = 2000
-	self.prices["MIL_PLANE"] = 1800
-	self.vspawns["CIV_GROUND"] = {}
-	self.vspawns["CIV_WATER"] = {}
-	self.vspawns["CIV_HELI"] = {}
-	self.vspawns["CIV_PLANE"] = {}
-	self.vspawns["MIL_GROUND"] = {}
-	self.vspawns["MIL_WATER"] = {}
-	self.vspawns["MIL_HELI"] = {}
-	self.vspawns["MIL_PLANE"] = {}
+    self.prices = {}
+    
+    for name, _ in pairs(v_cats) do
+        self.vspawns[name] = {}
+    end
+
 	self.minutes = 0
 	self.timer = {}
 	self.maxvehicles = 10
@@ -55,16 +44,18 @@ function VehiclesServer:__init()
 	Network:Subscribe("V_ConfirmTransfer", self, self.ClientConfirmTransfer)
 	Network:Subscribe("V_BuyVehicle", self, self.ClientPurchaseVehicle)
 	
-	for name, tabl in pairs(self.vspawns) do
-		for pos, angle in pairs(self.vspawns[name]) do
-			table.insert(self.vtps[name], pos)
-		end
-	end
-	
 	--Events:Subscribe("PlayerChat", self, self.Cha)
 end
 
 function VehiclesServer:Chat(args)
+
+    local words = args.text:split(" ")
+
+    if words[1] == "/spawn" and v_cats[words[2]] then
+        self:PlaceVehicle(words[2], args.player)
+        return
+    end
+
 	--[[self.vspawns["CIV_GROUND"] = {}
 	self.vspawns["CIV_WATER"] = {}
 	self.vspawns["CIV_HELI"] = {}
@@ -435,7 +426,7 @@ function VehiclesServer:IsSpawned(pos)
 end
 function VehiclesServer:SpawnRandomVehicles(num)
 	--SUPER COMPLEX ALGORITHM TO RANDOMLY SPAWN VEHICLES
-	local numvspawns = 0
+	--[[local numvspawns = 0
 	for vtype, _ in pairs(self.vspawns) do
 		for pos, angle in pairs(self.vspawns[vtype]) do
 			numvspawns = numvspawns + 1
@@ -465,20 +456,15 @@ function VehiclesServer:SpawnRandomVehicles(num)
 	end
 	local pcent = numvspawns / table.count(self.notownedvehs)
 	--Chat:Broadcast(string.format("%.0f total vehicles spawned", table.count(self.notownedvehs)), Color.Yellow)
-	print(string.format("%.0f total vehicles spawned", table.count(self.notownedvehs)))
+	print(string.format("%.0f total vehicles spawned", table.count(self.notownedvehs)))]]
 end
 function VehiclesServer:SendDataTemp(args)
-	--FOR PLACING VEHICLE SPAWN DATA ONLY
-	args.player:SetValue("CIV_GROUND", 1)
-	args.player:SetValue("CIV_WATER", 1)
-	args.player:SetValue("CIV_HELI", 1)
-	args.player:SetValue("CIV_PLANE", 1)
-	args.player:SetValue("MIL_GROUND", 1)
-	args.player:SetValue("MIL_WATER", 1)
-	args.player:SetValue("MIL_HELI", 1)
-	args.player:SetValue("MIL_PLANE", 1)
-	args.player:SetValue("CIV_GROUND", 1)
-	args.player:SetValue("CIV_GROUND", 1)
+    --FOR PLACING VEHICLE SPAWN DATA ONLY
+    
+    for cat, _ in pairs(v_cats) do
+        args.player:SetValue(cat, 1)
+    end
+
 	Network:Send(args.player, "UpdateVehicleTablesTemp", self.vspawns)
 end
 function VehiclesServer:LoadFile(filename)
@@ -590,31 +576,27 @@ function VehiclesServer:RemoveTrap(key, sender)
 		end
 end
 
-function VehiclesServer:ClientVehiclePlaceTempF(key,sender)
-	--FOR PLACING VEHICLE SPAWNS ONLY
-	if key == 82 then
-		self:RemoveTrap(key, sender)
-		return
-	end
-	local vType = "CIV_GROUND"
-	if key == 49 then vType = "CIV_GROUND"
-	elseif key == 50 then vType = "CIV_WATER"
-	elseif key == 51 then vType = "CIV_HELI"
-	elseif key == 52 then vType = "CIV_PLANE"
-	elseif key == 53 then vType = "MIL_GROUND"
-	elseif key == 54 then vType = "MIL_WATER"
-	elseif key == 55 then vType = "MIL_HELI"
-	elseif key == 56 then vType = "MIL_PLANE"
-	else return	end
-	Chat:Send(sender, "Set type "..vType.." car spawn at "..tostring(sender:GetPosition()), Color(0,255,255))
-	local str = "\nX "..tostring(sender:GetPosition())..", "..tostring(sender:GetAngle())..", "..tostring(vType)
+function VehiclesServer:PlaceVehicle(type, player)
+
+	Chat:Send(player, "Set type "..type.." vehicle spawn at "..tostring(player:GetPosition()), Color(0,255,255))
+	local str = "\nX "..tostring(player:GetPosition())..", "..tostring(player:GetAngle())..", "..tostring(type)
 	local file = io.open("spawns.txt", "a")
 	file:write(str)
 	file:close()
-	local tablenum = table.count(self.vspawns[vType])
-	self.vspawns[vType][sender:GetPosition()] = sender:GetAngle()
+	local tablenum = table.count(self.vspawns[type])
+    self.vspawns[type][player:GetPosition()] = player:GetAngle()
+    
 	for p in Server:GetPlayers() do
 		Network:Send(p, "UpdateVehicleTablesTemp", self.vspawns)
+    end
+    
+end
+
+function VehiclesServer:ClientVehiclePlaceTempF(key,sender)
+    --FOR PLACING VEHICLE SPAWNS ONLY
+    if key == 82 then
+		self:RemoveTrap(key, sender)
+		return
 	end
 end
 function VehiclesServer:ModuleLoad()
