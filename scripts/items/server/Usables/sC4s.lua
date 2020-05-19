@@ -104,7 +104,7 @@ function sC4s:DestroyC4(args, player)
 
     local pos = c4:GetPosition()
 
-    Network:Broadcast("items/C4Explode", {position = pos, id = c4.id})
+    Network:Broadcast("items/C4Explode", {position = pos, id = c4:GetId(), owner_id = c4:GetValue("owner_id")})
 
     Inventory.RemoveItem({
         item = c4:GetValue("Item"),
