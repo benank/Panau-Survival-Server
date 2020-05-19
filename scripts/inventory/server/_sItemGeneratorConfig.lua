@@ -177,7 +177,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.245,
+            rarity = 0.265,
             items = 
             {
                 ["SMG Ammo"] = {rarity = 0.2, min = 10, max = 20},
@@ -190,7 +190,7 @@ LootItems =
         },
         ["ARMOUR"] = 
         {
-            rarity = 0.03,
+            rarity = 0.04,
             items = 
             {
                 ["Police Helmet"] = {rarity = 0.5, min = 1, max = 1},
@@ -238,11 +238,11 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.21,
+            rarity = 0.18,
             items = 
             {
-                ["Battery"] = {rarity = 0.75, min = 2, max = 4},
-                ["EVAC"] = {rarity = 0.25, min = 1, max = 1},
+                ["Vehicle Repair"] = {rarity = 0.25, min = 1, max = 2},
+                ["Battery"] = {rarity = 0.75, min = 1, max = 2},
             }
         },
         ["WEAPON"] = 
@@ -326,8 +326,8 @@ LootItems =
             rarity = 0.125,
             items = 
             {
-                ["Battery"] = {rarity = 0.6, min = 4, max = 8},
-                ["EVAC"] = {rarity = 0.4, min = 1, max = 1},
+                ["Battery"] = {rarity = 0.7, min = 2, max = 4},
+                ["EVAC"] = {rarity = 0.3, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
