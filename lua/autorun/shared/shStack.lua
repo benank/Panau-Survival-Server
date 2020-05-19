@@ -104,7 +104,7 @@ function shStack:AddItem(_item)
     end
 
     -- Adding an item with durability, which means it is a single item
-    if self:IsStackable() then
+    if self:IsStackable() or count_table(self.contents) == 0 then
 
         table.insert(self.contents, item)
 
@@ -112,6 +112,7 @@ function shStack:AddItem(_item)
 
         local amount_to_add = math.min(item.amount, self:GetProperty("stacklimit") - self:GetAmount())
         item.amount = item.amount - amount_to_add
+
         self.contents[1].amount = self.contents[1].amount + amount_to_add
 
         if item.amount > 0 then
