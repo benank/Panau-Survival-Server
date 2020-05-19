@@ -90,6 +90,7 @@ function cInventoryUIStyle:__init()
         ["Can of Ham"] = self.item_colors.darkgreen,
         ["Can of Peaches"] = self.item_colors.darkgreen,
         ["Chips"] = self.item_colors.darkgreen,
+        ["Spicy Chips"] = self.item_colors.darkgreen,
         ["Chocolate"] = self.item_colors.darkgreen,
         ["Coffee"] = self.item_colors.darkgreen,
         ["Cookies"] = self.item_colors.darkgreen,
