@@ -27,7 +27,7 @@ function sC4s:__init()
                         self:DestroyC4({id = id})
                     end
 
-                elseif not IsValid(attach_entity) then
+                elseif attach_entity and not IsValid(attach_entity) then
                     -- Attach entity not valid, remove C4
 
                     if IsValid(wno:GetValue("Owner")) then
