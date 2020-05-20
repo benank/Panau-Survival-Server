@@ -1,17 +1,17 @@
 WeaponBaseDamage = 
 {
     [0] = 3, -- All vehicle machine guns
-    [Weapon.Handgun] = 4, -- All of these are in percents
-    [Weapon.Assault] = 5,
+    [Weapon.Handgun] = 12, -- All of these are in percents
+    [Weapon.Assault] = 6,
     [Weapon.BubbleGun] = -2,
-    [Weapon.GrenadeLauncher] = 50,
-    [Weapon.MachineGun] = 7,
-    [Weapon.Revolver] = 10,
-    [Weapon.RocketLauncher] = 100,
-    [Weapon.SMG] = 5,
-    [Weapon.Sniper] = 80,
-    [Weapon.SawnOffShotgun] = 3, -- Damage per bullet in each shot
-    [Weapon.Shotgun] = 5,
+    [Weapon.GrenadeLauncher] = 60,
+    [Weapon.MachineGun] = 8,
+    [Weapon.Revolver] = 30,
+    [Weapon.RocketLauncher] = 110,
+    [Weapon.SMG] = 8,
+    [Weapon.Sniper] = 100,
+    [Weapon.SawnOffShotgun] = 4, -- Damage per bullet in each shot
+    [Weapon.Shotgun] = 6,
 }
 
 FOVDamageModifier = 0.20 -- If hiding behind a wall, how much damage do you absorb 
