@@ -10,6 +10,7 @@ function sC4s:__init()
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("InventoryUpdated", self, self.InventoryUpdated)
 
     
     -- Update attached C4s every second so they are at least nearby the entity
@@ -49,6 +50,45 @@ function sC4s:__init()
 
         end
     end)()
+
+end
+
+function sC4s:InventoryUpdated(args)
+
+    -- Check if they dropped a placed c4 and remove it if so
+    local func = coroutine.wrap(function()
+
+        local player_placed_c4s = {}
+        local player_id = tostring(args.player:GetSteamId())
+
+        for id, wno in pairs(self.wnos) do
+            if wno:GetValue("owner_id") == player_id then
+                player_placed_c4s[id] = true
+            end
+        end
+
+        -- Did not place any c4, so return
+        if count_table(player_placed_c4s) == 0 then return end
+
+        local inv = Inventory.Get({player = args.player})
+
+        local cat = Items_indexed["C4"].category
+
+        for index, stack in pairs(inv[cat]) do
+            for item_index, item in pairs(stack.contents) do
+                if item.name == "C4" and item.custom_data.id and player_placed_c4s[item.custom_data.id] then
+                    -- Player still has C4 so don't remove
+                    player_placed_c4s[item.custom_data.id] = nil
+                end
+            end
+        end
+
+        for id, _ in pairs(player_placed_c4s) do
+            self:RemoveC4(id)
+        end
+
+    end)()
+
 
 end
 
@@ -104,7 +144,14 @@ function sC4s:DestroyC4(args, player)
 
     local pos = c4:GetPosition()
 
-    Network:Broadcast("items/C4Explode", {position = pos, id = c4:GetId(), owner_id = c4:GetValue("owner_id")})
+    if not self.sz_config then
+        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+    end
+
+    -- If they are within sz radius * 2, we don't let them detonate that close
+    if pos:Distance(self.sz_config.safezone.position) > self.sz_config.safezone.radius * 2 then
+        Network:Broadcast("items/C4Explode", {position = pos, id = c4:GetId(), owner_id = c4:GetValue("owner_id")})
+    end
 
     Inventory.RemoveItem({
         item = c4:GetValue("Item"),
@@ -124,6 +171,7 @@ end
 function sC4s:UseItem(args)
 
     if args.item.name ~= "C4" then return end
+    if args.player:InVehicle() then return end
 
     -- TOOD: check if already placed. If placed, then explode
     if args.item.custom_data.id then

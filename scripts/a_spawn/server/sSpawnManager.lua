@@ -24,7 +24,9 @@ function sSpawnManager:__init()
     local func = coroutine.wrap(function()
         while true do
             for player in Server:GetPlayers() do
-                self:UpdatePlayerPositionMinuteTick(player)
+                if IsValid(player) then
+                    self:UpdatePlayerPositionMinuteTick(player)
+                end
                 Timer.Sleep(1)
             end
             Timer.Sleep(60 * 1000)

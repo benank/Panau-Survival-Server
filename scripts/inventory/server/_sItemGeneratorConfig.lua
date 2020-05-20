@@ -31,14 +31,14 @@ LootItems =
             items = 
             {
                 ["Chocolate"] = {rarity = 0.08, min = 2, max = 3},
-                ["Cookies"] = {rarity = 0.07, min = 1, max = 2},
-                ["Peanuts"] = {rarity = 0.07, min = 1, max = 2},
-                ["Pretzel"] = {rarity = 0.07, min = 1, max = 2},
+                ["Cookies"] = {rarity = 0.079, min = 1, max = 1},
+                ["Peanuts"] = {rarity = 0.08, min = 1, max = 1},
+                ["Pretzel"] = {rarity = 0.08, min = 1, max = 1},
                 ["Can of Beans"] = {rarity = 0.08, min = 1, max = 1},
                 ["Can of Ham"] = {rarity = 0.08, min = 1, max = 1},
-                ["Can of Peaches"] = {rarity = 0.071, min = 1, max = 1},
+                ["Can of Peaches"] = {rarity = 0.07, min = 1, max = 1},
                 ["Chips"] = {rarity = 0.07, min = 1, max = 2},
-                ["Spicy Chips"] = {rarity = 0.038, min = 3, max = 5},
+                ["Spicy Chips"] = {rarity = 0.01, min = 1, max = 2},
                 ["Macadamia Nuts"] = {rarity = 0.001, min = 1, max = 1},
                 ["Coffee"] = {rarity = 0.07, min = 1, max = 2},
                 ["Apple Juice"] = {rarity = 0.07, min = 1, max = 2},
@@ -158,7 +158,8 @@ LootItems =
                 ["BackTrack"] = {rarity = 0.2, min = 1, max = 1},
                 ["Vehicle Guard"] = {rarity = 0.2, min = 1, max = 1},
                 ["Vehicle Repair"] = {rarity = 0.2, min = 1, max = 1},
-                ["Battery"] = {rarity = 0.4, min = 1, max = 1},
+                ["Car Paint"] = {rarity = 0.1, min = 1, max = 1},
+                ["Battery"] = {rarity = 0.3, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
@@ -243,8 +244,9 @@ LootItems =
             rarity = 0.18,
             items = 
             {
-                ["Vehicle Repair"] = {rarity = 0.25, min = 1, max = 2},
-                ["Battery"] = {rarity = 0.75, min = 1, max = 2},
+                ["Vehicle Repair"] = {rarity = 0.2, min = 1, max = 2},
+                ["Car Paint"] = {rarity = 0.2, min = 1, max = 1},
+                ["Battery"] = {rarity = 0.6, min = 1, max = 2},
             }
         },
         ["WEAPON"] = 
@@ -299,9 +301,10 @@ LootItems =
             rarity = 0.125,
             items = 
             {
-                ["Mine"] = {rarity = 0.2, min = 1, max = 1},
-                ["Claymore"] = {rarity = 0.3, min = 1, max = 1},
-                ["Molotov"] = {rarity = 0.5, min = 1, max = 1},
+                ["Mine"] = {rarity = 0.325, min = 1, max = 1},
+                ["Claymore"] = {rarity = 0.275, min = 1, max = 1},
+                ["Molotov"] = {rarity = 0.325, min = 1, max = 1},
+                ["C4"] = {rarity = 0.075, min = 1, max = 1},
             }
         },
         ["GEAR"] = 
@@ -328,8 +331,8 @@ LootItems =
             rarity = 0.175,
             items = 
             {
-                ["Battery"] = {rarity = 0.8, min = 1, max = 2},
-                ["EVAC"] = {rarity = 0.2, min = 1, max = 1},
+                ["Battery"] = {rarity = 0.875, min = 1, max = 2},
+                ["EVAC"] = {rarity = 0.125, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
@@ -359,13 +362,13 @@ LootItems =
             {
                 ["Chocolate"] = {rarity = 0.125, min = 1, max = 2},
                 ["Cookies"] = {rarity = 0.125, min = 1, max = 2},
-                ["Peanuts"] = {rarity = 0.124, min = 1, max = 2},
+                ["Peanuts"] = {rarity = 0.125, min = 1, max = 2},
                 ["Pretzel"] = {rarity = 0.125, min = 1, max = 2},
-                ["Can of Beans"] = {rarity = 0.115, min = 1, max = 2},
+                ["Can of Beans"] = {rarity = 0.119, min = 1, max = 2},
                 ["Can of Ham"] = {rarity = 0.125, min = 1, max = 2},
                 ["Can of Peaches"] = {rarity = 0.125, min = 1, max = 2},
                 ["Chips"] = {rarity = 0.125, min = 1, max = 2},
-                ["Spicy Chips"] = {rarity = 0.01, min = 3, max = 5},
+                ["Spicy Chips"] = {rarity = 0.005, min = 1, max = 2},
                 ["Macadamia Nuts"] = {rarity = 0.001, min = 1, max = 1},
             }
         },
