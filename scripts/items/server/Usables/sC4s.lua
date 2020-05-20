@@ -171,6 +171,7 @@ end
 function sC4s:UseItem(args)
 
     if args.item.name ~= "C4" then return end
+    if args.player:InVehicle() then return end
 
     -- TOOD: check if already placed. If placed, then explode
     if args.item.custom_data.id then
