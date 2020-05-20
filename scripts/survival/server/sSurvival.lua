@@ -124,7 +124,9 @@ function sSurvivalManager:SetupIntervals()
         while true do
 
             for player in Server:GetPlayers() do
-                self:AdjustSurvivalStats(player)
+                if IsValid(player) then
+                    self:AdjustSurvivalStats(player)
+                end
                 Timer.Sleep(5)
             end
             

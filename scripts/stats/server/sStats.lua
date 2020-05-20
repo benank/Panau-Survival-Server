@@ -78,18 +78,19 @@ function sStats:MinuteTick()
 
     local func = coroutine.wrap(function()
         for p in Server:GetPlayers() do
-            local player_data = p:GetValue("PlayerData")
+            if IsValid(p) then
+                local player_data = p:GetValue("PlayerData")
 
-            if player_data then
-                player_data.time_online = player_data.time_online + 1
-                self:UpdateStat({
-                    player = p,
-                    key = "time_online",
-                    value = player_data.time_online
-                })
+                if player_data then
+                    player_data.time_online = player_data.time_online + 1
+                    self:UpdateStat({
+                        player = p,
+                        key = "time_online",
+                        value = player_data.time_online
+                    })
+                end
             end
             Timer.Sleep(1)
-
         end
     end)()
 
