@@ -6,10 +6,10 @@ WeaponBaseDamage =
     [Weapon.BubbleGun] = -2,
     [Weapon.GrenadeLauncher] = 60,
     [Weapon.MachineGun] = 7,
-    [Weapon.Revolver] = 20,
+    [Weapon.Revolver] = 23,
     [Weapon.RocketLauncher] = 110,
     [Weapon.SMG] = 8,
-    [Weapon.Sniper] = 100,
+    [Weapon.Sniper] = 90,
     [Weapon.SawnOffShotgun] = 4, -- Damage per bullet in each shot
     [Weapon.Shotgun] = 6,
 }
