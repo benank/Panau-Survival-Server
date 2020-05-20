@@ -144,7 +144,14 @@ function sC4s:DestroyC4(args, player)
 
     local pos = c4:GetPosition()
 
-    Network:Broadcast("items/C4Explode", {position = pos, id = c4:GetId(), owner_id = c4:GetValue("owner_id")})
+    if not self.sz_config then
+        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+    end
+
+    -- If they are within sz radius * 2, we don't let them detonate that close
+    if pos:Distance(self.sz_config.safezone.position) > self.sz_config.safezone.radius * 2 then
+        Network:Broadcast("items/C4Explode", {position = pos, id = c4:GetId(), owner_id = c4:GetValue("owner_id")})
+    end
 
     Inventory.RemoveItem({
         item = c4:GetValue("Item"),
