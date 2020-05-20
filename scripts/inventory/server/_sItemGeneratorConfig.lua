@@ -301,10 +301,10 @@ LootItems =
             rarity = 0.125,
             items = 
             {
-                ["Mine"] = {rarity = 0.3, min = 1, max = 1},
-                ["Claymore"] = {rarity = 0.25, min = 1, max = 1},
-                ["Molotov"] = {rarity = 0.3, min = 1, max = 1},
-                ["C4"] = {rarity = 0.15, min = 1, max = 1},
+                ["Mine"] = {rarity = 0.325, min = 1, max = 1},
+                ["Claymore"] = {rarity = 0.275, min = 1, max = 1},
+                ["Molotov"] = {rarity = 0.325, min = 1, max = 1},
+                ["C4"] = {rarity = 0.075, min = 1, max = 1},
             }
         },
         ["GEAR"] = 
@@ -331,8 +331,8 @@ LootItems =
             rarity = 0.175,
             items = 
             {
-                ["Battery"] = {rarity = 0.8, min = 1, max = 2},
-                ["EVAC"] = {rarity = 0.2, min = 1, max = 1},
+                ["Battery"] = {rarity = 0.875, min = 1, max = 2},
+                ["EVAC"] = {rarity = 0.125, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
