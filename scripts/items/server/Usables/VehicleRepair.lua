@@ -32,7 +32,10 @@ Network:Subscribe("items/CompleteItemUsage", function(args, player)
         entity:SetSpawnPosition(entity:GetPosition())
         entity:SetSpawnAngle(entity:GetAngle())
         entity:Respawn()
-        entity:SetHealth(1)
+
+        Timer.SetTimeout(2000, function()
+            entity:SetHealth(1)
+        end)
 
         Inventory.RemoveItem({
             item = player_iu.item,
