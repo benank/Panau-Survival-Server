@@ -200,6 +200,7 @@ end
 function sProxAlarms:UseItem(args)
 
     if args.item.name ~= "Proximity Alarm" then return end
+    if args.player:InVehicle() then return end
 
     if args.player:GetValue("StuntingVehicle") then
         Chat:Send(args.player, "You cannot use this item while stunting on a vehicle!", Color.Red)
