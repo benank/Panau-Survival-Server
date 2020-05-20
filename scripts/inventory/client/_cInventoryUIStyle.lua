@@ -71,6 +71,7 @@ function cInventoryUIStyle:__init()
         ["EVAC"] = self.item_colors.yellow,
         ["Healthpack"] = self.item_colors.green,
         ["Ping"] = self.item_colors.yellow,
+        ["Combat Ping"] = self.item_colors.yellow,
         ["Stash Hacker"] = self.item_colors.yellow,
         ["Barrel Stash"] = self.item_colors.lightblue,
         ["Garbage Stash"] = self.item_colors.lightblue,

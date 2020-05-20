@@ -2,6 +2,9 @@ class 'cPing'
 
 function cPing:__init()
 
+    self.speed_mod = 4
+    self.num_circles = 3
+
     Network:Subscribe("Items/PingSound", self, self.PingSound)
     Network:Subscribe("Items/Ping", self, self.Ping)
 
@@ -11,10 +14,23 @@ function cPing:Ping(args)
 
     self.timer = Timer()
     self.range = args.range
-    self.nearby_players = args.nearby_players
+
     self.position = LocalPlayer:GetPosition()
-    self.speed_mod = 4
-    self.num_circles = 3
+
+    self.nearby_players = args.nearby_players
+
+    for id, data in pairs(self.nearby_players) do
+        data.id = id
+
+        local delay = data.position:Distance(self.position) * self.speed_mod
+
+        Timer.SetTimeout(delay, function()
+            if self.nearby_players[id] then
+                cPingPlayerIndicators:AddPlayer(self.nearby_players[id])
+            end
+        end)
+
+    end
 
     if not self.render then
         self.render = Events:Subscribe("GameRender", self, self.GameRender)

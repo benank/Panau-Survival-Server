@@ -1,6 +1,6 @@
 Events:Subscribe("Inventory/UseItem", function(args)
 
-    if args.item.name ~= "Ping" or args.item.name ~= "Combat Ping" then return end
+    if args.item.name ~= "Ping" and args.item.name ~= "Combat Ping" then return end
 
     local ping_data = ItemsConfig.usables[args.item.name]
 
@@ -23,7 +23,7 @@ Events:Subscribe("Inventory/UseItem", function(args)
             if IsValid(p) then
                 local player_pos = p:GetPosition()
                 if p ~= args.player and player_pos:Distance(pos) < range then
-                    nearby_players[p:GetId()] = {pos = p:GetPosition(), name = p:GetName()}
+                    nearby_players[p:GetId()] = {position = p:GetPosition(), name = p:GetName()}
                 end
             end
             Timer.Sleep(1)

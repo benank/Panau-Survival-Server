@@ -13,7 +13,7 @@ ItemsConfig =
         ["EVAC"] = {use_time = 5},
         ["Respawner"] = {use_time = 3}, -- Temp
         ["Ping"] = {max_distance = 5000, max_height = 4000},
-        ["Combat Ping"] = {max_distance = 300, max_height = 200},
+        ["Combat Ping"] = {max_distance = 400, max_height = 200},
     },
     equippables = -- Use equip
     {
