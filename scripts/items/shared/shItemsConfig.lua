@@ -12,6 +12,7 @@ ItemsConfig =
         ["BackTrack"] = {use_time = 3},
         ["EVAC"] = {use_time = 5},
         ["Respawner"] = {use_time = 3}, -- Temp
+		["Car Paint"] = {use_time = 3, range = 5},
     },
     equippables = -- Use equip
     {

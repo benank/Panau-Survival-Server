@@ -162,7 +162,8 @@ Items =
         name = "Car Paint",
         category = "Survival",
         stacklimit = 5,
-        can_use = true
+        can_use = true,
+		can_stack = true
     },
     {
         name = "Cruise Missile",

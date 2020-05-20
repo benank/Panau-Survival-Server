@@ -37,6 +37,26 @@ function cInventoryUIStyle:__init()
         radius = 6
     }
 
+    self.car_paint_icon = 
+    {
+        margin = 5,
+        border_color = Color.White
+    }
+
+    self.car_paint_colors = {
+        ["Red"] = Color(255,0,0),
+        ["Green"] = Color(0,255,0),
+        ["Blue"] = Color(0,0,255),
+        ["Purple"] = Color(128,0,255),
+        ["Pink"] = Color(255,0,255),
+        ["Nyan"] = Color(0,191,255),
+        ["Lime"] = Color(128,255,0),
+        ["Orange"] = Color(255,64,0),
+        ["Yellow"] = Color(255,255,0),
+        ["White"] = Color(255,255,255),
+        ["Black"] = Color(0,0,0),
+    }
+
     self.category_title_colors = {Normal = Color.White, Full = Color.Red}
     self.border_size = 2
 
@@ -113,6 +133,44 @@ function cInventoryUIStyle:__init()
         ["Second Life"] = self.item_colors.purple,
     }
 
+
+end
+
+function cInventoryUIStyle:RenderItemWindow(itemWindow, stack, parent_window)
+
+    if itemWindow and parent_window:GetVisible() then
+        
+        local base_pos = parent_window:GetPosition()
+
+        -- Render equipped indicator
+        local position = itemWindow:GetPosition() + base_pos + self.equipped_icon.position
+
+        if stack.contents[1].equipped then
+            -- Top item in stack is equipped
+            Render:FillCircle(position, self.equipped_icon.radius, self.equipped_icon.color)
+        elseif stack:GetOneEquipped() then
+            -- An item in the stack is equipped
+            Render:FillCircle(position, self.equipped_icon.radius, self.equipped_icon.color_under)
+        end
+
+        -- Render car paint
+        if stack:GetProperty("name") == "Car Paint" then
+            local item = stack.contents[1]
+            local color_data = self.car_paint_icon
+            local size = Vector2(itemWindow:GetHeight() - color_data.margin * 2, itemWindow:GetHeight() - color_data.margin * 2)
+
+            local start_pos = itemWindow:GetPosition() + base_pos + Vector2(itemWindow:GetWidth() - color_data.margin - size.x, color_data.margin)
+            
+            local color = self.car_paint_colors[item.custom_data.color]
+
+            Render:FillArea(start_pos, size, color)
+            Render:DrawLine(start_pos, start_pos + Vector2(size.x, 0), color_data.border_color)
+            Render:DrawLine(start_pos, start_pos + Vector2(0, size.y), color_data.border_color)
+            Render:DrawLine(start_pos + size, start_pos + size - Vector2(size.x, 0), color_data.border_color)
+            Render:DrawLine(start_pos + size, start_pos + size - Vector2(0, size.y), color_data.border_color)
+
+        end
+    end
 
 end
 
