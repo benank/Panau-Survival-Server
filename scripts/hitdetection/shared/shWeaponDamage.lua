@@ -1,12 +1,12 @@
 WeaponBaseDamage = 
 {
     [0] = 3, -- All vehicle machine guns
-    [Weapon.Handgun] = 12, -- All of these are in percents
-    [Weapon.Assault] = 6,
+    [Weapon.Handgun] = 10, -- All of these are in percents
+    [Weapon.Assault] = 5,
     [Weapon.BubbleGun] = -2,
     [Weapon.GrenadeLauncher] = 60,
-    [Weapon.MachineGun] = 8,
-    [Weapon.Revolver] = 30,
+    [Weapon.MachineGun] = 7,
+    [Weapon.Revolver] = 20,
     [Weapon.RocketLauncher] = 110,
     [Weapon.SMG] = 8,
     [Weapon.Sniper] = 100,
