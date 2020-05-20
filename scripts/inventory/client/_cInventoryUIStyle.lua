@@ -75,6 +75,7 @@ function cInventoryUIStyle:__init()
         ["Barrel Stash"] = self.item_colors.lightblue,
         ["Garbage Stash"] = self.item_colors.lightblue,
         ["Locked Stash"] = self.item_colors.lightblue,
+        ["Proximity Alarm"] = self.item_colors.lightblue,
         ["Tactical Nuke"] = self.item_colors.red,
         ["Vehicle Repair"] = self.item_colors.yellow,
         ["Woet"] = self.item_colors.yellow,

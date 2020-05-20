@@ -14,6 +14,7 @@ Lootbox.Types =
     BarrelStash = 11,
     GarbageStash = 12,
     LockedStash = 13,
+    ProximityAlarm = 14
 }
 
 StashAccessMode = 
@@ -189,6 +190,13 @@ Lootbox.Models =
         col = "59x36.nl/go158_lod1-a_col.pfx",
         model_dst = "59x36.nl/go158-a_dst.lod",
         col_dst = "59x36.nl/go158_lod1-a_dst_col.pfx",
+        offset = Vector3(0, 0, 0),
+        look_offset = Vector3(0, 1, -1)
+    },
+    [Lootbox.Types.ProximityAlarm] = 
+    {
+        model = "samsite.animated.eez/key036sam-d2.lod",
+        col = "samsite.animated.eez/key036sam_lod1-d2_col.pfx",
         offset = Vector3(0, 0, 0),
         look_offset = Vector3(0, 1, -1)
     }

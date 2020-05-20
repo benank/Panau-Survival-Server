@@ -1,0 +1,67 @@
+class 'cPing'
+
+function cPing:__init()
+
+    Network:Subscribe("Items/PingSound", self, self.PingSound)
+    Network:Subscribe("Items/Ping", self, self.Ping)
+
+end
+
+function cPing:Ping(args)
+
+    self.timer = Timer()
+    self.range = args.range
+    self.nearby_players = args.nearby_players
+    self.position = LocalPlayer:GetPosition()
+    self.speed_mod = 4
+    self.num_circles = 3
+
+    if not self.render then
+        self.render = Events:Subscribe("GameRender", self, self.GameRender)
+    end
+
+end
+
+function cPing:GameRender(args)
+
+    local t = Transform3()
+    t:Translate(self.position):Rotate(Angle(0, math.pi / 2, 0))
+    Render:SetTransform(t)
+
+    local size = self.timer:GetMilliseconds() / self.speed_mod
+
+    for i = 1, self.num_circles do
+        Render:DrawCircle(Vector3.Zero, size + i * 5, Color(255, 255, 0, 255 - math.min(1, size / self.range) * 255))
+    end
+
+    if size > self.range then
+        Events:Unsubscribe(self.render)
+        self.render = nil
+    end
+ 
+end
+
+function cPing:PingSound(args)
+
+    if IsValid(self.sound) then
+        self.sound:Remove()
+        Timer.Clear(self.timeout)
+    end
+
+    self.sound = ClientSound.Create(AssetLocation.Game, {
+        bank_id = 31,
+        sound_id = 15,
+        position = args.position,
+        angle = Angle()
+    })
+
+    self.sound:SetParameter(0,0)
+    self.sound:SetParameter(1,1)
+
+    self.timeout = Timer.SetTimeout(args.range * self.speed_mod, function()
+        self.sound:Remove()
+    end)
+
+end
+
+cPing = cPing()
