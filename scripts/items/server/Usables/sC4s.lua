@@ -252,7 +252,14 @@ function sC4s:TryPlaceC4(args, player)
             if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed and 
             player_iu.item.name == "C4" then
 
-                if player:GetPosition():Distance(args.position) > 10 then
+                local player_pos = player:GetPosition()
+
+                if player:GetPosition():Distance(args.position) > 7 then
+                    Chat:Send(player, "Placing C4 failed!", Color.Red)
+                    return
+                end
+
+                if IsValid(args.forward_ray.entity) and args.forward_ray.entity:GetPosition():Distance(player_pos) > 7 then
                     Chat:Send(player, "Placing C4 failed!", Color.Red)
                     return
                 end
