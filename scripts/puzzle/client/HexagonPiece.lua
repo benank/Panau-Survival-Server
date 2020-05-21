@@ -55,7 +55,7 @@ end
 
 function HexagonPiece:Initialize()
 
-    local rotation = math.random(6)
+    local rotation = math.random(1,5)
 	self.target_rot = math.pi * 2 / 6 * rotation
 	self.rot = self.target_rot
 	self.has_ends = self:HasAnyEnds()
