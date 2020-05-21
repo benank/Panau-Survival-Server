@@ -245,8 +245,10 @@ function sC4s:TryPlaceC4(args, player)
         player:SetValue("C4UsingItem", nil)
 
         local sub
-        sub = Network:Subscribe("items/CompleteItemUsage", function(_, player)
+        sub = Network:Subscribe("items/CompleteItemUsage", function(_, _player)
         
+            if player ~= _player then return end
+
             local player_iu = player:GetValue("ItemUse")
 
             if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed and 
@@ -277,6 +279,8 @@ function sC4s:TryPlaceC4(args, player)
                 })
 
             end
+
+            Network:Unsubscribe(sub)
 
 
         end)
