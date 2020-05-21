@@ -244,9 +244,10 @@ LootItems =
             rarity = 0.18,
             items = 
             {
-                ["Vehicle Repair"] = {rarity = 0.2, min = 1, max = 2},
-                ["Car Paint"] = {rarity = 0.2, min = 1, max = 1},
-                ["Battery"] = {rarity = 0.6, min = 1, max = 2},
+                ["Vehicle Repair"] = {rarity = 0.18, min = 1, max = 2},
+                ["Car Paint"] = {rarity = 0.18, min = 1, max = 1},
+                ["Battery"] = {rarity = 0.585, min = 1, max = 2},
+                ["Respawner"] = {rarity = 0.055, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
@@ -331,7 +332,8 @@ LootItems =
             rarity = 0.175,
             items = 
             {
-                ["Battery"] = {rarity = 0.875, min = 1, max = 2},
+                ["Battery"] = {rarity = 0.765, min = 1, max = 2},
+                ["Respawner"] = {rarity = 0.11, min = 1, max = 1},
                 ["EVAC"] = {rarity = 0.125, min = 1, max = 1},
             }
         },
