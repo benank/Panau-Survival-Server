@@ -174,6 +174,15 @@ function sHitDetection:PlayerChat(args)
             return
         end
 
+        local survival = args.player:GetValue("Survival")
+
+        if not survival then return end
+
+        if survival.hunger <= 10 or survival.thirst <= 20 then
+            Chat:Send(args.player, "You cannot use this command right now.", Color.Red)
+            return
+        end
+
         self:ApplyDamage(args.player, SuicideDamage, DamageEntity.Suicide)
 
         local last_damaged = args.player:GetValue("LastDamaged")
