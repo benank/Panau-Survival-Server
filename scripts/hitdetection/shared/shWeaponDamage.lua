@@ -37,7 +37,16 @@ WeaponHitType =
     Headshot = 1,
     Bodyshot = 2,
     Explosive = 3,
-    Melee = 4
+    MeleeGrapple = 4,
+    MeleeStandingKick = 5,
+    MeleeSlidingKick = 6
+}
+
+MeleeDamage = 
+{
+    [WeaponHitType.MeleeGrapple] = {damage = 25, knockback = 0},
+    [WeaponHitType.MeleeStandingKick] = {damage = 15, knockback = 0},
+    [WeaponHitType.MeleeSlidingKick] = {damage = 30, knockback = 5},
 }
 
 BoneModifiers =  -- Percentages of total damage, 1.0 = no change, 0.5 = half damage

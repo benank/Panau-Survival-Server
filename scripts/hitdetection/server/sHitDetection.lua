@@ -23,6 +23,10 @@ function sHitDetection:__init()
     Events:Subscribe("HitDetection/VehicleGuardActivate", self, self.VehicleGuardActivate)
     Events:Subscribe("HitDetection/WarpGrenade", self, self.WarpGrenade)
 
+    Events:Subscribe("HitDetection/MeleeGrappleHit", self, self.MeleeGrappleHit)
+    Events:Subscribe("HitDetection/MeleeStandingKickHit", self, self.MeleeStandingKickHit)
+    Events:Subscribe("HitDetection/MeleeSlidingKickHit", self, self.MeleeSlidingKickHit)
+
     Events:Subscribe("Hitdetection/AdminKill", self, self.AdminKill)
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
@@ -153,6 +157,28 @@ function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
 
     player:SetValue("Health", math.min(1, math.max(0, old_hp - damage)))
     self:CheckHealth(player, old_hp, damage)
+
+end
+
+function sHitDetection:MeleeGrappleHit(args, player)
+
+    if not args.victim_id then return end
+
+    local victim = self.players[args.victim_id]
+
+    if not IsValid(victim) then return end
+
+    
+
+end
+
+
+function sHitDetection:MeleeStandingKickHit(args, player)
+
+end
+
+
+function sHitDetection:MeleeSlidingKickHit(args, player)
 
 end
 
