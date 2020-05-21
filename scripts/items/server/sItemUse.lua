@@ -67,6 +67,11 @@ end
 -- When a player tries to use an item but cancels for some reason
 function sItemUse:CancelUsage(args, player)
 
+    if player:GetValue("ItemUsageSub") then
+        Network:Unsubscribe(player:GetValue("ItemUsageSub"))
+        player:SetValue("ItemUsageSub", nil)
+    end
+
     Events:Fire("ItemUse/CancelUsage", {player = player})
 
     local player_iu = player:GetValue("ItemUse")

@@ -345,8 +345,11 @@ function sClaymores:TryPlaceClaymore(args, player)
         end
 
         Network:Unsubscribe(sub)
+        player:SetValue("ItemUsageSub", nil)
 
     end)
+
+    player:SetValue("ItemUsageSub", sub)
 
 end
 
