@@ -169,6 +169,11 @@ function sHitDetection:PlayerChat(args)
 
         if args.player:GetValue("Loading") then return end
 
+        if args.player:InVehicle() then
+            Chat:Send(args.player, "You must exit the vehicle to use this command.", Color.Red)
+            return
+        end
+
         self:ApplyDamage(args.player, SuicideDamage, DamageEntity.Suicide)
 
         local last_damaged = args.player:GetValue("LastDamaged")
