@@ -77,6 +77,7 @@ function sVehicleManager:__init()
     local func = coroutine.wrap(function()
         while true do
 
+            log_function_call("CheckForDestroyedVehicles")
             self:CheckForDestroyedVehicles()
 
             Timer.Sleep(1000 * 10)
@@ -87,6 +88,7 @@ function sVehicleManager:__init()
     local func = coroutine.wrap(function()
         while true do
 
+            log_function_call("sVehicleManager:SaveVehicles")
             self:SaveVehicles()
 
             Timer.Sleep(1000 * 60)

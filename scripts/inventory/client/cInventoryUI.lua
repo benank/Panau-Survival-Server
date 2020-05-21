@@ -531,6 +531,7 @@ end
 
 function cInventoryUI:RightClickItemButton(button)
 
+    if Game:GetState() ~= GUIState.Game then return end
     if button:GetDataString("stack_category") == "loot" then
         return
     end
@@ -566,6 +567,7 @@ end
 
 function cInventoryUI:ToggleDroppingItemButton(button)
 
+    if Game:GetState() ~= GUIState.Game then return end
     button:SetDataBool("dropping", not button:GetDataBool("dropping"))
     local colors = button:GetDataBool("dropping") and InventoryUIStyle.colors.dropping or InventoryUIStyle.colors.default
 
@@ -586,6 +588,7 @@ end
 
 function cInventoryUI:ShiftStack(button)
 
+    if Game:GetState() ~= GUIState.Game then return end
     if self.shift_timer:GetSeconds() < 0.2 then return end
 
     self.shift_timer:Restart()
@@ -603,6 +606,7 @@ end
 
 function cInventoryUI:MouseScroll(args)
 
+    if Game:GetState() ~= GUIState.Game then return end
     if not self.hovered_button then return end -- Not hovering over a button
 
     if self.hovered_button:GetDataString("stack_category") == "loot" then
@@ -644,6 +648,8 @@ function cInventoryUI:MouseScroll(args)
 end
 
 function cInventoryUI:LeftClickItemButton(button)
+
+    if Game:GetState() ~= GUIState.Game then return end
 
     if self.hovered_button ~= button then return end -- Only hovered button receives mouse clicks
 
