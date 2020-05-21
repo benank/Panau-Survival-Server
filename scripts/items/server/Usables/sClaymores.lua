@@ -19,6 +19,17 @@ function sClaymores:__init()
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(ItemsConfig.usables.Claymore.cell_size), self, self.PlayerCellUpdate)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+    Events:Subscribe("ItemUse/CancelUsage", self, self.ItemUseCancelUsage)
+end
+
+function sClaymores:ItemUseCancelUsage(args)
+
+    local player_iu = args.player:GetValue("ItemUse")
+
+    if not player_iu or player_iu.item.name ~= "Claymore" then return end
+
+    Chat:Send(args.player, "Placing claymore failed!", Color.Red)
+
 end
 
 function sClaymores:ClearBadClaymores()
@@ -299,20 +310,39 @@ function sClaymores:TryPlaceClaymore(args, player)
 
     local player_iu = player:GetValue("ClaymoreUsingItem")
 
-    if player_iu.item and ItemsConfig.usables[player_iu.item.name]
-        and player_iu.item.name == "Claymore" then
+    if not player_iu then return end
 
-        Inventory.RemoveItem({
-            item = player_iu.item,
-            index = player_iu.index,
-            player = player
-        })
+    player_iu.delayed = true
+    sItemUse:InventoryUseItem(player_iu)
 
-        -- Now actually place the claymore
-        self:PlaceClaymore(args.position, args.angle, player)
+    player:SetValue("ClaymoreUsingItem", nil)
 
-    end
+    
+    local sub
+    sub = Network:Subscribe("items/CompleteItemUsage", function(_, player)
+    
+        local player_iu = player:GetValue("ItemUse")
 
+        if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed and 
+        player_iu.item.name == "Claymore" then
+
+            if player:GetPosition():Distance(args.position) > 10 then
+                Chat:Send(player, "Placing claymore failed!", Color.Red)
+                return
+            end
+
+            Inventory.RemoveItem({
+                item = player_iu.item,
+                index = player_iu.index,
+                player = player
+            })
+
+            -- Now actually place the claymore
+            self:PlaceClaymore(args.position, args.angle, player)
+
+        end
+
+    end)
 
 end
 

@@ -11,6 +11,7 @@ function sC4s:__init()
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("InventoryUpdated", self, self.InventoryUpdated)
+    Events:Subscribe("ItemUse/CancelUsage", self, self.ItemUseCancelUsage)
 
     
     -- Update attached C4s every second so they are at least nearby the entity
@@ -50,6 +51,16 @@ function sC4s:__init()
 
         end
     end)()
+
+end
+
+function sC4s:ItemUseCancelUsage(args)
+
+    local player_iu = args.player:GetValue("ItemUse")
+
+    if not player_iu or player_iu.item.name ~= "C4" then return end
+
+    Chat:Send(args.player, "Placing C4 failed!", Color.Red)
 
 end
 
@@ -228,19 +239,40 @@ function sC4s:TryPlaceC4(args, player)
 
     if c4_using then
 
-        -- Now actually place the claymore
-        local id = self:PlaceC4(args.position, args.angle, player, args.forward_ray.entity, args.values, c4_using.item)
-
-        -- Set custom data with wno id
-        Inventory.ModifyItemCustomData({
-            player = player,
-            item = c4_using.item,
-            custom_data = {
-                id = id
-            }
-        })
+        c4_using.delayed = true
+        sItemUse:InventoryUseItem(c4_using)
 
         player:SetValue("C4UsingItem", nil)
+
+        local sub
+        sub = Network:Subscribe("items/CompleteItemUsage", function(_, player)
+        
+            local player_iu = player:GetValue("ItemUse")
+
+            if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed and 
+            player_iu.item.name == "C4" then
+
+                if player:GetPosition():Distance(args.position) > 10 then
+                    Chat:Send(player, "Placing C4 failed!", Color.Red)
+                    return
+                end
+
+                -- Now actually place the claymore
+                local id = self:PlaceC4(args.position, args.angle, player, args.forward_ray.entity, args.values, c4_using.item)
+
+                -- Set custom data with wno id
+                Inventory.ModifyItemCustomData({
+                    player = player,
+                    item = c4_using.item,
+                    custom_data = {
+                        id = id
+                    }
+                })
+
+            end
+
+
+        end)
 
     end
 
