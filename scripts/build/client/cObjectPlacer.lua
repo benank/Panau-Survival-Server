@@ -81,6 +81,7 @@ function cObjectPlacer:StartObjectPlacement(args)
     self.angle_offset = args.angle ~= nil and args.angle or Angle()
     self.offset = args.offset or Vector3()
     self.place_entity = args.place_entity
+    self.bb_mod = args.bb_mod or 1
 
     self.disable_walls = args.disable_walls
     self.disable_ceil = args.disable_ceil
@@ -104,7 +105,7 @@ function cObjectPlacer:CreateModel()
     local size = bb2 - bb1
     local color = Color(255, 0, 0, 150)
 
-    offset = bb1 - self.object:GetPosition()
+    offset = bb1 - self.object:GetPosition() - self.angle_offset * self.offset
 
     local vertices = {}
 
@@ -218,8 +219,8 @@ function cObjectPlacer:CheckBoundingBox()
         local angle = self.object:GetAngle()
         local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.25, 0)
         for i = 1, #self.vertices, 2 do
-            local p1 = angle * self.vertices[i].position * 0.7 + object_pos
-            local p2 = angle * self.vertices[i+1].position * 0.7 + object_pos
+            local p1 = angle * self.vertices[i].position * 0.7 * self.bb_mod + object_pos
+            local p2 = angle * self.vertices[i+1].position * 0.7 * self.bb_mod + object_pos
 
             local diff = p2 - p1
             local len = diff:Length()

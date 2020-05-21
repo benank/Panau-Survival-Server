@@ -36,7 +36,7 @@ end
 
 function sProxAlarms:ItemExplode(args)
 
-    -- TODO: blowup alarm
+    -- TODO: blowup alarms
 
 end
 
