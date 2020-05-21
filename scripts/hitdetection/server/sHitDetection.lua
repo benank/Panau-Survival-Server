@@ -36,6 +36,7 @@ function sHitDetection:ClientModuleLoad(args)
 end
 
 function sHitDetection:PlayerQuit(args)
+    log_function_call("sHitDetection:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
 end
 

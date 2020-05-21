@@ -50,6 +50,7 @@ function sDelayedMessages:EnsurePlayerExistsInDB(player)
 end
 
 function sDelayedMessages:PlayerQuit(args)
+    log_function_call("sDelayedMessages:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
 end
 

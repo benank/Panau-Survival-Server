@@ -32,6 +32,7 @@ function sLootManager:ClientModuleLoad(args)
 end
 
 function sLootManager:PlayerQuit(args)
+    log_function_call("sLootManager:PlayerQuit")
     -- Remove player from cell if they are in one
     if args.player:GetValue("Cell") and args.player:GetValue("Cell")[Lootbox.Cell_Size] then
         

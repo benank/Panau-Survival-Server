@@ -98,6 +98,8 @@ end
 
 function sSpawnManager:PlayerQuit(args)
 
+    log_function_call("sSpawnManager:PlayerQuit")
+
     Events:Fire("Discord", {
         channel = "Chat",
         content = string.format("*%s [%s] left the server.*", args.player:GetName(), args.player:GetSteamId())

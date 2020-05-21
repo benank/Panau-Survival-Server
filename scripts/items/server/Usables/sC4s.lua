@@ -102,6 +102,7 @@ end
 
 function sC4s:PlayerQuit(args)
 
+    log_function_call("sC4s:PlayerQuit")
     -- Remove all active c4s if player disconnects
     local steamid = tostring(args.player:GetSteamId())
 
