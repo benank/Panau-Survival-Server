@@ -292,6 +292,7 @@ end
 
 function sVehicleManager:PlayerQuit(args)
 
+    log_function_call("sVehicleManager:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
 
     local vehicles = args.player:GetValue("OwnedVehicles")

@@ -27,6 +27,7 @@ function sSurvivalManager:LoadStatus(args)
 end
 
 function sSurvivalManager:PlayerQuit(args)
+    log_function_call("sSurvivalManager:PlayerQuit")
     self:UpdateDB(args.player)
 end
 
