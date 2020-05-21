@@ -23,6 +23,7 @@ function sSpawnManager:__init()
     
     local func = coroutine.wrap(function()
         while true do
+            log_function_call("sSpawnManager coroutine.wrap(function()")
             for player in Server:GetPlayers() do
                 if IsValid(player) then
                     self:UpdatePlayerPositionMinuteTick(player)

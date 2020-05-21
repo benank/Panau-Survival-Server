@@ -229,6 +229,7 @@ function sHitDetection:CheckPendingHits()
     
     local func = coroutine.wrap(function()
         while true do
+            log_function_call("sHitDetection self.pending_armor_aggregation")
             if count_table(self.pending_armor_aggregation) > 0 then
 
                 for steam_id, data in pairs(self.pending_armor_aggregation) do
@@ -355,7 +356,7 @@ function sHitDetection:PlayerInsideToxicArea(args)
 end
 
 function sHitDetection:SecondTick()
-
+    log_function_call("sHitDetection:SecondTick")
     for p in Server:GetPlayers() do
         if p:GetValue("OnFire") and 
         ( p:GetPosition().y < 199.5 or p:GetValue("InSafezone") 

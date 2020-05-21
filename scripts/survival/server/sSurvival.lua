@@ -123,7 +123,7 @@ function sSurvivalManager:SetupIntervals()
 
     local func = coroutine.wrap(function()
         while true do
-
+            log_function_call("sSurvivalManager:SetupIntervals")
             for player in Server:GetPlayers() do
                 if IsValid(player) then
                     self:AdjustSurvivalStats(player)
@@ -138,6 +138,7 @@ function sSurvivalManager:SetupIntervals()
 
     local func2 = coroutine.wrap(function()
         while true do
+            log_function_call("sSurvivalManager:SetupIntervals 2")
             self:DamageDyingPlayers()
             Timer.Sleep(1000 * self.damage_interval)
         end

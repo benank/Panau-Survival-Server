@@ -7,6 +7,8 @@ function sClaymores:__init()
     self.claymores = {} -- Active claymores, indexed by claymore id
     self.claymore_cells = {} -- Active claymores, organized by cell x, y, then claymore id
 
+    self.network_subs = {}
+
     Console:Subscribe("clearbadclaymores", self, self.ClearBadClaymores)
 
     Network:Subscribe("items/CancelClaymorePlacement", self, self.CancelClaymorePlacement)
@@ -23,6 +25,11 @@ function sClaymores:__init()
 end
 
 function sClaymores:ItemUseCancelUsage(args)
+
+    if self.network_subs[tostring(args.player:GetSteamId())] then
+        Network:Unsubscribe(self.network_subs[tostring(args.player:GetSteamId())])
+        self.network_subs[tostring(args.player:GetSteamId())] = nil
+    end
 
     local player_iu = args.player:GetValue("ItemUse")
 
@@ -317,6 +324,10 @@ function sClaymores:TryPlaceClaymore(args, player)
 
     player:SetValue("ClaymoreUsingItem", nil)
 
+    if self.network_subs[tostring(args.player:GetSteamId())] then
+        Network:Unsubscribe(self.network_subs[tostring(args.player:GetSteamId())])
+        self.network_subs[tostring(args.player:GetSteamId())] = nil
+    end
     
     local sub
     sub = Network:Subscribe("items/CompleteItemUsage", function(_, _player)
@@ -345,11 +356,11 @@ function sClaymores:TryPlaceClaymore(args, player)
         end
 
         Network:Unsubscribe(sub)
-        player:SetValue("ItemUsageSub", nil)
+        self.network_subs[tostring(player:GetSteamId())] = nil
 
     end)
 
-    player:SetValue("ItemUsageSub", sub)
+    self.network_subs[tostring(player:GetSteamId())] = sub
 
 end
 

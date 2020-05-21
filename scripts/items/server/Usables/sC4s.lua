@@ -4,6 +4,8 @@ function sC4s:__init()
 
     self.wnos = {}
 
+    self.network_subs = {}
+
     Network:Subscribe("items/CancelC4Placement", self, self.CancelC4Placement)
     Network:Subscribe("items/PlaceC4", self, self.FinishC4Placement)
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
@@ -17,6 +19,7 @@ function sC4s:__init()
     -- Update attached C4s every second so they are at least nearby the entity
     local func = coroutine.wrap(function()
         while true do
+            log_function_call("sC4s second coroutine")
             Timer.Sleep(1000)
 
             for id, wno in pairs(self.wnos) do
@@ -56,6 +59,11 @@ end
 
 function sC4s:ItemUseCancelUsage(args)
 
+    if self.network_subs[tostring(args.player:GetSteamId())] then
+        Network:Unsubscribe(self.network_subs[tostring(args.player:GetSteamId())])
+        self.network_subs[tostring(args.player:GetSteamId())] = nil
+    end
+
     local player_iu = args.player:GetValue("ItemUse")
 
     if not player_iu or player_iu.item.name ~= "C4" then return end
@@ -69,6 +77,7 @@ function sC4s:InventoryUpdated(args)
     -- Check if they dropped a placed c4 and remove it if so
     local func = coroutine.wrap(function()
 
+        log_function_call("sC4s:InventoryUpdated coroutine")
         local player_placed_c4s = {}
         local player_id = tostring(args.player:GetSteamId())
 
@@ -244,6 +253,11 @@ function sC4s:TryPlaceC4(args, player)
 
         player:SetValue("C4UsingItem", nil)
 
+        if self.network_subs[tostring(args.player:GetSteamId())] then
+            Network:Unsubscribe(self.network_subs[tostring(args.player:GetSteamId())])
+            self.network_subs[tostring(args.player:GetSteamId())] = nil
+        end
+        
         local sub
         sub = Network:Subscribe("items/CompleteItemUsage", function(_, _player)
         
@@ -281,11 +295,11 @@ function sC4s:TryPlaceC4(args, player)
             end
 
             Network:Unsubscribe(sub)
-            player:SetValue("ItemUsageSub", nil)
+            self.network_subs[tostring(player:GetSteamId())] = nil
 
         end)
     
-        player:SetValue("ItemUsageSub", sub)
+        self.network_subs[tostring(player:GetSteamId())] = sub
 
     end
 

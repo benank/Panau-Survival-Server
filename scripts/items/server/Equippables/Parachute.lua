@@ -28,7 +28,7 @@ end)
 local func = coroutine.wrap(function()
 
     while true do
-
+        log_function_call("players_with_parachutes coroutine")
         for k,v in pairs(players_with_parachutes) do
             if IsValid(v) then
                 if v:GetParachuting() then
@@ -48,7 +48,7 @@ end)()
 local func2 = coroutine.wrap(function()
 
     while true do
-
+        log_function_call("Server:GetPlayers() ParachutingValue")
         for player in Server:GetPlayers() do
 
             if IsValid(player) then
