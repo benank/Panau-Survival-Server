@@ -143,6 +143,12 @@ function cMeleeDetection:ScanForHit(type)
                     self.recent_hits[ray.entity:GetId()] = true
                     cHitDetectionMarker:Activate()
 
+                    ClientEffect.Play(AssetLocation.Game, {
+                        position = ray.position,
+                        angle = ray.entity:GetAngle(),
+                        effect_id = 421
+                    })
+
                 elseif ray.entity.__tyoe == "ClientStaticObject" and type == WeaponHitType.MeleeGrapple then
 
                     -- Break open vending machine

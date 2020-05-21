@@ -165,20 +165,41 @@ function sHitDetection:MeleeGrappleHit(args, player)
     if not args.victim_id then return end
 
     local victim = self.players[args.victim_id]
-
     if not IsValid(victim) then return end
 
-    
+    if victim:GetPosition():Distance(player) > 5 then return end
+
+    self:ApplyDamage(victim, MeleeDamage[DamageEntity.MeleeGrapple].damage, DamageEntity.MeleeGrapple, tostring(player:GetSteamId()))
 
 end
-
 
 function sHitDetection:MeleeStandingKickHit(args, player)
 
+    if not args.victim_id then return end
+
+    local victim = self.players[args.victim_id]
+    if not IsValid(victim) then return end
+
+    if victim:GetPosition():Distance(player) > 5 then return end
+
+    self:ApplyDamage(victim, MeleeDamage[DamageEntity.MeleeKick].damage, DamageEntity.MeleeKick, tostring(player:GetSteamId()))
+
+    
+    Network:Send(victim, "HitDetection/KnockdownEffect", 
+        {source = player:GetPosition(), amount = MeleeDamage[DamageEntity.MeleeKick].knockback})
+
 end
 
-
 function sHitDetection:MeleeSlidingKickHit(args, player)
+
+    if not args.victim_id then return end
+
+    local victim = self.players[args.victim_id]
+    if not IsValid(victim) then return end
+
+    if victim:GetPosition():Distance(player) > 5 then return end
+
+    self:ApplyDamage(victim, MeleeDamage[DamageEntity.MeleeSlidingKick].damage, DamageEntity.MeleeSlidingKick, tostring(player:GetSteamId()))
 
 end
 

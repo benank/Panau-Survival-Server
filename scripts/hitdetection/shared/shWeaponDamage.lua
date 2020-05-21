@@ -47,9 +47,9 @@ WeaponHitType =
 
 MeleeDamage = 
 {
-    [WeaponHitType.MeleeGrapple] = {damage = 25, knockback = 0},
-    [WeaponHitType.MeleeStandingKick] = {damage = 15, knockback = 0},
-    [WeaponHitType.MeleeSlidingKick] = {damage = 30, knockback = 5},
+    [DamageEntity.MeleeGrapple] = {damage = 25, knockback = 0},
+    [DamageEntity.MeleeKick] = {damage = 15, knockback = 0},
+    [DamageEntity.MeleeSlidingKick] = {damage = 30, knockback = 5},
 }
 
 BoneModifiers =  -- Percentages of total damage, 1.0 = no change, 0.5 = half damage
