@@ -163,6 +163,8 @@ function cInventoryUIStyle:RenderItemWindow(itemWindow, stack, parent_window)
             
             local color = self.car_paint_colors[item.custom_data.color]
 
+            if not start_pos or not size or not color then return end
+
             Render:FillArea(start_pos, size, color)
             Render:DrawLine(start_pos, start_pos + Vector2(size.x, 0), color_data.border_color)
             Render:DrawLine(start_pos, start_pos + Vector2(0, size.y), color_data.border_color)
