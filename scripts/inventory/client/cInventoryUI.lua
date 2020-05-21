@@ -141,25 +141,12 @@ function cInventoryUI:WindowRender()
     if not self.window:GetVisible() then return end
     if not Inventory.contents then return end
 
-    local base_pos = self.window:GetPosition()
-    local icon = InventoryUIStyle.equipped_icon
-
     for category, _ in pairs(Inventory.contents) do
         for index, stack in pairs(Inventory.contents[category]) do
+
             local itemWindow = self.itemWindows[category][index]
-
-            if itemWindow then
-                
-                local position = itemWindow:GetPosition() + base_pos + icon.position
-
-                if stack.contents[1].equipped then
-                    -- Top item in stack is equipped
-                    Render:FillCircle(position, icon.radius, icon.color)
-                elseif stack:GetOneEquipped() then
-                    -- An item in the stack is equipped
-                    Render:FillCircle(position, icon.radius, icon.color_under)
-                end
-            end
+            InventoryUIStyle:RenderItemWindow(itemWindow, stack, self.window)
+            
         end
     end
 
@@ -732,9 +719,10 @@ function cInventoryUI:ToggleVisible()
         Events:Unsubscribe(self.LPI)
         self.LPI = nil
         self:InventoryClosed()
+        self.mouse_pos = Mouse:GetPosition()
     else -- Open inventory
         self.window:Show()
-        Mouse:SetPosition(Render.Size * 0.75)
+        Mouse:SetPosition(self.mouse_pos or Render.Size * 0.75)
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
         self.window:BringToFront()
     end

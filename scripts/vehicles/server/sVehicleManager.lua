@@ -15,6 +15,8 @@ function sVehicleManager:__init()
     self.spawns = {} -- Spawn positions with their corresponding vehicles and times, etc
     self.spawn_weights = {}
 
+    self.players = {}
+
     self:SetupSpawnTables()
     self:ReadVehicleSpawnData("spawns/spawns.txt")
     self:SpawnVehicles()
@@ -26,6 +28,7 @@ function sVehicleManager:__init()
     Events:Subscribe("PlayerEnterVehicle", self, self.PlayerEnterVehicle)
 
     Events:Subscribe("MinuteTick", self, self.MinuteTick)
+    Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
     Events:Subscribe("Items/PlayerUseVehicleGuard", self, self.PlayerUseVehicleGuard)
@@ -260,14 +263,14 @@ function sVehicleManager:Tick500()
 end
 
 function sVehicleManager:MinuteTick()
-    for id, timer in pairs(self.despawning_vehicles) do
+    for id, time in pairs(self.despawning_vehicles) do
 
         if count_table(self.owned_vehicles[id]:GetOccupants()) > 0 then
             -- Friend is using vehicle, restart timer
-            timer:Restart()
+            self.despawning_vehicles[id] = Server:GetElapsedSeconds()
             self:SaveVehicle(self.owned_vehicles[id])
 
-        elseif timer:GetMinutes() >= config.owned_despawn_time then
+        elseif Server:GetElapsedSeconds() - time >= config.owned_despawn_time * 60 then
             -- Remove vehicle from game
             self.despawning_vehicles[id] = nil
 
@@ -283,15 +286,21 @@ function sVehicleManager:MinuteTick()
 
 end
 
+function sVehicleManager:PlayerJoin(args)
+    self.players[tostring(args.player:GetSteamId())] = args.player
+end
+
 function sVehicleManager:PlayerQuit(args)
+
+    self.players[tostring(args.player:GetSteamId())] = nil
 
     local vehicles = args.player:GetValue("OwnedVehicles")
     if not vehicles then return end
 
     for id, vehicle_data in pairs(vehicles) do
         if IsValid(vehicle_data.vehicle) then
-            self:SaveVehicle(vehicle_data.vehicle)
-            self.despawning_vehicles[id] = Timer()
+            self:SaveVehicle(vehicle_data.vehicle, args.player)
+            self.despawning_vehicles[id] = Server:GetElapsedSeconds()
         end
     end
 
@@ -307,7 +316,7 @@ function sVehicleManager:PlayerExitVehicle(args)
 
         -- If a friend is using the vehicle, restart the timer
         if self.despawning_vehicles[vehicle_data.vehicle_id] then
-            self.despawning_vehicles[vehicle_data.vehicle_id]:Restart()
+            self.despawning_vehicles[vehicle_data.vehicle_id] = Server:GetElapsedSeconds()
         end
     end
 end
@@ -479,7 +488,7 @@ function sVehicleManager:PlayerEnterVehicle(args)
 
         -- If a friend is using the vehicle, restart the timer
         if self.despawning_vehicles[data.vehicle_id] then
-            self.despawning_vehicles[data.vehicle_id]:Restart()
+            self.despawning_vehicles[data.vehicle_id] = Server:GetElapsedSeconds()
         end
     end
 
@@ -819,10 +828,8 @@ end
 
 function sVehicleManager:GetVehicleCost(args)
 
-    local base_cost = config.spawn.cost_overrides[args.model_id] or config.spawn[args.spawn_type].cost
+    local base_cost = vCosts[args.model_id] or 999
     local cost = base_cost * config.spawn.cost_modifier
-
-    local sign = random() > 0.5 and -1 or 1
 
     cost = cost * args.health -- Scale cost based on health
 
@@ -888,6 +895,10 @@ function sVehicleManager:SaveVehicle(vehicle, player, vehicle_data)
 
     local vehicle_data = vehicle_data or vehicle:GetValue("VehicleData") -- Vehicle data will always exist
     if not vehicle_data then return end
+
+    if not player then
+        player = vehicle_data.owner_steamid and self.players[vehicle_data.owner_steamid] or nil
+    end
 
     local health = IsValid(vehicle) and vehicle:GetHealth() or vehicle_data.health
     if health <= 0.2 then return end

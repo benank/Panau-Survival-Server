@@ -26,9 +26,16 @@ end
 function cStashPlacement:PlaceObject(args)
     if not self.placing_stash then return end
 
+    if args.entity and args.entity.__type == "ClientStaticObject" then
+        args.model = args.entity:GetModel()
+    else
+        args.model = nil
+    end
+
     Network:Send("items/PlaceStash", {
         position = args.position,
-        angle = args.angle
+        angle = args.angle,
+        model = args.model
     })
     self:StopPlacement()
 end

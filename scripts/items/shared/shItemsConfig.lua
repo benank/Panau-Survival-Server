@@ -12,6 +12,7 @@ ItemsConfig =
         ["BackTrack"] = {use_time = 3},
         ["EVAC"] = {use_time = 5},
         ["Respawner"] = {use_time = 3}, -- Temp
+		["Car Paint"] = {use_time = 3, range = 5},
     },
     equippables = -- Use equip
     {
@@ -61,4 +62,12 @@ ItemsConfig =
             ["Laser Grenade"] = DamageEntity.LaserGrenade,
         }
     }
+}
+
+DisabledPlacementModels = 
+{
+    ["geo.cbb.eez/go152-a.lod"] = true,
+    ["38x11.nl/go231-a.lod"] = true,
+    ["f1t16.garbage_can.eez/go225-a.lod"] = true,
+    ["areaset03.blz/go161-a1_dst.lod"] = true
 }

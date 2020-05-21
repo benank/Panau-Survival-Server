@@ -195,6 +195,20 @@ function sHitDetection:PlayerChat(args)
 
         if args.player:GetValue("Loading") then return end
 
+        if args.player:InVehicle() then
+            Chat:Send(args.player, "You must exit the vehicle to use this command.", Color.Red)
+            return
+        end
+
+        local survival = args.player:GetValue("Survival")
+
+        if not survival then return end
+
+        if survival.hunger <= 10 or survival.thirst <= 20 then
+            Chat:Send(args.player, "You cannot use this command right now.", Color.Red)
+            return
+        end
+
         self:ApplyDamage(args.player, SuicideDamage, DamageEntity.Suicide)
 
         local last_damaged = args.player:GetValue("LastDamaged")
@@ -395,8 +409,7 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     if not explosive_data then return end
 
     local dist = args.position:Distance(args.local_position)
-    dist = math.min(explosive_data.radius / 2, math.max(0, dist / 2))
-    local percent_modifier = math.max(0, 1 - (dist / (explosive_data.radius / 2)))
+    local percent_modifier = math.max(0, 1 - dist / explosive_data.radius)
 
     if percent_modifier == 0 then return end
 
@@ -404,7 +417,9 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     local original_damage = explosive_data.damage * percent_modifier
     local damage = original_damage
 
-    if not args.in_fov then return end
+    if not args.in_fov then
+        damage = damage * FOVDamageModifier
+    end
     
     damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 

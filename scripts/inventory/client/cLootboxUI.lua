@@ -40,9 +40,21 @@ function cLootboxUI:__init()
     LocalPlayer:SetValue("LootOpen", false)
 
     Events:Subscribe(var("KeyUp"):get(), self, self.KeyUp)
+    self.window:Subscribe(var("PostRender"):get(), self, self.WindowRender)
     Network:Subscribe(var("Inventory/LootboxOpen"):get(), self, self.LootboxOpen)
     Network:Subscribe(var("Inventory/LootboxSync"):get(), self, self.LootboxSync)
     
+end
+
+function cLootboxUI:WindowRender()
+
+    for index, stack in pairs(LootManager.current_box.contents) do
+
+        local itemWindow = self.itemWindows[index]
+        InventoryUIStyle:RenderItemWindow(itemWindow, stack, self.window)
+
+    end
+
 end
 
 function cLootboxUI:PressDismountStashButton(btn)

@@ -24,6 +24,7 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.RemoveItem-" .. self.steamID, self, self.RemoveItemRemote))
     table.insert(self.events, Events:Subscribe("Inventory.ModifyStack-" .. self.steamID, self, self.ModifyStackRemote))
     table.insert(self.events, Events:Subscribe("Inventory.ModifyDurability-" .. self.steamID, self, self.ModifyDurabilityRemote))
+    table.insert(self.events, Events:Subscribe("Inventory.ModifyItemCustomData-" .. self.steamID, self, self.ModifyItemCustomDataRemote))
     table.insert(self.events, Events:Subscribe("Inventory.OperationBlock-" .. self.steamID, self, self.OperationBlockRemote))
     table.insert(self.events, Events:Subscribe("Inventory.SetItemEquipped-" .. self.steamID, self, self.SetItemEquippedRemote))
 
@@ -63,6 +64,17 @@ function sInventory:Load()
     if #result > 0 then -- if already in DB
         
         self:Deserialize(result[1].contents)
+
+        -- If there is non-persistent custom data, remove it (like C4 id)
+        for cat, data in pairs(self.contents) do
+            for index, stack in pairs(data) do
+                for item_index, item in pairs(stack.contents) do
+                    if Items_indexed[item.name].non_persistent_custom_data then
+                        item.custom_data = {}
+                    end
+                end
+            end
+        end
         
     else
         
@@ -123,7 +135,7 @@ function sInventory:PlayerKilled(args)
     local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
     -- Level 0 within financial district, don't drop items
-    if level == 0 and args.player:GetPosition():Distance(sz_config.safezone.position) < 1200 then return end
+    if level == 0 and args.player:GetPosition():Distance(sz_config.safezone.position) < 1500 then return end
 
     local num_slots_to_drop = GetNumSlotsDroppedOnDeath(level)
 
@@ -275,6 +287,16 @@ function sInventory:SpawnDropbox(contents, is_death_drop)
     -- Request ground data
     Network:Send(self.player, "Inventory/GetGroundData")
 
+    -- Remove non persistent custom data, if any
+    for index, stack in pairs(contents) do
+        for item_index, item in pairs(stack.contents) do
+            if Items_indexed[item.name].non_persistent_custom_data then
+                 item.custom_data = {}
+                 stack.contents[item_index] = item
+            end
+        end
+    end
+
     -- Receive ground data
     local sub
     sub = Network:Subscribe("Inventory/GroundData" .. self.steamID, function(args, player)
@@ -286,6 +308,7 @@ function sInventory:SpawnDropbox(contents, is_death_drop)
             angle = args.angle,
             tier = Lootbox.Types.Dropbox,
             active = true,
+            is_deathdrop = is_death_drop,
             contents = contents
         })
         dropbox:Sync()
@@ -682,12 +705,36 @@ function sInventory:SetItemEquippedRemote(args)
 
 end
 
-function sInventory:ModifyDurabilityRemote(args)
+function sInventory:ModifyItemCustomDataRemote(args)
 
     if args.player ~= self.player then
-        error("sInventory:ModifyDurabilityRemote failed: player does not match")
+        error("sInventory:ModifyItemCustomDataRemote failed: player does not match")
         return
     end
+
+    local cat = args.item.category
+
+    for index, stack in pairs(self.contents[cat]) do
+
+        for _, item in pairs(stack.contents) do
+
+            if item.uid == args.item.uid then
+
+                item.custom_data = args.custom_data
+                self:Sync({index = index, stack = stack, sync_stack = true})
+
+                return
+
+            end
+
+        end
+
+    end
+
+
+end
+
+function sInventory:ModifyDurabilityRemote(args)
 
     local cat = args.item.category
 
@@ -874,6 +921,7 @@ function sInventory:RemoveStack(args)
 
     else
 
+        -- Remove by stack uid
         for _index, _stack in pairs(self.contents[cat]) do
 
             if _stack.uid == args.stack.uid then
@@ -894,48 +942,93 @@ function sInventory:RemoveStack(args)
 
         end
 
-        -- If we are just subtracting items, not by uid or index
-        if args.stack then
+        if not args.stack then return end
 
-            local name = args.stack:GetProperty("name")
-    
-            for i, check_stack in ipairs(self.contents[cat]) do
-        
-                if check_stack and check_stack:GetProperty("name") == name then
+        if args.stack:GetAmount() == 1 then
+            -- Only removing one item, so look for uid
+            local item = args.stack.contents[1]
 
-                    local return_stack = check_stack:RemoveStack(args.stack)
+            -- Check for matching item uids in stacks
+            for index, stack in pairs(self.contents[cat]) do
 
-                    if check_stack:GetAmount() == 0 then
+                for item_index, _item in pairs(stack.contents) do
+
+                    if item.uid == _item.uid then
                         
-                        self:CheckIfStackHasOneEquippedThenUnequip(self.contents[cat][i])
+                        stack:RemoveItem(item)
+                        args.stack:RemoveItem(item)
 
-                        if i < #self.contents[cat] then
-                            self:ShiftItemsDown(cat, i)
-                            self:Sync({sync_cat = true, cat = cat})
+                        -- Removed entire stack
+                        if stack:GetAmount() == 0 then
+
+                            -- If we are not removing the last item
+                            if index < #self.contents[cat] then
+                                self:ShiftItemsDown(cat, index)
+                                self:Sync({sync_cat = true, cat = cat}) -- Category sync for less network requests
+                            else
+                                self.contents[cat][index] = nil
+                                stack = nil
+                                self:Sync({index = index, cat = cat, sync_remove = true})
+                            end
+
+                            return
+
                         else
-                            self.contents[cat][i] = nil
-                            self:Sync({index = i, cat = cat, sync_remove = true})
+
+                            self.contents[cat][index] = stack
+                            self:Sync({index = index, stack = self.contents[cat][index], sync_stack = true})
+
                         end
 
                     end
-
-                    -- Got more items to remove, so keep going
-                    if return_stack then
-                        args.stack = return_stack
-                    else -- Otherwise break, we are done
-
-                        if self.contents[cat][i] and self.contents[cat][i]:GetAmount() > 0 then
-                            self:Sync({index = i, sync_stack = true, stack = self.contents[cat][i]})
-                        end
-
-                        args.stack = nil
-                        break
-                    end
-
 
                 end
 
             end
+        end
+
+
+        if not args.stack then return end
+
+        -- If we are just subtracting items, not by uid or index
+        local name = args.stack:GetProperty("name")
+
+        for i, check_stack in ipairs(self.contents[cat]) do
+    
+            if check_stack and check_stack:GetProperty("name") == name then
+
+                local return_stack = check_stack:RemoveStack(args.stack)
+
+                if check_stack:GetAmount() == 0 then
+                    
+                    self:CheckIfStackHasOneEquippedThenUnequip(self.contents[cat][i])
+
+                    if i < #self.contents[cat] then
+                        self:ShiftItemsDown(cat, i)
+                        self:Sync({sync_cat = true, cat = cat})
+                    else
+                        self.contents[cat][i] = nil
+                        self:Sync({index = i, cat = cat, sync_remove = true})
+                    end
+
+                end
+
+                -- Got more items to remove, so keep going
+                if return_stack then
+                    args.stack = return_stack
+                else -- Otherwise break, we are done
+
+                    if self.contents[cat][i] and self.contents[cat][i]:GetAmount() > 0 then
+                        self:Sync({index = i, sync_stack = true, stack = self.contents[cat][i]})
+                    end
+
+                    args.stack = nil
+                    break
+                end
+
+
+            end
+
 
         end
 

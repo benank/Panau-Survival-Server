@@ -5,15 +5,15 @@ class 'sSpawnManager'
 
 function sSpawnManager:__init()
 
-    self.timer = Timer()
-    
-    local func = coroutine.wrap(function()
-        for player in Server:GetPlayers() do
-            self:UpdatePlayerPositionMinuteTick(player)
-            Timer.Sleep(3)
-        end
-        Timer.Sleep(1000)
-    end)()
+	Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
+	Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
+	Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
+	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("SetHomePosition", self, self.SetHomePosition)
+    Events:Subscribe("PlayerChat", self, self.PlayerChat)
+
+	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
 
     for p in Server:GetPlayers() do
         if not p:GetValue("Loading") then
@@ -21,15 +21,29 @@ function sSpawnManager:__init()
         end
     end
     
+    local func = coroutine.wrap(function()
+        while true do
+            for player in Server:GetPlayers() do
+                if IsValid(player) then
+                    self:UpdatePlayerPositionMinuteTick(player)
+                end
+                Timer.Sleep(1)
+            end
+            Timer.Sleep(60 * 1000)
+        end
+    end)()
 
-	Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
-	Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
-	Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
-	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
-    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
-    Events:Subscribe("SetHomePosition", self, self.SetHomePosition)
+end
 
-	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
+function sSpawnManager:PlayerChat(args)
+
+    if args.text == "/unsethome" then
+        self:SetHomePosition({
+            player = args.player,
+            pos = self:GetPositionInSafezone()
+        })
+        Chat:Send(args.player, "Set spawn point to the safezone.", Color.Yellow)
+    end
 
 end
 

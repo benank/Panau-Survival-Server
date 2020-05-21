@@ -39,6 +39,7 @@ config =
         ["Chips"] = {hunger = 15, thirst = -15},
         ["Coffee"] = {hunger = 15, thirst = 3, health = 2},
         ["Energy Drink"] = {hunger = 3, thirst = 8, health = 5},
+        ["Spicy Chips"] = {hunger = 10, thirst = -20, health = -5},
         ["Iced Tea"] = {hunger = 3, thirst = 12},
         ["Peanuts"] = {hunger = 8, thirst = 0},
         ["Pretzel"] = {hunger = 10, thirst = -2},
