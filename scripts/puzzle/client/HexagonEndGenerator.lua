@@ -66,7 +66,7 @@ function EndGenerator:__init()
     self.difficulty_num_connects = -- Max connections = 12
     {
         [1] = {min = 2, max = 3}, -- Easiest difficulty
-        [2] = {min = 3, max = 6},
+        [2] = {min = 4, max = 5},
         [3] = {min = 6, max = 8} -- Hardest difficulty
     }
 	
