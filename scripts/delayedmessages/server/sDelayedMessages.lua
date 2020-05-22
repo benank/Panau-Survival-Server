@@ -52,6 +52,7 @@ end
 function sDelayedMessages:PlayerQuit(args)
     log_function_call("sDelayedMessages:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
+    log_function_call("sDelayedMessages:PlayerQuit 2")
 end
 
 function sDelayedMessages:TryToSendToPlayer(args)

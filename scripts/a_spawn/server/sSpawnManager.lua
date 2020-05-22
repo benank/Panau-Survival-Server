@@ -108,6 +108,8 @@ function sSpawnManager:PlayerQuit(args)
 
     self:UpdatePlayer(args.player)
 
+    log_function_call("sSpawnManager:PlayerQuit 2")
+
 end
 
 function sSpawnManager:UpdatePlayer(player)

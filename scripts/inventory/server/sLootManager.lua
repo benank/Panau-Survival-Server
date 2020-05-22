@@ -42,6 +42,7 @@ function sLootManager:PlayerQuit(args)
         LootCells.Player[cell.x][cell.y][tostring(args.player:GetSteamId().id)] = nil
 
     end
+    log_function_call("sLootManager:PlayerQuit 2")
 end
 
 -- Updates LootCells.Player

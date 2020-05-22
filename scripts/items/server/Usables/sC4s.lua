@@ -132,6 +132,7 @@ function sC4s:PlayerQuit(args)
             self.wnos[id] = nil
         end
     end
+    log_function_call("sC4s:PlayerQuit 2")
 
 end
 

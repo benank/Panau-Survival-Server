@@ -80,6 +80,7 @@ function sInventoryManager:PlayerQuit(args)
         self.inventories[id]:Unload()
         self.inventories[id] = nil
     end
+    log_function_call("sInventoryManager:PlayerQuit 2")
 
 end
 

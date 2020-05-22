@@ -38,6 +38,7 @@ end
 function sHitDetection:PlayerQuit(args)
     log_function_call("sHitDetection:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
+    log_function_call("sHitDetection:PlayerQuit 2")
 end
 
 function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
