@@ -639,14 +639,15 @@ Items =
         stacklimit = 1,
         can_equip = true,
         equip_type = "personal_vehicle",
-        durable = true
+        durable = true,
+        max_durability = 2000
     },
     {
         name = "Cloud Strider Boots",
         category = "Survival",
         stacklimit = 1,
         can_equip = true,
-        equip_type = "boots",
+        equip_type = "personal_vehicle",
         durable = true
     },
     {
