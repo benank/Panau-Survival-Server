@@ -132,6 +132,10 @@ function sProxAlarms:InsideProximityAlarm(args, player)
 
     if count_table(alarm.contents) == 0 then return end -- No batteries
 
+    local exp = player:GetValue("Exp")
+
+    if exp and exp.level == 0 then return end -- Does not work on level 0s
+
     -- OK now broadcast to owner, if online
 
     local owner_id = tostring(alarm.stash.owner_id)
