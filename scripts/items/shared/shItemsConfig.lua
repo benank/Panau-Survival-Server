@@ -13,7 +13,9 @@ ItemsConfig =
         ["BackTrack"] = {use_time = 3},
         ["EVAC"] = {use_time = 5},
         ["Respawner"] = {use_time = 3}, -- Temp
-		["Car Paint"] = {use_time = 3, range = 5},
+		    ["Car Paint"] = {use_time = 3, range = 5},
+        ["Ping"] = {max_distance = 5000, max_height = 4000},
+        ["Combat Ping"] = {max_distance = 400, max_height = 200},
     },
     equippables = -- Use equip
     {

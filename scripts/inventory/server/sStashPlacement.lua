@@ -4,11 +4,10 @@ local StashNameToType =
 {
     ["Barrel Stash"] = Lootbox.Types.BarrelStash,
     ["Garbage Stash"] = Lootbox.Types.GarbageStash,
-    ["Locked Stash"] = Lootbox.Types.LockedStash,
+    ["Locked Stash"] = Lootbox.Types.LockedStash
 }
 
 function sStashPlacement:__init()
-
     
     local func = coroutine.wrap(function()
         while not SharedObject.GetByName("SafezoneConfig") do
