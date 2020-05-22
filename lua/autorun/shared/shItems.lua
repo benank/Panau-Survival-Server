@@ -634,6 +634,14 @@ Items =
         durable = true
     },
     {
+        name = "Hoverboard",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        equip_type = "personal_vehicle",
+        durable = true
+    },
+    {
         name = "Cloud Strider Boots",
         category = "Survival",
         stacklimit = 1,
