@@ -1,16 +1,16 @@
 class 'cMeleeDetection'
 
-local DEBUG_ON = true
+local DEBUG_ON = false
 
 function cMeleeDetection:__init()
 
     self.melee_config = 
     {
-        [WeaponHitType.MeleeGrapple] = 
+        [DamageEntity.MeleeGrapple] = 
         {
             bone = "ragdoll_LeftHand", -- Bone to use
             bone_angle = Angle(math.pi / 2, 0, 0), -- Angle offset
-            length = 1, -- Length of hit
+            length = 1.25, -- Length of hit
             cooldown = 0.5, -- Delay before next melee
             hit_types = {
                 ["Player"] = true,
@@ -18,23 +18,23 @@ function cMeleeDetection:__init()
             },
             event_name = var("HitDetection/MeleeGrappleHit")
         },
-        [WeaponHitType.MeleeStandingKick] = 
+        [DamageEntity.MeleeKick] = 
         {
-            bone = "", -- Bone to use
+            bone = "ragdoll_RightFoot", -- Bone to use
             bone_angle = Angle(), -- Angle offset
-            length = 1, -- Length of hit
-            cooldown = 0.75, -- Delay before next melee
+            length = 1.25, -- Length of hit
+            cooldown = 1, -- Delay before next melee
             hit_types = {
                 ["Player"] = true
             },
             event_name = var("HitDetection/MeleeStandingKickHit")
         },
-        [WeaponHitType.MeleeSlidingKick] = 
+        [DamageEntity.MeleeSlidingKick] = 
         {
-            bone = "", -- Bone to use
-            bone_angle = Angle(), -- Angle offset
-            length = 1, -- Length of hit
-            cooldown = 1.25, -- Delay before next melee
+            bone = "ragdoll_RightFoot", -- Bone to use
+            bone_angle = Angle(-math.pi / 2, 0, 0), -- Angle offset
+            length = 1.25, -- Length of hit
+            cooldown = 1, -- Delay before next melee
             hit_types = {
                 ["Player"] = true
             },
@@ -71,7 +71,7 @@ function cMeleeDetection:LocalPlayerInput(args)
 
         self.recent_hits = {}
 
-        if LocalPlayer:GetValue("GrapplehookEnabled") then
+        if LocalPlayer:GetValue("GrapplehookEnabled") and not LocalPlayer:GetValue("InSafezone") then
 
             self:PerformGrappleAttack()
             self.last_kick_time = current_time
@@ -95,21 +95,47 @@ end
 
 function cMeleeDetection:PerformGrappleAttack()
 
-    self:ScanForHit(WeaponHitType.MeleeGrapple)
+    self:ScanForHit(DamageEntity.MeleeGrapple)
 
 end
 
 function cMeleeDetection:PerformSlidingKick()
 
     LocalPlayer:SetBaseState(AnimationState.SCloseCombatRunningKick)
-    self:ScanForHit(WeaponHitType.MeleeSlidingKick)
+    self:ScanForHit(DamageEntity.MeleeSlidingKick)
 
 end
 
 function cMeleeDetection:PerformStandingKick()
 
     LocalPlayer:SetBaseState(AnimationState.SCloseCombatKick)
-    self:ScanForHit(WeaponHitType.MeleeStandingKick)
+    self:ScanForHit(DamageEntity.MeleeKick)
+
+end
+
+function cMeleeDetection:FireRay(pos, angle, length)
+
+    local ray
+
+    local ang = angle * Angle(0, -math.pi / 12, 0)
+
+    for i = 1, 3 do
+
+        ray_cast = Physics:Raycast(pos, ang * Vector3.Forward, 0, length)
+
+        if DEBUG_ON then
+            Render:DrawLine(pos, ray_cast.position, Color.Red)
+        end
+
+        if ray_cast.entity then
+            ray = ray_cast
+        end
+
+        ang = ang * Angle(0, math.pi / 12, 0)
+
+    end
+
+    return ray
 
 end
 
@@ -120,20 +146,16 @@ function cMeleeDetection:ScanForHit(type)
     self.kick_cooldown_time = type_data.cooldown
 
     local sub
-    sub = Events:Subscribe("Render", function(args)
+    sub = Events:Subscribe("GameRender", function(args)
     
         local pos = LocalPlayer:GetBonePosition(type_data.bone)
         local angle = LocalPlayer:GetBoneAngle(type_data.bone) * type_data.bone_angle
 
-        local ray = Physics:Raycast(pos, angle * Vector3.Forward, 0, 0.4)
-
-        if DEBUG_ON then
-            Render:DrawLine(pos, ray.position, Color.Red)
-        end
+        local ray = self:FireRay(pos, angle, type_data.length) or {}
 
         if ray.entity then
 
-            if type == WeaponHitType.MeleeGrapple and not self.grapple_attack_states[LocalPlayer:GetBaseState()] then return end
+            if type == DamageEntity.MeleeGrapple and not self.grapple_attack_states[LocalPlayer:GetBaseState()] then return end
 
             if type_data.hit_types[ray.entity.__type] and not self.recent_hits[ray.entity:GetId()] then
 
@@ -149,7 +171,7 @@ function cMeleeDetection:ScanForHit(type)
                         effect_id = 421
                     })
 
-                elseif ray.entity.__tyoe == "ClientStaticObject" and type == WeaponHitType.MeleeGrapple then
+                elseif ray.entity.__tyoe == "ClientStaticObject" and type == DamageEntity.MeleeGrapple then
 
                     -- Break open vending machine
 

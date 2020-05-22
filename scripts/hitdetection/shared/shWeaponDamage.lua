@@ -40,9 +40,7 @@ WeaponHitType =
     Headshot = 1,
     Bodyshot = 2,
     Explosive = 3,
-    MeleeGrapple = 4,
-    MeleeStandingKick = 5,
-    MeleeSlidingKick = 6
+    Melee = 4
 }
 
 MeleeDamage = 
