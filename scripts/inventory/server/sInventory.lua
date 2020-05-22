@@ -321,8 +321,6 @@ function sInventory:SpawnDropbox(contents, is_death_drop)
         if player ~= self.player then return end
         if not args.position or not args.angle then return end
 
-        print("GO")
-
         if self.last_dropbox and IsValid(self.last_dropbox) 
         and self.last_dropbox.position
         and count_table(self.last_dropbox.contents) > 0 
@@ -395,7 +393,6 @@ function sInventory:CheckForOverflow()
 
         Chat:Send(self.player, chat_msg, Color.Red)
 
-        print("overflow spawn dropbox")
         self:SpawnDropbox(stacks_to_drop)
 
         -- Full sync in case they dropped from multiple categories
@@ -449,7 +446,6 @@ function sInventory:DropStacks(args, player)
     end
 
     if count_table(contents) > 0 then
-        print("drop stack spawn dropbox")
         self:SpawnDropbox(contents)
     end
 
