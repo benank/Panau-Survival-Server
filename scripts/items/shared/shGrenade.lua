@@ -176,7 +176,7 @@ Grenade.Types = {
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),
         ["angle"] = Angle(0, math.pi / 2, 0),
-        ["effect_time"] = 15,
+        ["effect_time"] = 30,
         ["custom_func"] = function(grenade)
             Timer.SetTimeout(7000, function()
                 ClientParticleSystem.Play(AssetLocation.Game, {
@@ -186,6 +186,25 @@ Grenade.Types = {
                     path = "fx_flare_02.psmb"
                 })
             end)
+            
+            Timer.SetTimeout(14000, function()
+                ClientParticleSystem.Play(AssetLocation.Game, {
+                    position = grenade.position + Vector3(0, 81, 5),
+                    timeout = 8,
+                    angle = Angle(),
+                    path = "fx_flare_02.psmb"
+                })
+            end)
+
+            Timer.SetTimeout(21000, function()
+                ClientParticleSystem.Play(AssetLocation.Game, {
+                    position = grenade.position + Vector3(0, 81, 5),
+                    timeout = 8,
+                    angle = Angle(),
+                    path = "fx_flare_02.psmb"
+                })
+            end)
+
             Timer.SetTimeout(1000, function()
                 ClientLight.Play({
                     position = grenade.position + Vector3(0, 110, 0),
@@ -193,7 +212,7 @@ Grenade.Types = {
                     color = Color(252, 73, 60),
                     multiplier = 10,
                     radius = 500,
-                    timeout = 15
+                    timeout = 30
                 })
             end)
         end
@@ -203,13 +222,13 @@ Grenade.Types = {
         ["trail_effect_id"] = 61,
 		["weight"] = 0.7,
         ["drag"] = 0.12,
-        ["repeat_interval"] = 500, -- effect repeats
+        ["repeat_interval"] = 250, -- effect repeats
         ["custom_func"] = function(grenade)
             if grenade.type.repeat_interval then
-                ClientEffect.Play(AssetLocation.Game, {
+                ClientParticleSystem.Play(AssetLocation.Game, {
                     ["position"] = grenade.position,
                     ["angle"] = Angle(),
-                    ["effect_id"] = grenade.type.repeat_effect_id or grenade.type.effect_id
+                    ["path"] = "fx_env_oilrig_tophouse_02.psmb"
                 })
 
                 Timer.SetTimeout(grenade.type.repeat_interval, function()

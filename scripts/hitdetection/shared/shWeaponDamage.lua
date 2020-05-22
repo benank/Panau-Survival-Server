@@ -1,17 +1,17 @@
 WeaponBaseDamage = 
 {
     [0] = 3, -- All vehicle machine guns
-    [Weapon.Handgun] = 4, -- All of these are in percents
+    [Weapon.Handgun] = 10, -- All of these are in percents
     [Weapon.Assault] = 5,
     [Weapon.BubbleGun] = -2,
-    [Weapon.GrenadeLauncher] = 50,
+    [Weapon.GrenadeLauncher] = 60,
     [Weapon.MachineGun] = 7,
-    [Weapon.Revolver] = 10,
-    [Weapon.RocketLauncher] = 100,
-    [Weapon.SMG] = 5,
-    [Weapon.Sniper] = 80,
-    [Weapon.SawnOffShotgun] = 3, -- Damage per bullet in each shot
-    [Weapon.Shotgun] = 5,
+    [Weapon.Revolver] = 23,
+    [Weapon.RocketLauncher] = 110,
+    [Weapon.SMG] = 8,
+    [Weapon.Sniper] = 90,
+    [Weapon.SawnOffShotgun] = 4, -- Damage per bullet in each shot
+    [Weapon.Shotgun] = 6,
 }
 
 FOVDamageModifier = 0.20 -- If hiding behind a wall, how much damage do you absorb 
@@ -28,8 +28,8 @@ SuicideDamage = 999
 
 ExplosiveBaseDamage = 
 {
-    [DamageEntity.Mine] = {damage = 250, radius = 10, knockback = 10},
-    [DamageEntity.Claymore] = {damage = 500, radius = 15, knockback = 12},
+    [DamageEntity.Mine] = {damage = 250, radius = 6, knockback = 10},
+    [DamageEntity.Claymore] = {damage = 500, radius = 10, knockback = 12},
     [DamageEntity.C4] = {damage = 400, radius = 50, knockback = 30},
     [DamageEntity.HEGrenade] = {damage = 140, radius = 5, knockback = 5},
     [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 60}

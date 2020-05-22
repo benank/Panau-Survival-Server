@@ -3,7 +3,8 @@ ItemsConfig =
     usables = -- No food items here because those have no delay when using them
     {
         ["Mine"] = {use_time = 3, trigger_radius = 1.75, cell_size = 256, trigger_time = 1.5},
-        ["Claymore"] = {trigger_range = 3, cell_size = 256},
+        ["Claymore"] = {trigger_range = 3, cell_size = 256, use_time = 5, delay_use = true},
+        ["C4"] = {use_time = 6, delay_use = true},
         ["Bandages"] = {restore_hp = 0.2, use_time = 3},
         ["Healthpack"] = {restore_hp = 1.0, use_time = 10},
         ["Woet"] = {use_time = 1, range = 5},
@@ -12,6 +13,7 @@ ItemsConfig =
         ["BackTrack"] = {use_time = 3},
         ["EVAC"] = {use_time = 5},
         ["Respawner"] = {use_time = 3}, -- Temp
+		    ["Car Paint"] = {use_time = 3, range = 5},
         ["Ping"] = {max_distance = 5000, max_height = 4000},
         ["Combat Ping"] = {max_distance = 400, max_height = 200},
     },

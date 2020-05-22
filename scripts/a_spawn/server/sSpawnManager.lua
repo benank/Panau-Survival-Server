@@ -23,8 +23,11 @@ function sSpawnManager:__init()
     
     local func = coroutine.wrap(function()
         while true do
+            log_function_call("sSpawnManager coroutine.wrap(function()")
             for player in Server:GetPlayers() do
-                self:UpdatePlayerPositionMinuteTick(player)
+                if IsValid(player) then
+                    self:UpdatePlayerPositionMinuteTick(player)
+                end
                 Timer.Sleep(1)
             end
             Timer.Sleep(60 * 1000)
@@ -96,12 +99,16 @@ end
 
 function sSpawnManager:PlayerQuit(args)
 
+    log_function_call("sSpawnManager:PlayerQuit")
+
     Events:Fire("Discord", {
         channel = "Chat",
         content = string.format("*%s [%s] left the server.*", args.player:GetName(), args.player:GetSteamId())
     })
 
     self:UpdatePlayer(args.player)
+
+    log_function_call("sSpawnManager:PlayerQuit 2")
 
 end
 
@@ -211,6 +218,8 @@ end
 function sSpawnManager:PlayerSpawn(args)
     args.player:SetValue("Spawn/KilledRecently", false)
     
+    if args.player:GetValue("SecondLifeActive") then return end
+
     if args.player:GetValue("FirstSpawn") then
         args.player:SetPosition(self:GetRespawnPosition(args.player))
     else

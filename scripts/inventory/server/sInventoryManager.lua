@@ -73,12 +73,14 @@ function sInventoryManager:PlayerChat(args)
 end
 
 function sInventoryManager:PlayerQuit(args)
+    log_function_call("sInventoryManager:PlayerQuit")
 
     local id = tostring(args.player:GetSteamId().id)
     if self.inventories[id] then
         self.inventories[id]:Unload()
         self.inventories[id] = nil
     end
+    log_function_call("sInventoryManager:PlayerQuit 2")
 
 end
 

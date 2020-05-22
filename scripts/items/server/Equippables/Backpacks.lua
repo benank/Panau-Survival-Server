@@ -12,7 +12,7 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
     args.player:SetNetworkValue("EquippedVisuals", equipped_visuals)
 
     Events:Fire("Inventory.ToggleBackpackEquipped-" .. tostring(args.player:GetSteamId().id), 
-        {equipped = args.item.equipped == true, slots = slots})
+        {equipped = args.item.equipped == true, no_sync = args.no_sync, slots = slots})
 
 end)
 
