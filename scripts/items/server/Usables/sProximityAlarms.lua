@@ -8,104 +8,175 @@ class 'sProxAlarms'
 
 function sProxAlarms:__init()
 
-    SQL:Execute("CREATE TABLE IF NOT EXISTS proximity_alarms (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, angle VARCHAR, contents BLOB)")
-
-    self.objects = {}
+    self.network_subs = {}
+    self.alarms = {}
 
     self.max_items = 1 -- 1 stack of batteries only
 
+    self.players = {}
+
     Network:Subscribe("items/CancelProxPlacement", self, self.CancelProxPlacement)
     Network:Subscribe("items/PlaceProx", self, self.FinishProxPlacement)
-    Network:Subscribe("items/StepOnProx", self, self.StepOnProx)
     Network:Subscribe("items/DestroyProx", self, self.DestroyProx)
-    Network:Subscribe("items/PickupProx", self, self.PickupProx)
+
+    Network:Subscribe("items/InsideProximityAlarm", self, self.InsideProximityAlarm)
+    Network:Subscribe("items/DestroyProx", self, self.DestroyProx)
 
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 
-    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
-end
+    Events:Subscribe("ItemUse/CancelUsage", self, self.ItemUseCancelUsage)
 
-function sProxAlarms:ModuleUnload()
+    Events:Subscribe("Inventory/RemoveLootbox", self, self.RemoveLootbox)
+    Events:Subscribe("Inventory/CreateLootbox", self, self.CreateLootbox)
+    Events:Subscribe("Inventory/LootboxUpdated", self, self.LootboxUpdated)
 
-    for id, obj in pairs(self.objects) do
-        obj:Remove()
-    end
+    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
+    Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+
+    local func = coroutine.wrap(function()
+        while true do
+            Timer.Sleep(1000 * 60 * 60) -- One hour
+
+            self:LowerBatteryDurabilities()
+        end
+    end)()
 end
 
 function sProxAlarms:ItemExplode(args)
 
-    -- TODO: blowup alarms
+    local func = coroutine.wrap(function()
+        
+        for id, alarm in pairs(self.alarms) do
+            if alarm.position:Distance(args.position) < args.radius then
+                self:DestroyProx({id = id}, args.player)
+            end
+            Timer.Sleep(1)
+        end
+
+    end)()
+
+end
+
+function sProxAlarms:ClientModuleLoad(args)
+    self.players[tostring(args.player:GetSteamId())] = args.player
+end
+
+function sProxAlarms:PlayerQuit(args)
+    self.players[tostring(args.player:GetSteamId())] = nil
+end
+
+function sProxAlarms:LootboxUpdated(args)
+    if args.tier ~= 14 then return end -- Not a proximity alarm
+
+    self.alarms[args.uid] = args
+end
+
+function sProxAlarms:LowerBatteryDurabilities()
+
+    -- Loop through alarms and lower durabilities
+    for id, alarm in pairs(self.alarms) do
+
+        if count_table(alarm.contents) > 0 then
+            -- There is at least one battery, so lower its durability
+
+            local contents = {}
+
+            for index, item in pairs(alarm.contents[1].contents) do
+                contents[index] = shItem(item)
+            end
+
+            local stack = shStack({contents = contents, uid = alarm.contents[1].uid})
+
+            stack.contents[1].durability = stack.contents[1].durability - ItemsConfig.usables["Proximity Alarm"].battery_dura_per_hour
+
+            if stack.contents[1].durability <= 10 then
+                stack:RemoveItem(nil, nil, true)
+            end
+
+            Events:Fire("Inventory/ModifyStashStackRemote", {
+                stash_id = id,
+                stack = stack:GetSyncObject(),
+                stack_index = 1
+            })
+
+        end
+
+    end
+
+end
+
+function sProxAlarms:CreateLootbox(args)
+    if args.tier ~= 14 then return end -- Not a proximity alarm
+
+    self.alarms[args.uid] = args
+
+end
+
+function sProxAlarms:RemoveLootbox(args)
+    if args.tier ~= 14 then return end -- Not a proximity alarm
+
+    self.alarms[args.uid] = nil
+
+end
+
+function sProxAlarms:InsideProximityAlarm(args, player)
+
+    if not args.id then return end
+
+    local alarm = self.alarms[args.id]
+
+    if not alarm then return end
+
+    if count_table(alarm.contents) == 0 then return end -- No batteries
+
+    -- OK now broadcast to owner, if online
+
+    local owner_id = tostring(alarm.stash.owner_id)
+
+    local owner = self.players[owner_id]
+
+    if not IsValid(owner) then return end
+    if owner == player then return end
+
+    Network:Send(owner, "Items/ProximityPlayerDetected", {id = player:GetId(), position = player:GetPosition(), name = player:GetName()})
+
+end
+
+function sProxAlarms:ItemUseCancelUsage(args)
+
+    if self.network_subs[tostring(args.player:GetSteamId())] then
+        Network:Unsubscribe(self.network_subs[tostring(args.player:GetSteamId())])
+        self.network_subs[tostring(args.player:GetSteamId())] = nil
+    end
+
+    local player_iu = args.player:GetValue("ItemUse")
+
+    if not player_iu or player_iu.item.name ~= "Proximity Alarm" then return end
+
+    Chat:Send(args.player, "Placing proximity alarm failed!", Color.Red)
 
 end
 
 function sProxAlarms:DestroyProx(args, player)
-    if not args.id or not self.objects[args.id] then return end
+    if not args.id or not self.alarms[args.id] then return end
 
-    local alarm = self.objects[args.id]
+    local alarm = self.alarms[args.id]
 
-    if alarm.exploded then return end
-
-    Network:Send(player, "items/ProxExplode", {position = alarm:GetPosition(), id = alarm.id})
-    Network:SendNearby(player, "items/ProxExplode", {position = alarm:GetPosition(), id = alarm.id})
-
-    local cmd = SQL:Command("DELETE FROM proximity_alarms where id = ?")
-    cmd:Bind(1, args.id)
-    cmd:Execute()
-
-    -- Remove alarm
-    local cell = alarm:GetCell()
-    self.claymores[args.id] = nil
-    alarm:Remove()
-
-end
-
-function sProxAlarms:PickupProx(args, player)
-    if not args.id or not self.objects[args.id] then return end
-
-    local alarm = self.objects[args.id]
-
-    if alarm.owner_id ~= tostring(player:GetSteamId()) then return end -- They do not own this alarm
-
-    if alarm.position:Distance(player:GetPosition()) > 5 then return end
-
-    local num_alarms = Inventory.GetNumOfItem({player = player, item_name = "Proximity Alarm"})
-
-    local item = deepcopy(Items_indexed["Proximity Alarm"])
-    item.amount = 1
-
-    Inventory.AddItem({
-        item = item,
-        player = player
-    })
-
-    -- If the number of alarms in their inventory did not go up, they did not have room for it
-    if num_alarms == Inventory.GetNumOfItem({player = player, item_name = "Proximity Alarm"}) then
-        Chat:Send(player, "Failed to pick up alarm because you do not have space for it!", Color.Red)
-        return
-    end
-
-    local cmd = SQL:Command("DELETE FROM proximity_alarms where id = ?")
-    cmd:Bind(1, args.id)
-    cmd:Execute()
-
-    -- Remove alarm
-    self.objects[args.id] = nil
-    alarm:Remove()
-
-end
-
--- When someone enters the range of the alarm
-function sProxAlarms:StepOnProx(args, player)
-
-    if not args.id then return end
-    local id = tonumber(args.id)
-
-    local alarm = self.objects[id]
     if not alarm then return end
 
-    -- TODO: send data to player
+    Network:Send(player, "items/ProxExplode", {position = alarm.position})
+    Network:SendNearby(player, "items/ProxExplode", {position = alarm.position})
+
+    -- TODO: remove lootbox and stash from DB
+    Events:Fire("items/DestroyProximityAlarm", {
+        id = alarm.stash.id
+    })
+
+    -- Remove alarm
+    self.alarms[args.id] = nil
 
 end
 
@@ -113,31 +184,6 @@ function sProxAlarms:AddAlarm(args)
 
     -- Create lootbox
     Events:Fire("Items/CreateProximityAlarm", args)
-
-end
-
--- Load all claymores from DB
-function sProxAlarms:LoadAllProx()
-
-    local result = SQL:Query("SELECT * FROM proximity_alarms"):Execute()
-    
-    if #result > 0 then
-
-        for _, alarm_data in pairs(result) do
-            local split = alarm_data.position:split(",")
-            local pos = Vector3(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]))
-
-            local angle = self:DeserializeAngle(alarm_data.angle)
-
-            self:AddAlarm({
-                id = alarm_data.id,
-                owner_id = alarm_data.steamID,
-                position = pos,
-                angle = angle
-            })
-        end
-
-    end
 
 end
 
@@ -152,27 +198,10 @@ end
 
 function sProxAlarms:PlaceProx(position, angle, player)
 
-    local steamID = tostring(player:GetSteamId())
-    local cmd = SQL:Command("INSERT INTO proximity_alarms (steamID, position, angle, contents) VALUES (?, ?, ?)")
-    cmd:Bind(1, steamID)
-    cmd:Bind(2, tostring(position))
-    cmd:Bind(3, self:SerializeAngle(angle))
-    cmd:Bind(4, "")
-    cmd:Execute()
-
-	cmd = SQL:Query("SELECT last_insert_rowid() as id FROM proximity_alarms")
-    local result = cmd:Execute()
-    
-    if not result or not result[1] or not result[1].id then
-        error("Failed to place proximity alarm")
-        return
-    end
-    
-    self:AddAlarm({
-        id = result[1].id,
-        owner_id = steamID,
+    Events:Fire("Items/PlaceProximityAlarm", {
         position = position,
-        angle = angle
+        angle = angle,
+        player = player
     })
 
 end
@@ -181,19 +210,45 @@ function sProxAlarms:TryPlaceProx(args, player)
 
     local player_iu = player:GetValue("ProxUsingItem")
 
-    if player_iu.item and ItemsConfig.usables[player_iu.item.name]
-        and player_iu.item.name == "Proximity Alarm" then
+    if not player_iu then return end
 
-        Inventory.RemoveItem({
-            item = player_iu.item,
-            index = player_iu.index,
-            player = player
-        })
+    player_iu.delayed = true
+    sItemUse:InventoryUseItem(player_iu)
 
-        -- Now actually place the alarm
-        self:PlaceProx(args.position, args.angle, player)
+    player:SetValue("ProxUsingItem", nil)
 
+    if self.network_subs[tostring(args.player:GetSteamId())] then
+        Network:Unsubscribe(self.network_subs[tostring(args.player:GetSteamId())])
+        self.network_subs[tostring(args.player:GetSteamId())] = nil
     end
+    
+    local sub
+    sub = Network:Subscribe("items/CompleteItemUsage", function(_, _player)
+    
+        if player ~= _player then return end
+
+        local player_iu = player:GetValue("ItemUse")
+
+        if player_iu.item and ItemsConfig.usables[player_iu.item.name]
+            and player_iu.item.name == "Proximity Alarm" then
+
+            Inventory.RemoveItem({
+                item = player_iu.item,
+                index = player_iu.index,
+                player = player
+            })
+
+            -- Now actually place the alarm
+            self:PlaceProx(args.position, args.angle, player)
+
+        end
+
+        Network:Unsubscribe(sub)
+        self.network_subs[tostring(player:GetSteamId())] = nil
+
+    end)
+
+    self.network_subs[tostring(player:GetSteamId())] = sub
 
 end
 
@@ -269,4 +324,3 @@ function sProxAlarms:FinishProxPlacement(args, player)
 end
 
 sProxAlarms = sProxAlarms()
-sProxAlarms:LoadAllProx()
