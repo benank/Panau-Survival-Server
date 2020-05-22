@@ -218,6 +218,8 @@ end
 function sSpawnManager:PlayerSpawn(args)
     args.player:SetValue("Spawn/KilledRecently", false)
     
+    if args.player:GetValue("SecondLifeActive") then return end
+
     if args.player:GetValue("FirstSpawn") then
         args.player:SetPosition(self:GetRespawnPosition(args.player))
     else
