@@ -296,7 +296,7 @@ function sProxAlarms:FinishProxPlacement(args, player)
     end
 
     -- If they are within sz radius * 2, we don't let them place that close
-    if args.position:Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
+    if args.position:Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 10 then
         Chat:Send(player, "Cannot place proximity alarms while near the safezone!", Color.Red)
         return
     end
