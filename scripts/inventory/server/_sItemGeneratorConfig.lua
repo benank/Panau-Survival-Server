@@ -5,29 +5,28 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.23,
+            rarity = 0.33,
             items = 
             {
-                ["Bubbles"] = {rarity = 0.2, min = 8, max = 16},
-                ["Revolver Ammo"] = {rarity = 0.3, min = 2, max = 4},
-                ["Handgun Ammo"] = {rarity = 0.3, min = 2, max = 4},
-                ["Sawn-Off Ammo"] = {rarity = 0.2, min = 2, max = 4},
+                ["Bubbles"] = {rarity = 0.2, min = 5, max = 10},
+                ["Revolver Ammo"] = {rarity = 0.3, min = 3, max = 6},
+                ["Handgun Ammo"] = {rarity = 0.3, min = 3, max = 6},
+                ["Sawn-Off Ammo"] = {rarity = 0.2, min = 3, max = 6},
             }
         },
         ["EXPLOSIVE"] = 
         {
-            rarity = 0.235,
+            rarity = 0.2,
             items = 
             {
-                ["Smoke Grenade"] = {rarity = 0.2, min = 1, max = 1},
-                ["Flares"] = {rarity = 0.2, min = 1, max = 1},
+                ["Flares"] = {rarity = 0.25, min = 1, max = 1},
                 ["Flashbang"] = {rarity = 0.25, min = 1, max = 1},
-                ["HE Grenade"] = {rarity = 0.35, min = 1, max = 1},
+                ["HE Grenade"] = {rarity = 0.5, min = 1, max = 1},
             }
         },
         ["FOOD & DRINK"] = 
         {
-            rarity = 0.26,
+            rarity = 0.2,
             items = 
             {
                 ["Chocolate"] = {rarity = 0.08, min = 2, max = 3},
@@ -58,7 +57,7 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.16,
+            rarity = 0.155,
             items = 
             {
                 ["Woet"] = {rarity = 0.25, min = 1, max = 1},
@@ -83,15 +82,15 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.327,
+            rarity = 0.33,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.05, min = 10, max = 20},
-                ["Revolver Ammo"] = {rarity = 0.2, min = 3, max = 6},
-                ["Handgun Ammo"] = {rarity = 0.2, min = 3, max = 6},
-                ["Sawn-Off Ammo"] = {rarity = 0.15, min = 2, max = 4},
-                ["SMG Ammo"] = {rarity = 0.2, min = 4, max = 8},
-                ["Shotgun Ammo"] = {rarity = 0.15, min = 2, max = 4},
+                ["Revolver Ammo"] = {rarity = 0.2, min = 4, max = 8},
+                ["Handgun Ammo"] = {rarity = 0.2, min = 4, max = 8},
+                ["Sawn-Off Ammo"] = {rarity = 0.15, min = 4, max = 8},
+                ["SMG Ammo"] = {rarity = 0.2, min = 5, max = 10},
+                ["Shotgun Ammo"] = {rarity = 0.15, min = 3, max = 6},
                 ["Assault Ammo"] = {rarity = 0.05, min = 3, max = 6},
             }
         },
@@ -117,10 +116,10 @@ LootItems =
             rarity = 0.15,
             items = 
             {
-                ["Smoke Grenade"] = {rarity = 0.075, min = 1, max = 1},
                 ["Flares"] = {rarity = 0.075, min = 1, max = 1},
                 ["Flashbang"] = {rarity = 0.05, min = 1, max = 1},
                 ["HE Grenade"] = {rarity = 0.3, min = 1, max = 1},
+                ["Smoke Grenade"] = {rarity = 0.075, min = 1, max = 1},
                 ["Toxic Grenade"] = {rarity = 0.3, min = 1, max = 1},
                 ["Mine"] = {rarity = 0.2, min = 1, max = 1},
             }
@@ -135,7 +134,7 @@ LootItems =
         },
         ["HEALTH"] = 
         {
-            rarity = 0.125,
+            rarity = 0.122,
             items = 
             {
                 ["Bandages"] = {rarity = 0.6, min = 1, max = 2},
@@ -214,7 +213,8 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Toxic Grenade"] = {rarity = 0.4, min = 1, max = 2},
+                ["Smoke Grenade"] = {rarity = 0.2, min = 1, max = 2},
+                ["Toxic Grenade"] = {rarity = 0.2, min = 1, max = 2},
                 ["Mine"] = {rarity = 0.2, min = 1, max = 1},
                 ["Claymore"] = {rarity = 0.2, min = 1, max = 1},
                 ["Molotov"] = {rarity = 0.2, min = 1, max = 1},
