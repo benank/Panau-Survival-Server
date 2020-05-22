@@ -10,7 +10,9 @@ function sLoadFlow:__init()
     Events:Subscribe("ModulesLoad", function()
         Timer.SetTimeout(1000, function()
             for p in Server:GetPlayers() do
-                Events:Fire("LoadFlowFinish", {player = p})
+                if IsValid(p) then
+                    Events:Fire("LoadFlowFinish", {player = p})
+                end
             end
         end)
     end)
@@ -18,6 +20,7 @@ function sLoadFlow:__init()
 end
 
 function sLoadFlow:LoadFlowAdd(args)
+    if not IsValid(args.player) then return end
     local steam_id = tostring(args.player:GetSteamId())
 
     if not self.loads[steam_id] then

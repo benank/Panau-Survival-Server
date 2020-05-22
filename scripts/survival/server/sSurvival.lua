@@ -29,6 +29,7 @@ end
 function sSurvivalManager:PlayerQuit(args)
     log_function_call("sSurvivalManager:PlayerQuit")
     self:UpdateDB(args.player)
+    log_function_call("sSurvivalManager:PlayerQuit 2")
 end
 
 function sSurvivalManager:CheckForDyingPlayer(player)

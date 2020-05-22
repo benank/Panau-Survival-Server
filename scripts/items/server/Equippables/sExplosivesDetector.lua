@@ -30,6 +30,7 @@ local func = coroutine.wrap(function()
 
         log_function_call("sExplosivesDetector check")
         Timer.Sleep(1000)
+        log_function_call("sExplosivesDetector check 2")
 
         for p in Server:GetPlayers() do
             if IsValid(p) then
