@@ -26,6 +26,11 @@ function cLootbox:Remove()
         end
     end
 
+    Events:Fire("Inventory/LootboxRemove", {
+        id = self.uid,
+        tier = self.tier
+    })
+
 end
 
 function cLootbox:CreateModel()
@@ -74,6 +79,14 @@ function cLootbox:CreateModel()
         -- Register static object ids in uid lookup table
         LootManager.SO_id_to_uid[obj:GetId()] = self.uid
     end
+
+
+    Events:Fire("Inventory/LootboxCreate", {
+        id = self.uid,
+        tier = self.tier,
+        position = self.position,
+        angle = self.angle
+    })
 
 
 end

@@ -199,7 +199,7 @@ Lootbox.Models =
         model = "samsite.animated.eez/key036sam-d2.lod",
         col = "samsite.animated.eez/key036sam_lod1-d2_col.pfx",
         offset = Vector3(0, 0, 0),
-        look_offset = Vector3(0, 1, -1)
+        look_offset = Vector3(0, 0, 0)
     }
 }
 

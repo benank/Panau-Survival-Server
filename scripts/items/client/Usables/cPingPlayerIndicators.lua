@@ -12,6 +12,8 @@ end
 -- Adds a new player to be shown. Must contain: position, name, id
 function cPingPlayerIndicators:AddPlayer(data)
 
+    if data.id == LocalPlayer:GetId() then return end -- No pings on localplayer
+
     self.current_showing_names[data.id] = {position = data.position, name = data.name, time = Client:GetElapsedSeconds()}
 
     if not self.render then
@@ -56,7 +58,12 @@ function cPingPlayerIndicators:RenderPlayer(data, local_pos, time)
 
     self:DrawShadowedText(Vector2(-text_size.x / 2, -text_size.y * 1.25), name, color, self.text_size)
 
-    local text = string.format("%.0fm", data.position:Distance(local_pos))
+    local dist = data.position:Distance(local_pos)
+    local text = string.format("%.0fm", dist)
+    if dist > 1000 then
+        text = string.format("%.1fkm", dist / 1000)
+    end
+
     text_size = Render:GetTextSize(text, self.text_size / 2)
 
     self:DrawShadowedText(Vector2(-text_size.x / 2, 0), text, color, self.text_size / 2)
