@@ -137,6 +137,8 @@ function sInventory:PlayerKilled(args)
     -- Level 0 within financial district, don't drop items
     if level == 0 and args.player:GetPosition():Distance(sz_config.safezone.position) < 1500 then return end
 
+    if args.player:GetValue("SecondLifeEquipped") then return end
+
     local num_slots_to_drop = GetNumSlotsDroppedOnDeath(level)
 
     if num_slots_to_drop == 0 then return end

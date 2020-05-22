@@ -53,40 +53,6 @@ function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
 
     if old_hp <= 0 then return end
 
-    if old_hp - damage <= 0 and source ~= DamageEntity.Suicide and source ~= DamageEntity.AdminKill then
-        -- If this damage is going to kill them
-
-        -- If they have a second life, don't let them die
-        if player:GetValue("SecondLifeEquipped") then
-
-            player:SetNetworkValue("Invincible", true)
-            player:SetHealth(0.1)
-
-            local item_cost = CreateItem({
-                name = "Second Life",
-                amount = 1
-            })
-            
-            Inventory.RemoveItem({
-                item = item_cost:GetSyncObject(),
-                player = player
-            })
-        
-            Chat:Send(player, "Second Life just prevented you from dying and has been consumed!", Color.Yellow)
-
-            player:SetValue("RecentHealTime", Server:GetElapsedSeconds())
-            player:SetValue("SecondLifeEquipped", false)
-
-            Timer.SetTimeout(1000, function()
-                if IsValid(player) then
-                    player:SetHealth(1)
-                    player:SetNetworkValue("Invincible", false)
-                end
-            end)
-        end
-
-    end
-
     attacker = self.players[attacker_id]
 
     local msg = ""
