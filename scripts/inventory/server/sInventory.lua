@@ -203,14 +203,20 @@ end
 
 function sInventory:ToggleBackpackEquipped(args)
 
+    self.backpack_equipped = args.equipped
+
     if not args.equipped then
         -- Unequipped backpack
-        for cat, slots_to_add in pairs(args.slots) do
-            self.slots[cat].backpack = self.slots[cat].backpack - slots_to_add
-        end
+        -- Delay in case they are equipping another backpack at the same time
+        --Timer.SetTimeout(500, function()
+            for cat, slots_to_add in pairs(args.slots) do
+                self.slots[cat].backpack = self.slots[cat].backpack - slots_to_add
+            end
 
-        -- No need to check for overflow here because sync does it
-        self:Sync({sync_slots = true})
+            -- No need to check for overflow here because sync does it
+
+            --self:Sync({sync_slots = true})
+        --end)
 
     else
 
@@ -218,7 +224,7 @@ function sInventory:ToggleBackpackEquipped(args)
             self.slots[cat].backpack = self.slots[cat].backpack + slots_to_add
         end
 
-        self:Sync({sync_slots = true})
+        --self:Sync({sync_slots = true})
 
     end
 
@@ -243,6 +249,7 @@ function sInventory:ToggleEquipped(args, player)
     if not self.contents[args.cat][args.index]:GetProperty("can_equip") then return end
 
     local uid = self.contents[args.cat][args.index].uid
+    local item_uid = self.contents[args.cat][args.index].contents[1].uid
 
     -- check for items of same equip type and unequip them
     local equip_type = self.contents[args.cat][args.index]:GetProperty("equip_type")
@@ -252,11 +259,11 @@ function sInventory:ToggleEquipped(args, player)
             for item_index, item in pairs(stack.contents) do
 
                 if item.equipped and item.equip_type == equip_type
-                and item.uid ~= self.contents[args.cat][args.index].contents[1].uid then
+                and item.uid ~= item_uid then
 
                     item.equipped = false
                     Events:Fire("Inventory/ToggleEquipped", 
-                        {index = stack_index, player = self.player, item = self.contents[cat][stack_index].contents[1]:Copy():GetSyncObject()})
+                        {index = stack_index, player = self.player, item = item:Copy():GetSyncObject()})
 
                     --Timer.Sleep(1)
                 end
@@ -276,11 +283,11 @@ function sInventory:ToggleEquipped(args, player)
     -- Equip/unequip the item
     self.contents[args.cat][index].contents[1].equipped = not self.contents[args.cat][index].contents[1].equipped
 
-    -- Sync it
-    self:Sync({cat = args.cat, sync_cat = true})
-
     Events:Fire("Inventory/ToggleEquipped", 
         {player = self.player, index = index, item = self.contents[args.cat][index].contents[1]:Copy():GetSyncObject()})
+
+    -- Sync it
+    self:Sync({sync_full = true})
 
 end
 
@@ -299,23 +306,49 @@ function sInventory:SpawnDropbox(contents, is_death_drop)
         end
     end
 
+    if not self.dropping_contents then
+        self.dropping_contents = contents
+    else
+        for _, stack in pairs(contents) do
+            table.insert(self.dropping_contents, stack)
+        end
+    end
+
+    if self.ground_data_sub then return end
+
     -- Receive ground data
-    local sub
-    sub = Network:Subscribe("Inventory/GroundData" .. self.steamID, function(args, player)
+    self.ground_data_sub = Network:Subscribe("Inventory/GroundData" .. self.steamID, function(args, player)
         if player ~= self.player then return end
         if not args.position or not args.angle then return end
 
-        local dropbox = CreateLootbox({
+        print("GO")
+
+        if self.last_dropbox and IsValid(self.last_dropbox) 
+        and self.last_dropbox.position
+        and count_table(self.last_dropbox.contents) > 0 
+        and self.last_dropbox.position:Distance(args.position) < 0.1 then
+            -- Add to existing dropbox
+            for _, stack in pairs(self.dropping_contents) do
+                self.last_dropbox:AddStack(stack)
+            end
+
+            return
+        end
+
+        self.last_dropbox = CreateLootbox({
             position = args.position,
             angle = args.angle,
             tier = Lootbox.Types.Dropbox,
             active = true,
             is_deathdrop = is_death_drop,
-            contents = contents
+            contents = self.dropping_contents
         })
-        dropbox:Sync()
+        self.last_dropbox:Sync()
 
-        Network:Unsubscribe(sub)
+        Network:Unsubscribe(self.ground_data_sub)
+        self.ground_data_sub = nil
+
+        self.dropping_contents = nil
 
         if is_death_drop then
             Events:Fire("Inventory/SetDeathDropPosition", {player = self.player, position = args.position})
@@ -362,6 +395,7 @@ function sInventory:CheckForOverflow()
 
         Chat:Send(self.player, chat_msg, Color.Red)
 
+        print("overflow spawn dropbox")
         self:SpawnDropbox(stacks_to_drop)
 
         -- Full sync in case they dropped from multiple categories
@@ -415,6 +449,7 @@ function sInventory:DropStacks(args, player)
     end
 
     if count_table(contents) > 0 then
+        print("drop stack spawn dropbox")
         self:SpawnDropbox(contents)
     end
 
@@ -1075,6 +1110,8 @@ end
 
 -- Syncs inventory to player and all modules
 function sInventory:Sync(args)
+
+    if not IsValid(self.player) then return end
 
     if not self.initial_sync and not args.sync_full then return end -- Don't sync anything until we do the initial sync
 
