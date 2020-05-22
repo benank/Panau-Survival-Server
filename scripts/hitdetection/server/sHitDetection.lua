@@ -40,7 +40,9 @@ function sHitDetection:ClientModuleLoad(args)
 end
 
 function sHitDetection:PlayerQuit(args)
+    log_function_call("sHitDetection:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
+    log_function_call("sHitDetection:PlayerQuit 2")
 end
 
 function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
@@ -54,40 +56,6 @@ function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
     local old_hp = player:GetHealth()
 
     if old_hp <= 0 then return end
-
-    if old_hp - damage <= 0 and source ~= DamageEntity.Suicide and source ~= DamageEntity.AdminKill then
-        -- If this damage is going to kill them
-
-        -- If they have a second life, don't let them die
-        if player:GetValue("SecondLifeEquipped") then
-
-            player:SetNetworkValue("Invincible", true)
-            player:SetHealth(0.1)
-
-            local item_cost = CreateItem({
-                name = "Second Life",
-                amount = 1
-            })
-            
-            Inventory.RemoveItem({
-                item = item_cost:GetSyncObject(),
-                player = player
-            })
-        
-            Chat:Send(player, "Second Life just prevented you from dying and has been consumed!", Color.Yellow)
-
-            player:SetValue("RecentHealTime", Server:GetElapsedSeconds())
-            player:SetValue("SecondLifeEquipped", false)
-
-            Timer.SetTimeout(1000, function()
-                if IsValid(player) then
-                    player:SetHealth(1)
-                    player:SetNetworkValue("Invincible", false)
-                end
-            end)
-        end
-
-    end
 
     attacker = self.players[attacker_id]
 
@@ -275,6 +243,7 @@ function sHitDetection:CheckPendingHits()
     
     local func = coroutine.wrap(function()
         while true do
+            log_function_call("sHitDetection self.pending_armor_aggregation")
             if count_table(self.pending_armor_aggregation) > 0 then
 
                 for steam_id, data in pairs(self.pending_armor_aggregation) do
@@ -401,7 +370,7 @@ function sHitDetection:PlayerInsideToxicArea(args)
 end
 
 function sHitDetection:SecondTick()
-
+    log_function_call("sHitDetection:SecondTick")
     for p in Server:GetPlayers() do
         if p:GetValue("OnFire") and 
         ( p:GetPosition().y < 199.5 or p:GetValue("InSafezone") 

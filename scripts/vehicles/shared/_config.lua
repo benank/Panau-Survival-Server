@@ -91,7 +91,7 @@ config =
         "Taxi",
         "Licenseplate"
     },
-    decal_chance = 0.05,
+    decal_chance = 0.2,
     templates = -- Use these templates for spawning
     {
         [69] = {chance = 0.1, templates = {"Armed"}}, -- winstons amen party boat

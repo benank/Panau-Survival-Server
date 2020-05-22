@@ -77,6 +77,7 @@ end
 function sStats:MinuteTick()
 
     local func = coroutine.wrap(function()
+        log_function_call("sStats:MinuteTick")
         for p in Server:GetPlayers() do
             if IsValid(p) then
                 local player_data = p:GetValue("PlayerData")
