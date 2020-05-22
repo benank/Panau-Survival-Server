@@ -319,22 +319,14 @@ LootItems =
                 ["RocketGrapple"] = {rarity = 0.1, min = 1, max = 1},
             }
         },
-        ["HEALTH"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Healthpack"] = {rarity = 1, min = 1, max = 1},
-            }
-        },
         ["TOOL"] = 
         {
-            rarity = 0.175,
+            rarity = 0.225,
             items = 
             {
-                ["Battery"] = {rarity = 0.765, min = 1, max = 2},
-                ["Respawner"] = {rarity = 0.11, min = 1, max = 1},
-                ["EVAC"] = {rarity = 0.125, min = 1, max = 1},
+                ["Battery"] = {rarity = 0.817, min = 1, max = 2},
+                ["Respawner"] = {rarity = 0.086, min = 1, max = 1},
+                ["EVAC"] = {rarity = 0.097, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
