@@ -23,6 +23,9 @@ Events:Subscribe("Inventory/UseItem", function(args)
             if IsValid(p) then
                 local exp = p:GetValue("Exp")
                 local player_pos = p:GetPosition()
+
+                player_pos.y = pos.y -- 2D distance
+
                 if p ~= args.player 
                 and player_pos:Distance(pos) < range
                 and not p:GetValue("Loading") and exp and exp.level > 0
