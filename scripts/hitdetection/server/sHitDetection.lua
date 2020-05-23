@@ -170,7 +170,7 @@ end
 
 function sHitDetection:CheckPendingHits()
     
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
 
             if count_table(self.pending_hits) > 0 then
@@ -191,10 +191,10 @@ function sHitDetection:CheckPendingHits()
 
             Timer.Sleep(10)
         end
-    end)()
+    end)
 
     
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
             log_function_call("sHitDetection self.pending_armor_aggregation")
             if count_table(self.pending_armor_aggregation) > 0 then
@@ -216,7 +216,7 @@ function sHitDetection:CheckPendingHits()
             Timer.Sleep(1000)
 
         end
-    end)()
+    end)
 
 end
 

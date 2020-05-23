@@ -60,7 +60,7 @@ end
 
 function sWeaponManager:CheckPendingShots()
     
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
             if count_table(self.pending_fire) > 0 then
 
@@ -79,7 +79,7 @@ function sWeaponManager:CheckPendingShots()
 
             Timer.Sleep(100)
         end
-    end)()
+    end)
 
 end
 

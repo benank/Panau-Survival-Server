@@ -14,7 +14,7 @@ Events:Subscribe("Inventory/UseItem", function(args)
 
     local range = math.min(1, args.player:GetPosition().y / ping_data.max_height) * ping_data.max_distance
     
-    local func = coroutine.wrap(function()
+    Thread(function()
         
         local pos = args.player:GetPosition()
         local nearby_players = {}
@@ -42,6 +42,6 @@ Events:Subscribe("Inventory/UseItem", function(args)
 
         Network:Broadcast("Items/PingSound", {position = pos, range = range})
 
-    end)()
+    end)
 
 end)

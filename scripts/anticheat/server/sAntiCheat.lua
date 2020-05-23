@@ -14,7 +14,7 @@ end
 function sAntiCheat:CheckServerHealth()
     
     -- Check to see if the server is lagging
-    local func = coroutine.wrap(function()
+    Thread(function()
         local last_time = Server:GetElapsedSeconds()
         local players_history = {}
         
@@ -72,7 +72,7 @@ function sAntiCheat:CheckServerHealth()
             log_function_call("sAntiCheat:CheckServerHealth() 2")
 
         end
-    end)()
+    end)
 
 end
 

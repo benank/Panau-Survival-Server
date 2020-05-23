@@ -39,18 +39,18 @@ function sVehicleManager:__init()
 
     Network:Subscribe("Vehicles/VehicleDestroyed", self, self.VehicleDestroyedClient)
 
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
 
             self:Tick500()
 
             Timer.Sleep(500)
         end
-    end)()
+    end)
 
 
     -- Respawn vehicles loop
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
 
             local random = math.random
@@ -72,9 +72,9 @@ function sVehicleManager:__init()
 
             Timer.Sleep(1000 * 60 * 60)
         end
-    end)()
+    end)
 
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
 
             log_function_call("CheckForDestroyedVehicles")
@@ -84,9 +84,9 @@ function sVehicleManager:__init()
             Timer.Sleep(1000 * 10)
 
         end
-    end)()
+    end)
 
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
 
             log_function_call("sVehicleManager:SaveVehicles")
@@ -96,7 +96,7 @@ function sVehicleManager:__init()
             Timer.Sleep(1000 * 60)
 
         end
-    end)()
+    end)
 
 end
 

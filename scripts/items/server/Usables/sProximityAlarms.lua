@@ -30,18 +30,18 @@ function sProxAlarms:__init()
 
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
             Timer.Sleep(1000 * 60 * 60) -- One hour
 
             self:LowerBatteryDurabilities()
         end
-    end)()
+    end)
 end
 
 function sProxAlarms:ItemExplode(args)
 
-    local func = coroutine.wrap(function()
+    Thread(function()
         
         for id, alarm in pairs(self.alarms) do
             if alarm.position:Distance(args.position) < args.radius then
@@ -50,7 +50,7 @@ function sProxAlarms:ItemExplode(args)
             Timer.Sleep(1)
         end
 
-    end)()
+    end)
 
 end
 
