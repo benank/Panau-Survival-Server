@@ -60,7 +60,7 @@ function sSpawnManager:SetHomePosition(args)
 	command:Bind(4, steamid)
     command:Execute()
     
-    args.player:SetValue("HomePosition", args.pos)
+    args.player:SetNetworkValue("HomePosition", args.pos)
 
 end
 
