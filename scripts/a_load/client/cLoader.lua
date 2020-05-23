@@ -109,7 +109,7 @@ function cLoader:LocalPlayerDeath()
 
     Thread(function()
         Timer.Sleep(5000)
-        self.load_time = Client:GetElapsedSeconds()
+        self.load_time = Client:GetElapsedSeconds() - 4
         self.resources_needed = self.resources_needed + self.resources_for_gameload
         self:UpdateResourceCount()
         self:Start()
