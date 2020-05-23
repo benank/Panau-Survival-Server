@@ -21,9 +21,9 @@ end)
 
 Events:Subscribe("SecondTick", function()
     log_function_call("players_with_parachutes coroutine")
-    for id, player in pairs(players_with_parachutes) do
+    for player in Server:GetPlayers() do
         log_function_call("players_with_parachutes coroutine2 ")
-        if IsValid(player) then
+        if IsValid(player) and players_with_parachutes[player:GetId()] then
             log_function_call("players_with_parachutes coroutine 3")
             if player:GetParachuting() then
                 log_function_call("players_with_parachutes coroutine 4")
