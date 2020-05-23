@@ -100,7 +100,7 @@ function sProxAlarms:LowerBatteryDurabilities()
                 Events:Fire("SendPlayerPersistentMessage", {
                     steam_id = alarm.stash.owner_id,
                     message = string.format("Your proximity detector ran out of batteries @ X: %.0f Y: %.0f", coords.x, coords.z),
-                    color = Color(150, 0, 0)
+                    color = Color(200, 0, 0)
                 })
             end
 
@@ -186,7 +186,7 @@ function sProxAlarms:DestroyProx(args, player)
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = alarm.stash.owner_id,
         message = string.format("Your proximity detector was destroyed @ X: %.0f Y: %.0f", coords.x, coords.z),
-        color = Color(150, 0, 0)
+        color = Color(200, 0, 0)
     })
 
     Network:Send(player, "items/ProxExplode", {position = alarm.position})
