@@ -31,7 +31,7 @@ Events:Subscribe("SecondTick", function()
             end
         else
             log_function_call("players_with_parachutes coroutine 5")
-            players_with_parachutes[id] = nil
+            players_with_parachutes[player:GetId()] = nil
         end
     end
     log_function_call("players_with_parachutes coroutine6 ")
