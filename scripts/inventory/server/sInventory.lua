@@ -437,7 +437,9 @@ function sInventory:DropStacks(args, player)
 
     -- Store all uids in case the inventory contents shift and indices are no longer valid
     for index, data in pairs(args.stacks) do
-        args.stacks[index].uid = self.contents[data.cat][data.index].uid
+        if data.cat and data.index and self.contents[data.cat] and self.contents[data.cat][data.index] then
+            args.stacks[index].uid = self.contents[data.cat][data.index].uid
+        end
     end
 
     -- Now remove items and add them to a lootbox (or stash)
