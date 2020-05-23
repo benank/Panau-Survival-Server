@@ -224,6 +224,7 @@ function cSafezoneSigns:GameRender(args)
         Render:ResetTransform()
     end
 
+    collectgarbage()
 
 end
 
