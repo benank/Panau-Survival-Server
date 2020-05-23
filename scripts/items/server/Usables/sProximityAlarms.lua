@@ -136,6 +136,8 @@ function sProxAlarms:InsideProximityAlarm(args, player)
 
     if exp and exp.level == 0 then return end -- Does not work on level 0s
 
+    if player:GetValue("Invisible") then return end
+
     -- OK now broadcast to owner, if online
 
     local owner_id = tostring(alarm.stash.owner_id)

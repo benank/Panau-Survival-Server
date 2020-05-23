@@ -25,7 +25,8 @@ Events:Subscribe("Inventory/UseItem", function(args)
                 local player_pos = p:GetPosition()
                 if p ~= args.player 
                 and player_pos:Distance(pos) < range
-                and not p:GetValue("Loading") and exp and exp.level > 0 then
+                and not p:GetValue("Loading") and exp and exp.level > 0
+                and not p:GetValue("Invisible") then
                     nearby_players[p:GetId()] = {position = p:GetPosition(), name = p:GetName()}
                 end
             end
