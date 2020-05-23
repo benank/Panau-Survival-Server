@@ -246,7 +246,8 @@ LootItems =
             {
                 ["Vehicle Repair"] = {rarity = 0.18, min = 1, max = 2},
                 ["Car Paint"] = {rarity = 0.18, min = 1, max = 1},
-                ["Battery"] = {rarity = 0.585, min = 1, max = 2},
+                ["Battery"] = {rarity = 0.445, min = 1, max = 2},
+                ["Combat Ping"] = {rarity = 0.14, min = 1, max = 1},
                 ["Respawner"] = {rarity = 0.055, min = 1, max = 1},
             }
         },
@@ -293,8 +294,7 @@ LootItems =
             rarity = 0.025,
             items = 
             {
-                ["Barrel Stash"] = {rarity = 0.5, min = 1, max = 1},
-                ["Garbage Stash"] = {rarity = 0.5, min = 1, max = 1},
+                ["Proximity Alarm"] = {rarity = 1, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -324,7 +324,8 @@ LootItems =
             rarity = 0.225,
             items = 
             {
-                ["Battery"] = {rarity = 0.817, min = 1, max = 2},
+                ["Battery"] = {rarity = 0.669, min = 1, max = 2},
+                ["Combat Ping"] = {rarity = 0.148, min = 1, max = 1},
                 ["Respawner"] = {rarity = 0.086, min = 1, max = 1},
                 ["EVAC"] = {rarity = 0.097, min = 1, max = 1},
             }
