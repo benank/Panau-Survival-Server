@@ -12,14 +12,9 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
     if args.item.equipped then
         args.player:SetValue("ParachutingValue", 0)
-        table.insert(players_with_parachutes, args.player)
+        players_with_parachutes[args.player:GetId()] = args.player
     else
-        for k,v in pairs(players_with_parachutes) do
-            if v:GetId() == args.player:GetId() then
-                table.remove(players_with_parachutes, k)
-                break
-            end
-        end
+        players_with_parachutes[args.player:GetId()] = nil
     end
 
 end)
@@ -29,13 +24,13 @@ local func = coroutine.wrap(function()
 
     while true do
         log_function_call("players_with_parachutes coroutine")
-        for k,v in pairs(players_with_parachutes) do
-            if IsValid(v) then
-                if v:GetParachuting() then
-                    v:SetValue("ParachutingValue", v:GetValue("ParachutingValue") + ItemsConfig.equippables["Parachute"].dura_per_sec)
+        for id, player in pairs(players_with_parachutes) do
+            if IsValid(player) then
+                if player:GetParachuting() then
+                    player:SetValue("ParachutingValue", player:GetValue("ParachutingValue") + ItemsConfig.equippables["Parachute"].dura_per_sec)
                 end
             else
-                players_with_parachutes[k] = nil
+                players_with_parachutes[id] = nil
             end
         end
 
