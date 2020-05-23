@@ -1,9 +1,3 @@
-
-
-
---Model: samsite.animated.eez/key036sam-d2.lod
---16:51:05 | [info ] | [modelviewer] Collision: samsite.animated.eez/key036sam_lod1-d2_col.pfx
-
 class 'sProxAlarms'
 
 function sProxAlarms:__init()
