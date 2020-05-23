@@ -94,6 +94,14 @@ function sProxAlarms:LowerBatteryDurabilities()
 
             if stack.contents[1].durability <= 10 then
                 stack:RemoveItem(nil, nil, true)
+
+                local coords = alarm.position + Vector3(16384, 0, 16384)
+                
+                Events:Fire("SendPlayerPersistentMessage", {
+                    steam_id = alarm.stash.owner_id,
+                    message = string.format("Your proximity detector ran out of batteries @ X: %.0f Y: %.0f", coords.x, coords.z),
+                    color = Color(150, 0, 0)
+                })
             end
 
             Events:Fire("Inventory/ModifyStashStackRemote", {
@@ -173,6 +181,14 @@ function sProxAlarms:DestroyProx(args, player)
 
     if not alarm then return end
 
+    local coords = alarm.position + Vector3(16384, 0, 16384)
+                
+    Events:Fire("SendPlayerPersistentMessage", {
+        steam_id = alarm.stash.owner_id,
+        message = string.format("Your proximity detector ran out of batteries @ X: %.0f Y: %.0f", coords.x, coords.z),
+        color = Color(150, 0, 0)
+    })
+    
     Network:Send(player, "items/ProxExplode", {position = alarm.position})
     Network:SendNearby(player, "items/ProxExplode", {position = alarm.position})
 
