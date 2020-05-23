@@ -19,6 +19,7 @@ function sLootbox:__init(args)
     self.angle = args.angle
     self.contents = args.contents
     self.model_data = Lootbox.Models[args.tier]
+    self.stash = args.stash
     self.is_dropbox = args.tier == Lootbox.Types.Dropbox
     self.is_vending_machine = args.tier == Lootbox.Types.VendingMachineFood or args.tier == Lootbox.Types.VendingMachineDrink
     self.is_stash = Lootbox.Stashes[args.tier] ~= nil
@@ -96,6 +97,11 @@ function sLootbox:PlayerAddStack(stack, player)
     -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
     if self.is_stash then
         if not self.stash:CanPlayerOpen(player) then return stack end
+    end
+
+    if self.tier == Lootbox.Types.ProximityAlarm and stack:GetProperty("name") ~= "Battery" then
+        Chat:Send(player, "You can only put batteries in a proximity alarm!", Color.Red)
+        return stack
     end
 
     Events:Fire("Discord", {
@@ -377,6 +383,8 @@ function sLootbox:Remove()
         return
     end
 
+    Events:Fire("Inventory/RemoveLootbox", self:GetFullData())
+
     self.active = false
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/RemoveLootbox", {cell = self.cell, uid = self.uid})
 
@@ -402,7 +410,14 @@ end
 
 -- Update contents to anyone who has it open
 function sLootbox:UpdateToPlayers()
+    Events:Fire("Inventory/LootboxUpdated", self:GetFullData())
     Network:SendToPlayers(self.players_opened, "Inventory/LootboxSync", self:GetContentsSyncData())
+end
+
+function sLootbox:GetFullData()
+    local data = self:GetSyncData()
+    data.contents = self:GetContentsData()
+    return data
 end
 
 function sLootbox:GetContentsData()

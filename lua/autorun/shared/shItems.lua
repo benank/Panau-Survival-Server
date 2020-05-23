@@ -208,7 +208,13 @@ Items =
     {
         name = "Ping",
         category = "Supplies",
-        stacklimit = 5,
+        stacklimit = 10,
+        can_use = true
+    },
+    {
+        name = "Combat Ping",
+        category = "Supplies",
+        stacklimit = 10,
         can_use = true
     },
     {
@@ -436,15 +442,23 @@ Items =
         can_use = true
     },
     {
+        name = "Proximity Alarm",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true
+    },
+    {
         name = "Lockpick",
         category = "Supplies",
         stacklimit = 100
     },
     {
-        name = "Binoculars",
+        name = "Thermal Vision",
         category = "Survival",
         stacklimit = 1,
-        can_use = true
+        can_equip = true,
+        durable = true,
+        max_durability = 1000,
     },
     {
         name = "Grapplehook",

@@ -4,7 +4,8 @@ function sStashes:__init()
 
     SQL:Execute("CREATE TABLE IF NOT EXISTS stashes (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, name VARCHAR, type INTEGER, position VARCHAR, angle VARCHAR, access_mode INTEGER, health REAL, contents BLOB)")
 
-    self.stashes = {}
+    self.stashes = {} -- Stashes indexed by stash id
+    self.stashes_by_uid = {} -- Stashes by lootbox uid
 
     Network:Subscribe("Stashes/DeleteStash", self, self.DeleteStash)
     Network:Subscribe("Stashes/RenameStash", self, self.RenameStash)
@@ -12,6 +13,39 @@ function sStashes:__init()
 
     Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+    Events:Subscribe("Items/PlaceProximityAlarm", self, self.PlaceProximityAlarm)
+    Events:Subscribe("Inventory/ModifyStashStackRemote", self, self.ModifyStashStackRemote)
+    Events:Subscribe("items/DestroyProximityAlarm", self, self.DestroyProximityAlarm)
+end
+
+function sStashes:DestroyProximityAlarm(args)
+    self:DeleteStash(args)
+end
+
+function sStashes:ModifyStashStackRemote(args)
+
+    local stash = self.stashes_by_uid[args.stash_id]
+    if not stash then return end
+
+    local contents = {}
+
+    for index, item in pairs(args.stack.contents) do
+        contents[index] = shItem(item)
+    end
+
+    if count_table(contents) > 0 then
+        stash.lootbox.contents[args.stack_index] = shStack({contents = contents, uid = args.stack.uid})
+    else
+        stash.lootbox.contents[args.stack_index] = nil
+    end
+    
+    stash.lootbox:UpdateToPlayers()
+    stash:UpdateToDB()
+
+end
+
+function sStashes:PlaceProximityAlarm(args)
+    self:PlaceStash(args.position, args.angle, Lootbox.Types.ProximityAlarm, args.player)
 end
 
 function sStashes:PlayerLevelUpdated(args)
@@ -30,14 +64,10 @@ function sStashes:DismountStash(args, player)
     if not args.id then return end
     args.id = tonumber(args.id)
 
-    local player_stashes = player:GetValue("Stashes")
-    local stash = player_stashes[args.id]
-
-    if not stash then return end
-
     local stash_instance = self.stashes[args.id]
 
     if not stash_instance then return end
+    if stash_instance.owner_id ~= tostring(player:GetSteamId()) then return end
 
     local stash_item_name = Lootbox.Stashes[stash_instance.lootbox.tier].name
     local contents = stash_instance.lootbox.contents
@@ -50,9 +80,13 @@ function sStashes:DismountStash(args, player)
 
     table.insert(contents, stack)
 
+    local type = stash_instance.lootbox.tier
+
+    local angle = type == Lootbox.Types.ProximityAlarm and Angle() or stash_instance.lootbox.angle
+
     local dropbox = CreateLootbox({
         position = stash_instance.lootbox.position,
-        angle = stash_instance.lootbox.angle,
+        angle = angle,
         tier = Lootbox.Types.Dropbox,
         active = true,
         contents = contents
@@ -60,13 +94,17 @@ function sStashes:DismountStash(args, player)
     dropbox:Sync()
 
     -- Create dropbox with contents
-    stash_instance:Remove()
     self.stashes[args.id] = nil
+    self.stashes_by_uid[stash_instance.lootbox.uid] = nil
+    stash_instance:Remove()
 
-    player_stashes[args.id] = nil
+    if type ~= Lootbox.Types.ProximityAlarm then
+        local player_stashes = player:GetValue("Stashes")
+        player_stashes[args.id] = nil
 
-    player:SetValue("Stashes", player_stashes)
-    self:SyncStashesToPlayer(player)
+        player:SetValue("Stashes", player_stashes)
+        self:SyncStashesToPlayer(player)
+    end
 end
 
 function sStashes:RenameStash(args, player)
@@ -94,7 +132,7 @@ function sStashes:ClientModuleLoad(args)
 
     for id, stash in pairs(self.stashes) do
 
-        if stash.owner_id == steam_id then
+        if stash.owner_id == steam_id and stash.lootbox.tier ~= Lootbox.Types.ProximityAlarm then
             -- Player owns this stash
             player_stashes[id] = stash:GetSyncData()
         end
@@ -135,23 +173,23 @@ function sStashes:DeleteStash(args, player)
     if not args.id then return end
     args.id = tonumber(args.id)
 
-    local player_stashes = player:GetValue("Stashes")
-    local stash = player_stashes[args.id]
-
-    if not stash then return end
-
     local stash_instance = self.stashes[args.id]
 
     if not stash_instance then return end
 
     -- Create dropbox with contents
-    stash_instance:Remove()
+    self.stashes_by_uid[stash_instance.lootbox.uid] = nil
     self.stashes[args.id] = nil
+    stash_instance:Remove()
 
-    player_stashes[args.id] = nil
+    if IsValid(player) then
+        local player_stashes = player:GetValue("Stashes")
 
-    player:SetValue("Stashes", player_stashes)
-    self:SyncStashesToPlayer(player)
+        player_stashes[args.id] = nil
+
+        player:SetValue("Stashes", player_stashes)
+        self:SyncStashesToPlayer(player)
+    end
 
 end
 
@@ -180,6 +218,9 @@ function sStashes:AddStash(args)
     lootbox.stash = stash
     
     self.stashes[args.id] = stash
+    self.stashes_by_uid[lootbox.uid] = stash
+
+    Events:Fire("Inventory/CreateLootbox", lootbox:GetFullData())
 
     return lootbox
 
@@ -255,11 +296,15 @@ function sStashes:PlaceStash(position, angle, type, player)
 
     lootbox:Sync()
 
-    local player_stashes = player:GetValue("Stashes")
-    player_stashes[lootbox.stash.id] = lootbox.stash:GetSyncData()
+    if type ~= Lootbox.Types.ProximityAlarm then
 
-    player:SetValue("Stashes", player_stashes)
-    self:SyncStashesToPlayer(player)
+        local player_stashes = player:GetValue("Stashes")
+        player_stashes[lootbox.stash.id] = lootbox.stash:GetSyncData()
+
+        player:SetValue("Stashes", player_stashes)
+        self:SyncStashesToPlayer(player)
+
+    end
 end
 
 function sStashes:SerializeAngle(ang)
