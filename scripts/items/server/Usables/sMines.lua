@@ -21,7 +21,7 @@ end
 
 function sMines:ClearBadMines()
 
-    local func = coroutine.wrap(function()
+    Thread(function()
         print("Clearing bad mines...")
         for id, mine in pairs(self.mines) do
 
@@ -64,7 +64,7 @@ function sMines:ClearBadMines()
         end
 
         print("All bad mines cleared.")
-    end)()
+    end)
 
 end
 

@@ -41,7 +41,7 @@ Events:Subscribe("PlayerDeath", function(args)
         player:SetValue("SecondLifeEquipped", false)
 
         
-        local func = coroutine.wrap(function()
+        Thread(function()
             while IsValid(player) and player:GetHealth() < 1 or player:GetValue("Loading") do
                 Timer.Sleep(1000)
             end
@@ -57,7 +57,7 @@ Events:Subscribe("PlayerDeath", function(args)
             if IsValid(player) then
                 player:SetNetworkValue("Invincible", false)
             end
-        end)()
+        end)
 
         -- Make sure they respawn back at where they died
         local sub

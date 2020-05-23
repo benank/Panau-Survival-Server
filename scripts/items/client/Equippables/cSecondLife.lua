@@ -45,7 +45,7 @@ function cSecondLife:SecondLifeDectivate(args)
         Game:FireEvent("ply.pause")
     end
 
-    local func = coroutine.wrap(function()
+    Thread(function()
         Timer.Sleep(3000)
         if not self.fx[args.id] then return end
 
@@ -66,8 +66,7 @@ function cSecondLife:SecondLifeDectivate(args)
         if args.id == tostring(LocalPlayer:GetSteamId()) then
             Game:FireEvent("ply.unpause")
         end
-    end)()
-
+    end)
 
 end
 

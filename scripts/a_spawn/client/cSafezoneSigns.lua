@@ -30,7 +30,7 @@ end
 
 function cSafezoneSigns:LoadImages()
 
-    local func = coroutine.wrap(function()
+    Thread(function()
     
         Timer.Sleep(3000)
         self.signs["Lootboxes"] = 
@@ -107,7 +107,7 @@ function cSafezoneSigns:LoadImages()
 
         self.models_created = true
     
-    end)()
+    end)
 
 end
 
@@ -224,6 +224,7 @@ function cSafezoneSigns:GameRender(args)
         Render:ResetTransform()
     end
 
+    collectgarbage()
 
 end
 

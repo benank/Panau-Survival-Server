@@ -217,7 +217,7 @@ end
 
 function sHitDetection:CheckPendingHits()
     
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
 
             if count_table(self.pending_hits) > 0 then
@@ -238,10 +238,10 @@ function sHitDetection:CheckPendingHits()
 
             Timer.Sleep(10)
         end
-    end)()
+    end)
 
     
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
             log_function_call("sHitDetection self.pending_armor_aggregation")
             if count_table(self.pending_armor_aggregation) > 0 then
@@ -258,11 +258,12 @@ function sHitDetection:CheckPendingHits()
                     end
                 end
             end
+            log_function_call("sHitDetection self.pending_armor_aggregation 2")
 
             Timer.Sleep(1000)
 
         end
-    end)()
+    end)
 
 end
 
@@ -372,14 +373,14 @@ end
 function sHitDetection:SecondTick()
     log_function_call("sHitDetection:SecondTick")
     for p in Server:GetPlayers() do
-        if p:GetValue("OnFire") and 
+        if IsValid(p) and p:GetValue("OnFire") and 
         ( p:GetPosition().y < 199.5 or p:GetValue("InSafezone") 
             or Server:GetElapsedSeconds() - p:GetValue("OnFireTime") >= FireEffectTime
             or p:GetHealth() <= 0 ) then
 
             p:SetNetworkValue("OnFire", false)
 
-        elseif p:GetValue("OnFire") then
+        elseif IsValid(p) and p:GetValue("OnFire") then
 
             local attacker_id = p:GetValue("FireAttackerId")
 
@@ -387,6 +388,7 @@ function sHitDetection:SecondTick()
 
         end
     end
+    log_function_call("sHitDetection:SecondTick 2")
 
 end
 

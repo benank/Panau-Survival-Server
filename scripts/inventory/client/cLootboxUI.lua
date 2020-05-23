@@ -94,8 +94,9 @@ function cLootboxUI:UpdateLootboxTitle()
 
         local is_owner = current_box.stash.owner_id == tostring(LocalPlayer:GetSteamId())
 
-        local text = string.format("%s (%d/%d)", 
-            is_owner and current_box.stash.name or "Stash", current_box.stash.num_items, current_box.stash.capacity)
+        local name = is_owner and current_box.stash.name or Lootbox.Stashes[current_box.tier].name
+
+        local text = string.format("%s (%d/%d)", name, current_box.stash.num_items, current_box.stash.capacity)
 
         self.lootbox_title:SetText(text)
         self.lootbox_title:SetTextSize(ClientInventory.ui.inv_dimensions.text_size)

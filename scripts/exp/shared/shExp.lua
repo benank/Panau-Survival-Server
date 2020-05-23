@@ -14,30 +14,31 @@ Exp =
     },    
     Kill = 
     {
-        [DamageEntity.None] = 20,
-        [DamageEntity.Physics] = 60,
-        [DamageEntity.Bullet] = 100,
-        [DamageEntity.Explosion] = 90,
-        [DamageEntity.Vehicle] = 50,
-        [DamageEntity.ToxicGrenade] = 80,
-        [DamageEntity.Molotov] = 80,
-        [DamageEntity.Mine] = 50,
-        [DamageEntity.Claymore] = 50,
-        [DamageEntity.HEGrenade] = 80,
-        [DamageEntity.LaserGrenade] = 70,
+        [DamageEntity.None] = 40,
+        [DamageEntity.Physics] = 120,
+        [DamageEntity.Bullet] = 200,
+        [DamageEntity.Explosion] = 180,
+        [DamageEntity.Vehicle] = 100,
+        [DamageEntity.ToxicGrenade] = 160,
+        [DamageEntity.Molotov] = 160,
+        [DamageEntity.Mine] = 100,
+        [DamageEntity.Claymore] = 100,
+        [DamageEntity.HEGrenade] = 160,
+        [DamageEntity.LaserGrenade] = 140,
         [DamageEntity.Hunger] = 0,
         [DamageEntity.Thirst] = 0,
-        [DamageEntity.VehicleGuard] = 40,
+        [DamageEntity.VehicleGuard] = 80,
         [DamageEntity.WarpGrenade] = 0,
-        [DamageEntity.Suicide] = 60,
+        [DamageEntity.Suicide] = 120,
         [DamageEntity.AdminKill] = 0,
+        [DamageEntity.C4] = 170
         [DamageEntity.C4] = 85,
-        [DamageEntity.MeleeGrapple] = 100,
-        [DamageEntity.MeleeKick] = 110,
-        [DamageEntity.MeleeSlidingKick] = 100,
+        [DamageEntity.MeleeGrapple] = 200,
+        [DamageEntity.MeleeKick] = 220,
+        [DamageEntity.MeleeSlidingKick] = 200,
     },
     KillExpireTime = 60 * 60 * 8, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
-    Level0ExpCutoffLevel = 5 -- Level where you stop getting exp for killing level 0 players
+    Level0ExpCutoffLevel = 3 -- Level where you stop getting exp for killing level 0 players
 }
 
 

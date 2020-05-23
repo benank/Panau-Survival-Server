@@ -13,13 +13,12 @@ function cExplosivesDetector:__init()
     self.circle_color_owned = Color(0, 200, 0, self.alpha)
     self.border_color = Color(0, 0, 0, self.alpha)
     
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
             self:CheckForNearbyExplosives()
             Timer.Sleep(1000)
         end
-
-    end)()
+    end)
     
     Network:Subscribe(var("items/ToggleEquippedExplosivesDetector"):get(), self, self.ToggleEquipped)
 

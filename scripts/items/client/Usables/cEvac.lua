@@ -191,7 +191,7 @@ function cEvac:PlayCountdownSound(pos)
     
     local seconds = 0
     local sound
-    local func = coroutine.wrap(function()
+    Thread(function()
         while seconds < 10 do
 
             local sound = ClientSound.Create(AssetLocation.Game, {
@@ -208,7 +208,7 @@ function cEvac:PlayCountdownSound(pos)
             Timer.Sleep(1000)
             sound:Remove()
         end
-    end)()
+    end)
 
 end
 

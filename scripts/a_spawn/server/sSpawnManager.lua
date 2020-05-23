@@ -21,18 +21,19 @@ function sSpawnManager:__init()
         end
     end
     
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
-            log_function_call("sSpawnManager coroutine.wrap(function()")
+            log_function_call("sSpawnManager (function()")
             for player in Server:GetPlayers() do
                 if IsValid(player) then
                     self:UpdatePlayerPositionMinuteTick(player)
                 end
                 Timer.Sleep(1)
             end
-            Timer.Sleep(60 * 1000)
+            log_function_call("sSpawnManager (function() 2")
+            Timer.Sleep(1000)
         end
-    end)()
+    end)
 
 end
 
@@ -59,7 +60,7 @@ function sSpawnManager:SetHomePosition(args)
 	command:Bind(4, steamid)
     command:Execute()
     
-    args.player:SetValue("HomePosition", args.pos)
+    args.player:SetNetworkValue("HomePosition", args.pos)
 
 end
 

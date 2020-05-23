@@ -209,13 +209,15 @@ function sInventory:ToggleBackpackEquipped(args)
         -- Unequipped backpack
         -- Delay in case they are equipping another backpack at the same time
         --Timer.SetTimeout(500, function()
-            for cat, slots_to_add in pairs(args.slots) do
-                self.slots[cat].backpack = self.slots[cat].backpack - slots_to_add
-            end
+        for cat, slots_to_add in pairs(args.slots) do
+            self.slots[cat].backpack = self.slots[cat].backpack - slots_to_add
+        end
 
             -- No need to check for overflow here because sync does it
 
-            --self:Sync({sync_slots = true})
+        if not args.no_sync then
+            self:Sync({sync_slots = true})
+        end
         --end)
 
     else
@@ -263,7 +265,7 @@ function sInventory:ToggleEquipped(args, player)
 
                     item.equipped = false
                     Events:Fire("Inventory/ToggleEquipped", 
-                        {index = stack_index, player = self.player, item = item:Copy():GetSyncObject()})
+                        {index = stack_index, no_sync = true, player = self.player, item = item:Copy():GetSyncObject()})
 
                     --Timer.Sleep(1)
                 end
@@ -287,7 +289,9 @@ function sInventory:ToggleEquipped(args, player)
         {player = self.player, index = index, item = self.contents[args.cat][index].contents[1]:Copy():GetSyncObject()})
 
     -- Sync it
-    self:Sync({sync_full = true})
+    Timer.SetTimeout(100, function()
+        self:Sync({sync_full = true})
+    end)
 
 end
 
@@ -433,7 +437,9 @@ function sInventory:DropStacks(args, player)
 
     -- Store all uids in case the inventory contents shift and indices are no longer valid
     for index, data in pairs(args.stacks) do
-        args.stacks[index].uid = self.contents[data.cat][data.index].uid
+        if data.cat and data.index and self.contents[data.cat] and self.contents[data.cat][data.index] then
+            args.stacks[index].uid = self.contents[data.cat][data.index].uid
+        end
     end
 
     -- Now remove items and add them to a lootbox (or stash)
