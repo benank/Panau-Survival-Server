@@ -72,9 +72,6 @@ function Location:IsActive(position, scale)
 end
 
 function Location:DrawIcon(position, scale)
-    print(self.type)
-    print(Location.Icon.UV[self.type])
-    print(Location.Icon.UVSize)
 	Location.Icon.Sheet:Draw(
         position - (Location.Icon.Size * scale / 2), 
         Location.Icon.Size * scale, 
