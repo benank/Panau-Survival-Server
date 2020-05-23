@@ -1,6 +1,7 @@
 # Credits
 
 [SK83RJOSH: original grenades script](https://github.com/SK83RJOSH/jc2mp-grenades)
+[SK83RJOSH: original map script](https://github.com/SK83RJOSH/jc2mp-pda)
 
 [Philpax: original nametags script](https://github.com/jc2mp/nametags)
 
