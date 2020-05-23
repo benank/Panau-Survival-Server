@@ -19,26 +19,23 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
 end)
 
-
-local func = coroutine.wrap(function()
-
-    while true do
-        log_function_call("players_with_parachutes coroutine")
-        for id, player in pairs(players_with_parachutes) do
-            if IsValid(player) then
-                if player:GetParachuting() then
-                    player:SetValue("ParachutingValue", player:GetValue("ParachutingValue") + ItemsConfig.equippables["Parachute"].dura_per_sec)
-                end
-            else
-                players_with_parachutes[id] = nil
+Events:Subscribe("SecondTick", function()
+    log_function_call("players_with_parachutes coroutine")
+    for id, player in pairs(players_with_parachutes) do
+        log_function_call("players_with_parachutes coroutine2 ")
+        if IsValid(player) then
+            log_function_call("players_with_parachutes coroutine 3")
+            if player:GetParachuting() then
+                log_function_call("players_with_parachutes coroutine 4")
+                player:SetValue("ParachutingValue", player:GetValue("ParachutingValue") + ItemsConfig.equippables["Parachute"].dura_per_sec)
             end
+        else
+            log_function_call("players_with_parachutes coroutine 5")
+            players_with_parachutes[id] = nil
         end
-
-        Timer.Sleep(1000)
-
     end
-end)()
-
+    log_function_call("players_with_parachutes coroutine6 ")
+end)
 
 local func2 = coroutine.wrap(function()
 
