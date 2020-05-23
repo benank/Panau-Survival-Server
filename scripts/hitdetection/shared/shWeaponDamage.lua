@@ -43,6 +43,13 @@ WeaponHitType =
     Melee = 4
 }
 
+MeleeDamage = 
+{
+    [DamageEntity.MeleeGrapple] = {damage = 25, knockback = 0},
+    [DamageEntity.MeleeKick] = {damage = 15, knockback = 0},
+    [DamageEntity.MeleeSlidingKick] = {damage = 30, knockback = 5},
+}
+
 BoneModifiers =  -- Percentages of total damage, 1.0 = no change, 0.5 = half damage
 {
     ["ragdoll_AttachHandLeft"] = {  mod = 0.50, type = WeaponHitType.Bodyshot},

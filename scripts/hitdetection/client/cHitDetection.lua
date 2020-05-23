@@ -17,9 +17,29 @@ function cHitDetection:__init()
     Events:Subscribe(var("PostRender"):get(), self, self.PostRender)
 
     Events:Subscribe(var("HitDetection/Explosion"):get(), self, self.Explosion)
+    Network:Subscribe(var("HitDetection/KnockdownEffect"):get(), self, self.KnockdownEffect)
 
 end
 
+function cHitDetection:KnockdownEffect(args)
+    self:ApplyKnockback(args.source, args.amount)
+end
+
+function cHitDetection:ApplyKnockback(source, amount)
+
+    local base_state = LocalPlayer:GetBaseState()
+    local local_pos = LocalPlayer:GetPosition()
+
+    if not LocalPlayer:InVehicle() 
+    and not LocalPlayer:GetValue("StuntingVehicle")
+    and base_state ~= AnimationState.SReeledInIdle
+    and base_state ~= AnimationState.SReelFlight
+    and base_state ~= AnimationState.SHangstuntIdle then
+        LocalPlayer:SetRagdollLinearVelocity(
+            LocalPlayer:GetLinearVelocity() + ((local_pos - source):Normalized() + Vector3(0, 1.5, 0)) * amount)
+    end
+
+end
 
 function cHitDetection:CheckHealth()
     -- Called on PostTick to check for health changes and apply a red screen
@@ -75,17 +95,10 @@ function cHitDetection:Explosion(args)
 
         local knockback_effect = explosive_data.knockback * percent_modifier
 
-        print(in_fov)
-
         local base_state = LocalPlayer:GetBaseState()
 
-        if in_fov and not LocalPlayer:InVehicle() 
-        and not LocalPlayer:GetValue("StuntingVehicle")
-        and base_state ~= AnimationState.SReeledInIdle
-        and base_state ~= AnimationState.SReelFlight
-        and base_state ~= AnimationState.SHangstuntIdle then
-            LocalPlayer:SetRagdollLinearVelocity(
-                LocalPlayer:GetLinearVelocity() + ((args.local_position - args.position):Normalized() + Vector3(0, 1.5, 0)) * knockback_effect)
+        if in_fov then
+            self:ApplyKnockback(args.position, knockback_effect)
         end
 
         Network:Send(var("HitDetectionSyncExplosion"):get(), {
