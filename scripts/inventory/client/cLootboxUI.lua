@@ -94,11 +94,7 @@ function cLootboxUI:UpdateLootboxTitle()
 
         local is_owner = current_box.stash.owner_id == tostring(LocalPlayer:GetSteamId())
 
-        local name = is_owner and current_box.stash.name or "Stash"
-
-        if current_box.tier == Lootbox.Types.ProximityAlarm then
-            name = "Proximity Alarm"
-        end
+        local name = is_owner and current_box.stash.name or Lootbox.Stashes[current_box.tier].name
 
         local text = string.format("%s (%d/%d)", name, current_box.stash.num_items, current_box.stash.capacity)
 
