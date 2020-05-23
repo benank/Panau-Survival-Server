@@ -62,7 +62,6 @@ function sWeaponManager:CheckPendingShots()
     
     local func = coroutine.wrap(function()
         while true do
-            log_function_call("sWeaponManager:CheckPendingShots()")
             if count_table(self.pending_fire) > 0 then
 
                 for steam_id, data in pairs(self.pending_fire) do
@@ -77,7 +76,6 @@ function sWeaponManager:CheckPendingShots()
                     end
                 end
             end
-            log_function_call("sWeaponManager:CheckPendingShots() 2")
 
             Timer.Sleep(100)
         end
