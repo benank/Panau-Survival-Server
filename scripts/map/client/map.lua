@@ -576,7 +576,31 @@ function Map:Draw()
 
 		Render:DrawLine(center - height, center - offsetHeight, Color.White)
 		Render:DrawLine(center + height, center + offsetHeight, Color.White)
-	end
+    end
+    
+    self:DrawLegend()
 
 	collectgarbage()
+end
+
+function Map:DrawLegend()
+
+	local scale = Map.IconScale
+
+    local mouse_pos = Map:ScreenToWorld(Mouse:GetPosition()) + Vector3(16384, 0, 16384)
+    local text = string.format("X: %.0f Y: %.0f", mouse_pos.x, mouse_pos.z)
+    local text_size = Render:GetTextSize(text, TextSize.VeryLarge * scale)
+
+    local size_y = Vector2(0, text_size.y)
+    local position = Vector2(0, Render.Size.y) + Vector2(5, -5) - size_y
+
+	Render:DrawText(position - (size_y) + (Vector2.Down * (Location.Icon.Size.y / 2) * scale) + (Vector2.Down * TextSize.VeryLarge * scale / 2) + (Vector2.Left * scale * 5), text, Color.Black, TextSize.VeryLarge, scale)
+	Render:DrawText(position - (size_y) + (Vector2.Down * (Location.Icon.Size.y / 2) * scale) + (Vector2.Down * TextSize.VeryLarge * scale / 2) + (Vector2.One * scale * 5), text, Color.Black, TextSize.VeryLarge, scale)
+	Render:DrawText(position - (size_y) + (Vector2.Down * (Location.Icon.Size.y / 2) * scale) + (Vector2.Down * TextSize.VeryLarge * scale / 2) + (Vector2.Up * scale * 5), text, Color.Black, TextSize.VeryLarge, scale)
+	Render:DrawText(position - (size_y) + (Vector2.Down * (Location.Icon.Size.y / 2) * scale) + (Vector2.Down * TextSize.VeryLarge * scale / 2) + (Vector2.Right * scale * 5), text, Color.Black, TextSize.VeryLarge, scale)
+	Render:DrawText(position - (size_y) + (Vector2.Down * (Location.Icon.Size.y / 2) * scale) + (Vector2.Down * TextSize.VeryLarge * scale / 2) - (Vector2.One * scale * 5), text, Color.Black, TextSize.VeryLarge, scale)
+	Render:DrawText(position - (size_y) + (Vector2.Down * (Location.Icon.Size.y / 2) * scale) + (Vector2.Down * TextSize.VeryLarge * scale / 2) + (Vector2.Down * scale * 5), text, Color.Black, TextSize.VeryLarge, scale)
+
+	Render:DrawText(position - (size_y) + (Vector2.Down * (Location.Icon.Size.y / 2) * scale) + (Vector2.Down * TextSize.VeryLarge * scale / 2), text, Color.White, TextSize.VeryLarge, scale)
+
 end
