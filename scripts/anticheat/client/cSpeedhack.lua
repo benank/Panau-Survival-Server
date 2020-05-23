@@ -1,7 +1,7 @@
 local start_time = os.time()
 local timer = Timer()
 
-local func = coroutine.wrap(function()
+Thread(function()
     while true do
         
         local time_diff = os.time() - start_time
@@ -15,4 +15,4 @@ local func = coroutine.wrap(function()
 
         Timer.Sleep(1000)
     end
-end)()
+end)

@@ -24,7 +24,7 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
 end)
 
-local func = coroutine.wrap(function()
+Thread(function()
 
     while true do
 
@@ -52,7 +52,7 @@ local func = coroutine.wrap(function()
         log_function_call("sExplosivesDetector check 2")
 
     end
-end)()
+end)
 
 function DecreaseDuraOfBattery(player)
 

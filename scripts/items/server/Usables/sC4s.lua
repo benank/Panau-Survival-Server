@@ -17,7 +17,7 @@ function sC4s:__init()
 
     
     -- Update attached C4s every second so they are at least nearby the entity
-    local func = coroutine.wrap(function()
+    Thread(function()
         while true do
             log_function_call("sC4s second coroutine")
             Timer.Sleep(1000)
@@ -54,7 +54,7 @@ function sC4s:__init()
             log_function_call("sC4s second coroutine 2")
 
         end
-    end)()
+    end)
 
 end
 
@@ -76,7 +76,7 @@ end
 function sC4s:InventoryUpdated(args)
 
     -- Check if they dropped a placed c4 and remove it if so
-    local func = coroutine.wrap(function()
+    Thread(function()
 
         log_function_call("sC4s:InventoryUpdated coroutine")
         local player_placed_c4s = {}
@@ -108,7 +108,7 @@ function sC4s:InventoryUpdated(args)
             self:RemoveC4(id)
         end
 
-    end)()
+    end)
 
 
 end

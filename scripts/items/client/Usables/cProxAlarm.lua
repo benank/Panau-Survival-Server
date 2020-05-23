@@ -19,7 +19,7 @@ function cProxAlarm:__init(args)
 
     self.enabled = true
 
-    local func = coroutine.wrap(function()
+    Thread(function()
         while self.enabled do
 
             self.sound = ClientSound.Create(AssetLocation.Game, {
@@ -38,7 +38,7 @@ function cProxAlarm:__init(args)
             Timer.Sleep(15000)
 
         end
-    end)()
+    end)
 
 end
 

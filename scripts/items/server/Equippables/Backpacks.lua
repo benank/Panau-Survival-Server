@@ -61,9 +61,9 @@ Events:Subscribe("HitDetection/PlayerExplosionHit", function(args) ModifyBackpac
 Events:Subscribe("HitDetection/PlayerBulletHit", function(args) ModifyBackpackDurability(args) end)
 
 
-local func = coroutine.wrap(function()
+Thread(function()
     while true do
-        log_function_call("backpacks local func = coroutine.wrap(function()")
+        log_function_call("backpacks local func = (function()")
         for steam_id, data in pairs(backpack_hits) do
             for item_name, item_hits in pairs(data) do
 
@@ -89,8 +89,8 @@ local func = coroutine.wrap(function()
                 backpack_hits[steam_id] = nil
             end
         end
-        log_function_call("backpacks local func = coroutine.wrap(function() 2")
+        log_function_call("backpacks local func = (function() 2")
 
         Timer.Sleep(500)
     end
-end)()
+end)

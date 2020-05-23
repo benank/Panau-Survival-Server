@@ -2,6 +2,8 @@ class 'cLoader'
 
 function cLoader:__init()
 
+    self.load_time = Client:GetElapsedSeconds()
+
     self.resources_needed = 0
     self.resources_loaded = 0
 
@@ -77,23 +79,9 @@ end
 
 function cLoader:InitialLoad()
 
-    self.resources_needed = self.resources_needed + self.resources_for_gameload 
-
     self.can_add_resources = true
+    self.resources_needed = self.resources_needed + self.resources_for_gameload
     
-    local func = coroutine.wrap(function()
-        while not self.game_loaded do
-
-            if Game:GetState() == GUIState.Game then
-                self:GameLoad()
-                self.game_loaded = true
-            end
-
-            Timer.Sleep(100)
-        end
-    end)()
-
-
     self:UpdateResourceCount()
     self:Start()
 
@@ -101,17 +89,15 @@ end
 
 function cLoader:GameLoad()
 
-    if not self.game_loaded then
+    self.game_loaded = false
+    self:UpdateResourceCount()
+    Thread(function()
+        Timer.Sleep((Client:GetElapsedSeconds() - self.load_time) * 2500)
         self.game_loaded = true
-        self.resources_loaded = self.resources_loaded + self.resources_for_gameload / 2
+        self.resources_loaded = self.resources_loaded + self.resources_for_gameload
         self:UpdateResourceCount()
-        Timer.SetTimeout(3000, function()
-            self.game_loaded = true
-            self.resources_loaded = self.resources_loaded + self.resources_for_gameload / 2
-            self:UpdateResourceCount()
-            self:Stop()
-        end)
-    end
+        self:Stop()
+    end)
 
 end
 
@@ -121,7 +107,9 @@ function cLoader:LocalPlayerDeath()
     self.resources_loaded = 0
     self.game_loaded = false
 
-    Timer.SetTimeout(5000, function()
+    Thread(function()
+        Timer.Sleep(5000)
+        self.load_time = Client:GetElapsedSeconds()
         self.resources_needed = self.resources_needed + self.resources_for_gameload
         self:UpdateResourceCount()
         self:Start()

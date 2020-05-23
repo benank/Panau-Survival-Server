@@ -41,7 +41,7 @@ end
 
 function sClaymores:ClearBadClaymores()
 
-    local func = coroutine.wrap(function()
+    Thread(function()
         print("Clearing bad claymores...")
         for id, claymore in pairs(self.claymores) do
 
@@ -84,8 +84,8 @@ function sClaymores:ClearBadClaymores()
         end
 
         print("All bad claymores cleared.")
-    end)()
-
+    end)
+    
 end
 
 function sClaymores:ItemExplode(args)

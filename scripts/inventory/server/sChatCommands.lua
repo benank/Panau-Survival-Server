@@ -24,7 +24,7 @@ Events:Subscribe("PlayerChat", function(args)
             return
         end
 
-        local func = coroutine.wrap(function()
+        Thread(function()
             for i = 1, amount do
 
                 Inventory.AddItem({
@@ -39,7 +39,7 @@ Events:Subscribe("PlayerChat", function(args)
 
             end
             Chat:Send(args.player, "Added " .. name .. " [x" .. tostring(amount) .. "]", Color.Green)
-        end)()
+        end)
 
 
     elseif args.text == "/box" then

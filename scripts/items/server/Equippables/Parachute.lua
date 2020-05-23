@@ -33,7 +33,7 @@ Events:Subscribe("SecondTick", function()
     log_function_call("players_with_parachutes coroutine 2")
 end)
 
-local func2 = coroutine.wrap(function()
+Thread(function()
 
     while true do
         log_function_call("Server:GetPlayers() ParachutingValue")
@@ -64,4 +64,4 @@ local func2 = coroutine.wrap(function()
 
     end
 
-end)()
+end)

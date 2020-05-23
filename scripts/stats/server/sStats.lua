@@ -76,7 +76,7 @@ end
 
 function sStats:MinuteTick()
 
-    local func = coroutine.wrap(function()
+    Thread(function()
         log_function_call("sStats:MinuteTick")
         for p in Server:GetPlayers() do
             if IsValid(p) then
@@ -94,7 +94,7 @@ function sStats:MinuteTick()
             Timer.Sleep(1)
         end
         log_function_call("sStats:MinuteTick 2")
-    end)()
+    end)
 
 end
 

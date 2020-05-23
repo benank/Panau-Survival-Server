@@ -20,14 +20,14 @@ end
 
 function sLootManager:ClientModuleLoad(args)
 
-    --local func = coroutine.wrap(function()
+    --Thread(function()
     --    while not self.ready do
     --        Timer.Sleep(500)
     --    end
     --    if IsValid(args.player) then
             Events:Fire("ForcePlayerUpdateCell", {player = args.player, cell_size = Lootbox.Cell_Size})
     --    end
-    --end)()
+    --end)
     
 end
 
@@ -144,7 +144,7 @@ end
 
 function sLootManager:GenerateAllLoot()
 
-    --local func = coroutine.wrap(function()
+    --Thread(function()
         local rand = math.random
 
         local sz_position = Vector3(-10291, 202.5, -3019)
@@ -191,7 +191,7 @@ function sLootManager:GenerateAllLoot()
             tostring(self:GetNumSpawnedBoxes()), tostring(#self.loot_data)))
 
         self.ready = true
-    --end)()
+    --end)
 
 end
 
