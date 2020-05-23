@@ -165,6 +165,15 @@ function cLoader:Start()
     Game:FireEvent("ply.pause")
     Game:FireEvent("ply.invulnerable")
 
+    if not self.sound then
+        self.sound = ClientSound.Create(AssetLocation.Game, {
+            bank_id = 25,
+            sound_id = 43,
+            position = Camera:GetPosition(),
+            angle = Angle()
+        })
+    end
+
     if not self.active then
         Network:Send(var("LoadStatus"):get())
     end
@@ -235,6 +244,11 @@ function cLoader:Stop()
         if self.target_value - self.progressBar:GetValue() > 0.1 then return end
 
         self.window:Hide()
+
+        if IsValid(self.sound) then
+            self.sound:Remove()
+            self.sound = nil
+        end
 
         if self.active then
             Network:Send(var("LoadStatus"):get(), {status = var("done"):get()})
