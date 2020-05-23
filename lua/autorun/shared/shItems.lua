@@ -162,7 +162,8 @@ Items =
         name = "Car Paint",
         category = "Survival",
         stacklimit = 5,
-        can_use = true
+        can_use = true,
+		can_stack = true
     },
     {
         name = "Cruise Missile",
@@ -207,7 +208,13 @@ Items =
     {
         name = "Ping",
         category = "Supplies",
-        stacklimit = 5,
+        stacklimit = 10,
+        can_use = true
+    },
+    {
+        name = "Combat Ping",
+        category = "Supplies",
+        stacklimit = 10,
         can_use = true
     },
     {
@@ -261,14 +268,16 @@ Items =
     {
         name = "Woet",
         category = "Supplies",
-        stacklimit = 5,
+        stacklimit = 10,
         can_use = true
     },
     {
         name = "C4",
         category = "Explosives",
-        stacklimit = 5,
-        can_use = true
+        stacklimit = 1,
+        can_use = true,
+        can_stack = true,
+        non_persistent_custom_data = true
     },
     {
         name = "Claymore",
@@ -373,6 +382,12 @@ Items =
         can_use = true
     },
     {
+        name = "Spicy Chips",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true
+    },
+    {
         name = "Chocolate",
         category = "Survival",
         stacklimit = 5,
@@ -427,15 +442,23 @@ Items =
         can_use = true
     },
     {
+        name = "Proximity Alarm",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true
+    },
+    {
         name = "Lockpick",
         category = "Supplies",
         stacklimit = 100
     },
     {
-        name = "Binoculars",
+        name = "Thermal Vision",
         category = "Survival",
         stacklimit = 1,
-        can_use = true
+        can_equip = true,
+        durable = true,
+        max_durability = 1000,
     },
     {
         name = "Grapplehook",

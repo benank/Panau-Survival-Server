@@ -12,43 +12,31 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
     if args.item.equipped then
         args.player:SetValue("ParachutingValue", 0)
-        table.insert(players_with_parachutes, args.player)
+        players_with_parachutes[args.player:GetId()] = args.player
     else
-        for k,v in pairs(players_with_parachutes) do
-            if v:GetId() == args.player:GetId() then
-                table.remove(players_with_parachutes, k)
-                break
-            end
-        end
+        players_with_parachutes[args.player:GetId()] = nil
     end
 
 end)
 
-
-local func = coroutine.wrap(function()
-
-    while true do
-
-        for k,v in pairs(players_with_parachutes) do
-            if IsValid(v) then
-                if v:GetParachuting() then
-                    v:SetValue("ParachutingValue", v:GetValue("ParachutingValue") + ItemsConfig.equippables["Parachute"].dura_per_sec)
-                end
-            else
-                players_with_parachutes[k] = nil
+Events:Subscribe("SecondTick", function()
+    log_function_call("players_with_parachutes coroutine")
+    for player in Server:GetPlayers() do
+        if IsValid(player) and players_with_parachutes[player:GetId()] then
+            if player:GetValue("ParachutingValue") and player:GetParachuting() then
+                player:SetValue("ParachutingValue", player:GetValue("ParachutingValue") + ItemsConfig.equippables["Parachute"].dura_per_sec)
             end
+        else
+            players_with_parachutes[player:GetId()] = nil
         end
-
-        Timer.Sleep(1000)
-
     end
-end)()
-
+    log_function_call("players_with_parachutes coroutine 2")
+end)
 
 local func2 = coroutine.wrap(function()
 
     while true do
-
+        log_function_call("Server:GetPlayers() ParachutingValue")
         for player in Server:GetPlayers() do
 
             if IsValid(player) then
@@ -70,6 +58,7 @@ local func2 = coroutine.wrap(function()
 
             Timer.Sleep(5)
         end
+        log_function_call("Server:GetPlayers() ParachutingValue 2")
 
         Timer.Sleep(3000)
 

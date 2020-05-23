@@ -141,25 +141,12 @@ function cInventoryUI:WindowRender()
     if not self.window:GetVisible() then return end
     if not Inventory.contents then return end
 
-    local base_pos = self.window:GetPosition()
-    local icon = InventoryUIStyle.equipped_icon
-
     for category, _ in pairs(Inventory.contents) do
         for index, stack in pairs(Inventory.contents[category]) do
+
             local itemWindow = self.itemWindows[category][index]
-
-            if itemWindow then
-                
-                local position = itemWindow:GetPosition() + base_pos + icon.position
-
-                if stack.contents[1].equipped then
-                    -- Top item in stack is equipped
-                    Render:FillCircle(position, icon.radius, icon.color)
-                elseif stack:GetOneEquipped() then
-                    -- An item in the stack is equipped
-                    Render:FillCircle(position, icon.radius, icon.color_under)
-                end
-            end
+            InventoryUIStyle:RenderItemWindow(itemWindow, stack, self.window)
+            
         end
     end
 
@@ -544,6 +531,7 @@ end
 
 function cInventoryUI:RightClickItemButton(button)
 
+    if Game:GetState() ~= GUIState.Game then return end
     if button:GetDataString("stack_category") == "loot" then
         return
     end
@@ -579,6 +567,7 @@ end
 
 function cInventoryUI:ToggleDroppingItemButton(button)
 
+    if Game:GetState() ~= GUIState.Game then return end
     button:SetDataBool("dropping", not button:GetDataBool("dropping"))
     local colors = button:GetDataBool("dropping") and InventoryUIStyle.colors.dropping or InventoryUIStyle.colors.default
 
@@ -599,6 +588,7 @@ end
 
 function cInventoryUI:ShiftStack(button)
 
+    if Game:GetState() ~= GUIState.Game then return end
     if self.shift_timer:GetSeconds() < 0.2 then return end
 
     self.shift_timer:Restart()
@@ -616,6 +606,7 @@ end
 
 function cInventoryUI:MouseScroll(args)
 
+    if Game:GetState() ~= GUIState.Game then return end
     if not self.hovered_button then return end -- Not hovering over a button
 
     if self.hovered_button:GetDataString("stack_category") == "loot" then
@@ -657,6 +648,8 @@ function cInventoryUI:MouseScroll(args)
 end
 
 function cInventoryUI:LeftClickItemButton(button)
+
+    if Game:GetState() ~= GUIState.Game then return end
 
     if self.hovered_button ~= button then return end -- Only hovered button receives mouse clicks
 

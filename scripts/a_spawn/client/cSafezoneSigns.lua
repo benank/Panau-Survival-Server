@@ -2,65 +2,8 @@ class 'cSafezoneSigns'
 
 function cSafezoneSigns:__init()
 
-    self.signs = 
-    {
-        ["Lootboxes"] = 
-        {
-            image = Image.Create(AssetLocation.Resource, "Safezone_Lootboxes"),
-            size = Vector2(1200, 500),
-            scale = 9,
-            position = Vector3(-10264.067383, 207.745816, -2979.312988),
-            angle = Angle(0.523599 + math.pi, 0, 0)
-        },
-        ["ServerBasics"] = 
-        {
-            image = Image.Create(AssetLocation.Resource, "Safezone_ServerBasics"),
-            size = Vector2(1200, 500),
-            scale = 9,
-            position = Vector3(-10284.602539, 207.755768, -2967.457031),
-            angle = Angle(0.523599 + math.pi, 0, 0)
-        },
-        ["Keybinds"] = 
-        {
-            image = Image.Create(AssetLocation.Resource, "Safezone_Keybinds"),
-            size = Vector2(1200, 500),
-            scale = 9,
-            position = Vector3(-10242.552734, 207.746216, -2991.734619),
-            angle = Angle(0.523599 + math.pi, 0, 0)
-        },
-        ["Rules"] = 
-        {
-            image = Image.Create(AssetLocation.Resource, "Safezone_Rules"),
-            size = Vector2(1200, 500),
-            scale = 9,
-            position = Vector3(-10259.183594, 209.923981, -3052.387451),
-            angle = Angle(2.277459 + math.pi, 0, 0)
-        },
-        ["Team"] = 
-        {
-            image = Image.Create(AssetLocation.Resource, "Safezone_Team"),
-            size = Vector2(1200, 500),
-            scale = 7,
-            position = Vector3(-10303.698242, 207.763489, -2956.489014),
-            angle = Angle(0.523599 + math.pi, 0, 0)
-        },
-        ["Welcome"] = 
-        {
-            image = Image.Create(AssetLocation.Resource, "Safezone_Welcome"),
-            size = Vector2(1000, 2000),
-            scale = 50,
-            position = Vector3(-10262.698242, 254.607315, -2951.677490),
-            angle = Angle(0.523599 + math.pi, 0, 0)
-        },
-        ["GetConnected"] = 
-        {
-            image = Image.Create(AssetLocation.Resource, "Safezone_GetConnected"),
-            size = Vector2(2128, 276),
-            scale = 2.5,
-            position = Vector3(-10341.725586, 205.002228, -3062.086182),
-            angle = Angle(-2.094716 + math.pi, 0, 0)
-        },
-    }
+    self.signs = {}
+    self:LoadImages()
 
     self.stats =  -- Dynamic server stats for billboard
     {
@@ -75,8 +18,6 @@ function cSafezoneSigns:__init()
         }
     }
 
-    self:CreateModels()
-
     self.lights = {}
     self:CreateLights()
 
@@ -84,6 +25,89 @@ function cSafezoneSigns:__init()
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
     Network:Subscribe("ServerStats/UpdatePlayersOnline", self, self.UpdatePlayersOnline)
+
+end
+
+function cSafezoneSigns:LoadImages()
+
+    local func = coroutine.wrap(function()
+    
+        Timer.Sleep(3000)
+        self.signs["Lootboxes"] = 
+        {
+            image = Image.Create(AssetLocation.Resource, "Safezone_Lootboxes"),
+            size = Vector2(1200, 500),
+            scale = 9,
+            position = Vector3(-10264.067383, 207.745816, -2979.312988),
+            angle = Angle(0.523599 + math.pi, 0, 0)
+        }
+
+        Timer.Sleep(1000)
+        self.signs["ServerBasics"] = 
+        {
+            image = Image.Create(AssetLocation.Resource, "Safezone_ServerBasics"),
+            size = Vector2(1200, 500),
+            scale = 9,
+            position = Vector3(-10284.602539, 207.755768, -2967.457031),
+            angle = Angle(0.523599 + math.pi, 0, 0)
+        }
+
+        Timer.Sleep(1000)
+        self.signs["Keybinds"] = 
+        {
+            image = Image.Create(AssetLocation.Resource, "Safezone_Keybinds"),
+            size = Vector2(1200, 500),
+            scale = 9,
+            position = Vector3(-10242.552734, 207.746216, -2991.734619),
+            angle = Angle(0.523599 + math.pi, 0, 0)
+        }
+
+        Timer.Sleep(1000)
+        self.signs["Rules"] = 
+        {
+            image = Image.Create(AssetLocation.Resource, "Safezone_Rules"),
+            size = Vector2(1200, 500),
+            scale = 9,
+            position = Vector3(-10259.183594, 209.923981, -3052.387451),
+            angle = Angle(2.277459 + math.pi, 0, 0)
+        }
+
+        Timer.Sleep(1000)
+        self.signs["Team"] = 
+        {
+            image = Image.Create(AssetLocation.Resource, "Safezone_Team"),
+            size = Vector2(1200, 500),
+            scale = 7,
+            position = Vector3(-10303.698242, 207.763489, -2956.489014),
+            angle = Angle(0.523599 + math.pi, 0, 0)
+        }
+
+        Timer.Sleep(1000)
+        self.signs["Welcome"] = 
+        {
+            image = Image.Create(AssetLocation.Resource, "Safezone_Welcome"),
+            size = Vector2(1000, 2000),
+            scale = 50,
+            position = Vector3(-10262.698242, 254.607315, -2951.677490),
+            angle = Angle(0.523599 + math.pi, 0, 0)
+        }
+
+        Timer.Sleep(1000)
+        self.signs["GetConnected"] = 
+        {
+            image = Image.Create(AssetLocation.Resource, "Safezone_GetConnected"),
+            size = Vector2(2128, 276),
+            scale = 2.5,
+            position = Vector3(-10341.725586, 205.002228, -3062.086182),
+            angle = Angle(-2.094716 + math.pi, 0, 0)
+        }
+
+        Timer.Sleep(1000)
+        self:CreateModels()
+
+        self.models_created = true
+    
+    end)()
 
 end
 
@@ -166,6 +190,7 @@ function cSafezoneSigns:CreateModels()
         sign_data.image:SetSize(sign_data.size)
         local model = self:CreateSprite(sign_data.image, sign_data.scale)
         self.signs[name].model = model
+        Timer.Sleep(100)
 
     end
 end
@@ -182,6 +207,8 @@ function cSafezoneSigns:SecondTick()
 end
 
 function cSafezoneSigns:GameRender(args)
+
+    if not self.models_created then return end
 
     for name, sign_data in pairs(self.signs) do
         local t = Transform3():Translate(sign_data.position):Rotate(sign_data.angle)

@@ -28,7 +28,7 @@ function shItem:__init(args)
     self.custom_data = args.custom_data or {}
     self.nodrop = args.nodrop or false
 
-    self:GetCustomData();
+    self:GetCustomData()
 
     if args.equipped then
         self.equipped = args.equipped
@@ -69,7 +69,38 @@ end
 -- Gets custom data if there is any
 function shItem:GetCustomData()
 
-    -- Custom data logic here
+	-- Checks if item is Car Paint and does not yet have custom data assigned to it
+    if self.name == "Car Paint" and not self.custom_data.color then
+	
+		-- Color rarity table
+		local cRarity = {
+			["Red"] = 0.1,
+			["Green"] = 0.1,
+			["Blue"] = 0.1,
+			["Purple"] = 0.1,
+			["Pink"] = 0.1,
+			["Nyan"] = 0.1,
+			["Lime"] = 0.1,
+			["Orange"] = 0.1,
+			["Yellow"] = 0.1,
+			["White"] = 0.05,
+			["Black"] = 0.05,
+		}
+	
+		-- Selects color and assigns to the item
+		local sum = 0
+		local target = math.random() 
+		for name, rarity in pairs(cRarity) do
+			sum = sum + rarity
+			if target <= sum then
+				self.custom_data.color = name
+				break
+			end
+		end
+		
+	end
+	
+	-- Additional custom data will be added here
 
 end
 

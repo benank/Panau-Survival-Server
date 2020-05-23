@@ -36,7 +36,9 @@ function sHitDetection:ClientModuleLoad(args)
 end
 
 function sHitDetection:PlayerQuit(args)
+    log_function_call("sHitDetection:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
+    log_function_call("sHitDetection:PlayerQuit 2")
 end
 
 function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
@@ -50,40 +52,6 @@ function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
     local old_hp = player:GetHealth()
 
     if old_hp <= 0 then return end
-
-    if old_hp - damage <= 0 and source ~= DamageEntity.Suicide and source ~= DamageEntity.AdminKill then
-        -- If this damage is going to kill them
-
-        -- If they have a second life, don't let them die
-        if player:GetValue("SecondLifeEquipped") then
-
-            player:SetNetworkValue("Invincible", true)
-            player:SetHealth(0.1)
-
-            local item_cost = CreateItem({
-                name = "Second Life",
-                amount = 1
-            })
-            
-            Inventory.RemoveItem({
-                item = item_cost:GetSyncObject(),
-                player = player
-            })
-        
-            Chat:Send(player, "Second Life just prevented you from dying and has been consumed!", Color.Yellow)
-
-            player:SetValue("RecentHealTime", Server:GetElapsedSeconds())
-            player:SetValue("SecondLifeEquipped", false)
-
-            Timer.SetTimeout(1000, function()
-                if IsValid(player) then
-                    player:SetHealth(1)
-                    player:SetNetworkValue("Invincible", false)
-                end
-            end)
-        end
-
-    end
 
     attacker = self.players[attacker_id]
 
@@ -169,6 +137,20 @@ function sHitDetection:PlayerChat(args)
 
         if args.player:GetValue("Loading") then return end
 
+        if args.player:InVehicle() then
+            Chat:Send(args.player, "You must exit the vehicle to use this command.", Color.Red)
+            return
+        end
+
+        local survival = args.player:GetValue("Survival")
+
+        if not survival then return end
+
+        if survival.hunger <= 10 or survival.thirst <= 20 then
+            Chat:Send(args.player, "You cannot use this command right now.", Color.Red)
+            return
+        end
+
         self:ApplyDamage(args.player, SuicideDamage, DamageEntity.Suicide)
 
         local last_damaged = args.player:GetValue("LastDamaged")
@@ -214,6 +196,7 @@ function sHitDetection:CheckPendingHits()
     
     local func = coroutine.wrap(function()
         while true do
+            log_function_call("sHitDetection self.pending_armor_aggregation")
             if count_table(self.pending_armor_aggregation) > 0 then
 
                 for steam_id, data in pairs(self.pending_armor_aggregation) do
@@ -228,6 +211,7 @@ function sHitDetection:CheckPendingHits()
                     end
                 end
             end
+            log_function_call("sHitDetection self.pending_armor_aggregation 2")
 
             Timer.Sleep(1000)
 
@@ -340,16 +324,16 @@ function sHitDetection:PlayerInsideToxicArea(args)
 end
 
 function sHitDetection:SecondTick()
-
+    log_function_call("sHitDetection:SecondTick")
     for p in Server:GetPlayers() do
-        if p:GetValue("OnFire") and 
+        if IsValid(p) and p:GetValue("OnFire") and 
         ( p:GetPosition().y < 199.5 or p:GetValue("InSafezone") 
             or Server:GetElapsedSeconds() - p:GetValue("OnFireTime") >= FireEffectTime
             or p:GetHealth() <= 0 ) then
 
             p:SetNetworkValue("OnFire", false)
 
-        elseif p:GetValue("OnFire") then
+        elseif IsValid(p) and p:GetValue("OnFire") then
 
             local attacker_id = p:GetValue("FireAttackerId")
 
@@ -357,6 +341,7 @@ function sHitDetection:SecondTick()
 
         end
     end
+    log_function_call("sHitDetection:SecondTick 2")
 
 end
 
@@ -369,8 +354,7 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     if not explosive_data then return end
 
     local dist = args.position:Distance(args.local_position)
-    dist = math.min(explosive_data.radius / 2, math.max(0, dist / 2))
-    local percent_modifier = math.max(0, 1 - (dist / (explosive_data.radius / 2)))
+    local percent_modifier = math.max(0, 1 - dist / explosive_data.radius)
 
     if percent_modifier == 0 then return end
 
@@ -378,7 +362,9 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     local original_damage = explosive_data.damage * percent_modifier
     local damage = original_damage
 
-    if not args.in_fov then return end
+    if not args.in_fov then
+        damage = damage * FOVDamageModifier
+    end
     
     damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 

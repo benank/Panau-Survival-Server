@@ -11,6 +11,7 @@ function sSpawnManager:__init()
 	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("SetHomePosition", self, self.SetHomePosition)
+    Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
 	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
 
@@ -22,12 +23,29 @@ function sSpawnManager:__init()
     
     local func = coroutine.wrap(function()
         while true do
+            log_function_call("sSpawnManager coroutine.wrap(function()")
             for player in Server:GetPlayers() do
-                self:UpdatePlayerPositionMinuteTick(player)
+                if IsValid(player) then
+                    self:UpdatePlayerPositionMinuteTick(player)
+                end
+                Timer.Sleep(1)
             end
+            log_function_call("sSpawnManager coroutine.wrap(function() 2")
             Timer.Sleep(60 * 1000)
         end
     end)()
+
+end
+
+function sSpawnManager:PlayerChat(args)
+
+    if args.text == "/unsethome" then
+        self:SetHomePosition({
+            player = args.player,
+            pos = self:GetPositionInSafezone()
+        })
+        Chat:Send(args.player, "Set spawn point to the safezone.", Color.Yellow)
+    end
 
 end
 
@@ -82,12 +100,16 @@ end
 
 function sSpawnManager:PlayerQuit(args)
 
+    log_function_call("sSpawnManager:PlayerQuit")
+
     Events:Fire("Discord", {
         channel = "Chat",
         content = string.format("*%s [%s] left the server.*", args.player:GetName(), args.player:GetSteamId())
     })
 
     self:UpdatePlayer(args.player)
+
+    log_function_call("sSpawnManager:PlayerQuit 2")
 
 end
 
@@ -197,6 +219,8 @@ end
 function sSpawnManager:PlayerSpawn(args)
     args.player:SetValue("Spawn/KilledRecently", false)
     
+    if args.player:GetValue("SecondLifeActive") then return end
+
     if args.player:GetValue("FirstSpawn") then
         args.player:SetPosition(self:GetRespawnPosition(args.player))
     else

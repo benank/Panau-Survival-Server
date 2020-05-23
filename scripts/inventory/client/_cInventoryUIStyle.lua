@@ -37,6 +37,26 @@ function cInventoryUIStyle:__init()
         radius = 6
     }
 
+    self.car_paint_icon = 
+    {
+        margin = 5,
+        border_color = Color.White
+    }
+
+    self.car_paint_colors = {
+        ["Red"] = Color(255,0,0),
+        ["Green"] = Color(0,255,0),
+        ["Blue"] = Color(0,0,255),
+        ["Purple"] = Color(128,0,255),
+        ["Pink"] = Color(255,0,255),
+        ["Nyan"] = Color(0,191,255),
+        ["Lime"] = Color(128,255,0),
+        ["Orange"] = Color(255,64,0),
+        ["Yellow"] = Color(255,255,0),
+        ["White"] = Color(255,255,255),
+        ["Black"] = Color(0,0,0),
+    }
+
     self.category_title_colors = {Normal = Color.White, Full = Color.Red}
     self.border_size = 2
 
@@ -44,6 +64,7 @@ function cInventoryUIStyle:__init()
     {
         blue = Color(17, 84, 135, self.background_alpha), -- armor, grapples, para, grenades, radio
         red = Color(120, 10, 10, self.background_alpha), -- cruise missile, nuke, area bombing
+        brightred = Color(200, 10, 10, self.background_alpha), -- C4 selected
         pink = Color(140, 63, 140, self.background_alpha), -- backpacks, scuba gear, explosive detector
         yellow = Color(155, 145, 29, self.background_alpha), -- landclaim, ping, bping, evac, vehicle repair, backtrak, stashhacker, woet
         darkgreen = Color(24, 99, 24, self.background_alpha), -- food/drink items
@@ -70,10 +91,12 @@ function cInventoryUIStyle:__init()
         ["EVAC"] = self.item_colors.yellow,
         ["Healthpack"] = self.item_colors.green,
         ["Ping"] = self.item_colors.yellow,
+        ["Combat Ping"] = self.item_colors.yellow,
         ["Stash Hacker"] = self.item_colors.yellow,
         ["Barrel Stash"] = self.item_colors.lightblue,
         ["Garbage Stash"] = self.item_colors.lightblue,
         ["Locked Stash"] = self.item_colors.lightblue,
+        ["Proximity Alarm"] = self.item_colors.lightblue,
         ["Tactical Nuke"] = self.item_colors.red,
         ["Vehicle Repair"] = self.item_colors.yellow,
         ["Woet"] = self.item_colors.yellow,
@@ -90,6 +113,7 @@ function cInventoryUIStyle:__init()
         ["Can of Ham"] = self.item_colors.darkgreen,
         ["Can of Peaches"] = self.item_colors.darkgreen,
         ["Chips"] = self.item_colors.darkgreen,
+        ["Spicy Chips"] = self.item_colors.darkgreen,
         ["Chocolate"] = self.item_colors.darkgreen,
         ["Coffee"] = self.item_colors.darkgreen,
         ["Cookies"] = self.item_colors.darkgreen,
@@ -114,7 +138,52 @@ function cInventoryUIStyle:__init()
 
 end
 
-function cInventoryUIStyle:GetItemColorByName(name)
+function cInventoryUIStyle:RenderItemWindow(itemWindow, stack, parent_window)
+
+    if itemWindow and parent_window:GetVisible() then
+        
+        local base_pos = parent_window:GetPosition()
+
+        -- Render equipped indicator
+        local position = itemWindow:GetPosition() + base_pos + self.equipped_icon.position
+
+        if stack.contents[1].equipped then
+            -- Top item in stack is equipped
+            Render:FillCircle(position, self.equipped_icon.radius, self.equipped_icon.color)
+        elseif stack:GetOneEquipped() then
+            -- An item in the stack is equipped
+            Render:FillCircle(position, self.equipped_icon.radius, self.equipped_icon.color_under)
+        end
+
+        -- Render car paint
+        if stack:GetProperty("name") == "Car Paint" then
+            local item = stack.contents[1]
+            local color_data = self.car_paint_icon
+            local size = Vector2(itemWindow:GetHeight() - color_data.margin * 2, itemWindow:GetHeight() - color_data.margin * 2)
+
+            local start_pos = itemWindow:GetPosition() + base_pos + Vector2(itemWindow:GetWidth() - color_data.margin - size.x, color_data.margin)
+            
+            local color = self.car_paint_colors[item.custom_data.color]
+
+            if not start_pos or not size or not color then return end
+
+            Render:FillArea(start_pos, size, color)
+            Render:DrawLine(start_pos, start_pos + Vector2(size.x, 0), color_data.border_color)
+            Render:DrawLine(start_pos, start_pos + Vector2(0, size.y), color_data.border_color)
+            Render:DrawLine(start_pos + size, start_pos + size - Vector2(size.x, 0), color_data.border_color)
+            Render:DrawLine(start_pos + size, start_pos + size - Vector2(0, size.y), color_data.border_color)
+
+        end
+    end
+
+end
+
+function cInventoryUIStyle:GetItemColorByName(name, item)
+
+    if name == "C4" and item.custom_data.id then
+        return self.item_colors.brightred
+    end
+    
     if self.item_color_map[name] then
         return self.item_color_map[name]
     else
@@ -154,7 +223,7 @@ function cInventoryUIStyle:UpdateItemColor(itemwindow)
     else
         -- Make item normal color
         self:SetBorderColor(itemwindow, self.colors.hover.border)
-        itemwindow:FindChildByName("button_bg", true):SetColor(self:GetItemColorByName(stack_name))
+        itemwindow:FindChildByName("button_bg", true):SetColor(self:GetItemColorByName(stack_name, stack and stack.contents[1] or nil))
     end
 
     local hovered = button:GetDataBool("hovered")

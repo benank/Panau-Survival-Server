@@ -28,6 +28,7 @@ local func = coroutine.wrap(function()
 
     while true do
 
+        log_function_call("sExplosivesDetector check")
         Timer.Sleep(1000)
 
         for p in Server:GetPlayers() do
@@ -48,6 +49,7 @@ local func = coroutine.wrap(function()
                 end
             end
         end
+        log_function_call("sExplosivesDetector check 2")
 
     end
 end)()
@@ -81,36 +83,3 @@ function DecreaseDuraOfBattery(player)
     end
 
 end
-
-
-local func2 = coroutine.wrap(function()
-
-    while true do
-
-        for player in Server:GetPlayers() do
-
-            if IsValid(player) then
-                local parachuting_value = player:GetValue("ParachutingValue")
-
-                if parachuting_value and parachuting_value > 0 then
-                    local item = GetEquippedItem("Parachute", player)
-                    if not item then return end
-                    item.durability = item.durability - parachuting_value
-                    Inventory.ModifyDurability({
-                        player = player,
-                        item = item
-                    })
-                    UpdateEquippedItem(player, "Parachute", item)
-                    player:SetValue("ParachutingValue", 0)
-
-                end
-            end
-
-            Timer.Sleep(5)
-        end
-
-        Timer.Sleep(3000)
-
-    end
-
-end)()

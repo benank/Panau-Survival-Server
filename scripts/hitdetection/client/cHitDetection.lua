@@ -64,17 +64,18 @@ function cHitDetection:Explosion(args)
         local from_pos = args.position + Vector3.Up
         local to_pos = LocalPlayer:GetBonePosition(var("ragdoll_Spine"):get())
         local diff = (to_pos - from_pos):Normalized()
-        local ray = Physics:Raycast(from_pos, diff, 0, 15, false)
+        local ray = Physics:Raycast(from_pos, diff, 0, 300, false)
 
         local in_fov = ray.entity and ray.entity.__type == "LocalPlayer"
     
         local dist = args.position:Distance(args.local_position)
-        dist = math.min(explosive_data.radius, math.max(0, dist - 5))
-        local percent_modifier = 1 - (dist / (explosive_data.radius / 2))
+        local percent_modifier = math.max(0, 1 - dist / explosive_data.radius)
     
         if percent_modifier == 0 then return end
 
         local knockback_effect = explosive_data.knockback * percent_modifier
+
+        print(in_fov)
 
         local base_state = LocalPlayer:GetBaseState()
 

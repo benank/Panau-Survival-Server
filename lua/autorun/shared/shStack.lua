@@ -21,10 +21,14 @@ end
 
 function shStack:GetAmount()
 
-    return (#self.contents == 0 or not self.contents[1] or (self:GetProperty("durable") or self:GetProperty("can_equip"))) and 
+    return (#self.contents == 0 or not self.contents[1] or self:IsStackable()) and 
         #self.contents or 
         self.contents[1].amount
 
+end
+
+function shStack:IsStackable()
+    return self:GetProperty("durable") or self:GetProperty("can_equip") or Items_indexed[self:GetProperty("name")].can_stack
 end
 
 function shStack:UpdateProperties()
@@ -43,7 +47,7 @@ function shStack:UpdateProperties()
         equipped = self.contents[1].equipped,
         max_durability = self.contents[1].max_durability,
         equip_type = self.contents[1].equip_type,
-        nodrop = self.contents[1].nodrop,
+        nodrop = self.contents[1].nodrop
     }
 
 end
@@ -100,7 +104,7 @@ function shStack:AddItem(_item)
     end
 
     -- Adding an item with durability, which means it is a single item
-    if self:GetProperty("durable") or self:GetProperty("can_equip") or not self.contents[1] then
+    if self:IsStackable() or count_table(self.contents) == 0 then
 
         table.insert(self.contents, item)
 
@@ -108,6 +112,7 @@ function shStack:AddItem(_item)
 
         local amount_to_add = math.min(item.amount, self:GetProperty("stacklimit") - self:GetAmount())
         item.amount = item.amount - amount_to_add
+
         self.contents[1].amount = self.contents[1].amount + amount_to_add
 
         if item.amount > 0 then
@@ -148,8 +153,7 @@ function shStack:RemoveItem(_item, index, only_one)
 
     if only_one then
 
-        if self.can_equip or self.durable then -- If there are durable or equippable items in here
-            print("GO HERE")
+        if self:IsStackable() then -- If there are durable or equippable items in here
             return table.remove(self.contents, 1)
         else
             local copy = self.contents[1]:Copy()
@@ -169,7 +173,7 @@ function shStack:RemoveItem(_item, index, only_one)
         error("shStack:RemoveItem failed: the amount you are trying to remove is greater than the total amount in the stack")
     end
 
-    if not item.durable and not item.can_equip then
+    if not self:IsStackable() then
         self.contents[1].amount = self.contents[1].amount - math.min(item.amount, self:GetAmount())
         item.amount = item.amount - math.min(item.amount, self:GetAmount())
         return item.amount > 0 and item or nil

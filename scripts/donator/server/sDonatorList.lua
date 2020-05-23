@@ -43,7 +43,7 @@ Donators =
     ["STEAM_0:0:131970030"] = {
         steam_id = "STEAM_0:0:131970030", 
         name = "StuffJunky", 
-        level = DonatorLevel.Donator
+        level = DonatorLevel.GhostRider
     },
     ["STEAM_0:0:78672551"] = {
         steam_id = "STEAM_0:0:78672551", 
@@ -57,12 +57,22 @@ Donators =
     },
     ["STEAM_0:1:85704086"] = {
         steam_id = "STEAM_0:1:85704086", 
-        name = "Dody", 
+        name = "Dody",
         level = DonatorLevel.Donator
     },
     ["STEAM_0:0:63033165"] = {
         steam_id = "STEAM_0:0:63033165", 
         name = "Vitzual", 
         level = DonatorLevel.ShadowWings
+    },
+    ["STEAM_0:0:73438003"] = {
+        steam_id = "STEAM_0:0:73438003", 
+        name = "Mirkizos", 
+        level = DonatorLevel.GhostRider
+    },
+    ["STEAM_0:0:30867145"] = {
+        steam_id = "STEAM_0:0:30867145", 
+        name = "CrescentFresh", 
+        level = DonatorLevel.AvatarSpray
     }
 }

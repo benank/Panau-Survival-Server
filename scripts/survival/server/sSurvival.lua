@@ -27,7 +27,9 @@ function sSurvivalManager:LoadStatus(args)
 end
 
 function sSurvivalManager:PlayerQuit(args)
+    log_function_call("sSurvivalManager:PlayerQuit")
     self:UpdateDB(args.player)
+    log_function_call("sSurvivalManager:PlayerQuit 2")
 end
 
 function sSurvivalManager:CheckForDyingPlayer(player)
@@ -55,7 +57,7 @@ function sSurvivalManager:UseItem(args)
     survival.thirst = math.max(0, math.min(survival.thirst + restore_data.thirst, 100))
 
     if restore_data.health then -- If this food item restores health, like Energy Drink
-        args.player:Damage(-restore_data.health / 100)
+        args.player:Damage(-restore_data.health / 100, DamageEntity.Food)
     end
 
     args.player:SetValue("Survival", survival)
@@ -122,12 +124,15 @@ function sSurvivalManager:SetupIntervals()
 
     local func = coroutine.wrap(function()
         while true do
-
+            log_function_call("sSurvivalManager:SetupIntervals")
             for player in Server:GetPlayers() do
-                self:AdjustSurvivalStats(player)
+                if IsValid(player) then
+                    self:AdjustSurvivalStats(player)
+                end
                 Timer.Sleep(5)
             end
             
+            log_function_call("sSurvivalManager:SetupIntervals 2")
             Timer.Sleep(1000 * 60)
 
         end
@@ -135,7 +140,9 @@ function sSurvivalManager:SetupIntervals()
 
     local func2 = coroutine.wrap(function()
         while true do
+            log_function_call("sSurvivalManager:SetupIntervals 22")
             self:DamageDyingPlayers()
+            log_function_call("sSurvivalManager:SetupIntervals 22 2")
             Timer.Sleep(1000 * self.damage_interval)
         end
     end)()

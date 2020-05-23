@@ -19,6 +19,7 @@ function sAntiCheat:CheckServerHealth()
         local players_history = {}
         
         while true do
+            log_function_call("sAntiCheat:CheckServerHealth()")
 
             Timer.Sleep(1000)
 
@@ -68,6 +69,7 @@ function sAntiCheat:CheckServerHealth()
 
             -- Add new players
             players_history[tostring(string.format("%.0f", last_time))] = players
+            log_function_call("sAntiCheat:CheckServerHealth() 2")
 
         end
     end)()

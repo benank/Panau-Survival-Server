@@ -12,6 +12,7 @@ local natural_loot_tiers =
 Events:Subscribe("CheckIsTooCloseToLoot", function(args)
 
     local func = coroutine.wrap(function()
+        log_function_call("CheckIsTooCloseToLoot")
         local pos = args.position
         local too_close = false
         local id = IsValid(args.player) and tostring(args.player:GetSteamId()) or args.id
@@ -32,6 +33,7 @@ Events:Subscribe("CheckIsTooCloseToLoot", function(args)
 
         args.too_close = too_close
         Events:Fire("IsTooCloseToLootCheck"..id, args)
+        log_function_call("CheckIsTooCloseToLoot 2")
 
     end)()
 
