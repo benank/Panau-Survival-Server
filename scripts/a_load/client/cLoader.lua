@@ -92,9 +92,23 @@ function cLoader:GameLoad()
     self.game_loaded = false
     self:UpdateResourceCount()
     Thread(function()
-        Timer.Sleep((Client:GetElapsedSeconds() - self.load_time) * 2500)
+        local load_time_max = (Client:GetElapsedSeconds() - self.load_time) * 2500
+        local load_time = 0
+        local interval = 100
+        local percent = interval / load_time_max
+
+        while load_time < load_time_max do
+            load_time = load_time + interval
+            self.resources_loaded = self.resources_loaded + self.resources_for_gameload * percent
+            self:UpdateResourceCount()
+            Timer.Sleep(interval)
+        end
+
+        if self.resources_loaded > self.resources_needed then
+            self.resources_loaded = self.resources_needed
+        end
+
         self.game_loaded = true
-        self.resources_loaded = self.resources_loaded + self.resources_for_gameload
         self:UpdateResourceCount()
         self:Stop()
     end)
@@ -113,6 +127,7 @@ function cLoader:LocalPlayerDeath()
         self.resources_needed = self.resources_needed + self.resources_for_gameload
         self:UpdateResourceCount()
         self:Start()
+        
     end)
 
 end
@@ -143,6 +158,12 @@ function cLoader:Render(args)
 
     self.delta = self.delta + args.delta * 0.2
 
+    if not IsValid(self.sound) then
+        self:PlayMusic()
+    else
+        self.sound:SetPosition(Camera:GetPosition())
+    end
+
 end
 
 --[[
@@ -154,6 +175,17 @@ count: how many resources we are waiting for (no need to specify for images)
 
 ]]--
 
+function cLoader:PlayMusic()
+    if not IsValid(self.sound) then
+        self.sound = ClientSound.Create(AssetLocation.Game, {
+            bank_id = 25,
+            sound_id = 43,
+            position = Camera:GetPosition(),
+            angle = Angle()
+        })
+    end
+end
+
 function cLoader:Start()
 
     if self.resources_needed == self.resources_loaded or self.resources_needed == 0 then return end
@@ -164,6 +196,12 @@ function cLoader:Start()
 
     Game:FireEvent("ply.pause")
     Game:FireEvent("ply.invulnerable")
+
+    if not IsValid(self.sound) then
+        self:PlayMusic()
+    else
+        self.sound:SetPosition(Camera:GetPosition())
+    end
 
     if not self.active then
         Network:Send(var("LoadStatus"):get())
@@ -235,6 +273,11 @@ function cLoader:Stop()
         if self.target_value - self.progressBar:GetValue() > 0.1 then return end
 
         self.window:Hide()
+
+        if IsValid(self.sound) then
+            self.sound:Remove()
+            self.sound = nil
+        end
 
         if self.active then
             Network:Send(var("LoadStatus"):get(), {status = var("done"):get()})

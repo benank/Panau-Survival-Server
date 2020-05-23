@@ -31,7 +31,10 @@ Exp =
         [DamageEntity.WarpGrenade] = 0,
         [DamageEntity.Suicide] = 120,
         [DamageEntity.AdminKill] = 0,
-        [DamageEntity.C4] = 170
+        [DamageEntity.C4] = 170,
+        [DamageEntity.MeleeGrapple] = 200,
+        [DamageEntity.MeleeKick] = 220,
+        [DamageEntity.MeleeSlidingKick] = 200,
     },
     KillExpireTime = 60 * 60 * 8, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
     Level0ExpCutoffLevel = 3 -- Level where you stop getting exp for killing level 0 players
