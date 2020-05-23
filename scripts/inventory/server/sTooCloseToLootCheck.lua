@@ -33,6 +33,7 @@ Events:Subscribe("CheckIsTooCloseToLoot", function(args)
 
         args.too_close = too_close
         Events:Fire("IsTooCloseToLootCheck"..id, args)
+        log_function_call("CheckIsTooCloseToLoot 2")
 
     end)()
 

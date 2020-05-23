@@ -79,6 +79,7 @@ function sVehicleManager:__init()
 
             log_function_call("CheckForDestroyedVehicles")
             self:CheckForDestroyedVehicles()
+            log_function_call("CheckForDestroyedVehicles 2")
 
             Timer.Sleep(1000 * 10)
 
@@ -90,6 +91,7 @@ function sVehicleManager:__init()
 
             log_function_call("sVehicleManager:SaveVehicles")
             self:SaveVehicles()
+            log_function_call("sVehicleManager:SaveVehicles 2")
 
             Timer.Sleep(1000 * 60)
 

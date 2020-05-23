@@ -172,6 +172,7 @@ function sHitDetection:CheckPendingHits()
     
     local func = coroutine.wrap(function()
         while true do
+            log_function_call("sHitDetection:CheckPendingHits()")
 
             if count_table(self.pending_hits) > 0 then
                 local data = table.remove(self.pending_hits)
@@ -188,6 +189,7 @@ function sHitDetection:CheckPendingHits()
 
                 end
             end
+            log_function_call("sHitDetection:CheckPendingHits() 2")
 
             Timer.Sleep(10)
         end
@@ -211,6 +213,7 @@ function sHitDetection:CheckPendingHits()
                     end
                 end
             end
+            log_function_call("sHitDetection self.pending_armor_aggregation 2")
 
             Timer.Sleep(1000)
 
@@ -340,6 +343,7 @@ function sHitDetection:SecondTick()
 
         end
     end
+    log_function_call("sHitDetection:SecondTick 2")
 
 end
 

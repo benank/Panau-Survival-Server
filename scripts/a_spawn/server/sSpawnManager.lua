@@ -30,6 +30,7 @@ function sSpawnManager:__init()
                 end
                 Timer.Sleep(1)
             end
+            log_function_call("sSpawnManager coroutine.wrap(function() 2")
             Timer.Sleep(60 * 1000)
         end
     end)()

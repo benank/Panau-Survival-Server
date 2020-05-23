@@ -51,6 +51,7 @@ function sC4s:__init()
                 end
 
             end
+            log_function_call("sC4s second coroutine 2")
 
         end
     end)()

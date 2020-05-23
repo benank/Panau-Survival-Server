@@ -22,19 +22,15 @@ end)
 Events:Subscribe("SecondTick", function()
     log_function_call("players_with_parachutes coroutine")
     for player in Server:GetPlayers() do
-        log_function_call("players_with_parachutes coroutine2 ")
         if IsValid(player) and players_with_parachutes[player:GetId()] then
-            log_function_call("players_with_parachutes coroutine 3")
             if player:GetParachuting() then
-                log_function_call("players_with_parachutes coroutine 4")
                 player:SetValue("ParachutingValue", player:GetValue("ParachutingValue") + ItemsConfig.equippables["Parachute"].dura_per_sec)
             end
         else
-            log_function_call("players_with_parachutes coroutine 5")
             players_with_parachutes[player:GetId()] = nil
         end
     end
-    log_function_call("players_with_parachutes coroutine6 ")
+    log_function_call("players_with_parachutes coroutine 2")
 end)
 
 local func2 = coroutine.wrap(function()
@@ -62,6 +58,7 @@ local func2 = coroutine.wrap(function()
 
             Timer.Sleep(5)
         end
+        log_function_call("Server:GetPlayers() ParachutingValue 2")
 
         Timer.Sleep(3000)
 
