@@ -132,6 +132,7 @@ function sSurvivalManager:SetupIntervals()
                 Timer.Sleep(5)
             end
             
+            log_function_call("sSurvivalManager:SetupIntervals 2")
             Timer.Sleep(1000 * 60)
 
         end
@@ -139,8 +140,9 @@ function sSurvivalManager:SetupIntervals()
 
     local func2 = coroutine.wrap(function()
         while true do
-            log_function_call("sSurvivalManager:SetupIntervals 2")
+            log_function_call("sSurvivalManager:SetupIntervals 22")
             self:DamageDyingPlayers()
+            log_function_call("sSurvivalManager:SetupIntervals 22 2")
             Timer.Sleep(1000 * self.damage_interval)
         end
     end)()

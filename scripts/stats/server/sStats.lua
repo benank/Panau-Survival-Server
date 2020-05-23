@@ -93,6 +93,7 @@ function sStats:MinuteTick()
             end
             Timer.Sleep(1)
         end
+        log_function_call("sStats:MinuteTick 2")
     end)()
 
 end
