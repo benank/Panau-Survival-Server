@@ -66,7 +66,7 @@ function cInventoryUIStyle:__init()
         red = Color(120, 10, 10, self.background_alpha), -- cruise missile, nuke, area bombing
         brightred = Color(200, 10, 10, self.background_alpha), -- C4 selected
         pink = Color(140, 63, 140, self.background_alpha), -- backpacks, scuba gear, explosive detector
-        yellow = Color(155, 145, 29, self.background_alpha), -- landclaim, ping, bping, evac, vehicle repair, backtrak, stashhacker, woet
+        yellow = Color(155, 145, 29, self.background_alpha), -- landclaim, ping, bping, evac, vehicle repair, backtrak, hacker, woet
         darkgreen = Color(24, 99, 24, self.background_alpha), -- food/drink items
         green = Color(20, 155, 22, self.background_alpha), -- healing items
         lightblue = Color(11, 118, 137, self.background_alpha), -- build items
@@ -92,7 +92,7 @@ function cInventoryUIStyle:__init()
         ["Healthpack"] = self.item_colors.green,
         ["Ping"] = self.item_colors.yellow,
         ["Combat Ping"] = self.item_colors.yellow,
-        ["Stash Hacker"] = self.item_colors.yellow,
+        ["Hacker"] = self.item_colors.yellow,
         ["Barrel Stash"] = self.item_colors.lightblue,
         ["Garbage Stash"] = self.item_colors.lightblue,
         ["Locked Stash"] = self.item_colors.lightblue,
