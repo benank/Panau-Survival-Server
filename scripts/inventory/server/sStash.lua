@@ -28,7 +28,7 @@ end
 
 -- Returns whether or not a player is owner
 function sStash:IsPlayerOwner(player)
-    return tostring(player:GetSteamId()) == self.owner_id
+    return IsValid(player) and tostring(player:GetSteamId()) == self.owner_id
 end
 
 function sStash:ChangeName(name, player)

@@ -2,6 +2,16 @@ class 'HexagonPuzzle'
 
 function HexagonPuzzle:__init(difficulty)
 
+    self.delta = 0
+    self.last_time = Client:GetElapsedSeconds()
+
+    self.window = Button.Create()
+    self.window:SetSize(Render.Size)
+    self.window:SetBackgroundVisible(false)
+    self.window:BringToFront()
+    self.window:Subscribe("Press", self, self.PressHexagon)
+    self.window:Subscribe("RightPress", self, self.RightPressHexagon)
+
     self.difficulty = difficulty
 	self.active = true
 	self.space = 1.025 -- Space between hexagons
@@ -12,9 +22,13 @@ function HexagonPuzzle:__init(difficulty)
 	
 	self:InitHexagons()
 
-	Events:Subscribe("Render", self, self.Render)
-	Events:Subscribe("LocalPlayerInput", self, self.LPI)
-	Events:Subscribe("MouseUp", self, self.MouseUp)
+    self.window:Subscribe("PostRender", self, self.Render)
+
+    self.subs = 
+    {
+        Events:Subscribe("LocalPlayerInput", self, self.LPI),
+        Events:Subscribe("MouseUp", self, self.MouseUp)
+    }
 
 end
 
@@ -49,6 +63,14 @@ end
 
 function HexagonPuzzle:LPI()
 	if self.active then return false end
+end
+
+function HexagonPuzzle:RightPressHexagon()
+    self:MouseUp({button = 2})
+end
+
+function HexagonPuzzle:PressHexagon()
+    self:MouseUp({button = 1})
 end
 
 function HexagonPuzzle:MouseUp(args)
@@ -110,14 +132,17 @@ function HexagonPuzzle:CheckConnected()
             
         Mouse:SetVisible(false)
 
-        Events:Fire(var("StashHackerPuzzleComplete"):get())
+        Network:Send(var("items/HackComplete"):get())
 		
 	end
 		
 end
 	
 
-function HexagonPuzzle:Render(args)
+function HexagonPuzzle:Render(window)
+
+    self.delta = Client:GetElapsedSeconds() - self.last_time
+    self.last_time = Client:GetElapsedSeconds()
 
 	if self.active then
 	
@@ -126,7 +151,7 @@ function HexagonPuzzle:Render(args)
         end
 		
 		if not self.complete then
-			self.time = self.time - args.delta
+			self.time = self.time - self.delta
 			if self.time < 0 then
 				self.time = 0
 				self.active = false
@@ -151,30 +176,30 @@ function HexagonPuzzle:Render(args)
 		
 		for index, piece in pairs(self.hexagons) do
 		
-			piece:Render(args)
+			piece:Render({delta = self.delta})
 			if not piece.enabled then
 				self.active = false
 			end
 			
         end
         
-	end
+    else
+        
+        for k, event in pairs(self.subs) do
+            Events:Unsubscribe(event)
+        end
+
+        self.window:Remove()
+
+        if not self.complete then
+            Network:Send(var("items/FailHack"):get())
+        end
+    end
 		
 
 end
 
-function chat(args)
-
-	if args.text == "/puzzle" then
-		
-		HexagonPuzzle(3)
-		
-	end
-	
-end
-Events:Subscribe("LocalPlayerChat", chat)
-
-Events:Subscribe(var("StartStashHackerPuzzle"):get(), function()
-    HexagonPuzzle(3)
+Network:Subscribe(var("items/StartHack"):get(), function(args)
+    HexagonPuzzle(args.difficulty)
     Mouse:SetVisible(true)
 end)

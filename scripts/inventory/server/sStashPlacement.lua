@@ -80,7 +80,7 @@ function sStashPlacement:PlaceStash(args, player)
 
 
     -- If they are within sz radius * 2, we don't let them place that close
-    if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
+    if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 5 then
         Chat:Send(player, "Cannot place stashes while near the safezone!", Color.Red)
         return
     end

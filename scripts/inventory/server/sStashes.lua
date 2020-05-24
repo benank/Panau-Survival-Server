@@ -10,12 +10,50 @@ function sStashes:__init()
     Network:Subscribe("Stashes/DeleteStash", self, self.DeleteStash)
     Network:Subscribe("Stashes/RenameStash", self, self.RenameStash)
     Network:Subscribe("Stashes/Dismount", self, self.DismountStash)
+    Network:Subscribe("Stashes/UpdateStashAccessMode", self, self.UpdateStashAccessMode)
 
     Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
     Events:Subscribe("Items/PlaceProximityAlarm", self, self.PlaceProximityAlarm)
     Events:Subscribe("Inventory/ModifyStashStackRemote", self, self.ModifyStashStackRemote)
     Events:Subscribe("items/DestroyProximityAlarm", self, self.DestroyProximityAlarm)
+
+    Events:Subscribe("items/HackComplete", self, self.HackComplete)
+end
+
+function sStashes:UpdateStashAccessMode(args, player)
+
+    if not args.mode then return end
+
+    local current_box = player:GetValue("CurrentLootbox")
+
+    if not current_box or not current_box.lootbox.stash then return end
+
+    local stash = self.stashes[current_box.lootbox.stash.id]
+
+    if not stash then return end
+
+    stash:ChangeAccessMode(args.mode, player)
+
+end
+
+function sStashes:HackComplete(args)
+
+    local stash = self.stashes[args.stash_id]
+
+    if not stash then return end
+
+    Events:Fire("SendPlayerPersistentMessage", {
+        steam_id = stash.owner_id,
+        message = string.format("%s hacked your stash [%s] %s", args.player:GetName(), stash.name, WorldToMapString(stash.lootbox.position)),
+        color = Color(200, 0, 0)
+    })
+
+    stash.access_mode = StashAccessMode.Everyone
+    stash:UpdateToDB()
+
+    stash.lootbox:ForceClose()
+
 end
 
 function sStashes:DestroyProximityAlarm(args)
