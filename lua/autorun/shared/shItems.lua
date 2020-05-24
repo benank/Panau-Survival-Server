@@ -484,7 +484,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 2000,
         equip_type = "detector"
     },
     {
