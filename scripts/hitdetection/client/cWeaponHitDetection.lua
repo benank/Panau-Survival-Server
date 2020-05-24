@@ -5,9 +5,6 @@ function WeaponHitDetection:__init()
     self.debug_enabled = true
 
     self.bloom = 0
-    self.bloom_reset_time = 1 -- Time it takes for bloom to reset
-
-    self.max_bullet_lifetime = 5 -- 5 seconds until bullet is removed
 
     self.weapon_bullets = {
         [WeaponEnum.MachineGun] = ProjectileBullet,
@@ -47,7 +44,7 @@ function WeaponHitDetection:__init()
     if self.debug_enabled then
         Events:Subscribe("Render", self, self.RenderDebug) -- for debug / testing
     end
-    Events:Subscribe("LocalPlayerBulletDirectHitEntity", self, self.LocalPlayerBulletDirectHitEntity)
+    Events:Subscribe(var("LocalPlayerBulletDirectHitEntity"):get(), self, self.LocalPlayerBulletDirectHitEntity)
     Events:Subscribe(var("FireWeapon"):get(), self, self.FireWeapon)
 end
 
@@ -107,12 +104,17 @@ end
 function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
     if args.entity_type == "Player" then
         local victim = Player.GetById(args.entity_id)
-        Network:Send("HitDetection/DetectPlayerHit", {
+        Network:Send(var("HitDetection/DetectPlayerHit"):get(), {
             victim_steam_id = victim:GetSteamId(),
             weapon_enum = args.weapon_enum,
-            bone_enum = victim:GetClosestBone(args.hit_position)
+            bone_enum = victim:GetClosestBone(args.hit_position),
+            distance_travelled = args.distance_travelled
         })
+
+        cHitDetectionMarker:Activate()
     end
+
+    -- TODO: add vehicle support
 
     -- debugging / testing by using a ClientActor instead of a Player
     --[[

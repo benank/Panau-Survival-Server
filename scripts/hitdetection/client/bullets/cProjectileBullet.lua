@@ -110,7 +110,8 @@ function ProjectileBullet:HitSomething(raycast)
                 entity_type = raycast.entity.__type,
                 entity_id = raycast.entity:GetId(),
                 weapon_enum = self.weapon_enum,
-                hit_position = raycast.position
+                hit_position = raycast.position,
+                distance_travelled = self.total_distance_covered
             })
 
             if HitDetection.debug_enabled then

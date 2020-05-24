@@ -14,7 +14,7 @@ function sHitDetection:__init()
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
-    Network:Subscribe("HitDetectionSyncHit", self, self.SyncHit)
+    Network:Subscribe("HitDetection/DetectPlayerHit", self, self.DetectPlayerHit)
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
 
     Events:Subscribe("HitDetection/PlayerInToxicArea", self, self.PlayerInsideToxicArea)
@@ -110,8 +110,6 @@ function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
             msg = msg .. string.format(" [Vehicle: %s]", attacker:GetVehicle():GetName())
 
         end
-
-        Network:Send(attacker, "HitDetection/DealDamage")
 
         self:SetPlayerLastDamaged(player, DamageEntityNames[source], tostring(attacker:GetSteamId()))
 
@@ -309,6 +307,8 @@ function sHitDetection:PlayerDeath(args)
             killer_name = "???"
         end
 
+        -- TODO: add weapon name and vehicle as well
+
         local msg = string.format("%s [%s] was killed by %s [%s] [%s]", 
             args.player:GetName(),
             tostring(args.player:GetSteamId()),
@@ -430,10 +430,6 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
 
 end
 
-function sHitDetection:SyncHit(args, player)
-    table.insert(self.pending_hits, {pending = args.pending, player = player})
-end
-
 function sHitDetection:ExplosionHit(args, player)
 
     if not IsValid(player) then return end
@@ -474,92 +470,68 @@ function sHitDetection:ExplosionHit(args, player)
 
 end
 
-function sHitDetection:BulletHit(args, player)
-    
-    if not IsValid(player) then return end
-    if not args.bone or not BoneModifiers[args.bone.name] then return end
-    if not IsValid(args.attacker) then return end
+-- Called by Player when Player hits another player with a bullet
+--[[
+    args (in table):
 
-    if args.attacker:GetValue("InSafezone") then return end
+        victim_steam_id (string): steam id of the victim player
+        weapon_enum (integer): weapon enum of the weapon that the Player used
+        bone_enum (integer): bone enum of the bone that was hit on the victim
+        distance_travelled (number): distance that the bullet travelled 
+
+]]
+function sHitDetection:DetectPlayerHit(args, player)
+
+    assert(IsValid(player), "player is invalid")
+    assert(args.victim_steam_id, "victim_steam_id is invalid")
+    assert(args.weapon_enum, "weapon_enum is invalid")
+    assert(args.bone_enum, "bone_enum is invalid")
+    assert(args.distance_travelled and args.distance_travelled > 0, "distance_travelled is invalid")
+    
+    local victim = self.players[args.victim_steam_id]
+
+    if not IsValid(victim) then return end
+
+    if player:GetValue("InSafezone") then return end
+    if victim:GetValue("InSafezone") then return end
 
     local weapon = args.attacker:GetEquippedWeapon()
-    local base_damage = WeaponBaseDamage[weapon.id] or 0
+    local damage = WeaponDamage:CalculatePlayerDamage(args.weapon_enum, args.bone_enum, args.distance_travelled)
 
-    if base_damage == 0 then return end
+    if not base_damage then return end
 
     local hit_type = BoneModifiers[args.bone.name].type
     local original_damage = WeaponBaseDamage[weapon.id] * BoneModifiers[args.bone.name].mod
     local damage = original_damage
     damage = self:GetArmorMod(player, hit_type, damage, original_damage)
 
-    self:ApplyDamage(player, damage / 100, DamageEntity.Bullet, tostring(args.attacker:GetSteamId()))
+    self:ApplyDamage(victim, , DamageEntity.Bullet, tostring(player:GetSteamId()))
 
     Events:Fire("HitDetection/PlayerBulletHit", {
-        player = player,
-        attacker = args.attacker,
+        player = victim,
+        attacker = player,
         damage = damage
     })
 
 end
 
-function sHitDetection:CheckHealth(player, old_hp, damage)
+function sHitDetection:CheckHealth(player)
 
-    Timer.SetTimeout(10 * player:GetPing() + 500, function()
+    Thread(function()
+        Timer.Sleep(5 * player:GetPing() + 500)
         -- If they healed recently, disregard
         if not IsValid(player) then return end 
 
-        if player:GetValue("RecentHealTime") and Server:GetElapsedSeconds() - player:GetValue("RecentHealTime") < 15 then
-            return
-        end
-        
-        if player:GetHealth() >= old_hp and player:GetHealth() > 0 then
+        if player:GetHealth() >= player:GetValue("Health") and player:GetHealth() > 0 then
             -- Health did not change, ban
             Events:Fire("KickPlayer", {
                 player = player,
-                reason = string.format("Health hacking detected. Expected: %.3f Actual: %.3f", old_hp - damage, player:GetHealth()),
+                reason = string.format("Health hacking detected. Expected: %.3f Actual: %.3f", player:GetValue("Health"), player:GetHealth()),
                 p_reason = "Error"
             })
         end
+
     end)
-
-end
-
-function sHitDetection:GetArmorMod(player, hit_type, damage, original_damage)
-
-    local equipped_items = player:GetValue("EquippedItems")
-
-    for armor_name, mods in pairs(ArmorModifiers) do
-        if equipped_items[armor_name] and ArmorModifiers[armor_name][hit_type] > 0 then
-
-            damage = damage * (1 - ArmorModifiers[armor_name][hit_type])
-
-            -- If the armor prevented some damage, then modify its durability
-            if ArmorModifiers[armor_name][hit_type] > 0 then
-                
-                local steam_id = tostring(player:GetSteamId())
-
-                if not self.pending_armor_aggregation[steam_id] then
-                    self.pending_armor_aggregation[steam_id] = {}
-                end
-
-                if not self.pending_armor_aggregation[steam_id][armor_name] then
-                    self.pending_armor_aggregation[steam_id][armor_name] = 
-                    {
-                        player = player,
-                        armor_name = armor_name,
-                        damage_diff = original_damage - original_damage * (1 - ArmorModifiers[armor_name][hit_type])
-                    }
-                else
-                    self.pending_armor_aggregation[steam_id][armor_name].damage_diff = 
-                        self.pending_armor_aggregation[steam_id][armor_name].damage_diff +
-                        original_damage - original_damage * (1 - ArmorModifiers[armor_name][hit_type])
-                end
-            end
-
-        end
-    end
-
-    return damage
 
 end
 
