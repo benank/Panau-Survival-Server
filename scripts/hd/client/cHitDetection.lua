@@ -4,6 +4,9 @@ function HitDetection:__init()
     -- stops bullets from removing from the world so you can see where they land + other prints
     self.debug_enabled = true
 
+    self.bloom = 0
+    self.bloom_reset_time = 1 -- Time it takes for bloom to reset
+
     self.weapon_bullets = {
         --[WeaponEnum.MachineGun] = InstantBullet
         [WeaponEnum.MachineGun] = ProjectileBullet,
@@ -15,6 +18,10 @@ function HitDetection:__init()
         [WeaponEnum.MachineGun] = 550,
         [WeaponEnum.PanayRocketLauncher] = 100, -- untested
         [WeaponEnum.RocketLauncher] = 100 -- dont change this, it's the base-game velocity
+    }
+
+    self.weapon_blooms = {
+        [WeaponEnum.MachineGun] = 1 -- Bloom per shot
     }
 
     self.splash_weapons = {
@@ -48,6 +55,10 @@ function HitDetection:PreTick(args)
             end
         end
     end
+
+    if self.bloom > 0 then
+        self.bloom = math.max(0, self.bloom - math.pow(2, self.bloom * 0.5) * args.delta)
+    end
 end
 
 function HitDetection:FireWeapon(args)
@@ -68,11 +79,14 @@ function HitDetection:FireWeapon(args)
         id = self.bullet_id_counter,
         weapon_enum = equipped_weapon_enum,
         velocity = self.weapon_velocities[equipped_weapon_enum],
-        is_splash = self.splash_weapons[equipped_weapon_enum] != nil
+        is_splash = self.splash_weapons[equipped_weapon_enum] ~= nil,
+        bloom = self.bloom
     }
     local bullet = bullet_class(bullet_data)
     self.bullet_id_counter = self.bullet_id_counter + 1
     
+    self.bloom = self.bloom + self.weapon_blooms[equipped_weapon_enum]
+
     self.bullets[bullet:GetId()] = bullet
 
     --Chat:Print("Fired with " .. tostring(WeaponEnum:GetDescription(equipped_weapon_enum)), Color.White)

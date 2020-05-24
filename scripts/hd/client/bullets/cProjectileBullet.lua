@@ -7,6 +7,8 @@ function ProjectileBullet:__init(args)
     self:SetId(args.id)
     self.weapon_enum = args.weapon_enum
     self.velocity = args.velocity
+    self.bloom = args.bloom or 0
+
     self.is_splash = args.is_splash
     self.life_timer = Timer()
 
@@ -14,7 +16,7 @@ function ProjectileBullet:__init(args)
     self.current_position = Copy(self.initial_position)
     self.last_raycast_position = Copy(self.initial_position)
 
-    local target_position = Camera:GetPosition() + (Camera:GetAngle() * (Vector3.Forward * 80))
+    local target_position = Camera:GetPosition() + (Camera:GetAngle() * (Vector3.Forward * 80 + self:GetBloom()))
     self.angle = Angle.FromVectors(Vector3.Forward, target_position - Camera:GetPosition())
     self.angle.roll = 0
 
@@ -25,6 +27,14 @@ function ProjectileBullet:__init(args)
     self.initial_probe = true
 
     self.lock_position = false
+end
+
+function ProjectileBullet:GetBloom()
+    return self.bloom > 0 and 
+    Vector3(-self.bloom / 2 + math.random() * self.bloom, 
+        -self.bloom / 2 + math.random() * self.bloom, 
+        -self.bloom / 2 + math.random() * self.bloom) 
+    or Vector3.Zero
 end
 
 function ProjectileBullet:PreTick(delta)
