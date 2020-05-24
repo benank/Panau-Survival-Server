@@ -12,18 +12,23 @@ function ProjectileBullet:__init(args)
     self.is_splash = args.is_splash
     self.life_timer = Timer()
 
-    self.initial_position = Camera:GetPosition()
+    self.initial_position = LocalPlayer:GetBonePosition(BoneEnum.RightHand)
     self.current_position = Copy(self.initial_position)
     self.last_raycast_position = Copy(self.initial_position)
 
-    local target_position = Camera:GetPosition() + (Camera:GetAngle() * (Vector3.Forward * 80 + self:GetBloom()))
-    self.angle = Angle.FromVectors(Vector3.Forward, target_position - Camera:GetPosition())
+
+    local dir = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * self:GetBloom() * Vector3.Forward, 0, 1000).position
+    dir = Angle.FromVectors(Vector3.Forward, dir - self.initial_position)
+    self.target_position = Physics:Raycast(self.initial_position, dir * Vector3.Forward, 0, 1000).position
+    self.angle = Angle.FromVectors(Vector3.Forward, self.target_position - self.initial_position)
     self.angle.roll = 0
 
+    self.start_time = Client:GetElapsedSeconds()
+    self.max_lifetime = 10 -- If bullet travels for longer than this, it gets removed
     self.max_lifetime_distance = 1000 -- if bullet travels farther than this distance then it gets removed
     self.total_distance_covered = 0
     self.distance_covered_since_last_raycast = 0
-    self.raycast_distance = 10
+    self.raycast_distance = self.velocity / 10
     self.initial_probe = true
 
     self.lock_position = false
@@ -31,10 +36,10 @@ end
 
 function ProjectileBullet:GetBloom()
     return self.bloom > 0 and 
-    Vector3(-self.bloom / 2 + math.random() * self.bloom, 
-        -self.bloom / 2 + math.random() * self.bloom, 
-        -self.bloom / 2 + math.random() * self.bloom) 
-    or Vector3.Zero
+    Angle((-self.bloom / 2 + math.random() * self.bloom) * 0.01, 
+        (-self.bloom / 2 + math.random() * self.bloom) * 0.01, 
+        (-self.bloom / 2 + math.random() * self.bloom) * 0.01) 
+    or Angle()
 end
 
 function ProjectileBullet:PreTick(delta)
@@ -44,7 +49,8 @@ function ProjectileBullet:PreTick(delta)
     self:CalculateDistanceCovered()
     self:CalculateDistanceCoveredSinceLastRaycast()
 
-    if self.total_distance_covered > self.max_lifetime_distance then
+    if self.total_distance_covered > self.max_lifetime_distance
+    or Client:GetElapsedSeconds() - self.start_time > self.max_lifetime then
         self:SetActive(false)
     end
 
@@ -113,6 +119,32 @@ function ProjectileBullet:HitSomething(raycast)
         end
     end
 
+    local effect_time = 1000
+    local size = 0.05
+    self.effect_timer = Timer()
+    self.angle = Angle.FromVectors(raycast.normal, Vector3.Forward) * Angle(0, math.pi / 2, 0)
+    self.gamerender = Events:Subscribe("GameRender", function(args)
+    
+        local t = Transform3():Translate(self.current_position + Camera:GetAngle() * Vector3.Backward * 0.1):Rotate(Camera:GetAngle())
+        Render:SetTransform(t)
+
+        local time = self.effect_timer:GetMilliseconds()
+
+        local color = Color(255, 0, 0, 200)
+        Render:FillCircle(Vector3.Zero, size - time / effect_time * size, color)
+
+        if time > effect_time then
+            Events:Unsubscribe(self.gamerender)
+            self.gamerender = nil
+        end
+
+    end)
+
+    --[[ClientEffect.Play(AssetLocation.Game, {
+        position = raycast.position,
+        angle = Angle.FromVectors(raycast.normal, Vector3.Up),
+        effect_id = 2
+    })]]
 
     if HitDetection.debug_enabled then
         Chat:Print("Bullet Distance Travelled: " .. tostring(self.total_distance_covered), Color.Yellow)
@@ -143,6 +175,7 @@ end
 function ProjectileBullet:Render()
     local pos = Render:WorldToScreen(self.current_position)
     Render:FillCircle(pos, 6.0, Color.Crimson)
+    Render:FillCircle(Render:WorldToScreen(self.target_position), 5, Color.LawnGreen)
 end
 
 function ProjectileBullet:Destroy()

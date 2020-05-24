@@ -1,31 +1,42 @@
-class "HitDetection"
+class "WeaponHitDetection"
 
-function HitDetection:__init()
+function WeaponHitDetection:__init()
     -- stops bullets from removing from the world so you can see where they land + other prints
     self.debug_enabled = true
 
     self.bloom = 0
     self.bloom_reset_time = 1 -- Time it takes for bloom to reset
 
+    self.max_bullet_lifetime = 5 -- 5 seconds until bullet is removed
+
     self.weapon_bullets = {
-        --[WeaponEnum.MachineGun] = InstantBullet
         [WeaponEnum.MachineGun] = ProjectileBullet,
+        [WeaponEnum.Revolver] = ProjectileBullet,
+        [WeaponEnum.Handgun] = ProjectileBullet,
+        [WeaponEnum.BubbleGun] = ProjectileBullet,
         [WeaponEnum.PanayRocketLauncher] = ProjectileBullet,
         [WeaponEnum.RocketLauncher] = ProjectileBullet
     }
 
     self.weapon_velocities = {
+        [WeaponEnum.BubbleGun] = 1.5,
+        [WeaponEnum.Handgun] = 300,
+        [WeaponEnum.Revolver] = 400,
         [WeaponEnum.MachineGun] = 550,
         [WeaponEnum.PanayRocketLauncher] = 100, -- untested
         [WeaponEnum.RocketLauncher] = 100 -- dont change this, it's the base-game velocity
     }
 
     self.weapon_blooms = {
+        [WeaponEnum.BubbleGun] = 10,
+        [WeaponEnum.Handgun] = 1.2,
+        [WeaponEnum.Revolver] = 3,
         [WeaponEnum.MachineGun] = 1 -- Bloom per shot
     }
 
     self.splash_weapons = {
         [WeaponEnum.PanayRocketLauncher] = true,
+        [WeaponEnum.BubbleGun] = true,
         [WeaponEnum.RocketLauncher] = true
     }
 
@@ -40,11 +51,11 @@ function HitDetection:__init()
     Events:Subscribe(var("FireWeapon"):get(), self, self.FireWeapon)
 end
 
-function HitDetection:GetWeaponVelocity(weapon_enum)
+function WeaponHitDetection:GetWeaponVelocity(weapon_enum)
     return self.weapon_velocities[weapon_enum]
 end
 
-function HitDetection:PreTick(args)
+function WeaponHitDetection:PreTick(args)
     for bullet_id, bullet in pairs(self.bullets) do
         if bullet:GetActive() then
             bullet:PreTick(args.delta)
@@ -61,7 +72,7 @@ function HitDetection:PreTick(args)
     end
 end
 
-function HitDetection:FireWeapon(args)
+function WeaponHitDetection:FireWeapon(args)
     local target = LocalPlayer:GetAimTarget()
 
     local equipped_weapon_enum = WeaponEnum:GetByWeaponId(LocalPlayer:GetEquippedWeapon().id)
@@ -93,7 +104,7 @@ function HitDetection:FireWeapon(args)
 end
 
 -- excludes splash hits and direct splash hits
-function HitDetection:LocalPlayerBulletDirectHitEntity(args)
+function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
     if args.entity_type == "Player" then
         local victim = Player.GetById(args.entity_id)
         Network:Send("HitDetection/DetectPlayerHit", {
@@ -119,7 +130,7 @@ function HitDetection:LocalPlayerBulletDirectHitEntity(args)
     end
 end
 
-function HitDetection:RenderDebug()
+function WeaponHitDetection:RenderDebug()
     for bullet_id, bullet in pairs(self.bullets) do
         bullet:Render()
     end

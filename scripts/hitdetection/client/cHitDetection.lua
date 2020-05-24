@@ -9,11 +9,6 @@ function cHitDetection:__init()
     self.max_damage_screen_alpha = 150
     self.damage_screen_time = 1
 
-    Events:Subscribe(var("LocalPlayerBulletHit"):get(), self, self.LocalPlayerBulletHit)
-    Events:Subscribe(var("LocalPlayerDeath"):get(), self, self.LocalPlayerDeath)
-    Events:Subscribe(var("LocalPlayerExplosionHit"):get(), self, self.LocalPlayerExplosionHit)
-    Events:Subscribe(var("EntityBulletHit"):get(), self, self.EntityBulletHit)
-    Events:Subscribe(var("VehicleCollide"):get(), self, self.VehicleCollide)
     Events:Subscribe(var("PostRender"):get(), self, self.PostRender)
 
     Events:Subscribe(var("HitDetection/Explosion"):get(), self, self.Explosion)
@@ -136,66 +131,6 @@ function cHitDetection:PostRender(args)
     end
 
 
-end
-
-function cHitDetection:VehicleCollide(args)
-
-    --print("VehicleCollide")
-    --output_table(args)
-
-end
-
-function cHitDetection:EntityBulletHit(args)
-
-    -- if 0 damage, then they used the grapplehook to hit them (F)
-
-    -- only is called for the person who shot
-
-    --print("EntityBulletHit")
-    --output_table(args)
-
-end
-
-function cHitDetection:LocalPlayerExplosionHit(args)
-
-    if LocalPlayer:GetValue("Invincible") then return false end
-
-    if args.attacker then
-
-        local weapon = args.attacker:GetEquippedWeapon()
-        if not weapon then return end
-
-        table.insert(self.pending, {
-            attacker = args.attacker,
-            bone = args.bone,
-            type = WeaponHitType.Explosive,
-            damage = args.damage
-        })
-    
-        return false
-
-    end
-
-end
-
-function cHitDetection:LocalPlayerDeath(args)
-
-end
-
-function cHitDetection:LocalPlayerBulletHit(args)
-
-    if LocalPlayer:GetValue("Invincible") then return false end
-
-    if not args.bone or not BoneModifiers[args.bone.name] then return false end
-    if not args.attacker then return false end
-
-    table.insert(self.pending, {
-        attacker = args.attacker,
-        bone = args.bone,
-        type = WeaponHitType.Bodyshot
-    })
-
-    return false
 end
 
 cHitDetection = cHitDetection()
