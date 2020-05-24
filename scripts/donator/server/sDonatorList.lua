@@ -33,7 +33,7 @@ Donators =
     ["STEAM_0:0:27475230"] = {
         steam_id = "STEAM_0:0:27475230", 
         name = "Thasock",
-        level = DonatorLevel.Donator
+        level = DonatorLevel.Colorful
     },
     ["STEAM_0:0:53272641"] = {
         steam_id = "STEAM_0:0:53272641", 
