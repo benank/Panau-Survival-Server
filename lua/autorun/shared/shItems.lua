@@ -230,6 +230,12 @@ Items =
         can_use = true
     },
     {
+        name = "Master Hacker",
+        category = "Supplies",
+        stacklimit = 1,
+        can_use = true
+    },
+    {
         name = "Barrel Stash",
         category = "Survival",
         stacklimit = 3,
