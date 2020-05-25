@@ -10,12 +10,109 @@ function sStashes:__init()
     Network:Subscribe("Stashes/DeleteStash", self, self.DeleteStash)
     Network:Subscribe("Stashes/RenameStash", self, self.RenameStash)
     Network:Subscribe("Stashes/Dismount", self, self.DismountStash)
+    Network:Subscribe("Stashes/UpdateStashAccessMode", self, self.UpdateStashAccessMode)
 
     Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
-    Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
     Events:Subscribe("Items/PlaceProximityAlarm", self, self.PlaceProximityAlarm)
     Events:Subscribe("Inventory/ModifyStashStackRemote", self, self.ModifyStashStackRemote)
     Events:Subscribe("items/DestroyProximityAlarm", self, self.DestroyProximityAlarm)
+    Events:Subscribe("items/C4DetonateOnStash", self, self.C4DetonateOnStash)
+
+    Events:Subscribe("items/HackComplete", self, self.HackComplete)
+end
+
+-- When a C4 attached to a stash detonates
+function sStashes:C4DetonateOnStash(args)
+
+    local stash = self.stashes_by_uid[args.lootbox_uid]
+
+    if not stash then return end
+
+    stash.health = stash.health - C4StashDamage
+
+    Events:Fire("Discord", {
+        channel = "Stashes",
+        content = string.format("**RAID** %s [%s] used C4 on stash %d [%s]", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), stash.id, stash.owner_id)
+    })
+
+    if stash.health <= 0 then
+        -- Remove stash
+
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = stash.owner_id,
+            message = string.format("%s destroyed your stash [%s] %s", args.player:GetName(), stash.name, WorldToMapString(stash.lootbox.position)),
+            color = Color(200, 0, 0)
+        })
+
+        local owner = nil
+
+        for p in Server:GetPlayers() do
+            if tostring(p:GetSteamId()) == stash.owner_id then
+                owner = p
+            end
+        end
+
+        if count_table(stash.lootbox.contents) > 0 and stash.owner_id ~= tostring(args.player:GetSteamId()) then
+            Events:Fire("Stashes/DestroyStash", {
+                tier = stash.lootbox.tier,
+                player = args.player
+            })
+        end
+
+        self:DeleteStash({id = stash.id}, owner)
+
+        Events:Fire("Discord", {
+            channel = "Stashes",
+            content = string.format("**RAID** %s [%s] destroyed stash %d [%s]", 
+                args.player:GetName(), tostring(args.player:GetSteamId()), stash.id, stash.owner_id)
+        })
+
+    else
+        stash:UpdateToDB()
+    end
+
+end
+
+function sStashes:UpdateStashAccessMode(args, player)
+
+    if not args.mode then return end
+
+    local current_box = player:GetValue("CurrentLootbox")
+
+    if not current_box or not current_box.lootbox.stash then return end
+
+    local stash = self.stashes[current_box.lootbox.stash.id]
+
+    if not stash then return end
+
+    stash:ChangeAccessMode(args.mode, player)
+
+end
+
+function sStashes:HackComplete(args)
+
+    local stash = self.stashes[args.stash_id]
+
+    if not stash then return end
+
+    Events:Fire("SendPlayerPersistentMessage", {
+        steam_id = stash.owner_id,
+        message = string.format("%s hacked your stash [%s] %s", args.player:GetName(), stash.name, WorldToMapString(stash.lootbox.position)),
+        color = Color(200, 0, 0)
+    })
+
+    stash.access_mode = StashAccessMode.Everyone
+    stash:UpdateToDB()
+
+    stash.lootbox:ForceClose()
+
+    Events:Fire("Discord", {
+        channel = "Stashes",
+        content = string.format("**RAID** %s [%s] hacked stash %d [%s]", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), stash.id, stash.owner_id)
+    })
+
 end
 
 function sStashes:DestroyProximityAlarm(args)
@@ -145,26 +242,6 @@ end
 
 function sStashes:SyncStashesToPlayer(player)
     Network:Send(player, "Stashes/SyncMyStashes", player:GetValue("Stashes"))
-end
-
-function sStashes:ItemExplode(args)
-
-    -- TODO: damage nearby stashes
-
-    --[[local cell = GetCell(args.position, ItemsConfig.usables.Claymore.cell_size)
-    local adjacent_cells = GetAdjacentCells(cell)
-
-    for _, cell in pairs(adjacent_cells) do
-
-        VerifyCellExists(self.claymore_cells, cell)
-        for _, claymore in pairs(self.claymore_cells[cell.x][cell.y]) do
-            if claymore.position:Distance(args.position) < args.radius then
-                self:DestroyClaymore({id = claymore.id}, args.player)
-            end
-        end
-
-    end]]
-
 end
 
 -- Player deleted stash so contents are not dropped on ground

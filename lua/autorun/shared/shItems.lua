@@ -224,9 +224,15 @@ Items =
         can_use = true
     },
     {
-        name = "Stash Hacker",
+        name = "Hacker",
         category = "Supplies",
-        stacklimit = 2,
+        stacklimit = 3,
+        can_use = true
+    },
+    {
+        name = "Master Hacker",
+        category = "Supplies",
+        stacklimit = 1,
         can_use = true
     },
     {
