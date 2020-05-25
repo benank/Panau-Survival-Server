@@ -28,6 +28,7 @@ end
 
 function cLootManager:LocalPlayerCellUpdate(args)
 
+    debug("cLootManager:LocalPlayerCellUpdate")
     -- Remove loot from old cells
     for _, cell in pairs(args.old_adjacent) do
         self:ClearCell(cell)
@@ -220,6 +221,7 @@ end
 function cLootManager:LootboxCellsSync(data)
     
     -- spawn the boxes that the server has already for newly streamed cells
+    debug("cLootManager:LootboxCellsSync")
     Thread(function()
     for _, box_data in pairs(data.lootbox_data) do
         
@@ -240,6 +242,7 @@ end
 
 function cLootManager:ClearCell(cell)
 
+    debug("cLootManager:ClearCell" .. cell.x .. " " .. cell.y)
     VerifyCellExists(self.loot, cell)
 
     for uid, lootbox in pairs(self.loot[cell.x][cell.y]) do
