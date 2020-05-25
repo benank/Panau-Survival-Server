@@ -154,7 +154,9 @@ function sProxAlarms:InsideProximityAlarm(args, player)
         color = Color(200, 0, 0)
     })
 
-    Network:Send(owner, "Items/ProximityPlayerDetected", {id = player:GetId(), position = player:GetPosition(), name = player:GetName()})
+    if IsValid(owner) then
+        Network:Send(owner, "Items/ProximityPlayerDetected", {id = player:GetId(), position = player:GetPosition(), name = player:GetName()})
+    end
 
 end
 
