@@ -31,12 +31,6 @@ function cLootbox:Remove()
         LootManager.objects[obj:GetId()] = nil
     end
 
-    Events:Fire("Inventory/LootboxRemove", {
-        id = self.uid,
-        tier = self.tier,
-        cso_id = 
-    })
-
 end
 
 function cLootbox:CreateModel()
