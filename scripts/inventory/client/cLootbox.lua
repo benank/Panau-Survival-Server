@@ -11,9 +11,7 @@ function cLootbox:__init(args)
     self.static_objects = {}
     self.contents = {}
 
-    Timer.SetTimeout(100, function()
-        self:CreateModel()
-    end)
+    self:CreateModel()
 
 end
 
@@ -24,6 +22,7 @@ function cLootbox:Remove()
         if IsValid(obj) then 
             obj:Remove()
         end
+        LootManager.objects[obj:GetId()] = nil
     end
 
     Events:Fire("Inventory/LootboxRemove", {
@@ -79,8 +78,8 @@ function cLootbox:CreateModel()
         -- Register static object ids in uid lookup table
         obj:SetValue("LootboxId", self.uid)
         LootManager.SO_id_to_uid[obj:GetId()] = self.uid
+        LootManager.objects[obj:GetId()] = obj
     end
-
 
     Events:Fire("Inventory/LootboxCreate", {
         id = self.uid,
@@ -88,6 +87,5 @@ function cLootbox:CreateModel()
         position = self.position,
         angle = self.angle
     })
-
 
 end

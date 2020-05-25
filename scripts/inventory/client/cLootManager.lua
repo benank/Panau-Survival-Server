@@ -3,6 +3,7 @@ class 'cLootManager'
 function cLootManager:__init()
 
     self.loot = {} -- Create 2D array to store loot in cells
+    self.objects = {}
     self.current_box = nil -- Current opened box
     self.close_to_box = false -- If they are close enough to a box that we should raycast
 
@@ -27,6 +28,7 @@ end
 
 function cLootManager:LocalPlayerCellUpdate(args)
 
+    debug("cell update")
     -- Remove loot from old cells
     for _, cell in pairs(args.old_adjacent) do
         self:ClearCell(cell)
@@ -218,7 +220,8 @@ end
 
 function cLootManager:LootboxCellsSync(data)
     
-	-- spawn the boxes that the server has already for newly streamed cells
+    -- spawn the boxes that the server has already for newly streamed cells
+    Thread(function()
     for _, box_data in pairs(data.lootbox_data) do
         
         VerifyCellExists(self.loot, box_data.cell)
@@ -229,8 +232,10 @@ function cLootManager:LootboxCellsSync(data)
 
         if box_data.active then
             self.loot[box_data.cell.x][box_data.cell.y][box_data.uid] = cLootbox(box_data)
+            Timer.Sleep(2)
         end
     end
+    end)
 
 end
 
@@ -251,10 +256,8 @@ end
 
 function cLootManager:Unload()
 
-    for x, _ in pairs(self.loot) do
-        for y, _ in pairs(self.loot[x]) do
-            self:ClearCell({x = x, y = y})
-        end
+    for id, obj in pairs(self.objects) do
+        if IsValid(obj) then obj:Remove() end
     end
 
 end
