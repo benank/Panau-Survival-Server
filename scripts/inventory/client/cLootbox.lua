@@ -77,6 +77,7 @@ function cLootbox:CreateModel()
         --obj:SetOutlineEnabled(true)
 
         -- Register static object ids in uid lookup table
+        obj:SetValue("LootboxId", self.uid)
         LootManager.SO_id_to_uid[obj:GetId()] = self.uid
     end
 

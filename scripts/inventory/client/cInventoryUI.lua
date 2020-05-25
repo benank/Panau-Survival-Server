@@ -207,7 +207,7 @@ function cInventoryUI:PopulateEntry(args)
     local equip_outer = itemwindow:FindChildByName("equip_outer", true)
     local equip_inner = itemwindow:FindChildByName("equip_inner", true)
 
-    if not args.empty then
+    if not args.empty and not args.locked then
 
         if not stack then -- No item found, hide the entry
             itemwindow:Hide()
@@ -233,9 +233,27 @@ function cInventoryUI:PopulateEntry(args)
 
         end
 
+        itemwindow:SetDataBool("locked", false)
         InventoryUIStyle:UpdateItemColor(itemwindow)
 
-    else
+    elseif args.locked then
+
+        local empty_text = "-- [ LOCKED ] --"
+
+        button:GetParent():FindChildByName("text"):SetText(empty_text)
+        button:GetParent():FindChildByName("text_shadow"):SetText(empty_text)
+        
+        itemwindow:SetDataBool("loot", args.loot == true)
+        itemwindow:SetDataNumber("loot_index", args.index)
+        itemwindow:SetDataBool("locked", true)
+
+        durability:Hide()
+
+        InventoryUIStyle:UpdateItemColor(itemwindow)
+
+        itemwindow:Show()
+
+    elseif args.empty then
         
         local empty_text = "-- [ EMPTY ] --"
 
@@ -247,6 +265,7 @@ function cInventoryUI:PopulateEntry(args)
 
         durability:Hide()
 
+        itemwindow:SetDataBool("locked", false)
         InventoryUIStyle:UpdateItemColor(itemwindow)
 
         itemwindow:Show()
@@ -450,6 +469,7 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     button:SetDataString("stack_category", cat)
     button:SetDataBool("dropping", false)
     button:SetDataBool("hovered", false)
+    button:SetDataBool("locked", false)
     button:SetDataNumber("drop_amount", 0)
     itemWindow:Hide()
 

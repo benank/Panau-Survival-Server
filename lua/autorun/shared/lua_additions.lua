@@ -44,6 +44,13 @@ function random_table_value(t)
     return t[keys[math.random(#keys)]]
 end
 
+-- Dev_34
+function random_table_key(t)
+    local keys = {}
+    for k in pairs(t) do table.insert(keys, k) end
+    return keys[math.random(#keys)]
+end
+
 function table.compare(tbl1, tbl2)
 	for k, v in pairs(tbl1) do
 		if tbl2[k] ~= v then

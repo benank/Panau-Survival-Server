@@ -7,7 +7,7 @@ function sStash:__init(args)
     self.owner_id = args.owner_id
     self.access_mode = args.access_mode
     self.name = args.name
-    self.health = args.health
+    self.health = math.min(args.health, Lootbox.Stashes[self.lootbox.tier].health)
     self.capacity = Lootbox.Stashes[self.lootbox.tier].capacity
     self.can_change_access = self.lootbox.tier == Lootbox.Types.LockedStash
 
@@ -28,7 +28,7 @@ end
 
 -- Returns whether or not a player is owner
 function sStash:IsPlayerOwner(player)
-    return tostring(player:GetSteamId()) == self.owner_id
+    return IsValid(player) and tostring(player:GetSteamId()) == self.owner_id
 end
 
 function sStash:ChangeName(name, player)

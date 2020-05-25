@@ -83,11 +83,15 @@ end
 function sItemUse:CompleteItemUsage(args, player)
 
     Timer.SetTimeout(100, function() 
-        player:SetValue("ItemUse", {})
+        if IsValid(player) then
+            player:SetValue("ItemUse", {})
+        end
     end)
 
     Timer.SetTimeout(1000, function() 
-        Inventory.OperationBlock({player = player, change = -1})
+        if IsValid(player) then
+            Inventory.OperationBlock({player = player, change = -1})
+        end
     end);
         
 end

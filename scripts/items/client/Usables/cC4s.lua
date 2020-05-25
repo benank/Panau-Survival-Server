@@ -81,13 +81,26 @@ function cC4s:PlaceObject(args)
             args.values.angle_offset = -entity:GetAngle() * args.angle
         end
     end
-    
-    Network:Send("items/PlaceC4", {
+
+    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 5)
+
+    local send_data = {
         position = args.position,
         angle = args.angle,
         values = args.values,
         forward_ray = args.forward_ray
-    })
+    }
+
+    -- If they are placing the explosive on a stash/lootbox
+    if ray.entity and ray.entity.__type == "ClientStaticObject" then
+
+        if ray.entity:GetValue("LootboxId") then
+            send_data.lootbox_uid = tonumber(ray.entity:GetValue("LootboxId"))
+        end
+
+    end
+
+    Network:Send("items/PlaceC4", send_data)
 
     self:StopPlacement()
 end

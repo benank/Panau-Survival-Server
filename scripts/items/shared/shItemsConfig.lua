@@ -15,6 +15,8 @@ ItemsConfig =
         ["EVAC"] = {use_time = 5},
         ["Respawner"] = {use_time = 3}, -- Temp
         ["Car Paint"] = {use_time = 3, range = 5},
+        ["Hacker"] = {use_time = 3},
+        ["Master Hacker"] = {use_time = 5},
         ["Ping"] = {max_distance = 5000, max_height = 4000},
         ["Combat Ping"] = {max_distance = 550, max_height = 200},
     },
