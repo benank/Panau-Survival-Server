@@ -14,9 +14,30 @@ function sExp:__init()
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
+    Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
+end
+
+function sExp:DestroyStash(args)
+
+    local exp_earned = Exp.DestroyStash[args.tier]
+
+    if not exp_earned then return end
+
+    local exp_data = args.player:GetValue("Exp")
+
+    if not exp_data then return end
+
+    self:GivePlayerExp(exp_earned, ExpType.Combat, tostring(args.player:GetSteamId()), exp_data, args.player)
+
+    Events:Fire("Discord", {
+        channel = "Experience",
+        content = string.format("%s [%s] destroyed a stash [Tier: %d] and gained %d exp.", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), args.tier, exp_earned)
+    })
+    
 end
 
 -- Called when a player hacks something

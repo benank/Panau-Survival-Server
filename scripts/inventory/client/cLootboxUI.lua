@@ -197,6 +197,8 @@ function cLootboxUI:UpdateLootboxTitle(locked)
 
             if current_box.stash.can_change_access then
                 self.access_mode_menu:Show()
+            else
+                self.access_mode_menu:Hide()
             end
         else
             self.stash_dismount_button:Hide()
