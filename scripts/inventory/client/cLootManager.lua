@@ -255,8 +255,10 @@ end
 
 function cLootManager:Unload()
 
-    for id, obj in pairs(self.objects) do
-        if IsValid(obj) then obj:Remove() end
+    for x, _ in pairs(self.loot) do
+        for y, _ in pairs(self.loot[x]) do
+            self:ClearCell({x = x, y = y})
+        end
     end
 
 end

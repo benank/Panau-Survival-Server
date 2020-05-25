@@ -61,7 +61,6 @@ function AssetManagerMenu:__init()
 
     Events:Subscribe( "Render", self, self.Render )
     Events:Subscribe( "KeyUp", self, self.KeyUp )
-    Events:Subscribe( "LocalPlayerInput", self, self.LocalPlayerInput )
 
     Events:Subscribe("Vehicles/OwnedVehiclesUpdate", self, self.OwnedVehiclesUpdate)
     Events:Subscribe("Vehicles/ResetVehiclesMenu", self, self.ResetVehiclesMenu)
@@ -557,6 +556,13 @@ function AssetManagerMenu:SetActive( active )
         VehiclePlayerTransferMenu:SetActive(false)
         self.stash_rename_menu:Hide()
         self.delete_confirm_menu:Hide()
+
+        if self.active then
+            self.lpi = Events:Subscribe( "LocalPlayerInput", self, self.LocalPlayerInput )
+        else
+            Events:Unsubscribe(self.lpi)
+            self.lpi = nil
+        end
     end
 end
 
