@@ -17,7 +17,8 @@ end
 
 function var:get()
     local u_a = xor_cipher(self.a[2])
-    if u_a ~= self.a[1] and tonumber(u_a) ~= self.a[1] then
+    if u_a ~= self.a[1] 
+    and math.floor(tonumber(u_a) * (tonumber(u_a) < 1 and 10000000 or 1)) ~= math.floor(self.a[1] * (self.a[1] < 1 and 10000000 or 1)) then
         Network:Send(xor_cipher(n), {a = u_a, _a = self.a[1]})
         return
     end
