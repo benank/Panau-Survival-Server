@@ -2,7 +2,7 @@ class 'sAntiCheat'
 
 function sAntiCheat:__init()
 
-    self.max_lag_strikes = 5
+    self.max_lag_strikes = 7
     self:CheckServerHealth()
 
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
