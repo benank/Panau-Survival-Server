@@ -110,7 +110,7 @@ Map = {
 	Waypoint       = Location("Waypoint", Vector3(), Location.Type.Waypoint),
 	Locations      = {
 		Location("Kepulauan", Vector3(-1396.228, 276.0449, 10460.26), Location.Type.Comm),
-		Location("Negeri Gunung Berawn", Vector3(7826.969, 254.5643, 8466.012), Location.Type.MilLocation),
+		Location("Negeri Gunung Berawn", Vector3(7826.969, 254.5643, 8466.012), Location.Type.MilLocation, Location.Color.Green),
 		Location("Pekan Belalang", Vector3(-1775.918, 199.2626, 12071.51), Location.Type.CivVil),
 		Location("Kampung Tiga Kelapa", Vector3(-6475.682, 272.5664, -9362.973), Location.Type.CivVil),
 		Location("Kampung Jelantur", Vector3(-6304.328, 209.6773, -6151.631), Location.Type.CivVil),
