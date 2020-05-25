@@ -28,7 +28,6 @@ end
 
 function cLootManager:LocalPlayerCellUpdate(args)
 
-    debug("cell update")
     -- Remove loot from old cells
     for _, cell in pairs(args.old_adjacent) do
         self:ClearCell(cell)
