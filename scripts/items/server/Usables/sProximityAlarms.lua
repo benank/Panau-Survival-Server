@@ -144,10 +144,15 @@ function sProxAlarms:InsideProximityAlarm(args, player)
 
     local owner_id = tostring(alarm.stash.owner_id)
 
+    if owner_id == tostring(player:GetSteamId()) then return end -- Don't trigger on owner
+
     local owner = self.players[owner_id]
 
-    if not IsValid(owner) then return end
-    if owner == player then return end
+    Events:Fire("SendPlayerPersistentMessage", {
+        steam_id = owner_id,
+        message = string.format("Your proximity detector detected %s %s", player:GetName(), WorldToMapString(player:GetPosition())),
+        color = Color(200, 0, 0)
+    })
 
     Network:Send(owner, "Items/ProximityPlayerDetected", {id = player:GetId(), position = player:GetPosition(), name = player:GetName()})
 
