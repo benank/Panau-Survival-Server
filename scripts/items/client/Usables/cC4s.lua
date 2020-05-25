@@ -2,6 +2,7 @@ class 'cC4s'
 
 function cC4s:__init(args)
 
+    self.near_stashes = {} -- [cso id] = stash id
     self.c4s = {} -- [wno id] = cC4() 
 
     self.placing_c4 = false
@@ -13,6 +14,24 @@ function cC4s:__init(args)
 
     Events:Subscribe("WorldNetworkObjectCreate", self, self.WorldNetworkObjectCreate)
     Events:Subscribe("WorldNetworkObjectDestroy", self, self.WorldNetworkObjectDestroy)
+
+    Events:Subscribe(var("Inventory/LootboxCreate"):get(), self, self.LootboxCreate)
+    Events:Subscribe(var("Inventory/LootboxRemove"):get(), self, self.LootboxRemove)
+end
+
+function cC4s:LootboxCreate(args)
+
+    if args.tier ~= 11 and args.tier ~= 12 and args.tier ~= 13 then return end
+
+    self.near_stashes[args.cso_id] = args.id
+
+end
+
+function cC4s:LootboxRemove(args)
+
+    if args.tier ~= 11 and args.tier ~= 12 and args.tier ~= 13 then return end
+
+    self.near_stashes[args.cso_id] = nil
 
 end
 
@@ -94,8 +113,8 @@ function cC4s:PlaceObject(args)
     -- If they are placing the explosive on a stash/lootbox
     if ray.entity and ray.entity.__type == "ClientStaticObject" then
 
-        if ray.entity:GetValue("LootboxId") then
-            send_data.lootbox_uid = tonumber(ray.entity:GetValue("LootboxId"))
+        if self.near_stashes[ray.entity:GetId()] then
+            send_data.lootbox_uid = self.near_stashes[ray.entity:GetId()]
         end
 
     end

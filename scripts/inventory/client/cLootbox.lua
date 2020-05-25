@@ -17,6 +17,12 @@ end
 
 function cLootbox:Remove()
 
+    Events:Fire("Inventory/LootboxRemove", {
+        id = self.uid,
+        tier = self.tier,
+        cso_id = self.static_objects[1]:GetId()
+    })
+
     self.active = false
     for _, obj in pairs(self.static_objects) do
         if IsValid(obj) then 
@@ -27,7 +33,8 @@ function cLootbox:Remove()
 
     Events:Fire("Inventory/LootboxRemove", {
         id = self.uid,
-        tier = self.tier
+        tier = self.tier,
+        cso_id = 
     })
 
 end
@@ -83,6 +90,7 @@ function cLootbox:CreateModel()
 
     Events:Fire("Inventory/LootboxCreate", {
         id = self.uid,
+        cso_id = self.static_objects[1]:GetId(),
         tier = self.tier,
         position = self.position,
         angle = self.angle
