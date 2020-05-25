@@ -1,6 +1,6 @@
 class 'HexagonPuzzle'
 
-function HexagonPuzzle:__init(difficulty)
+function HexagonPuzzle:__init(difficulty, time)
 
     self.delta = 0
     self.last_time = Client:GetElapsedSeconds()
@@ -16,7 +16,7 @@ function HexagonPuzzle:__init(difficulty)
 	self.active = true
 	self.space = 1.025 -- Space between hexagons
 	self.size = 0.075
-	self.time = 10
+	self.time = var(time)
 	self.complete = false
 	self.hexagons = {}
 	
@@ -149,11 +149,13 @@ function HexagonPuzzle:Render(window)
         if not Mouse:GetVisible() and not self.complete then
             Mouse:SetVisible(true)
         end
-		
-		if not self.complete then
-			self.time = self.time - self.delta
-			if self.time < 0 then
-				self.time = 0
+        
+        local time = tonumber(self.time:get())
+        if not self.complete then
+            local time_adj = time - self.delta
+			self.time:set(time_adj)
+			if time < 0 then
+				self.time:set(0)
 				self.active = false
 				ClientSound.Play(AssetLocation.Game, {
 					bank_id = 19,
@@ -167,7 +169,7 @@ function HexagonPuzzle:Render(window)
 			end
 		end
 		
-		local text = string.format("%.1f", self.time)
+		local text = string.format("%.1f", time)
 		local text_size = Render.Size.x * 0.035
 		local text_width = Render:GetTextWidth(text, text_size)
 		local text_pos = Vector2(Render.Size.x / 2 - text_width / 2, Render.Size.y * 0.035)
@@ -200,6 +202,6 @@ function HexagonPuzzle:Render(window)
 end
 
 Network:Subscribe(var("items/StartHack"):get(), function(args)
-    HexagonPuzzle(args.difficulty)
+    HexagonPuzzle(args.difficulty, args.time or 10)
     Mouse:SetVisible(true)
 end)

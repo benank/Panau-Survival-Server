@@ -48,7 +48,7 @@ function sHacker:UseItem(args, player)
     local player_iu = player:GetValue("ItemUse")
 
     if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed
-        and player_iu.item.name == "Hacker" and not player:GetValue("CurrentlyHacking") then
+        and (player_iu.item.name == "Hacker" or player_iu.item.name == "Master Hacker") and not player:GetValue("CurrentlyHacking") then
 
         local current_box = player:GetValue("CurrentLootbox")
         if not current_box or not current_box.locked then
@@ -70,7 +70,13 @@ function sHacker:UseItem(args, player)
         Inventory.OperationBlock({player = player, change = 1})
         player:SetValue("CurrentlyHacking", true)
 
-        Network:Send(player, "items/StartHack", {difficulty = self.difficulties[current_box.tier]})
+        local send_data = {difficulty = self.difficulties[current_box.tier]}
+
+        if player_iu.item.name == "Master Hacker" then
+            send_data.time = 20 -- Double time for Master Hacker
+        end
+
+        Network:Send(player, "items/StartHack", send_data)
 
     end
     
