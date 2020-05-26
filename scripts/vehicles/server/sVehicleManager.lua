@@ -116,7 +116,7 @@ function sVehicleManager:SaveVehicles()
 
     for id, v in pairs(self.owned_vehicles) do
         if IsValid(v) then 
-            self:SaveVehicle(vehicle_data.vehicle)
+            self:SaveVehicle(v)
         end
         Timer.Sleep(1)
     end
