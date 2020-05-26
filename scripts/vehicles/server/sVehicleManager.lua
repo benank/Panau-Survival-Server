@@ -507,7 +507,7 @@ function sVehicleManager:TryBuyVehicle(args)
     local player_lockpicks = Inventory.GetNumOfItem({player = args.player, item_name = "Lockpick"})
     local owned_vehicles = args.player:GetValue("OwnedVehicles")
 
-    if player_lockpicks < args.data.cost then
+    if not player_lockpicks or not args.data.cost or player_lockpicks < args.data.cost then
         Chat:Send(args.player, "You do not have enough lockpicks to purchase this vehicle!", Color.Red)
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
