@@ -26,7 +26,9 @@ function sAntiCheat:CheckServerHealth()
             local players = {}
 
             for p in Server:GetPlayers() do
-                players[p:GetId()] = p
+                if IsValid(p) then
+                    players[p:GetId()] = p
+                end
             end
 
             local seconds_elapsed = Server:GetElapsedSeconds()
