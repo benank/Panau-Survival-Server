@@ -39,19 +39,19 @@ function sVehicleManager:__init()
 
     Network:Subscribe("Vehicles/VehicleDestroyed", self, self.VehicleDestroyedClient)
 
-    Thread(function()
-        while true do
+    Timer.SetInterval(500, function()
+        --while true do
 
-            self:Tick500()
+            --self:Tick500()
 
-            Timer.Sleep(500)
-        end
+            --Timer.Sleep(500)
+        --end
     end)
 
 
     -- Respawn vehicles loop
-    Thread(function()
-        while true do
+    Timer.SetInterval(1000 * 60 * 60, function()
+        --while true do
 
             local random = math.random
 
@@ -65,37 +65,37 @@ function sVehicleManager:__init()
                         self:SpawnNaturalVehicle(spawn_type, index)
                     end
 
-                    Timer.Sleep(1)
+                    --Timer.Sleep(1)
                 end
 
             end
 
-            Timer.Sleep(1000 * 60 * 60)
-        end
+            --Timer.Sleep(1000 * 60 * 60)
+        --end
     end)
 
-    Thread(function()
-        while true do
+    Timer.SetInterval(1000 * 10, function()
+        --while true do
 
             log_function_call("CheckForDestroyedVehicles")
             self:CheckForDestroyedVehicles()
             log_function_call("CheckForDestroyedVehicles 2")
 
-            Timer.Sleep(1000 * 10)
+            --Timer.Sleep(1000 * 10)
 
-        end
+        --end
     end)
 
-    Thread(function()
-        while true do
+    Timer.SetInterval(1000 * 60, function()
+        --while true do
 
             log_function_call("sVehicleManager:SaveVehicles")
             self:SaveVehicles()
             log_function_call("sVehicleManager:SaveVehicles 2")
 
-            Timer.Sleep(1000 * 60)
+            --Timer.Sleep(1000 * 60)
 
-        end
+        --end
     end)
 
 end
@@ -116,9 +116,9 @@ function sVehicleManager:SaveVehicles()
 
     for id, v in pairs(self.owned_vehicles) do
         if IsValid(v) then 
-            self:SaveVehicle(vehicle_data.vehicle)
+            self:SaveVehicle(v:GetValue("VehicleData").vehicle)
         end
-        Timer.Sleep(1)
+        --Timer.Sleep(1)
     end
 
 end
@@ -256,7 +256,7 @@ function sVehicleManager:CheckForDestroyedVehicles()
             self.vehicles[id] = nil
         end
 
-        Timer.Sleep(1)
+        --Timer.Sleep(1)
 
     end
 

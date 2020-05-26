@@ -4,18 +4,20 @@ function ListHandler:__init()
 	self.PingList = {}
     self.LastTick = 0
     
-    Thread(function()
-        while true do
+    Timer.SetInterval(4000, function()
+        --while true do
             log_function_call("ListHandler:__init() 1")
             for player in Server:GetPlayers() do
-                self.PingList[tostring(player:GetSteamId())] = {
-                    ping = player:GetPing(), 
-                    level = player:GetValue("Exp") and player:GetValue("Exp").level or "..."
-                }
+                if IsValid(player) then
+                    self.PingList[tostring(player:GetSteamId())] = {
+                        ping = player:GetPing(), 
+                        level = player:GetValue("Exp") and player:GetValue("Exp").level or "..."
+                    }
+                end
             end
             log_function_call("ListHandler:__init() 2")
-            Timer.Sleep(4000)
-        end
+            --Timer.Sleep(4000)
+        --end
     end)
 
 	Network:Subscribe("SendPingList", self, self.SendPingList)
