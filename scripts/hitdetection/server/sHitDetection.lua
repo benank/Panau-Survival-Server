@@ -170,8 +170,8 @@ end
 
 function sHitDetection:CheckPendingHits()
     
-    Timer.SetInterval(10, function()
-        --while true do
+    Thread(function()
+        while true do
 
             if count_table(self.pending_hits) > 0 then
                 local data = table.remove(self.pending_hits)
@@ -184,25 +184,25 @@ function sHitDetection:CheckPendingHits()
                         self:BulletHit(v, data.player)
                     end
 
-                    --Timer.Sleep(3)
+                    Timer.Sleep(3)
 
                 end
             end
 
-            --Timer.Sleep(10)
-        --end
+            Timer.Sleep(10)
+        end
     end)
 
     
-    Timer.SetInterval(1000, function()
-        --while true do
+    Thread(function()
+        while true do
             log_function_call("sHitDetection self.pending_armor_aggregation")
             if count_table(self.pending_armor_aggregation) > 0 then
 
                 for steam_id, data in pairs(self.pending_armor_aggregation) do
                     for armor_name, hit_data in pairs(data) do
                         Events:Fire("HitDetection/ArmorDamaged", hit_data)
-                        --Timer.Sleep(300)
+                        Timer.Sleep(300)
                         self.pending_armor_aggregation[steam_id][armor_name] = nil
                     end
 
@@ -213,9 +213,9 @@ function sHitDetection:CheckPendingHits()
             end
             log_function_call("sHitDetection self.pending_armor_aggregation 2")
 
-            --Timer.Sleep(1000)
+            Timer.Sleep(1000)
 
-        --end
+        end
     end)
 
 end

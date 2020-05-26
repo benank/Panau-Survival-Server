@@ -14,12 +14,14 @@ end
 function sAntiCheat:CheckServerHealth()
     
     -- Check to see if the server is lagging
-    Timer.SetInterval(1000, function()
+    Thread(function()
         local last_time = Server:GetElapsedSeconds()
         local players_history = {}
         
-        --while true do
+        while true do
             log_function_call("sAntiCheat:CheckServerHealth()")
+
+            Timer.Sleep(1000)
 
             local players = {}
 
@@ -71,7 +73,7 @@ function sAntiCheat:CheckServerHealth()
             players_history[tostring(string.format("%.0f", last_time))] = players
             log_function_call("sAntiCheat:CheckServerHealth() 2")
 
-        --end
+        end
     end)
 
 end

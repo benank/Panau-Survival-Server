@@ -33,8 +33,8 @@ function sLootbox:__init(args)
     if self.is_dropbox then
 
         self.respawn_timer = true
-        Timer.SetTimeout(args.is_deathdrop and Lootbox.Deathdrop_Despawn_Time or Lootbox.Dropbox_Despawn_Time, function()
-            --Timer.Sleep(args.is_deathdrop and Lootbox.Deathdrop_Despawn_Time or Lootbox.Dropbox_Despawn_Time)
+        Thread(function()
+            Timer.Sleep(args.is_deathdrop and Lootbox.Deathdrop_Despawn_Time or Lootbox.Dropbox_Despawn_Time)
             self:Remove()
         end)
 
@@ -332,8 +332,8 @@ function sLootbox:StartRespawnTimer()
 
     self.respawn_timer = true
     
-    Timer.SetTimeout(self:GetRespawnTime(), function()
-        --Timer.Sleep(self:GetRespawnTime())
+    Thread(function()
+        Timer.Sleep(self:GetRespawnTime())
         self:RespawnBox()
     end)
 
