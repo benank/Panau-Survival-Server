@@ -3,13 +3,16 @@ class 'cLootbox'
 function cLootbox:__init(args)
 
     self.uid = args.uid
+    self.cell = args.cell
     self.position = args.position
     self.angle = args.angle
     self.tier = args.tier
     self.active = args.active
     self.model_data = args.model_data
     self.static_objects = {}
-    self.contents = {}
+    self.contents = args.contents or {}
+    self.stash = args.stash
+    self.locked = args.locked
 
     self:CreateModel()
 

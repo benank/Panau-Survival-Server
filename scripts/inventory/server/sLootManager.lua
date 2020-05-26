@@ -72,7 +72,7 @@ function sLootManager:PlayerCellUpdate(args)
 
         for _, lootbox in pairs(LootCells.Loot[update_cell.x][update_cell.y]) do
             if lootbox.active then -- Only get active boxes
-                table.insert(lootbox_data, lootbox:GetSyncData())
+                table.insert(lootbox_data, lootbox:GetSyncData(args.player))
             end
         end
     end
