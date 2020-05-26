@@ -61,8 +61,8 @@ Events:Subscribe("HitDetection/PlayerExplosionHit", function(args) ModifyBackpac
 Events:Subscribe("HitDetection/PlayerBulletHit", function(args) ModifyBackpackDurability(args) end)
 
 
-Timer.SetInterval(500, function()
-    --while true do
+Thread(function()
+    while true do
         log_function_call("backpacks local func = (function()")
         for steam_id, data in pairs(backpack_hits) do
             for item_name, item_hits in pairs(data) do
@@ -81,7 +81,7 @@ Timer.SetInterval(500, function()
                 end
 
                 backpack_hits[steam_id][item_name] = nil
-                --Timer.Sleep(500)
+                Timer.Sleep(500)
 
             end
 
@@ -91,6 +91,6 @@ Timer.SetInterval(500, function()
         end
         log_function_call("backpacks local func = (function() 2")
 
-        --Timer.Sleep(500)
-    --end
+        Timer.Sleep(500)
+    end
 end)

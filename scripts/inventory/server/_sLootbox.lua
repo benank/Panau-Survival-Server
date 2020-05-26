@@ -33,8 +33,8 @@ function sLootbox:__init(args)
     if self.is_dropbox then
 
         self.respawn_timer = true
-        Timer.SetTimeout(args.is_deathdrop and Lootbox.Deathdrop_Despawn_Time or Lootbox.Dropbox_Despawn_Time, function()
-            --Timer.Sleep(args.is_deathdrop and Lootbox.Deathdrop_Despawn_Time or Lootbox.Dropbox_Despawn_Time)
+        Thread(function()
+            Timer.Sleep(args.is_deathdrop and Lootbox.Deathdrop_Despawn_Time or Lootbox.Dropbox_Despawn_Time)
             self:Remove()
         end)
 
@@ -263,24 +263,23 @@ function sLootbox:TryOpenBox(args, player)
 
     if locked then
 
-        local data = {contents = {}, locked = locked}
-
         local lootbox_data = {
             uid = self.uid, 
             cell = self.cell, 
-            locked = locked, 
             tier = self.tier
         }
-
+    
         if self.is_stash then
-            data.stash = self.stash:GetSyncData()
-            lootbox_data.stash = data.stash
+            lootbox_data.stash = self.stash:GetSyncData()
         end
+    
+        -- Set current box anyway for hackers
+        player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell, lootbox = lootbox_data})
+    
+        player:SetValue("CurrentLootbox", self:GetSyncData(player))
+        Network:Send(player, "Inventory/LootboxOpen", self:GetSyncData(player))
 
-        player:SetValue("CurrentLootbox", lootbox_data)
-        Network:Send(player, "Inventory/LootboxOpen", data)
         return
-
     end
 
     self:Open(player)
@@ -332,8 +331,8 @@ function sLootbox:StartRespawnTimer()
 
     self.respawn_timer = true
     
-    Timer.SetTimeout(self:GetRespawnTime(), function()
-        --Timer.Sleep(self:GetRespawnTime())
+    Thread(function()
+        Timer.Sleep(self:GetRespawnTime())
         self:RespawnBox()
     end)
 
@@ -469,7 +468,7 @@ function sLootbox:GetContentsData()
 
 end
 
-function sLootbox:GetSyncData()
+function sLootbox:GetSyncData(player)
 
     local data = {
         tier = self.tier,
@@ -478,11 +477,20 @@ function sLootbox:GetSyncData()
         active = self.active,
         model_data = self.model_data,
         cell = self.cell,
-        uid = self.uid
+        uid = self.uid,
+        locked = self.locked
     }
 
+    -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
     if self.is_stash then
         data.stash = self.stash:GetSyncData()
+        if not self.stash:CanPlayerOpen(player) then
+            data.locked = true
+        end
+    end
+
+    if not data.locked then
+        data.contents = self:GetContentsData()
     end
 
     return data

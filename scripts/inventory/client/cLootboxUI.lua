@@ -233,6 +233,10 @@ function cLootboxUI:LootboxSync(args)
     if not LootManager.current_box then return end
 
     LootManager:RecreateContents(args.contents)
+    LootManager.current_box.stash = args.stash
+
+    LootManager.loot[LootManager.current_box.cell.x][LootManager.current_box.cell.y][LootManager.current_box.uid] = LootManager.current_box
+
     self:Update({action = "full", stash = args.stash})
 
 end
@@ -243,6 +247,9 @@ function cLootboxUI:LootboxOpen(args)
     if not LootManager.current_box then return end
 
     LootManager:RecreateContents(args.contents)
+    LootManager.current_box.stash = args.stash
+
+    LootManager.loot[LootManager.current_box.cell.x][LootManager.current_box.cell.y][LootManager.current_box.uid] = LootManager.current_box
 
     self:Update({action = "full", stash = args.stash, locked = args.locked})
 
@@ -362,6 +369,7 @@ function cLootboxUI:KeyUp(args)
             self:ToggleVisible()
         elseif IsValid(LootManager.current_looking_box) and not self.window:GetVisible() then
             LootManager.current_box = LootManager.current_looking_box
+            self:LootboxOpen(LootManager.current_box)
             Network:Send("Inventory/TryOpenBox" .. tostring(LootManager.current_looking_box.uid))
         end
         self.lootbox_title_window:SendToBack()
