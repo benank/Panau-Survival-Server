@@ -65,7 +65,7 @@ PlayerGetVehicle = Player.GetVehicle
 function Player:GetVehicle() if not v(self) then return end return PlayerGetVehicle(self) end
 
 PlayerGiveWeapon = Player.GiveWeapon
-function Player:GiveWeapon(number, weapon) if not v(self) then return end return PlayerGiveWeapon(number, weapon) end
+function Player:GiveWeapon(number, weapon) if not v(self) then return end return PlayerGiveWeapon(self,number, weapon) end
 
 PlayerInVehicle = Player.InVehicle
 function Player:InVehicle() if not v(self) then return end PlayerInVehicle(self) end
