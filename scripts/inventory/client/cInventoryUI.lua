@@ -223,9 +223,24 @@ function cInventoryUI:PopulateEntry(args)
         
         if stack:GetProperty("durable") then
 
-            durability:SetSizeAutoRel(Vector2(math.min(1, stack.contents[1].durability / stack.contents[1].max_durability) * 0.9, 0.1))
-            durability:SetColor(self:GetDurabilityColor(stack.contents[1].durability / stack.contents[1].max_durability))
+            local durability_amt = stack.contents[1].durability / stack.contents[1].max_durability
+            local num_dura_x = math.floor(durability_amt)
+
+            if durability_amt >= 1 then
+                durability_amt = durability_amt - num_dura_x
+            end
+
+            durability:SetSizeAutoRel(Vector2(durability_amt * 0.9, 0.1))
+            durability:SetColor(self:GetDurabilityColor(durability_amt))
             durability:Show()
+
+            for i = 1, 5 do
+                if i <= num_dura_x then
+                    itemwindow:FindChildByName(string.format("dura_%dx", i), true):Show()
+                else
+                    itemwindow:FindChildByName(string.format("dura_%dx", i), true):Hide()
+                end
+            end
 
         else
 
@@ -425,8 +440,22 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     button:SetTextPressedColor(colors.text_hover)
 
     local durability = Rectangle.Create(itemWindow, "dura")
-    durability:SetPositionRel(Vector2(0.05, 0.75))
+    durability:SetPositionRel(Vector2(0.05, 0.7))
     durability:Hide()
+
+    -- Create extra dura bars
+    local dura_bar_margin = 0.01
+    local dura_bar_width = (0.9 - dura_bar_margin * 5) / 5
+    for i = 1, 5 do
+
+        local dura_x = Rectangle.Create(itemWindow, string.format("dura_%dx", i))
+        local pos = Vector2(0.05 + (dura_bar_width + dura_bar_margin) * (i - 1), 0.85)
+        dura_x:SetPositionRel(pos)
+        dura_x:SetSizeAutoRel(Vector2(dura_bar_width, 0.05))
+        dura_x:SetColor(Color.White)
+        dura_x:Hide()
+    
+    end
 
     local equip_outer = Rectangle.Create(itemWindow, "equip_outer")
     equip_outer:SetSize(Vector2(10, 10))
