@@ -8,9 +8,11 @@ function Thread:__init(func)
         self.finished = true
     end
     
-    local f = coroutine.wrap(function()
+    local f = coroutine.create(function()
 
-        self.status, self.error = pcall(coroutine.wrap(modified_func)) -- runs the thread
+        local cr = coroutine.create(modified_func) -- runs the thread
+
+        self.status, self.error = coroutine.resume(cr)
 
         while not self.finished and not self.error do
             Timer.Sleep(100)
@@ -18,7 +20,11 @@ function Thread:__init(func)
 
         assert(self.status, string.format("Thread error: %s", self.error))
 
-    end)()
+    end)
+
+    coroutine.resume(f)
+
+
 end
 
 function Thread:IsFinished()
