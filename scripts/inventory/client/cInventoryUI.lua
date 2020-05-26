@@ -221,7 +221,7 @@ function cInventoryUI:PopulateEntry(args)
         button:GetParent():FindChildByName("text"):SetText(self:GetItemNameWithAmount(stack, args.index))
         button:GetParent():FindChildByName("text_shadow"):SetText(self:GetItemNameWithAmount(stack, args.index))
         
-        if stack:GetProperty("durable") then
+        if stack:GetProperty("durable") and stack.contents[1].durability and stack.contents[1].max_durability > 0 then
 
             local durability_amt = stack.contents[1].durability / stack.contents[1].max_durability
             local num_dura_x = math.floor(durability_amt)

@@ -33,9 +33,9 @@ Events:Subscribe("SecondTick", function()
     log_function_call("players_with_parachutes coroutine 2")
 end)
 
-Thread(function()
+Timer.SetInterval(3000, function()
 
-    while true do
+    --while true do
         log_function_call("Server:GetPlayers() ParachutingValue")
         for player in Server:GetPlayers() do
 
@@ -56,12 +56,12 @@ Thread(function()
                 end
             end
 
-            Timer.Sleep(5)
+            --Timer.Sleep(5)
         end
         log_function_call("Server:GetPlayers() ParachutingValue 2")
 
-        Timer.Sleep(3000)
+        --Timer.Sleep(3000)
 
-    end
+    --end
 
 end)

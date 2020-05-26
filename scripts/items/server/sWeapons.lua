@@ -60,8 +60,8 @@ end
 
 function sWeaponManager:CheckPendingShots()
     
-    Thread(function()
-        while true do
+    Timer.SetInterval(100, function()
+        --while true do
             if count_table(self.pending_fire) > 0 then
 
                 for steam_id, data in pairs(self.pending_fire) do
@@ -77,8 +77,8 @@ function sWeaponManager:CheckPendingShots()
                 end
             end
 
-            Timer.Sleep(100)
-        end
+            --Timer.Sleep(100)
+        --end
     end)
 
 end

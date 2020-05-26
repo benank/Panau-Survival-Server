@@ -76,7 +76,7 @@ end
 
 function sStats:MinuteTick()
 
-    Thread(function()
+    --Thread(function()
         log_function_call("sStats:MinuteTick")
         for p in Server:GetPlayers() do
             if IsValid(p) then
@@ -91,10 +91,10 @@ function sStats:MinuteTick()
                     })
                 end
             end
-            Timer.Sleep(1)
+            --Timer.Sleep(1)
         end
         log_function_call("sStats:MinuteTick 2")
-    end)
+    --end)
 
 end
 
