@@ -68,7 +68,7 @@ function sWeaponManager:CheckPendingShots()
                     for weapon_id, ammo_data in pairs(data) do
                         self:ProcessWeaponShot(ammo_data)
                         self.pending_fire[steam_id][weapon_id] = nil
-                        Timer.Sleep(100)
+                        --Timer.Sleep(100)
                     end
 
                     if count_table(self.pending_fire[steam_id]) == 0 then
