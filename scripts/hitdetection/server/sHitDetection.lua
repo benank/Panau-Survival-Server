@@ -457,7 +457,7 @@ end
 
 function sHitDetection:CheckHealth(player, old_hp, damage)
 
-    Timer.SetTimeout(10 * player:GetPing() + 500, function()
+    Timer.SetTimeout(20 * player:GetPing() + 1000, function()
         -- If they healed recently, disregard
         if not IsValid(player) then return end 
 
