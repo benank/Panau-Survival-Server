@@ -1,8 +1,3 @@
-
-NetworkSend = Network.Send
-function Network:Send(player, string, object) if not v(player) then return end NetworkSend(self, player, string, object) end
-
-
 class 'fakesql'
 
 function fakesql:__init()
