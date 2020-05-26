@@ -112,6 +112,8 @@ function sLootManager:LoadFromFile()
     local counter = 0
 	local spawn_timer = Timer() -- time loot spawn time
     local file = io.open(self.lootspawn_file, "r") -- read from lootspawns.txt
+
+    local tiers = {}
     
 	if file ~= nil then -- file might not exist
 		for line in file:lines() do
@@ -121,6 +123,12 @@ function sLootManager:LoadFromFile()
 				counter = counter + 1
                 local tokens = line:split(",")
                 local tier = tonumber(tokens[1])
+
+                if not tiers[tier] then
+                    tiers[tier] = 1
+                else
+                    tiers[tier] = tiers[tier] + 1
+                end
 
                 -- If this box is a spawnable box
                 if Lootbox.GeneratorConfig.spawnable[tier] then
@@ -138,7 +146,10 @@ function sLootManager:LoadFromFile()
 		file:close()
 	else
 		print("Fatal Error: Could not load loot from file")
-	end
+    end
+    
+    print(string.format("Loaded: %d tier 1, %d tier 2, %d tier 3, %d tier 4", 
+        tiers[Lootbox.Types.Level1], tiers[Lootbox.Types.Level2], tiers[Lootbox.Types.Level3], tiers[Lootbox.Types.Level4]))
 
 end
 
