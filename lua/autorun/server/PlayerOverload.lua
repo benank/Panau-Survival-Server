@@ -44,7 +44,7 @@ PlayerGetLinearVelocity = Player.GetLinearVelocity
 function PlayerGetLinearVelocity() if not v(self) then return end return PlayerGetLinearVelocity(self) end
 
 PlayerGetModelId = Player.GetModelId
-function Player:GetModelId() if not v(self) then return end return PlayerGetModelId() end
+function Player:GetModelId() if not v(self) then return end return PlayerGetModelId(self) end
 
 PlayerGetName = Player.GetName
 function Player:GetName() if not v(self) then return end return PlayerGetName(self) end
