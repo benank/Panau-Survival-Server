@@ -431,6 +431,8 @@ function sInventory:DropStacks(args, player)
         return
     end
 
+    if player:GetValue("StuntingVehicle") then return end
+
     if not self:CanPlayerPerformOperations(player) then return end
 
     self.operation_block = self.operation_block + 1
