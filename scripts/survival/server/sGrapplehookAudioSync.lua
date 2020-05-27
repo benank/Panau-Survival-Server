@@ -1,4 +1,4 @@
-class 'GrapplehookAudioSync'
+--[[class 'GrapplehookAudioSync'
 
 function GrapplehookAudioSync:__init()
 
@@ -16,4 +16,4 @@ function GrapplehookAudioSync:FireGrapplehookHitSound(args, player)
     Network:SendNearby(player, "SyncedGrapplehookSound", {position = args.position, sound = 212})
 end
 
-GrapplehookAudioSync = GrapplehookAudioSync()
+GrapplehookAudioSync = GrapplehookAudioSync()]]
