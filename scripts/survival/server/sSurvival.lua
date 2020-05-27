@@ -8,7 +8,7 @@ function sSurvivalManager:__init()
 
     self:SetupIntervals()
 
-    Network:Subscribe("Survival/Ready", self, self.PlayerReady)
+    Network:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Network:Subscribe("Survival/UpdateClimateZone", self, self.UpdateClimateZone)
     Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
@@ -19,6 +19,7 @@ end
 
 -- Set player's health after the loading screen
 function sSurvivalManager:LoadStatus(args)
+    if not IsValid(args.player) then return end
     if args.status ~= false then return end
     if not args.player:GetValue("TargetHealth") then return end
 
@@ -99,6 +100,8 @@ function sSurvivalManager:UpdateClimateZone(args, player)
 end
 
 function sSurvivalManager:PlayerSpawn(args)
+
+    if not IsValid(args.player) then return end
 
     -- Player Respawned
     if args.player:GetValue("dead") then
@@ -199,7 +202,7 @@ function sSurvivalManager:AdjustSurvivalStats(player)
 
 end
 
-function sSurvivalManager:PlayerReady(args, player)
+function sSurvivalManager:ClientModuleLoad(args, player)
 
     local steamID = tostring(player:GetSteamId())
     
