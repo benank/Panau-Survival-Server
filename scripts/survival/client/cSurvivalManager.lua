@@ -15,8 +15,6 @@ function cSurvivalManager:__init()
 
     Events:Fire("loader/CompleteResource", {count = 2})
 
-    Network:Send("Survival/Ready")
-
     Network:Subscribe("Survival/Update", self, self.Update)
     Events:Subscribe("Render", self, self.Render)
     Events:Subscribe("MinuteTick", self, self.MinuteTick)
