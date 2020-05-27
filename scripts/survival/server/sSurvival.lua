@@ -250,6 +250,8 @@ end
 
 function sSurvivalManager:UpdateDB(player)
 
+    if not IsValid(player) then return end
+
     local steamID = tostring(player:GetSteamId())
     local survival = player:GetValue("Survival")
 
