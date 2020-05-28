@@ -39,7 +39,7 @@ function cSurvivalManager:LocalPlayerInput(args)
 end
 
 function cSurvivalManager:UpdateClimateZone()
-    Network:Send("Survival/UpdateClimateZone", {zone = LocalPlayer:GetClimateZone()})
+    --Network:Send("Survival/UpdateClimateZone", {zone = LocalPlayer:GetClimateZone()})
 end
 
 function cSurvivalManager:MinuteTick()
@@ -49,7 +49,6 @@ end
 function cSurvivalManager:Render(args)
 
     self.hud:Render(args)
-    --self.grapple_manager:Render(args)
 
 end
 
