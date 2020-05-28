@@ -1,4 +1,4 @@
---[[config = 
+config = 
 {
     defaults = 
     {
@@ -47,4 +47,4 @@
         ["Macadamia Nuts"] = {hunger = 25, thirst = 0},
         ["CamelBak"] = {hunger = 0, thirst = 12, dura_per_use = 10}
     }
-}]]
+}

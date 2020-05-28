@@ -1,4 +1,4 @@
---[[class 'sSurvivalManager'
+class 'sSurvivalManager'
 
 
 function sSurvivalManager:__init()
@@ -284,4 +284,4 @@ end
 
 SQL:Execute("CREATE TABLE IF NOT EXISTS survival (steamID VARCHAR UNIQUE, health REAL, hunger REAL, thirst REAL, radiation REAL)")
 
-SurvivalManager = sSurvivalManager()]]
+SurvivalManager = sSurvivalManager()
