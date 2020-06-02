@@ -9,6 +9,9 @@ function ProjectileBullet:__init(args)
     self.velocity = args.velocity
     self.bloom = args.bloom or 0
 
+    self.bullet_color = Color(252, 221, 121)
+    self.bullet_size = args.bullet_size
+
     self.is_splash = args.is_splash
     self.life_timer = Timer()
 
@@ -120,10 +123,11 @@ function ProjectileBullet:HitSomething(raycast)
         end
     end
 
-    local effect_time = 1000
+    local effect_time = 1500
     local size = 0.05
     self.effect_timer = Timer()
     self.angle = Angle.FromVectors(raycast.normal, Vector3.Forward) * Angle(0, math.pi / 2, 0)
+
     self.gamerender = Events:Subscribe("GameRender", function(args)
     
         local t = Transform3():Translate(self.current_position + Camera:GetAngle() * Vector3.Backward * 0.1):Rotate(Camera:GetAngle())
@@ -131,7 +135,7 @@ function ProjectileBullet:HitSomething(raycast)
 
         local time = self.effect_timer:GetMilliseconds()
 
-        local color = Color(255, 0, 0, 200)
+        local color = self.bullet_color
         Render:FillCircle(Vector3.Zero, size - time / effect_time * size, color)
 
         if time > effect_time then
@@ -147,7 +151,7 @@ function ProjectileBullet:HitSomething(raycast)
         effect_id = 2
     })]]
 
-    if HitDetection.debug_enabled then
+    if WeaponHitDetection.debug_enabled then
         Chat:Print("Bullet Distance Travelled: " .. tostring(self.total_distance_covered), Color.Yellow)
     end
 
@@ -155,13 +159,17 @@ function ProjectileBullet:HitSomething(raycast)
     self:SetActive(false)
 end
 
-function ProjectileBullet:CalculatePosition()
+function ProjectileBullet:GetForward()
     local life_time = self.life_timer:GetSeconds()
     if life_time < 0.001 then
         life_time = 0.01
     end
     local forward = life_time * self.velocity
-    local new_position = self.initial_position + (self.angle * (Vector3.Forward * forward))
+    return forward
+end
+
+function ProjectileBullet:CalculatePosition()
+    local new_position = self.initial_position + (self.angle * (Vector3.Forward * self:GetForward()))
     self.current_position = new_position
 end
 
@@ -171,6 +179,15 @@ end
 
 function ProjectileBullet:CalculateDistanceCoveredSinceLastRaycast()
     self.distance_covered_since_last_raycast = Vector3.Distance(self.last_raycast_position, self.current_position)
+end
+
+function ProjectileBullet:RenderLine()
+    if not self:GetActive() then return end
+    Render:DrawLine(
+        self.current_position,
+        self.current_position + (self.angle * (Vector3.Forward * self.velocity * self.bullet_size)),
+        self.bullet_color
+    )
 end
 
 function ProjectileBullet:Render()

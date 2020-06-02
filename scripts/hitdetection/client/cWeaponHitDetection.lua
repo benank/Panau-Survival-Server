@@ -2,48 +2,18 @@ class "WeaponHitDetection"
 
 function WeaponHitDetection:__init()
     -- stops bullets from removing from the world so you can see where they land + other prints
-    self.debug_enabled = true
+    self.debug_enabled = false
 
     self.bloom = 0
-
-    self.weapon_bullets = {
-        [WeaponEnum.MachineGun] = ProjectileBullet,
-        [WeaponEnum.Revolver] = ProjectileBullet,
-        [WeaponEnum.Handgun] = ProjectileBullet,
-        [WeaponEnum.BubbleGun] = ProjectileBullet,
-        [WeaponEnum.PanayRocketLauncher] = ProjectileBullet,
-        [WeaponEnum.RocketLauncher] = ProjectileBullet
-    }
-
-    self.weapon_velocities = {
-        [WeaponEnum.BubbleGun] = 1.5,
-        [WeaponEnum.Handgun] = 300,
-        [WeaponEnum.Revolver] = 400,
-        [WeaponEnum.MachineGun] = 550,
-        [WeaponEnum.PanayRocketLauncher] = 100, -- untested
-        [WeaponEnum.RocketLauncher] = 100 -- dont change this, it's the base-game velocity
-    }
-
-    self.weapon_blooms = {
-        [WeaponEnum.BubbleGun] = 10,
-        [WeaponEnum.Handgun] = 1.2,
-        [WeaponEnum.Revolver] = 3,
-        [WeaponEnum.MachineGun] = 1 -- Bloom per shot
-    }
-
-    self.splash_weapons = {
-        [WeaponEnum.PanayRocketLauncher] = true,
-        [WeaponEnum.BubbleGun] = true,
-        [WeaponEnum.RocketLauncher] = true
-    }
+    self.max_bloom = 100
 
     self.bullet_id_counter = 0
     self.bullets = {}
 
     Events:Subscribe("PreTick", self, self.PreTick)
-    if self.debug_enabled then
-        Events:Subscribe("Render", self, self.RenderDebug) -- for debug / testing
-    end
+    Events:Subscribe("Render", self, self.Render)
+
+    Events:Subscribe("GameRenderOpaque", self, self.GameRenderOpaque)
     Events:Subscribe(var("LocalPlayerBulletDirectHitEntity"):get(), self, self.LocalPlayerBulletDirectHitEntity)
     Events:Subscribe(var("FireWeapon"):get(), self, self.FireWeapon)
 end
@@ -65,7 +35,9 @@ function WeaponHitDetection:PreTick(args)
     end
 
     if self.bloom > 0 then
-        self.bloom = math.max(0, self.bloom - math.pow(2, self.bloom * 0.5) * args.delta)
+        self.bloom = math.max(
+            self.bloom - math.pow(2, self.bloom * 0.4) * args.delta, 
+            0)
     end
 end
 
@@ -78,22 +50,25 @@ function WeaponHitDetection:FireWeapon(args)
     end
     if not equipped_weapon_enum then return end
 
-    local bullet_class = self.weapon_bullets[equipped_weapon_enum]
-    if not bullet_class then
+    local bullet_config = cWeaponBulletConfig:GetByWeaponEnum(equipped_weapon_enum)
+
+    if not bullet_config then
         Chat:Print("No bullet configured for this weapon!", Color.Red)
     end
 
     local bullet_data = {
         id = self.bullet_id_counter,
         weapon_enum = equipped_weapon_enum,
-        velocity = self.weapon_velocities[equipped_weapon_enum],
-        is_splash = self.splash_weapons[equipped_weapon_enum] ~= nil,
-        bloom = self.bloom
+        velocity = bullet_config.speed,
+        is_splash = bullet_config.splash ~= nil,
+        bloom = self.bloom,
+        bullet_size = bullet_config.bullet_size
     }
-    local bullet = bullet_class(bullet_data)
+
+    local bullet = bullet_config.type(bullet_data)
     self.bullet_id_counter = self.bullet_id_counter + 1
     
-    self.bloom = self.bloom + self.weapon_blooms[equipped_weapon_enum]
+    self.bloom = math.min(self.bloom + bullet_config.bloom, self.max_bloom)
 
     self.bullets[bullet:GetId()] = bullet
 
@@ -116,20 +91,25 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
 
     -- TODO: add vehicle support
 
-    -- debugging / testing by using a ClientActor instead of a Player
-    --[[
+end
 
-    ]]
-    if self.debug_enabled then
-        if args.entity_type == "ClientActor" then
-            local victim = ClientActor.GetById(args.entity_id)
-            Network:Send("HitDetection/DetectPlayerHit", {
-                victim_steam_id = 34,
-                weapon_enum = args.weapon_enum,
-                bone_enum = victim:GetClosestBone(args.hit_position)
-            })
-        end
+function WeaponHitDetection:GameRenderOpaque(args)
+    for bullet_id, bullet in pairs(self.bullets) do
+        bullet:RenderLine()
     end
+end
+
+function WeaponHitDetection:Render(args)
+
+    -- Draw bloom circle
+    if self.bloom > 0 then
+        Render:DrawCircle(Render.Size / 2, math.min(50, self.bloom * 5), Color(255,255,255,100))
+    end
+
+    if self.debug_enabled then
+        self:RenderDebug()
+    end
+
 end
 
 function WeaponHitDetection:RenderDebug()
@@ -138,4 +118,4 @@ function WeaponHitDetection:RenderDebug()
     end
 end
 
-HitDetection = HitDetection()
+WeaponHitDetection = WeaponHitDetection()
