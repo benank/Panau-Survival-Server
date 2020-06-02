@@ -42,7 +42,7 @@ end
 function sItemGenerator:GetStack(tier, groups)
 
     if not Lootbox.GeneratorConfig.spawnable[tier] then
-        error("sItemGenerator:GetItem failed: invalid tier specified")
+        error(debug.traceback("sItemGenerator:GetItem failed: invalid tier specified"))
     end
 
     local group = self:FindGroupName(tier)
@@ -118,7 +118,7 @@ function sItemGenerator:FindGroupName(tier)
 
     end
 
-    error("No group name found in sItemGenerator:FindGroupName! Did you make the rarities absolute?")
+    error(debug.traceback("No group name found in sItemGenerator:FindGroupName! Did you make the rarities absolute?"))
 
 end
 
