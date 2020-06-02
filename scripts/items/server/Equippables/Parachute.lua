@@ -19,7 +19,7 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
 end)
 
---[[Events:Subscribe("SecondTick", function()
+Events:Subscribe("SecondTick", function()
     log_function_call("players_with_parachutes coroutine")
     for player in Server:GetPlayers() do
         if IsValid(player) and players_with_parachutes[player:GetId()] then
@@ -64,4 +64,4 @@ Thread(function()
 
     end
 
-end)]]
+end)
