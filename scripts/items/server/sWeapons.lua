@@ -200,20 +200,21 @@ function sWeaponManager:RefreshEquippedWeapons(player)
 
     if not IsValid(player) then return end
 
+    print("sWeaponManager:RefreshEquippedWeapons")
+
     local player_equipped = player:GetValue("EquippedItems")
     local equipped_weapons = player:GetValue("EquippedWeapons")
 
-    player:ClearInventory()
+    local equipped_weapon = player:GetEquippedWeapon()
+    local equipped_weapon_slot = player:GetEquippedSlot()
 
     Thread(function()
+        Network:Send(player, "items/ForceWeaponZoomout")
         Timer.Sleep(500)
 
         if not IsValid(player) then return end
         player:ClearInventory()
-        Timer.Sleep(100)
 
-        if not IsValid(player) then return end
-            
         for name,v in pairs(player_equipped) do
 
             local item_equipped_config = ItemsConfig.equippables.weapons[name]
@@ -247,7 +248,6 @@ function sWeaponManager:RefreshEquippedWeapons(player)
         end
 
         player:SetValue("EquippedWeapons", equipped_weapons)
-
 
     end)
 
