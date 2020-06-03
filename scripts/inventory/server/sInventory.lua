@@ -643,6 +643,8 @@ end
 
 function sInventory:OperationBlockRemote(args)
 
+    if not IsValid(self.player) then return end
+
     if args.player ~= self.player then
         error(debug.traceback("sInventory:OperationBlockRemote failed: player does not match"))
         return
