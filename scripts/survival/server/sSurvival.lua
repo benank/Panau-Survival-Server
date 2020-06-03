@@ -8,7 +8,7 @@ function sSurvivalManager:__init()
 
     self:SetupIntervals()
 
-    Network:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Network:Subscribe("Survival/UpdateClimateZone", self, self.UpdateClimateZone)
     Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
@@ -189,7 +189,7 @@ function sSurvivalManager:AdjustSurvivalStats(player)
     if player:GetValue("InSafezone") then return end
     if player:GetValue("Invincible") then return end
 
-    local zone_mod = config.decaymods[player:GetValue("ClimateZone")]
+    local zone_mod = config.decaymods[player:GetValue("ClimateZone")] or config.decaymods[ClimateZone.City]
 
     survival.hunger = math.max(survival.hunger - config.decay.hunger * zone_mod.hunger, 0)
     survival.thirst = math.max(survival.thirst - config.decay.thirst * zone_mod.thirst, 0)
@@ -202,8 +202,9 @@ function sSurvivalManager:AdjustSurvivalStats(player)
 
 end
 
-function sSurvivalManager:ClientModuleLoad(args, player)
+function sSurvivalManager:ClientModuleLoad(args)
 
+    local player = args.player
     local steamID = tostring(player:GetSteamId())
     
 	local query = SQL:Query("SELECT * FROM survival WHERE steamID = (?) LIMIT 1")
