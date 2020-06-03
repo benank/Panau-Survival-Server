@@ -12,6 +12,9 @@ DamageEntity.Suicide = 15
 DamageEntity.AdminKill = 16
 DamageEntity.C4 = 17
 DamageEntity.Food = 18
+DamageEntity.MeleeGrapple = 19
+DamageEntity.MeleeKick = 20
+DamageEntity.MeleeSlidingKick = 21
 
 DamageEntityNames = 
 {
@@ -33,5 +36,8 @@ DamageEntityNames =
     [DamageEntity.Suicide] = "Respawn",
     [DamageEntity.AdminKill] = "Admin Kill",
     [DamageEntity.C4] = "C4",
-    [DamageEntity.Food] = "Food"
+    [DamageEntity.Food] = "Food",
+    [DamageEntity.MeleeGrapple] = "Grapplehook",
+    [DamageEntity.MeleeKick] = "Melee Kick",
+    [DamageEntity.MeleeSlidingKick] = "Melee Sliding Kick",
 }

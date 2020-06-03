@@ -205,39 +205,51 @@ function sWeaponManager:RefreshEquippedWeapons(player)
 
     player:ClearInventory()
 
-    for name,v in pairs(player_equipped) do
+    Thread(function()
+        Timer.Sleep(500)
 
-        local item_equipped_config = ItemsConfig.equippables.weapons[name]
+        if not IsValid(player) then return end
+        player:ClearInventory()
+        Timer.Sleep(100)
 
-        if (v.equip_type == "weapon_1h" or v.equip_type == "weapon_2h")
-         and item_equipped_config and item_equipped_config.weapon_id then
+        if not IsValid(player) then return end
+            
+        for name,v in pairs(player_equipped) do
 
-            local ammo = self:GetWeaponAmmo({weapon_name = name, player = player})
-            player:SetValue("WeaponAmmo", ammo)
+            local item_equipped_config = ItemsConfig.equippables.weapons[name]
 
-            player:GiveWeapon(item_equipped_config.equip_slot, Weapon(
-                item_equipped_config.weapon_id,
-                0,
-                ammo
-            ))
+            if (v.equip_type == "weapon_1h" or v.equip_type == "weapon_2h")
+            and item_equipped_config and item_equipped_config.weapon_id then
 
-            equipped_weapons[name] = {
-                id = item_equipped_config.weapon_id,
-                ammo = ammo
-            }
+                local ammo = self:GetWeaponAmmo({weapon_name = name, player = player})
+                player:SetValue("WeaponAmmo", ammo)
 
-            Network:Send(player, "items/ForceWeaponSwitch", 
-            {
-                slot = item_equipped_config.equip_slot,
-                weapon = item_equipped_config.weapon_id,
-                ammo = ammo
-            })
+                player:GiveWeapon(item_equipped_config.equip_slot, Weapon(
+                    item_equipped_config.weapon_id,
+                    0,
+                    ammo
+                ))
+
+                equipped_weapons[name] = {
+                    id = item_equipped_config.weapon_id,
+                    ammo = ammo
+                }
+
+                Network:Send(player, "items/ForceWeaponSwitch", 
+                {
+                    slot = item_equipped_config.equip_slot,
+                    weapon = item_equipped_config.weapon_id,
+                    ammo = ammo
+                })
+
+            end
 
         end
 
-    end
+        player:SetValue("EquippedWeapons", equipped_weapons)
 
-    player:SetValue("EquippedWeapons", equipped_weapons)
+
+    end)
 
 end
 
