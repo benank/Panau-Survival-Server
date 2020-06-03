@@ -4,15 +4,26 @@ function Thread:__init(func)
 
     self.finished = false
 
-    local cr = coroutine.create(func) -- runs the thread
-
-    self.status, self.error = coroutine.resume(cr, self)
-
-    self.finished = true
-
-    if not self.status then
-        error(debug.traceback(cr, self.error))
+    local modified_func = function()
+        func()
+        self.finished = true
     end
+    
+    local f = coroutine.wrap(function()
+
+        local co = coroutine.create(modified_func) -- runs the thread
+
+        self.status, self.error = coroutine.resume(co)
+
+        while not self.finished do
+            Timer.Sleep(100)
+        end
+
+        if not self.status then
+            error(debug.traceback(co, self.error))
+        end
+
+    end)()
 
 end
 
