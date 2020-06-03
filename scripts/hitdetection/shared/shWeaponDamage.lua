@@ -129,32 +129,36 @@ function WeaponDamage:GetDamageForWeapon(weapon_enum)
     return self.weapon_damages[weapon_enum]
 end
 
-function WeaponDamage:CalculatePlayerDamage(weapon_enum, bone_enum, distance)
+function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, hit_type, distance)
+
     local base_damage = self.weapon_damages[weapon_enum].base
     local bone_damage_modifier = self.bone_damage_modifiers[bone_enum]
+    local hit_type = self.bone_damage_modifiers[bone_enum].type
     local falloff_modifier = self.weapon_damages[weapon_enum].falloff(distance, self.weapon_damages[weapon_enum].distance_falloff)
-    local armor_mod = 
-
 
     local damage = weapon_damage * bone_damage_modifier * falloff_modifier * 100
+
+    local armor_mod = self:GetArmorMod(victim, hit_type, damage)
 
     return math.floor(damage) / 100
 end
 
-function WeaponDamage:GetArmorMod(player, hit_type, damage, original_damage)
+function WeaponDamage:GetArmorMod(player, hit_type, damage)
 
     assert(IsValid(player), "player was invalid")
+
+    local original_damage = damage
 
     local equipped_items = player:GetValue("EquippedItems")
     local steam_id = tostring(player:GetSteamId())
 
-    for armor_name, mods in pairs(ArmorModifiers) do
-        if equipped_items[armor_name] and ArmorModifiers[armor_name][hit_type] > 0 then
+    for armor_name, mods in pairs(self.ArmorModifiers) do
+        if equipped_items[armor_name] and self.ArmorModifiers[armor_name][hit_type] > 0 then
 
-            damage = damage * (1 - ArmorModifiers[armor_name][hit_type])
+            damage = damage * (1 - self.ArmorModifiers[armor_name][hit_type])
 
             -- If the armor prevented some damage, then modify its durability
-            if ArmorModifiers[armor_name][hit_type] > 0 then
+            if self.ArmorModifiers[armor_name][hit_type] > 0 then
                 
                 if not self.pending_armor_aggregation[steam_id] then
                     self.pending_armor_aggregation[steam_id] = {}
@@ -165,12 +169,12 @@ function WeaponDamage:GetArmorMod(player, hit_type, damage, original_damage)
                     {
                         player = player,
                         armor_name = armor_name,
-                        damage_diff = original_damage - original_damage * (1 - ArmorModifiers[armor_name][hit_type])
+                        damage_diff = original_damage - original_damage * (1 - self.ArmorModifiers[armor_name][hit_type])
                     }
                 else
                     self.pending_armor_aggregation[steam_id][armor_name].damage_diff = 
                         self.pending_armor_aggregation[steam_id][armor_name].damage_diff +
-                        original_damage - original_damage * (1 - ArmorModifiers[armor_name][hit_type])
+                        original_damage - original_damage * (1 - self.ArmorModifiers[armor_name][hit_type])
                 end
             end
 

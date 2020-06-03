@@ -16,6 +16,17 @@ function WeaponHitDetection:__init()
     Events:Subscribe("GameRenderOpaque", self, self.GameRenderOpaque)
     Events:Subscribe(var("LocalPlayerBulletDirectHitEntity"):get(), self, self.LocalPlayerBulletDirectHitEntity)
     Events:Subscribe(var("FireWeapon"):get(), self, self.FireWeapon)
+    Events:Subscribe(var("LocalPlayerBulletHit"):get(), self, self.LocalPlayerBulletHit)
+    Events:Subscribe(var("LocalPlayerExplosionHit"):get(), self, self.LocalPlayerExplosionHit)
+end
+
+-- Block default weapons
+function WeaponHitDetection:LocalPlayerExplosionHit(args)
+    return false
+end
+
+function WeaponHitDetection:LocalPlayerBulletHit(args)
+    return false
 end
 
 function WeaponHitDetection:GetWeaponVelocity(weapon_enum)

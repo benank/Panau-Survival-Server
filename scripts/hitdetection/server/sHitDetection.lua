@@ -432,7 +432,7 @@ end
 
 function sHitDetection:ExplosionHit(args, player)
 
-    if not IsValid(player) then return end
+    --[[if not IsValid(player) then return end
     if not IsValid(args.attacker) then return end
 
     if args.attacker:GetValue("InSafezone") then return end
@@ -466,7 +466,7 @@ function sHitDetection:ExplosionHit(args, player)
         player = player,
         attacker = args.attacker,
         damage = damage
-    })
+    })]]
 
 end
 
@@ -498,14 +498,7 @@ function sHitDetection:DetectPlayerHit(args, player)
     local weapon = args.attacker:GetEquippedWeapon()
     local damage = WeaponDamage:CalculatePlayerDamage(args.weapon_enum, args.bone_enum, args.distance_travelled)
 
-    if not base_damage then return end
-
-    local hit_type = BoneModifiers[args.bone.name].type
-    local original_damage = WeaponBaseDamage[weapon.id] * BoneModifiers[args.bone.name].mod
-    local damage = original_damage
-    damage = self:GetArmorMod(player, hit_type, damage, original_damage)
-
-    self:ApplyDamage(victim, , DamageEntity.Bullet, tostring(player:GetSteamId()))
+    self:ApplyDamage(victim, damage, DamageEntity.Bullet, tostring(player:GetSteamId()))
 
     Events:Fire("HitDetection/PlayerBulletHit", {
         player = victim,
