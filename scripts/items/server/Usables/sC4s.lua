@@ -78,6 +78,8 @@ function sC4s:InventoryUpdated(args)
     -- Check if they dropped a placed c4 and remove it if so
     Thread(function()
 
+        if not IsValid(args.player) then return end
+
         log_function_call("sC4s:InventoryUpdated coroutine")
         local player_placed_c4s = {}
         local player_id = tostring(args.player:GetSteamId())

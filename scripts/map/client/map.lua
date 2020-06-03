@@ -43,7 +43,8 @@ Location.Icon = {
 
 Location.Color = 
 {
-    Green = Color(0, 255, 0, 80)
+    Green = Color(0, 255, 0, 80),
+    Red = Color(255, 0, 0, 80)
 }
 
 Waypoint:Remove()
@@ -116,7 +117,7 @@ Map = {
 		Location("Kampung Jelantur", Vector3(-6304.328, 209.6773, -6151.631), Location.Type.CivVil),
 		Location("Bandar Kayu Buaya", Vector3(1436.405, 205.3391, 952.2224), Location.Type.CivVil),
 		Location("Tanah Raya Timur Beta", Vector3(11634.37, 366.0744, -2124.131), Location.Type.Comm),
-		Location("Gunung Lapik", Vector3(3901.989, 221.1246, 6189.263), Location.Type.MilAir),
+		Location("Gunung Lapik", Vector3(3901.989, 221.1246, 6189.263), Location.Type.MilAir, Location.Color.Green),
 		Location("Lengkok Sungai Gambler's Den", Vector3(-7737.874, 202.6088, 6749.43), Location.Type.CivVil),
 		Location("Koji Kuasa Panau Utara", Vector3(5512.42, 269.3309, -9919.016), Location.Type.CivVil),
 		Location("Pelantar Minyuk Gerudi Besar", Vector3(-15586.53, 236.3287, 6106.84), Location.Type.OilRig, Location.Color.Green),
@@ -145,7 +146,7 @@ Map = {
 		Location("Bandar Tokong Kecil", Vector3(9219.15, 247.0397, -10916.27), Location.Type.CivVil),
 		Location("Pekan Pakis", Vector3(12765.27, 303.8687, -1806.861), Location.Type.CivVil),
 		Location("Tanah Raya Timur Gamma", Vector3(10638.28, 435.3674, 3317.785), Location.Type.Comm),
-		Location("Rumah Hartawan", Vector3(138.8727, 202.0234, -13069.55), Location.Type.CivVil),
+		Location("Rumah Hartawan", Vector3(138.8727, 202.0234, -13069.55), Location.Type.CivVil, Location.Color.Green),
 		Location("Seabreeeze Sawmill", Vector3(-1017.106, 249.7261, 9481.964), Location.Type.CivVil),
 		Location("Kampung Orkid Riak", Vector3(1299.751, 220.5759, 8944.248), Location.Type.CivVil),
 		Location("Kampung Rencong Berkarat", Vector3(4186.12, 1240.772, -2946.137), Location.Type.MilLocation),
@@ -204,7 +205,7 @@ Map = {
 		Location("Panau City - Docks District", Vector3(-15315.65, 202.9297, -2818.928), Location.Type.CivCity, Location.Color.Green),
 		Location("Kampung Nelayan-Nelayan", Vector3(958.4824, 204.2445, -12187.5), Location.Type.CivVil),
 		Location("Sungai Madu Leleh", Vector3(-9840.547, 208.627, 4986.521), Location.Type.CivVil),
-		Location("Pulau Naga", Vector3(-589.0225, 200.9491, 11536.25), Location.Type.CivVil),
+		Location("Pulau Naga", Vector3(-589.0225, 200.9491, 11536.25), Location.Type.CivVil, Location.Color.Green),
 		Location("Kampung Sawah Luas", Vector3(2909.846, 224.1102, 5672.293), Location.Type.CivVil),
 		Location("Kem Rajang Floodgates", Vector3(-7962.754, 192.2301, 4686.348), Location.Type.MilLocation),
 		Location("Kampung Curah Dalam", Vector3(-2680.948, 886.1861, -8557.208), Location.Type.MilLocation),
@@ -281,7 +282,7 @@ Map = {
 		Location("Kampung Kayu Keras", Vector3(8076.139, 307.7526, 11644.47), Location.Type.CivVil),
 		--Location("Pulau Berendam", Vector3(9494.373, 245.6784, -12923.39), Location.Type.MilHarb),
 		Location("Pulau Berendam", Vector3(9471.735352, 202.862061, -13158.911133), Location.Type.MilHarb),
-		Location("Telok Ayer Batang", Vector3(486.7163, 263.6576, 5150.679), Location.Type.MilLocation),
+		Location("Telok Ayer Batang", Vector3(486.7163, 263.6576, 5150.679), Location.Type.MilLocation, Location.Color.Green),
 		Location("Kem Port Pelangi", Vector3(-10552.46, 198.7463, 13246.9), Location.Type.MilHarb, Location.Color.Green),
 		--Location("Pasir Hitam", Vector3(1793.183, 207.1591, 2219.146), Location.Type.MilLocation),
 		Location("Pasir Hitam", Vector3(1770.504395, 202.291901, 2274.141357), Location.Type.MilLocation, Location.Color.Green),
@@ -373,7 +374,7 @@ Map = {
 		Location("Panau Falls Casino", Vector3(2181.745, 645.841858, 1371.177), Location.Type.CivVil, Location.Color.Green),
 		Location("Kampung Tokong Dalam", Vector3(3503.015, 702.4131, -458.8622), Location.Type.CivVil),
 		Location("Kem Port Rodrigo", Vector3(-4664.661, 190.5764, 11762.42), Location.Type.MilHarb),
-		Location("Kota Pantai Kuala", Vector3(189.7178, 205.481, -12526.7), Location.Type.CivCity),
+		Location("Kota Pantai Kuala", Vector3(189.7178, 205.481, -12526.7), Location.Type.CivCity, Location.Color.Green),
 		Location("Kepulauan Pelaut Gamma", Vector3(12532.1, 260.5356, -6872.014), Location.Type.Comm),
 		Location("Tasik Jernih", Vector3(-186.1156, 206.6427, 5653.479), Location.Type.CivVil),
 		Location("Kampung Pokok Ru", Vector3(10022.48, 204.4316, -10956.25), Location.Type.CivVil),
@@ -385,7 +386,7 @@ Map = {
 		Location("Gunung Hutan Merah", Vector3(-8503.434, 239.8902, 2171.95), Location.Type.MilLocation),
 		Location("Kampung Bunga Mawar", Vector3(13568.29, 197.9329, 3252.776), Location.Type.MilHarb, Location.Color.Green),
 		Location("Kampung Sawah Hutan", Vector3(-2830.986, 220.6546, 9919.413), Location.Type.CivVil),
-		Location("Bandar Baru Nipah", Vector3(-499.1229, 242.4776, -12096.36), Location.Type.CivCity),
+		Location("Bandar Baru Nipah", Vector3(-499.1229, 242.4776, -12096.36), Location.Type.CivCity, Location.Color.Green),
 		Location("Awan Cendawan Power Plant", Vector3(9078.66, 202.9968, 1485.909), Location.Type.MilStrong),
 		Location("Kampung Tukang Besi", Vector3(12354.82, 271.382, -1650.81), Location.Type.CivVil),
 		Location("Kampung Kepulauan Selatan", Vector3(2184.427, 196.5946, 7002.66), Location.Type.CivVil),
@@ -393,13 +394,13 @@ Map = {
 		Location("Gunung Condong", Vector3(9350.65, 306.0321, 9314.123), Location.Type.MilLocation),
 		Location("Kampung Papan Tanda", Vector3(2637.957, 245.1643, 4867.09), Location.Type.CivVil),
 		Location("Bandar Jeti Batu", Vector3(7286.844, 202.1595, 3302.721), Location.Type.CivVil),
-		Location("Pekan Kesuma", Vector3(5374.749, 204.2978, 13954.49), Location.Type.CivCity),
+		Location("Pekan Kesuma", Vector3(5374.749, 204.2978, 13954.49), Location.Type.CivCity, Location.Color.Green),
 		--Location("Gunung Tasik Facility", Vector3(3164.62, 1296.626, -3777.025), Location.Type.MilLocation),
 		Location("Gunung Tasik Facility", Vector3(3164.62, 1234, -3777.025), Location.Type.MilLocation),
 		Location("Gurun Lautan Lama Beta", Vector3(-10360.72, 334.369, 5189.125), Location.Type.Comm),
 		Location("Kampung Negeri Sawah", Vector3(12692.07, 295.3927, -2382.073), Location.Type.CivVil),
 		Location("Kampung Kala Merah", Vector3(-5301.203, 651.0872, 5774.312), Location.Type.MilLocation),
-		Location("Pekan Lalang Liar", Vector3(-405.5977, 212.5643, -13008.34), Location.Type.CivCity),
+		Location("Pekan Lalang Liar", Vector3(-405.5977, 212.5643, -13008.34), Location.Type.CivCity, Location.Color.Green),
 		Location("Pekan Putra Gunung", Vector3(2186.499, 238.1986, 9866.725), Location.Type.CivVil),
 		Location("Pelantar Gas Kepulauan Pelaut", Vector3(9997.194, 236.3287, -14187.47), Location.Type.OilRig, Location.Color.Green),
 		Location("Pekan Gua Cina", Vector3(10808.48, 284.0437, -9597.311), Location.Type.CivVil),
@@ -492,7 +493,7 @@ Map = {
 		Location("Kota Buluh", Vector3(8432.64, 201.4412, -12844.17), Location.Type.CivVil),
 		-- NON-SETTLEMENTS
 		Location("Hantu Island", Vector3(-14091.01, 688.75, -14145.97), Location.Type.MilStrong),
-		Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.Comm)
+		Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green)
 	}
 }
 

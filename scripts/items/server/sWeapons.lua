@@ -198,6 +198,8 @@ end
 
 function sWeaponManager:RefreshEquippedWeapons(player)
 
+    if not IsValid(player) then return end
+
     local player_equipped = player:GetValue("EquippedItems")
     local equipped_weapons = player:GetValue("EquippedWeapons")
 

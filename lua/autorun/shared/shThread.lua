@@ -1,6 +1,7 @@
 class 'Thread'
 
 function Thread:__init(func)
+
     self.finished = false
 
     local modified_func = function()
@@ -8,22 +9,21 @@ function Thread:__init(func)
         self.finished = true
     end
     
-    local f = coroutine.create(function()
+    local f = coroutine.wrap(function()
 
-        local cr = coroutine.create(modified_func) -- runs the thread
+        local co = coroutine.create(modified_func) -- runs the thread
 
-        self.status, self.error = coroutine.resume(cr)
+        self.status, self.error = coroutine.resume(co)
 
-        while not self.finished and not self.error do
+        while not self.finished do
             Timer.Sleep(100)
         end
 
-        assert(self.status, string.format("Thread error: %s", self.error))
+        if not self.status then
+            error(debug.traceback(co, self.error))
+        end
 
-    end)
-
-    coroutine.resume(f)
-
+    end)()
 
 end
 

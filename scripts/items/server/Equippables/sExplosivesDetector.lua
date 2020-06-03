@@ -56,6 +56,8 @@ end)
 
 function DecreaseDuraOfBattery(player)
 
+    if not IsValid(player) then return end
+
     local inv = Inventory.Get({player = player})
     if not inv then return end
     

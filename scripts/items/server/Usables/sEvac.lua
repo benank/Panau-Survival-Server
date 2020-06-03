@@ -24,9 +24,15 @@ function sEvac:UseItem(args, player)
             player = player
         })
 
+        local target_pos = Vector3(
+            math.clamp(args.waypoint.x, -16384, 16384),
+            math.min(3000, args.waypoint.y),
+            math.clamp(args.waypoint.z, -16384, 16384)
+        )
+
         Network:Broadcast("items/ActivateEvac", {
             start_position = player:GetPosition() + Vector3(0, 7, 0),
-            end_position = args.waypoint + Vector3(0, 12, 0)
+            end_position = target_pos + Vector3(0, 12, 0)
         })
 
         Chat:Send(player, "EVAC called. Grapple onto the side when it arrives.", Color.Yellow)

@@ -10,13 +10,11 @@ function shItem:__init(args)
     not args.category or 
     not args.stacklimit 
     then
-        error("shItem:__init failed: missing a key piece of information")
-        print(debug.traceback())
+        error(debug.traceback("shItem:__init failed: missing a key piece of information"))
     end
 
     if not CategoryExists(args.category) then
-        error("shItem:__init failed: category does not exist: " .. args.category)
-        print(debug.traceback())
+        error(debug.traceback("shItem:__init failed: category does not exist: " .. args.category))
     end
 
     self.uid = args.uid or GetUID()
@@ -37,7 +35,7 @@ function shItem:__init(args)
     if args.durability then
 
         if args.amount > 1 then
-            error("shItem:__init failed: durability was given but item had more than one amount")
+            error(debug.traceback("shItem:__init failed: durability was given but item had more than one amount"))
         end
 
         self.durability = args.durability
@@ -45,7 +43,7 @@ function shItem:__init(args)
         if args.max_durability then
             self.max_durability = args.max_durability
         else
-            error("shItem:__init failed: max_durability was not given when an item had durability")
+            error(debug.traceback("shItem:__init failed: max_durability was not given when an item had durability"))
         end
     end
 
@@ -55,7 +53,7 @@ function shItem:__init(args)
         self.can_equip = args.can_equip
 
         if args.equip_type == nil then
-            error("shItem:__init failed: equip_type was not given for an equippable item: " .. tostring(self.name))
+            error(debug.traceback("shItem:__init failed: equip_type was not given for an equippable item: " .. tostring(self.name)))
         end
 
         self.equip_type = args.equip_type

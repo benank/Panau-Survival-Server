@@ -73,7 +73,7 @@ function HexagonPiece:PrintEnds()
     for index, active in pairs(self.ends) do
         str = str .. string.format("End %d is %s", index, tostring(active)) 
     end
-    debug(str)
+    _debug(str)
 end
 
 function HexagonPiece:SetEnds(ends)

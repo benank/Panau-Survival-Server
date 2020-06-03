@@ -11,7 +11,7 @@ Events:Subscribe("PlayerChat", function(args)
     elseif words[1] == "/invis" then
         local invisible = not args.player:GetValue("Invisible")
         args.player:SetNetworkValue("Invisible", invisible)
-        args.player:SetStreamDistance(invisible and 0 or 500)
+        args.player:SetStreamDistance(invisible and 0 or 1024)
         Chat:Send(args.player, "Invisible: " .. tostring(invisible) .. " (WILL RESET ON DEATH)", Color.Yellow)
     elseif words[1] == "/tpp" and words[2] then
         local target_player = Player.GetById(tonumber(words[2]))
