@@ -1183,6 +1183,8 @@ end
 
 function sInventory:UpdateDB()
 
+    if not IsValid(self.player) then return end
+
     local serialized = self:Serialize()
 
     local update = SQL:Command("UPDATE inventory SET contents = ? WHERE steamID = (?)")
