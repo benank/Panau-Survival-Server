@@ -28,6 +28,7 @@ end
 local function Sleep(delay)
     local coro = running()
     SetTimeout(delay, function(args)
+        if not coro then return end
         local status = coroutine.status(coro)
 
         if status == "dead" then
