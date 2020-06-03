@@ -3,14 +3,6 @@
     "author": "",
     "author_url": "",
     "description": "Auto-generated",
-    "name": "survival-hud"
-  },
-  "resources":
-  {
-    "icon_Hunger": "http://paradigm.mp/resources/ps/icons/survivalhud/Hunger2.png",
-    "icon_Thirst": "http://paradigm.mp/resources/ps/icons/survivalhud/Thirst2.png",
-    "icon_Energy": "http://paradigm.mp/resources/ps/icons/survivalhud/Energy2.png",
-    "icon_Radiation": "http://paradigm.mp/resources/ps/icons/survivalhud/Radiation2.png",
-    "icon_Grapplehook": "http://paradigm.mp/resources/ps/icons/survivalhud/Grapplehook.png"
+    "name": "survival"
   }
 }

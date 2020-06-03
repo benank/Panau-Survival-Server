@@ -224,9 +224,15 @@ Items =
         can_use = true
     },
     {
-        name = "Stash Hacker",
+        name = "Hacker",
         category = "Supplies",
-        stacklimit = 2,
+        stacklimit = 3,
+        can_use = true
+    },
+    {
+        name = "Master Hacker",
+        category = "Supplies",
+        stacklimit = 1,
         can_use = true
     },
     {
@@ -484,7 +490,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 2000,
         equip_type = "detector"
     },
     {

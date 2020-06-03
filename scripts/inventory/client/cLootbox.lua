@@ -3,33 +3,36 @@ class 'cLootbox'
 function cLootbox:__init(args)
 
     self.uid = args.uid
+    self.cell = args.cell
     self.position = args.position
     self.angle = args.angle
     self.tier = args.tier
     self.active = args.active
     self.model_data = args.model_data
     self.static_objects = {}
-    self.contents = {}
+    self.contents = args.contents or {}
+    self.stash = args.stash
+    self.locked = args.locked
 
-    Timer.SetTimeout(100, function()
-        self:CreateModel()
-    end)
+    self:CreateModel()
 
 end
 
 function cLootbox:Remove()
+
+    Events:Fire("Inventory/LootboxRemove", {
+        id = self.uid,
+        tier = self.tier,
+        cso_id = self.static_objects[1]:GetId()
+    })
 
     self.active = false
     for _, obj in pairs(self.static_objects) do
         if IsValid(obj) then 
             obj:Remove()
         end
+        LootManager.objects[obj:GetId()] = nil
     end
-
-    Events:Fire("Inventory/LootboxRemove", {
-        id = self.uid,
-        tier = self.tier
-    })
 
 end
 
@@ -77,16 +80,17 @@ function cLootbox:CreateModel()
         --obj:SetOutlineEnabled(true)
 
         -- Register static object ids in uid lookup table
+        obj:SetValue("LootboxId", self.uid)
         LootManager.SO_id_to_uid[obj:GetId()] = self.uid
+        LootManager.objects[obj:GetId()] = obj
     end
-
 
     Events:Fire("Inventory/LootboxCreate", {
         id = self.uid,
+        cso_id = self.static_objects[1]:GetId(),
         tier = self.tier,
         position = self.position,
         angle = self.angle
     })
-
 
 end

@@ -17,6 +17,7 @@ Events:Subscribe("ModuleUnload", Unload)
 
 function UpdateEquippedItem(player, name, value)
 
+    if not IsValid(player) then return end
     local equipped_items = player:GetValue("EquippedItems")
     equipped_items[name] = (value.equipped == true and value.durability > 0) and value or nil
     player:SetValue("EquippedItems", equipped_items)

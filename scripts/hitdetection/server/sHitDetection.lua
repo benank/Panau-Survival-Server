@@ -23,10 +23,6 @@ function sHitDetection:__init()
     Events:Subscribe("HitDetection/VehicleGuardActivate", self, self.VehicleGuardActivate)
     Events:Subscribe("HitDetection/WarpGrenade", self, self.WarpGrenade)
 
-    Network:Subscribe("HitDetection/MeleeGrappleHit", self, self.MeleeGrappleHit)
-    Network:Subscribe("HitDetection/MeleeStandingKickHit", self, self.MeleeStandingKickHit)
-    Network:Subscribe("HitDetection/MeleeSlidingKickHit", self, self.MeleeSlidingKickHit)
-
     Events:Subscribe("Hitdetection/AdminKill", self, self.AdminKill)
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
@@ -123,49 +119,6 @@ function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
 
     player:SetValue("Health", math.min(1, math.max(0, old_hp - damage)))
     self:CheckHealth(player, old_hp, damage)
-
-end
-
-function sHitDetection:MeleeGrappleHit(args, player)
-
-    if not args.victim_id then return end
-
-    local victim = self.players[args.victim_id]
-    if not IsValid(victim) then return end
-
-    if victim:GetPosition():Distance(player:GetPosition()) > 7 then return end
-
-    self:ApplyDamage(victim, MeleeDamage[DamageEntity.MeleeGrapple].damage / 100, DamageEntity.MeleeGrapple, tostring(player:GetSteamId()))
-
-end
-
-function sHitDetection:MeleeStandingKickHit(args, player)
-
-    if not args.victim_id then return end
-
-    local victim = self.players[args.victim_id]
-    if not IsValid(victim) then return end
-
-    if victim:GetPosition():Distance(player:GetPosition()) > 7 then return end
-
-    self:ApplyDamage(victim, MeleeDamage[DamageEntity.MeleeKick].damage / 100, DamageEntity.MeleeKick, tostring(player:GetSteamId()))
-
-    
-end
-
-function sHitDetection:MeleeSlidingKickHit(args, player)
-
-    if not args.victim_id then return end
-
-    local victim = self.players[args.victim_id]
-    if not IsValid(victim) then return end
-
-    if victim:GetPosition():Distance(player:GetPosition()) > 7 then return end
-
-    self:ApplyDamage(victim, MeleeDamage[DamageEntity.MeleeSlidingKick].damage / 100, DamageEntity.MeleeSlidingKick, tostring(player:GetSteamId()))
-
-    Network:Send(victim, "HitDetection/KnockdownEffect", 
-        {source = player:GetPosition(), amount = MeleeDamage[DamageEntity.MeleeSlidingKick].knockback})
 
 end
 

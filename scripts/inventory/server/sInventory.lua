@@ -431,6 +431,8 @@ function sInventory:DropStacks(args, player)
         return
     end
 
+    if player:GetValue("StuntingVehicle") then return end
+
     if not self:CanPlayerPerformOperations(player) then return end
 
     self.operation_block = self.operation_block + 1
@@ -642,7 +644,7 @@ end
 function sInventory:OperationBlockRemote(args)
 
     if args.player ~= self.player then
-        error("sInventory:OperationBlockRemote failed: player does not match")
+        error(debug.traceback("sInventory:OperationBlockRemote failed: player does not match"))
         return
     end
 
@@ -653,7 +655,7 @@ end
 function sInventory:AddStackRemote(args)
 
     if args.player ~= self.player then
-        error("sInventory:AddStackRemote failed: player does not match")
+        error(debug.traceback("sInventory:AddStackRemote failed: player does not match"))
         return
     end
 
@@ -665,7 +667,7 @@ end
 function sInventory:RemoveStackRemote(args)
 
     if args.player ~= self.player then
-        error("sInventory:RemoveStackRemote failed: player does not match")
+        error(debug.traceback("sInventory:RemoveStackRemote failed: player does not match"))
         return
     end
 
@@ -676,7 +678,7 @@ end
 function sInventory:RemoveItemRemote(args)
 
     if args.player ~= self.player then
-        error("sInventory:RemoveItemRemote failed: player does not match")
+        error(debug.traceback("sInventory:RemoveItemRemote failed: player does not match"))
         return
     end
 
@@ -687,7 +689,7 @@ end
 function sInventory:AddItemRemote(args)
 
     if args.player ~= self.player then
-        error("sInventory:AddItemRemote failed: player does not match")
+        error(debug.traceback("sInventory:AddItemRemote failed: player does not match"))
         return
     end
 
@@ -710,7 +712,7 @@ end
 function sInventory:ModifyStackRemote(args)
 
     if args.player ~= self.player then
-        error("sInventory:ModifyStackRemote failed: player does not match")
+        error(debug.traceback("sInventory:ModifyStackRemote failed: player does not match"))
         return
     end
 
@@ -721,7 +723,7 @@ end
 function sInventory:SetItemEquippedRemote(args)
 
     if args.player ~= self.player then
-        error("sInventory:SetItemEquippedRemote failed: player does not match")
+        error(debug.traceback("sInventory:SetItemEquippedRemote failed: player does not match"))
         return
     end
 
@@ -747,7 +749,7 @@ end
 function sInventory:ModifyItemCustomDataRemote(args)
 
     if args.player ~= self.player then
-        error("sInventory:ModifyItemCustomDataRemote failed: player does not match")
+        error(debug.traceback("sInventory:ModifyItemCustomDataRemote failed: player does not match"))
         return
     end
 

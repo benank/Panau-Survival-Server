@@ -24,6 +24,7 @@ function sLootbox:__init(args)
     self.is_vending_machine = args.tier == Lootbox.Types.VendingMachineFood or args.tier == Lootbox.Types.VendingMachineDrink
     self.is_stash = Lootbox.Stashes[args.tier] ~= nil
     self.has_been_opened = false
+    self.locked = args.locked or false
     -- Eventually add support for world specification
 
     self.players_opened = {}
@@ -253,9 +254,32 @@ function sLootbox:TryOpenBox(args, player)
     if player:GetHealth() <= 0 then return end
     if player:GetPosition():Distance(self.position) > Lootbox.Distances.Can_Open + 1 then return end
 
+    local locked = self.locked
+
     -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
     if self.is_stash then
-        if not self.stash:CanPlayerOpen(player) then return end
+        if not self.stash:CanPlayerOpen(player) then locked = true end
+    end
+
+    if locked then
+
+        local lootbox_data = {
+            uid = self.uid, 
+            cell = self.cell, 
+            tier = self.tier
+        }
+    
+        if self.is_stash then
+            lootbox_data.stash = self.stash:GetSyncData()
+        end
+    
+        -- Set current box anyway for hackers
+        player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell, lootbox = lootbox_data})
+    
+        player:SetValue("CurrentLootbox", self:GetSyncData(player))
+        Network:Send(player, "Inventory/LootboxOpen", self:GetSyncData(player))
+
+        return
     end
 
     self:Open(player)
@@ -273,7 +297,19 @@ end
 function sLootbox:Open(player)
     
     self.players_opened[tostring(player:GetSteamId())] = player
-    player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell})
+    
+    local lootbox_data = {
+        uid = self.uid, 
+        cell = self.cell, 
+        tier = self.tier
+    }
+
+    if self.is_stash then
+        lootbox_data.stash = self.stash:GetSyncData()
+    end
+
+    player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell, lootbox = lootbox_data})
+
     Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
     Events:Fire("PlayerOpenLootbox", {player = player, has_been_opened = self.has_been_opened, tier = self.tier})
@@ -432,7 +468,7 @@ function sLootbox:GetContentsData()
 
 end
 
-function sLootbox:GetSyncData()
+function sLootbox:GetSyncData(player)
 
     local data = {
         tier = self.tier,
@@ -441,11 +477,20 @@ function sLootbox:GetSyncData()
         active = self.active,
         model_data = self.model_data,
         cell = self.cell,
-        uid = self.uid
+        uid = self.uid,
+        locked = self.locked
     }
 
+    -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
     if self.is_stash then
         data.stash = self.stash:GetSyncData()
+        if not self.stash:CanPlayerOpen(player) then
+            data.locked = true
+        end
+    end
+
+    if not data.locked then
+        data.contents = self:GetContentsData()
     end
 
     return data

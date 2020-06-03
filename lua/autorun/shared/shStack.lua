@@ -3,7 +3,7 @@ class 'shStack'
 function shStack:__init(args)
 
     if not args.contents or #args.contents == 0 then
-        error("shStack:__init failed: contents is empty")
+        error(debug.traceback("shStack:__init failed: contents is empty"))
     end
 
     self.uid = args.uid or GetUID()
@@ -66,7 +66,7 @@ function shStack:AddStack(_stack)
     local stack = _stack:Copy()
 
     if not self:CanStack(stack.contents[1]) then
-        error("shStack:AddStack failed: the stack cannot be added to the stack")
+        error(debug.traceback("shStack:AddStack failed: the stack cannot be added to the stack"))
     end
 
     if self:GetAmount() >= self:GetProperty("stacklimit") then
@@ -96,7 +96,7 @@ function shStack:AddItem(_item)
     local item = _item:Copy()
 
     if not self:CanStack(item) then
-        error("shStack:AddItem failed: the item cannot be added to the stack")
+        error(debug.traceback("shStack:AddItem failed: the item cannot be added to the stack"))
     end
 
     if self:GetAmount() >= self:GetProperty("stacklimit") then
@@ -145,7 +145,7 @@ function shStack:RemoveItem(_item, index, only_one)
     if index ~= nil then
 
         if not self.contents[index] then
-            error(string.format("shStack:RemoveItem failed: the specified index %s does not exist in the contents", index))
+            error(debug.traceback(string.format("shStack:RemoveItem failed: the specified index %s does not exist in the contents", index)))
         end
 
         return table.remove(self.contents, index)
@@ -166,11 +166,11 @@ function shStack:RemoveItem(_item, index, only_one)
     local item = _item:Copy()
 
     if not self:CanStack(item) then
-        error("shStack:RemoveItem failed: the item cannot be removed from the stack")
+        error(debug.traceback("shStack:RemoveItem failed: the item cannot be removed from the stack"))
     end
 
     if item.amount > self:GetAmount() then
-        error("shStack:RemoveItem failed: the amount you are trying to remove is greater than the total amount in the stack")
+        error(debug.traceback("shStack:RemoveItem failed: the amount you are trying to remove is greater than the total amount in the stack"))
     end
 
     if not self:IsStackable() then
@@ -191,7 +191,7 @@ function shStack:RemoveItem(_item, index, only_one)
     end
 
     if item then
-        error("shStack:RemoveItem failed: something went wrong and the item failed to remove")
+        error(debug.traceback("shStack:RemoveItem failed: something went wrong and the item failed to remove"))
     end
 
 end

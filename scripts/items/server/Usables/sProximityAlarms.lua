@@ -90,12 +90,16 @@ function sProxAlarms:LowerBatteryDurabilities()
                 stack:RemoveItem(nil, nil, true)
 
                 local coords = alarm.position + Vector3(16384, 0, 16384)
+
+                if stack:GetAmount() == 0 then
                 
-                Events:Fire("SendPlayerPersistentMessage", {
-                    steam_id = alarm.stash.owner_id,
-                    message = string.format("Your proximity detector ran out of batteries @ X: %.0f Y: %.0f", coords.x, coords.z),
-                    color = Color(200, 0, 0)
-                })
+                    Events:Fire("SendPlayerPersistentMessage", {
+                        steam_id = alarm.stash.owner_id,
+                        message = string.format("Your proximity alarm ran out of batteries @ X: %.0f Y: %.0f", coords.x, coords.z),
+                        color = Color(200, 0, 0)
+                    })
+                    
+                end
             end
 
             Events:Fire("Inventory/ModifyStashStackRemote", {
@@ -144,12 +148,19 @@ function sProxAlarms:InsideProximityAlarm(args, player)
 
     local owner_id = tostring(alarm.stash.owner_id)
 
+    if owner_id == tostring(player:GetSteamId()) then return end -- Don't trigger on owner
+
     local owner = self.players[owner_id]
 
-    if not IsValid(owner) then return end
-    if owner == player then return end
+    Events:Fire("SendPlayerPersistentMessage", {
+        steam_id = owner_id,
+        message = string.format("Your proximity alarm detected %s %s", player:GetName(), WorldToMapString(player:GetPosition())),
+        color = Color(200, 0, 0)
+    })
 
-    Network:Send(owner, "Items/ProximityPlayerDetected", {id = player:GetId(), position = player:GetPosition(), name = player:GetName()})
+    if IsValid(owner) then
+        Network:Send(owner, "Items/ProximityPlayerDetected", {id = player:GetId(), position = player:GetPosition(), name = player:GetName()})
+    end
 
 end
 
@@ -179,7 +190,7 @@ function sProxAlarms:DestroyProx(args, player)
                 
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = alarm.stash.owner_id,
-        message = string.format("Your proximity detector was destroyed @ X: %.0f Y: %.0f", coords.x, coords.z),
+        message = string.format("Your proximity alarm was destroyed @ X: %.0f Y: %.0f", coords.x, coords.z),
         color = Color(200, 0, 0)
     })
 

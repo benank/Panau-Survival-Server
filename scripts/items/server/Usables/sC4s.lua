@@ -78,6 +78,8 @@ function sC4s:InventoryUpdated(args)
     -- Check if they dropped a placed c4 and remove it if so
     Thread(function()
 
+        if not IsValid(args.player) then return end
+
         log_function_call("sC4s:InventoryUpdated coroutine")
         local player_placed_c4s = {}
         local player_id = tostring(args.player:GetSteamId())
@@ -176,6 +178,14 @@ function sC4s:DestroyC4(args, player)
         Network:Broadcast("items/C4Explode", {position = pos, id = c4:GetId(), owner_id = c4:GetValue("owner_id")})
     end
 
+    local lootbox_id = c4:GetValue("LootboxId")
+    if lootbox_id then
+        Events:Fire("items/C4DetonateOnStash", {
+            lootbox_uid = lootbox_id,
+            player = IsValid(c4:GetValue("Owner")) and c4:GetValue("Owner") or player
+        })
+    end
+
     Inventory.RemoveItem({
         item = c4:GetValue("Item"),
         player = c4:GetValue("Owner")
@@ -220,19 +230,20 @@ function sC4s:CancelC4Placement(args, player)
     Inventory.OperationBlock({player = player, change = -1})
 end
 
-function sC4s:PlaceC4(position, angle, player, entity, values, item)
+function sC4s:PlaceC4(args, item)
 
-    local c4 = WorldNetworkObject.Create(position, {
+    local c4 = WorldNetworkObject.Create(args.position, {
         enabled = false
     })
-    c4:SetAngle(angle)
+    c4:SetAngle(args.angle)
 
-    c4:SetNetworkValue("owner_id", tostring(player:GetSteamId()))
-    c4:SetNetworkValue("AttachEntity", entity)
-    c4:SetNetworkValue("Angle", angle)
-    c4:SetNetworkValue("Values", values)
-    c4:SetValue("Owner", player)
+    c4:SetNetworkValue("owner_id", tostring(args.player:GetSteamId()))
+    c4:SetNetworkValue("AttachEntity", args.forward_ray.entity)
+    c4:SetNetworkValue("Angle", args.angle)
+    c4:SetNetworkValue("Values", args.values)
+    c4:SetValue("Owner", args.player)
     c4:SetValue("Item", item)
+    c4:SetValue("LootboxId", args.lootbox_uid)
 
     self.wnos[c4:GetId()] = c4
 
@@ -247,7 +258,7 @@ function sC4s:TryPlaceC4(args, player)
     if not IsValid(player) then return end
 
     local c4_using = player:GetValue("C4UsingItem")
-
+    
     if c4_using then
 
         c4_using.delayed = true
@@ -271,7 +282,7 @@ function sC4s:TryPlaceC4(args, player)
             player_iu.item.name == "C4" then
 
                 local player_pos = player:GetPosition()
-
+                
                 if player:GetPosition():Distance(args.position) > 7 then
                     Chat:Send(player, "Placing C4 failed!", Color.Red)
                     return
@@ -282,8 +293,10 @@ function sC4s:TryPlaceC4(args, player)
                     return
                 end
 
+                args.player = player
+
                 -- Now actually place the claymore
-                local id = self:PlaceC4(args.position, args.angle, player, args.forward_ray.entity, args.values, c4_using.item)
+                local id = self:PlaceC4(args, c4_using.item)
 
                 -- Set custom data with wno id
                 Inventory.ModifyItemCustomData({
@@ -347,7 +360,7 @@ function sC4s:FinishC4Placement(args, player)
         self:TryPlaceC4(args, args.player)
         
     end)
-
+    
     args.player = player
     Events:Fire("CheckIsTooCloseToLoot", args)
 

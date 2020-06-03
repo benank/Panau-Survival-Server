@@ -26,7 +26,7 @@ Events:Subscribe("SecondTick", function()
             if player:GetValue("ParachutingValue") and player:GetParachuting() then
                 player:SetValue("ParachutingValue", player:GetValue("ParachutingValue") + ItemsConfig.equippables["Parachute"].dura_per_sec)
             end
-        else
+        elseif IsValid(player) then
             players_with_parachutes[player:GetId()] = nil
         end
     end
