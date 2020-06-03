@@ -2,7 +2,7 @@ class "WeaponHitDetection"
 
 function WeaponHitDetection:__init()
     -- stops bullets from removing from the world so you can see where they land + other prints
-    self.debug_enabled = false
+    self.debug_enabled = true
 
     self.bloom = 0
     self.max_bloom = 100
@@ -64,24 +64,30 @@ function WeaponHitDetection:FireWeapon(args)
     local bullet_config = cWeaponBulletConfig:GetByWeaponEnum(equipped_weapon_enum)
 
     if not bullet_config then
-        Chat:Print("No bullet configured for this weapon!", Color.Red)
+        error(debug.traceback("No bullet configured for this weapon!"))
     end
 
-    local bullet_data = {
-        id = self.bullet_id_counter,
-        weapon_enum = equipped_weapon_enum,
-        velocity = bullet_config.speed,
-        is_splash = bullet_config.splash ~= nil,
-        bloom = self.bloom,
-        bullet_size = bullet_config.bullet_size
-    }
+    local num_shots = bullet_config.multi_shot or 1
 
-    local bullet = bullet_config.type(bullet_data)
-    self.bullet_id_counter = self.bullet_id_counter + 1
-    
-    self.bloom = math.min(self.bloom + bullet_config.bloom, self.max_bloom)
+    for i = 1, num_shots do
 
-    self.bullets[bullet:GetId()] = bullet
+        local bullet_data = {
+            id = self.bullet_id_counter,
+            weapon_enum = equipped_weapon_enum,
+            velocity = bullet_config.speed,
+            is_splash = bullet_config.splash ~= nil,
+            bloom = self.bloom,
+            bullet_size = bullet_config.bullet_size
+        }
+
+        local bullet = bullet_config.type(bullet_data)
+        self.bullet_id_counter = self.bullet_id_counter + 1
+        
+        self.bloom = math.min(self.bloom + bullet_config.bloom, self.max_bloom)
+
+        self.bullets[bullet:GetId()] = bullet
+
+    end
 
     --Chat:Print("Fired with " .. tostring(WeaponEnum:GetDescription(equipped_weapon_enum)), Color.White)
 end

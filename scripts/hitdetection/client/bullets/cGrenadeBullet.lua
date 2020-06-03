@@ -1,13 +1,12 @@
-class "ProjectileBullet"
+class "GrenadeBullet"
 
-function ProjectileBullet:__init(args)
+function GrenadeBullet:__init(args)
     getter_setter(self, "active")
     self:SetActive(true)
     getter_setter(self, "id")
     self:SetId(args.id)
     self.weapon_enum = args.weapon_enum
     self.velocity = args.velocity
-    self.bloom = args.bloom or 0
 
     self.bullet_color = Color(252, 221, 121)
     self.bullet_size = args.bullet_size
@@ -20,7 +19,7 @@ function ProjectileBullet:__init(args)
     self.last_raycast_position = Copy(self.initial_position)
 
 
-    local dir = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * self:GetBloom() * Vector3.Forward, 0, 1000).position
+    local dir = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 1000).position
     dir = Angle.FromVectors(Vector3.Forward, dir - self.initial_position)
     self.target_position = Physics:Raycast(self.initial_position, dir * Vector3.Forward, 0, 1000).position
     self.angle = Angle.FromVectors(Vector3.Forward, self.target_position - self.initial_position)
@@ -31,24 +30,16 @@ function ProjectileBullet:__init(args)
     self.max_lifetime_distance = 1000 -- if bullet travels farther than this distance then it gets removed
     self.total_distance_covered = 0
     self.distance_covered_since_last_raycast = 0
-    self.raycast_distance = self.velocity / 10
+    self.raycast_distance = 0.01
     self.initial_probe = true
 
     self.lock_position = false
 end
 
-function ProjectileBullet:GetBloom()
-    return self.bloom > 0 and 
-    Angle((-self.bloom / 2 + math.random() * self.bloom) * 0.01, 
-        (-self.bloom / 2 + math.random() * self.bloom) * 0.01, 
-        (-self.bloom / 2 + math.random() * self.bloom) * 0.01) 
-    or Angle()
-end
-
-function ProjectileBullet:PreTick(delta)
+function GrenadeBullet:PreTick(delta)
     if self.lock_position then return end
 
-    self:CalculatePosition()
+    self:CalculatePosition(delta)
     self:CalculateDistanceCovered()
     self:CalculateDistanceCoveredSinceLastRaycast()
 
@@ -63,7 +54,7 @@ function ProjectileBullet:PreTick(delta)
     end
 end
 
-function ProjectileBullet:ProbeForHit()
+function GrenadeBullet:ProbeForHit()
     local raycast_position
     if not self.initial_probe then
         raycast_position = self.last_raycast_position + (self.angle * (Vector3.Forward * self.raycast_distance))
@@ -89,7 +80,7 @@ function ProjectileBullet:ProbeForHit()
     end
 end
 
-function ProjectileBullet:BulletRaycast(raycast_position, raycast_distance_modifier)
+function GrenadeBullet:BulletRaycast(raycast_position, raycast_distance_modifier)
     local raycast_distance = self.raycast_distance * raycast_distance_modifier
     local raycast = Physics:Raycast(raycast_position, self.angle * Vector3.Forward, 0, raycast_distance, true)
     if raycast.distance < raycast_distance then
@@ -97,7 +88,7 @@ function ProjectileBullet:BulletRaycast(raycast_position, raycast_distance_modif
     end
 end
 
-function ProjectileBullet:HitSomething(raycast)
+function GrenadeBullet:HitSomething(raycast)
     if self.is_splash then
         Events:Fire("LocalPlayerBulletSplash", {
             weapon_enum = self.weapon_enum,
@@ -159,7 +150,7 @@ function ProjectileBullet:HitSomething(raycast)
     self:SetActive(false)
 end
 
-function ProjectileBullet:GetForward()
+function GrenadeBullet:GetForward()
     local life_time = self.life_timer:GetSeconds()
     if life_time < 0.001 then
         life_time = 0.01
@@ -168,20 +159,22 @@ function ProjectileBullet:GetForward()
     return forward
 end
 
-function ProjectileBullet:CalculatePosition()
+function GrenadeBullet:CalculatePosition(delta)
+    self.angle.pitch = self.angle.pitch - math.pi * 0.05 * delta
+    _debug(self.angle.pitch)
     local new_position = self.initial_position + (self.angle * (Vector3.Forward * self:GetForward()))
     self.current_position = new_position
 end
 
-function ProjectileBullet:CalculateDistanceCovered()
+function GrenadeBullet:CalculateDistanceCovered()
     self.total_distance_covered = Vector3.Distance(self.initial_position, self.current_position)
 end
 
-function ProjectileBullet:CalculateDistanceCoveredSinceLastRaycast()
+function GrenadeBullet:CalculateDistanceCoveredSinceLastRaycast()
     self.distance_covered_since_last_raycast = Vector3.Distance(self.last_raycast_position, self.current_position)
 end
 
-function ProjectileBullet:RenderLine()
+function GrenadeBullet:RenderLine()
     if not self:GetActive() then return end
     Render:DrawLine(
         self.current_position,
@@ -190,12 +183,12 @@ function ProjectileBullet:RenderLine()
     )
 end
 
-function ProjectileBullet:Render()
+function GrenadeBullet:Render()
     local pos = Render:WorldToScreen(self.current_position)
     Render:FillCircle(pos, 6.0, Color.Crimson)
     Render:FillCircle(Render:WorldToScreen(self.target_position), 5, Color.LawnGreen)
 end
 
-function ProjectileBullet:Destroy()
+function GrenadeBullet:Destroy()
     -- remove any CSOs, effects, or event subscriptions here
 end
