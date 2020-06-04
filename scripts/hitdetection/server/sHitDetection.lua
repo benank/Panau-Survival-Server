@@ -45,6 +45,8 @@ function sHitDetection:PlayerQuit(args)
     log_function_call("sHitDetection:PlayerQuit 2")
 end
 
+-- TODO: add damage for vehicles and attribute vehicle explosions to proper killers
+
 function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
 
     if player:GetValue("Loading") then return end

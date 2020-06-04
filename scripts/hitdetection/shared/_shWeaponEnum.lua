@@ -13,6 +13,12 @@ function WeaponEnum:__init()
     self.SawnOffShotgun = 10
     self.Shotgun = 11
 
+    -- Vehicle Weapons
+    self.V_Minigun = 12--26
+    self.V_Rockets = 13--116
+    self.V_Cannon = 14--134
+    self.V_MachineGun = 15--28
+
     self.descriptions = {
         [self.MachineGun] = "Machine Gun",
         [self.Handgun] = "Handgun",
@@ -24,7 +30,11 @@ function WeaponEnum:__init()
         [self.SMG] = "SMG",
         [self.Sniper] = "Sniper Rifle",
         [self.SawnOffShotgun] = "Sawn-Off Shotgun",
-        [self.Shotgun] = "Shotgun"
+        [self.Shotgun] = "Shotgun",
+        [self.V_Minigun] = "Vehicle Minigun",
+        [self.V_Rockets] = "Vehicle Rockets",
+        [self.V_Cannon] = "Vehicle Auto Cannon",
+        [self.V_MachineGun] = "Vehicle Machine Gun"
     }
 
     --] li""t is on https://wiki.jc-mp.com/Lua/Shared/Weapon
