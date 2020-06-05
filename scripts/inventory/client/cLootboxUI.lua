@@ -367,7 +367,9 @@ function cLootboxUI:KeyUp(args)
 
         if self.window:GetVisible() then
             self:ToggleVisible()
-        elseif IsValid(LootManager.current_looking_box) and not self.window:GetVisible() then
+        elseif IsValid(LootManager.current_looking_box) 
+        and not self.window:GetVisible()
+        and LootManager.current_looking_box.position:Distance(LocalPlayer:GetPosition()) < 10 then
             LootManager.current_box = LootManager.current_looking_box
             self:LootboxOpen(LootManager.current_box)
             Network:Send("Inventory/TryOpenBox" .. tostring(LootManager.current_looking_box.uid))
