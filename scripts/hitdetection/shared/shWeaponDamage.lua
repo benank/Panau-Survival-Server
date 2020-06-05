@@ -10,21 +10,26 @@ function WeaponDamage:__init()
     end
 
     self.weapon_damages = {
-        [WeaponEnum.MachineGun] =       {base = 0.07, distance_falloff = 500, falloff = falloff_func},
-        [WeaponEnum.Handgun] =          {base = 0.05, distance_falloff = 150, falloff = falloff_func},
-        [WeaponEnum.Assault] =          {base = 0.06, distance_falloff = 300, falloff = falloff_func},
-        [WeaponEnum.BubbleGun] =        {base =-0.05, distance_falloff = 50,  falloff = falloff_func},
-        [WeaponEnum.GrenadeLauncher] =  {base = 0.15, distance_falloff = 0,   falloff = function() return 0 end},
-        [WeaponEnum.Revolver] =         {base = 0.10, distance_falloff = 300, falloff = falloff_func},
-        [WeaponEnum.RocketLauncher] =   {base = 0.20, distance_falloff = 500, falloff = function() return 0 end},
-        [WeaponEnum.SMG] =              {base = 0.06, distance_falloff = 100, falloff = falloff_func},
-        [WeaponEnum.Sniper] =           {base = 0.90, distance_falloff = 200, falloff = 
+        [WeaponEnum.MachineGun] =       {base = 0.07, v_mod = 0.1,  distance_falloff = 500, falloff = falloff_func},
+        [WeaponEnum.Handgun] =          {base = 0.05, v_mod = 0.05, distance_falloff = 150, falloff = falloff_func},
+        [WeaponEnum.Assault] =          {base = 0.06, v_mod = 0.1,  distance_falloff = 300, falloff = falloff_func},
+        [WeaponEnum.BubbleGun] =        {base =-0.05, v_mod = 0,    distance_falloff = 50,  falloff = falloff_func},
+        [WeaponEnum.GrenadeLauncher] =  {base = 0.10, v_mod = 2,    distance_falloff = 0,   falloff = function() return 0 end},
+        [WeaponEnum.Revolver] =         {base = 0.10, v_mod = 0.05, distance_falloff = 300, falloff = falloff_func},
+        [WeaponEnum.RocketLauncher] =   {base = 0.15, v_mod = 4,    distance_falloff = 0,   falloff = function() return 0 end},
+        [WeaponEnum.SMG] =              {base = 0.06, v_mod = 0.02, distance_falloff = 100, falloff = falloff_func},
+        [WeaponEnum.Sniper] =           {base = 0.90, v_mod = 0.2,  distance_falloff = 200, falloff = 
             function(distance, distance_falloff) -- Sniper gains full power at 200+ meters away
                 return math.clamp(distance / distance_falloff, 0, 1)
             end},
-        [WeaponEnum.SawnOffShotgun] =   {base = 0.03, distance_falloff = 80, falloff = falloff_func},
-        [WeaponEnum.Shotgun] =          {base = 0.04, distance_falloff = 80, falloff = falloff_func}
-        -- TODO: vehicle weapons, minigun?
+        [WeaponEnum.SawnOffShotgun] =   {base = 0.03, v_mod = 0.075, distance_falloff = 80, falloff = falloff_func},
+        [WeaponEnum.Shotgun] =          {base = 0.04, v_mod = 0.1,   distance_falloff = 80, falloff = falloff_func},
+        
+        -- Vehicle Weapons
+        [WeaponEnum.V_Minigun] =        {base = 0.02, v_mod = 0.1,   distance_falloff = 500, falloff = falloff_func},
+        [WeaponEnum.V_Rockets] =        {base = 0.15, v_mod = 3,     distance_falloff = 0,   falloff = function() return 0 end},
+        [WeaponEnum.V_Cannon] =         {base = 0.10, v_mod = 1.0,   distance_falloff = 0,   falloff = function() return 0 end},
+        [WeaponEnum.V_MachineGun] =     {base = 0.05, v_mod = 0.2,   distance_falloff = 300, falloff = falloff_func}
     }
 
     self.bone_damage_modifiers = {
@@ -129,7 +134,9 @@ function WeaponDamage:GetDamageForWeapon(weapon_enum)
     return self.weapon_damages[weapon_enum]
 end
 
-function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, hit_type, distance)
+function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, distance)
+
+    if victim:GetValue("InSafezone") then return 0 end
 
     local base_damage = self.weapon_damages[weapon_enum].base
     local bone_damage_modifier = self.bone_damage_modifiers[bone_enum]
@@ -157,24 +164,27 @@ function WeaponDamage:GetArmorMod(player, hit_type, damage)
 
             damage = damage * (1 - self.ArmorModifiers[armor_name][hit_type])
 
-            -- If the armor prevented some damage, then modify its durability
-            if self.ArmorModifiers[armor_name][hit_type] > 0 then
-                
-                if not self.pending_armor_aggregation[steam_id] then
-                    self.pending_armor_aggregation[steam_id] = {}
-                end
+            -- TODO: move this to sHitDetection
+            if Server then
+                -- If the armor prevented some damage, then modify its durability
+                if self.ArmorModifiers[armor_name][hit_type] > 0 then
+                    
+                    if not self.pending_armor_aggregation[steam_id] then
+                        self.pending_armor_aggregation[steam_id] = {}
+                    end
 
-                if not self.pending_armor_aggregation[steam_id][armor_name] then
-                    self.pending_armor_aggregation[steam_id][armor_name] = 
-                    {
-                        player = player,
-                        armor_name = armor_name,
-                        damage_diff = original_damage - original_damage * (1 - self.ArmorModifiers[armor_name][hit_type])
-                    }
-                else
-                    self.pending_armor_aggregation[steam_id][armor_name].damage_diff = 
-                        self.pending_armor_aggregation[steam_id][armor_name].damage_diff +
-                        original_damage - original_damage * (1 - self.ArmorModifiers[armor_name][hit_type])
+                    if not self.pending_armor_aggregation[steam_id][armor_name] then
+                        self.pending_armor_aggregation[steam_id][armor_name] = 
+                        {
+                            player = player,
+                            armor_name = armor_name,
+                            damage_diff = original_damage - original_damage * (1 - self.ArmorModifiers[armor_name][hit_type])
+                        }
+                    else
+                        self.pending_armor_aggregation[steam_id][armor_name].damage_diff = 
+                            self.pending_armor_aggregation[steam_id][armor_name].damage_diff +
+                            original_damage - original_damage * (1 - self.ArmorModifiers[armor_name][hit_type])
+                    end
                 end
             end
 

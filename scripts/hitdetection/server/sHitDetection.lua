@@ -2,6 +2,8 @@ class 'sHitDetection'
 
 function sHitDetection:__init()
 
+    self.PING_LIMIT = 500 -- No damage if you are above 500 ping
+
     self.pending_hits = {}
     self.last_damage_timeout = 15 -- 15 seconds to clear last damaged kill attribution
 
@@ -47,63 +49,60 @@ end
 
 -- TODO: add damage for vehicles and attribute vehicle explosions to proper killers
 
-function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
+function sHitDetection:ApplyDamage(args)
 
-    if player:GetValue("Loading") then return end
-    if player:GetValue("Invincible") then return end
-    if player:GetValue("InSafezone") 
-    and source ~= DamageEntity.Suicide 
-    and source ~= DamageEntity.AdminKill then return end
+    if args.player:GetValue("Loading") then return end
+    if args.player:GetValue("Invincible") then return end
+    if args.player:GetValue("InSafezone") 
+    and args.source ~= DamageEntity.Suicide 
+    and args.source ~= DamageEntity.AdminKill then return end
 
-    local old_hp = player:GetHealth()
+    local old_hp = args.player:GetHealth()
 
     if old_hp <= 0 then return end
 
-    attacker = self.players[attacker_id]
+    attacker = args.attacker_id and self.players[args.attacker_id] or nil
 
     local msg = ""
     
-    if not IsValid(attacker) and not attacker_id then
-        player:Damage(damage, source)
+    if not IsValid(attacker) and not args.attacker_id then
+        args.player:Damage(args.damage, args.source)
 
         msg = string.format("%s [%s] damaged by %s for %.0f damage",
-            player:GetName(), 
-            tostring(player:GetSteamId()),
-            DamageEntityNames[source],
-            damage * 100)
+            args.player:GetName(), 
+            tostring(args.player:GetSteamId()),
+            DamageEntityNames[args.source],
+            args.damage * 100)
 
-    elseif not IsValid(attacker) and attacker_id then
+    elseif not IsValid(attacker) and args.attacker_id then
 
-        player:Damage(damage, source)
+        args.player:Damage(args.damage, args.source)
             
         msg = string.format("%s [%s] damaged by %s from [%s] for %.0f damage",
-            player:GetName(), 
-            tostring(player:GetSteamId()),
-            DamageEntityNames[source],
-            attacker_id,
-            damage * 100)
+            args.player:GetName(), 
+            tostring(args.player:GetSteamId()),
+            DamageEntityNames[args.source],
+            args.attacker_id,
+            args.damage * 100)
 
-        self:SetPlayerLastDamaged(player, DamageEntityNames[source], attacker_id)
+        self:SetPlayerLastDamaged(args.player, DamageEntityNames[args.source], args.attacker_id)
 
     else
 
-        player:Damage(damage, source, attacker)
+        args.player:Damage(args.damage, args.source, attacker)
             
         msg = string.format("%s [%s] damaged by %s from %s [%s] for %.0f damage",
-            player:GetName(), 
-            tostring(player:GetSteamId()),
-            DamageEntityNames[source],
+            args.player:GetName(), 
+            tostring(args.player:GetSteamId()),
+            DamageEntityNames[args.source],
             attacker:GetName(),
             tostring(attacker:GetSteamId()),
-            damage * 100)
+            args.damage * 100)
 
-        if source == DamageEntity.Explosion or source == DamageEntity.Bullet then
+        if args.source == DamageEntity.Explosion or args.source == DamageEntity.Bullet then
             -- Append weapon name too
 
-            local weapon = attacker:GetEquippedWeapon()
-            local weapon_name = GetWeaponName(weapon.id)
-
-            msg = msg .. string.format(" [Weapon: %s]", weapon_name)
+            msg = msg .. string.format(" [Weapon: %s]", WeaponEnum:GetDescription(args.weapon_enum))
 
         end
 
@@ -130,6 +129,7 @@ end
 
 function sHitDetection:MeleeGrappleHit(args, player)
 
+    if not self:PlayerCanApplyDamage(player, args.token) then return end
     if not args.victim_id then return end
 
     local victim = self.players[args.victim_id]
@@ -143,6 +143,7 @@ end
 
 function sHitDetection:MeleeStandingKickHit(args, player)
 
+    if not self:PlayerCanApplyDamage(player, args.token) then return end
     if not args.victim_id then return end
 
     local victim = self.players[args.victim_id]
@@ -157,6 +158,7 @@ end
 
 function sHitDetection:MeleeSlidingKickHit(args, player)
 
+    if not self:PlayerCanApplyDamage(player, args.token) then return end
     if not args.victim_id then return end
 
     local victim = self.players[args.victim_id]
@@ -198,7 +200,7 @@ function sHitDetection:PlayerChat(args)
             return
         end
 
-        self:ApplyDamage(args.player, SuicideDamage, DamageEntity.Suicide)
+        self:ApplyDamage(args.player, WeaponDamage.SuicideDamage, DamageEntity.Suicide)
 
         local last_damaged = args.player:GetValue("LastDamaged")
 
@@ -294,6 +296,8 @@ end
 function sHitDetection:PlayerDeath(args)
 
     args.player:SetNetworkValue("OnFire", false)
+
+    -- TODO: check if player's vehicle was damaged and apply kill attribution to killer
 
     local last_damaged = args.player:GetValue("LastDamaged")
 
@@ -489,6 +493,8 @@ function sHitDetection:DetectPlayerHit(args, player)
     assert(args.weapon_enum, "weapon_enum is invalid")
     assert(args.bone_enum, "bone_enum is invalid")
     assert(args.distance_travelled and args.distance_travelled > 0, "distance_travelled is invalid")
+
+    if not self:PlayerCanApplyDamage(player, args.token) then return end
     
     local victim = self.players[args.victim_steam_id]
 
@@ -498,9 +504,15 @@ function sHitDetection:DetectPlayerHit(args, player)
     if victim:GetValue("InSafezone") then return end
 
     local weapon = args.attacker:GetEquippedWeapon()
-    local damage = WeaponDamage:CalculatePlayerDamage(args.weapon_enum, args.bone_enum, args.distance_travelled)
+    local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, args.bone_enum, args.distance_travelled)
 
-    self:ApplyDamage(victim, damage, DamageEntity.Bullet, tostring(player:GetSteamId()))
+    self:ApplyDamage({
+        victim = victim,
+        damage = damage,
+        damage_entity = DamageEntity.Bullet,
+        weapon_enum = args.weapon_enum, 
+        attacker_id = tostring(player:GetSteamId())
+    })
 
     Events:Fire("HitDetection/PlayerBulletHit", {
         player = victim,
@@ -536,6 +548,11 @@ function sHitDetection:SetPlayerLastDamaged(player, damage_type, steam_id)
         steam_id = steam_id,
         timer = Server:GetElapsedSeconds()
     })
+end
+
+-- Checks if a player can apply damage (valid token)
+function sHitDetection:PlayerCanApplyDamage(player, token)
+    return sTokens:PlayerTokenMatches(player, token) and player:GetPing() < self.PING_LIMIT
 end
 
 sHitDetection = sHitDetection()

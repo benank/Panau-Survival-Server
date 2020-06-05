@@ -58,7 +58,7 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 500,
-            bloom = 0.5,
+            bloom = 0.75,
             bullet_size = 0.1
         },
         [WeaponEnum.Sniper] = 
@@ -84,6 +84,35 @@ function cWeaponBulletConfig:__init()
             bullet_size = 0.2,
             multi_shot = 6
         },
+        -- Vehicle Weapons
+        [WeaponEnum.V_Minigun] = 
+        {
+            type = ProjectileBullet,
+            speed = 200,
+            bloom = 0.5,
+            bullet_size = 0.2
+        },
+        [WeaponEnum.V_Rockets] = 
+        {
+            type = ProjectileBullet,
+            speed = 100,
+            bloom = 0,
+            bullet_size = 0
+        },
+        [WeaponEnum.V_Cannon] = 
+        {
+            type = ProjectileBullet,
+            speed = 200,
+            bloom = 5,
+            bullet_size = 1.0
+        },
+        [WeaponEnum.V_MachineGun] = 
+        {
+            type = ProjectileBullet,
+            speed = 400,
+            bloom = 1,
+            bullet_size = 0.5
+        }
     }
 
 end

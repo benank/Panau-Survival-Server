@@ -53,7 +53,6 @@ function WeaponHitDetection:PreTick(args)
 end
 
 function WeaponHitDetection:FireWeapon(args)
-    local target = LocalPlayer:GetAimTarget()
 
     local equipped_weapon_enum = WeaponEnum:GetByWeaponId(LocalPlayer:GetEquippedWeapon().id)
     if not equipped_weapon_enum then
@@ -89,24 +88,46 @@ function WeaponHitDetection:FireWeapon(args)
 
     end
 
-    --Chat:Print("Fired with " .. tostring(WeaponEnum:GetDescription(equipped_weapon_enum)), Color.White)
 end
 
 -- excludes splash hits and direct splash hits
 function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
     if args.entity_type == "Player" then
         local victim = Player.GetById(args.entity_id)
+        local bone = victim:GetClosestBone(args.hit_position)
+
         Network:Send(var("HitDetection/DetectPlayerHit"):get(), {
             victim_steam_id = victim:GetSteamId(),
             weapon_enum = args.weapon_enum,
-            bone_enum = victim:GetClosestBone(args.hit_position),
-            distance_travelled = args.distance_travelled
+            bone_enum = bone,
+            distance_travelled = args.distance_travelled,
+            token = TOKEN
+        })
+
+        -- Preemptively add damage text and indicator so it feels responsive
+        cDamageText:Add({
+            position = args.hit_position,
+            amount = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, bone, args.distance_travelled),
+            color = bone == BoneEnum.Head and Color.Yellow or Color.White,
+            size = bone == BoneEnum.Head and 20 or nil
         })
 
         cHitDetectionMarker:Activate()
-    end
 
-    -- TODO: add vehicle support
+    elseif args.entity_type == "Vehicle" then
+
+        Network:Send(var("HitDetection/DetectVehicleHit"):get(), {
+            victim_steam_id = victim:GetSteamId(),
+            weapon_enum = args.weapon_enum,
+            distance_travelled = args.distance_travelled,
+            token = TOKEN
+        })
+
+        -- TODO: add vehicle damage (see: WeaponDamage:CalculateVehicleDamage)
+
+        cHitDetectionMarker:Activate()
+
+    end
 
 end
 
