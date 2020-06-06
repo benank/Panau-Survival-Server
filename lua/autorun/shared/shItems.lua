@@ -18,7 +18,7 @@ Items =
     {
         name = "Rockets",
         category = "Supplies",
-        stacklimit = 2,
+        stacklimit = 3,
     },
     {
         name = "Revolver Ammo",
