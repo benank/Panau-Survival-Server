@@ -134,6 +134,8 @@ function sWeaponManager:FireWeapon(args, player)
             player = player
         }
 
+        if not weapon_name then return end
+
         equipped_weapons[weapon_name].ammo = ammo_amount - 1
     else
         self.pending_fire[steam_id][weapon.id].ammo = args.ammo
@@ -164,6 +166,8 @@ function sWeaponManager:ProcessWeaponShot(args)
     local ammo_item = shItem(item_data)
 
     local player_weapons = args.player:GetValue("EquippedWeapons")
+
+    if not weapon_name or not player_weapons then return end
 
     player_weapons[weapon_name].ammo = player_weapons[weapon_name].ammo - ammo_used
     args.player:SetValue("EquippedWeapons", player_weapons)
@@ -199,8 +203,6 @@ end
 function sWeaponManager:RefreshEquippedWeapons(player)
 
     if not IsValid(player) then return end
-
-    print("sWeaponManager:RefreshEquippedWeapons")
 
     local player_equipped = player:GetValue("EquippedItems")
     local equipped_weapons = player:GetValue("EquippedWeapons")

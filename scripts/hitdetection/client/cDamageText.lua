@@ -25,7 +25,7 @@ function cDamageText:Add(args)
 
     table.insert(self.texts, {
         position = args.position,
-        amount = string.format("%.0f", args.amount),
+        amount = args.amount < 1 and string.format("%.2f", args.amount) or string.format("%.0f", args.amount),
         time = Client:GetElapsedSeconds(),
         dir = Vector2(math.random() - 0.5, math.random() - 0.5):Normalized(),
         color = args.color or Color.White,
@@ -58,7 +58,7 @@ function cDamageText:Render(args)
                 local color = Color(data.color.r, data.color.g, data.color.b, 0)
                 color.a = 255 - 255 * time_diff / self.max_shown_time
 
-                self:RenderOutlinedText(pos, data.amount, color, self.text_size)
+                self:RenderOutlinedText(pos, data.amount, color, data.size)
 
             end
 

@@ -177,8 +177,11 @@ function WeaponManager:ForceWeaponSwitch(args)
     self.last_slot = args.slot
 
     Thread(function()
+        if self.switching then return end
+        self.switching = true
         Timer.Sleep(1000)
         self:ForceInputWeaponSwitch(args.slot)
+        self.switching = false
     end)
     
 end

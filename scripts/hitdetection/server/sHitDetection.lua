@@ -17,6 +17,7 @@ function sHitDetection:__init()
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
     Network:Subscribe("HitDetection/DetectPlayerHit", self, self.DetectPlayerHit)
+    Network:Subscribe("HitDetection/DetectVehicleHit", self, self.DetectVehicleHit)
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
 
     Events:Subscribe("HitDetection/PlayerInToxicArea", self, self.PlayerInsideToxicArea)
@@ -503,7 +504,6 @@ function sHitDetection:DetectPlayerHit(args, player)
     if player:GetValue("InSafezone") then return end
     if victim:GetValue("InSafezone") then return end
 
-    local weapon = args.attacker:GetEquippedWeapon()
     local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, args.bone_enum, args.distance_travelled)
 
     self:ApplyDamage({
@@ -519,6 +519,36 @@ function sHitDetection:DetectPlayerHit(args, player)
         attacker = player,
         damage = damage
     })
+
+end
+
+function sHitDetection:DetectVehicleHit(args, player)
+
+    assert(IsValid(player), "player is invalid")
+    assert(args.vehicle_id, "vehicle_id is invalid")
+    assert(args.distance_travelled and args.distance_travelled > 0, "distance_travelled is invalid")
+
+    if not self:PlayerCanApplyDamage(player, args.token) then return end
+    
+    local vehicle = Vehicle.GetById(args.vehicle_id)
+
+    if not IsValid(vehicle) then return end
+
+    if player:GetValue("InSafezone") then return end
+    if vehicle:GetDriver() and vehicle:GetDriver():GetValue("InSafezone") then return end
+
+    local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, args.distance_travelled)
+
+    if damage <= 0 then return end
+    if vehicle:GetHealth() <= 0 then return end
+
+    vehicle:SetHealth(math.max(0, vehicle:GetHealth() - damage))
+    
+    if vehicle:GetDriver() then
+        self:SetPlayerLastDamaged(vehicle:GetDriver(), DamageEntity.Bullet, tostring(player:GetSteamId()))
+    end
+
+    -- TODO: set vehicle last damaged so we can attribute killer when it explodes
 
 end
 

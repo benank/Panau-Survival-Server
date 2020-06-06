@@ -21,7 +21,7 @@ function ProjectileBullet:__init(args)
 
 
     local dir = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * self:GetBloom() * Vector3.Forward, 0, 1000).position
-    dir = args.angle * self:GetBloom() or Angle.FromVectors(Vector3.Forward, dir - self.initial_position)
+    dir = args.angle and (args.angle * self:GetBloom()) or Angle.FromVectors(Vector3.Forward, dir - self.initial_position)
     self.target_position = Physics:Raycast(self.initial_position, dir * Vector3.Forward, 0, 1000).position
     self.angle = Angle.FromVectors(Vector3.Forward, self.target_position - self.initial_position)
     self.angle.roll = 0
@@ -112,6 +112,7 @@ function ProjectileBullet:HitSomething(raycast)
             Events:Fire("LocalPlayerBulletDirectHitEntity", {
                 entity_type = raycast.entity.__type,
                 entity_id = raycast.entity:GetId(),
+                entity = raycast.entity,
                 weapon_enum = self.weapon_enum,
                 hit_position = raycast.position,
                 distance_travelled = self.total_distance_covered

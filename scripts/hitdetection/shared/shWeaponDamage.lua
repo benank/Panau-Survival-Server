@@ -10,15 +10,15 @@ function WeaponDamage:__init()
     end
 
     self.weapon_damages = {
-        [WeaponEnum.MachineGun] =       {base = 0.07, v_mod = 0.1,  distance_falloff = 500, falloff = falloff_func},
-        [WeaponEnum.Handgun] =          {base = 0.05, v_mod = 0.05, distance_falloff = 150, falloff = falloff_func},
-        [WeaponEnum.Assault] =          {base = 0.06, v_mod = 0.1,  distance_falloff = 300, falloff = falloff_func},
-        [WeaponEnum.BubbleGun] =        {base =-0.05, v_mod = 0,    distance_falloff = 50,  falloff = falloff_func},
-        [WeaponEnum.GrenadeLauncher] =  {base = 0.10, v_mod = 2,    distance_falloff = 0,   falloff = function() return 0 end},
-        [WeaponEnum.Revolver] =         {base = 0.10, v_mod = 0.05, distance_falloff = 300, falloff = falloff_func},
-        [WeaponEnum.RocketLauncher] =   {base = 0.15, v_mod = 4,    distance_falloff = 0,   falloff = function() return 0 end},
-        [WeaponEnum.SMG] =              {base = 0.06, v_mod = 0.02, distance_falloff = 100, falloff = falloff_func},
-        [WeaponEnum.Sniper] =           {base = 0.90, v_mod = 0.2,  distance_falloff = 200, falloff = 
+        [WeaponEnum.MachineGun] =       {base = 0.07, v_mod = 0.08,  distance_falloff = 500, falloff = falloff_func},
+        [WeaponEnum.Handgun] =          {base = 0.05, v_mod = 0.05,  distance_falloff = 150, falloff = falloff_func},
+        [WeaponEnum.Assault] =          {base = 0.06, v_mod = 0.08,  distance_falloff = 300, falloff = falloff_func},
+        [WeaponEnum.BubbleGun] =        {base =-0.05, v_mod = 0,     distance_falloff = 50,  falloff = falloff_func},
+        [WeaponEnum.GrenadeLauncher] =  {base = 0.10, v_mod = 2,     distance_falloff = 0,   falloff = function() return 0 end},
+        [WeaponEnum.Revolver] =         {base = 0.10, v_mod = 0.05,  distance_falloff = 300, falloff = falloff_func},
+        [WeaponEnum.RocketLauncher] =   {base = 0.15, v_mod = 2,     distance_falloff = 0,   falloff = function() return 0 end},
+        [WeaponEnum.SMG] =              {base = 0.06, v_mod = 0.02,  distance_falloff = 100, falloff = falloff_func},
+        [WeaponEnum.Sniper] =           {base = 0.90, v_mod = 0.07,  distance_falloff = 200, falloff = 
             function(distance, distance_falloff) -- Sniper gains full power at 200+ meters away
                 return math.clamp(distance / distance_falloff, 0, 1)
             end},
@@ -134,20 +134,35 @@ function WeaponDamage:GetDamageForWeapon(weapon_enum)
     return self.weapon_damages[weapon_enum]
 end
 
+function WeaponDamage:CalculateVehicleDamage(vehicle, weapon_enum, distance)
+
+    if vehicle:GetValue("InSafezone") then return 0 end
+    if vehicle:GetHealth() <= 0 then return 0 end
+
+    local base_damage = self.weapon_damages[weapon_enum].base
+    local v_mod = self.weapon_damages[weapon_enum].v_mod
+    local falloff_modifier = self.weapon_damages[weapon_enum].falloff(distance, self.weapon_damages[weapon_enum].distance_falloff)
+
+    local damage = base_damage * falloff_modifier * v_mod
+
+    return damage
+
+end
+
 function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, distance)
 
     if victim:GetValue("InSafezone") then return 0 end
+    if victim:GetHealth() <= 0 then return 0 end
 
     local base_damage = self.weapon_damages[weapon_enum].base
-    local bone_damage_modifier = self.bone_damage_modifiers[bone_enum]
+    local bone_damage_modifier = self.bone_damage_modifiers[bone_enum].modifier
     local hit_type = self.bone_damage_modifiers[bone_enum].type
     local falloff_modifier = self.weapon_damages[weapon_enum].falloff(distance, self.weapon_damages[weapon_enum].distance_falloff)
-
-    local damage = weapon_damage * bone_damage_modifier * falloff_modifier * 100
-
     local armor_mod = self:GetArmorMod(victim, hit_type, damage)
 
-    return math.floor(damage) / 100
+    local damage = base_damage * bone_damage_modifier * armor_mod * falloff_modifier
+
+    return damage
 end
 
 function WeaponDamage:GetArmorMod(player, hit_type, damage)
@@ -155,6 +170,7 @@ function WeaponDamage:GetArmorMod(player, hit_type, damage)
     assert(IsValid(player), "player was invalid")
 
     local original_damage = damage
+    local mod = 1
 
     local equipped_items = player:GetValue("EquippedItems")
     local steam_id = tostring(player:GetSteamId())
@@ -162,7 +178,7 @@ function WeaponDamage:GetArmorMod(player, hit_type, damage)
     for armor_name, mods in pairs(self.ArmorModifiers) do
         if equipped_items[armor_name] and self.ArmorModifiers[armor_name][hit_type] > 0 then
 
-            damage = damage * (1 - self.ArmorModifiers[armor_name][hit_type])
+            mod = mod * (1 - self.ArmorModifiers[armor_name][hit_type])
 
             -- TODO: move this to sHitDetection
             if Server then
@@ -191,7 +207,7 @@ function WeaponDamage:GetArmorMod(player, hit_type, damage)
         end
     end
 
-    return damage
+    return mod
 
 end
 

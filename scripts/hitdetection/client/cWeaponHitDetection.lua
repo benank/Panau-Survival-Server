@@ -2,7 +2,7 @@ class "WeaponHitDetection"
 
 function WeaponHitDetection:__init()
     -- stops bullets from removing from the world so you can see where they land + other prints
-    self.debug_enabled = true
+    self.debug_enabled = false
 
     self.bloom = 0
     self.max_bloom = 100
@@ -147,9 +147,9 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
         -- Preemptively add damage text and indicator so it feels responsive
         cDamageText:Add({
             position = args.hit_position,
-            amount = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, bone, args.distance_travelled),
-            color = bone == BoneEnum.Head and Color.Yellow or Color.White,
-            size = bone == BoneEnum.Head and 20 or nil
+            amount = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, bone, args.distance_travelled) * 100,
+            color = bone == BoneEnum.Head and Color.Red or Color.White,
+            size = bone == BoneEnum.Head and 24 or nil
         })
 
         cHitDetectionMarker:Activate()
@@ -163,7 +163,11 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
             token = TOKEN
         })
 
-        -- TODO: add vehicle damage (see: WeaponDamage:CalculateVehicleDamage)
+        -- Preemptively add damage text and indicator so it feels responsive
+        cDamageText:Add({
+            position = args.hit_position,
+            amount = WeaponDamage:CalculateVehicleDamage(args.entity, args.weapon_enum, args.distance_travelled) * 100
+        })
 
         cHitDetectionMarker:Activate()
 
@@ -182,20 +186,20 @@ function WeaponHitDetection:Render(args)
     -- Draw bloom circle
     if self.bloom > 0 then
 
-        local weapon_enum = cVehicleWeaponManager:IsValidVehicleWeaponAction(Action.VehicleFireLeft) or
-        self:IsValidVehicleWeaponAction(Action.VehicleFireLeft)
-    
-        local bullet_config = cWeaponBulletConfig:GetByWeaponEnum(weapon_enum)
-    
-        if not bullet_config then
-            error(debug.traceback("No bullet configured for this weapon!"))
-        end
-    
-        local num_shots = bullet_config.multi_shot or 1
         local v = LocalPlayer:GetVehicle() or LocalPlayer:GetValue("VehicleMG")
 
-        if bullet_config.indicator then
-            cVehicleWeaponManager:DrawBloom(math.min(50, self.bloom * 5), Color(255,255,255,100))
+        if IsValid(v) then
+
+            local weapon_enum = cVehicleWeaponManager:IsValidVehicleWeaponAction(Action.VehicleFireLeft) or
+            cVehicleWeaponManager:IsValidVehicleWeaponAction(Action.VehicleFireLeft)
+        
+            local bullet_config = cWeaponBulletConfig:GetByWeaponEnum(weapon_enum)
+        
+            if not bullet_config then return end
+    
+            if bullet_config.indicator then
+                cVehicleWeaponManager:DrawBloom(math.min(50, self.bloom * 5), Color(255,255,255,100))
+            end
         else
             Render:DrawCircle(Render.Size / 2, math.min(50, self.bloom * 5), Color(255,255,255,100))
         end
