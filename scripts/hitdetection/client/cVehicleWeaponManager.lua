@@ -2,6 +2,8 @@ class 'cVehicleWeaponManager'
 
 function cVehicleWeaponManager:__init()
 
+    -- Handles the FireVehicleWeapon event and the vehicle weapon heat system
+
     self.current_heat = var(0)
     self.max_heat = 100
     self.heat_decay_speed = 10
@@ -172,7 +174,7 @@ end
 function cVehicleWeaponManager:DrawWeaponHitHud(args)
 
     local weapon = self:IsValidVehicleWeaponAction(Action.VehicleFireLeft) or
-    self:IsValidVehicleWeaponAction(Action.VehicleFireLeft)
+    self:IsValidVehicleWeaponAction(Action.VehicleFireRight)
 
     local bullet_data = cWeaponBulletConfig:GetByWeaponEnum(weapon)
 

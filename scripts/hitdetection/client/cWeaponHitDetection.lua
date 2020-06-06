@@ -15,10 +15,125 @@ function WeaponHitDetection:__init()
 
     Events:Subscribe("GameRenderOpaque", self, self.GameRenderOpaque)
     Events:Subscribe(var("LocalPlayerBulletDirectHitEntity"):get(), self, self.LocalPlayerBulletDirectHitEntity)
+    Events:Subscribe(var("LocalPlayerBulletSplashEntityHit"):get(), self, self.LocalPlayerBulletSplashEntityHit)
+    Events:Subscribe(var("LocalPlayerBulletSplash"):get(), self, self.LocalPlayerBulletSplash)
     Events:Subscribe(var("FireWeapon"):get(), self, self.FireWeapon)
     Events:Subscribe(var("FireVehicleWeapon"):get(), self, self.FireVehicleWeapon)
     Events:Subscribe(var("LocalPlayerBulletHit"):get(), self, self.LocalPlayerBulletHit)
     Events:Subscribe(var("LocalPlayerExplosionHit"):get(), self, self.LocalPlayerExplosionHit)
+end
+
+function WeaponHitDetection:CheckPlayerSplash(args)
+
+    local radius = WeaponDamage.weapon_damages[args.weapon_enum].radius
+
+    local player = args.player
+
+    local ray = Physics:Raycast(
+        args.hit_position, 
+        (player:GetBonePosition(BoneEnum.Spine1) - args.hit_position),
+        0, radius, false)
+
+    if ray.distance < radius
+    and ray.entity
+    and ((ray.entity.__type == "Player" and ray.entity == player) 
+    or (ray.entity.__type == "LocalPlayer" and ray.entity == player)) then
+
+        local damage = WeaponDamage:CalculatePlayerDamage(player, args.weapon_enum, BoneEnum.Spine1, args.distance_travelled)
+        local falloff = 1 - ray.distance / radius
+        damage = damage * falloff
+
+        if damage > 0 then
+
+            -- Hit the player with the splash damage
+            Network:Send(var("HitDetection/DetectPlayerSplashHit"):get(), {
+                victim_steam_id = tostring(player:GetSteamId()),
+                damage_falloff = falloff,
+                weapon_enum = args.weapon_enum,
+                token = TOKEN:get()
+            })
+
+            -- Preemptively add damage text and indicator so it feels responsive
+            cDamageText:Add({
+                position = ray.position,
+                amount = damage * 100
+            })
+
+            cHitDetectionMarker:Activate()
+
+        end
+
+    end
+
+end
+
+function WeaponHitDetection:LocalPlayerBulletSplash(args)
+
+    --Thread(function()
+    
+    local radius = WeaponDamage.weapon_damages[args.weapon_enum].radius
+
+    if not radius then return end
+
+    for player in Client:GetStreamedPlayers() do
+
+        local args_copy = deepcopy(args)
+        args_copy.player = player
+        self:CheckPlayerSplash(args_copy)
+            --Timer.Sleep(5)
+
+    end
+
+    local args_copy = deepcopy(args)
+    args_copy.player = LocalPlayer
+    self:CheckPlayerSplash(args_copy)
+
+
+    for vehicle in Client:GetVehicles() do
+
+        local ray = Physics:Raycast(
+            args.hit_position, 
+            (vehicle:GetPosition() - args.hit_position),
+            0, radius)
+
+        if ray.distance < radius
+        and ray.entity
+        and ray.entity.__type == "Vehicle"
+        and ray.entity == vehicle then
+
+            local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, args.distance_travelled)
+            local falloff = 1 - ray.distance / radius
+            damage = damage * falloff
+
+            if damage > 0 then
+
+                -- Hit the player with the splash damage
+                Network:Send(var("HitDetection/DetectVehicleSplashHit"):get(), {
+                    vehicle_id = vehicle:GetId(),
+                    damage_falloff = falloff,
+                    weapon_enum = args.weapon_enum,
+                    token = TOKEN:get()
+                })
+
+                -- Preemptively add damage text and indicator so it feels responsive
+                cDamageText:Add({
+                    position = ray.position,
+                    amount = damage * 100
+                })
+
+                cHitDetectionMarker:Activate()
+
+            end
+
+            --Timer.Sleep(5)
+
+        end
+
+    end
+
+
+
+    --end)
 end
 
 -- Block default weapons
@@ -73,7 +188,7 @@ function WeaponHitDetection:FireVehicleWeapon(args)
 
         local bullet_data = {
             id = self.bullet_id_counter,
-            weapon_enum = equipped_weapon_enum,
+            weapon_enum = args.weapon_enum,
             velocity = bullet_config.speed,
             is_splash = bullet_config.splash ~= nil,
             bloom = self.bloom,
@@ -130,24 +245,78 @@ function WeaponHitDetection:FireWeapon(args)
 
 end
 
+function WeaponHitDetection:LocalPlayerBulletSplashEntityHit(args)
+
+    if args.entity_type == "Player" then
+        local victim = Player.GetById(args.entity_id)
+
+        local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, BoneEnum.Spine1, args.distance_travelled) * 100
+
+        if damage == 0 then return end
+
+        Network:Send(var("HitDetection/DetectPlayerSplashHit"):get(), {
+            victim_steam_id = tostring(victim:GetSteamId()),
+            weapon_enum = args.weapon_enum,
+            distance_travelled = args.distance_travelled,
+            token = TOKEN:get()
+        })
+
+        -- Preemptively add damage text and indicator so it feels responsive
+        cDamageText:Add({
+            position = args.hit_position,
+            amount = damage
+        })
+
+        cHitDetectionMarker:Activate()
+
+    elseif args.entity_type == "Vehicle" then
+
+        local damage = WeaponDamage:CalculateVehicleDamage(args.entity, args.weapon_enum, args.distance_travelled) * 100
+
+        if damage == 0 then return end
+
+        Network:Send(var("HitDetection/DetectVehicleSplashHit"):get(), {
+            vehicle_id = args.entity:GetId(),
+            weapon_enum = args.weapon_enum,
+            distance_travelled = args.distance_travelled,
+            token = TOKEN:get(),
+            hit_position = args.hit_position
+        })
+
+        -- Preemptively add damage text and indicator so it feels responsive
+        cDamageText:Add({
+            position = args.hit_position,
+            amount = damage
+        })
+
+        cHitDetectionMarker:Activate()
+
+    end
+
+end
+
 -- excludes splash hits and direct splash hits
 function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
     if args.entity_type == "Player" then
         local victim = Player.GetById(args.entity_id)
         local bone = victim:GetClosestBone(args.hit_position)
 
+        local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, bone, args.distance_travelled) * 100
+
+        if damage == 0 then return end
+
         Network:Send(var("HitDetection/DetectPlayerHit"):get(), {
-            victim_steam_id = victim:GetSteamId(),
+            victim_steam_id = tostring(victim:GetSteamId()),
             weapon_enum = args.weapon_enum,
             bone_enum = bone,
             distance_travelled = args.distance_travelled,
-            token = TOKEN
+            token = TOKEN:get()
         })
 
         -- Preemptively add damage text and indicator so it feels responsive
         cDamageText:Add({
             position = args.hit_position,
-            amount = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, bone, args.distance_travelled) * 100,
+            amount = damage,
             color = bone == BoneEnum.Head and Color.Red or Color.White,
             size = bone == BoneEnum.Head and 24 or nil
         })
@@ -156,17 +325,21 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
 
     elseif args.entity_type == "Vehicle" then
 
+        local damage = WeaponDamage:CalculateVehicleDamage(args.entity, args.weapon_enum, args.distance_travelled) * 100
+
+        if damage == 0 then return end
+
         Network:Send(var("HitDetection/DetectVehicleHit"):get(), {
             vehicle_id = args.entity:GetId(),
             weapon_enum = args.weapon_enum,
             distance_travelled = args.distance_travelled,
-            token = TOKEN
+            token = TOKEN:get()
         })
 
         -- Preemptively add damage text and indicator so it feels responsive
         cDamageText:Add({
             position = args.hit_position,
-            amount = WeaponDamage:CalculateVehicleDamage(args.entity, args.weapon_enum, args.distance_travelled) * 100
+            amount = damage
         })
 
         cHitDetectionMarker:Activate()
@@ -191,7 +364,7 @@ function WeaponHitDetection:Render(args)
         if IsValid(v) then
 
             local weapon_enum = cVehicleWeaponManager:IsValidVehicleWeaponAction(Action.VehicleFireLeft) or
-            cVehicleWeaponManager:IsValidVehicleWeaponAction(Action.VehicleFireLeft)
+            cVehicleWeaponManager:IsValidVehicleWeaponAction(Action.VehicleFireRight)
         
             local bullet_config = cWeaponBulletConfig:GetByWeaponEnum(weapon_enum)
         
@@ -199,10 +372,12 @@ function WeaponHitDetection:Render(args)
     
             if bullet_config.indicator then
                 cVehicleWeaponManager:DrawBloom(math.min(50, self.bloom * 5), Color(255,255,255,100))
+                return
             end
-        else
-            Render:DrawCircle(Render.Size / 2, math.min(50, self.bloom * 5), Color(255,255,255,100))
+
         end
+
+        Render:DrawCircle(Render.Size / 2, math.min(50, self.bloom * 5), Color(255,255,255,100))
         
     end
 

@@ -27,7 +27,7 @@ function cWeaponBulletConfig:__init()
         [WeaponEnum.BubbleGun] = 
         {
             type = ProjectileBullet,
-            speed = 1,
+            speed = 4,
             bloom = 50,
             bullet_size = 0
         },
@@ -82,7 +82,7 @@ function cWeaponBulletConfig:__init()
             speed = 200,
             bloom = 2,
             bullet_size = 0.2,
-            multi_shot = 6
+            multi_shot = 3
         },
         -- Vehicle Weapons
         [WeaponEnum.V_Minigun] = 

@@ -25,7 +25,7 @@ function cDamageText:Add(args)
 
     table.insert(self.texts, {
         position = args.position,
-        amount = args.amount < 1 and string.format("%.2f", args.amount) or string.format("%.0f", args.amount),
+        amount = (args.amount < 1 and args.amount > 0) and string.format("%.2f", args.amount) or string.format("%.0f", args.amount),
         time = Client:GetElapsedSeconds(),
         dir = Vector2(math.random() - 0.5, math.random() - 0.5):Normalized(),
         color = args.color or Color.White,

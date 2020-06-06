@@ -889,7 +889,9 @@ end
 
 -- Using a function for now incase we need to do future compatibility stuff
 function sVehicleManager:SpawnVehicle(args)
-    return Vehicle.Create(args)
+    local v = Vehicle.Create(args)
+    v:SetInvulnerable(true) -- Vehicles can only be damaged by custom hit detection
+    return v
 end
 
 function sVehicleManager:ModuleUnload()

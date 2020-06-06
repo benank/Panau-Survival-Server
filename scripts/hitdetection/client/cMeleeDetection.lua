@@ -161,8 +161,14 @@ function cMeleeDetection:ScanForHit(type)
 
                 if ray.entity.__type == "Player" then
                     -- Hit player, send to server
-                    Network:Send(type_data.event_name:get(), {victim_id = tostring(ray.entity:GetSteamId()), token = TOKEN})
+                    Network:Send(type_data.event_name:get(), {victim_id = tostring(ray.entity:GetSteamId()), token = TOKEN:get()})
                     self.recent_hits[ray.entity:GetId()] = true
+
+                    cDamageText:Add({
+                        position = ray.position + Vector3(0, 0.5, 0),
+                        amount = WeaponDamage:CalculateMeleeDamage(ray.entity, type) * 100
+                    })
+
                     cHitDetectionMarker:Activate()
 
                     ClientEffect.Play(AssetLocation.Game, {
