@@ -9,20 +9,28 @@ function cVehicleWeaponManager:__init()
 
     self.fire_delays = -- Delays between shots for vehicle weapons
     {
-        [WeaponEnum.V_Minigun] = 100,
-        [WeaponEnum.V_MachineGun] = 400
+        [WeaponEnum.V_Minigun] = 50,
+        [WeaponEnum.V_MachineGun] = 200
     }
 
-    self.fire_delay = Client:GetElapsedSeconds()
+    self.fire_delay = Timer()
 
     -- Handles the FireVehicleWeapon event and the vehicle weapon heat system
 
     self.vehicle_events = {} -- Events for when you are in a vehicle
 
+    self.heat_amounts = 
+    {
+        [WeaponEnum.V_Minigun] = 1.5,
+        [WeaponEnum.V_MachineGun] = 4,
+        [WeaponEnum.V_Rockets] = 0,
+        [WeaponEnum.V_Cannon] = 0
+    }
+
     self.heat_actions = 
     {
-        [Action.VehicleFireLeft] = 1,
-        [Action.VehicleFireRight] = 0
+        [Action.VehicleFireLeft] = true,
+        [Action.VehicleFireRight] = true
     }
 
     self.fire_actions = 
@@ -80,6 +88,8 @@ end
 
 function cVehicleWeaponManager:LocalPlayerInput(args)
 
+    if Game:GetState() ~= GUIState.Game then return end
+
     if self.overheated and self.fire_actions[args.input] then self:StopFiringInput() return false end
 
     if self.heat_actions[args.input] ~= nil then
@@ -91,11 +101,11 @@ function cVehicleWeaponManager:LocalPlayerInput(args)
         -- Fire delays for the weapons
         local seconds = Client:GetElapsedSeconds()
 
-        if self.fire_delays[weapon] and seconds - self.fire_delay > self.fire_delays[weapon] then return end
-        self.fire_delay = seconds
+        if self.fire_delays[weapon] and self.fire_delay:GetMilliseconds() < self.fire_delays[weapon] then return end
+        self.fire_delay:Restart()
 
         local current_heat = self.current_heat:get()
-        current_heat = math.min(self.max_heat, current_heat + self.heat_actions[args.input])
+        current_heat = math.min(self.max_heat, current_heat + self.heat_amounts[weapon])
         self.current_heat:set(current_heat)
 
         if current_heat == self.max_heat then
@@ -108,7 +118,9 @@ function cVehicleWeaponManager:LocalPlayerInput(args)
             self.secondary_fire_timer:Restart()
         end
 
-        Events:Fire(var("FireVehicleWeapon"):get())
+        Events:Fire(var("FireVehicleWeapon"):get(), {
+            weapon_enum = weapon
+        })
 
     end
 
@@ -125,9 +137,11 @@ function cVehicleWeaponManager:Render(args)
 
     if not self:IsValidVehicleWeaponAction() then return end
 
+    self:DrawWeaponHitHud()
+
     if current_heat > 0 then
         local bar_size = Vector2(70, 5)
-        local bar_pos = Render.Size / 2 + Vector2(0, 30) - Vector2(bar_size.x / 2, 0)
+        local bar_pos = Render.Size / 2 + Vector2(0, -50) - Vector2(bar_size.x / 2, 0)
 
         local fill_color = self.overheated and Color(200, 0, 0, 200) or Color(200, 200, 200, 200)
 
@@ -144,7 +158,7 @@ function cVehicleWeaponManager:Render(args)
     if secondary_fire_time < self.secondary_fire_cooldown then
 
         local bar_size = Vector2(70, 3)
-        local bar_pos = Render.Size / 2 + Vector2(0, 35) - Vector2(bar_size.x / 2, 0)
+        local bar_pos = Render.Size / 2 + Vector2(0, -45) - Vector2(bar_size.x / 2, 0)
 
         local fill_color = Color(0, 200, 200, 200)
 
@@ -153,6 +167,44 @@ function cVehicleWeaponManager:Render(args)
 
     end
 
+end
+
+function cVehicleWeaponManager:DrawWeaponHitHud(args)
+
+    local weapon = self:IsValidVehicleWeaponAction(Action.VehicleFireLeft) or
+    self:IsValidVehicleWeaponAction(Action.VehicleFireLeft)
+
+    local bullet_data = cWeaponBulletConfig:GetByWeaponEnum(weapon)
+
+    if not bullet_data or not bullet_data.indicator then
+        Game:FireEvent("gui.aim.show")
+        return
+    end
+
+    Game:FireEvent("gui.aim.hide")
+
+    local v = LocalPlayer:GetVehicle() or LocalPlayer:GetValue("VehicleMG")
+
+    local angle = bullet_data.angle(Camera:GetAngle(), v:GetAngle())
+    local ray = Physics:Raycast(LocalPlayer:GetBonePosition(BoneEnum.RightHand), angle * Vector3.Forward, 0, 1000)
+
+    local pos, on_screen = Render:WorldToScreen(ray.position)
+
+    self.aim_pos_2d, self.aim_pos_2d_onscreen = pos, on_screen
+
+    if not on_screen then return end
+
+    local width = 2
+    local height = 22
+
+    Render:FillArea(pos - Vector2(width / 2, height / 2), Vector2(width, height), Color.White)
+    Render:FillArea(pos - Vector2(height / 2, width / 2), Vector2(height, width), Color.White)
+
+end
+
+function cVehicleWeaponManager:DrawBloom(size, color)
+    if not self.aim_pos_2d or not self.aim_pos_2d_onscreen then return end
+    Render:DrawCircle(self.aim_pos_2d, size, color)
 end
 
 function cVehicleWeaponManager:LocalPlayerEnterVehicle(args)
@@ -177,6 +229,7 @@ function cVehicleWeaponManager:UnsubscribeVehicleEvents()
         Events:Unsubscribe(v)
     end
     self.vehicle_events = {}
+    Game:FireEvent("gui.aim.show")
 end
 
 cVehicleWeaponManager = cVehicleWeaponManager()

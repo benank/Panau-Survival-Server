@@ -88,30 +88,47 @@ function cWeaponBulletConfig:__init()
         [WeaponEnum.V_Minigun] = 
         {
             type = ProjectileBullet,
-            speed = 200,
+            speed = 600,
             bloom = 0.5,
-            bullet_size = 0.2
+            bullet_size = 0.2,
+            indicator = true,
+            angle = function(cam_angle, v_angle)
+                return v_angle * Angle(0, -math.pi * 0.0425, 0)
+            end
         },
         [WeaponEnum.V_Rockets] = 
         {
             type = ProjectileBullet,
-            speed = 100,
+            speed = 300,
             bloom = 0,
-            bullet_size = 0
+            bullet_size = 0,
+            splash = true,
+            indicator = true,
+            angle = function(cam_angle, v_angle)
+                return v_angle * Angle(0, -math.pi * 0.04, 0)
+            end
         },
         [WeaponEnum.V_Cannon] = 
         {
             type = ProjectileBullet,
-            speed = 200,
+            speed = 300,
             bloom = 5,
-            bullet_size = 1.0
+            bullet_size = 1.0,
+            splash = true,
+            indicator = true,
+            angle = function(cam_angle, v_angle)
+                return v_angle * Angle(0, -math.pi * 0.04, 0)
+            end
         },
         [WeaponEnum.V_MachineGun] = 
         {
             type = ProjectileBullet,
-            speed = 400,
+            speed = 500,
             bloom = 1,
-            bullet_size = 0.5
+            bullet_size = 0.5,
+            angle = function(cam_angle, v_angle)
+                return cam_angle
+            end
         }
     }
 

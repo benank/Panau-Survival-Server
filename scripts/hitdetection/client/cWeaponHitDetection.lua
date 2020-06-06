@@ -16,6 +16,7 @@ function WeaponHitDetection:__init()
     Events:Subscribe("GameRenderOpaque", self, self.GameRenderOpaque)
     Events:Subscribe(var("LocalPlayerBulletDirectHitEntity"):get(), self, self.LocalPlayerBulletDirectHitEntity)
     Events:Subscribe(var("FireWeapon"):get(), self, self.FireWeapon)
+    Events:Subscribe(var("FireVehicleWeapon"):get(), self, self.FireVehicleWeapon)
     Events:Subscribe(var("LocalPlayerBulletHit"):get(), self, self.LocalPlayerBulletHit)
     Events:Subscribe(var("LocalPlayerExplosionHit"):get(), self, self.LocalPlayerExplosionHit)
 end
@@ -52,13 +53,52 @@ function WeaponHitDetection:PreTick(args)
     end
 end
 
+function WeaponHitDetection:FireVehicleWeapon(args)
+
+    if not args.weapon_enum then
+        Chat:Print("Fired with unsupported weapon", Color.Red)
+        return
+    end
+
+    local bullet_config = cWeaponBulletConfig:GetByWeaponEnum(args.weapon_enum)
+
+    if not bullet_config then
+        error(debug.traceback("No bullet configured for this weapon!"))
+    end
+
+    local num_shots = bullet_config.multi_shot or 1
+    local v = LocalPlayer:GetVehicle() or LocalPlayer:GetValue("VehicleMG")
+
+    for i = 1, num_shots do
+
+        local bullet_data = {
+            id = self.bullet_id_counter,
+            weapon_enum = equipped_weapon_enum,
+            velocity = bullet_config.speed,
+            is_splash = bullet_config.splash ~= nil,
+            bloom = self.bloom,
+            angle = bullet_config.angle(Camera:GetAngle(), v:GetAngle()),
+            bullet_size = bullet_config.bullet_size
+        }
+
+        local bullet = bullet_config.type(bullet_data)
+        self.bullet_id_counter = self.bullet_id_counter + 1
+        
+        self.bloom = math.min(self.bloom + bullet_config.bloom, self.max_bloom)
+
+        self.bullets[bullet:GetId()] = bullet
+
+    end
+
+end
+
 function WeaponHitDetection:FireWeapon(args)
 
     local equipped_weapon_enum = WeaponEnum:GetByWeaponId(LocalPlayer:GetEquippedWeapon().id)
     if not equipped_weapon_enum then
         Chat:Print("Fired with unsupported weapon!", Color.Red)
+        return
     end
-    if not equipped_weapon_enum then return end
 
     local bullet_config = cWeaponBulletConfig:GetByWeaponEnum(equipped_weapon_enum)
 
@@ -117,7 +157,7 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
     elseif args.entity_type == "Vehicle" then
 
         Network:Send(var("HitDetection/DetectVehicleHit"):get(), {
-            victim_steam_id = victim:GetSteamId(),
+            vehicle_id = args.entity:GetId(),
             weapon_enum = args.weapon_enum,
             distance_travelled = args.distance_travelled,
             token = TOKEN
@@ -141,7 +181,25 @@ function WeaponHitDetection:Render(args)
 
     -- Draw bloom circle
     if self.bloom > 0 then
-        Render:DrawCircle(Render.Size / 2, math.min(50, self.bloom * 5), Color(255,255,255,100))
+
+        local weapon_enum = cVehicleWeaponManager:IsValidVehicleWeaponAction(Action.VehicleFireLeft) or
+        self:IsValidVehicleWeaponAction(Action.VehicleFireLeft)
+    
+        local bullet_config = cWeaponBulletConfig:GetByWeaponEnum(weapon_enum)
+    
+        if not bullet_config then
+            error(debug.traceback("No bullet configured for this weapon!"))
+        end
+    
+        local num_shots = bullet_config.multi_shot or 1
+        local v = LocalPlayer:GetVehicle() or LocalPlayer:GetValue("VehicleMG")
+
+        if bullet_config.indicator then
+            cVehicleWeaponManager:DrawBloom(math.min(50, self.bloom * 5), Color(255,255,255,100))
+        else
+            Render:DrawCircle(Render.Size / 2, math.min(50, self.bloom * 5), Color(255,255,255,100))
+        end
+        
     end
 
     if self.debug_enabled then

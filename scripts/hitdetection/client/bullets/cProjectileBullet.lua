@@ -21,7 +21,7 @@ function ProjectileBullet:__init(args)
 
 
     local dir = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * self:GetBloom() * Vector3.Forward, 0, 1000).position
-    dir = Angle.FromVectors(Vector3.Forward, dir - self.initial_position)
+    dir = args.angle * self:GetBloom() or Angle.FromVectors(Vector3.Forward, dir - self.initial_position)
     self.target_position = Physics:Raycast(self.initial_position, dir * Vector3.Forward, 0, 1000).position
     self.angle = Angle.FromVectors(Vector3.Forward, self.target_position - self.initial_position)
     self.angle.roll = 0
@@ -92,7 +92,7 @@ end
 function ProjectileBullet:BulletRaycast(raycast_position, raycast_distance_modifier)
     local raycast_distance = self.raycast_distance * raycast_distance_modifier
     local raycast = Physics:Raycast(raycast_position, self.angle * Vector3.Forward, 0, raycast_distance, true)
-    if raycast.distance < raycast_distance then
+    if raycast.distance < raycast_distance or raycast.position.y < 199 then
         self:HitSomething(raycast)
     end
 end

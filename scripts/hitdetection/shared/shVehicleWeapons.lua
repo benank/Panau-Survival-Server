@@ -54,7 +54,7 @@ function VehicleWeapons:__init()
         }, -- Sivirkin 15 Havoc
         [62] = 
         {
-            [VehicleSeat.Driver] = {FireLeft = WeaponEnum.V_MachineGun},
+            [VehicleSeat.Driver] = {FireLeft = WeaponEnum.V_Minigun},
         }, -- UH-10 Chippewa
         [64] = 
         {
