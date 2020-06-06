@@ -72,7 +72,7 @@ function cHitDetection:Explosion(args)
     if LocalPlayer:GetValue(var("InSafezone"):get()) then return end
     if LocalPlayer:GetValue("Invincible") then return end
 
-    local explosive_data = ExplosiveBaseDamage[args.type]
+    local explosive_data = WeaponDamage.ExplosiveBaseDamage[args.type]
 
     if explosive_data then
 

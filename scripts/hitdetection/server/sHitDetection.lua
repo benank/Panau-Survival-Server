@@ -64,7 +64,7 @@ function sHitDetection:ApplyDamage(args)
 
     if old_hp <= 0 then return end
 
-    attacker = args.attacker_id and self.players[args.attacker_id] or nil
+    attacker = args.attacker_id and self.players[args.attacker_id] or args.attacker
 
     local msg = ""
     
@@ -306,7 +306,7 @@ function sHitDetection:WarpGrenade(args)
 
     self:ApplyDamage({
         player = args.player, 
-        damage = WarpGrenadeDamage, 
+        damage = WeaponDamage.WarpGrenadeDamage, 
         source = DamageEntity.WarpGrenade
     })
 
@@ -318,7 +318,7 @@ function sHitDetection:VehicleGuardActivate(args)
 
     self:ApplyDamage({
         player = args.player, 
-        damage = VehicleGuardDamage, 
+        damage = WeaponDamage.VehicleGuardDamage, 
         source = DamageEntity.VehicleGuard, 
         attacker_id = args.attacker_id
     })
@@ -430,7 +430,7 @@ function sHitDetection:PlayerInsideToxicArea(args)
 
     self:ApplyDamage({
         player = args.player, 
-        damage = ToxicDamagePerSecond, 
+        damage = WeaponDamage.ToxicDamagePerSecond, 
         source = DamageEntity.ToxicGrenade, 
         attacker_id = args.attacker_id
     })
@@ -453,7 +453,7 @@ function sHitDetection:SecondTick()
 
             self:ApplyDamage({
                 player = p, 
-                damage = FireDamagePerSecond, 
+                damage = WeaponDamage.FireDamagePerSecond, 
                 source = DamageEntity.Molotov, 
                 attacker_id = attacker_id
             })
@@ -581,7 +581,8 @@ function sHitDetection:DetectPlayerHit(args, player)
         damage = damage,
         source = DamageEntity.Bullet,
         weapon_enum = args.weapon_enum, 
-        attacker_id = tostring(player:GetSteamId())
+        attacker_id = tostring(player:GetSteamId()),
+        attacker = player
     })
 
     Events:Fire("HitDetection/PlayerBulletHit", {
@@ -647,7 +648,8 @@ function sHitDetection:DetectPlayerSplashHit(args, player)
         damage = damage,
         source = DamageEntity.Explosion,
         weapon_enum = args.weapon_enum, 
-        attacker_id = tostring(player:GetSteamId())
+        attacker_id = tostring(player:GetSteamId()),
+        attacker = player
     })
 
     Events:Fire("HitDetection/PlayerBulletHit", {
