@@ -11,7 +11,7 @@ local natural_loot_tiers =
 
 Events:Subscribe("CheckIsTooCloseToLoot", function(args)
 
-    Thread(function()
+    --Thread(function()
         local pos = args.position
         local too_close = false
         local id = IsValid(args.player) and tostring(args.player:GetSteamId()) or args.id
@@ -26,13 +26,13 @@ Events:Subscribe("CheckIsTooCloseToLoot", function(args)
                     break
                 end
 
-                Timer.Sleep(1)
+                --Timer.Sleep(1)
             end
         end
 
         args.too_close = too_close
         Events:Fire("IsTooCloseToLootCheck"..id, args)
 
-    end)
+    --end)
 
 end)

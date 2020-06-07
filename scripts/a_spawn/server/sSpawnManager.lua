@@ -20,16 +20,12 @@ function sSpawnManager:__init()
             p:SetValue("FirstSpawn", true)
         end
     end
-    
-    Thread(function()
-        while true do
-            for player in Server:GetPlayers() do
-                if IsValid(player) then
-                    self:UpdatePlayerPositionMinuteTick(player)
-                end
-                Timer.Sleep(1)
+
+    Timer.SetInterval(1000, function()
+        for player in Server:GetPlayers() do
+            if IsValid(player) then
+                self:UpdatePlayerPositionMinuteTick(player)
             end
-            Timer.Sleep(1000)
         end
     end)
 

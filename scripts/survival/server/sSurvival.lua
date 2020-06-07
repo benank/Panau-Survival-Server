@@ -123,25 +123,16 @@ end
 
 function sSurvivalManager:SetupIntervals()
 
-    Thread(function()
-        while true do
-            for player in Server:GetPlayers() do
-                if IsValid(player) then
-                    self:AdjustSurvivalStats(player)
-                end
-                Timer.Sleep(5)
+    Timer.SetInterval(1000 * 60, function()
+        for player in Server:GetPlayers() do
+            if IsValid(player) then
+                self:AdjustSurvivalStats(player)
             end
-            
-            Timer.Sleep(1000 * 60)
-
         end
     end)
 
-    Thread(function()
-        while true do
-            self:DamageDyingPlayers()
-            Timer.Sleep(1000 * self.damage_interval)
-        end
+    Timer.SetInterval(1000 * self.damage_interval, function()
+        self:DamageDyingPlayers()
     end)
 
 end

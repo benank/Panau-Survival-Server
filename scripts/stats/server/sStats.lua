@@ -76,23 +76,20 @@ end
 
 function sStats:MinuteTick()
 
-    Thread(function()
-        for p in Server:GetPlayers() do
-            if IsValid(p) then
-                local player_data = p:GetValue("PlayerData")
+    for p in Server:GetPlayers() do
+        if IsValid(p) then
+            local player_data = p:GetValue("PlayerData")
 
-                if player_data then
-                    player_data.time_online = player_data.time_online + 1
-                    self:UpdateStat({
-                        player = p,
-                        key = "time_online",
-                        value = player_data.time_online
-                    })
-                end
+            if player_data then
+                player_data.time_online = player_data.time_online + 1
+                self:UpdateStat({
+                    player = p,
+                    key = "time_online",
+                    value = player_data.time_online
+                })
             end
-            Timer.Sleep(1)
         end
-    end)
+    end
 
 end
 
