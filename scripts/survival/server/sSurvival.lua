@@ -24,6 +24,7 @@ function sSurvivalManager:LoadStatus(args)
     if not args.player:GetValue("TargetHealth") then return end
 
     args.player:SetHealth(args.player:GetValue("TargetHealth"))
+    args.player:SetValue("Health", args.player:GetValue("TargetHealth"))
     args.player:SetValue("TargetHealth", nil)
 end
 
@@ -58,6 +59,7 @@ function sSurvivalManager:UseItem(args)
     survival.thirst = math.max(0, math.min(survival.thirst + restore_data.thirst, 100))
 
     if restore_data.health then -- If this food item restores health, like Energy Drink
+        args.player:SetValue("Health", math.min(1, args.player:GetHealth() + restore_data.health / 100))
         args.player:Damage(-restore_data.health / 100, DamageEntity.Food)
     end
 

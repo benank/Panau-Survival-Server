@@ -46,7 +46,7 @@ function cHitDetection:CheckHealth()
 
     local current_health = LocalPlayer:GetHealth()
 
-    if current_health < self.old_health then
+    if current_health < self.old_health and self.old_health - current_health > 0.01 then
 
         if self.damage_screen_timer then
             self.damage_screen_timer:Restart()

@@ -232,6 +232,8 @@ function sSpawnManager:PlayerSpawn(args)
     }, args.player)
 
     args.player:SetValue("FirstSpawn", true)
+    args.player:SetHealth(1)
+    args.player:SetValue("Health", 1)
 
 	return false
 end

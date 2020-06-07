@@ -3,6 +3,8 @@ class 'sHitDetection'
 function sHitDetection:__init()
 
     self.PING_LIMIT = 500 -- No damage if you are above 500 ping
+    self.health_check_threshold = 0.15
+    self.health_strikes_max = 5
 
     self.pending_hits = {}
     self.last_damage_timeout = 15 -- 15 seconds to clear last damaged kill attribution
@@ -38,10 +40,24 @@ function sHitDetection:__init()
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
+
+    Thread(function()
+        while true do
+
+            for p in Server:GetPlayers() do
+                self:CheckHealth(p)
+            end
+
+            Timer.Sleep(500)
+        end
+    end)
+
+    -- TODO: check vehicle health too
 end
 
 function sHitDetection:ClientModuleLoad(args)
     self.players[tostring(args.player:GetSteamId())] = args.player
+    args.player:SetValue("HealthStrikes", 0)
 end
 
 function sHitDetection:PlayerQuit(args)
@@ -128,10 +144,6 @@ function sHitDetection:ApplyDamage(args)
     })
 
     args.player:SetValue("Health", math.min(1, math.max(0, old_hp - args.damage)))
-
-    if not (args.weapon_enum and args.weapon_enum == WeaponEnum.BubbleGun) then
-        self:CheckHealth(args.player, old_hp, args.damage)
-    end
 
 end
 
@@ -695,24 +707,34 @@ end
 
 function sHitDetection:CheckHealth(player)
 
-    Thread(function()
-        local expected_health = player:GetValue("Health")
-        Timer.Sleep(10 * player:GetPing() + 1000)
-        -- If they healed recently, disregard
-        if not IsValid(player) then return end
-        local player_health = player:GetHealth()
+    if not IsValid(player) then return end
 
-        if player_health >= expected_health and player_health > 0
-        and player_health - expected_health > 0.01 then
-            -- Health did not change, ban
+    local current_health = player:GetHealth()
+    local expected_health = player:GetValue("Health")
+
+    if not expected_health then return end
+
+    if current_health > 0
+    and current_health - expected_health > self.health_check_threshold then
+        -- Health did not change, ban
+        player:SetValue("HealthStrikes", player:GetValue("HealthStrikes") + 1)
+        print("increase health strikes")
+
+        if player:GetValue("HealthStrikes") >= self.health_strikes_max then
             Events:Fire("KickPlayer", {
                 player = player,
-                reason = string.format("Health hacking detected. Expected: %.3f Actual: %.3f", expected_health, player_health),
+                reason = string.format("Health hacking detected. Expected: %.3f Actual: %.3f", expected_health, current_health),
                 p_reason = "Error"
             })
         end
 
-    end)
+    end
+
+    if current_health > expected_health then
+        player:SetHealth(expected_health)
+    else
+        player:SetValue("Health", current_health)
+    end
 
 end
 
