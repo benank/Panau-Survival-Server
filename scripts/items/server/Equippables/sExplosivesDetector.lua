@@ -28,7 +28,6 @@ Thread(function()
 
     while true do
 
-        log_function_call("sExplosivesDetector check")
         Timer.Sleep(1000)
 
         for p in Server:GetPlayers() do
@@ -49,7 +48,6 @@ Thread(function()
                 end
             end
         end
-        log_function_call("sExplosivesDetector check 2")
 
     end
 end)

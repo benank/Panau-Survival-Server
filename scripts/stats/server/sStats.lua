@@ -77,7 +77,6 @@ end
 function sStats:MinuteTick()
 
     Thread(function()
-        log_function_call("sStats:MinuteTick")
         for p in Server:GetPlayers() do
             if IsValid(p) then
                 local player_data = p:GetValue("PlayerData")
@@ -93,7 +92,6 @@ function sStats:MinuteTick()
             end
             Timer.Sleep(1)
         end
-        log_function_call("sStats:MinuteTick 2")
     end)
 
 end

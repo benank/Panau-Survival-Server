@@ -77,9 +77,7 @@ function sVehicleManager:__init()
     Thread(function()
         while true do
 
-            log_function_call("CheckForDestroyedVehicles")
             self:CheckForDestroyedVehicles()
-            log_function_call("CheckForDestroyedVehicles 2")
 
             Timer.Sleep(1000 * 10)
 
@@ -89,9 +87,7 @@ function sVehicleManager:__init()
     Thread(function()
         while true do
 
-            log_function_call("sVehicleManager:SaveVehicles")
             self:SaveVehicles()
-            log_function_call("sVehicleManager:SaveVehicles 2")
 
             Timer.Sleep(1000 * 60)
 
@@ -267,7 +263,6 @@ function sVehicleManager:Tick500()
 end
 
 function sVehicleManager:MinuteTick()
-    log_function_call("sVehicleManager:MinuteTick")
     for id, time in pairs(self.despawning_vehicles) do
 
         if count_table(self.owned_vehicles[id]:GetOccupants()) > 0 then
@@ -297,7 +292,6 @@ end
 
 function sVehicleManager:PlayerQuit(args)
 
-    log_function_call("sVehicleManager:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
 
     local vehicles = args.player:GetValue("OwnedVehicles")
@@ -310,7 +304,6 @@ function sVehicleManager:PlayerQuit(args)
         end
     end
 
-    log_function_call("sVehicleManager:PlayerQuit 2")
 end
 
 function sVehicleManager:PlayerExitVehicle(args)

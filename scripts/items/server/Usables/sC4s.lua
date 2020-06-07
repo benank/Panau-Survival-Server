@@ -19,7 +19,6 @@ function sC4s:__init()
     -- Update attached C4s every second so they are at least nearby the entity
     Thread(function()
         while true do
-            log_function_call("sC4s second coroutine")
             Timer.Sleep(1000)
 
             for id, wno in pairs(self.wnos) do
@@ -51,7 +50,6 @@ function sC4s:__init()
                 end
 
             end
-            log_function_call("sC4s second coroutine 2")
 
         end
     end)
@@ -80,7 +78,6 @@ function sC4s:InventoryUpdated(args)
 
         if not IsValid(args.player) then return end
 
-        log_function_call("sC4s:InventoryUpdated coroutine")
         local player_placed_c4s = {}
         local player_id = tostring(args.player:GetSteamId())
 
@@ -125,7 +122,6 @@ end
 
 function sC4s:PlayerQuit(args)
 
-    log_function_call("sC4s:PlayerQuit")
     -- Remove all active c4s if player disconnects
     local steamid = tostring(args.player:GetSteamId())
 
@@ -135,7 +131,6 @@ function sC4s:PlayerQuit(args)
             self.wnos[id] = nil
         end
     end
-    log_function_call("sC4s:PlayerQuit 2")
 
 end
 

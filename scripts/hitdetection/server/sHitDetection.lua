@@ -36,9 +36,7 @@ function sHitDetection:ClientModuleLoad(args)
 end
 
 function sHitDetection:PlayerQuit(args)
-    log_function_call("sHitDetection:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
-    log_function_call("sHitDetection:PlayerQuit 2")
 end
 
 function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
@@ -196,7 +194,6 @@ function sHitDetection:CheckPendingHits()
     
     Thread(function()
         while true do
-            log_function_call("sHitDetection self.pending_armor_aggregation")
             if count_table(self.pending_armor_aggregation) > 0 then
 
                 for steam_id, data in pairs(self.pending_armor_aggregation) do
@@ -211,7 +208,6 @@ function sHitDetection:CheckPendingHits()
                     end
                 end
             end
-            log_function_call("sHitDetection self.pending_armor_aggregation 2")
 
             Timer.Sleep(1000)
 
@@ -324,7 +320,6 @@ function sHitDetection:PlayerInsideToxicArea(args)
 end
 
 function sHitDetection:SecondTick()
-    log_function_call("sHitDetection:SecondTick")
     for p in Server:GetPlayers() do
         if IsValid(p) and p:GetValue("OnFire") and 
         ( p:GetPosition().y < 199.5 or p:GetValue("InSafezone") 
@@ -341,7 +336,6 @@ function sHitDetection:SecondTick()
 
         end
     end
-    log_function_call("sHitDetection:SecondTick 2")
 
 end
 

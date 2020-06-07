@@ -23,14 +23,12 @@ function sSpawnManager:__init()
     
     Thread(function()
         while true do
-            log_function_call("sSpawnManager (function()")
             for player in Server:GetPlayers() do
                 if IsValid(player) then
                     self:UpdatePlayerPositionMinuteTick(player)
                 end
                 Timer.Sleep(1)
             end
-            log_function_call("sSpawnManager (function() 2")
             Timer.Sleep(1000)
         end
     end)
@@ -100,16 +98,12 @@ end
 
 function sSpawnManager:PlayerQuit(args)
 
-    log_function_call("sSpawnManager:PlayerQuit")
-
     Events:Fire("Discord", {
         channel = "Chat",
         content = string.format("*%s [%s] left the server.*", args.player:GetName(), args.player:GetSteamId())
     })
 
     self:UpdatePlayer(args.player)
-
-    log_function_call("sSpawnManager:PlayerQuit 2")
 
 end
 

@@ -28,9 +28,7 @@ function sSurvivalManager:LoadStatus(args)
 end
 
 function sSurvivalManager:PlayerQuit(args)
-    log_function_call("sSurvivalManager:PlayerQuit")
     self:UpdateDB(args.player)
-    log_function_call("sSurvivalManager:PlayerQuit 2")
 end
 
 function sSurvivalManager:CheckForDyingPlayer(player)
@@ -127,7 +125,6 @@ function sSurvivalManager:SetupIntervals()
 
     Thread(function()
         while true do
-            log_function_call("sSurvivalManager:SetupIntervals")
             for player in Server:GetPlayers() do
                 if IsValid(player) then
                     self:AdjustSurvivalStats(player)
@@ -135,7 +132,6 @@ function sSurvivalManager:SetupIntervals()
                 Timer.Sleep(5)
             end
             
-            log_function_call("sSurvivalManager:SetupIntervals 2")
             Timer.Sleep(1000 * 60)
 
         end
@@ -143,9 +139,7 @@ function sSurvivalManager:SetupIntervals()
 
     Thread(function()
         while true do
-            log_function_call("sSurvivalManager:SetupIntervals 22")
             self:DamageDyingPlayers()
-            log_function_call("sSurvivalManager:SetupIntervals 22 2")
             Timer.Sleep(1000 * self.damage_interval)
         end
     end)

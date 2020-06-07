@@ -20,7 +20,6 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 end)
 
 Events:Subscribe("SecondTick", function()
-    log_function_call("players_with_parachutes coroutine")
     for player in Server:GetPlayers() do
         if IsValid(player) and players_with_parachutes[player:GetId()] then
             if player:GetValue("ParachutingValue") and player:GetParachuting() then
@@ -30,13 +29,11 @@ Events:Subscribe("SecondTick", function()
             players_with_parachutes[player:GetId()] = nil
         end
     end
-    log_function_call("players_with_parachutes coroutine 2")
 end)
 
 Thread(function()
 
     while true do
-        log_function_call("Server:GetPlayers() ParachutingValue")
         for player in Server:GetPlayers() do
 
             if IsValid(player) then
@@ -58,7 +55,6 @@ Thread(function()
 
             Timer.Sleep(5)
         end
-        log_function_call("Server:GetPlayers() ParachutingValue 2")
 
         Timer.Sleep(3000)
 
