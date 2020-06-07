@@ -46,11 +46,11 @@ function VehicleWeapons:__init()
         }, -- G9 Eclipse
         [37] = 
         {
-            [VehicleSeat.Driver] = {FireLeft = WeaponEnum.V_MachineGun},
+            [VehicleSeat.Driver] = {FireLeft = WeaponEnum.V_Minigun},
         }, -- Sivirkin 15 Havoc
         [57] = 
         {
-            [VehicleSeat.Driver] = {FireLeft = WeaponEnum.V_MachineGun},
+            [VehicleSeat.Driver] = {FireLeft = WeaponEnum.V_Minigun},
         }, -- Sivirkin 15 Havoc
         [62] = 
         {
