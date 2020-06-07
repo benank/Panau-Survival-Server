@@ -330,7 +330,7 @@ function sLootbox:StartRespawnTimer()
 
     self.respawn_timer = true
     
-    timer.SetTimeout(self:GetRespawnTime(), function()
+    Timer.SetTimeout(self:GetRespawnTime(), function()
         self:RespawnBox()
     end)
 
