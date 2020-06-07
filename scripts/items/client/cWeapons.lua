@@ -176,10 +176,10 @@ function WeaponManager:ForceWeaponSwitch(args)
 
     self.last_slot = args.slot
 
-    Thread(function()
-        if self.switching then return end
+    if self.switching then return end
         self.switching = true
-        Timer.Sleep(1000)
+
+    Timer.SetTimeout(1000, function()
         self:ForceInputWeaponSwitch(args.slot)
         self.switching = false
     end)
@@ -224,8 +224,7 @@ function WeaponManager:ForceInputWeaponSwitch(slot)
 
     end)
 
-    Thread(function()
-        Timer.Sleep(100)
+    Timer.SetTimeout(100, function()
         if self.weapon_switch_input_sub then
             self.weapon_switch_input_sub = Events:Unsubscribe(self.weapon_switch_input_sub)
         end

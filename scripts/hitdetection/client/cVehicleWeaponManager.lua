@@ -45,7 +45,7 @@ function cVehicleWeaponManager:__init()
     }
 
     -- Cooldown for using secondary fire again
-    self.secondary_fire_cooldown = 5
+    self.secondary_fire_cooldown = 3
     self.secondary_fire_timer = Timer()
 
     Events:Subscribe("LocalPlayerEnterVehicle", self, self.LocalPlayerEnterVehicle)
