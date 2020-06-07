@@ -36,9 +36,7 @@ function sHitDetection:ClientModuleLoad(args)
 end
 
 function sHitDetection:PlayerQuit(args)
-    log_function_call("sHitDetection:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
-    log_function_call("sHitDetection:PlayerQuit 2")
 end
 
 function sHitDetection:ApplyDamage(player, damage, source, attacker_id)
@@ -170,51 +168,36 @@ end
 
 function sHitDetection:CheckPendingHits()
     
-    Thread(function()
-        while true do
+    Timer.SetInterval(10, function()
+        if count_table(self.pending_hits) > 0 then
+            local data = table.remove(self.pending_hits)
 
-            if count_table(self.pending_hits) > 0 then
-                local data = table.remove(self.pending_hits)
+            for _, v in pairs(data.pending) do
 
-                for _, v in pairs(data.pending) do
-
-                    if v.type == WeaponHitType.Explosive then
-                        self:ExplosionHit(v, data.player)
-                    else
-                        self:BulletHit(v, data.player)
-                    end
-
-                    Timer.Sleep(3)
-
+                if v.type == WeaponHitType.Explosive then
+                    self:ExplosionHit(v, data.player)
+                else
+                    self:BulletHit(v, data.player)
                 end
-            end
 
-            Timer.Sleep(10)
+            end
         end
     end)
 
     
-    Thread(function()
-        while true do
-            log_function_call("sHitDetection self.pending_armor_aggregation")
-            if count_table(self.pending_armor_aggregation) > 0 then
+    Timer.SetInterval(500, function()
+        if count_table(self.pending_armor_aggregation) > 0 then
 
-                for steam_id, data in pairs(self.pending_armor_aggregation) do
-                    for armor_name, hit_data in pairs(data) do
-                        Events:Fire("HitDetection/ArmorDamaged", hit_data)
-                        Timer.Sleep(300)
-                        self.pending_armor_aggregation[steam_id][armor_name] = nil
-                    end
+            for steam_id, data in pairs(self.pending_armor_aggregation) do
+                for armor_name, hit_data in pairs(data) do
+                    Events:Fire("HitDetection/ArmorDamaged", hit_data)
+                    self.pending_armor_aggregation[steam_id][armor_name] = nil
+                end
 
-                    if count_table(self.pending_armor_aggregation[steam_id]) == 0 then
-                        self.pending_armor_aggregation[steam_id] = nil
-                    end
+                if count_table(self.pending_armor_aggregation[steam_id]) == 0 then
+                    self.pending_armor_aggregation[steam_id] = nil
                 end
             end
-            log_function_call("sHitDetection self.pending_armor_aggregation 2")
-
-            Timer.Sleep(1000)
-
         end
     end)
 
@@ -324,7 +307,6 @@ function sHitDetection:PlayerInsideToxicArea(args)
 end
 
 function sHitDetection:SecondTick()
-    log_function_call("sHitDetection:SecondTick")
     for p in Server:GetPlayers() do
         if IsValid(p) and p:GetValue("OnFire") and 
         ( p:GetPosition().y < 199.5 or p:GetValue("InSafezone") 
@@ -341,7 +323,6 @@ function sHitDetection:SecondTick()
 
         end
     end
-    log_function_call("sHitDetection:SecondTick 2")
 
 end
 

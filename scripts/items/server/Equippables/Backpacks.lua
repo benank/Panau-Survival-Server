@@ -61,36 +61,30 @@ Events:Subscribe("HitDetection/PlayerExplosionHit", function(args) ModifyBackpac
 Events:Subscribe("HitDetection/PlayerBulletHit", function(args) ModifyBackpackDurability(args) end)
 
 
-Thread(function()
-    while true do
-        log_function_call("backpacks local func = (function()")
-        for steam_id, data in pairs(backpack_hits) do
-            for item_name, item_hits in pairs(data) do
+Timer.SetInterval(500, function()
+    for steam_id, data in pairs(backpack_hits) do
+        for item_name, item_hits in pairs(data) do
 
-                if IsValid(item_hits.player) then
-                    local item = item_hits.item
+            if IsValid(item_hits.player) then
+                local item = item_hits.item
 
-                    item.durability = item.durability - item_hits.dura
-                    Inventory.ModifyDurability({
-                        player = item_hits.player,
-                        item = item
-                    })
+                item.durability = item.durability - item_hits.dura
+                Inventory.ModifyDurability({
+                    player = item_hits.player,
+                    item = item
+                })
 
-                    UpdateEquippedItem(item_hits.player, item.name, item)
-
-                end
-
-                backpack_hits[steam_id][item_name] = nil
-                Timer.Sleep(500)
+                UpdateEquippedItem(item_hits.player, item.name, item)
 
             end
 
-            if count_table(backpack_hits[steam_id]) == 0 then
-                backpack_hits[steam_id] = nil
-            end
+            backpack_hits[steam_id][item_name] = nil
+
         end
-        log_function_call("backpacks local func = (function() 2")
 
-        Timer.Sleep(500)
+        if count_table(backpack_hits[steam_id]) == 0 then
+            backpack_hits[steam_id] = nil
+        end
     end
+
 end)

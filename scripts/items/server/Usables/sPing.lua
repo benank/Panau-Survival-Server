@@ -14,34 +14,29 @@ Events:Subscribe("Inventory/UseItem", function(args)
 
     local range = math.min(1, args.player:GetPosition().y / ping_data.max_height) * ping_data.max_distance
     
-    Thread(function()
-        
-        local pos = args.player:GetPosition()
-        local nearby_players = {}
+    local pos = args.player:GetPosition()
+    local nearby_players = {}
 
-        for p in Server:GetPlayers() do
-            if IsValid(p) then
-                local exp = p:GetValue("Exp")
-                local player_pos = p:GetPosition()
+    for p in Server:GetPlayers() do
+        if IsValid(p) then
+            local exp = p:GetValue("Exp")
+            local player_pos = p:GetPosition()
 
-                player_pos.y = pos.y -- 2D distance
+            player_pos.y = pos.y -- 2D distance
 
-                if p ~= args.player 
-                and player_pos:Distance(pos) < range
-                and not p:GetValue("Loading") and exp and exp.level > 0
-                and not p:GetValue("Invisible") then
-                    nearby_players[p:GetId()] = {position = p:GetPosition(), name = p:GetName()}
-                end
+            if p ~= args.player 
+            and player_pos:Distance(pos) < range
+            and not p:GetValue("Loading") and exp and exp.level > 0
+            and not p:GetValue("Invisible") then
+                nearby_players[p:GetId()] = {position = p:GetPosition(), name = p:GetName()}
             end
-            Timer.Sleep(1)
         end
+    end
 
-        if IsValid(args.player) then
-            Network:Send(args.player, "Items/Ping", {range = range, nearby_players = nearby_players})
-        end
+    if IsValid(args.player) then
+        Network:Send(args.player, "Items/Ping", {range = range, nearby_players = nearby_players})
+    end
 
-        Network:Broadcast("Items/PingSound", {position = pos, range = range})
-
-    end)
+    Network:Broadcast("Items/PingSound", {position = pos, range = range})
 
 end)

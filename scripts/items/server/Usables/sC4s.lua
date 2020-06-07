@@ -17,43 +17,36 @@ function sC4s:__init()
 
     
     -- Update attached C4s every second so they are at least nearby the entity
-    Thread(function()
-        while true do
-            log_function_call("sC4s second coroutine")
-            Timer.Sleep(1000)
+    Timer.SetInterval(1000, function()
+        for id, wno in pairs(self.wnos) do
 
-            for id, wno in pairs(self.wnos) do
+            local attach_entity = wno:GetValue("AttachEntity")
+            if IsValid(attach_entity) then
+                wno:SetPosition(wno:GetValue("AttachEntity"):GetPosition())
 
-                local attach_entity = wno:GetValue("AttachEntity")
-                if IsValid(attach_entity) then
-                    wno:SetPosition(wno:GetValue("AttachEntity"):GetPosition())
-
-                    if attach_entity:GetHealth() <= 0 then
-                        self:DestroyC4({id = id})
-                    end
-
-                elseif attach_entity and not IsValid(attach_entity) then
-                    -- Attach entity not valid, remove C4
-
-                    if IsValid(wno:GetValue("Owner")) then
-
-                        -- Set custom data with wno id
-                        Inventory.ModifyItemCustomData({
-                            player = wno:GetValue("Owner"),
-                            item = wno:GetValue("Item"),
-                            custom_data = {}
-                        })
-
-                    end
-
-                    self:RemoveC4(id)
-                    
+                if attach_entity:GetHealth() <= 0 then
+                    self:DestroyC4({id = id})
                 end
 
-            end
-            log_function_call("sC4s second coroutine 2")
+            elseif attach_entity and not IsValid(attach_entity) then
+                -- Attach entity not valid, remove C4
 
+                if IsValid(wno:GetValue("Owner")) then
+
+                    -- Set custom data with wno id
+                    Inventory.ModifyItemCustomData({
+                        player = wno:GetValue("Owner"),
+                        item = wno:GetValue("Item"),
+                        custom_data = {}
+                    })
+
+                end
+
+                self:RemoveC4(id)
+                
+            end
         end
+
     end)
 
 end
@@ -76,42 +69,37 @@ end
 function sC4s:InventoryUpdated(args)
 
     -- Check if they dropped a placed c4 and remove it if so
-    Thread(function()
 
-        if not IsValid(args.player) then return end
+    if not IsValid(args.player) then return end
 
-        log_function_call("sC4s:InventoryUpdated coroutine")
-        local player_placed_c4s = {}
-        local player_id = tostring(args.player:GetSteamId())
+    local player_placed_c4s = {}
+    local player_id = tostring(args.player:GetSteamId())
 
-        for id, wno in pairs(self.wnos) do
-            if wno:GetValue("owner_id") == player_id then
-                player_placed_c4s[id] = true
+    for id, wno in pairs(self.wnos) do
+        if wno:GetValue("owner_id") == player_id then
+            player_placed_c4s[id] = true
+        end
+    end
+
+    -- Did not place any c4, so return
+    if count_table(player_placed_c4s) == 0 then return end
+
+    local inv = Inventory.Get({player = args.player})
+
+    local cat = Items_indexed["C4"].category
+
+    for index, stack in pairs(inv[cat]) do
+        for item_index, item in pairs(stack.contents) do
+            if item.name == "C4" and item.custom_data.id and player_placed_c4s[item.custom_data.id] then
+                -- Player still has C4 so don't remove
+                player_placed_c4s[item.custom_data.id] = nil
             end
         end
+    end
 
-        -- Did not place any c4, so return
-        if count_table(player_placed_c4s) == 0 then return end
-
-        local inv = Inventory.Get({player = args.player})
-
-        local cat = Items_indexed["C4"].category
-
-        for index, stack in pairs(inv[cat]) do
-            for item_index, item in pairs(stack.contents) do
-                if item.name == "C4" and item.custom_data.id and player_placed_c4s[item.custom_data.id] then
-                    -- Player still has C4 so don't remove
-                    player_placed_c4s[item.custom_data.id] = nil
-                end
-            end
-        end
-
-        for id, _ in pairs(player_placed_c4s) do
-            self:RemoveC4(id)
-        end
-
-    end)
-
+    for id, _ in pairs(player_placed_c4s) do
+        self:RemoveC4(id)
+    end
 
 end
 
@@ -125,7 +113,6 @@ end
 
 function sC4s:PlayerQuit(args)
 
-    log_function_call("sC4s:PlayerQuit")
     -- Remove all active c4s if player disconnects
     local steamid = tostring(args.player:GetSteamId())
 
@@ -135,7 +122,6 @@ function sC4s:PlayerQuit(args)
             self.wnos[id] = nil
         end
     end
-    log_function_call("sC4s:PlayerQuit 2")
 
 end
 
