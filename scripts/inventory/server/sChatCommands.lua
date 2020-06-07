@@ -25,18 +25,30 @@ Events:Subscribe("PlayerChat", function(args)
         end
 
         Thread(function()
-            for i = 1, amount do
-
+            if not Items_indexed[name].durable then
+                
                 Inventory.AddItem({
                     player = args.player,
                     item = CreateItem({
                         name = name,
-                        amount = 1
+                        amount = amount
                     }):GetSyncObject()
                 })
 
-                Timer.Sleep(20)
+            else
+                for i = 1, amount do
 
+                    Inventory.AddItem({
+                        player = args.player,
+                        item = CreateItem({
+                            name = name,
+                            amount = 1
+                        }):GetSyncObject()
+                    })
+
+                    Timer.Sleep(20)
+
+                end
             end
             Chat:Send(args.player, "Added " .. name .. " [x" .. tostring(amount) .. "]", Color.Green)
         end)

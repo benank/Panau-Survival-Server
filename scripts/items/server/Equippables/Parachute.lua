@@ -20,7 +20,6 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 end)
 
 Events:Subscribe("SecondTick", function()
-    log_function_call("players_with_parachutes coroutine")
     for player in Server:GetPlayers() do
         if IsValid(player) and players_with_parachutes[player:GetId()] then
             if player:GetValue("ParachutingValue") and player:GetParachuting() then
@@ -30,37 +29,28 @@ Events:Subscribe("SecondTick", function()
             players_with_parachutes[player:GetId()] = nil
         end
     end
-    log_function_call("players_with_parachutes coroutine 2")
 end)
 
-Thread(function()
+Timer.SetInterval(3000, function()
 
-    while true do
-        log_function_call("Server:GetPlayers() ParachutingValue")
-        for player in Server:GetPlayers() do
+    for player in Server:GetPlayers() do
 
-            if IsValid(player) then
-                local parachuting_value = player:GetValue("ParachutingValue")
+        if IsValid(player) then
+            local parachuting_value = player:GetValue("ParachutingValue")
 
-                if parachuting_value and parachuting_value > 0 then
-                    local item = GetEquippedItem("Parachute", player)
-                    if not item then return end
-                    item.durability = item.durability - parachuting_value
-                    Inventory.ModifyDurability({
-                        player = player,
-                        item = item
-                    })
-                    UpdateEquippedItem(player, "Parachute", item)
-                    player:SetValue("ParachutingValue", 0)
+            if parachuting_value and parachuting_value > 0 then
+                local item = GetEquippedItem("Parachute", player)
+                if not item then return end
+                item.durability = item.durability - parachuting_value
+                Inventory.ModifyDurability({
+                    player = player,
+                    item = item
+                })
+                UpdateEquippedItem(player, "Parachute", item)
+                player:SetValue("ParachutingValue", 0)
 
-                end
             end
-
-            Timer.Sleep(5)
         end
-        log_function_call("Server:GetPlayers() ParachutingValue 2")
-
-        Timer.Sleep(3000)
 
     end
 

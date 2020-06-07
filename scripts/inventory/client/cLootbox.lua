@@ -23,7 +23,7 @@ function cLootbox:Remove()
     Events:Fire("Inventory/LootboxRemove", {
         id = self.uid,
         tier = self.tier,
-        cso_id = self.static_objects[1]:GetId()
+        cso_id = self.cso_id
     })
 
     self.active = false
@@ -84,6 +84,8 @@ function cLootbox:CreateModel()
         LootManager.SO_id_to_uid[obj:GetId()] = self.uid
         LootManager.objects[obj:GetId()] = obj
     end
+
+    self.cso_id = self.static_objects[1]:GetId()
 
     Events:Fire("Inventory/LootboxCreate", {
         id = self.uid,
