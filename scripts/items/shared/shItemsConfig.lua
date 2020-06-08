@@ -30,7 +30,7 @@ ItemsConfig =
         weapons = 
         {
             ["Handgun"] = {dura_per_use = 1, weapon_id = Weapon.Handgun, equip_slot = WeaponSlot.Right},
-            ["Assault Rifle"] = {dura_per_use = 2, weapon_id = Weapon.Assault, equip_slot = WeaponSlot.Primary},
+            ["Assault Rifle"] = {dura_per_use = 1, weapon_id = Weapon.Assault, equip_slot = WeaponSlot.Primary},
             ["Bubble Gun"] = {dura_per_use = 1, weapon_id = Weapon.BubbleGun, equip_slot = WeaponSlot.Right},
             ["Grenade Launcher"] = {dura_per_use = 5, weapon_id = Weapon.GrenadeLauncher, equip_slot = WeaponSlot.Right},
             ["Machine Gun"] = {dura_per_use = 2, weapon_id = Weapon.MachineGun, equip_slot = WeaponSlot.Primary},
