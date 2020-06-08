@@ -32,9 +32,9 @@ Exp =
         [DamageEntity.Suicide] = 120,
         [DamageEntity.AdminKill] = 0,
         [DamageEntity.C4] = 170,
-        --[DamageEntity.MeleeGrapple] = 200,
-        --[DamageEntity.MeleeKick] = 220,
-        --[DamageEntity.MeleeSlidingKick] = 200,
+        [DamageEntity.MeleeGrapple] = 200,
+        [DamageEntity.MeleeKick] = 220,
+        [DamageEntity.MeleeSlidingKick] = 200,
     },
     Hack = 
     {
