@@ -401,14 +401,15 @@ function sHitDetection:PlayerDeath(args)
         
         Events:Fire("SendPlayerPersistentMessage", {
             steam_id = last_damaged.steam_id,
-            message = string.format("You killed %s [%s]%s", args.player:GetName(), last_damaged.damage_type, additional_info),
+            message = string.format("You killed %s [%s]%s %s", 
+                args.player:GetName(), last_damaged.damage_type, additional_info, WorldToMapString(args.player:GetPosition())),
             color = Color.Red
         })
 
         print(msg)
         Events:Fire("Discord", {
             channel = "Hitdetection",
-            content = msg
+            content = msg .. WorldToMapString(args.player:GetPosition())
         })
 
     else
@@ -480,7 +481,7 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     
     if not IsValid(player) then return end
 
-    local explosive_data = ExplosiveBaseDamage[args.type]
+    local explosive_data = WeaponDamage.ExplosiveBaseDamage[args.type]
 
     if not explosive_data then return end
 
@@ -497,7 +498,7 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
         damage = damage * FOVDamageModifier
     end
     
-    damage = self:GetArmorMod(player, hit_type, damage, original_damage)
+    damage = damage * WeaponDamage:GetArmorMod(player, hit_type, damage, original_damage)
 
     self:ApplyDamage({
         player = player, 
