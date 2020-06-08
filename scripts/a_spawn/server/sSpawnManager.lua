@@ -21,7 +21,7 @@ function sSpawnManager:__init()
         end
     end
 
-    Timer.SetInterval(1000, function()
+    Timer.SetInterval(1000 * 60, function()
         for player in Server:GetPlayers() do
             if IsValid(player) then
                 self:UpdatePlayerPositionMinuteTick(player)
