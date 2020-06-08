@@ -70,7 +70,7 @@ function WeaponDamage:__init()
     {
         [DamageEntity.Mine] = {damage = 250, radius = 6, knockback = 10},
         [DamageEntity.Claymore] = {damage = 500, radius = 10, knockback = 12},
-        [DamageEntity.C4] = {damage = 400, radius = 50, knockback = 30},
+        [DamageEntity.C4] = {damage = 400, radius = 40, knockback = 30},
         [DamageEntity.HEGrenade] = {damage = 140, radius = 5, knockback = 5},
         [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 60}
     }
