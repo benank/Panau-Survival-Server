@@ -508,7 +508,13 @@ function Map:WorldToScreen(position)
 end
 
 function Map:ToggleWaypoint(position)
-	local wPosition, waypoint = Waypoint:GetPosition()
+
+    local wPosition, waypoint = Waypoint:GetPosition()
+    
+    if waypoint then
+        Waypoint:Remove()
+        return
+    end
 
 	if waypoint and Map.Waypoint:IsActive(Map:WorldToScreen(wPosition), Map.IconScale * Map.WaypointScale * (PDA:IsUsingGamepad() and 2 or 1)) then
 		Waypoint:Remove()
