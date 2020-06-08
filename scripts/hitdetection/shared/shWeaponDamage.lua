@@ -16,9 +16,9 @@ function WeaponDamage:__init()
         [WeaponEnum.Handgun] =          {base = 0.09, v_mod = 0.05,  distance_falloff = 150, falloff = falloff_func},
         [WeaponEnum.Assault] =          {base = 0.09, v_mod = 0.08,  distance_falloff = 300, falloff = falloff_func},
         [WeaponEnum.BubbleGun] =        {base =-0.02, v_mod = 0,     distance_falloff = 50,  falloff = falloff_func},
-        [WeaponEnum.GrenadeLauncher] =  {base = 0.08, v_mod = 1.5,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
+        [WeaponEnum.GrenadeLauncher] =  {base = 0.08, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
         [WeaponEnum.Revolver] =         {base = 0.18, v_mod = 0.05,  distance_falloff = 300, falloff = falloff_func},
-        [WeaponEnum.RocketLauncher] =   {base = 0.10, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 4},
+        [WeaponEnum.RocketLauncher] =   {base = 0.10, v_mod = 3,     distance_falloff = 0,   falloff = function() return 1 end, radius = 4},
         [WeaponEnum.SMG] =              {base = 0.08, v_mod = 0.02,  distance_falloff = 100, falloff = falloff_func},
         [WeaponEnum.Sniper] =           {base = 0.90, v_mod = 0.07,  distance_falloff = 200, falloff = 
             function(distance, distance_falloff) -- Sniper gains full power at 200+ meters away
@@ -52,6 +52,28 @@ function WeaponDamage:__init()
         [BoneEnum.LeftFoot] = {modifier = 0.45, type = WeaponHitType.Bodyshot},
         [BoneEnum.RightHand] = {modifier = 0.45, type = WeaponHitType.Bodyshot},
         [BoneEnum.LeftHand] ={modifier =  0.4, type = WeaponHitType.Bodyshot}
+    }
+
+    self.default_vehicle_armor = 1 -- 1x damage multiplier, lower = less damage
+
+    self.vehicle_armors = -- Vehicle armors, indexed by vehicle model id. If not here, then it uses default armor
+    {
+        [30] = 0.25, -- Si-47 Leopard
+        [34] = 0.1, -- G9 Eclpise
+        [37] = 0.5, -- Havoc
+        [57] = 0.5, -- Havoc
+        [62] = 0.3, -- Chippewa
+        [64] = 0.15, -- Topa
+        [85] = 0.05, -- Bering
+        [69] = 0.5, -- Winstons amen 69
+        [50] = 0.1, -- Zhejiang
+        [4] = 0.5, -- fire truck
+        [18] = 0.1, -- SV-1003 Raider
+        [31] = 0.2, -- URGA-9380
+        [22] = 0.3, -- Fengding EC14FD2
+        [49] = 0.5, -- 	Niseco Tusker D18
+        [56] = 0.1, -- 	GV-104 Razorback
+        [76] = 0.1 -- 	SAAS PP30 Ox
     }
 
     self.FOVDamageModifier = 0.20 -- If hiding behind a wall, how much damage do you absorb 
@@ -143,8 +165,9 @@ function WeaponDamage:CalculateVehicleDamage(vehicle, weapon_enum, distance)
     local base_damage = self.weapon_damages[weapon_enum].base
     local v_mod = self.weapon_damages[weapon_enum].v_mod
     local falloff_modifier = self.weapon_damages[weapon_enum].falloff(distance, self.weapon_damages[weapon_enum].distance_falloff)
+    local vehicle_armor = self.vehicle_armors[vehicle:GetModelId()] or self.default_vehicle_armor
 
-    local damage = base_damage * falloff_modifier * v_mod
+    local damage = base_damage * falloff_modifier * v_mod * vehicle_armor
 
     return damage
 

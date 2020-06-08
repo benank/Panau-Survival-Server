@@ -10,6 +10,10 @@ function VehicleWeapons:__init()
         {
             [VehicleSeat.MountedGun1] = {FireLeft = WeaponEnum.V_Minigun}
         }, -- SV-1003 Raider
+        [48] = 
+        {
+            [VehicleSeat.MountedGun1] = {FireLeft = WeaponEnum.V_MachineGun}
+        }, -- Maddox FVA 45
         [56] = 
         {
             [VehicleSeat.Driver] = {FireRight = WeaponEnum.V_Cannon}
