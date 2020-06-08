@@ -552,6 +552,30 @@ function Map:Draw()
 		Render:FillCircle(Map:WorldToScreen(LocalPlayer:GetPosition()), Location.Icon.Size.x * scale / 2, Color.Red)
 		Render:FillCircle(Map:WorldToScreen(LocalPlayer:GetPosition()), Location.Icon.Size.x * scale / 3, Color.White)
     end
+
+    if not self.sz_config then
+        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+    end
+
+    if self.sz_config then
+
+        local alpha = 75
+
+        local nz_pos = Map:WorldToScreen(self.sz_config.neutralzone.position)
+        local nz_size = self.sz_config.neutralzone.radius / 32768 * Render.Height * Map.Zoom
+        local nz_color = Color(self.sz_config.neutralzone.color.r, self.sz_config.neutralzone.color.g, self.sz_config.neutralzone.color.b, alpha)
+        Render:FillCircle(nz_pos, nz_size, nz_color)
+        nz_color.a = 255
+        Render:DrawCircle(nz_pos, nz_size, nz_color)
+
+        local sz_pos = Map:WorldToScreen(self.sz_config.safezone.position)
+        local sz_size = self.sz_config.safezone.radius / 32768 * Render.Height * Map.Zoom
+        local sz_color = Color(self.sz_config.safezone.color.r, self.sz_config.safezone.color.g, self.sz_config.safezone.color.b, alpha)
+        Render:FillCircle(sz_pos, sz_size, sz_color)
+        sz_color.a = 255
+        Render:DrawCircle(sz_pos, sz_size, sz_color)
+
+    end
     
 	local position, waypoint = Waypoint:GetPosition()
 
