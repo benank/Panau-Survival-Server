@@ -10,13 +10,37 @@ function sStats:__init()
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
     Events:Subscribe("Stats/Update", self, self.UpdateStat)
     Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
+    Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("MinuteTick", self, self.MinuteTick)
+    Events:Subscribe("items/HackComplete", self, self.HackComplete)
+
+    -- Every 5 minutes, save stats
+    Timer.SetInterval(1000 * 60 * 5, function()
+        for p in Server:GetPlayers() do
+            self:UpdateAllStats(p)
+        end
+    end)
+
+end
+
+function sStats:PlayerQuit(args)
+    self:UpdateAllStats(args.player)
+end
+
+function sStats:HackComplete(args)
+
+    local stashes_hacked = args.player:GetValue("PlayerData")["stashes_hacked"] + 1
+
+    self:UpdateStat({
+        player = args.player,
+        key = "stashes_hacked",
+        value = stashes_hacked
+    })
 
 end
 
 function sStats:PlayerKilled(args)
     if not args.killer then return end
-
     
 	local query = SQL:Query("SELECT kills FROM player_data WHERE steamID = (?) LIMIT 1")
     query:Bind(1, args.killer)
@@ -74,6 +98,32 @@ function sStats:PlayerOpenLootbox(args)
 
 end
 
+function sStats:UpdateAllStats(player)
+
+    if not IsValid(player) then return end
+
+    local player_stats = player:GetValue("PlayerData")
+
+    if not player_stats then return end
+
+    local command = SQL:Command("UPDATE player_data SET kills = ?, deaths = ?, time_online = ?, ip = ?, first_login = ?, last_login = ?, tier1_looted = ?, tier2_looted = ?, tier3_looted = ?, tier4_looted = ?, tier5_looted = ?, stashes_hacked = ? WHERE steamID = (?)")
+    command:Bind(1, player_stats.kills)
+    command:Bind(2, player_stats.deaths)
+    command:Bind(3, player_stats.time_online)
+    command:Bind(4, tostring(player:GetIP()))
+    command:Bind(5, player_stats.first_login)
+    command:Bind(6, self:GetDateNow())
+    command:Bind(7, player_stats.tier1_looted)
+    command:Bind(8, player_stats.tier2_looted)
+    command:Bind(9, player_stats.tier3_looted)
+    command:Bind(10, player_stats.tier4_looted)
+    command:Bind(11, player_stats.tier5_looted)
+    command:Bind(12, player_stats.stashes_hacked)
+    command:Bind(13, tostring(player:GetSteamId()))
+    command:Execute()
+
+end
+
 function sStats:MinuteTick()
 
     for p in Server:GetPlayers() do
@@ -98,13 +148,18 @@ function sStats:UpdateStat(args)
     if not args.key then return end
     if not args.value then return end
 
-    local steam_id = args.steam_id or tostring(args.player:GetSteamId())
+    -- Update SQL if player is not online, otherwise update it when they leave to save sql executions
+    if not IsValid(args.player) then
 
-    local update = SQL:Command(string.format("UPDATE player_data SET %s = ? WHERE steamID = (?)", args.key))
-	update:Bind(1, args.value)
-	update:Bind(2, steam_id)
-    update:Execute()
-    
+        local steam_id = args.steam_id or tostring(args.player:GetSteamId())
+
+        local update = SQL:Command(string.format("UPDATE player_data SET %s = ? WHERE steamID = (?)", args.key))
+        update:Bind(1, args.value)
+        update:Bind(2, steam_id)
+        update:Execute()
+
+    end
+        
     if IsValid(args.player) then
         local player_data = args.player:GetValue("PlayerData")
         player_data[args.key] = args.value
