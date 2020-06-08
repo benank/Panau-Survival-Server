@@ -30,6 +30,7 @@ function sVehicleManager:__init()
     Events:Subscribe("MinuteTick", self, self.MinuteTick)
     Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+    Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
     Events:Subscribe("Items/PlayerUseVehicleGuard", self, self.PlayerUseVehicleGuard)
 
@@ -97,6 +98,49 @@ function sVehicleManager:__init()
 
         end
     end)
+
+end
+
+function sVehicleManager:PlayerChat(args)
+
+    if not IsAdmin(args.player) then return end
+
+    local split = args.text:split(" ")
+
+    if split[1] == "/spawnv" and split[2] then
+
+        local model_id = tonumber(split[2])
+        
+        local spawn_args = {}
+        spawn_args.position = args.player:GetPosition()
+        spawn_args.angle = args.player:GetAngle()
+        spawn_args.model_id = model_id
+
+        spawn_args.tone1 = self:GetColorFromHSV(config.colors.default)
+        spawn_args.tone2 = spawn_args.tone1 -- Matching tones here so cars look normal. 
+
+        local health = config.spawn.health.min + (config.spawn.health.max - config.spawn.health.min) * random()
+        local vehicle = self:SpawnVehicle(spawn_args)
+        vehicle:SetHealth(health)
+        vehicle:SetStreamDistance(500)
+
+        spawn_args.health = health
+        local vehicle_data = self:GenerateVehicleData(spawn_args)
+
+        if split[3] then
+            vehicle_data.cost = tonumber(split[3])
+        end
+            
+        vehicle_data.health = vehicle:GetHealth()
+        vehicle_data.position = vehicle:GetPosition()
+        vehicle_data.model_id = vehicle:GetModelId()
+        vehicle_data.spawned = true
+        vehicle_data.vehicle = vehicle
+
+        vehicle:SetNetworkValue("VehicleData", vehicle_data)
+        self.vehicles[vehicle:GetId()] = vehicle
+
+    end
 
 end
 
@@ -530,15 +574,17 @@ function sVehicleManager:TryBuyVehicle(args)
 
     local orig_cost = args.data.cost
 
-    local item_cost = CreateItem({
-        name = "Lockpick",
-        amount = args.data.cost
-    })
-    
-    Inventory.RemoveItem({
-        item = item_cost:GetSyncObject(),
-        player = args.player
-    })
+    if args.data.cost > 0 then
+        local item_cost = CreateItem({
+            name = "Lockpick",
+            amount = args.data.cost
+        })
+        
+        Inventory.RemoveItem({
+            item = item_cost:GetSyncObject(),
+            player = args.player
+        })
+    end
 
     if args.data.guards > 0 then
         args.data.guards = args.data.guards - 1
