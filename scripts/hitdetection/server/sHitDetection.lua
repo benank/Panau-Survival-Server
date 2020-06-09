@@ -457,7 +457,7 @@ function sHitDetection:SecondTick()
     for p in Server:GetPlayers() do
         if IsValid(p) and p:GetValue("OnFire") and 
         ( p:GetPosition().y < 199.5 or p:GetValue("InSafezone") 
-            or Server:GetElapsedSeconds() - p:GetValue("OnFireTime") >= FireEffectTime
+            or Server:GetElapsedSeconds() - p:GetValue("OnFireTime") >= WeaponDamage.FireEffectTime
             or p:GetHealth() <= 0 ) then
 
             p:SetNetworkValue("OnFire", false)
