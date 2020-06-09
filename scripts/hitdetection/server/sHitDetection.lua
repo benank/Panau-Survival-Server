@@ -497,7 +497,7 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     local damage = original_damage
 
     if not args.in_fov then
-        damage = damage * FOVDamageModifier
+        damage = damage * WeaponDamage.FOVDamageModifier
     end
     
     damage = damage * WeaponDamage:GetArmorMod(player, hit_type, damage, original_damage)
