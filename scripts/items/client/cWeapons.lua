@@ -79,6 +79,9 @@ end
 
 function WeaponManager:LocalPlayerInput(args)
     if self.firing_actions[args.input] and not LocalPlayer:InVehicle() then
+        _debug("equipped: " .. tostring(self.equipped))
+        _debug("self.enabled: " .. tostring(self.enabled))
+        _debug("IsCurrentWeaponOutOfAmmo: " .. tostring(self:IsCurrentWeaponOutOfAmmo()))
         if not self.equipped or not self.enabled then return false end
         
         -- Stop action when out of ammo to fix JC2MP sync bug
