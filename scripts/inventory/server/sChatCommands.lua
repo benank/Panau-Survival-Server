@@ -25,7 +25,7 @@ Events:Subscribe("PlayerChat", function(args)
         end
 
         Thread(function()
-            if not Items_indexed[name].durable then
+            if not Items_indexed[name].durable and not Items_indexed[name].can_equip then
                 
                 Inventory.AddItem({
                     player = args.player,

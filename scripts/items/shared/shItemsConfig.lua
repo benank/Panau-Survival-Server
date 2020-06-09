@@ -27,6 +27,7 @@ ItemsConfig =
         ["Parachute"] = {dura_per_sec = 1},
         ["Explosives Detector"] = {dura_per_sec = 1, dura_per_activation = 15, battery_dura_per_sec = 5},
         ["Cloud Strider Boots"] = {dura_per_5_sec = 1},
+        ["Stick Disguise"] = {dura_per_hit = 2},
         weapons = 
         {
             ["Handgun"] = {dura_per_use = 1, weapon_id = Weapon.Handgun, equip_slot = WeaponSlot.Right},
@@ -47,7 +48,7 @@ ItemsConfig =
             ["Police Helmet"] = {dura_per_hit = 6},
             ["Military Helmet"] = {dura_per_hit = 4},
             ["Military Vest"] = {dura_per_hit = 6},
-            ["Kevlar Vest"] = {dura_per_hit = 4}
+            ["Kevlar Vest"] = {dura_per_hit = 2}
         },
         backpacks = 
         {
