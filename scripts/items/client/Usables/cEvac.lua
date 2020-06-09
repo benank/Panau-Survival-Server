@@ -115,29 +115,32 @@ function cEvac:UpdateStage(ball)
     elseif stage == 4 then
         -- Reached the waypoint
 
-        local destruct_sound = ClientSound.Create(AssetLocation.Game, {
-			bank_id = 40,
-			sound_id = 53,
-			position = ball:GetPosition(),
-			angle = Angle()
-        })
+        if ball:GetPosition():Distance(Camera:GetPosition()) < 2000 then
 
-        destruct_sound:SetParameter(0,1)
-        destruct_sound:SetParameter(1,0)
-
-        local sound
-        Timer.SetTimeout(2000, function()
-            sound = ClientSound.Create(AssetLocation.Game, {
-                bank_id = 23,
-                sound_id = 0,
+            local destruct_sound = ClientSound.Create(AssetLocation.Game, {
+                bank_id = 40,
+                sound_id = 53,
                 position = ball:GetPosition(),
                 angle = Angle()
             })
 
-            sound:SetParameter(0,0)
-            sound:SetParameter(1,1)
-            sound:SetParameter(2,0)
-        end)
+            destruct_sound:SetParameter(0,1)
+            destruct_sound:SetParameter(1,0)
+
+            local sound
+            Timer.SetTimeout(2000, function()
+                sound = ClientSound.Create(AssetLocation.Game, {
+                    bank_id = 23,
+                    sound_id = 0,
+                    position = ball:GetPosition(),
+                    angle = Angle()
+                })
+
+                sound:SetParameter(0,0)
+                sound:SetParameter(1,1)
+                sound:SetParameter(2,0)
+            end)
+        end
         
         Timer.SetTimeout(10 * 1000, function()
 
@@ -188,6 +191,8 @@ function cEvac:ActivateEvac(args)
 end
 
 function cEvac:PlayCountdownSound(pos)
+
+    if pos:Distance(Camera:GetPosition()) > 2000 then return end
     
     local seconds = 0
     local sound
