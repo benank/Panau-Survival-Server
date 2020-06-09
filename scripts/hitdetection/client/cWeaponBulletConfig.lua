@@ -72,7 +72,7 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 400,
-            bloom = 3,
+            bloom = 1.5,
             bullet_size = 0.1,
             multi_shot = 3
         },
@@ -80,7 +80,7 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 400,
-            bloom = 2,
+            bloom = 1,
             bullet_size = 0.2,
             multi_shot = 3
         },
