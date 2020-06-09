@@ -2,6 +2,8 @@ class 'cSafezone'
 
 function cSafezone:__init()
 
+    self.sz_sync_timer = Timer()
+
     self.in_safezone = false
     self.in_neutralzone = false
     self.near_safezone = true
@@ -29,7 +31,7 @@ end
 
 function cSafezone:RenderText(args)
 
-    if self.in_safezone then
+    if LocalPlayer:GetValue("InSafezone") then
 
         self:RenderSafezoneText("In Safezone", "You cannot be killed here", config.safezone.color)
 
@@ -107,7 +109,8 @@ function cSafezone:Render(args)
     if self.near_safezone then
         self.in_safezone = LocalPlayer:GetPosition():Distance(config.safezone.position) < config.safezone.radius
 
-        if self.in_safezone ~= old_in_safezone then
+        if (self.in_safezone ~= old_in_safezone or (self.in_safezone ~= LocalPlayer:GetValue("InSafezone")))
+        and self.sz_sync_timer:GetSeconds() > 0.5 then
             Network:Send(var("EnterExitSafezone"):get(), {in_sz = self.in_safezone})
             if self.in_safezone then 
                 Events:Fire("EnterSafezone")
@@ -117,7 +120,8 @@ function cSafezone:Render(args)
                 Events:Fire("ExitSafezone")        
             end
             LocalPlayer:SetOutlineEnabled(self.in_safezone)
-            LocalPlayer:SetOutlineColor(config.safezone.color)   
+            LocalPlayer:SetOutlineColor(config.safezone.color)
+            self.sz_sync_timer:Restart()
         end
     end
 
