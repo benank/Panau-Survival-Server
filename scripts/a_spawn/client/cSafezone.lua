@@ -122,6 +122,7 @@ function cSafezone:Render(args)
             LocalPlayer:SetOutlineEnabled(self.in_safezone)
             LocalPlayer:SetOutlineColor(config.safezone.color)
             self.sz_sync_timer:Restart()
+            self.in_safezone = LocalPlayer:GetValue("InSafezone")
         end
     end
 
