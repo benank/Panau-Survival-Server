@@ -546,19 +546,6 @@ function Map:Draw()
 		end
 	end
 
-    -- Home position
-    local home_pos = LocalPlayer:GetValue("HomePosition")
-
-    if home_pos then
-        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 2, Color.Blue)
-        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 3, Color.White)
-    end
-
-	if math.floor(PDA.timer:GetSeconds() * 4) % 2 == 0 then
-		Render:FillCircle(Map:WorldToScreen(LocalPlayer:GetPosition()), Location.Icon.Size.x * scale / 2, Color.Red)
-		Render:FillCircle(Map:WorldToScreen(LocalPlayer:GetPosition()), Location.Icon.Size.x * scale / 3, Color.White)
-    end
-
     if not self.sz_config then
         self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
     end
@@ -609,6 +596,33 @@ function Map:Draw()
 		Render:DrawLine(center + height, center + offsetHeight, Color.White)
     end
     
+    -- Home position
+    local home_pos = LocalPlayer:GetValue("HomePosition")
+
+    if home_pos then
+        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 3, Color.Black)
+        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 4, Color.Orange)
+    end
+
+    if math.floor(PDA.timer:GetSeconds() * 4) % 2 == 0 then
+        local pos = Map:WorldToScreen(LocalPlayer:GetPosition())
+        local size = Location.Icon.Size.x * scale * 0.6
+        local t = Transform2():Translate(pos):Rotate(-Camera:GetAngle().yaw + math.pi)
+        Render:SetTransform(t)
+
+        local width = size
+        local height = size * 1.5
+
+        Render:FillTriangle(
+            Vector2(width / 2, -height / 2),
+            Vector2(-width / 2, -height / 2),
+            Vector2(0, height / 2),
+            Color(255, 0, 0, 200)
+        )
+
+        Render:ResetTransform()
+    end
+
     self:DrawLegend()
 
 	collectgarbage()
