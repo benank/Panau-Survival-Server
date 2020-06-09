@@ -1022,6 +1022,7 @@ function sVehicleManager:SaveVehicle(vehicle, player, vehicle_data)
 
     if IsValid(player) then
         local owned_vehicles = player:GetValue("OwnedVehicles")
+        if not owned_vehicles then return end
         owned_vehicles[vehicle_data.vehicle_id] = vehicle_data
         player:SetValue("OwnedVehicles", owned_vehicles)
         self:SyncPlayerOwnedVehicles(player)
