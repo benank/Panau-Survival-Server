@@ -231,7 +231,7 @@ Map = {
 		--Location("Paya Luas", Vector3(12028.47, 187.8509, -10679.78), Location.Type.MilAir),
 		Location("Paya Luas", Vector3(12028.47, 206.8509, -10679.78), Location.Type.MilAir, Location.Color.Green),
 		Location("Kampung Sri Puteri", Vector3(-5166.081, 338.7373, -7321.45), Location.Type.CivVil),
-		Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.MilLocation),
+		Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.MilLocation, Location.Color.Red),
 		Location("Gunung Rata", Vector3(860.4727, 287.4586, 11726.06), Location.Type.MilLocation),
 		Location("Kem Harimau Putih", Vector3(11212.44, 399.179, 848.4565), Location.Type.MilLocation),
 		--Location("Palau Dayang Terlena", Vector3(-11911.88, 609.6496, 4799.679), Location.Type.MilAir),
@@ -443,7 +443,7 @@ Map = {
 		Location("Bandar Kolam Dalam", Vector3(9983.953, 212.7729, -9679.302), Location.Type.CivVil),
 		Location("Pelantar Gas Telok Beting Timur", Vector3(15525.08, 236.3287, -4305.083), Location.Type.OilRig),
 		--Location("PAN MILSAT", Vector3(7056.561, 776.8174, 1036.695), Location.Type.MilLocation),
-		Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.MilLocation),
+		Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.MilLocation, Location.Color.Red),
 		Location("Cape Carnival", Vector3(13788.11, 222.02, -2315.564), Location.Type.MilLocation, Location.Color.Green),
 		Location("Port Gurun Lautan Lama", Vector3(-13579.83, 209.6284, 6453.933), Location.Type.MilHarb),
 		Location("Kampung Padang Luas", Vector3(10851.88, 200.9827, -8668.016), Location.Type.MilHarb, Location.Color.Green),
@@ -480,7 +480,7 @@ Map = {
 		Location("Kepulauan Selatan Delta", Vector3(2251.685, 592.3736, 12041.24), Location.Type.Comm, Location.Color.Green),
 		Location("Kem Gunung Raya", Vector3(4703.085, 1652.525, -4738.075), Location.Type.MilLocation),
 		Location("Gurun Lautan Lama Delta", Vector3(-9093.51, 399.3805, 6926.042), Location.Type.Comm),
-		Location("Pelabuhan Saudagar Harbor", Vector3(-14871.19, 196.2978, -2944.443), Location.Type.MilStrong),
+		-- Location("Pelabuhan Saudagar Harbor", Vector3(-14871.19, 196.2978, -2944.443), Location.Type.MilStrong),
 		Location("Pekan Tanjung", Vector3(1404.5, 203.6984, 6744.877), Location.Type.CivVil),
 		Location("Kem General Vikneshwaran", Vector3(1285.233, 227.4771, 404.9492), Location.Type.MilLocation),
 		Location("Pulau Ketam Kecil", Vector3(11682.66, 187.1396, -5123.087), Location.Type.MilHarb, Location.Color.Green),
@@ -492,8 +492,8 @@ Map = {
 		Location("Kampung Teratai Putih", Vector3(-7175.5, 204.3399, -6330.171), Location.Type.CivVil),
 		Location("Kota Buluh", Vector3(8432.64, 201.4412, -12844.17), Location.Type.CivVil),
 		-- NON-SETTLEMENTS
-		Location("Hantu Island", Vector3(-14091.01, 688.75, -14145.97), Location.Type.MilStrong),
-		Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green)
+		-- Location("Hantu Island", Vector3(-14091.01, 688.75, -14145.97), Location.Type.MilStrong),
+		-- Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green)
 	}
 }
 
