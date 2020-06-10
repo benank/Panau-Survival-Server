@@ -265,7 +265,7 @@ function sVehicleManager:VehicleDestroyed(vehicle, vehicle_data_input)
             })
         end
 
-    else
+    elseif vehicle_data.spawn_type then
 
         -- Add to respawn list if not owned
         self.spawns[vehicle_data.spawn_type][vehicle_data.spawn_index].spawned = false
