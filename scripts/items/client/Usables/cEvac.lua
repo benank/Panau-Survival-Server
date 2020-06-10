@@ -115,9 +115,12 @@ function cEvac:UpdateStage(ball)
     elseif stage == 4 then
         -- Reached the waypoint
 
+        local sound
+        local destruct_sound
+
         if ball:GetPosition():Distance(Camera:GetPosition()) < 2000 then
 
-            local destruct_sound = ClientSound.Create(AssetLocation.Game, {
+            destruct_sound = ClientSound.Create(AssetLocation.Game, {
                 bank_id = 40,
                 sound_id = 53,
                 position = ball:GetPosition(),
@@ -127,7 +130,6 @@ function cEvac:UpdateStage(ball)
             destruct_sound:SetParameter(0,1)
             destruct_sound:SetParameter(1,0)
 
-            local sound
             Timer.SetTimeout(2000, function()
                 sound = ClientSound.Create(AssetLocation.Game, {
                     bank_id = 23,
@@ -150,8 +152,8 @@ function cEvac:UpdateStage(ball)
                 angle = Angle()
             })
 
-            if sound then sound:Remove() end
-            if destruct_sound then destruct_sound:Remove() end
+            if IsValid(sound) then sound:Remove() end
+            if IsValid(destruct_sound) then destruct_sound:Remove() end
             self.objects[ball:GetId()] = nil
             ball:Remove()
         end)
