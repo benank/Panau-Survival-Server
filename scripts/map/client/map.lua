@@ -9,7 +9,8 @@ Location.Type = {
 	MilHarb     = "MilHarb",
 	MilStrong   = "MilStrong",
 	OilRig      = "OilRig",
-	Waypoint    = "Waypoint"
+    Waypoint    = "Waypoint",
+    Workbench   = "Workbench"
 }
 
 Location.TypeName = {
@@ -21,7 +22,13 @@ Location.TypeName = {
 	MilHarb     = "Military Harbor",
 	MilStrong   = "Military Stronghold",
 	OilRig      = "Oil Rig",
-	Waypoint    = "Waypoint"
+    Waypoint    = "Waypoint",
+    Workbench   = "Workbench"
+}
+
+Location.CustomIcons = 
+{
+    [Location.Type.Workbench] = WorkbenchIcon
 }
 
 Location.Icon = {
@@ -73,11 +80,19 @@ function Location:IsActive(position, scale)
 end
 
 function Location:DrawIcon(position, scale)
-	Location.Icon.Sheet:Draw(
-        position - (Location.Icon.Size * scale / 2), 
-        Location.Icon.Size * scale, 
-        Location.Icon.UV[self.type], 
-        Location.Icon.UV[self.type] + Location.Icon.UVSize)
+    if Location.CustomIcons[self.type] then
+        Location.CustomIcons[self.type]:Draw(
+            position - (Location.Icon.Size * scale / 2), 
+            Location.Icon.Size * scale, 
+            Vector2(0, 0), 
+            Vector2(1, 1))
+    else
+        Location.Icon.Sheet:Draw(
+            position - (Location.Icon.Size * scale / 2), 
+            Location.Icon.Size * scale, 
+            Location.Icon.UV[self.type], 
+            Location.Icon.UV[self.type] + Location.Icon.UVSize)
+    end
 end
 
 function Location:DrawColor(position, scale)
@@ -493,7 +508,11 @@ Map = {
 		Location("Kota Buluh", Vector3(8432.64, 201.4412, -12844.17), Location.Type.CivVil),
 		-- NON-SETTLEMENTS
 		Location("Hantu Island", Vector3(-14091.01, 688.75, -14145.97), Location.Type.MilStrong),
-		Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green)
+		Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green),
+		Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench),
+		Location("Eastern Workbench", Vector3(14426.58, 204.574, -1102.409), Location.Type.Workbench),
+		Location("Northern Workbench", Vector3(2602.199, 384, -11045.744), Location.Type.Workbench),
+		Location("Western Workbench", Vector3(-12293.124, 569.63, 2815.34), Location.Type.Workbench),
 	}
 }
 

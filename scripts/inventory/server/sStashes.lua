@@ -96,6 +96,8 @@ function sStashes:HackComplete(args)
 
     if not stash then return end
 
+    if stash.owner_id == "SERVER" then return end
+
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = stash.owner_id,
         message = string.format("%s hacked your stash [%s] %s", args.player:GetName(), stash.name, WorldToMapString(stash.lootbox.position)),
