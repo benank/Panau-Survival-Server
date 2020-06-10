@@ -50,7 +50,7 @@ function ListGUI:__init()
     }
 
     self.friend_delays = {} -- Delays on how often a player can be added/removed
-    self.friend_delay_time = 30
+    self.friend_delay_time = 15
     
 	self.PlayerCount = 0
 	self.Rows = {}
