@@ -29,6 +29,8 @@ function sFriends:ClientModuleLoad(args)
 
     end
 
+    print("MY ADDED FRIENDS " .. friends_str)
+
     args.player:SetNetworkValue("Friends", friends_str)
 
     -- Now get all players who added this player
@@ -45,6 +47,8 @@ function sFriends:ClientModuleLoad(args)
         end
 
     end
+
+    print("FRIENDS ADDED ME " .. added_me_str)
 
     args.player:SetNetworkValue("FriendsAddedMe", added_me_str)
 
@@ -96,6 +100,7 @@ function sFriends:AddFriend(args, player)
 
     local msg = string.format("%s [%s] added %s [%s] as a friend", 
         player:GetName(), player:GetSteamId(), adding_player:GetName(), adding_player:GetSteamId())
+
     Events:Fire("Discord", {
         channel = "Friends",
         content = msg
@@ -121,8 +126,9 @@ function sFriends:RemoveFriend(args, player)
     if not IsValid(removing_player) then return end
     if not IsFriend(player, removing_steam_id) then return end -- Not friends
 
-    local cmd = SQL:Command("DELETE FROM FRIENDS WHERE steam_id = ?")
+    local cmd = SQL:Command("DELETE FROM FRIENDS WHERE steam_id = ? AND friend_steamid = ?")
     cmd:Bind(1, player_steam_id)
+    cmd:Bind(2, removing_steam_id)
     cmd:Execute()
 
     local my_friends = player:GetValue("Friends")
@@ -141,6 +147,7 @@ function sFriends:RemoveFriend(args, player)
 
     local msg = string.format("%s [%s] removed %s [%s] as a friend", 
         player:GetName(), player:GetSteamId(), removing_player:GetName(), removing_player:GetSteamId())
+
     Events:Fire("Discord", {
         channel = "Friends",
         content = msg
