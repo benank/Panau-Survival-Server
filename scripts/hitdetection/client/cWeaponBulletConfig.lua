@@ -2,6 +2,56 @@ class 'cWeaponBulletConfig'
 
 function cWeaponBulletConfig:__init()
 
+    local fixed_reticle_angle_func = function(cam_angle, v_angle)
+
+        local initial_pos = LocalPlayer:GetBonePosition(BoneEnum.RightHand)
+        
+        -- Fixed reticle
+        local angle = v_angle * Angle(0, -math.pi * 0.0425, 0)
+        local ray = Physics:Raycast(initial_pos, angle * Vector3.Forward, 0, 1000)
+
+        local pos, on_screen = Render:WorldToScreen(ray.position)
+
+        local cam_ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 1000)
+        local cam_angle = Angle.FromVectors(Vector3.Forward, cam_ray.position - initial_pos)
+
+        local cam_pos, cam_on_screen = Render:WorldToScreen(cam_ray.position)
+
+        local middle = Render.Size / 2
+
+        --[[_debug(middle:Distance(cam_pos))
+        _debug(pos:Distance(cam_pos))
+        _debug(on_screen)
+        _debug(cam_on_screen)]]
+
+        local max_table = 
+        {
+            [30] = {y = 200, x = 100},
+            [34] = {y = 200, x = 100},
+            [62] = {y = 500, x = 200},
+            [64] = {y = 500, x = 2000}
+        }
+
+        local v = LocalPlayer:GetVehicle()
+
+        local y_max = 200
+        local x_max = 100
+
+        if IsValid(v) and max_table[v:GetModelId()] then
+            y_max = max_table[v:GetModelId()].y
+            x_max = max_table[v:GetModelId()].x
+        end
+
+        if on_screen and cam_on_screen
+        and math.abs(cam_pos.x - pos.x) < x_max
+        and math.abs(cam_pos.y - pos.y) < y_max then
+            return cam_angle
+        else
+            return angle
+        end
+
+    end
+
     self.weapon_bullets = {
         [WeaponEnum.MachineGun] = 
         {
@@ -88,42 +138,36 @@ function cWeaponBulletConfig:__init()
         [WeaponEnum.V_Minigun] = 
         {
             type = ProjectileBullet,
-            speed = 800,
+            speed = 600,
             bloom = 0.5,
             bullet_size = 0.2,
             indicator = true,
-            angle = function(cam_angle, v_angle)
-                return v_angle * Angle(0, -math.pi * 0.0425, 0)
-            end
+            angle = fixed_reticle_angle_func
         },
         [WeaponEnum.V_Rockets] = 
         {
             type = ProjectileBullet,
-            speed = 400,
+            speed = 300,
             bloom = 0,
             bullet_size = 0,
             splash = true,
             indicator = true,
-            angle = function(cam_angle, v_angle)
-                return v_angle * Angle(0, -math.pi * 0.04, 0)
-            end
+            angle = fixed_reticle_angle_func
         },
         [WeaponEnum.V_Cannon] = 
         {
             type = ProjectileBullet,
-            speed = 500,
-            bloom = 5,
-            bullet_size = 1.0,
+            speed = 300,
+            bloom = 4,
+            bullet_size = 0,
             splash = true,
             indicator = true,
-            angle = function(cam_angle, v_angle)
-                return v_angle * Angle(0, -math.pi * 0.04, 0)
-            end
+            angle = fixed_reticle_angle_func
         },
         [WeaponEnum.V_MachineGun] = 
         {
             type = ProjectileBullet,
-            speed = 700,
+            speed = 500,
             bloom = 1,
             bullet_size = 0.5,
             angle = function(cam_angle, v_angle)

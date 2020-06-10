@@ -12,7 +12,8 @@ function cVehicleWeaponManager:__init()
     self.fire_delays = -- Delays between shots for vehicle weapons
     {
         [WeaponEnum.V_Minigun] = 50,
-        [WeaponEnum.V_MachineGun] = 200
+        [WeaponEnum.V_MachineGun] = 200,
+        [WeaponEnum.V_Cannon] = 100
     }
 
     self.fire_delay = Timer()
@@ -26,7 +27,7 @@ function cVehicleWeaponManager:__init()
         [WeaponEnum.V_Minigun] = 1.5,
         [WeaponEnum.V_MachineGun] = 4,
         [WeaponEnum.V_Rockets] = 0,
-        [WeaponEnum.V_Cannon] = 0
+        [WeaponEnum.V_Cannon] = 4
     }
 
     self.heat_actions = 
@@ -45,7 +46,7 @@ function cVehicleWeaponManager:__init()
     }
 
     -- Cooldown for using secondary fire again
-    self.secondary_fire_cooldown = 3
+    self.secondary_fire_cooldown = 2
     self.secondary_fire_timer = Timer()
 
     Events:Subscribe("LocalPlayerEnterVehicle", self, self.LocalPlayerEnterVehicle)
