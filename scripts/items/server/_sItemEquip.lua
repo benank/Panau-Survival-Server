@@ -8,6 +8,10 @@ function Unload()
     for player in Server:GetPlayers() do
         player:SetValue("EquippedItems", {})
         player:SetNetworkValue("EquippedVisuals", {})
+
+        if player:GetValue("ModelId") then
+            player:SetModelId(player:GetValue("ModelId"))
+        end
     end
 
 end

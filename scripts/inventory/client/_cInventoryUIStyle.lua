@@ -135,6 +135,7 @@ function cInventoryUIStyle:__init()
         ["Cloud Strider Boots"] = self.item_colors.purple,
         ["Second Life"] = self.item_colors.purple,
         ["Master Hacker"] = self.item_colors.purple,
+        ["Stick Disguise"] = self.item_colors.purple,
     }
 
 
