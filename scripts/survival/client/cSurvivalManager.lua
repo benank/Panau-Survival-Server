@@ -15,8 +15,6 @@ function cSurvivalManager:__init()
 
     Events:Fire("loader/CompleteResource", {count = 2})
 
-    Network:Send("Survival/Ready")
-
     Network:Subscribe("Survival/Update", self, self.Update)
     Events:Subscribe("Render", self, self.Render)
     Events:Subscribe("MinuteTick", self, self.MinuteTick)
@@ -41,7 +39,7 @@ function cSurvivalManager:LocalPlayerInput(args)
 end
 
 function cSurvivalManager:UpdateClimateZone()
-    Network:Send("Survival/UpdateClimateZone", {zone = LocalPlayer:GetClimateZone()})
+    --Network:Send("Survival/UpdateClimateZone", {zone = LocalPlayer:GetClimateZone()})
 end
 
 function cSurvivalManager:MinuteTick()
@@ -51,7 +49,6 @@ end
 function cSurvivalManager:Render(args)
 
     self.hud:Render(args)
-    --self.grapple_manager:Render(args)
 
 end
 

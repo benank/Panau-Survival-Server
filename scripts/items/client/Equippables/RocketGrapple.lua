@@ -203,6 +203,8 @@ end
 
 function EquippableRocketGrapple:RenderGrappleDistance(ray)
 
+    if ray.distance < 80 then return end
+
 	local triangleColor = Color(0,200,0,150)
 	
 	if LocalPlayer:GetValue("NumGrappleCharges") == 0 or ray.distance > self.range then

@@ -411,7 +411,7 @@ Map = {
 		Location("Kem Kapitan Luk Ya Sian", Vector3(74.19531, 1392.88, -6291.536), Location.Type.MilLocation, Location.Color.Green),
 		Location("Kuala Cengkih", Vector3(7210.072, 202.9297, -12004.09), Location.Type.MilHarb),
 		Location("Pelantar Gas Panau Timur", Vector3(13096.18, 236.3287, 4871.582), Location.Type.OilRig, Location.Color.Green),
-		Location("Kampung Nur Cahaya", Vector3(-7031.882, 315.3552, 5390.055), Location.Type.CivCity),
+		Location("Kampung Nur Cahaya", Vector3(-7031.882, 315.3552, 5390.055), Location.Type.CivCity, Location.Color.Green),
 		Location("Pekan Cahaya Matahari", Vector3(11393.25, 258.5214, -6938.114), Location.Type.CivVil),
 		Location("Kepulauan Selatan Zeta", Vector3(14619.25, 612.9855, 12576.75), Location.Type.Comm),
 		Location("Gunung Pawang Tua", Vector3(10953.24, 251.841, 2082.581), Location.Type.MilLocation, Location.Color.Green),

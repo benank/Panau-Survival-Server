@@ -28,7 +28,20 @@ end
 local function Sleep(delay)
     local coro = running()
     SetTimeout(delay, function(args)
-        resume(coro, args)
+        if not coro then return end
+        local status = coroutine.status(coro)
+
+        if status == "dead" then
+            print(debug.traceback("Coroutine died in Timer.Sleep. Cannot resume."))
+            return
+        end
+
+        local success, error_msg = resume(coro, args)
+
+        if not success then
+            error(debug.traceback(string.format("Error in resuming coroutine in Timer.Sleep: %s", error_msg)))
+        end
+
     end)
     return yield()
 end

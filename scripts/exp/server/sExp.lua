@@ -331,6 +331,7 @@ function sExp:ClientModuleLoad(args)
     args.player:SetNetworkValue("Exp", exp_data)
     Events:Fire("PlayerExpLoaded", {player = args.player})
 
+    args.source = "exp"
     Events:Fire("LoadFlowAdd", args)
 
     if self.global_multiplier > 1 then

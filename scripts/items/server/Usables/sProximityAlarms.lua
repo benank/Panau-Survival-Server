@@ -30,27 +30,18 @@ function sProxAlarms:__init()
 
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 
-    Thread(function()
-        while true do
-            Timer.Sleep(1000 * 60 * 60) -- One hour
-
-            self:LowerBatteryDurabilities()
-        end
+    Timer.SetInterval(1000 * 60 * 60, function()
+        self:LowerBatteryDurabilities()
     end)
 end
 
 function sProxAlarms:ItemExplode(args)
 
-    Thread(function()
-        
-        for id, alarm in pairs(self.alarms) do
-            if alarm.position:Distance(args.position) < args.radius then
-                self:DestroyProx({id = id}, args.player)
-            end
-            Timer.Sleep(1)
+    for id, alarm in pairs(self.alarms) do
+        if alarm.position:Distance(args.position) < args.radius then
+            self:DestroyProx({id = id}, args.player)
         end
-
-    end)
+    end
 
 end
 
@@ -95,7 +86,7 @@ function sProxAlarms:LowerBatteryDurabilities()
                 
                     Events:Fire("SendPlayerPersistentMessage", {
                         steam_id = alarm.stash.owner_id,
-                        message = string.format("Your proximity detector ran out of batteries @ X: %.0f Y: %.0f", coords.x, coords.z),
+                        message = string.format("Your proximity alarm ran out of batteries @ X: %.0f Y: %.0f", coords.x, coords.z),
                         color = Color(200, 0, 0)
                     })
                     
@@ -154,7 +145,7 @@ function sProxAlarms:InsideProximityAlarm(args, player)
 
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = owner_id,
-        message = string.format("Your proximity detector detected %s %s", player:GetName(), WorldToMapString(player:GetPosition())),
+        message = string.format("Your proximity alarm detected %s %s", player:GetName(), WorldToMapString(player:GetPosition())),
         color = Color(200, 0, 0)
     })
 
@@ -190,7 +181,7 @@ function sProxAlarms:DestroyProx(args, player)
                 
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = alarm.stash.owner_id,
-        message = string.format("Your proximity detector was destroyed @ X: %.0f Y: %.0f", coords.x, coords.z),
+        message = string.format("Your proximity alarm was destroyed @ X: %.0f Y: %.0f", coords.x, coords.z),
         color = Color(200, 0, 0)
     })
 

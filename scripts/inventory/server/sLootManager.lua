@@ -32,7 +32,6 @@ function sLootManager:ClientModuleLoad(args)
 end
 
 function sLootManager:PlayerQuit(args)
-    log_function_call("sLootManager:PlayerQuit")
     -- Remove player from cell if they are in one
     if args.player:GetValue("Cell") and args.player:GetValue("Cell")[Lootbox.Cell_Size] then
         
@@ -42,7 +41,6 @@ function sLootManager:PlayerQuit(args)
         LootCells.Player[cell.x][cell.y][tostring(args.player:GetSteamId().id)] = nil
 
     end
-    log_function_call("sLootManager:PlayerQuit 2")
 end
 
 -- Updates LootCells.Player
@@ -72,7 +70,7 @@ function sLootManager:PlayerCellUpdate(args)
 
         for _, lootbox in pairs(LootCells.Loot[update_cell.x][update_cell.y]) do
             if lootbox.active then -- Only get active boxes
-                table.insert(lootbox_data, lootbox:GetSyncData())
+                table.insert(lootbox_data, lootbox:GetSyncData(args.player))
             end
         end
     end
@@ -112,6 +110,8 @@ function sLootManager:LoadFromFile()
     local counter = 0
 	local spawn_timer = Timer() -- time loot spawn time
     local file = io.open(self.lootspawn_file, "r") -- read from lootspawns.txt
+
+    local tiers = {}
     
 	if file ~= nil then -- file might not exist
 		for line in file:lines() do
@@ -121,6 +121,12 @@ function sLootManager:LoadFromFile()
 				counter = counter + 1
                 local tokens = line:split(",")
                 local tier = tonumber(tokens[1])
+
+                if not tiers[tier] then
+                    tiers[tier] = 1
+                else
+                    tiers[tier] = tiers[tier] + 1
+                end
 
                 -- If this box is a spawnable box
                 if Lootbox.GeneratorConfig.spawnable[tier] then
@@ -138,7 +144,10 @@ function sLootManager:LoadFromFile()
 		file:close()
 	else
 		print("Fatal Error: Could not load loot from file")
-	end
+    end
+    
+    print(string.format("Loaded: %d tier 1, %d tier 2, %d tier 3, %d tier 4", 
+        tiers[Lootbox.Types.Level1], tiers[Lootbox.Types.Level2], tiers[Lootbox.Types.Level3], tiers[Lootbox.Types.Level4]))
 
 end
 

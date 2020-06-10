@@ -355,7 +355,7 @@ function sStashes:PlaceStash(position, angle, type, player)
     local result = cmd:Execute()
     
     if not result or not result[1] or not result[1].id then
-        error("Failed to place stash")
+        error(debug.traceback("Failed to place stash"))
         return
     end
 

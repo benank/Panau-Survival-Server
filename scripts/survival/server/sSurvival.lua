@@ -8,7 +8,7 @@ function sSurvivalManager:__init()
 
     self:SetupIntervals()
 
-    Network:Subscribe("Survival/Ready", self, self.PlayerReady)
+    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Network:Subscribe("Survival/UpdateClimateZone", self, self.UpdateClimateZone)
     Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
@@ -19,6 +19,7 @@ end
 
 -- Set player's health after the loading screen
 function sSurvivalManager:LoadStatus(args)
+    if not IsValid(args.player) then return end
     if args.status ~= false then return end
     if not args.player:GetValue("TargetHealth") then return end
 
@@ -27,9 +28,7 @@ function sSurvivalManager:LoadStatus(args)
 end
 
 function sSurvivalManager:PlayerQuit(args)
-    log_function_call("sSurvivalManager:PlayerQuit")
     self:UpdateDB(args.player)
-    log_function_call("sSurvivalManager:PlayerQuit 2")
 end
 
 function sSurvivalManager:CheckForDyingPlayer(player)
@@ -100,6 +99,8 @@ end
 
 function sSurvivalManager:PlayerSpawn(args)
 
+    if not IsValid(args.player) then return end
+
     -- Player Respawned
     if args.player:GetValue("dead") then
 
@@ -122,29 +123,16 @@ end
 
 function sSurvivalManager:SetupIntervals()
 
-    Thread(function()
-        while true do
-            log_function_call("sSurvivalManager:SetupIntervals")
-            for player in Server:GetPlayers() do
-                if IsValid(player) then
-                    self:AdjustSurvivalStats(player)
-                end
-                Timer.Sleep(5)
+    Timer.SetInterval(1000 * 60, function()
+        for player in Server:GetPlayers() do
+            if IsValid(player) then
+                self:AdjustSurvivalStats(player)
             end
-            
-            log_function_call("sSurvivalManager:SetupIntervals 2")
-            Timer.Sleep(1000 * 60)
-
         end
     end)
 
-    Thread(function()
-        while true do
-            log_function_call("sSurvivalManager:SetupIntervals 22")
-            self:DamageDyingPlayers()
-            log_function_call("sSurvivalManager:SetupIntervals 22 2")
-            Timer.Sleep(1000 * self.damage_interval)
-        end
+    Timer.SetInterval(1000 * self.damage_interval, function()
+        self:DamageDyingPlayers()
     end)
 
 end
@@ -186,7 +174,7 @@ function sSurvivalManager:AdjustSurvivalStats(player)
     if player:GetValue("InSafezone") then return end
     if player:GetValue("Invincible") then return end
 
-    local zone_mod = config.decaymods[player:GetValue("ClimateZone")]
+    local zone_mod = config.decaymods[player:GetValue("ClimateZone")] or config.decaymods[ClimateZone.City]
 
     survival.hunger = math.max(survival.hunger - config.decay.hunger * zone_mod.hunger, 0)
     survival.thirst = math.max(survival.thirst - config.decay.thirst * zone_mod.thirst, 0)
@@ -199,8 +187,9 @@ function sSurvivalManager:AdjustSurvivalStats(player)
 
 end
 
-function sSurvivalManager:PlayerReady(args, player)
+function sSurvivalManager:ClientModuleLoad(args)
 
+    local player = args.player
     local steamID = tostring(player:GetSteamId())
     
 	local query = SQL:Query("SELECT * FROM survival WHERE steamID = (?) LIMIT 1")
@@ -249,6 +238,8 @@ function sSurvivalManager:PlayerReady(args, player)
 end
 
 function sSurvivalManager:UpdateDB(player)
+
+    if not IsValid(player) then return end
 
     local steamID = tostring(player:GetSteamId())
     local survival = player:GetValue("Survival")

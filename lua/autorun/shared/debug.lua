@@ -1,5 +1,5 @@
-IsTest = true
-function debug(s)
+IsTest = false
+function _debug(s)
 	if not IsTest then return end
 	if Server then
 		Chat:Broadcast("[debug]: " .. tostring(s), Color.Red)

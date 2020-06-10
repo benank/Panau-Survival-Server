@@ -60,24 +60,19 @@ end
 
 function sWeaponManager:CheckPendingShots()
     
-    Thread(function()
-        while true do
-            if count_table(self.pending_fire) > 0 then
+    Timer.SetInterval(100, function()
+        if count_table(self.pending_fire) > 0 then
 
-                for steam_id, data in pairs(self.pending_fire) do
-                    for weapon_id, ammo_data in pairs(data) do
-                        self:ProcessWeaponShot(ammo_data)
-                        self.pending_fire[steam_id][weapon_id] = nil
-                        Timer.Sleep(100)
-                    end
+            for steam_id, data in pairs(self.pending_fire) do
+                for weapon_id, ammo_data in pairs(data) do
+                    self:ProcessWeaponShot(ammo_data)
+                    self.pending_fire[steam_id][weapon_id] = nil
+                end
 
-                    if count_table(self.pending_fire[steam_id]) == 0 then
-                        self.pending_fire[steam_id] = nil
-                    end
+                if count_table(self.pending_fire[steam_id]) == 0 then
+                    self.pending_fire[steam_id] = nil
                 end
             end
-
-            Timer.Sleep(100)
         end
     end)
 
@@ -197,6 +192,8 @@ function sWeaponManager:GetWeaponNameFromId(weapon_id)
 end
 
 function sWeaponManager:RefreshEquippedWeapons(player)
+
+    if not IsValid(player) then return end
 
     local player_equipped = player:GetValue("EquippedItems")
     local equipped_weapons = player:GetValue("EquippedWeapons")

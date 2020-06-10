@@ -77,6 +77,7 @@ LootItems =
                 ["Sawn-Off Shotgun"] = {rarity = 0.2, min = 1, max = 1},
             }
         },
+
     },
     [Lootbox.Types.Level2] = 
     {
@@ -113,7 +114,7 @@ LootItems =
         },
         ["EXPLOSIVE"] = 
         {
-            rarity = 0.15,
+            rarity = 0.145,
             items = 
             {
                 ["Flares"] = {rarity = 0.075, min = 1, max = 1},
@@ -126,7 +127,7 @@ LootItems =
         },
         ["GEAR"] = 
         {
-            rarity = 0.023,
+            rarity = 0.028,
             items = 
             {
                 ["Grapplehook"] = {rarity = 1, min = 1, max = 1},
@@ -134,7 +135,7 @@ LootItems =
         },
         ["HEALTH"] = 
         {
-            rarity = 0.122,
+            rarity = 0.13,
             items = 
             {
                 ["Bandages"] = {rarity = 0.6, min = 1, max = 2},
@@ -151,7 +152,7 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.21,
+            rarity = 0.202,
             items = 
             {
                 ["BackTrack"] = {rarity = 0.2, min = 1, max = 1},
@@ -173,6 +174,7 @@ LootItems =
                 ["SMG"] = {rarity = 0.2, min = 1, max = 1},
             }
         },
+
     },
     [Lootbox.Types.Level3] = 
     {
@@ -258,11 +260,12 @@ LootItems =
             {
                 ["Sawn-Off Shotgun"] = {rarity = 0.2, min = 1, max = 1},
                 ["SMG"] = {rarity = 0.4, min = 1, max = 1},
-                ["Assault Rifle"] = {rarity = 0.1, min = 1, max = 1},
                 ["Shotgun"] = {rarity = 0.2, min = 1, max = 1},
+                ["Assault Rifle"] = {rarity = 0.1, min = 1, max = 1},
                 ["Sniper Rifle"] = {rarity = 0.1, min = 1, max = 1},
             }
         },
+
     },
     [Lootbox.Types.Level4] = 
     {
@@ -312,10 +315,10 @@ LootItems =
             rarity = 0.035,
             items = 
             {
-                ["Combat Backpack"] = {rarity = 0.4, min = 1, max = 1},
-                ["Explorer Backpack"] = {rarity = 0.4, min = 1, max = 1},
-                ["Parachute"] = {rarity = 0.1, min = 1, max = 1},
-                ["RocketGrapple"] = {rarity = 0.1, min = 1, max = 1},
+                ["Combat Backpack"] = {rarity = 0.39, min = 1, max = 1},
+                ["Explorer Backpack"] = {rarity = 0.39, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.11, min = 1, max = 1},
+                ["RocketGrapple"] = {rarity = 0.11, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
@@ -335,14 +338,15 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Assault Rifle"] = {rarity = 0.6, min = 1, max = 1},
                 ["Shotgun"] = {rarity = 0.125, min = 1, max = 1},
+                ["Assault Rifle"] = {rarity = 0.6, min = 1, max = 1},
                 ["Sniper Rifle"] = {rarity = 0.1, min = 1, max = 1},
                 ["Grenade Launcher"] = {rarity = 0.1, min = 1, max = 1},
                 ["Machine Gun"] = {rarity = 0.05, min = 1, max = 1},
                 ["Rocket Launcher"] = {rarity = 0.025, min = 1, max = 1},
             }
         },
+
     },
     [Lootbox.Types.Level5] = 
     {
@@ -367,6 +371,7 @@ LootItems =
                 ["Macadamia Nuts"] = {rarity = 0.001, min = 1, max = 1},
             }
         },
+
     },
     [Lootbox.Types.VendingMachineDrink] = 
     {
@@ -382,5 +387,6 @@ LootItems =
                 ["Water"] = {rarity = 0.2, min = 1, max = 2},
             }
         },
+
     },
 }

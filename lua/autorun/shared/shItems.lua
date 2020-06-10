@@ -119,6 +119,16 @@ Items =
         equip_type = "body_armor"
     },
     {
+        name = "Stick Disguise",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 1000,
+        equip_type = "disguise",
+        max_held = 1
+    },
+    {
         name = "Scuba Gear",
         category = "Survival",
         stacklimit = 1,
@@ -499,7 +509,7 @@ Items =
         stacklimit = 2,
         can_equip = true,
         durable = true,
-        max_durability = 2500,
+        max_durability = 3500,
         equip_type = "parachute"
     },
     {

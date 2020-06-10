@@ -39,63 +39,37 @@ function sVehicleManager:__init()
 
     Network:Subscribe("Vehicles/VehicleDestroyed", self, self.VehicleDestroyedClient)
 
-    Thread(function()
-        while true do
-
-            self:Tick500()
-
-            Timer.Sleep(500)
-        end
+    Timer.SetInterval(500, function()
+        self:Tick500()
     end)
 
 
     -- Respawn vehicles loop
-    Thread(function()
-        while true do
+    Timer.SetInterval(1000 * 60 * 60, function()
+        local random = math.random
 
-            local random = math.random
+        for spawn_type, data_entries in pairs(self.spawns) do
+            for index, spawn_data in pairs(data_entries) do
 
-            for spawn_type, data_entries in pairs(self.spawns) do
-                for index, spawn_data in pairs(data_entries) do
-
-                    if not spawn_data.spawned 
-                    and random() < config.spawn[spawn_type].spawn_chance
-                    and spawn_data.respawn_timer:GetMinutes() >= config.spawn[spawn_type].respawn_interval then
-                        -- Spawn vehicle
-                        self:SpawnNaturalVehicle(spawn_type, index)
-                    end
-
-                    Timer.Sleep(1)
+                if not spawn_data.spawned 
+                and random() < config.spawn[spawn_type].spawn_chance
+                and spawn_data.respawn_timer:GetMinutes() >= config.spawn[spawn_type].respawn_interval then
+                    -- Spawn vehicle
+                    self:SpawnNaturalVehicle(spawn_type, index)
                 end
 
             end
 
-            Timer.Sleep(1000 * 60 * 60)
         end
+
     end)
 
-    Thread(function()
-        while true do
-
-            log_function_call("CheckForDestroyedVehicles")
-            self:CheckForDestroyedVehicles()
-            log_function_call("CheckForDestroyedVehicles 2")
-
-            Timer.Sleep(1000 * 10)
-
-        end
+    Timer.SetInterval(1000 * 10, function()
+        self:CheckForDestroyedVehicles()
     end)
 
-    Thread(function()
-        while true do
-
-            log_function_call("sVehicleManager:SaveVehicles")
-            self:SaveVehicles()
-            log_function_call("sVehicleManager:SaveVehicles 2")
-
-            Timer.Sleep(1000 * 60)
-
-        end
+    Timer.SetInterval(1000 * 60, function()
+        self:SaveVehicles()
     end)
 
 end
@@ -116,9 +90,8 @@ function sVehicleManager:SaveVehicles()
 
     for id, v in pairs(self.owned_vehicles) do
         if IsValid(v) then 
-            self:SaveVehicle(vehicle_data.vehicle)
+            self:SaveVehicle(v)
         end
-        Timer.Sleep(1)
     end
 
 end
@@ -256,8 +229,6 @@ function sVehicleManager:CheckForDestroyedVehicles()
             self.vehicles[id] = nil
         end
 
-        Timer.Sleep(1)
-
     end
 
 end
@@ -267,7 +238,6 @@ function sVehicleManager:Tick500()
 end
 
 function sVehicleManager:MinuteTick()
-    log_function_call("sVehicleManager:MinuteTick")
     for id, time in pairs(self.despawning_vehicles) do
 
         if count_table(self.owned_vehicles[id]:GetOccupants()) > 0 then
@@ -297,7 +267,6 @@ end
 
 function sVehicleManager:PlayerQuit(args)
 
-    log_function_call("sVehicleManager:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
 
     local vehicles = args.player:GetValue("OwnedVehicles")
@@ -310,7 +279,6 @@ function sVehicleManager:PlayerQuit(args)
         end
     end
 
-    log_function_call("sVehicleManager:PlayerQuit 2")
 end
 
 function sVehicleManager:PlayerExitVehicle(args)
@@ -507,7 +475,7 @@ function sVehicleManager:TryBuyVehicle(args)
     local player_lockpicks = Inventory.GetNumOfItem({player = args.player, item_name = "Lockpick"})
     local owned_vehicles = args.player:GetValue("OwnedVehicles")
 
-    if player_lockpicks < args.data.cost then
+    if not player_lockpicks or not args.data.cost or player_lockpicks < args.data.cost then
         Chat:Send(args.player, "You do not have enough lockpicks to purchase this vehicle!", Color.Red)
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
@@ -974,6 +942,7 @@ function sVehicleManager:SaveVehicle(vehicle, player, vehicle_data)
 
     if IsValid(player) then
         local owned_vehicles = player:GetValue("OwnedVehicles")
+        if not owned_vehicles then return end
         owned_vehicles[vehicle_data.vehicle_id] = vehicle_data
         player:SetValue("OwnedVehicles", owned_vehicles)
         self:SyncPlayerOwnedVehicles(player)

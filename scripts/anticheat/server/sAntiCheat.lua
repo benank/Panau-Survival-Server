@@ -14,64 +14,59 @@ end
 function sAntiCheat:CheckServerHealth()
     
     -- Check to see if the server is lagging
-    Thread(function()
+    Timer.SetInterval(1000, function()
         local last_time = Server:GetElapsedSeconds()
         local players_history = {}
-        
-        while true do
-            log_function_call("sAntiCheat:CheckServerHealth()")
+    
+        local players = {}
 
-            Timer.Sleep(1000)
-
-            local players = {}
-
-            for p in Server:GetPlayers() do
+        for p in Server:GetPlayers() do
+            if IsValid(p) then
                 players[p:GetId()] = p
             end
+        end
 
-            local seconds_elapsed = Server:GetElapsedSeconds()
+        local seconds_elapsed = Server:GetElapsedSeconds()
 
-            if seconds_elapsed - last_time > 3 then
+        if seconds_elapsed - last_time > 3 then
 
-                local msg = string.format("**Hitch warning: Server is running %.2f seconds behind!**", seconds_elapsed - last_time)
-                print(msg)
+            local msg = string.format("**Hitch warning: Server is running %.2f seconds behind!**", seconds_elapsed - last_time)
+            print(msg)
+
+            Events:Fire("Discord", {
+                channel = "Errors",
+                content = msg
+            })
+
+            local players_msg = "Players Online:"
+
+            local last_players = players_history[tostring(string.format("%.0f", last_time))]
+
+            if last_players then
+                for id, p in pairs(last_players) do
+                    if IsValid(p) then
+                        players_msg = players_msg .. "\n" .. string.format("%s [%s] [%s]", p:GetName(), p:GetSteamId(), p:GetIP())
+                    end
+                end
+
+                print(players_msg)
 
                 Events:Fire("Discord", {
                     channel = "Errors",
-                    content = msg
+                    content = players_msg
                 })
-
-                local players_msg = "Players Online:"
-
-                local last_players = players_history[tostring(string.format("%.0f", last_time))]
-
-                if last_players then
-                    for id, p in pairs(last_players) do
-                        if IsValid(p) then
-                            players_msg = players_msg .. "\n" .. string.format("%s [%s] [%s]", p:GetName(), p:GetSteamId(), p:GetIP())
-                        end
-                    end
-
-                    print(players_msg)
-
-                    Events:Fire("Discord", {
-                        channel = "Errors",
-                        content = players_msg
-                    })
-                end
-
             end
 
-            -- Erase old players
-            players_history[tostring(string.format("%.0f", last_time))] = nil
-
-            last_time = seconds_elapsed
-
-            -- Add new players
-            players_history[tostring(string.format("%.0f", last_time))] = players
-            log_function_call("sAntiCheat:CheckServerHealth() 2")
-
         end
+
+        -- Erase old players
+        players_history[tostring(string.format("%.0f", last_time))] = nil
+
+        last_time = seconds_elapsed
+
+        -- Add new players
+        players_history[tostring(string.format("%.0f", last_time))] = players
+
     end)
 
 end
@@ -100,7 +95,7 @@ function sAntiCheat:LagCheck(args, player)
     local diff = Server:GetElapsedSeconds() - last_check
     player:SetValue("LastLagCheck", Server:GetElapsedSeconds())
 
-    if diff < 1.5 and diff > 0.5 then
+    --[[if diff < 1.5 and diff > 0.5 then
         Events:Fire("Discord", {
             channel = "Errors",
             content = string.format("Lag check invalid [%s %s] - response sent too quickly (%.2f seconds)", 
@@ -108,7 +103,7 @@ function sAntiCheat:LagCheck(args, player)
         })
         player:SetValue("LagStrikes", player:GetValue("LagStrikes") + 1)
         return
-    end
+    end]]
 
     if diff > 7 then
         Events:Fire("Discord", {

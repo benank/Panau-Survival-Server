@@ -1,13 +1,7 @@
-Thread(function()
-    while true do
-        Timer.Sleep(1000)
-        Events:Fire("SecondTick")
-    end
+Timer.SetInterval(1000, function()
+    Events:Fire("SecondTick")
 end)
 
-Thread(function()
-    while true do
-        Timer.Sleep(60 * 1000)
-        Events:Fire("MinuteTick")
-    end
+Timer.SetInterval(60 * 1000, function()
+    Events:Fire("MinuteTick")
 end)
