@@ -91,8 +91,13 @@ function sFriends:AddFriend(args, player)
     Network:Send(player, "Friends/Update")
     Network:Send(adding_player, "Friends/Update")
 
-    Chat:Send(player, "Added " .. adding_player:GetName() .. " as a friend.", Color.Green)
-    Chat:Send(adding_player, player:GetName() .. " added you as a friend.", Color.Green)
+    if AreFriends(player, adding_steam_id) then
+        Chat:Send(player, "You are now friends with " .. adding_player:GetName() .. ".", Color(0, 200, 0))
+        Chat:Send(adding_player, "You are now friends with " .. player:GetName() .. ".", Color(0, 200, 0))
+    else
+        Chat:Send(player, "Sent " .. adding_player:GetName() .. " a friend request.", Color.Green)
+        Chat:Send(adding_player, player:GetName() .. " sent you a friend request.", Color.Green)
+    end
 
     local msg = string.format("%s [%s] added %s [%s] as a friend", 
         player:GetName(), player:GetSteamId(), adding_player:GetName(), adding_player:GetSteamId())
@@ -122,6 +127,8 @@ function sFriends:RemoveFriend(args, player)
     if not IsValid(removing_player) then return end
     if not IsFriend(player, removing_steam_id) then return end -- Not friends
 
+    local friends_before = AreFriends(player, removing_steam_id)
+
     local cmd = SQL:Command("DELETE FROM FRIENDS WHERE steam_id = ? AND friend_steamid = ?")
     cmd:Bind(1, player_steam_id)
     cmd:Bind(2, removing_steam_id)
@@ -138,8 +145,10 @@ function sFriends:RemoveFriend(args, player)
     Network:Send(player, "Friends/Update")
     Network:Send(removing_player, "Friends/Update")
 
-    Chat:Send(player, "Removed " .. removing_player:GetName() .. " as a friend.", Color.Red)
-    Chat:Send(removing_player, player:GetName() .. " removed you as a friend.", Color.Red)
+    if friends_before then
+        Chat:Send(player, "You are no longer friends with " .. removing_player:GetName() .. ".", Color(200, 0, 0))
+        Chat:Send(removing_player, "You are no longer friends with " .. player:GetName() .. ".", Color(200, 0, 0))
+    end
 
     local msg = string.format("%s [%s] removed %s [%s] as a friend", 
         player:GetName(), player:GetSteamId(), removing_player:GetName(), removing_player:GetSteamId())

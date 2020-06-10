@@ -88,7 +88,7 @@ function cVehicleManager:LocalPlayerInput(args)
             if not data then return false end
 
             if data.owner_steamid ~= tostring(LocalPlayer:GetSteamId())
-            and not IsAFriend(LocalPlayer, data.owner_steamid) then 
+            and not AreFriends(LocalPlayer, data.owner_steamid) then 
 
                 local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 10)
 
@@ -173,7 +173,7 @@ function cVehicleManager:RenderVehicleDataClassic(v)
     local color = self.text.color
     local circle_color = self.text.locked_color
 
-    local friendly_vehicle = tostring(data.owner_steamid) == tostring(LocalPlayer:GetSteamId()) or IsAFriend(LocalPlayer, data.owner_steamid)
+    local friendly_vehicle = tostring(data.owner_steamid) == tostring(LocalPlayer:GetSteamId()) or AreFriends(LocalPlayer, data.owner_steamid)
     
     if friendly_vehicle then
         circle_color = self.text.unlocked_color
@@ -229,7 +229,7 @@ function cVehicleManager:SecondTick()
 
             -- Only allow friends or owner to sync destruction
             if data.owner_steamid == tostring(LocalPlayer:GetSteamId())
-            or IsAFriend(LocalPlayer, data.owner_steamid) then 
+            or AreFriends(LocalPlayer, data.owner_steamid) then 
 
                 if v:GetHealth() <= 0.2 and not v:GetValue("Remove") then
                     Network:Send(var("Vehicles/VehicleDestroyed"):get(), {vehicle = v})

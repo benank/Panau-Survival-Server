@@ -314,7 +314,7 @@ end
 function Grenades:GameRender(args)
     for k, grenade in pairs(self.grenades) do
 
-        if (grenade.is_mine or IsAFriend(LocalPlayer, grenade.owner_id)) and grenade.detonated and grenade.grenade_type == "Toxic Grenade" then
+        if (grenade.is_mine or AreFriends(LocalPlayer, grenade.owner_id)) and grenade.detonated and grenade.grenade_type == "Toxic Grenade" then
             local transform = Transform3():Translate(grenade.position):Scale(grenade.radius)
 
             --Render:SetTransform(transform:Scale(0.1))
