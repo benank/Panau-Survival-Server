@@ -635,7 +635,11 @@ function sHitDetection:DetectVehicleHit(args, player)
         self:SetPlayerLastDamaged(vehicle:GetDriver(), DamageEntity.Bullet, tostring(player:GetSteamId()), args.weapon_enum)
     end
 
-    -- TODO: set vehicle last damaged so we can attribute killer when it explodes
+    vehicle:SetValue("LastDamaged", 
+    {
+        name = player:GetName(),
+        weapon_name = WeaponEnum:GetDescription(args.weapon_enum)
+    })
 
 end
 
@@ -703,8 +707,11 @@ function sHitDetection:DetectVehicleSplashHit(args, player)
         self:SetPlayerLastDamaged(vehicle:GetDriver(), DamageEntity.Explosion, tostring(player:GetSteamId()), args.weapon_enum)
     end
 
-    -- TODO: set vehicle last damaged so we can attribute killer when it explodes
-
+    vehicle:SetValue("LastDamaged", 
+    {
+        name = player:GetName(),
+        weapon_name = WeaponEnum:GetDescription(args.weapon_enum)
+    })
 
 end
 

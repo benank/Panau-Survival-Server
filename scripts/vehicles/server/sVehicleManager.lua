@@ -223,6 +223,7 @@ function sVehicleManager:VehicleDestroyed(vehicle, vehicle_data_input)
     -- If vehicle was not passed in, then vehicle_data was passed in
     local vehicle_data = IsValid(vehicle) and vehicle:GetValue("VehicleData") or vehicle_data_input
     vehicle_data.name = Vehicle.GetNameByModelId(vehicle_data.model_id)
+    local last_damaged = vehicle:GetValue("LastDamaged")
 
     -- If this vehicle was owned by someone
     if vehicle_data.vehicle_id then
@@ -256,14 +257,26 @@ function sVehicleManager:VehicleDestroyed(vehicle, vehicle_data_input)
             self:SyncPlayerOwnedVehicles(owner)
 
         end
+
+        local additional_info = ""
+
+        if last_damaged then
+            additional_info = string.format("by %s [Weapon: %s]", last_damaged.name, last_damaged.weapon_name)
+        end
         
         if IsValid(vehicle) then
             Events:Fire("SendPlayerPersistentMessage", {
                 steam_id = vehicle_data.owner_steamid,
-                message = string.format("Your vehicle was destroyed [%s]", vehicle_data.name),
+                message = string.format("Your %s was destroyed %s", vehicle_data.name, additional_info),
                 color = Color.Red
             })
         end
+
+        Events:Fire("Discord", {
+            channel = "Vehicles",
+            msg = string.format("[%s]'s %s [ID: %s] was destroyed %s", 
+                vehicle_data.owner_steamid, vehicle_data.name, vehicle_data.vehicle_id, additional_info)
+        })
 
     elseif vehicle_data.spawn_type then
 
