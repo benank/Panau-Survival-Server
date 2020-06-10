@@ -622,7 +622,7 @@ function sVehicleManager:TryBuyVehicle(args)
     -- Check if vehicle is owned or unowned
     if not args.data.owner_steamid then
         -- Not owned previously
-        args.data.cost = args.data.cost * config.cost_multiplier_on_purchase
+        args.data.cost = (vCosts[args.vehicle:GetModelId()] or 50) * config.cost_multiplier_on_purchase
 
         Chat:Send(args.player, string.format("Vehicle successfully purchased! (%s/%s)", 
             tostring(count_table(owned_vehicles) + 1), tostring(args.player:GetValue("MaxVehicles"))), Color.Green)
