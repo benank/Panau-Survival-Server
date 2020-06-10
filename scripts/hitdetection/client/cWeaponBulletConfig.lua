@@ -101,7 +101,7 @@ function cWeaponBulletConfig:__init()
             type = ProjectileBullet,
             speed = 100,
             bloom = 0,
-            bullet_size = 1,
+            bullet_size = 0,
             splash = true
         },
         [WeaponEnum.SMG] = 
