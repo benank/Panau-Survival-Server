@@ -150,8 +150,8 @@ function cEvac:UpdateStage(ball)
                 angle = Angle()
             })
 
-            sound:Remove()
-            destruct_sound:Remove()
+            if sound then sound:Remove() end
+            if destruct_sound then destruct_sound:Remove() end
             self.objects[ball:GetId()] = nil
             ball:Remove()
         end)
@@ -187,6 +187,11 @@ function cEvac:ActivateEvac(args)
     })
 
     self.objects[ball:GetId()] = ball
+
+    Events:Fire("Flare", {
+        position = args.end_position,
+        time = 60 * 2.5
+    })
 
 end
 
