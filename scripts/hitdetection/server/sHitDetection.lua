@@ -406,7 +406,7 @@ function sHitDetection:PlayerDeath(args)
             color = Color.Red
         })
 
-        msg = msg .. WorldToMapString(args.player:GetPosition())
+        msg = msg .. " " .. WorldToMapString(args.player:GetPosition())
 
         print(msg)
         Events:Fire("Discord", {
