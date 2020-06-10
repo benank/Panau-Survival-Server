@@ -207,7 +207,7 @@ function sLootbox:TakeLootStack(args, player)
 
     local return_stack = inv:AddStack({stack = stack})
 
-    if self.is_stash and not IsAFriend(player, self.stash.owner_id) and not self.stash:IsPlayerOwner(player) then
+    if self.is_stash and not AreFriends(player, self.stash.owner_id) and not self.stash:IsPlayerOwner(player) then
         Events:Fire("Discord", {
             channel = "Stashes",
             content = string.format("**__RAID__**: %s [%s] is raiding [%s].", 

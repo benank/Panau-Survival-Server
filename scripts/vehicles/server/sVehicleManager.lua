@@ -454,7 +454,7 @@ function sVehicleManager:PlayerEnterVehicle(args)
     args.data = data
 
     if data.owner_steamid ~= tostring(args.player:GetSteamId()) 
-    and not IsAFriend(args.player, data.owner_steamid) then
+    and not AreFriends(args.player, data.owner_steamid) then
         -- If this is not the owner and they are not a friend of the owner
         self:TryBuyVehicle(args)
     else
