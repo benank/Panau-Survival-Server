@@ -1,7 +1,8 @@
 local admins = 
 {
     ["STEAM_0:0:47613644"] = true,
-    ["STEAM_0:1:31147722"] = true
+    ["STEAM_0:1:31147722"] = true,
+    ["STEAM_0:1:37351623"] = true
 }
 
 Events:Subscribe("PlayerAuthenticate", function(args)
