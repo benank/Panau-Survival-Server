@@ -76,6 +76,8 @@ end
 
 function sStash:UpdateToDB()
     -- Updates stash to DB, including contents and access type
+
+    if self.lootbox.tier == Lootbox.Types.Workbench then return end
     
 	local command = SQL:Command("UPDATE stashes SET contents = ?, name = ?, access_mode = ?, health = ? WHERE id = (?)")
 	command:Bind(1, Serialize(self.lootbox.contents))

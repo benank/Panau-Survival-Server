@@ -397,3 +397,4 @@ end
 
 sStashes = sStashes()
 sStashes:LoadAllStashes()
+sWorkBenchManager:CreateWorkbenches()

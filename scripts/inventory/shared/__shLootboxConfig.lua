@@ -40,7 +40,7 @@ Lootbox.Stashes =
     [Lootbox.Types.GarbageStash] = {capacity = 12, name = "Garbage Stash", health = 200, default_access = StashAccessMode.Everyone},
     [Lootbox.Types.LockedStash] = {capacity = 12, name = "Locked Stash", health = 400, default_access = StashAccessMode.OnlyMe},
     [Lootbox.Types.ProximityAlarm] = {capacity = 1, name = "Proximity Alarm", health = 1, default_access = StashAccessMode.Everyone},
-    [Lootbox.Types.WorkBench] = {capacity = 2, name = "Workbench", health = 1, default_access = StashAccessMode.Everyone},
+    [Lootbox.Types.Workbench] = {capacity = 3, name = "Workbench", health = 1, default_access = StashAccessMode.Everyone},
 }
 
 Lootbox.GeneratorConfig = 
@@ -208,9 +208,9 @@ Lootbox.Models =
     [Lootbox.Types.Workbench] = 
     {
         model = "pickup.boost.vehicle.eez/pu02-a.lod",
-        col = "pickup.boost.vehicle.eez/pu02_lod1-a_col.pfx",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
         offset = Vector3(0, 0, 0),
-        look_offset = Vector3(0, 0, 0)
+        look_offset = Vector3(0, 0.4, 0)
     }
 }
 
