@@ -183,7 +183,13 @@ function sSurvivalManager:AdjustSurvivalStats(player)
     self:CheckForDyingPlayer(player)
 
     self:SyncToPlayer(player)
-    self:UpdateDB(player)
+
+    local diff = Server:GetElapsedSeconds() - player:GetValue("SurvivalLastUpdate")
+
+    if diff > 120 then
+        self:UpdateDB(player)
+        player:SetValue("SurvivalLastUpdate", Server:GetElapsedSeconds())
+    end
 
 end
 
@@ -234,6 +240,8 @@ function sSurvivalManager:ClientModuleLoad(args)
     
     self:SyncToPlayer(player)
     self:CheckForDyingPlayer(player)
+
+    player:SetValue("SurvivalLastUpdate", Server:GetElapsedSeconds())
 
 end
 

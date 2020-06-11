@@ -25,7 +25,7 @@ ItemsConfig =
         ["Grapplehook"] = {dura_per_sec = 1},
         ["RocketGrapple"] = {dura_per_sec = 3},
         ["Parachute"] = {dura_per_sec = 1},
-        ["Explosives Detector"] = {dura_per_sec = 1, dura_per_activation = 15, battery_dura_per_sec = 5},
+        ["Explosives Detector"] = {dura_per_sec = 5, dura_per_activation = 15, battery_dura_per_sec = 25},
         ["Cloud Strider Boots"] = {dura_per_5_sec = 1},
         ["Stick Disguise"] = {dura_per_hit = 2},
         weapons = 
