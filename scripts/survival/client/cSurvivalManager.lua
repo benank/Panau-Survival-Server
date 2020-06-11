@@ -47,7 +47,8 @@ function cSurvivalManager:MinuteTick()
 end
 
 function cSurvivalManager:Render(args)
-
+    
+    Game:FireEvent("gsy.exit.settlement")
     self.hud:Render(args)
 
 end
