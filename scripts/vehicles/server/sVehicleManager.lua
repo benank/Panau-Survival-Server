@@ -88,9 +88,18 @@ end
 -- Called every minute, saves all owned vehicles in the server
 function sVehicleManager:SaveVehicles()
 
+    local seconds = Server:GetElapsedSeconds()
+
     for id, v in pairs(self.owned_vehicles) do
-        if IsValid(v) then 
-            self:SaveVehicle(v)
+        if IsValid(v) then
+
+            local last_update = v:GetValue("VehicleLastUpdate")
+
+            if last_update and seconds - last_update >= 60 then
+                self:SaveVehicle(v)
+            end
+
+            v:SetValue("VehicleLastUpdate", seconds)
         end
     end
 
@@ -243,7 +252,6 @@ function sVehicleManager:MinuteTick()
         if count_table(self.owned_vehicles[id]:GetOccupants()) > 0 then
             -- Friend is using vehicle, restart timer
             self.despawning_vehicles[id] = Server:GetElapsedSeconds()
-            self:SaveVehicle(self.owned_vehicles[id])
 
         elseif Server:GetElapsedSeconds() - time >= config.owned_despawn_time * 60 then
             -- Remove vehicle from game
