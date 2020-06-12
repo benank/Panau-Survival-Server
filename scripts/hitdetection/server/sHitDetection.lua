@@ -23,6 +23,7 @@ function sHitDetection:__init()
     Network:Subscribe("HitDetection/DetectPlayerSplashHit", self, self.DetectPlayerSplashHit)
     Network:Subscribe("HitDetection/DetectVehicleSplashHit", self, self.DetectVehicleSplashHit)
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
+    Network:Subscribe("HitDetection/VehicleExplosionHit", self, self.VehicleExplosionHit)
 
     Events:Subscribe("HitDetection/PlayerInToxicArea", self, self.PlayerInsideToxicArea)
     Events:Subscribe("HitDetection/PlayerSurvivalDamage", self, self.PlayerSurvivalDamage)
@@ -465,6 +466,67 @@ function sHitDetection:SecondTick()
 
 end
 
+function sHitDetection:VehicleExplosionHit(args, player)
+
+    if not IsValid(player) then return end
+    if player:GetValue("InSafezone") then return end
+
+    assert(args.hit_vehicles and count_table(args.hit_vehicles) > 0, "hit_vehicles is invalid")
+    assert(args.type, "type is invalid")
+    assert(args.position, "position is invalid")
+    assert(args.attacker_id, "attacker_id is invalid")
+
+    if not self:PlayerCanApplyDamage(player, tostring(args.token)) then return end
+
+    local explosive_data = WeaponDamage.ExplosiveBaseDamage[args.type]
+    if not explosive_data then return end
+
+    for vehicle_id, data in pairs(args.hit_vehicles) do
+
+        local v = Vehicle.GetById(vehicle_id)
+
+        if IsValid(v) then
+            
+            local v_pos = v:GetPosition()
+            local dist = data.dist -- Use clientside distance in case of desync
+            local percent_modifier = math.max(0, 1 - dist / explosive_data.radius)
+
+            if percent_modifier > 0 then
+
+                local hit_type = WeaponHitType.Explosive
+                local original_damage = explosive_data.damage * percent_modifier
+                local damage = original_damage
+
+                if not data.in_fov then
+                    damage = damage * WeaponDamage.FOVDamageModifier
+                end
+                
+                local armor = WeaponDamage.vehicle_armors[v:GetModelId()] or 1
+                damage = damage * explosive_data.v_mod * armor
+
+                v:SetHealth(v:GetHealth() - damage)
+
+                local v_data = v:GetValue("VehicleData")
+
+                local msg = string.format("%s [ID: %s] [Owner: %s] was damaged by %s from [%s] for %.2f damage", 
+                    v:GetName(), tostring(v_data.vehicle_id), tostring(v_data.owner_steamid), 
+                    DamageEntityNames[args.type], args.attacker_id, damage * 100)
+
+                Events:Fire("Discord", {
+                    channel = "Hitdetection",
+                    content = msg
+                })
+
+                v:SetLinearVelocity(v:GetLinearVelocity() + (data.hit_dir * explosive_data.radius * explosive_data.knockback * (armor * 0.3)))
+
+            end
+
+        end
+
+    end
+    
+end
+
 function sHitDetection:HitDetectionSyncExplosion(args, player)
     
     if not IsValid(player) then return end
@@ -500,11 +562,6 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
         damage = damage,
         type = args.type
     })
-
-    if player:InVehicle() then
-        player:GetVehicle():SetHealth(player:GetVehicle():GetHealth() - original_damage / explosive_data.damage * 0.25)
-        player:GetVehicle():SetLinearVelocity(player:GetVehicle():GetLinearVelocity() + ((player:GetVehicle():GetPosition() - args.position):Normalized() * explosive_data.radius * explosive_data.knockback))
-    end
 
 end
 

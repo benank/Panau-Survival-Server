@@ -76,6 +76,9 @@ function cHitDetection:Explosion(args)
 
     if explosive_data then
 
+        args.radius = explosive_data.radius
+        self:CheckForVehicleExplosionDamage(args)
+
         local from_pos = args.position + Vector3.Up
         local to_pos = LocalPlayer:GetBonePosition(var("ragdoll_Spine"):get())
         local diff = (to_pos - from_pos):Normalized()
@@ -106,6 +109,50 @@ function cHitDetection:Explosion(args)
 
     end
 
+end
+
+function cHitDetection:CheckForVehicleExplosionDamage(args)
+
+    -- First, check to see if we are the closest player. If we are, then we will do the checks
+
+    local my_dist = LocalPlayer:GetPosition():Distance(args.position)
+
+    for p in Client:GetStreamedPlayers() do
+        if p:GetPosition():Distance(args.position) < my_dist then return end
+    end
+
+    -- Okay, we are the closest. Now lets see if this thing hit any vehicles
+
+    local hit_vehicles = {}
+
+    for v in Client:GetVehicles() do
+
+        local v_pos = v:GetPosition()
+        local dist = v_pos:Distance(args.position)
+        local dir = (v_pos - args.position + Vector3(0, 0.1, 0)):Normalized()
+        local ray = Physics:Raycast(args.position, dir, 0, args.radius)
+
+        if dist < args.radius and v:GetHealth() > 0 and not v:GetValue("Destroyed") then
+            hit_vehicles[v:GetId()] = 
+            {
+                in_fov = ray.entity and ray.entity.__type == "Vehicle" and ray.entity == v,
+                dist = dist,
+                hit_dir = (v_pos - args.position):Normalized()
+            }
+        end
+
+    end
+
+    if count_table(hit_vehicles) > 0 then
+        Network:Send(var("HitDetection/VehicleExplosionHit"):get(), 
+        {
+            hit_vehicles = hit_vehicles, 
+            token = TOKEN:get(), 
+            type = args.type,
+            position = args.position,
+            attacker_id = args.attacker_id
+        })
+    end
 
 end
 

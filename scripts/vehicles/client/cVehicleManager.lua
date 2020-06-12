@@ -179,12 +179,12 @@ function cVehicleManager:DrawCurrentVehicleHealth()
         self.vehicle_health_display_timer:Restart()
     end
 
-    if self.vehicle_health_display_timer:GetSeconds() < 3 then
+    if self.vehicle_health_display_timer:GetSeconds() < 5 then
 
         -- Render vehicle health
         local text = string.format("%.0f%%", self.vehicle_health * 100)
 
-        local alpha = 255 - 255 * math.min(1, self.vehicle_health_display_timer:GetSeconds() / 3)
+        local alpha = 255 - 255 * math.min(1, self.vehicle_health_display_timer:GetSeconds() / 5)
         local color = Color.FromHSV(120 * self.vehicle_health, 0.9, 0.9)
         color.a = alpha
         
