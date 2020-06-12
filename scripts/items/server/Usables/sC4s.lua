@@ -154,7 +154,7 @@ function sC4s:ItemExplode(args)
 
     for id, wno in pairs(self.wnos) do
         if wno:GetPosition():Distance(args.position) < args.radius then
-            self:DestroyC4({id = wno:GetId(), detonation_source_id = tostring(args.player:GetSteamId())})
+            self:DestroyC4({id = wno:GetId(), detonation_source_id = args.player and tostring(args.player:GetSteamId()) or nil})
         end
     end
 
