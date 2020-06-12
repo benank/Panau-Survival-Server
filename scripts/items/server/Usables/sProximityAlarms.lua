@@ -189,7 +189,7 @@ function sProxAlarms:DestroyProx(args, player)
 
     local alarm = self.alarms[args.id]
 
-    if not alarm then return end
+    player = player or args.player
 
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = alarm.stash.owner_id,
