@@ -28,8 +28,8 @@ function cWeaponBulletConfig:__init()
         {
             [30] = {y = 200, x = 100},
             [34] = {y = 200, x = 100},
-            [62] = {y = 550, x = 250},
-            [64] = {y = 550, x = 250}
+            [62] = {y = 650, x = 350},
+            [64] = {y = 650, x = 350}
         }
 
         local v = LocalPlayer:GetVehicle()
