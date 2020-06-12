@@ -139,7 +139,7 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 600,
-            bloom = 0.5,
+            bloom = 0.3,
             bullet_size = 0.2,
             indicator = true,
             angle = fixed_reticle_angle_func
