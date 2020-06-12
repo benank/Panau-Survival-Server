@@ -5,6 +5,8 @@ function cVehicleManager:__init()
     self.owned_vehicles = {} -- My owned vehicles
     self.in_gas_station = false
 
+    self.vehicle_health_display_timer = Timer()
+
     self.text = 
     {
         size = 17,
@@ -128,12 +130,70 @@ end
 
 function cVehicleManager:Render(args)
 
-    if LocalPlayer:InVehicle() then return end
+    if LocalPlayer:InVehicle() then
+        self:RenderCurrentVehicleData()
+        return
+    end
 
     local aim = LocalPlayer:GetAimTarget()
 
     if aim.entity and aim.entity.__type == "Vehicle" then
         self:RenderVehicleDataClassic(aim.entity)
+    end
+
+end
+
+function cVehicleManager:RenderCurrentVehicleData()
+
+    if LocalPlayer:GetValue("InventoryOpen") then return end
+
+    self:DrawCurrentVehicleSpeed()
+    self:DrawCurrentVehicleHealth()
+
+end
+
+function cVehicleManager:DrawCurrentVehicleSpeed()
+
+    local v = LocalPlayer:GetVehicle()
+    local speed = math.round(-(-v:GetAngle() * v:GetLinearVelocity()).z)
+    local text = string.format("%.0f km/h", speed * 3.6)
+
+    if math.abs(speed) < 1 then return end
+
+    local size = Render.Size.y * 0.04
+    local margin = Vector2(-10, -10)
+    local text_size = Render:GetTextSize(text, size)
+    local pos = Vector2(Render.Size.x - text_size.x, Render.Size.y - text_size.y)
+    Render:DrawText(pos + margin + Vector2(2,2), text, Color.Black, size)
+    Render:DrawText(pos + margin, text, Color.White, size)
+
+end
+
+function cVehicleManager:DrawCurrentVehicleHealth()
+
+    local v = LocalPlayer:GetVehicle()
+    self.vehicle_health = v:GetHealth()
+
+    if self.vehicle_health ~= self.last_vehicle_health then
+        self.last_vehicle_health = self.vehicle_health
+        self.vehicle_health_display_timer:Restart()
+    end
+
+    if self.vehicle_health_display_timer:GetSeconds() < 3 then
+
+        -- Render vehicle health
+        local text = string.format("%.0f%%", self.vehicle_health * 100)
+
+        local alpha = 255 - 255 * math.min(1, self.vehicle_health_display_timer:GetSeconds() / 3)
+        local color = Color.FromHSV(120 * self.vehicle_health, 0.9, 0.9)
+        color.a = alpha
+        
+        local size = Render.Size.y * 0.04
+        local margin = Vector2(0, -10)
+        local text_size = Render:GetTextSize(text, size)
+        local pos = Vector2(Render.Size.x / 2 - text_size.x / 2, Render.Size.y - text_size.y)
+        Render:DrawText(pos + margin, text, color, size)
+
     end
 
 end
