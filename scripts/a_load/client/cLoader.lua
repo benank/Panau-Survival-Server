@@ -90,10 +90,7 @@ function cLoader:SecondTick()
             Timer.SetTimeout(1000, function()
                 self.resources_loaded = self.resources_loaded + self.resources_for_loadscreen
                 self:UpdateResourceCount()
-
-                if not self.game_loaded then
-                    self:Stop()
-                end
+                self:Stop()
             end)
         end
 
