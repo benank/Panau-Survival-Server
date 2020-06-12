@@ -300,7 +300,6 @@ function Nametags:CanDraw(p)
         
         local exp = LocalPlayer:GetValue("Exp")
 
-        output_table(exp)
         if exp and exp.level == 0 then return true end
 
     elseif LocalPlayer:GetValue("InSafezone") and p:GetValue("InSafezone") then return true end
