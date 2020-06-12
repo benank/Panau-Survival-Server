@@ -15,8 +15,51 @@ function sExp:__init()
 
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
+    Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
+
+end
+
+function sExp:ItemExplode(args)
+
+    if args.no_detonation_source then return end
+
+    if args.detonation_source_id then
+        -- Use ID to give exp
+
+        for p in Server:GetPlayers() do
+            if tostring(p:GetSteamId()) == args.detonation_source_id then
+                args.player = p
+                break
+            end
+        end
+
+    end
+
+    -- Check owner id for friend or self
+    if not args.owner_id then return end
+
+    if not IsValid(args.player) then return end
+    if args.owner_id == tostring(args.player:GetSteamId()) then return end
+
+    if IsAFriend(args.player, args.owner_id) then return end
+
+    local exp_earned = Exp.DestroyExplosive[args.type]
+
+    if not exp_earned then return end
+
+    local exp_data = args.player:GetValue("Exp")
+
+    if not exp_data then return end
+
+    self:GivePlayerExp(exp_earned, ExpType.Combat, tostring(args.player:GetSteamId()), exp_data, args.player)
+
+    Events:Fire("Discord", {
+        channel = "Experience",
+        content = string.format("%s [%s] destroyed an explosive [Type: %s] and gained %d exp.", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), DamageEntityNames[args.type], exp_earned)
+    })
 
 end
 

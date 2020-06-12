@@ -11,10 +11,8 @@ function sProxAlarms:__init()
 
     Network:Subscribe("items/CancelProxPlacement", self, self.CancelProxPlacement)
     Network:Subscribe("items/PlaceProx", self, self.FinishProxPlacement)
-    Network:Subscribe("items/DestroyProx", self, self.DestroyProx)
 
     Network:Subscribe("items/InsideProximityAlarm", self, self.InsideProximityAlarm)
-    Network:Subscribe("items/DestroyProx", self, self.DestroyProx)
 
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
@@ -24,6 +22,7 @@ function sProxAlarms:__init()
     Events:Subscribe("Inventory/RemoveLootbox", self, self.RemoveLootbox)
     Events:Subscribe("Inventory/CreateLootbox", self, self.CreateLootbox)
     Events:Subscribe("Inventory/LootboxUpdated", self, self.LootboxUpdated)
+    Events:Subscribe("Items/ChangeAlarmOwnership", self, self.ChangeAlarmOwnership)
 
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
@@ -37,6 +36,12 @@ function sProxAlarms:__init()
             self:LowerBatteryDurabilities()
         end
     end)
+end
+
+function sProxAlarms:ChangeAlarmOwnership(args)
+    if self.alarms[args.uid] then
+        self.alarms[args.uid].stash.owner_id = args.owner_id
+    end
 end
 
 function sProxAlarms:ItemExplode(args)
@@ -197,9 +202,9 @@ function sProxAlarms:DestroyProx(args, player)
     Network:Send(player, "items/ProxExplode", {position = alarm.position})
     Network:SendNearby(player, "items/ProxExplode", {position = alarm.position})
 
-    -- TODO: remove lootbox and stash from DB
     Events:Fire("items/DestroyProximityAlarm", {
-        id = alarm.stash.id
+        id = alarm.stash.id,
+        player = player
     })
 
     -- Remove alarm

@@ -76,7 +76,7 @@ function sHitDetection:ApplyDamage(args)
     if not IsValid(attacker) and not args.attacker_id then
         args.player:Damage(args.damage, args.source)
 
-        msg = string.format("%s [%s] damaged by %s for %.0f damage",
+        msg = string.format("%s [%s] damaged by %s for %.2f damage",
             args.player:GetName(), 
             tostring(args.player:GetSteamId()),
             DamageEntityNames[args.source],
@@ -86,7 +86,7 @@ function sHitDetection:ApplyDamage(args)
 
         args.player:Damage(args.damage, args.source)
             
-        msg = string.format("%s [%s] damaged by %s from [%s] for %.0f damage",
+        msg = string.format("%s [%s] damaged by %s from [%s] for %.2f damage",
             args.player:GetName(), 
             tostring(args.player:GetSteamId()),
             DamageEntityNames[args.source],
@@ -99,7 +99,7 @@ function sHitDetection:ApplyDamage(args)
 
         args.player:Damage(args.damage, args.source, attacker)
             
-        msg = string.format("%s [%s] damaged by %s from %s [%s] for %.0f damage",
+        msg = string.format("%s [%s] damaged by %s from %s [%s] for %.2f damage",
             args.player:GetName(), 
             tostring(args.player:GetSteamId()),
             DamageEntityNames[args.source],

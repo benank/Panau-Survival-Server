@@ -96,26 +96,83 @@ function sStashes:HackComplete(args)
 
     if not stash then return end
 
-    Events:Fire("SendPlayerPersistentMessage", {
-        steam_id = stash.owner_id,
-        message = string.format("%s hacked your stash [%s] %s", args.player:GetName(), stash.name, WorldToMapString(stash.lootbox.position)),
-        color = Color(200, 0, 0)
-    })
+    if stash.owner_id == tostring(args.player:GetSteamId()) then return end
 
-    stash.access_mode = StashAccessMode.Everyone
-    stash:UpdateToDB()
+    if stash.lootbox.tier == Lootbox.Types.ProximityAlarm then
 
-    stash.lootbox:ForceClose()
+        -- Hacked proximity alarm
+        local old_owner_id = stash.owner_id
 
-    Events:Fire("Discord", {
-        channel = "Stashes",
-        content = string.format("**RAID** %s [%s] hacked stash %d [%s]", 
-            args.player:GetName(), tostring(args.player:GetSteamId()), stash.id, stash.owner_id)
-    })
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = old_owner_id,
+            message = string.format("%s hacked your proximity alarm %s", args.player:GetName(), WorldToMapString(stash.lootbox.position)),
+            color = Color(200, 0, 0)
+        })
 
+        -- Transfer ownership
+        stash.owner_id = tostring(args.player:GetSteamId())
+        stash.access_mode = StashAccessMode.Everyone
+
+        -- Lock Prox Alarm
+        stash:UpdateToDB()
+
+        Events:Fire("Items/ChangeAlarmOwnership", {
+            uid = stash.lootbox.uid,
+            owner_id = stash.owner_id
+        })
+
+        stash.lootbox:ForceClose()
+        stash.lootbox:Sync()
+
+        Events:Fire("Discord", {
+            channel = "Stashes",
+            content = string.format("**RAID** %s [%s] hacked proximity alarm %d [%s]", 
+                args.player:GetName(), tostring(args.player:GetSteamId()), stash.id, stash.owner_id)
+        })
+
+    else
+
+        -- They can open it, so do not complete the hack
+        if stash.CanPlayerOpen(args.player) then return end
+
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = stash.owner_id,
+            message = string.format("%s hacked your stash [%s] %s", args.player:GetName(), stash.name, WorldToMapString(stash.lootbox.position)),
+            color = Color(200, 0, 0)
+        })
+
+        stash.access_mode = StashAccessMode.Everyone
+        stash:UpdateToDB()
+        stash.lootbox:Sync()
+
+        stash.lootbox:ForceClose()
+
+        Events:Fire("Discord", {
+            channel = "Stashes",
+            content = string.format("**RAID** %s [%s] hacked stash %d [%s]", 
+                args.player:GetName(), tostring(args.player:GetSteamId()), stash.id, stash.owner_id)
+        })
+
+    end
+        
 end
 
 function sStashes:DestroyProximityAlarm(args)
+    
+    if not args.id then return end
+    args.id = tonumber(args.id)
+
+    local stash_instance = self.stashes[args.id]
+
+    if not stash_instance then return end
+
+    if stash_instance.owner_id ~= tostring(args.player:GetSteamId()) then
+        Events:Fire("Stashes/DestroyStash", {
+            tier = stash_instance.lootbox.tier,
+            player = args.player
+        })
+    end
+
     self:DeleteStash(args)
 end
 

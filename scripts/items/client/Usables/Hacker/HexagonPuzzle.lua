@@ -202,6 +202,7 @@ function HexagonPuzzle:Render(window)
 end
 
 Network:Subscribe(var("items/StartHack"):get(), function(args)
+	print(args.difficulty)
     HexagonPuzzle(args.difficulty, args.time or 10)
     Mouse:SetVisible(true)
 end)
