@@ -5,7 +5,7 @@ local admins =
     ["STEAM_0:1:37351623"] = true
 }
 
-Events:Subscribe("PlayerJoin", function(args)
+Events:Subscribe("PlayerAuthenticate", function(args)
     if admins[tostring(args.player:GetSteamId())] then
         args.player:SetNetworkValue("Admin", true)
     else
