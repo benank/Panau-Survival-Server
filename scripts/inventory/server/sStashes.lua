@@ -97,6 +97,7 @@ function sStashes:HackComplete(args)
     if not stash then return end
 
     if stash.owner_id == tostring(args.player:GetSteamId()) then return end
+    if stash.owner_id == "SERVER" then return end
 
     if stash.lootbox.tier == Lootbox.Types.ProximityAlarm then
 
@@ -452,3 +453,4 @@ end
 
 sStashes = sStashes()
 sStashes:LoadAllStashes()
+sWorkBenchManager:CreateWorkbenches()
