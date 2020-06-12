@@ -57,7 +57,6 @@ function sHacker:UseItem(args, player)
         and (player_iu.item.name == "Hacker" or player_iu.item.name == "Master Hacker") and not player:GetValue("CurrentlyHacking") then
 
         local current_box = player:GetValue("CurrentLootbox")
-        output_table(current_box)
         if not current_box or (not current_box.locked and not hackable_tiers[current_box.tier]) then
             Chat:Send(player, "You must open a hackable object first!", Color.Red)
             return
