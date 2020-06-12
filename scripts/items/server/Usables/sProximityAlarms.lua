@@ -191,11 +191,9 @@ function sProxAlarms:DestroyProx(args, player)
 
     if not alarm then return end
 
-    local coords = alarm.position + Vector3(16384, 0, 16384)
-                
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = alarm.stash.owner_id,
-        message = string.format("Your proximity alarm was destroyed @ X: %.0f Y: %.0f", coords.x, coords.z),
+        message = string.format("Your proximity alarm was destroyed by %s %s", player:GetName(), WorldToMapString(alarm.position)),
         color = Color(200, 0, 0)
     })
 
