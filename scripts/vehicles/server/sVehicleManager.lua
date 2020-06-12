@@ -274,7 +274,7 @@ function sVehicleManager:VehicleDestroyed(vehicle, vehicle_data_input)
 
         Events:Fire("Discord", {
             channel = "Vehicles",
-            msg = string.format("[%s]'s %s [ID: %s] was destroyed %s", 
+            content = string.format("[%s]'s %s [ID: %s] was destroyed %s", 
                 vehicle_data.owner_steamid, vehicle_data.name, vehicle_data.vehicle_id, additional_info)
         })
 
