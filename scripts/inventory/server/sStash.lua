@@ -20,7 +20,7 @@ function sStash:CanPlayerOpen(player)
     if self.access_mode == StashAccessMode.Everyone then
         return true
     elseif self.access_mode == StashAccessMode.Friends then
-        return IsAFriend(player, self.owner_id) or self:IsPlayerOwner(player)
+        return AreFriends(player, self.owner_id) or self:IsPlayerOwner(player)
     elseif self.access_mode == StashAccessMode.OnlyMe then
         return self:IsPlayerOwner(player)
     end
@@ -64,6 +64,7 @@ function sStash:ChangeAccessMode(mode, player)
     self:UpdateToDB()
 
     self:Sync(player)
+    self.lootbox:Sync()
 
     -- Force close lootbox for players who cannot open anymore
     for id, p in pairs(self.lootbox.players_opened) do
@@ -76,15 +77,14 @@ end
 
 function sStash:UpdateToDB()
     -- Updates stash to DB, including contents and access type
-
-    if self.lootbox.tier == Lootbox.Types.Workbench then return end
     
-	local command = SQL:Command("UPDATE stashes SET contents = ?, name = ?, access_mode = ?, health = ? WHERE id = (?)")
+	local command = SQL:Command("UPDATE stashes SET contents = ?, name = ?, access_mode = ?, health = ?, steamID = ? WHERE id = (?)")
 	command:Bind(1, Serialize(self.lootbox.contents))
 	command:Bind(2, self.name)
 	command:Bind(3, self.access_mode)
 	command:Bind(4, self.health)
-	command:Bind(5, self.id)
+	command:Bind(5, self.owner_id)
+	command:Bind(6, self.id)
 	command:Execute()
 
 end

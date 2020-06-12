@@ -39,12 +39,20 @@ function WeaponManager:__init()
         [Action.VehicleFireRight] = true
     }
 
+    self.last_slot = 1
+
     Network:Subscribe(var("items/ToggleWeaponEquipped"):get(), self, self.ToggleWeaponEquipped)
     Network:Subscribe(var("items/ForceWeaponSwitch"):get(), self, self.ForceWeaponSwitch)
+    Network:Subscribe(var("items/ForceWeaponZoomout"):get(), self, self.ForceWeaponZoomout)
     Events:Subscribe(var("PostTick"):get(), self, self.PostTick)
     Events:Subscribe(var("LocalPlayerInput"):get(), self, self.LocalPlayerInput)
     Events:Subscribe(var("LocalPlayerDeath"):get(), self, self.LocalPlayerDeath)
     Events:Subscribe(var("InputPoll"):get(), self, self.InputPoll)
+    Events:Subscribe(var("LoadingFinished"):get(), self, self.LoadingFinished)
+end
+
+function WeaponManager:LoadingFinished()
+    self:ForceInputWeaponSwitch(self.last_slot)
 end
 
 function WeaponManager:LocalPlayerDeath()
@@ -166,10 +174,43 @@ function WeaponManager:ForceWeaponSwitch(args)
 
     self.enabled = true
 
-    self:ForceInputWeaponSwitch(args.slot)
+    self.last_slot = args.slot
+
+    if self.switching then return end
+        self.switching = true
+
+    Timer.SetTimeout(1000, function()
+        self:ForceInputWeaponSwitch(args.slot)
+        self.switching = false
+    end)
+    
+end
+
+function WeaponManager:ForceWeaponZoomout()
+
+    if LocalPlayer:GetUpperBodyState() ~= AnimationState.UbSAiming then return end
+
+    local inputPollEvent
+
+    inputPollEvent = Events:Subscribe("InputPoll", function()
+        if Game:GetState() ~= GUIState.Game then
+            return
+        end
+
+        Input:SetValue(Action.ShoulderCam, 1)
+
+        if not inputPollEvent then
+            return
+        end
+
+        inputPollEvent = Events:Unsubscribe(inputPollEvent)
+    end)
+
 end
 
 function WeaponManager:ForceInputWeaponSwitch(slot)
+
+    if LocalPlayer:GetValue("Loading") then return end
 
     if self.weapon_switch_input_sub then return end
 
@@ -180,10 +221,13 @@ function WeaponManager:ForceInputWeaponSwitch(slot)
         elseif slot == WeaponSlot.Right then
             Input:SetValue(Action.EquipRightSlot, 1)
         end
-        
-        Events:Unsubscribe(self.weapon_switch_input_sub)
-        self.weapon_switch_input_sub = nil
 
+    end)
+
+    Timer.SetTimeout(100, function()
+        if self.weapon_switch_input_sub then
+            self.weapon_switch_input_sub = Events:Unsubscribe(self.weapon_switch_input_sub)
+        end
     end)
 
 end

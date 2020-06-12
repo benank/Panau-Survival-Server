@@ -39,6 +39,7 @@ function Grenades:GrenadeExploded(args, player)
         Events:Fire("items/ItemExplode", {
             position = args.position,
             radius = args.radius,
+            type = args.type,
             player = player
         })
     end

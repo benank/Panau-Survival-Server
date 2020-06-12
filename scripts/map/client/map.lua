@@ -9,8 +9,7 @@ Location.Type = {
 	MilHarb     = "MilHarb",
 	MilStrong   = "MilStrong",
 	OilRig      = "OilRig",
-    Waypoint    = "Waypoint",
-    Workbench   = "Workbench"
+	Waypoint    = "Waypoint"
 }
 
 Location.TypeName = {
@@ -22,13 +21,7 @@ Location.TypeName = {
 	MilHarb     = "Military Harbor",
 	MilStrong   = "Military Stronghold",
 	OilRig      = "Oil Rig",
-    Waypoint    = "Waypoint",
-    Workbench   = "Workbench"
-}
-
-Location.CustomIcons = 
-{
-    [Location.Type.Workbench] = WorkbenchIcon
+	Waypoint    = "Waypoint"
 }
 
 Location.Icon = {
@@ -80,19 +73,11 @@ function Location:IsActive(position, scale)
 end
 
 function Location:DrawIcon(position, scale)
-    if Location.CustomIcons[self.type] then
-        Location.CustomIcons[self.type]:Draw(
-            position - (Location.Icon.Size * scale / 2), 
-            Location.Icon.Size * scale, 
-            Vector2(0, 0), 
-            Vector2(1, 1))
-    else
-        Location.Icon.Sheet:Draw(
-            position - (Location.Icon.Size * scale / 2), 
-            Location.Icon.Size * scale, 
-            Location.Icon.UV[self.type], 
-            Location.Icon.UV[self.type] + Location.Icon.UVSize)
-    end
+	Location.Icon.Sheet:Draw(
+        position - (Location.Icon.Size * scale / 2), 
+        Location.Icon.Size * scale, 
+        Location.Icon.UV[self.type], 
+        Location.Icon.UV[self.type] + Location.Icon.UVSize)
 end
 
 function Location:DrawColor(position, scale)
@@ -156,7 +141,8 @@ Map = {
 		Location("Pekan Ular Sawa", Vector3(-12484.68, 609.5613, 3776.653), Location.Type.MilLocation),
 		Location("Kem Serigala Kelabu", Vector3(2761.386, 584.049, -667.3429), Location.Type.MilLocation),
 		Location("Paya Keras", Vector3(2148.528, 497.9752, -9337.318), Location.Type.CivVil),
-		Location("Kem Hutan Supply Depot", Vector3(-3000.255, 245.3961, 12743.33), Location.Type.MilStrong),
+		-- Location("Kem Hutan Supply Depot", Vector3(-3000.255, 245.3961, 12743.33), Location.Type.MilStrong),
+		Location("Kem Hutan Supply Depot", Vector3(-3000.255, 245.3961, 12743.33), Location.Type.MilLocation),
 		Location("Pekan Badak Bermandi", Vector3(1823.334, 230.1996, 5159.33), Location.Type.CivVil),
 		Location("Bandar Tokong Kecil", Vector3(9219.15, 247.0397, -10916.27), Location.Type.CivVil),
 		Location("Pekan Pakis", Vector3(12765.27, 303.8687, -1806.861), Location.Type.CivVil),
@@ -199,7 +185,8 @@ Map = {
 		Location("Kampung Sawah Basah", Vector3(-12043.88, 339.811, 15013.85), Location.Type.CivVil),
 		Location("Fasility Gunung Timur", Vector3(14201.5, 528.8898, 12442.37), Location.Type.MilLocation, Location.Color.Green),
 		Location("Port Kepulauan Pelaut", Vector3(9755.877, 202.1912, -11597.89), Location.Type.MilHarb),
-		Location("Gunung Gila Pangkat Facility", Vector3(557.3547, 1179.563, -7246.511), Location.Type.MilStrong),
+		-- Location("Gunung Gila Pangkat Facility", Vector3(557.3547, 1179.563, -7246.511), Location.Type.MilStrong),
+		Location("Gunung Gila Pangkat Facility", Vector3(557.3547, 1179.563, -7246.511), Location.Type.MilLocation),
 		Location("Tanjung Putih", Vector3(-13480.81, 215.5418, 4673.613), Location.Type.CivVil),
 		Location("Kepulauan Senjakala Beta", Vector3(-13961.91, 339.755, 12156.74), Location.Type.Comm),
 		Location("Kem Pekan Selamat", Vector3(-9278.248, 227.8146, 9638.767), Location.Type.MilLocation, Location.Color.Green),
@@ -244,9 +231,9 @@ Map = {
 		Location("Bandar Gereja Guruun", Vector3(-10318.24, 449.2608, 9632.378), Location.Type.CivVil),
 		Location("Bandar Sungai Rajang", Vector3(-7757.264, 206.3257, 4180.161), Location.Type.CivVil),
 		--Location("Paya Luas", Vector3(12028.47, 187.8509, -10679.78), Location.Type.MilAir),
-		Location("Paya Luas", Vector3(12028.47, 206.8509, -10679.78), Location.Type.MilAir),
+		Location("Paya Luas", Vector3(12028.47, 206.8509, -10679.78), Location.Type.MilAir, Location.Color.Green),
 		Location("Kampung Sri Puteri", Vector3(-5166.081, 338.7373, -7321.45), Location.Type.CivVil),
-		Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.MilLocation),
+		Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.MilLocation, Location.Color.Red),
 		Location("Gunung Rata", Vector3(860.4727, 287.4586, 11726.06), Location.Type.MilLocation),
 		Location("Kem Harimau Putih", Vector3(11212.44, 399.179, 848.4565), Location.Type.MilLocation),
 		--Location("Palau Dayang Terlena", Vector3(-11911.88, 609.6496, 4799.679), Location.Type.MilAir),
@@ -279,7 +266,7 @@ Map = {
 		Location("Teluk Panau Tengah Gamma", Vector3(-3793.139, 284.7395, 10017.39), Location.Type.Comm),
 		Location("Kem Harimau Bintang", Vector3(12218.26, 619.968, 14088.2), Location.Type.MilLocation),
 		Location("Bukit Rendah", Vector3(82.44434, 1122.303, -9012.872), Location.Type.MilLocation, Location.Color.Green),
-		Location("Loji Bahan Bakar Fossin", Vector3(9516.775, 209.9794, -10177.47), Location.Type.MilLocation),
+		Location("Loji Bahan Bakar Fossin", Vector3(9516.775, 209.9794, -10177.47), Location.Type.MilLocation, Location.Color.Green),
 		Location("Pulau Ketam Besar", Vector3(3825.969, 209.4087, 10260.54), Location.Type.MilLocation),
 		Location("Kem Lembah Hutan", Vector3(11215.5, 295.0118, 13618.05), Location.Type.MilLocation),
 		Location("Bandar Pekan Lama", Vector3(12355.14, 236.5235, 1199.771), Location.Type.CivVil),
@@ -292,7 +279,8 @@ Map = {
 		Location("Bandar Koperasi", Vector3(-3813.054, 358.4707, -12355.99), Location.Type.CivVil),
 		Location("Pekan Hujung", Vector3(-11032.57, 472.3613, 7393.208), Location.Type.MilLocation, Location.Color.Green),
 		Location("Kampung Lembah Gurun", Vector3(-8413.657, 315.5773, 9254.735), Location.Type.CivVil),
-		Location("Lembah Firdaus Compound", Vector3(2722.232, 210.1208, 9486.71), Location.Type.MilStrong),
+		-- Location("Lembah Firdaus Compound", Vector3(2722.232, 210.1208, 9486.71), Location.Type.MilStrong),
+		Location("Lembah Firdaus Compound", Vector3(2722.232, 210.1208, 9486.71), Location.Type.MilLocation),
 		Location("Kem General Hong", Vector3(-3268.039, 675.9688, -9598.611), Location.Type.MilLocation, Location.Color.Green),
 		Location("Kampung Kayu Keras", Vector3(8076.139, 307.7526, 11644.47), Location.Type.CivVil),
 		--Location("Pulau Berendam", Vector3(9494.373, 245.6784, -12923.39), Location.Type.MilHarb),
@@ -309,8 +297,9 @@ Map = {
 		--Location("Banjaran Gundin", Vector3(-4684.034, 415.1115, -11277.62), Location.Type.MilAir),
 		Location("Banjaran Gundin", Vector3(-4515.668945, 432.914185, -11271.915039), Location.Type.MilAir),
 		Location("Tanah Raya Timur lota", Vector3(9404.302, 1151.02, -4025.884), Location.Type.Comm),
-		Location("Emas Hitam Oil Refinery", Vector3(11577.3, 228.0705, -9371.375), Location.Type.MilStrong),
 		--Location("Emas Hitam Oil Refinery", Vector3(11577.3, 228.0705, -9371.375), Location.Type.U_Stronghold),
+		--Location("Emas Hitam Oil Refinery", Vector3(11577.3, 228.0705, -9371.375), Location.Type.MilStrong),
+		Location("Emas Hitam Oil Refinery", Vector3(11577.3, 228.0705, -9371.375), Location.Type.MilLocation),
 		Location("Banjaran Berawan Besar Eta", Vector3(761.4179, 487.6692, -5165.993), Location.Type.Comm),
 		Location("Bandar Dataran Sawah", Vector3(10690.31, 313.1415, 291.9846), Location.Type.CivVil),
 		Location("Negeri Gandin", Vector3(-6166.084, 230.4234, -11983.46), Location.Type.MilLocation),
@@ -328,7 +317,7 @@ Map = {
 		Location("Bandar Baru Bukit Kuprum", Vector3(5343.008, 1240.739, -4125.098), Location.Type.CivVil),
 		Location("Kampung Perigi Hitam", Vector3(12337.46, 270.573, -7537.716), Location.Type.CivVil),
 		Location("Kampung Phon Reput", Vector3(-6859.892, 229.049, 1892.154), Location.Type.CivVil),
-		Location("Sungai Cengkih Besar", Vector3(4520.471, 205.963, -10814.01), Location.Type.MilAir),
+		Location("Sungai Cengkih Besar", Vector3(4520.471, 205.963, -10814.01), Location.Type.MilAir, Location.Color.Green),
 		Location("Sungai Tapai", Vector3(4017.216, 202.2688, 8580.282), Location.Type.CivVil),
 		Location("Kampung Gunung Merah", Vector3(-7544.855, 324.7808, 9767.752), Location.Type.CivVil),
 		Location("Bandar Pantai Sunyi", Vector3(8331.996, 201.1841, 3349.719), Location.Type.CivVil),
@@ -356,7 +345,8 @@ Map = {
 		Location("Tanjung Intan", Vector3(-5837.049, 213.8395, -12813.25), Location.Type.CivVil),
 		Location("Pelantar Gas Telok Panau", Vector3(-4903.697, 236.3287, -1400.066), Location.Type.OilRig, Location.Color.Green),
 		Location("Pekan Sempit", Vector3(-10796.94, 211.1486, 14614.73), Location.Type.CivVil),
-		Location("Pemainan Racun Facility", Vector3(-3392.792, 190.8312, 8814.813), Location.Type.MilStrong),
+		-- Location("Pemainan Racun Facility", Vector3(-3392.792, 190.8312, 8814.813), Location.Type.MilStrong),
+		Location("Pemainan Racun Facility", Vector3(-3392.792, 190.8312, 8814.813), Location.Type.MilLocation),
 		Location("Pekan Juku-Juku", Vector3(-1412.271, 201.5011, -13407.59), Location.Type.CivVil),
 		Location("Kepulauan Selatan lota", Vector3(7914.223, 501.735, 11139.74), Location.Type.Comm),
 		Location("Tanah Raya Timur Alpha", Vector3(6631.838, 994.809, 393.8506), Location.Type.Comm),
@@ -374,7 +364,8 @@ Map = {
 		Location("Lembah Genting Tinggi", Vector3(-451.7679, 836.5936, -8860.411), Location.Type.MilLocation),
 		Location("Port Rajang Selatan", Vector3(-7951.542, 203.5004, 7720.742), Location.Type.CivVil, Location.Color.Green),
 		Location("Kepulauan Pelaut Beta", Vector3(7275.744, 241.37, -10821.89), Location.Type.Comm, Location.Color.Green),
-		Location("Kem Gunung Gurun Supply Depot", Vector3(-10699.12, 381.8536, 11071.68), Location.Type.MilStrong, Location.Color.Green),
+		-- Location("Kem Gunung Gurun Supply Depot", Vector3(-10699.12, 381.8536, 11071.68), Location.Type.MilStrong, Location.Color.Green),
+		Location("Kem Gunung Gurun Supply Depot", Vector3(-10699.12, 381.8536, 11071.68), Location.Type.MilLocation, Location.Color.Green),
 		Location("Rajang Temple", Vector3(-4325.398, 497.1956, 6872.245), Location.Type.CivVil, Location.Color.Green),
 		Location("Bandar Lengkok Sungai", Vector3(-8217.518, 212.195, 6501.447), Location.Type.CivVil),
 		Location("Kem Jalan Gurun", Vector3(-8934.59, 239.7559, 7473.34), Location.Type.MilLocation),
@@ -383,7 +374,8 @@ Map = {
 		Location("Bukit Bura", Vector3(2848.076416, 403.071289, -7414.663574), Location.Type.MilLocation),
 		Location("Kampung Jalan Gunung", Vector3(3390.594, 490.7922, 1909.7), Location.Type.CivVil),
 		Location("Kem Kuala Utara", Vector3(13869.81, 189.4279, 10606.23), Location.Type.MilHarb),
-		Location("Kampung Bahari Village", Vector3(-6953.055, 229.9818, -9774.106), Location.Type.MilStrong, Location.Color.Green),
+		-- Location("Kampung Bahari Village", Vector3(-6953.055, 229.9818, -9774.106), Location.Type.MilStrong, Location.Color.Green),
+		Location("Kampung Bahari Village", Vector3(-6953.055, 229.9818, -9774.106), Location.Type.MilLocation, Location.Color.Green),
 		Location("Pekan Dusun Rambutan", Vector3(1031.712, 254.3053, 10127.8), Location.Type.CivVil),
 		--Location("Panau Falls Casino", Vector3(2181.745, 696.8648, 1371.177), Location.Type.CivVil),
 		Location("Panau Falls Casino", Vector3(2181.745, 645.841858, 1371.177), Location.Type.CivVil, Location.Color.Green),
@@ -402,7 +394,8 @@ Map = {
 		Location("Kampung Bunga Mawar", Vector3(13568.29, 197.9329, 3252.776), Location.Type.MilHarb, Location.Color.Green),
 		Location("Kampung Sawah Hutan", Vector3(-2830.986, 220.6546, 9919.413), Location.Type.CivVil),
 		Location("Bandar Baru Nipah", Vector3(-499.1229, 242.4776, -12096.36), Location.Type.CivCity, Location.Color.Green),
-		Location("Awan Cendawan Power Plant", Vector3(9078.66, 202.9968, 1485.909), Location.Type.MilStrong),
+		-- Location("Awan Cendawan Power Plant", Vector3(9078.66, 202.9968, 1485.909), Location.Type.MilStrong),
+		Location("Awan Cendawan Power Plant", Vector3(9078.66, 202.9968, 1485.909), Location.Type.MilLocation),
 		Location("Kampung Tukang Besi", Vector3(12354.82, 271.382, -1650.81), Location.Type.CivVil),
 		Location("Kampung Kepulauan Selatan", Vector3(2184.427, 196.5946, 7002.66), Location.Type.CivVil),
 		Location("Banjaran Berawan Besar Beta", Vector3(-1570.055, 527.3829, -11711.6), Location.Type.Comm),
@@ -426,7 +419,7 @@ Map = {
 		Location("Kem Kapitan Luk Ya Sian", Vector3(74.19531, 1392.88, -6291.536), Location.Type.MilLocation, Location.Color.Green),
 		Location("Kuala Cengkih", Vector3(7210.072, 202.9297, -12004.09), Location.Type.MilHarb),
 		Location("Pelantar Gas Panau Timur", Vector3(13096.18, 236.3287, 4871.582), Location.Type.OilRig, Location.Color.Green),
-		Location("Kampung Nur Cahaya", Vector3(-7031.882, 315.3552, 5390.055), Location.Type.CivCity),
+		Location("Kampung Nur Cahaya", Vector3(-7031.882, 315.3552, 5390.055), Location.Type.CivCity, Location.Color.Green),
 		Location("Pekan Cahaya Matahari", Vector3(11393.25, 258.5214, -6938.114), Location.Type.CivVil),
 		Location("Kepulauan Selatan Zeta", Vector3(14619.25, 612.9855, 12576.75), Location.Type.Comm),
 		Location("Gunung Pawang Tua", Vector3(10953.24, 251.841, 2082.581), Location.Type.MilLocation, Location.Color.Green),
@@ -458,7 +451,7 @@ Map = {
 		Location("Bandar Kolam Dalam", Vector3(9983.953, 212.7729, -9679.302), Location.Type.CivVil),
 		Location("Pelantar Gas Telok Beting Timur", Vector3(15525.08, 236.3287, -4305.083), Location.Type.OilRig),
 		--Location("PAN MILSAT", Vector3(7056.561, 776.8174, 1036.695), Location.Type.MilLocation),
-		Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.MilLocation),
+		Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.MilLocation, Location.Color.Red),
 		Location("Cape Carnival", Vector3(13788.11, 222.02, -2315.564), Location.Type.MilLocation, Location.Color.Green),
 		Location("Port Gurun Lautan Lama", Vector3(-13579.83, 209.6284, 6453.933), Location.Type.MilHarb),
 		Location("Kampung Padang Luas", Vector3(10851.88, 200.9827, -8668.016), Location.Type.MilHarb, Location.Color.Green),
@@ -495,7 +488,7 @@ Map = {
 		Location("Kepulauan Selatan Delta", Vector3(2251.685, 592.3736, 12041.24), Location.Type.Comm, Location.Color.Green),
 		Location("Kem Gunung Raya", Vector3(4703.085, 1652.525, -4738.075), Location.Type.MilLocation),
 		Location("Gurun Lautan Lama Delta", Vector3(-9093.51, 399.3805, 6926.042), Location.Type.Comm),
-		Location("Pelabuhan Saudagar Harbor", Vector3(-14871.19, 196.2978, -2944.443), Location.Type.MilStrong),
+		-- Location("Pelabuhan Saudagar Harbor", Vector3(-14871.19, 196.2978, -2944.443), Location.Type.MilStrong),
 		Location("Pekan Tanjung", Vector3(1404.5, 203.6984, 6744.877), Location.Type.CivVil),
 		Location("Kem General Vikneshwaran", Vector3(1285.233, 227.4771, 404.9492), Location.Type.MilLocation),
 		Location("Pulau Ketam Kecil", Vector3(11682.66, 187.1396, -5123.087), Location.Type.MilHarb, Location.Color.Green),
@@ -507,12 +500,8 @@ Map = {
 		Location("Kampung Teratai Putih", Vector3(-7175.5, 204.3399, -6330.171), Location.Type.CivVil),
 		Location("Kota Buluh", Vector3(8432.64, 201.4412, -12844.17), Location.Type.CivVil),
 		-- NON-SETTLEMENTS
-		Location("Hantu Island", Vector3(-14091.01, 688.75, -14145.97), Location.Type.MilStrong),
-		Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green),
-		Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench),
-		Location("Eastern Workbench", Vector3(14426.58, 204.574, -1102.409), Location.Type.Workbench),
-		Location("Northern Workbench", Vector3(2602.199, 384, -11045.744), Location.Type.Workbench),
-		Location("Western Workbench", Vector3(-12293.124, 569.63, 2815.34), Location.Type.Workbench),
+		-- Location("Hantu Island", Vector3(-14091.01, 688.75, -14145.97), Location.Type.MilStrong),
+		-- Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green)
 	}
 }
 
@@ -527,7 +516,13 @@ function Map:WorldToScreen(position)
 end
 
 function Map:ToggleWaypoint(position)
-	local wPosition, waypoint = Waypoint:GetPosition()
+
+    local wPosition, waypoint = Waypoint:GetPosition()
+    
+    if waypoint then
+        Waypoint:Remove()
+        return
+    end
 
 	if waypoint and Map.Waypoint:IsActive(Map:WorldToScreen(wPosition), Map.IconScale * Map.WaypointScale * (PDA:IsUsingGamepad() and 2 or 1)) then
 		Waypoint:Remove()
@@ -559,17 +554,28 @@ function Map:Draw()
 		end
 	end
 
-    -- Home position
-    local home_pos = LocalPlayer:GetValue("HomePosition")
-
-    if home_pos then
-        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 2, Color.Blue)
-        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 3, Color.White)
+    if not self.sz_config then
+        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
     end
 
-	if math.floor(PDA.timer:GetSeconds() * 4) % 2 == 0 then
-		Render:FillCircle(Map:WorldToScreen(LocalPlayer:GetPosition()), Location.Icon.Size.x * scale / 2, Color.Red)
-		Render:FillCircle(Map:WorldToScreen(LocalPlayer:GetPosition()), Location.Icon.Size.x * scale / 3, Color.White)
+    if self.sz_config then
+
+        local alpha = 75
+
+        local nz_pos = Map:WorldToScreen(self.sz_config.neutralzone.position)
+        local nz_size = self.sz_config.neutralzone.radius / 32768 * Render.Height * Map.Zoom
+        local nz_color = Color(self.sz_config.neutralzone.color.r, self.sz_config.neutralzone.color.g, self.sz_config.neutralzone.color.b, alpha)
+        Render:FillCircle(nz_pos, nz_size, nz_color)
+        nz_color.a = 255
+        Render:DrawCircle(nz_pos, nz_size, nz_color)
+
+        local sz_pos = Map:WorldToScreen(self.sz_config.safezone.position)
+        local sz_size = self.sz_config.safezone.radius / 32768 * Render.Height * Map.Zoom
+        local sz_color = Color(self.sz_config.safezone.color.r, self.sz_config.safezone.color.g, self.sz_config.safezone.color.b, alpha)
+        Render:FillCircle(sz_pos, sz_size, sz_color)
+        sz_color.a = 255
+        Render:DrawCircle(sz_pos, sz_size, sz_color)
+
     end
     
 	local position, waypoint = Waypoint:GetPosition()
@@ -598,6 +604,33 @@ function Map:Draw()
 		Render:DrawLine(center + height, center + offsetHeight, Color.White)
     end
     
+    -- Home position
+    local home_pos = LocalPlayer:GetValue("HomePosition")
+
+    if home_pos then
+        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 3, Color.Black)
+        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 4, Color.Orange)
+    end
+
+    if math.floor(PDA.timer:GetSeconds() * 4) % 2 == 0 then
+        local pos = Map:WorldToScreen(LocalPlayer:GetPosition())
+        local size = Location.Icon.Size.x * scale * 0.6
+        local t = Transform2():Translate(pos):Rotate(-Camera:GetAngle().yaw + math.pi)
+        Render:SetTransform(t)
+
+        local width = size
+        local height = size * 1.5
+
+        Render:FillTriangle(
+            Vector2(width / 2, -height / 2),
+            Vector2(-width / 2, -height / 2),
+            Vector2(0, height / 2),
+            Color(255, 0, 0, 200)
+        )
+
+        Render:ResetTransform()
+    end
+
     self:DrawLegend()
 
 	collectgarbage()

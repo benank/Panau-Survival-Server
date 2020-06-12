@@ -21,10 +21,20 @@ function sSpawnManager:__init()
         end
     end
 
-    Timer.SetInterval(1000 * 60, function()
+	Timer.SetInterval(1000 * 30, function()
+		
+		local seconds = Server:GetElapsedSeconds()
+
         for player in Server:GetPlayers() do
-            if IsValid(player) then
-                self:UpdatePlayerPositionMinuteTick(player)
+			if IsValid(player) then
+				
+				local last_update = player:GetValue("SpawnLastUpdate")
+
+				if last_update and seconds - last_update >= 60 then
+					self:UpdatePlayerPositionMinuteTick(player)
+					player:SetValue("SpawnLastUpdate", seconds)
+				end
+
             end
         end
     end)
@@ -65,7 +75,7 @@ function sSpawnManager:ModuleUnload()
 end
 
 function sSpawnManager:EnterExitSafezone(args, player)
-	local in_sz = args.in_sz and player:GetPosition():Distance(config.safezone.position) < config.safezone.radius * 1.5
+	local in_sz = args.in_sz and player:GetPosition():Distance(config.safezone.position) < config.safezone.radius * 1.25
     player:SetNetworkValue("InSafezone", in_sz)
 
 	Events:Fire("EnterExitSafezone", {player = player, in_sz = in_sz})
@@ -176,7 +186,9 @@ function sSpawnManager:PlayerJoin(args)
     Events:Fire("Discord", {
         channel = "Chat",
         content = string.format("*%s [%s] joined the server.*", args.player:GetName(), args.player:GetSteamId())
-    })
+	})
+	
+	args.player:SetValue("SpawnLastUpdate", Server:GetElapsedSeconds())
 
 end
 
@@ -217,11 +229,8 @@ function sSpawnManager:PlayerSpawn(args)
         args.player:SetPosition(args.player:GetValue("SpawnPosition"))
     end
 
-    self:EnterExitSafezone({
-        in_sz = true
-    }, args.player)
-
     args.player:SetValue("FirstSpawn", true)
+    args.player:SetHealth(1)
 
 	return false
 end

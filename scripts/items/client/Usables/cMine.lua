@@ -23,7 +23,7 @@ function cMine:ShapeTriggerEnter(args)
     if args.entity.__type ~= "LocalPlayer" then return end
     if args.entity ~= LocalPlayer then return end
     if self.owner_id == tostring(LocalPlayer:GetSteamId()) then return end -- Don't explode on the owner
-    if IsAFriend(LocalPlayer, self.owner_id) then return end -- Owner is a friend
+    if AreFriends(LocalPlayer, self.owner_id) then return end -- Owner is a friend
     if LocalPlayer:GetValue("Invincible") then return end
 
     self.exploding = true

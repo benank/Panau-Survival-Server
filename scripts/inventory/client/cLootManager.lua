@@ -129,7 +129,9 @@ function cLootManager:RecreateContents(_contents)
         local items = {}
 
         for i, j in ipairs(v.contents) do
-            items[i] = shItem(j)
+            if type(j) == "userdata" or count_table(j) > 0 then
+                items[i] = shItem(j)
+            end
         end
 
         if count_table(items) > 0 then

@@ -130,7 +130,10 @@ function sClaymores:DestroyClaymore(args, player)
     Events:Fire("items/ItemExplode", {
         position = claymore.position,
         radius = 10,
-        player = player
+        player = player,
+        owner_id = claymore.owner_id,
+        type = DamageEntity.Claymore,
+        no_detonation_source = args.no_detonation_source
     })
 
 end
@@ -222,7 +225,10 @@ function sClaymores:StepOnClaymore(args, player)
         Events:Fire("items/ItemExplode", {
             position = claymore.position,
             radius = 10,
-            player = player
+            player = player,
+            owner_id = claymore.owner_id,
+            type = DamageEntity.Claymore,
+            no_detonation_source = true
         })
     end
 
