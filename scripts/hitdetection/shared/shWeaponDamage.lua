@@ -92,9 +92,9 @@ function WeaponDamage:__init()
     {
         [DamageEntity.Mine] = {damage = 250, radius = 6, knockback = 10, v_mod = 0.02},
         [DamageEntity.Claymore] = {damage = 500, radius = 10, knockback = 12, v_mod = 0.015},
-        [DamageEntity.C4] = {damage = 400, radius = 40, knockback = 30, v_mod = 0.03},
+        [DamageEntity.C4] = {damage = 400, radius = 40, knockback = 20, v_mod = 0.03},
         [DamageEntity.HEGrenade] = {damage = 140, radius = 6, knockback = 5, v_mod = 0.007},
-        [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 60, v_mod = 0.006}
+        [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 30, v_mod = 0.006}
     }
     
     self.WeaponHitType = 

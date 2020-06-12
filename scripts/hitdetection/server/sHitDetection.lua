@@ -517,7 +517,7 @@ function sHitDetection:VehicleExplosionHit(args, player)
                     content = msg
                 })
 
-                v:SetLinearVelocity(v:GetLinearVelocity() + (data.hit_dir * explosive_data.radius * explosive_data.knockback * (armor * 0.3)))
+                v:SetLinearVelocity(v:GetLinearVelocity() + (data.hit_dir * explosive_data.radius * explosive_data.knockback * (armor * 0.15)))
 
             end
 
