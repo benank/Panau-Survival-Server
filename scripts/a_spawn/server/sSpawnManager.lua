@@ -75,7 +75,7 @@ function sSpawnManager:ModuleUnload()
 end
 
 function sSpawnManager:EnterExitSafezone(args, player)
-	local in_sz = args.in_sz and player:GetPosition():Distance(config.safezone.position) < config.safezone.radius * 1.5
+	local in_sz = args.in_sz and player:GetPosition():Distance(config.safezone.position) < config.safezone.radius * 1.25
     player:SetNetworkValue("InSafezone", in_sz)
 
 	Events:Fire("EnterExitSafezone", {player = player, in_sz = in_sz})
@@ -229,11 +229,8 @@ function sSpawnManager:PlayerSpawn(args)
         args.player:SetPosition(args.player:GetValue("SpawnPosition"))
     end
 
-    self:EnterExitSafezone({
-        in_sz = true
-    }, args.player)
-
     args.player:SetValue("FirstSpawn", true)
+    args.player:SetHealth(1)
 
 	return false
 end

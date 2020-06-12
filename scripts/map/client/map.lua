@@ -516,7 +516,13 @@ function Map:WorldToScreen(position)
 end
 
 function Map:ToggleWaypoint(position)
-	local wPosition, waypoint = Waypoint:GetPosition()
+
+    local wPosition, waypoint = Waypoint:GetPosition()
+    
+    if waypoint then
+        Waypoint:Remove()
+        return
+    end
 
 	if waypoint and Map.Waypoint:IsActive(Map:WorldToScreen(wPosition), Map.IconScale * Map.WaypointScale * (PDA:IsUsingGamepad() and 2 or 1)) then
 		Waypoint:Remove()
@@ -548,17 +554,28 @@ function Map:Draw()
 		end
 	end
 
-    -- Home position
-    local home_pos = LocalPlayer:GetValue("HomePosition")
-
-    if home_pos then
-        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 2, Color.Blue)
-        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 3, Color.White)
+    if not self.sz_config then
+        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
     end
 
-	if math.floor(PDA.timer:GetSeconds() * 4) % 2 == 0 then
-		Render:FillCircle(Map:WorldToScreen(LocalPlayer:GetPosition()), Location.Icon.Size.x * scale / 2, Color.Red)
-		Render:FillCircle(Map:WorldToScreen(LocalPlayer:GetPosition()), Location.Icon.Size.x * scale / 3, Color.White)
+    if self.sz_config then
+
+        local alpha = 75
+
+        local nz_pos = Map:WorldToScreen(self.sz_config.neutralzone.position)
+        local nz_size = self.sz_config.neutralzone.radius / 32768 * Render.Height * Map.Zoom
+        local nz_color = Color(self.sz_config.neutralzone.color.r, self.sz_config.neutralzone.color.g, self.sz_config.neutralzone.color.b, alpha)
+        Render:FillCircle(nz_pos, nz_size, nz_color)
+        nz_color.a = 255
+        Render:DrawCircle(nz_pos, nz_size, nz_color)
+
+        local sz_pos = Map:WorldToScreen(self.sz_config.safezone.position)
+        local sz_size = self.sz_config.safezone.radius / 32768 * Render.Height * Map.Zoom
+        local sz_color = Color(self.sz_config.safezone.color.r, self.sz_config.safezone.color.g, self.sz_config.safezone.color.b, alpha)
+        Render:FillCircle(sz_pos, sz_size, sz_color)
+        sz_color.a = 255
+        Render:DrawCircle(sz_pos, sz_size, sz_color)
+
     end
     
 	local position, waypoint = Waypoint:GetPosition()
@@ -587,6 +604,33 @@ function Map:Draw()
 		Render:DrawLine(center + height, center + offsetHeight, Color.White)
     end
     
+    -- Home position
+    local home_pos = LocalPlayer:GetValue("HomePosition")
+
+    if home_pos then
+        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 3, Color.Black)
+        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 4, Color.Orange)
+    end
+
+    if math.floor(PDA.timer:GetSeconds() * 4) % 2 == 0 then
+        local pos = Map:WorldToScreen(LocalPlayer:GetPosition())
+        local size = Location.Icon.Size.x * scale * 0.6
+        local t = Transform2():Translate(pos):Rotate(-Camera:GetAngle().yaw + math.pi)
+        Render:SetTransform(t)
+
+        local width = size
+        local height = size * 1.5
+
+        Render:FillTriangle(
+            Vector2(width / 2, -height / 2),
+            Vector2(-width / 2, -height / 2),
+            Vector2(0, height / 2),
+            Color(255, 0, 0, 200)
+        )
+
+        Render:ResetTransform()
+    end
+
     self:DrawLegend()
 
 	collectgarbage()

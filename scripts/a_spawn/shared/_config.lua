@@ -9,7 +9,7 @@ config =
     neutralzone = 
     {
         position = Vector3(-10299, 204, -3012),
-        radius = 400,
+        radius = 2000,
         color = Color(0,106,255,100)
     }
 }

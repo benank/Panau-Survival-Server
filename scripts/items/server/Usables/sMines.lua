@@ -109,7 +109,10 @@ function sMines:DestroyMine(args, player)
     Events:Fire("items/ItemExplode", {
         position = mine.position,
         radius = 10,
-        player = player
+        player = player,
+        owner_id = mine.owner_id,
+        type = DamageEntity.Mine,
+        no_detonation_source = args.no_detonation_source
     })
 
 end
@@ -204,7 +207,10 @@ function sMines:StepOnMine(args, player)
                 Events:Fire("items/ItemExplode", {
                     position = mine.position,
                     radius = 10,
-                    player = player
+                    player = player,
+                    owner_id = mine.owner_id,
+                    type = DamageEntity.Mine,
+                    no_detonation_source = true
                 })
             end
 
