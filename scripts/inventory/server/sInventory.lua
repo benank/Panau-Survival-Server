@@ -139,8 +139,8 @@ function sInventory:PlayerKilled(args)
 
     local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
-    -- Level 0 within financial district, don't drop items
-    if level == 0 and args.player:GetPosition():Distance(sz_config.safezone.position) < 1500 then return end
+    -- Within neutralzone, don't drop items
+    if args.player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius then return end
 
     if args.player:GetValue("SecondLifeEquipped") then return end
 
@@ -694,6 +694,8 @@ function sInventory:RemoveItemRemote(args)
 end
 
 function sInventory:AddItemRemote(args)
+
+    if not IsValid(args.player) or not IsValid(self.player) then return end
 
     if args.player ~= self.player then
         error(debug.traceback("sInventory:AddItemRemote failed: player does not match"))

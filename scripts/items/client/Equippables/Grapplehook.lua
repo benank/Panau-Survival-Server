@@ -85,6 +85,8 @@ function EquippableGrapplehook:ToggleEnabled(enabled)
         self.action_block = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
         self.grapple_block = Events:Subscribe("SecondTick", self, self.SecondTick)
     end
+    
+    LocalPlayer:SetValue("GrapplehookEnabled", enabled)
 end
 
 function EquippableGrapplehook:StopUsing()

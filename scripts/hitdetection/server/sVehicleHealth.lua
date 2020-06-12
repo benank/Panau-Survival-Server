@@ -1,0 +1,4 @@
+VehicleHealth = -- Default 100
+{
+    
+}

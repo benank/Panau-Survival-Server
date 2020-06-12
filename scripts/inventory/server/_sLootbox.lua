@@ -273,8 +273,6 @@ function sLootbox:TryOpenBox(args, player)
         end
     
         -- Set current box anyway for hackers
-        player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell, lootbox = lootbox_data})
-    
         player:SetValue("CurrentLootbox", self:GetSyncData(player))
         Network:Send(player, "Inventory/LootboxOpen", self:GetSyncData(player))
 
@@ -307,7 +305,7 @@ function sLootbox:Open(player)
         lootbox_data.stash = self.stash:GetSyncData()
     end
 
-    player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell, lootbox = lootbox_data})
+    player:SetValue("CurrentLootbox", self:GetSyncData(player))
 
     Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
