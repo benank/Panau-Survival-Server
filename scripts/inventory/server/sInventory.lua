@@ -1189,6 +1189,7 @@ end
 function sInventory:UpdateDB()
 
     if not IsValid(self.player) then return end
+    if self.invsee_source then return end
 
     local serialized = self:Serialize()
 
