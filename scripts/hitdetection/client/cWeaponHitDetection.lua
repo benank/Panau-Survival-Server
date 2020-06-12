@@ -21,6 +21,24 @@ function WeaponHitDetection:__init()
     Events:Subscribe(var("FireVehicleWeapon"):get(), self, self.FireVehicleWeapon)
     Events:Subscribe(var("LocalPlayerBulletHit"):get(), self, self.LocalPlayerBulletHit)
     Events:Subscribe(var("LocalPlayerExplosionHit"):get(), self, self.LocalPlayerExplosionHit)
+
+    Events:Subscribe("LocalPlayerDeath", self, self.LocalPlayerDeath)
+    Events:Subscribe("EntitySpawn", self, self.EntitySpawn)
+end
+
+function WeaponHitDetection:EntitySpawn(args)
+    if args.entity.__type ~= "Player" and args.entity.__type ~= "LocalPlayer" then return end
+    if args.entity ~= LocalPlayer then return end
+    
+    -- Resubscribe to ensure they work
+    Events:Subscribe(var("LocalPlayerBulletHit"):get(), self, self.LocalPlayerBulletHit)
+    Events:Subscribe(var("LocalPlayerExplosionHit"):get(), self, self.LocalPlayerExplosionHit)
+end
+
+function WeaponHitDetection:LocalPlayerDeath()
+    -- Resubscribe to ensure they work
+    Events:Subscribe(var("LocalPlayerBulletHit"):get(), self, self.LocalPlayerBulletHit)
+    Events:Subscribe(var("LocalPlayerExplosionHit"):get(), self, self.LocalPlayerExplosionHit)
 end
 
 function WeaponHitDetection:CheckPlayerSplash(args)

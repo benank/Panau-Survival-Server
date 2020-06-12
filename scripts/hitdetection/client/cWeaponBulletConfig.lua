@@ -19,17 +19,12 @@ function cWeaponBulletConfig:__init()
 
         local middle = Render.Size / 2
 
-        --[[_debug(middle:Distance(cam_pos))
-        _debug(pos:Distance(cam_pos))
-        _debug(on_screen)
-        _debug(cam_on_screen)]]
-
         local max_table = 
         {
             [30] = {y = 200, x = 100},
             [34] = {y = 200, x = 100},
-            [62] = {y = 900, x = 350},
-            [64] = {y = 900, x = 350}
+            [62] = {y = 900, x = 400},
+            [64] = {y = 900, x = 400}
         }
 
         local v = LocalPlayer:GetVehicle()
