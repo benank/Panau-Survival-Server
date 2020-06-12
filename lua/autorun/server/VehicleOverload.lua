@@ -12,10 +12,15 @@ function Vehicle:SetHealth(amt)
         end
         self:SetNetworkValue("Destroyed", true)
 
-        Events:Fire("Discord", {
-            channel = "Vehicles",
-            content = string.format("**Possible vehicle health hacking detected!** ")
-        })
+        local vehicle_data = self:GetValue("VehicleData")
+
+        if vehicle_data.owner_steamid then
+            Events:Fire("Discord", {
+                channel = "Vehicles",
+                content = string.format("**Possible vehicle health hacking detected!** Vehicle: %s Vehicle id: %d Owner steam id: %s",
+                    vehicle_data.name, vehicle_data.vehicle_id, vehicle_data.owner_steamid)
+            })
+        end
     end
 
     VehicleSetHealth(self, amt)
