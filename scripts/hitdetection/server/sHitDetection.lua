@@ -41,18 +41,6 @@ function sHitDetection:__init()
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
-    Thread(function()
-        while true do
-
-            for p in Server:GetPlayers() do
-                self:CheckHealth(p)
-            end
-
-            Timer.Sleep(500)
-        end
-    end)
-
-    -- TODO: check vehicle health too
 end
 
 function sHitDetection:ClientModuleLoad(args)
@@ -142,8 +130,6 @@ function sHitDetection:ApplyDamage(args)
         channel = "Hitdetection",
         content = msg
     })
-
-    args.player:SetValue("Health", math.min(1, math.max(0, old_hp - args.damage)))
 
 end
 
@@ -712,39 +698,6 @@ function sHitDetection:DetectVehicleSplashHit(args, player)
         name = player:GetName(),
         weapon_name = WeaponEnum:GetDescription(args.weapon_enum)
     })
-
-end
-
-function sHitDetection:CheckHealth(player)
-
-    if not IsValid(player) then return end
-
-    local current_health = player:GetHealth()
-    local expected_health = player:GetValue("Health")
-
-    if not expected_health then return end
-
-    if current_health > 0
-    and current_health - expected_health > self.health_check_threshold then
-        -- Health did not change, ban
-        player:SetValue("HealthStrikes", player:GetValue("HealthStrikes") + 1)
-        print("increase health strikes")
-
-        if player:GetValue("HealthStrikes") >= self.health_strikes_max then
-            Events:Fire("KickPlayer", {
-                player = player,
-                reason = string.format("Health hacking detected. Expected: %.3f Actual: %.3f", expected_health, current_health),
-                p_reason = "Error"
-            })
-        end
-
-    end
-
-    if current_health > expected_health then
-        player:SetHealth(expected_health)
-    else
-        player:SetValue("Health", current_health)
-    end
 
 end
 

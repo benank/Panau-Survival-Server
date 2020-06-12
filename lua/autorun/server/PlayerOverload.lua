@@ -8,7 +8,39 @@ PlayerClearInventory = Player.ClearInventory
 function Player:ClearInventory() if not v(self) then return end PlayerClearInventory(self) end
 
 PlayerDamage = Player.Damage
-function Player:Damage(...) if not v(self) then return end PlayerDamage(self, ...) end
+function Player:Damage(...) 
+    if not v(self) then return end 
+    local args = {...}
+    local actual_health = self:GetValue("Health")
+    local health = self:GetHealth_() < actual_health and self:GetHealth_() or actual_health
+
+    local current_time = Server:GetElapsedSeconds()
+    local last_check_time = self:GetValue("HealthLastCheckTime")
+
+    if self:GetHealth_() > health then
+        if last_check_time and current_time - last_check_time < 4 then
+            self:SetHealth(health)
+        else
+            self:SetValue("Health", self:GetHealth_())
+            health = self:GetHealth_()
+        end
+    end
+
+    self:SetValue("Health", health - args[1])
+    self:SetValue("HealthLastCheckTime", Server:GetElapsedSeconds())
+
+    PlayerDamage(self, ...)
+    
+    if health - args[1] <= 0 then
+        self:SetHealth(0)
+        Events:Fire("Discord", {
+            channel = "Hitdetection",
+            msg = string.format("**Possible health hacking detected!** %s [%s] was forced to die. Clientside health: %.2f Serverside health: %.2f",
+                self:GetName(), tostring(self:GetSteamId()), health - args[1], self:GetHealth_())
+        })
+    end
+
+end
 
 PlayerDisableCollision = Player.PlayerDisableCollision
 function Player:PlayerDisableCollision(group1, group2) if not v(self) then return end return PlayerDisableCollision(self, group1, group2) end
@@ -29,7 +61,9 @@ PlayerGetEquippedWeapon = Player.GetEquippedWeapon
 function Player:GetEquippedWeapon() if not v(self) then return end return PlayerGetEquippedWeapon(self) end
 
 PlayerGetHealth = Player.GetHealth
-function Player:GetHealth() if not v(self) then return end return PlayerGetHealth(self) end
+function Player:GetHealth() if not v(self) then return end return self:GetValue("Health")--[[PlayerGetHealth(self)]] end
+
+function Player:GetHealth_() if not v(self) then return end return PlayerGetHealth(self) end
 
 PlayerGetId = Player.GetId
 function Player:GetId() if not v(self) then return end return PlayerGetId(self) end
@@ -80,7 +114,7 @@ PlayerSetColor = Player.SetColor
 function Player:SetColor(color) if not v(self) then return end return PlayerSetColor(self, color) end
 
 PlayerSetHealth = Player.SetHealth
-function Player:SetHealth(health) if not v(self) then return end return PlayerSetHealth(self, health) end
+function Player:SetHealth(health) if not v(self) then return end self:SetValue("Health", health) return PlayerSetHealth(self, health) end
 
 PlayerSetModelId = Player.SetModelId
 function Player:SetModelId(num) if not v(self) then return end return PlayerSetModelId(self, num) end

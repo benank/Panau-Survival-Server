@@ -225,6 +225,7 @@ function sSurvivalManager:ClientModuleLoad(args)
 
         -- Don't set health here because it's too early and won't work
         player:SetValue("TargetHealth", tonumber(result[1].health))
+        player:SetValue("Health", tonumber(result[1].health))
 
         player:SetValue("Survival", data)
         
@@ -263,7 +264,7 @@ function sSurvivalManager:UpdateDB(player)
 
     if not survival then return end
 
-    local health = player:GetHealth()
+    local health = player:GetHealth_()
     if health <= 0 then health = 1 end
     
     local update = SQL:Command("UPDATE survival SET health = ?, hunger = ?, thirst = ?, radiation = ? WHERE steamID = (?)")
