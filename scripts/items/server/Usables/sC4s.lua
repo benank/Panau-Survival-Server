@@ -201,7 +201,7 @@ function sC4s:DestroyC4(args, player)
         player = player,
         owner_id = owner_id,
         type = DamageEntity.C4,
-        detonation_source_id = args.detonation_source_id or tostring(player:GetSteamId())
+        detonation_source_id = args.detonation_source_id or (player and tostring(player:GetSteamId() or nil))
     })
 
 end
