@@ -64,6 +64,7 @@ function sStash:ChangeAccessMode(mode, player)
     self:UpdateToDB()
 
     self:Sync(player)
+    self.lootbox:Sync()
 
     -- Force close lootbox for players who cannot open anymore
     for id, p in pairs(self.lootbox.players_opened) do
