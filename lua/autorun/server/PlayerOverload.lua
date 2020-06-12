@@ -30,12 +30,12 @@ function Player:Damage(...)
     self:SetValue("HealthLastCheckTime", Server:GetElapsedSeconds())
 
     PlayerDamage(self, ...)
-    
+
     if health - args[1] <= 0 then
         self:SetHealth(0)
         Events:Fire("Discord", {
             channel = "Hitdetection",
-            msg = string.format("**Possible health hacking detected!** %s [%s] was forced to die. Clientside health: %.2f Serverside health: %.2f",
+            content = string.format("**Possible health hacking detected!** %s [%s] was forced to die. Clientside health: %.2f Serverside health: %.2f",
                 self:GetName(), tostring(self:GetSteamId()), health - args[1], self:GetHealth_())
         })
     end

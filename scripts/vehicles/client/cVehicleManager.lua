@@ -87,6 +87,8 @@ function cVehicleManager:LocalPlayerInput(args)
 
             if not data then return false end
 
+            if closest_vehicle:GetValue("Destroyed") then return false end
+
             if data.owner_steamid ~= tostring(LocalPlayer:GetSteamId())
             and not IsAFriend(LocalPlayer, data.owner_steamid) then 
                 if lockpicks < data.cost or (IsValid(closest_vehicle) and count_table(closest_vehicle:GetOccupants()) > 0) then
@@ -161,6 +163,8 @@ function cVehicleManager:RenderVehicleDataClassic(v)
     local pos = v:GetPosition() + Vector3(0,1,0)
     
     if not self:InBoundingBox(v) then return end
+
+    if v:GetValue("Destroyed") then return end
 
     local color = self.text.color
     local circle_color = self.text.locked_color
