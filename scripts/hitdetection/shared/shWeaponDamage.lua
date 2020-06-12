@@ -20,7 +20,7 @@ function WeaponDamage:__init()
         [WeaponEnum.Revolver] =         {base = 0.18, v_mod = 0.05,  distance_falloff = 300, falloff = falloff_func},
         [WeaponEnum.RocketLauncher] =   {base = 0.15, v_mod = 4,     distance_falloff = 0,   falloff = function() return 1 end, radius = 4},
         [WeaponEnum.SMG] =              {base = 0.08, v_mod = 0.02,  distance_falloff = 100, falloff = falloff_func},
-        [WeaponEnum.Sniper] =           {base = 0.90, v_mod = 0.04,  distance_falloff = 200, falloff = 
+        [WeaponEnum.Sniper] =           {base = 0.90, v_mod = 0.04,  distance_falloff = 150, falloff = 
             function(distance, distance_falloff) -- Sniper gains full power at 200+ meters away
                 return math.clamp(distance / distance_falloff, 0, 1)
             end},
