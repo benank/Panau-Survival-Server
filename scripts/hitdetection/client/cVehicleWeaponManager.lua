@@ -71,12 +71,16 @@ end
 
 function cVehicleWeaponManager:StopFiringInput()
 
+    local timer = Timer()
     local input_event
     input_event = Events:Subscribe("InputPoll", function(args)
         for input, _ in pairs(self.fire_actions) do
             Input:SetValue(input, 0)
         end
-        input_event = Events:Unsubscribe(input_event)
+
+        if timer:GetSeconds() >= 1 then
+            input_event = Events:Unsubscribe(input_event)
+        end
     end)
 
 end
@@ -117,7 +121,10 @@ function cVehicleWeaponManager:LocalPlayerInput(args)
 
         if args.input == Action.VehicleFireRight then
 
-            if self.secondary_fire_timer:GetSeconds() < self.secondary_fire_cooldown then return false end
+            if self.secondary_fire_timer:GetSeconds() < self.secondary_fire_cooldown then
+                self:StopFiringInput()
+                return false
+            end
             self.secondary_fire_timer:Restart()
         end
 
