@@ -18,11 +18,6 @@ function sInventory:__init(player)
     self.invsee_source = nil
     self.invsee = {}
 
-    -- Save inventory to DB interval
-    self.update_timer = Timer.SetInterval(1000 * 60, function()
-        self:UpdateDB()
-    end)
-
     table.insert(self.events, Events:Subscribe("Inventory.AddStack-" .. self.steamID, self, self.AddStackRemote))
     table.insert(self.events, Events:Subscribe("Inventory.AddItem-" .. self.steamID, self, self.AddItemRemote))
     table.insert(self.events, Events:Subscribe("Inventory.RemoveStack-" .. self.steamID, self, self.RemoveStackRemote))
@@ -139,8 +134,8 @@ function sInventory:PlayerKilled(args)
 
     local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
-    -- Within neutralzone, don't drop items
-    if args.player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius then return end
+    -- Level 0 within financial district, don't drop items
+    if level == 0 and args.player:GetPosition():Distance(sz_config.safezone.position) < 1500 then return end
 
     if args.player:GetValue("SecondLifeEquipped") then return end
 
@@ -695,8 +690,6 @@ end
 
 function sInventory:AddItemRemote(args)
 
-    if not IsValid(args.player) or not IsValid(self.player) then return end
-
     if args.player ~= self.player then
         error(debug.traceback("sInventory:AddItemRemote failed: player does not match"))
         return
@@ -1170,7 +1163,7 @@ function sInventory:Sync(args)
 
     -- If initial sync was done already, then update the database with the new info
     if self.initial_sync and not self.invsee_source then
-        --self:UpdateDB()
+        self:UpdateDB()
         Events:Fire("InventoryUpdated", {player = self.player})
     end
 
@@ -1191,7 +1184,6 @@ end
 function sInventory:UpdateDB()
 
     if not IsValid(self.player) then return end
-    if self.invsee_source then return end
 
     local serialized = self:Serialize()
 
@@ -1212,8 +1204,6 @@ end
 
 function sInventory:Unload()
 
-    self:UpdateDB()
-
     for k,v in pairs(self.events) do
         Events:Unsubscribe(v)
     end
@@ -1222,7 +1212,6 @@ function sInventory:Unload()
         Network:Unsubscribe(v)
     end
 
-    Timer.Clear(self.update_timer)
     
     self.player = nil
     self.contents = nil

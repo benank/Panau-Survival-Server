@@ -22,15 +22,6 @@ Events:Subscribe("PlayerChat", function(args)
         else
             Chat:Send(args.player, string.format("Player with id %d not found", tonumber(words[2])), Color.Yellow)
         end
-    elseif words[1] == "/tptome" and words[2] then
-        local target_player = Player.GetById(tonumber(words[2]))
-
-        if IsValid(target_player) then
-            target_player:SetPosition(args.player:GetPosition())
-            Chat:Send(args.player, "Teleported " .. target_player:GetName() .. " to you.", Color.Yellow)
-        else
-            Chat:Send(args.player, string.format("Player with id %d not found", tonumber(words[2])), Color.Yellow)
-        end
     elseif words[1] == "/spec" and words[2] then
         local target_player = Player.GetById(tonumber(words[2]))
 

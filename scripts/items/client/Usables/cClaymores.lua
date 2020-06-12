@@ -223,14 +223,8 @@ end
 
 function cClaymores:ClaymoresCellsSync(args)
 
-    if LocalPlayer:GetValue("Loading") then
-        Timer.SetTimeout(250, function()
-            self:ClaymoresCellsSync(args)
-        end)
-    else
-        for _, claymore_data in pairs(args.claymore_data) do
-            self:AddClaymore(claymore_data)
-        end
+    for _, claymore_data in pairs(args.claymore_data) do
+        self:AddClaymore(claymore_data)
     end
 
 end

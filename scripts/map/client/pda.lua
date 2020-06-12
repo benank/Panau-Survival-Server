@@ -25,7 +25,7 @@ function PDA:ModuleLoad()
 	Events:Subscribe("MouseMove", self, self.MouseMove)
 	Events:Subscribe("MouseUp", self, self.MouseUp)
 	Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
-	Events:Subscribe("Render", self, self.Render)
+	Events:Subscribe("PostRender", self, self.PostRender)
 	Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 end
 
@@ -106,7 +106,7 @@ function PDA:LocalPlayerInput(args)
 	end
 end
 
-function PDA:Render()
+function PDA:PostRender()
 	if Game:GetState() ~= GUIState.Game then
 		if self.active then
 			PDA:Toggle()

@@ -37,7 +37,7 @@ function cExplosivesDetector:CheckForNearbyExplosives()
             nearby_explosives[id] = {
                 pos = obj.position, 
                 name = "Claymore", 
-                is_mine = obj.owner_id == tostring(LocalPlayer:GetSteamId()) or AreFriends(LocalPlayer, obj.owner_id),
+                is_mine = obj.owner_id == tostring(LocalPlayer:GetSteamId()) or IsAFriend(LocalPlayer, obj.owner_id),
                 show_name = dist < self.range * 0.75}
         end
         Timer.Sleep(1)
@@ -49,7 +49,7 @@ function cExplosivesDetector:CheckForNearbyExplosives()
             nearby_explosives[id] = {
                 pos = obj.position, 
                 name = "Mine", 
-                is_mine = obj.owner_id == tostring(LocalPlayer:GetSteamId()) or AreFriends(LocalPlayer, obj.owner_id),
+                is_mine = obj.owner_id == tostring(LocalPlayer:GetSteamId()) or IsAFriend(LocalPlayer, obj.owner_id),
                 show_name = dist < self.range * 0.75}
         end
         Timer.Sleep(1)

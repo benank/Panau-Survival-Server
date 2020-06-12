@@ -207,7 +207,7 @@ function sLootbox:TakeLootStack(args, player)
 
     local return_stack = inv:AddStack({stack = stack})
 
-    if self.is_stash and not AreFriends(player, self.stash.owner_id) and not self.stash:IsPlayerOwner(player) then
+    if self.is_stash and not IsAFriend(player, self.stash.owner_id) and not self.stash:IsPlayerOwner(player) then
         Events:Fire("Discord", {
             channel = "Stashes",
             content = string.format("**__RAID__**: %s [%s] is raiding [%s].", 
@@ -273,6 +273,8 @@ function sLootbox:TryOpenBox(args, player)
         end
     
         -- Set current box anyway for hackers
+        player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell, lootbox = lootbox_data})
+    
         player:SetValue("CurrentLootbox", self:GetSyncData(player))
         Network:Send(player, "Inventory/LootboxOpen", self:GetSyncData(player))
 
@@ -305,7 +307,7 @@ function sLootbox:Open(player)
         lootbox_data.stash = self.stash:GetSyncData()
     end
 
-    player:SetValue("CurrentLootbox", self:GetSyncData(player))
+    player:SetValue("CurrentLootbox", {uid = self.uid, cell = self.cell, lootbox = lootbox_data})
 
     Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 

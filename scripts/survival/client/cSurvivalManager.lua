@@ -1,6 +1,5 @@
 class 'cSurvivalManager'
 
-local event = var("gsy.exit.settlement")
 
 function cSurvivalManager:__init()
 
@@ -49,7 +48,6 @@ end
 
 function cSurvivalManager:Render(args)
 
-    Game:FireEvent(event:get())
     self.hud:Render(args)
 
 end

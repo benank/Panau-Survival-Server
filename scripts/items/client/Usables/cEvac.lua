@@ -115,34 +115,29 @@ function cEvac:UpdateStage(ball)
     elseif stage == 4 then
         -- Reached the waypoint
 
+        local destruct_sound = ClientSound.Create(AssetLocation.Game, {
+			bank_id = 40,
+			sound_id = 53,
+			position = ball:GetPosition(),
+			angle = Angle()
+        })
+
+        destruct_sound:SetParameter(0,1)
+        destruct_sound:SetParameter(1,0)
+
         local sound
-        local destruct_sound
-
-        if ball:GetPosition():Distance(Camera:GetPosition()) < 2000 then
-
-            destruct_sound = ClientSound.Create(AssetLocation.Game, {
-                bank_id = 40,
-                sound_id = 53,
+        Timer.SetTimeout(2000, function()
+            sound = ClientSound.Create(AssetLocation.Game, {
+                bank_id = 23,
+                sound_id = 0,
                 position = ball:GetPosition(),
                 angle = Angle()
             })
 
-            destruct_sound:SetParameter(0,1)
-            destruct_sound:SetParameter(1,0)
-
-            Timer.SetTimeout(2000, function()
-                sound = ClientSound.Create(AssetLocation.Game, {
-                    bank_id = 23,
-                    sound_id = 0,
-                    position = ball:GetPosition(),
-                    angle = Angle()
-                })
-
-                sound:SetParameter(0,0)
-                sound:SetParameter(1,1)
-                sound:SetParameter(2,0)
-            end)
-        end
+            sound:SetParameter(0,0)
+            sound:SetParameter(1,1)
+            sound:SetParameter(2,0)
+        end)
         
         Timer.SetTimeout(10 * 1000, function()
 
@@ -152,8 +147,8 @@ function cEvac:UpdateStage(ball)
                 angle = Angle()
             })
 
-            if IsValid(sound) then sound:Remove() end
-            if IsValid(destruct_sound) then destruct_sound:Remove() end
+            sound:Remove()
+            destruct_sound:Remove()
             self.objects[ball:GetId()] = nil
             ball:Remove()
         end)
@@ -190,16 +185,9 @@ function cEvac:ActivateEvac(args)
 
     self.objects[ball:GetId()] = ball
 
-    Events:Fire("Flare", {
-        position = args.end_position,
-        time = 60 * 2.5
-    })
-
 end
 
 function cEvac:PlayCountdownSound(pos)
-
-    if pos:Distance(Camera:GetPosition()) > 2000 then return end
     
     local seconds = 0
     local sound

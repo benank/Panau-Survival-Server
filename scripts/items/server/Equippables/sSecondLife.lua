@@ -48,7 +48,7 @@ Events:Subscribe("PlayerDeath", function(args)
 
             if not IsValid(player) then return end
 
-            Network:Broadcast("Hitdetection/SecondLifeDectivate", {position = player:GetPosition(), id = tostring(player:GetSteamId())})
+            Network:Send(player, "Hitdetection/SecondLifeDectivate", {position = player:GetPosition(), id = tostring(player:GetSteamId())})
             player:SetHealth(1)
             player:SetStreamDistance(player:GetValue("StreamDistance"))
 

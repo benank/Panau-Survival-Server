@@ -11,8 +11,10 @@ function sProxAlarms:__init()
 
     Network:Subscribe("items/CancelProxPlacement", self, self.CancelProxPlacement)
     Network:Subscribe("items/PlaceProx", self, self.FinishProxPlacement)
+    Network:Subscribe("items/DestroyProx", self, self.DestroyProx)
 
     Network:Subscribe("items/InsideProximityAlarm", self, self.InsideProximityAlarm)
+    Network:Subscribe("items/DestroyProx", self, self.DestroyProx)
 
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
@@ -22,7 +24,6 @@ function sProxAlarms:__init()
     Events:Subscribe("Inventory/RemoveLootbox", self, self.RemoveLootbox)
     Events:Subscribe("Inventory/CreateLootbox", self, self.CreateLootbox)
     Events:Subscribe("Inventory/LootboxUpdated", self, self.LootboxUpdated)
-    Events:Subscribe("Items/ChangeAlarmOwnership", self, self.ChangeAlarmOwnership)
 
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
@@ -32,12 +33,6 @@ function sProxAlarms:__init()
     Timer.SetInterval(1000 * 60 * 60, function()
         self:LowerBatteryDurabilities()
     end)
-end
-
-function sProxAlarms:ChangeAlarmOwnership(args)
-    if self.alarms[args.uid] then
-        self.alarms[args.uid].stash.owner_id = args.owner_id
-    end
 end
 
 function sProxAlarms:ItemExplode(args)
@@ -180,20 +175,22 @@ function sProxAlarms:DestroyProx(args, player)
 
     local alarm = self.alarms[args.id]
 
-    player = player or args.player
+    if not alarm then return end
 
+    local coords = alarm.position + Vector3(16384, 0, 16384)
+                
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = alarm.stash.owner_id,
-        message = string.format("Your proximity alarm was destroyed by %s %s", player:GetName(), WorldToMapString(alarm.position)),
+        message = string.format("Your proximity alarm was destroyed @ X: %.0f Y: %.0f", coords.x, coords.z),
         color = Color(200, 0, 0)
     })
 
     Network:Send(player, "items/ProxExplode", {position = alarm.position})
     Network:SendNearby(player, "items/ProxExplode", {position = alarm.position})
 
+    -- TODO: remove lootbox and stash from DB
     Events:Fire("items/DestroyProximityAlarm", {
-        id = alarm.stash.id,
-        player = player
+        id = alarm.stash.id
     })
 
     -- Remove alarm

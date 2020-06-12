@@ -1,14 +1,13 @@
 Events:Subscribe("PlayerJoin", function(args)
-    args.player:SetNetworkValue("EquippedItems", {})
+    args.player:SetValue("EquippedItems", {})
     args.player:SetNetworkValue("EquippedVisuals", {})
 end)
 
 function Unload()
 
     for player in Server:GetPlayers() do
-        player:SetNetworkValue("EquippedItems", {})
+        player:SetValue("EquippedItems", {})
         player:SetNetworkValue("EquippedVisuals", {})
-        player:SetValue("CurrentlyHacking", nil)
 
         if player:GetValue("ModelId") then
             player:SetModelId(player:GetValue("ModelId"))
@@ -29,7 +28,7 @@ function UpdateEquippedItem(player, name, value)
     else
         equipped_items[name] = nil
     end
-    player:SetNetworkValue("EquippedItems", equipped_items)
+    player:SetValue("EquippedItems", equipped_items)
 
 end
 

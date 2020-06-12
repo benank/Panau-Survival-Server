@@ -48,7 +48,6 @@ function cLoader:__init()
     self.window:Hide()
 
     self.resources_for_gameload = 7
-    self.resources_for_loadscreen = 3
 
     self.delta = 0
 
@@ -61,8 +60,6 @@ function cLoader:__init()
     Events:Subscribe(var("ModulesLoad"):get(), self, self.ModulesLoad)
     Events:Subscribe(var("GameLoad"):get(), self, self.GameLoad)
     Events:Subscribe(var("LocalPlayerDeath"):get(), self, self.LocalPlayerDeath)
-
-    Events:Subscribe("SecondTick", self, self.SecondTick)
 
     -- Fire event for when modules reload
     Events:Fire(var("LoaderReady"):get())
@@ -80,28 +77,10 @@ function cLoader:StartLoad()
 
 end
 
-function cLoader:SecondTick()
-
-    if self.active then
-
-        if Game:GetState() == GUIState.Game and not self.loadscreen_complete then
-            self.loadscreen_complete = true
-
-            Timer.SetTimeout(1000, function()
-                self.resources_loaded = self.resources_loaded + self.resources_for_loadscreen
-                self:UpdateResourceCount()
-                self:Stop()
-            end)
-        end
-
-    end
-
-end
-
 function cLoader:InitialLoad()
 
     self.can_add_resources = true
-    self.resources_needed = self.resources_needed + self.resources_for_loadscreen
+    self.resources_needed = self.resources_needed + self.resources_for_gameload
     
     self:UpdateResourceCount()
     self:Start()
@@ -110,11 +89,10 @@ end
 
 function cLoader:GameLoad()
 
-    self.game_loaded = true
-    self.resources_needed = self.resources_needed + self.resources_for_gameload
+    self.game_loaded = false
     self:UpdateResourceCount()
     Thread(function()
-        local load_time_max = (Client:GetElapsedSeconds() - self.load_time) * 1500 + 1000
+        local load_time_max = (Client:GetElapsedSeconds() - self.load_time) * 2500
         local load_time = 0
         local interval = 100
         local percent = interval / load_time_max
@@ -130,6 +108,7 @@ function cLoader:GameLoad()
             self.resources_loaded = self.resources_needed
         end
 
+        self.game_loaded = true
         self:UpdateResourceCount()
         self:Stop()
     end)
@@ -141,12 +120,11 @@ function cLoader:LocalPlayerDeath()
     self.resources_needed = 0
     self.resources_loaded = 0
     self.game_loaded = false
-    self.loadscreen_complete = false
 
     Thread(function()
         Timer.Sleep(5000)
         self.load_time = Client:GetElapsedSeconds() - 4
-        self.resources_needed = self.resources_needed + self.resources_for_loadscreen
+        self.resources_needed = self.resources_needed + self.resources_for_gameload
         self:UpdateResourceCount()
         self:Start()
         

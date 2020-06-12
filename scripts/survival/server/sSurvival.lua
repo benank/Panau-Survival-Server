@@ -24,7 +24,6 @@ function sSurvivalManager:LoadStatus(args)
     if not args.player:GetValue("TargetHealth") then return end
 
     args.player:SetHealth(args.player:GetValue("TargetHealth"))
-    args.player:SetValue("Health", args.player:GetValue("TargetHealth"))
     args.player:SetValue("TargetHealth", nil)
 end
 
@@ -57,7 +56,6 @@ function sSurvivalManager:UseItem(args)
     survival.thirst = math.max(0, math.min(survival.thirst + restore_data.thirst, 100))
 
     if restore_data.health then -- If this food item restores health, like Energy Drink
-        args.player:SetValue("Health", math.min(1, args.player:GetHealth() + restore_data.health / 100))
         args.player:Damage(-restore_data.health / 100, DamageEntity.Food)
     end
 
@@ -185,13 +183,7 @@ function sSurvivalManager:AdjustSurvivalStats(player)
     self:CheckForDyingPlayer(player)
 
     self:SyncToPlayer(player)
-
-    local diff = Server:GetElapsedSeconds() - player:GetValue("SurvivalLastUpdate")
-
-    if diff > 120 then
-        self:UpdateDB(player)
-        player:SetValue("SurvivalLastUpdate", Server:GetElapsedSeconds())
-    end
+    self:UpdateDB(player)
 
 end
 
@@ -216,7 +208,6 @@ function sSurvivalManager:ClientModuleLoad(args)
 
         -- Don't set health here because it's too early and won't work
         player:SetValue("TargetHealth", tonumber(result[1].health))
-        player:SetValue("Health", tonumber(result[1].health))
 
         player:SetValue("Survival", data)
         
@@ -244,8 +235,6 @@ function sSurvivalManager:ClientModuleLoad(args)
     self:SyncToPlayer(player)
     self:CheckForDyingPlayer(player)
 
-    player:SetValue("SurvivalLastUpdate", Server:GetElapsedSeconds())
-
 end
 
 function sSurvivalManager:UpdateDB(player)
@@ -257,7 +246,7 @@ function sSurvivalManager:UpdateDB(player)
 
     if not survival then return end
 
-    local health = player:GetHealth_()
+    local health = player:GetHealth()
     if health <= 0 then health = 1 end
     
     local update = SQL:Command("UPDATE survival SET health = ?, hunger = ?, thirst = ?, radiation = ? WHERE steamID = (?)")
