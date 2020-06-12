@@ -167,7 +167,7 @@ function sWeaponManager:ProcessWeaponShot(args)
 
     local player_weapons = args.player:GetValue("EquippedWeapons")
 
-    if not weapon_name or not player_weapons then return end
+    if not weapon_name or not player_weapons or not player_weapons[weapon_name] then return end
 
     player_weapons[weapon_name].ammo = player_weapons[weapon_name].ammo - ammo_used
     args.player:SetValue("EquippedWeapons", player_weapons)
