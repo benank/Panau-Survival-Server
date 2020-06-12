@@ -151,9 +151,6 @@ function sExp:PlayerKilled(args)
 
     local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
-    -- Within neutralzone, don't lose exp
-    if args.player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius then return end
-
     -- Subtract exp from player who died
     local exp_data = args.player:GetValue("Exp")
     local exp_lost = GetExpLostOnDeath(exp_data.level)
