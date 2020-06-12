@@ -69,7 +69,9 @@ function cVehicleWeaponManager:SecondTick(args)
 
 end
 
-function cVehicleWeaponManager:StopFiringInput()
+function cVehicleWeaponManager:StopFiringInput(only_missiles)
+
+    local fire_actions = only_missiles and {[Action.VehicleFireRight] = true} or self.fire_actions
 
     local timer = Timer()
     local input_event
@@ -122,7 +124,7 @@ function cVehicleWeaponManager:LocalPlayerInput(args)
         if args.input == Action.VehicleFireRight then
 
             if self.secondary_fire_timer:GetSeconds() < self.secondary_fire_cooldown then
-                self:StopFiringInput()
+                self:StopFiringInput(true)
                 return false
             end
             self.secondary_fire_timer:Restart()
