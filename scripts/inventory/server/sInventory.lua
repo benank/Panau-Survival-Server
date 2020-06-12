@@ -688,6 +688,8 @@ end
 
 function sInventory:AddItemRemote(args)
 
+    if not IsValid(args.player) or not IsValid(self.player) then return end
+
     if args.player ~= self.player then
         error(debug.traceback("sInventory:AddItemRemote failed: player does not match"))
         return
