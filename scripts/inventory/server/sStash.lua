@@ -20,7 +20,7 @@ function sStash:CanPlayerOpen(player)
     if self.access_mode == StashAccessMode.Everyone then
         return true
     elseif self.access_mode == StashAccessMode.Friends then
-        return IsAFriend(player, self.owner_id) or self:IsPlayerOwner(player)
+        return AreFriends(player, self.owner_id) or self:IsPlayerOwner(player)
     elseif self.access_mode == StashAccessMode.OnlyMe then
         return self:IsPlayerOwner(player)
     end

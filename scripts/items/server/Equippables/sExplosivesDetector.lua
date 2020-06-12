@@ -24,34 +24,26 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
 end)
 
-Thread(function()
+Timer.SetInterval(5000, function()
 
-    while true do
+    for p in Server:GetPlayers() do
+        if IsValid(p) then
+            local item = GetEquippedItem("Explosives Detector", p)
+            if item then
 
-        log_function_call("sExplosivesDetector check")
-        Timer.Sleep(1000)
+                item.durability = item.durability - dura_data.dura_per_sec
+                Inventory.ModifyDurability({
+                    player = p,
+                    item = item
+                })
 
-        for p in Server:GetPlayers() do
-            if IsValid(p) then
-                local item = GetEquippedItem("Explosives Detector", p)
-                if item then
+                UpdateEquippedItem(p, "Explosives Detector", item)
+                DecreaseDuraOfBattery(p)
 
-                    item.durability = item.durability - dura_data.dura_per_sec
-                    Inventory.ModifyDurability({
-                        player = p,
-                        item = item
-                    })
-
-                    UpdateEquippedItem(p, "Explosives Detector", item)
-                    DecreaseDuraOfBattery(p)
-
-                    Timer.Sleep(1)
-                end
             end
         end
-        log_function_call("sExplosivesDetector check 2")
-
     end
+
 end)
 
 function DecreaseDuraOfBattery(player)

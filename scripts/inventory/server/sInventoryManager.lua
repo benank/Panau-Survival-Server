@@ -73,20 +73,22 @@ function sInventoryManager:PlayerChat(args)
 end
 
 function sInventoryManager:PlayerQuit(args)
-    log_function_call("sInventoryManager:PlayerQuit")
 
     local id = tostring(args.player:GetSteamId().id)
     if self.inventories[id] then
         self.inventories[id]:Unload()
         self.inventories[id] = nil
     end
-    log_function_call("sInventoryManager:PlayerQuit 2")
 
 end
 
 function sInventoryManager:Unload()
 
     Events:Fire("InventoryUnload")
+
+    for steamid, inventory in pairs(self.inventories) do
+        inventory:Unload()
+    end
 
     for player in Server:GetPlayers() do
         player:SetValue("Inventory", nil)

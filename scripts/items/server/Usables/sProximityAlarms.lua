@@ -29,12 +29,8 @@ function sProxAlarms:__init()
 
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 
-    Thread(function()
-        while true do
-            Timer.Sleep(1000 * 60 * 60) -- One hour
-
-            self:LowerBatteryDurabilities()
-        end
+    Timer.SetInterval(1000 * 60 * 60, function()
+        self:LowerBatteryDurabilities()
     end)
 end
 
@@ -46,16 +42,11 @@ end
 
 function sProxAlarms:ItemExplode(args)
 
-    Thread(function()
-        
-        for id, alarm in pairs(self.alarms) do
-            if alarm.position:Distance(args.position) < args.radius then
-                self:DestroyProx({id = id}, args.player)
-            end
-            Timer.Sleep(1)
+    for id, alarm in pairs(self.alarms) do
+        if alarm.position:Distance(args.position) < args.radius then
+            self:DestroyProx({id = id}, args.player)
         end
-
-    end)
+    end
 
 end
 

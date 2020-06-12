@@ -20,18 +20,22 @@ function sSpawnManager:__init()
             p:SetValue("FirstSpawn", true)
         end
     end
-    
-    Thread(function()
-        while true do
-            log_function_call("sSpawnManager (function()")
-            for player in Server:GetPlayers() do
-                if IsValid(player) then
-                    self:UpdatePlayerPositionMinuteTick(player)
-                end
-                Timer.Sleep(1)
+
+	Timer.SetInterval(1000 * 30, function()
+		
+		local seconds = Server:GetElapsedSeconds()
+
+        for player in Server:GetPlayers() do
+			if IsValid(player) then
+				
+				local last_update = player:GetValue("SpawnLastUpdate")
+
+				if last_update and seconds - last_update >= 60 then
+					self:UpdatePlayerPositionMinuteTick(player)
+					player:SetValue("SpawnLastUpdate", seconds)
+				end
+
             end
-            log_function_call("sSpawnManager (function() 2")
-            Timer.Sleep(1000)
         end
     end)
 
@@ -100,16 +104,12 @@ end
 
 function sSpawnManager:PlayerQuit(args)
 
-    log_function_call("sSpawnManager:PlayerQuit")
-
     Events:Fire("Discord", {
         channel = "Chat",
         content = string.format("*%s [%s] left the server.*", args.player:GetName(), args.player:GetSteamId())
     })
 
     self:UpdatePlayer(args.player)
-
-    log_function_call("sSpawnManager:PlayerQuit 2")
 
 end
 
@@ -186,7 +186,9 @@ function sSpawnManager:PlayerJoin(args)
     Events:Fire("Discord", {
         channel = "Chat",
         content = string.format("*%s [%s] joined the server.*", args.player:GetName(), args.player:GetSteamId())
-    })
+	})
+	
+	args.player:SetValue("SpawnLastUpdate", Server:GetElapsedSeconds())
 
 end
 

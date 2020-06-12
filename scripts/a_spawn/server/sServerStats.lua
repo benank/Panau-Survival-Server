@@ -18,10 +18,8 @@ function sServerStats:ClientModuleLoad(args)
 end
 
 function sServerStats:PlayerQuit(args)
-    log_function_call("sServerStats:PlayerQuit")
     self.stats["PlayersOnline"] = self.stats["PlayersOnline"] - 1
     self:RefreshOnlinePlayers()
-    log_function_call("sServerStats:PlayerQuit 2")
 end
 
 function sServerStats:RefreshOnlinePlayers()

@@ -6,6 +6,8 @@ function EquippableGrapplehook:__init()
     self.sync_timer = Timer()
     self.dura_change = 0
 
+    self.uid = 0
+
     self.blocked_actions = 
     {
         [Action.DecGrappleDistance] = true,
@@ -28,9 +30,9 @@ function EquippableGrapplehook:Render(args)
     
     if self.sync_timer:GetSeconds() > 2 and self.dura_change > 0 then
         if EquippableRocketGrapple:GetEquipped() then
-            Network:Send(var("items/RocketGrappleDecreaseDura"):get(), {change = math.ceil(self.dura_change)})
+            Network:Send(var("items/RocketGrappleDecreaseDura"):get(), {uid = self.uid, change = math.ceil(self.dura_change)})
         else
-            Network:Send(var("items/GrapplehookDecreaseDura"):get(), {change = math.ceil(self.dura_change)})
+            Network:Send(var("items/GrapplehookDecreaseDura"):get(), {uid = self.uid, change = math.ceil(self.dura_change)})
         end
         
         self.sync_timer:Restart()
@@ -66,6 +68,7 @@ end
 
 function EquippableGrapplehook:ToggleEquipped(args)
     self.equipped = args.equipped
+    self.uid = self.equipped and args.uid or 0
     self:StopUsing()
 
     self:ToggleEnabled(self.equipped)

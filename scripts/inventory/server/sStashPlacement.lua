@@ -9,13 +9,6 @@ local StashNameToType =
 
 function sStashPlacement:__init()
     
-    Thread(function()
-        while not SharedObject.GetByName("SafezoneConfig") do
-            Timer.Sleep(500)
-        end
-        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
-    end)
-
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
 
     Network:Subscribe("items/CancelStashPlacement", self, self.CancelStashPlacement)
@@ -78,6 +71,7 @@ function sStashPlacement:PlaceStash(args, player)
         return
     end
 
+    self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
     -- If they are within sz radius * 2, we don't let them place that close
     if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 5 then

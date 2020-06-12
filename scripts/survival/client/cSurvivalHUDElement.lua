@@ -15,14 +15,21 @@ function cSurvivalHUDElement:__init(args)
 
     if self.dual then
         self.level = 0
+        self:UpdateExp()
         Events:Subscribe("PlayerExpUpdated", function(args)
-            local exp_data = LocalPlayer:GetValue("Exp")
-
-            self.percent = exp_data.combat_exp / exp_data.combat_max_exp
-            self.percent2 = exp_data.explore_exp / exp_data.explore_max_exp
-            self.level = exp_data.level
+            self:UpdateExp()
         end)
     end
+end
+
+function cSurvivalHUDElement:UpdateExp()
+
+    local exp_data = LocalPlayer:GetValue("Exp")
+    if not exp_data then return end
+
+    self.percent = exp_data.combat_exp / exp_data.combat_max_exp
+    self.percent2 = exp_data.explore_exp / exp_data.explore_max_exp
+    self.level = exp_data.level
 end
 
 -- Renders the large version of the element

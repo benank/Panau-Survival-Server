@@ -40,63 +40,37 @@ function sVehicleManager:__init()
 
     Network:Subscribe("Vehicles/VehicleDestroyed", self, self.VehicleDestroyedClient)
 
-    Thread(function()
-        while true do
-
-            self:Tick500()
-
-            Timer.Sleep(500)
-        end
+    Timer.SetInterval(500, function()
+        self:Tick500()
     end)
 
 
     -- Respawn vehicles loop
-    Thread(function()
-        while true do
+    Timer.SetInterval(1000 * 60 * 60, function()
+        local random = math.random
 
-            local random = math.random
+        for spawn_type, data_entries in pairs(self.spawns) do
+            for index, spawn_data in pairs(data_entries) do
 
-            for spawn_type, data_entries in pairs(self.spawns) do
-                for index, spawn_data in pairs(data_entries) do
-
-                    if not spawn_data.spawned 
-                    and random() < config.spawn[spawn_type].spawn_chance
-                    and spawn_data.respawn_timer:GetMinutes() >= config.spawn[spawn_type].respawn_interval then
-                        -- Spawn vehicle
-                        self:SpawnNaturalVehicle(spawn_type, index)
-                    end
-
-                    Timer.Sleep(1)
+                if not spawn_data.spawned 
+                and random() < config.spawn[spawn_type].spawn_chance
+                and spawn_data.respawn_timer:GetMinutes() >= config.spawn[spawn_type].respawn_interval then
+                    -- Spawn vehicle
+                    self:SpawnNaturalVehicle(spawn_type, index)
                 end
 
             end
 
-            Timer.Sleep(1000 * 60 * 60)
         end
+
     end)
 
-    Thread(function()
-        while true do
-
-            log_function_call("CheckForDestroyedVehicles")
-            self:CheckForDestroyedVehicles()
-            log_function_call("CheckForDestroyedVehicles 2")
-
-            Timer.Sleep(1000 * 10)
-
-        end
+    Timer.SetInterval(1000 * 10, function()
+        self:CheckForDestroyedVehicles()
     end)
 
-    Thread(function()
-        while true do
-
-            log_function_call("sVehicleManager:SaveVehicles")
-            self:SaveVehicles()
-            log_function_call("sVehicleManager:SaveVehicles 2")
-
-            Timer.Sleep(1000 * 60)
-
-        end
+    Timer.SetInterval(1000 * 60, function()
+        self:SaveVehicles()
     end)
 
 end
@@ -158,11 +132,19 @@ end
 -- Called every minute, saves all owned vehicles in the server
 function sVehicleManager:SaveVehicles()
 
+    local seconds = Server:GetElapsedSeconds()
+
     for id, v in pairs(self.owned_vehicles) do
-        if IsValid(v) then 
-            self:SaveVehicle(v)
+        if IsValid(v) then
+
+            local last_update = v:GetValue("VehicleLastUpdate")
+
+            if last_update and seconds - last_update >= 60 then
+                self:SaveVehicle(v)
+            end
+
+            v:SetValue("VehicleLastUpdate", seconds)
         end
-        Timer.Sleep(1)
     end
 
 end
@@ -313,8 +295,6 @@ function sVehicleManager:CheckForDestroyedVehicles()
             self.vehicles[id] = nil
         end
 
-        Timer.Sleep(1)
-
     end
 
 end
@@ -324,13 +304,11 @@ function sVehicleManager:Tick500()
 end
 
 function sVehicleManager:MinuteTick()
-    log_function_call("sVehicleManager:MinuteTick")
     for id, time in pairs(self.despawning_vehicles) do
 
         if count_table(self.owned_vehicles[id]:GetOccupants()) > 0 then
             -- Friend is using vehicle, restart timer
             self.despawning_vehicles[id] = Server:GetElapsedSeconds()
-            self:SaveVehicle(self.owned_vehicles[id])
 
         elseif Server:GetElapsedSeconds() - time >= config.owned_despawn_time * 60 then
             -- Remove vehicle from game
@@ -354,7 +332,6 @@ end
 
 function sVehicleManager:PlayerQuit(args)
 
-    log_function_call("sVehicleManager:PlayerQuit")
     self.players[tostring(args.player:GetSteamId())] = nil
 
     local vehicles = args.player:GetValue("OwnedVehicles")
@@ -367,7 +344,6 @@ function sVehicleManager:PlayerQuit(args)
         end
     end
 
-    log_function_call("sVehicleManager:PlayerQuit 2")
 end
 
 function sVehicleManager:PlayerExitVehicle(args)
@@ -543,7 +519,7 @@ function sVehicleManager:PlayerEnterVehicle(args)
     args.data = data
 
     if data.owner_steamid ~= tostring(args.player:GetSteamId()) 
-    and not IsAFriend(args.player, data.owner_steamid) then
+    and not AreFriends(args.player, data.owner_steamid) then
         -- If this is not the owner and they are not a friend of the owner
         self:TryBuyVehicle(args)
     else

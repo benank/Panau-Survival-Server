@@ -33,8 +33,7 @@ function sLootbox:__init(args)
     if self.is_dropbox then
 
         self.respawn_timer = true
-        Thread(function()
-            Timer.Sleep(args.is_deathdrop and Lootbox.Deathdrop_Despawn_Time or Lootbox.Dropbox_Despawn_Time)
+        Timer.SetTimeout(args.is_deathdrop and Lootbox.Deathdrop_Despawn_Time or Lootbox.Dropbox_Despawn_Time, function()
             self:Remove()
         end)
 
@@ -208,7 +207,7 @@ function sLootbox:TakeLootStack(args, player)
 
     local return_stack = inv:AddStack({stack = stack})
 
-    if self.is_stash and not IsAFriend(player, self.stash.owner_id) and not self.stash:IsPlayerOwner(player) then
+    if self.is_stash and not AreFriends(player, self.stash.owner_id) and not self.stash:IsPlayerOwner(player) then
         Events:Fire("Discord", {
             channel = "Stashes",
             content = string.format("**__RAID__**: %s [%s] is raiding [%s].", 
@@ -329,8 +328,7 @@ function sLootbox:StartRespawnTimer()
 
     self.respawn_timer = true
     
-    Thread(function()
-        Timer.Sleep(self:GetRespawnTime())
+    Timer.SetTimeout(self:GetRespawnTime(), function()
         self:RespawnBox()
     end)
 

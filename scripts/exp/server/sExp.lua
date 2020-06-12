@@ -19,6 +19,33 @@ function sExp:__init()
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+
+end
+
+function sExp:PlayerQuit(args)
+    
+    local steam_id = tostring(args.player:GetSteamId())
+    local exp_data = args.player:GetValue("Exp")
+
+    if not exp_data then return end
+
+    self:UpdateDB(steam_id, exp_data)
+
+end
+
+function sExp:ModuleUnload()
+
+    for p in Server:GetPlayers() do
+        local steam_id = tostring(p:GetSteamId())
+        local exp_data = p:GetValue("Exp")
+
+        if exp_data then
+            self:UpdateDB(steam_id, exp_data)
+        end
+    end
+
 end
 
 function sExp:ItemExplode(args)
@@ -305,8 +332,6 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
         gained_level = true
     end
 
-    self:UpdateDB(steamID, exp_data)
-
     if IsValid(player) then
         player:SetNetworkValue("Exp", exp_data)
         Events:Fire("PlayerExpUpdated", {player = player})
@@ -314,6 +339,15 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
         if gained_level then
             Events:Fire("PlayerLevelUpdated", {player = player})
         end
+
+        local last_update = player:GetValue("ExpLastUpdate")
+
+        if Server:GetElapsedSeconds() - last_update > 60 then
+            self:UpdateDB(steamID, exp_data)
+            player:SetValue("ExpLastUpdate", Server:GetElapsedSeconds())
+        end
+    else
+        self:UpdateDB(steamID, exp_data)
     end
 
 end
@@ -379,11 +413,14 @@ function sExp:ClientModuleLoad(args)
     args.player:SetNetworkValue("Exp", exp_data)
     Events:Fire("PlayerExpLoaded", {player = args.player})
 
+    args.source = "exp"
     Events:Fire("LoadFlowAdd", args)
 
     if self.global_multiplier > 1 then
         Chat:Send(args.player, string.format("Global EXP multiplier is currently set to %.2f!", self.global_multiplier), Color(0, 255, 0))
     end
+
+    args.player:SetValue("ExpLastUpdate", Server:GetElapsedSeconds())
 
 end
 

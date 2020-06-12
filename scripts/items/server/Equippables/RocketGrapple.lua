@@ -8,7 +8,7 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
     args.player:SetNetworkValue("RocketGrappleEquipped", args.item.equipped == true)
 
-    Network:Send(args.player, "items/ToggleEquippedRocketGrapple", {equipped = args.item.equipped == true})
+    Network:Send(args.player, "items/ToggleEquippedRocketGrapple", {equipped = args.item.equipped == true, uid = args.item.uid})
 
 end)
 
@@ -18,6 +18,10 @@ Network:Subscribe("items/RocketGrappleDecreaseDura", function(args, player)
     if not item then return end
     local change = tonumber(args.change)
     if change < 1 or not change then change = 1 end
+
+    if item.uid ~= args.uid then
+        UpdateEquippedItem(player, "Grapplehook", nil)
+    end
 
     item.durability = item.durability - change * ItemsConfig.equippables["RocketGrapple"].dura_per_sec
     Inventory.ModifyDurability({

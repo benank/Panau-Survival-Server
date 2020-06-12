@@ -50,7 +50,7 @@ function ListGUI:__init()
     }
 
     self.friend_delays = {} -- Delays on how often a player can be added/removed
-    self.friend_delay_time = 30
+    self.friend_delay_time = 15
     
 	self.PlayerCount = 0
 	self.Rows = {}
@@ -227,7 +227,7 @@ end
 
 function ListGUI:UpdateFriendColor(tablerow, steam_id)
 
-    if IsFriend(LocalPlayer, steam_id) and IsAFriend(LocalPlayer, steam_id) then
+    if AreFriends(LocalPlayer, steam_id) then
         -- Both are friends
 		tablerow:SetBackgroundEvenColor(self.colors.friends)
         tablerow:SetBackgroundHoverColor(self.colors.friends)
@@ -235,15 +235,21 @@ function ListGUI:UpdateFriendColor(tablerow, steam_id)
         tablerow:FindChildByName("button", true):SetText("Remove")
     elseif IsFriend(LocalPlayer, steam_id) and not IsAFriend(LocalPlayer, steam_id) then
         -- LocalPlayer friended but they did not friend back
-		tablerow:SetBackgroundEvenColor(self.colors.i_added)
-        tablerow:SetBackgroundHoverColor(self.colors.i_added)
-        tablerow:SetBackgroundOddColor(self.colors.i_added)
+		--tablerow:SetBackgroundEvenColor(self.colors.i_added)
+        --tablerow:SetBackgroundHoverColor(self.colors.i_added)
+        --tablerow:SetBackgroundOddColor(self.colors.i_added)
+		tablerow:SetBackgroundEvenColor(self.colors.default)
+        tablerow:SetBackgroundHoverColor(self.colors.default_selected)
+        tablerow:SetBackgroundOddColor(self.colors.default_odd)
         tablerow:FindChildByName("button", true):SetText("Remove")
     elseif not IsFriend(LocalPlayer, steam_id) and IsAFriend(LocalPlayer, steam_id) then
         -- Player friended but LocalPlayer did not friend back
-		tablerow:SetBackgroundEvenColor(self.colors.they_added)
-        tablerow:SetBackgroundHoverColor(self.colors.they_added)
-        tablerow:SetBackgroundOddColor(self.colors.they_added)
+		--tablerow:SetBackgroundEvenColor(self.colors.they_added)
+        --tablerow:SetBackgroundHoverColor(self.colors.they_added)
+        --tablerow:SetBackgroundOddColor(self.colors.they_added)
+		tablerow:SetBackgroundEvenColor(self.colors.default)
+        tablerow:SetBackgroundHoverColor(self.colors.default_selected)
+        tablerow:SetBackgroundOddColor(self.colors.default_odd)
         tablerow:FindChildByName("button", true):SetText("Add")
     else
         -- No relation to this player
