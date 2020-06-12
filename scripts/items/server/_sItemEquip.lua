@@ -8,6 +8,7 @@ function Unload()
     for player in Server:GetPlayers() do
         player:SetNetworkValue("EquippedItems", {})
         player:SetNetworkValue("EquippedVisuals", {})
+        player:SetValue("CurrentlyHacking", nil)
     end
 
 end

@@ -80,9 +80,9 @@ function sStashes:UpdateStashAccessMode(args, player)
 
     local current_box = player:GetValue("CurrentLootbox")
 
-    if not current_box or not current_box.lootbox.stash then return end
+    if not current_box or not current_box.stash then return end
 
-    local stash = self.stashes[current_box.lootbox.stash.id]
+    local stash = self.stashes[current_box.stash.id]
 
     if not stash then return end
 
