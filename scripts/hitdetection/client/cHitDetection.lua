@@ -121,7 +121,7 @@ function cHitDetection:CheckForVehicleExplosionDamage(args)
         if p:GetPosition():Distance(args.position) < my_dist then return end
     end
 
-    args.radius = args.radius * 1.5
+    args.radius = args.radius * 2
 
     -- Okay, we are the closest. Now lets see if this thing hit any vehicles
 
