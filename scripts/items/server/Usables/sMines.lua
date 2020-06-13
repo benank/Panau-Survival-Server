@@ -383,6 +383,9 @@ function sMines:CompleteItemUsage(args, player)
 
         local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues()
 
+        print(BlacklistedAreas)
+        output_table(BlacklistedAreas)
+
         for _, area in pairs(BlacklistedAreas) do
             if player:GetPosition():Distance(area.pos) < area.size then
                 Chat:Send(player, "You cannot place mines here!", Color.Red)
