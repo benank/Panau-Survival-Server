@@ -71,6 +71,17 @@ function cWorkBenches:GameRender(args)
 
     for index, data in pairs(self.active_workbenches) do
 
+        local t = Transform3():Translate(data.position + Vector3.Up):Rotate(angle * Angle(0, math.pi, 0))
+        Render:SetTransform(t)
+
+        local color = Color.Red
+        local text = string.format("%.0f", math.max(0, data.time_left - data.timer:GetSeconds()))
+
+        local text_size = Render:GetTextWidth(text, 200, 0.003)
+        Render:DrawText(Vector3(-text_size * 0.1, -0.5, 0), text, color, 200, 0.003)
+        
+        Render:ResetTransform()
+
         -- Draw two large lines
 		local t = Transform3():Translate(data.position + Vector3(6, -1000, 0)):Rotate(angle)
 		Render:SetTransform(t)
@@ -88,15 +99,6 @@ function cWorkBenches:GameRender(args)
         Render:ResetTransform()
 
         
-        local t = Transform3():Translate(data.position + Vector3.Up):Rotate(angle * Angle(0, math.pi, 0))
-        Render:SetTransform(t)
-
-        local color = Color.Red
-        local text = string.format("%.0f", math.max(0, data.time_left - data.timer:GetSeconds()))
-
-        local text_size = Render:GetTextWidth(text, 200, 0.003)
-        Render:DrawText(Vector3(-text_size * 0.1, -0.5, 0), text, color, 200, 0.003)
-
 
     end
 
