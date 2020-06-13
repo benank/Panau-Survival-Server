@@ -417,6 +417,15 @@ function sClaymores:FinishClaymorePlacement(args, player)
         self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
     end
 
+    local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues()
+
+    for _, area in pairs(BlacklistedAreas) do
+        if player:GetPosition():Distance(area.pos) < area.size then
+            Chat:Send(player, "You cannot place claymores here!", Color.Red)
+            return
+        end
+    end
+
     if args.model and DisabledPlacementModels[args.model] then
         Chat:Send(player, "Placing claymore failed!", Color.Red)
         return
