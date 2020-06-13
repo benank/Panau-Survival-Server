@@ -13,4 +13,4 @@ BlacklistedAreas =
     {pos = Vector3(-7116.8, 388.98, 2928.25), size = 100},
 }
 
-local blacklist = SharedObject.Create("BlacklistedAreas", BlacklistedAreas)
+local blacklist = SharedObject.Create("BlacklistedAreas", {blacklist = BlacklistedAreas})

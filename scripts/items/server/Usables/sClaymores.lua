@@ -417,7 +417,7 @@ function sClaymores:FinishClaymorePlacement(args, player)
         self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
     end
 
-    local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues()
+    local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues().blacklist
 
     for _, area in pairs(BlacklistedAreas) do
         if player:GetPosition():Distance(area.pos) < area.size then

@@ -381,10 +381,7 @@ function sMines:CompleteItemUsage(args, player)
             return
         end
 
-        local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues()
-
-        print(BlacklistedAreas)
-        output_table(BlacklistedAreas)
+        local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues().blacklist
 
         for _, area in pairs(BlacklistedAreas) do
             if player:GetPosition():Distance(area.pos) < area.size then
