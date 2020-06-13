@@ -18,6 +18,14 @@ function sEvac:UseItem(args, player)
             return
         end
 
+        
+        local num_grapples = Inventory.GetNumOfItem({player = player, item_name = "Grapplehook"})
+
+        if num_grapples == 0 then
+            Chat:Send(player, "You must have a grapplehook to use this item!", Color.Red)
+            return
+        end
+
         Inventory.RemoveItem({
             item = player_iu.item,
             index = player_iu.index,
