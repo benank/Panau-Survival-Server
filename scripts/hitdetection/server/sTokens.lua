@@ -4,25 +4,16 @@ function sTokens:__init()
 
     self.TOKEN_LENGTH = 8
 
-    Thread(function()
+    Timer.SetInterval(1000, function()
 
-        while true do
-            for p in Server:GetPlayers() do
-                if IsValid(p) then
+        for p in Server:GetPlayers() do
 
-                    local token = self:GetNewToken()
-                    p:SetValue("HD_Token_Old", p:GetValue("HD_Token"))
-                    p:SetValue("HD_Token", token)
+            local token = self:GetNewToken()
+            p:SetValue("HD_Token_Old", p:GetValue("HD_Token"))
+            p:SetValue("HD_Token", token)
 
-                    Network:Send(p, "HitDetection/UpdateToken", {token = token})
+            Network:Send(p, "HitDetection/UpdateToken", {token = token})
 
-                    Timer.Sleep(10)
-
-                end
-
-            end
-
-            Timer.Sleep(1000)
         end
 
     end)
