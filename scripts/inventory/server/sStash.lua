@@ -97,6 +97,7 @@ function sStash:ContentsChanged(player)
 end
 
 function sStash:Sync(player)
+    if tostring(player:GetSteamId()) ~= self.owner_id then return end
     Network:Send(player, "Stashes/Sync", self:GetSyncData()) 
 end
 
