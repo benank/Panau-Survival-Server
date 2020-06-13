@@ -47,7 +47,7 @@ function cWorkBenches:SyncStatus(args)
             self:CreateCombiningLight(args.position)
         }
 
-        self.active_workbenches[args.name] = {position = args.position}
+        self.active_workbenches[args.name] = {position = args.position, time_left = args.time_left, timer = Timer()}
 
     end
 
@@ -86,6 +86,17 @@ function cWorkBenches:GameRender(args)
         Render:FillArea(Vector3(-0.7, 0, 0), Vector3(1.5, 4000, 0), self.signal_color)
 
         Render:ResetTransform()
+
+        
+        local t = Transform3():Translate(data.position + Vector3.Up):Rotate(angle * Angle(0, math.pi, 0))
+        Render:SetTransform(t)
+
+        local color = Color.Red
+        local text = string.format("%.0f", math.max(0, data.time_left - data.timer:GetSeconds()))
+
+        local text_size = Render:GetTextWidth(text, 200, 0.003)
+        Render:DrawText(Vector3(-text_size * 0.1, -0.5, 0), text, color, 200, 0.003)
+
 
     end
 

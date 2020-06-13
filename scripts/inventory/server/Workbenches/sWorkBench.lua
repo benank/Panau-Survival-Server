@@ -8,6 +8,9 @@ function sWorkBench:__init(args)
     self.lootbox = args.lootbox
     self.stash = args.stash
 
+    self.timer = Timer()
+    self.combine_time = 0
+
 end
 
 function sWorkBench:SyncStatus(player, finished)
@@ -17,7 +20,8 @@ function sWorkBench:SyncStatus(player, finished)
         state = self.state,
         finished = finished,
         name = self.name,
-        position = self.lootbox.position
+        position = self.lootbox.position,
+        time_left = self.combine_time - self.timer:GetSeconds()
     }
 
     if not IsValid(player) then
@@ -41,13 +45,17 @@ function sWorkBench:BeginCombining(player)
     self.lootbox:ForceClose()
     self.lootbox:Sync()
     self.stash:Sync()
-    
-    self:SyncStatus()
 
+    self.timer = Timer()
+    
     local combined_dura = self:GetCombinedDurability()
     local max_dura = self.lootbox.contents[1].contents[1].max_durability
     local name = self.lootbox.contents[1]:GetProperty("name")
     local combine_time = combined_dura / max_dura * WorkBenchConfig.time_to_combine
+
+    self.combine_time = combine_time
+
+    self:SyncStatus()
 
     Timer.SetTimeout(1000 * combine_time, function()
     
