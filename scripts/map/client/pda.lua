@@ -18,6 +18,7 @@ end
 
 function PDA:Toggle()
 	self.active = not self.active
+	LocalPlayer:SetValue("MapOpen", self.active)
 end
 
 function PDA:ModuleLoad()
