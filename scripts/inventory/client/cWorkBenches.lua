@@ -17,6 +17,10 @@ end
 
 function cWorkBenches:SyncStatus(args)
 
+    if not self.idle_sounds[args.name] then
+        self.idle_sounds[args.name] = self:CreateAmbientWorkbenchSound(args.position)
+    end
+
     if args.state == WorkBenchState.Idle then
 
         if self.fx[args.name] then
@@ -32,10 +36,6 @@ function cWorkBenches:SyncStatus(args)
 
         if args.finished then
             self:PlayFinishEffect(args.position)
-        end
-
-        if not self.idle_sounds[args.name] then
-            self.idle_sounds[args.name] = self:CreateAmbientWorkbenchSound(args.position)
         end
 
     elseif args.state == WorkBenchState.Combining then
