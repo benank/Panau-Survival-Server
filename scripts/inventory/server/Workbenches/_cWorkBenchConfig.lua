@@ -2,10 +2,10 @@ WorkBenchConfig =
 {
     locations = 
     {
-        {position = Vector3(4755.66, 572.124, 13219.67), angle = Angle()}, -- South
-        {position = Vector3(14426.58, 204.574, -1102.409), angle = Angle()}, -- East
-        {position = Vector3(2602.199, 384, -11045.744), angle = Angle()}, -- North
-        {position = Vector3(-12293.124, 569.63, 2815.34), angle = Angle()}, -- West
+        ["Southern Workbench"] = {position = Vector3(4755.66, 572.124, 13219.67), angle = Angle()}, -- South
+        ["Eastern Workbench"] = {position = Vector3(11455.59, 444, -516.274), angle = Angle(-math.pi * 0.2, 0, 0)}, -- East
+        ["Northern Workbench"] = {position = Vector3(3018.479, 206.05, -11952.077), angle = Angle(-math.pi * 0.2, -math.pi * 0.01, -math.pi * 0.02)}, -- North
+        ["Western Workbench"] = {position = Vector3(-7116.8, 388.85, 2928.25), angle = Angle(math.pi * 0.4, 0, 0)}, -- West
     },
     blacklisted_items = -- Put any blacklisted items in here
     {
@@ -14,6 +14,5 @@ WorkBenchConfig =
     max_items_at_once = 3, -- How many items can be put in the workbench at once
     maximum_durability = 5, -- Max durability is 5x normal
     durability_bonus = 0.1, -- x% durability bonus upon one finished combination
-    radius = 100, -- No build zone
     time_to_combine = 10 -- Combined durability / max_durability * time_to_combine = seconds it takes to combine
 }

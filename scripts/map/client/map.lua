@@ -51,7 +51,8 @@ Location.Icon = {
 Location.Color = 
 {
     Green = Color(0, 255, 0, 80),
-    Red = Color(255, 0, 0, 80)
+	Red = Color(255, 0, 0, 80),
+	Yellow = Color(255, 255, 0, 80)
 }
 
 Waypoint:Remove()
@@ -519,10 +520,10 @@ Map = {
 		-- Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green)
 		
 		-- Workbenches
-		Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench),
-		Location("Eastern Workbench", Vector3(14426.58, 204.574, -1102.409), Location.Type.Workbench),
-		Location("Northern Workbench", Vector3(2602.199, 384, -11045.744), Location.Type.Workbench),
-		Location("Western Workbench", Vector3(-12293.124, 569.63, 2815.34), Location.Type.Workbench),
+		["Southern Workbench"] = Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench),
+		["Eastern Workbench"] = Location("Eastern Workbench", Vector3(11455.59, 444, -516.274), Location.Type.Workbench),
+		["Northern Workbench"] = Location("Northern Workbench", Vector3(3018.479, 206.1557, -11952.077), Location.Type.Workbench),
+		["Western Workbench"] = Location("Western Workbench", Vector3(-7116.8, 388.98, 2928.25), Location.Type.Workbench),
 	}
 }
 
@@ -563,7 +564,7 @@ function Map:Draw()
 
 	local scale = Map.IconScale
 
-	for k, location in ipairs(Map.Locations) do
+	for k, location in pairs(Map.Locations) do
 		local position = Map:WorldToScreen(location.position)
 
 		if position.x > 0 and position.y > 0 and position.x < Render.Width and position.y < Render.Height then
@@ -678,3 +679,10 @@ function Map:DrawLegend()
 	Render:DrawText(position - (size_y) + (Vector2.Down * (Location.Icon.Size.y / 2) * scale) + (Vector2.Down * TextSize.VeryLarge * scale / 2), text, Color.White, TextSize.VeryLarge, scale)
 
 end
+
+Events:Subscribe("Workbenches/UpdateState", function(args)
+	if Map.Locations[args.name] then
+		Map.Locations[args.name].color = args.state == 2 and Location.Color.Yellow or nil
+		Map.Locations[args.name].name = args.state == 1 and args.name or args.name .. " (Active)"
+	end
+end)
