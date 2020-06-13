@@ -67,6 +67,10 @@ function sExp:ItemExplode(args)
     -- Check owner id for friend or self
     if not args.owner_id then return end
 
+    if args.exp_enabled ~= nil then
+        if not args.exp_enabled then return end
+    end
+
     if not IsValid(args.player) then return end
     if args.owner_id == tostring(args.player:GetSteamId()) then return end
 
