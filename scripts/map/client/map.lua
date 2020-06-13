@@ -57,11 +57,12 @@ Location.Color =
 
 Waypoint:Remove()
 
-function Location:__init(name, position, type, color)
+function Location:__init(name, position, type, color, show_on_minimap)
 	self.name     = name
 	self.position = position
     self.type     = type
-    self.color    = color
+	self.color    = color
+	self.show_on_minimap = show_on_minimap == true
 end
 
 function Location:GetTypeName()
@@ -520,10 +521,10 @@ Map = {
 		-- Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green)
 		
 		-- Workbenches
-		["Southern Workbench"] = Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench),
-		["Eastern Workbench"] = Location("Eastern Workbench", Vector3(11455.59, 444, -516.274), Location.Type.Workbench),
-		["Northern Workbench"] = Location("Northern Workbench", Vector3(3018.479, 206.1557, -11952.077), Location.Type.Workbench),
-		["Western Workbench"] = Location("Western Workbench", Vector3(-7116.8, 388.98, 2928.25), Location.Type.Workbench),
+		["Southern Workbench"] = Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench, nil, true),
+		["Eastern Workbench"] = Location("Eastern Workbench", Vector3(11455.59, 444, -516.274), Location.Type.Workbench, nil, true),
+		["Northern Workbench"] = Location("Northern Workbench", Vector3(3018.479, 206.1557, -11952.077), Location.Type.Workbench, nil, true),
+		["Western Workbench"] = Location("Western Workbench", Vector3(-7116.8, 388.98, 2928.25), Location.Type.Workbench, nil, true),
 	}
 }
 
@@ -654,6 +655,25 @@ function Map:Draw()
     end
 
     self:DrawLegend()
+
+	collectgarbage()
+end
+
+function Map:DrawMinimap()
+
+	local scale = Map.IconScale
+
+	for k, location in pairs(Map.Locations) do
+
+		if location.show_on_minimap then
+			local minimap_pos, on_screen = Render:WorldToMinimap(location.position)
+
+			if on_screen then
+				location:Draw(minimap_pos, scale)
+			end
+		end
+
+	end
 
 	collectgarbage()
 end

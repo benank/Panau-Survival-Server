@@ -107,6 +107,7 @@ function PDA:LocalPlayerInput(args)
 end
 
 function PDA:Render()
+
 	if Game:GetState() ~= GUIState.Game then
 		if self.active then
 			PDA:Toggle()
@@ -114,6 +115,8 @@ function PDA:Render()
 
 		return
 	end
+
+	Map:DrawMinimap()
 
 	Mouse:SetVisible(not PDA:IsUsingGamepad() and self.active)
 
