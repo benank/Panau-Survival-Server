@@ -57,6 +57,12 @@ function sWorkBench:BeginCombining(player)
 
     self:SyncStatus()
 
+    Events:Fire("Discord", {
+        channel = "Inventory",
+        content = string.format("%s [%s] started a combine of %s at the %s", 
+            player:GetName(), tostring(player:GetSteamId()), self.lootbox.contents[1]:GetProperty("name"), self.name)
+    })
+
     Timer.SetTimeout(1000 * combine_time, function()
     
         local new_item = CreateItem({
@@ -75,6 +81,12 @@ function sWorkBench:BeginCombining(player)
 
         self:SyncStatus()
 
+        Events:Fire("Discord", {
+            channel = "Inventory",
+            content = string.format("%s [%s] finished a combine of %s [New dura: %.0f] at the %s", 
+                player:GetName(), tostring(player:GetSteamId()), self.lootbox.contents[1]:GetProperty("name"), combined_dura, self.name)
+        })
+    
     end)
 
 end
