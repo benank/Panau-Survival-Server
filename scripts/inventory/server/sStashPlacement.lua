@@ -79,6 +79,7 @@ function sStashPlacement:PlaceStash(args, player)
         return
     end
 
+
     local pitch = math.abs(args.angle.pitch)
     local roll = math.abs(args.angle.roll)
 
@@ -94,7 +95,25 @@ function sStashPlacement:PlaceStash(args, player)
     end
 
 
-    self:TryPlaceStash(args, player)
+    local sub = nil
+    sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(player:GetSteamId()), function(args)
+    
+        Events:Unsubscribe(sub)
+        sub = nil
+
+        if args.too_close then
+
+            Chat:Send(player, "Cannot place stashes too close to loot!", Color.Red)
+            return
+
+        end
+
+        self:TryPlaceStash(args, args.player)
+
+    end)
+
+    args.player = player
+    Events:Fire("CheckIsTooCloseToLoot", args)
 
 end
 
