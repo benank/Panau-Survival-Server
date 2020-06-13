@@ -23,7 +23,7 @@ function sWorkBench:SyncStatus(player, finished)
     if not IsValid(player) then
         Network:Broadcast("Workbenches/SyncStatus", data)
     else
-        Network:Send("Workbenches/SyncStatus", data)
+        Network:Send(player, "Workbenches/SyncStatus", data)
     end
 end
 
