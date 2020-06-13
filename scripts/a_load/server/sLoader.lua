@@ -51,9 +51,9 @@ function sLoader:TogglePlayerEnabled(player, enabled)
 
     elseif enabled and player:GetValue("Loading") then
 
+        player:SetEnabled(true)
         player:SetStreamDistance(self.default_stream_distance)
         player:SetValue("Loading", false)
-        player:SetEnabled(true)
 
     end
 end
