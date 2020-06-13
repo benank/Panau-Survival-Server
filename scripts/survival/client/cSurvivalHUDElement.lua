@@ -61,13 +61,12 @@ function cSurvivalHUDElement:RenderLarge()
         fill_size = fill_size / 2
     end
 
+    self.percent = math.min(1, self.percent)
+    
     Render:FillArea(
         text_size, 
         Vector2(fill_size * self.percent, self.large_size.y), 
         self.color)
-
-    self.percent = math.min(1, self.percent)
-    self.percent2 = math.min(1, self.percent2)
 
     if self.dual then
         Render:FillArea(
