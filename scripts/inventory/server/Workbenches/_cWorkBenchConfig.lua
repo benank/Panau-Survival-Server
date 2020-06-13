@@ -14,5 +14,5 @@ WorkBenchConfig =
     max_items_at_once = 3, -- How many items can be put in the workbench at once
     maximum_durability = 5, -- Max durability is 5x normal
     durability_bonus = 0.1, -- x% durability bonus upon one finished combination
-    time_to_combine = 15 -- Combined durability / max_durability * time_to_combine = seconds it takes to combine
+    time_to_combine = 30 -- Combined durability / max_durability * time_to_combine = seconds it takes to combine
 }
