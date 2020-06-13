@@ -123,6 +123,10 @@ function sWorkBench:CanConbineItems()
 
     for _, stack in pairs(self.lootbox.contents) do
         if stack:GetProperty("name") ~= target_stack:GetProperty("name") then return false end
+        for _, item in pairs(stack.contents) do
+            -- If there is a max item in there, don't combine
+            if item.durability == item.max_durability * WorkBenchConfig.maximum_durability then return false end
+        end
     end
 
     return true
