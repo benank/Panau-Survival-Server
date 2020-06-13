@@ -50,9 +50,11 @@ Location.Icon = {
 
 Location.Color = 
 {
-    Green = Color(0, 255, 0, 80),
-	Red = Color(255, 0, 0, 80),
-	Yellow = Color(255, 255, 0, 80)
+    Green = Color(11, 151, 27, 255),
+	Red = Color(168, 32, 15, 255),
+	Yellow = Color(197, 155, 16, 255),
+	White = Color(230, 230, 230, 255),
+	Blue = Color(8, 63, 140, 255),
 }
 
 Waypoint:Remove()
@@ -61,7 +63,7 @@ function Location:__init(name, position, type, color, show_on_minimap)
 	self.name     = name
 	self.position = position
     self.type     = type
-	self.color    = color
+	self.color    = color or Location.Color.White
 	self.show_on_minimap = show_on_minimap == true
 end
 
@@ -99,12 +101,12 @@ end
 
 function Location:DrawColor(position, scale)
     if not self.color then return end
-    Render:FillArea(position - (Location.Icon.Size * scale / 2), Location.Icon.Size * scale, self.color)
+    Render:FillArea(position - (Location.Icon.Size * scale / 2) + Vector2(2,2), Location.Icon.Size * scale - Vector2(4,4), self.color)
 end
 
 function Location:Draw(position, scale)
-    self:DrawIcon(position, scale)
     self:DrawColor(position, scale)
+    self:DrawIcon(position, scale)
 end
 
 function Location:DrawTitle(position, scale)
