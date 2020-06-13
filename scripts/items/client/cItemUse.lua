@@ -96,8 +96,7 @@ function cItemUse:CompleteUsage()
         forward_ray.hit_type = "ClientStaticObject"
     end
 
-    local waypoint_pos, waypoint_set = Waypoint:GetPosition()
-    Network:Send(var("items/CompleteItemUsage"):get(), {ray = ray, forward_ray = forward_ray, waypoint = waypoint_pos, waypoint_set = waypoint_set})
+    Network:Send(var("items/CompleteItemUsage"):get(), {ray = ray, forward_ray = forward_ray, waypoint = Waypoint:GetPosition()})
     self:UnsubscribeEvents()
 
 end

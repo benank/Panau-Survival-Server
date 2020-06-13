@@ -140,7 +140,7 @@ function sC4s:ItemExplode(args)
 
     for id, wno in pairs(self.wnos) do
         if wno:GetPosition():Distance(args.position) < args.radius then
-            self:DestroyC4({id = wno:GetId(), detonation_source_id = args.player and tostring(args.player:GetSteamId()) or nil})
+            self:DestroyC4({id = wno:GetId()})
         end
     end
 
@@ -155,15 +155,13 @@ function sC4s:DestroyC4(args, player)
 
     local pos = c4:GetPosition()
 
-    local owner_id = c4:GetValue("owner_id")
-
     if not self.sz_config then
         self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
     end
 
     -- If they are within sz radius * 2, we don't let them detonate that close
     if pos:Distance(self.sz_config.safezone.position) > self.sz_config.safezone.radius * 2 then
-        Network:Broadcast("items/C4Explode", {position = pos, id = c4:GetId(), owner_id = owner_id})
+        Network:Broadcast("items/C4Explode", {position = pos, id = c4:GetId(), owner_id = c4:GetValue("owner_id")})
     end
 
     local lootbox_id = c4:GetValue("LootboxId")
@@ -184,10 +182,7 @@ function sC4s:DestroyC4(args, player)
     Events:Fire("items/ItemExplode", {
         position = pos,
         radius = 30,
-        player = player,
-        owner_id = owner_id,
-        type = DamageEntity.C4,
-        detonation_source_id = args.detonation_source_id or (player and tostring(player:GetSteamId() or nil))
+        player = player
     })
 
 end

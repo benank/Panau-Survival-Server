@@ -18,7 +18,7 @@ Items =
     {
         name = "Rockets",
         category = "Supplies",
-        stacklimit = 3,
+        stacklimit = 2,
     },
     {
         name = "Revolver Ammo",
@@ -523,7 +523,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 500,
         equip_type = "weapon_2h"
     },
     {
@@ -532,7 +532,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 500,
         equip_type = "weapon_1h"
     },
     {
@@ -541,7 +541,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 500,
         equip_type = "weapon_1h"
     },
     {
@@ -550,7 +550,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 500,
         equip_type = "weapon_1h"
     },
     {
@@ -559,7 +559,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 500,
         equip_type = "weapon_2h"
     },
     {
@@ -568,7 +568,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 500,
         equip_type = "weapon_1h"
     },
     {
@@ -577,7 +577,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 500,
         equip_type = "weapon_2h"
     },
     {
@@ -586,7 +586,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 500,
         equip_type = "weapon_1h"
     },
     {
@@ -595,7 +595,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 500,
         equip_type = "weapon_2h"
     },
     {
@@ -604,7 +604,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 500,
         equip_type = "weapon_1h"
     },
     {
@@ -613,7 +613,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 1000,
+        max_durability = 500,
         equip_type = "weapon_2h"
     },
     {

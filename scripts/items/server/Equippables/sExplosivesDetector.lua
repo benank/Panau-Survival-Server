@@ -24,7 +24,7 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
 end)
 
-Timer.SetInterval(5000, function()
+Timer.SetInterval(1000, function()
 
     for p in Server:GetPlayers() do
         if IsValid(p) then

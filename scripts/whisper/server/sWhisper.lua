@@ -9,9 +9,9 @@ function sWhisper:PlayerChat(args)
 
     local words = args.text:split(" ")
 
-    if string.lower(words[1]) == "/w" and words[2] and words[3] then
+    if words[1] == "/w" and words[2] and words[3] then
         self:WhisperPlayer(args)
-    elseif string.lower(words[1]) == "/r" and words[2] then
+    elseif words[1] == "/r" and words[2] then
         self:ReplyPlayer(args)
     end
 

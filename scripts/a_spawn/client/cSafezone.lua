@@ -2,10 +2,7 @@ class 'cSafezone'
 
 function cSafezone:__init()
 
-    self.sz_sync_timer = Timer()
-
-    self.in_safezone = false
-    self.in_neutralzone = false
+    self.in_safezone = nil
     self.near_safezone = true
 
     self.num_sz_circles = math.floor(config.safezone.radius / 2)
@@ -69,8 +66,6 @@ function cSafezone:SecondTick()
         player:SetOutlineColor(config.safezone.color)
     end
 
-    self.in_neutralzone = LocalPlayer:GetPosition():Distance(config.neutralzone.position) < config.neutralzone.radius
-
 end
 
 function cSafezone:EnterSafezone()
@@ -109,8 +104,7 @@ function cSafezone:Render(args)
     if self.near_safezone then
         self.in_safezone = LocalPlayer:GetPosition():Distance(config.safezone.position) < config.safezone.radius
 
-        if (self.in_safezone ~= old_in_safezone or (self.in_safezone ~= LocalPlayer:GetValue("InSafezone")))
-        and self.sz_sync_timer:GetSeconds() > 0.5 then
+        if self.in_safezone ~= old_in_safezone then
             Network:Send(var("EnterExitSafezone"):get(), {in_sz = self.in_safezone})
             if self.in_safezone then 
                 Events:Fire("EnterSafezone")
@@ -120,9 +114,7 @@ function cSafezone:Render(args)
                 Events:Fire("ExitSafezone")        
             end
             LocalPlayer:SetOutlineEnabled(self.in_safezone)
-            LocalPlayer:SetOutlineColor(config.safezone.color)
-            self.sz_sync_timer:Restart()
-            self.in_safezone = LocalPlayer:GetValue("InSafezone")
+            LocalPlayer:SetOutlineColor(config.safezone.color)   
         end
     end
 

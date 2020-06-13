@@ -46,7 +46,7 @@ function cClaymore:Render()
     end
 
     if self.owner_id == tostring(LocalPlayer:GetSteamId()) or
-    AreFriends(LocalPlayer, self.owner_id) then
+    IsAFriend(LocalPlayer, self.owner_id) then
         self.alpha = 200
     end
 
@@ -55,7 +55,7 @@ end
 
 function cClaymore:Trigger(args)
     if self.owner_id == tostring(LocalPlayer:GetSteamId()) then return end -- Don't explode on the owner
-    if AreFriends(LocalPlayer, self.owner_id) then return end -- Owner is a friend
+    if IsAFriend(LocalPlayer, self.owner_id) then return end -- Owner is a friend
     if LocalPlayer:GetValue("Invincible") then return end
 
     Network:Send(var("items/StepOnClaymore"):get(), {id = self.id})

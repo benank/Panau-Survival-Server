@@ -15,7 +15,6 @@ function sExp:__init()
 
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
-    Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
@@ -333,6 +332,8 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
         gained_level = true
     end
 
+    self:UpdateDB(steamID, exp_data)
+
     if IsValid(player) then
         player:SetNetworkValue("Exp", exp_data)
         Events:Fire("PlayerExpUpdated", {player = player})
@@ -340,15 +341,6 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
         if gained_level then
             Events:Fire("PlayerLevelUpdated", {player = player})
         end
-
-        local last_update = player:GetValue("ExpLastUpdate")
-
-        if Server:GetElapsedSeconds() - last_update > 60 then
-            self:UpdateDB(steamID, exp_data)
-            player:SetValue("ExpLastUpdate", Server:GetElapsedSeconds())
-        end
-    else
-        self:UpdateDB(steamID, exp_data)
     end
 
 end
@@ -414,14 +406,11 @@ function sExp:ClientModuleLoad(args)
     args.player:SetNetworkValue("Exp", exp_data)
     Events:Fire("PlayerExpLoaded", {player = args.player})
 
-    args.source = "exp"
     Events:Fire("LoadFlowAdd", args)
 
     if self.global_multiplier > 1 then
         Chat:Send(args.player, string.format("Global EXP multiplier is currently set to %.2f!", self.global_multiplier), Color(0, 255, 0))
     end
-
-    args.player:SetValue("ExpLastUpdate", Server:GetElapsedSeconds())
 
 end
 

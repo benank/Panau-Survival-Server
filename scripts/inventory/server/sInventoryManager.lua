@@ -86,10 +86,6 @@ function sInventoryManager:Unload()
 
     Events:Fire("InventoryUnload")
 
-    for steamid, inventory in pairs(self.inventories) do
-        inventory:Unload()
-    end
-
     for player in Server:GetPlayers() do
         player:SetValue("Inventory", nil)
     end

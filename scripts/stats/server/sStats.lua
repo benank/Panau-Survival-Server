@@ -13,18 +13,14 @@ function sStats:__init()
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("MinuteTick", self, self.MinuteTick)
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
-    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
     -- Every 5 minutes, save stats
     Timer.SetInterval(1000 * 60 * 5, function()
+        for p in Server:GetPlayers() do
+            self:UpdateAllStats(p)
+        end
     end)
 
-end
-
-function sStats:ModuleUnload()
-    for p in Server:GetPlayers() do
-        self:UpdateAllStats(p)
-    end
 end
 
 function sStats:PlayerQuit(args)

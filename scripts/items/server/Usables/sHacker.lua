@@ -36,18 +36,12 @@ function sHacker:HackComplete(args, player)
         tier = player:GetValue("CurrentLootbox").tier
     })
 
-    player:SetValue("CurrentlyHacking", false)
+    player:SetValue("CurrentlyHacking", true)
 
     Chat:Send(player, "Hack successful!", Color.Yellow)
 
     Inventory.OperationBlock({player = player, change = -1})
 end
-
-local hackable_tiers = 
-{
-    [13] = true, -- Locked stash
-    [14] = true -- Prox alarm
-}
 
 function sHacker:UseItem(args, player)
 
@@ -57,7 +51,7 @@ function sHacker:UseItem(args, player)
         and (player_iu.item.name == "Hacker" or player_iu.item.name == "Master Hacker") and not player:GetValue("CurrentlyHacking") then
 
         local current_box = player:GetValue("CurrentLootbox")
-        if not current_box or (not current_box.locked and not hackable_tiers[current_box.tier]) then
+        if not current_box or not current_box.locked then
             Chat:Send(player, "You must open a hackable object first!", Color.Red)
             return
         end
