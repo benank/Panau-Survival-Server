@@ -312,7 +312,8 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
     local gained_level = false
 
     if exp_data.combat_exp == exp_data.combat_max_exp
-    and exp_data.explore_exp == exp_data.explore_max_exp then
+    and exp_data.explore_exp == exp_data.explore_max_exp
+    and exp_data.level < Exp.Max_Level then
         exp_data = self:PlayerGainLevel(exp_data)
 
         Events:Fire("SendPlayerPersistentMessage", {
