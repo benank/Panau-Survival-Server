@@ -81,10 +81,11 @@ function sWorkBench:BeginCombining(player)
 
         self:SyncStatus()
 
+
         Events:Fire("Discord", {
             channel = "Inventory",
-            content = string.format("%s [%s] finished a combine of %s [New dura: %.0f] at the %s", 
-                player:GetName(), tostring(player:GetSteamId()), self.lootbox.contents[1]:GetProperty("name"), combined_dura, self.name)
+            content = string.format("Finished a combine of %s [New dura: %.0f] at the %s", 
+                self.lootbox.contents[1]:GetProperty("name"), combined_dura, self.name)
         })
     
     end)
