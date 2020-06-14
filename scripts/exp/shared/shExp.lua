@@ -57,6 +57,7 @@ Exp =
     KillExpireTime = 60 * 60 * 8, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
     LevelCutoffs = -- Level cutoffs for no exp for these players
     {
+        [0] = -1,
         [3] = 0,
         [10] = 1,
         [15] = 2,

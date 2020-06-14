@@ -332,6 +332,8 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
         end
         
         gained_level = true
+
+        self:UpdateDB(steamID, exp_data)
     end
 
     if IsValid(player) then

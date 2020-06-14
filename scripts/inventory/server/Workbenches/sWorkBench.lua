@@ -81,7 +81,6 @@ function sWorkBench:BeginCombining(player)
 
         self:SyncStatus()
 
-
         Events:Fire("Discord", {
             channel = "Inventory",
             content = string.format("Finished a combine of %s [New dura: %.0f] at the %s", 
