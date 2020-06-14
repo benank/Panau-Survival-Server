@@ -15,14 +15,21 @@ function cSurvivalHUDElement:__init(args)
 
     if self.dual then
         self.level = 0
+        self:UpdateExp()
         Events:Subscribe("PlayerExpUpdated", function(args)
-            local exp_data = LocalPlayer:GetValue("Exp")
-
-            self.percent = exp_data.combat_exp / exp_data.combat_max_exp
-            self.percent2 = exp_data.explore_exp / exp_data.explore_max_exp
-            self.level = exp_data.level
+            self:UpdateExp()
         end)
     end
+end
+
+function cSurvivalHUDElement:UpdateExp()
+
+    local exp_data = LocalPlayer:GetValue("Exp")
+    if not exp_data then return end
+
+    self.percent = exp_data.combat_exp / exp_data.combat_max_exp
+    self.percent2 = exp_data.explore_exp / exp_data.explore_max_exp
+    self.level = exp_data.level
 end
 
 -- Renders the large version of the element
@@ -54,9 +61,11 @@ function cSurvivalHUDElement:RenderLarge()
         fill_size = fill_size / 2
     end
 
+    local percent = math.min(1, self.percent)
+    
     Render:FillArea(
         text_size, 
-        Vector2(fill_size * self.percent, self.large_size.y), 
+        Vector2(fill_size * percent, self.large_size.y), 
         self.color)
 
     if self.dual then
@@ -82,10 +91,7 @@ function cSurvivalHUDElement:RenderLarge()
         end
     end
 
-
     SurvivalManager.hud:DrawBorder(text_size, self.large_size - percent_size)
-
-
 
     local percent_text = string.format("%.0f%%", self.percent * 100)
 
@@ -115,9 +121,11 @@ function cSurvivalHUDElement:RenderSmall()
         fill_size = fill_size / 2
     end
 
+    local percent = math.min(1, self.percent)
+    
     Render:FillArea(
         Vector2.Zero, 
-        Vector2(fill_size * self.percent, self.small_size.y), 
+        Vector2(fill_size * percent, self.small_size.y), 
         self.color)
 
     if self.dual then

@@ -207,6 +207,10 @@ function cInventoryUI:PopulateEntry(args)
     local equip_outer = itemwindow:FindChildByName("equip_outer", true)
     local equip_inner = itemwindow:FindChildByName("equip_inner", true)
 
+    for i = 1, 5 do
+        itemwindow:FindChildByName(string.format("dura_%dx", i), true):Hide()
+    end
+
     if not args.empty and not args.locked then
 
         if not stack then -- No item found, hide the entry

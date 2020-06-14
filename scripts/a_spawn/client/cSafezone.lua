@@ -2,7 +2,10 @@ class 'cSafezone'
 
 function cSafezone:__init()
 
-    self.in_safezone = nil
+    self.sz_sync_timer = Timer()
+
+    self.in_safezone = false
+    self.in_neutralzone = false
     self.near_safezone = true
 
     self.num_sz_circles = math.floor(config.safezone.radius / 2)
@@ -22,6 +25,39 @@ function cSafezone:__init()
 
     Events:Subscribe(var("SecondTick"):get(), self, self.SecondTick)
     Events:Subscribe(var("GameRenderOpaque"):get(), self, self.Render)
+    Events:Subscribe("Render", self, self.RenderText)
+
+end
+
+function cSafezone:RenderText(args)
+
+    if LocalPlayer:GetValue("InSafezone") then
+
+        self:RenderSafezoneText("In Safezone", "You cannot be killed here", config.safezone.color)
+
+    elseif self.in_neutralzone then
+
+        self:RenderSafezoneText("In Neutralzone", "You don't lose items on death here", config.neutralzone.color)
+
+    end
+
+end
+
+function cSafezone:RenderSafezoneText(text, subtext, color)
+
+    local c = Color(color.r, color.g, color.b, 200)
+
+    local top_margin = 10
+    local text_size =  24
+    local text_size_subtext = 14
+    
+    local text_textsize = Render:GetTextSize(text, text_size)
+    local subtext_textsize = Render:GetTextSize(subtext, text_size_subtext)
+
+    local pos = Vector2(Render.Size.x / 2, top_margin + text_textsize.y)
+
+    Render:DrawText(pos - text_textsize / 2, text, c, text_size)
+    Render:DrawText(pos - subtext_textsize / 2 + Vector2(0, text_textsize.y), subtext, c, text_size_subtext)
 
 end
 
@@ -32,6 +68,8 @@ function cSafezone:SecondTick()
         player:SetOutlineEnabled(player:GetValue(var("InSafezone"):get()) == true)
         player:SetOutlineColor(config.safezone.color)
     end
+
+    self.in_neutralzone = LocalPlayer:GetPosition():Distance(config.neutralzone.position) < config.neutralzone.radius
 
 end
 
@@ -71,7 +109,8 @@ function cSafezone:Render(args)
     if self.near_safezone then
         self.in_safezone = LocalPlayer:GetPosition():Distance(config.safezone.position) < config.safezone.radius
 
-        if self.in_safezone ~= old_in_safezone then
+        if (self.in_safezone ~= old_in_safezone or (self.in_safezone ~= LocalPlayer:GetValue("InSafezone")))
+        and self.sz_sync_timer:GetSeconds() > 0.5 then
             Network:Send(var("EnterExitSafezone"):get(), {in_sz = self.in_safezone})
             if self.in_safezone then 
                 Events:Fire("EnterSafezone")
@@ -81,7 +120,9 @@ function cSafezone:Render(args)
                 Events:Fire("ExitSafezone")        
             end
             LocalPlayer:SetOutlineEnabled(self.in_safezone)
-            LocalPlayer:SetOutlineColor(config.safezone.color)   
+            LocalPlayer:SetOutlineColor(config.safezone.color)
+            self.sz_sync_timer:Restart()
+            self.in_safezone = LocalPlayer:GetValue("InSafezone")
         end
     end
 

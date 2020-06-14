@@ -30,8 +30,8 @@ function cLootbox:Remove()
     for _, obj in pairs(self.static_objects) do
         if IsValid(obj) then 
             obj:Remove()
+            LootManager.objects[obj:GetId()] = nil
         end
-        LootManager.objects[obj:GetId()] = nil
     end
 
 end

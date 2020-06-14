@@ -182,9 +182,18 @@ end
 
 function cMines:MinesCellsSync(args)
 
-    for _, mine_data in pairs(args.mine_data) do
-        self:AddMine(mine_data)
+    if LocalPlayer:GetValue("Loading") then
+        Timer.SetTimeout(250, function()
+            self:MinesCellsSync(args)
+        end)
+    else
+        
+        for _, mine_data in pairs(args.mine_data) do
+            self:AddMine(mine_data)
+        end
+
     end
+
 
 end
 

@@ -18,6 +18,7 @@ end
 
 function PDA:Toggle()
 	self.active = not self.active
+	LocalPlayer:SetValue("MapOpen", self.active)
 end
 
 function PDA:ModuleLoad()
@@ -25,7 +26,7 @@ function PDA:ModuleLoad()
 	Events:Subscribe("MouseMove", self, self.MouseMove)
 	Events:Subscribe("MouseUp", self, self.MouseUp)
 	Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
-	Events:Subscribe("PostRender", self, self.PostRender)
+	Events:Subscribe("Render", self, self.Render)
 	Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 end
 
@@ -106,7 +107,8 @@ function PDA:LocalPlayerInput(args)
 	end
 end
 
-function PDA:PostRender()
+function PDA:Render()
+
 	if Game:GetState() ~= GUIState.Game then
 		if self.active then
 			PDA:Toggle()
@@ -114,6 +116,8 @@ function PDA:PostRender()
 
 		return
 	end
+
+	Map:DrawMinimap()
 
 	Mouse:SetVisible(not PDA:IsUsingGamepad() and self.active)
 

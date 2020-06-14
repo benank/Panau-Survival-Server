@@ -106,10 +106,20 @@ function sMines:DestroyMine(args, player)
     self.mines[args.id] = nil
     mine:Remove(player)
 
+    local exp_enabled = true
+
+    if mine.place_time and Server:GetElapsedSeconds() - mine.place_time < 60 * 60 then
+        exp_enabled = false
+    end
+
     Events:Fire("items/ItemExplode", {
         position = mine.position,
         radius = 10,
-        player = player
+        player = player,
+        owner_id = mine.owner_id,
+        type = DamageEntity.Mine,
+        no_detonation_source = args.no_detonation_source,
+        exp_enabled = exp_enabled
     })
 
 end
@@ -204,7 +214,10 @@ function sMines:StepOnMine(args, player)
                 Events:Fire("items/ItemExplode", {
                     position = mine.position,
                     radius = 10,
-                    player = player
+                    player = player,
+                    owner_id = mine.owner_id,
+                    type = DamageEntity.Mine,
+                    no_detonation_source = true
                 })
             end
 
@@ -278,12 +291,14 @@ function sMines:PlaceMine(position, angle, player)
         return
     end
     
-    self:AddMine({
+    local mine = self:AddMine({
         id = result[1].id,
         owner_id = steamID,
         position = position,
         angle = angle
-    }):SyncNearby(player)
+    })
+    mine:SyncNearby(player)
+    mine.place_time = Server:GetElapsedSeconds()
 
     Network:Send(player, "items/MinePlaceSound", {position = position})
     Network:SendNearby(player, "items/MinePlaceSound", {position = position})
@@ -364,6 +379,15 @@ function sMines:CompleteItemUsage(args, player)
         if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
             Chat:Send(player, "Cannot place mines while near the safezone!", Color.Red)
             return
+        end
+
+        local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues().blacklist
+
+        for _, area in pairs(BlacklistedAreas) do
+            if player:GetPosition():Distance(area.pos) < area.size then
+                Chat:Send(player, "You cannot place mines here!", Color.Red)
+                return
+            end
         end
 
         local sub = nil

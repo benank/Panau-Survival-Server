@@ -127,10 +127,20 @@ function sClaymores:DestroyClaymore(args, player)
     self.claymores[args.id] = nil
     claymore:Remove(player)
 
+    local exp_enabled = true
+
+    if claymore.place_time and Server:GetElapsedSeconds() - claymore.place_time < 60 * 60 then
+        exp_enabled = false
+    end
+
     Events:Fire("items/ItemExplode", {
         position = claymore.position,
         radius = 10,
-        player = player
+        player = player,
+        owner_id = claymore.owner_id,
+        type = DamageEntity.Claymore,
+        no_detonation_source = args.no_detonation_source,
+        exp_enabled = exp_enabled
     })
 
 end
@@ -222,7 +232,10 @@ function sClaymores:StepOnClaymore(args, player)
         Events:Fire("items/ItemExplode", {
             position = claymore.position,
             radius = 10,
-            player = player
+            player = player,
+            owner_id = claymore.owner_id,
+            type = DamageEntity.Claymore,
+            no_detonation_source = true
         })
     end
 
@@ -301,12 +314,14 @@ function sClaymores:PlaceClaymore(position, angle, player)
         return
     end
     
-    self:AddClaymore({
+    local claymore = self:AddClaymore({
         id = result[1].id,
         owner_id = steamID,
         position = position,
         angle = angle
-    }):SyncNearby(player)
+    })
+    claymore:SyncNearby(player)
+    claymore.place_time = Server:GetElapsedSeconds()
 
     Network:Send(player, "items/ClaymorePlaceSound", {position = position})
     Network:SendNearby(player, "items/ClaymorePlaceSound", {position = position})
@@ -400,6 +415,15 @@ function sClaymores:FinishClaymorePlacement(args, player)
 
     if not self.sz_config then
         self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+    end
+
+    local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues().blacklist
+
+    for _, area in pairs(BlacklistedAreas) do
+        if player:GetPosition():Distance(area.pos) < area.size then
+            Chat:Send(player, "You cannot place claymores here!", Color.Red)
+            return
+        end
     end
 
     if args.model and DisabledPlacementModels[args.model] then

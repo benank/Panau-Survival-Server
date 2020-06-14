@@ -15,8 +15,82 @@ function sExp:__init()
 
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
+    Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
+
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+
+end
+
+function sExp:PlayerQuit(args)
+    
+    local steam_id = tostring(args.player:GetSteamId())
+    local exp_data = args.player:GetValue("Exp")
+
+    if not exp_data then return end
+
+    self:UpdateDB(steam_id, exp_data)
+
+end
+
+function sExp:ModuleUnload()
+
+    for p in Server:GetPlayers() do
+        local steam_id = tostring(p:GetSteamId())
+        local exp_data = p:GetValue("Exp")
+
+        if exp_data then
+            self:UpdateDB(steam_id, exp_data)
+        end
+    end
+
+end
+
+function sExp:ItemExplode(args)
+
+    if args.no_detonation_source then return end
+
+    if args.detonation_source_id then
+        -- Use ID to give exp
+
+        for p in Server:GetPlayers() do
+            if tostring(p:GetSteamId()) == args.detonation_source_id then
+                args.player = p
+                break
+            end
+        end
+
+    end
+
+    -- Check owner id for friend or self
+    if not args.owner_id then return end
+
+    if args.exp_enabled ~= nil then
+        if not args.exp_enabled then return end
+    end
+
+    if not IsValid(args.player) then return end
+    if args.owner_id == tostring(args.player:GetSteamId()) then return end
+
+    if IsAFriend(args.player, args.owner_id) then return end
+
+    local exp_earned = Exp.DestroyExplosive[args.type]
+
+    if not exp_earned then return end
+
+    local exp_data = args.player:GetValue("Exp")
+
+    if not exp_data then return end
+
+    self:GivePlayerExp(exp_earned, ExpType.Combat, tostring(args.player:GetSteamId()), exp_data, args.player)
+
+    Events:Fire("Discord", {
+        channel = "Experience",
+        content = string.format("%s [%s] destroyed an explosive [Type: %s] and gained %d exp.", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), DamageEntityNames[args.type], exp_earned)
+    })
 
 end
 
@@ -78,6 +152,8 @@ function sExp:PlayerKilled(args)
     
     -- No exp lost if using Second Life
     if args.player:GetValue("SecondLifeEquipped") then return end
+
+    local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
     -- Subtract exp from player who died
     local exp_data = args.player:GetValue("Exp")
@@ -236,7 +312,8 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
     local gained_level = false
 
     if exp_data.combat_exp == exp_data.combat_max_exp
-    and exp_data.explore_exp == exp_data.explore_max_exp then
+    and exp_data.explore_exp == exp_data.explore_max_exp
+    and exp_data.level < Exp.Max_Level then
         exp_data = self:PlayerGainLevel(exp_data)
 
         Events:Fire("SendPlayerPersistentMessage", {
@@ -255,9 +332,9 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
         end
         
         gained_level = true
-    end
 
-    self:UpdateDB(steamID, exp_data)
+        self:UpdateDB(steamID, exp_data)
+    end
 
     if IsValid(player) then
         player:SetNetworkValue("Exp", exp_data)
@@ -266,6 +343,15 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
         if gained_level then
             Events:Fire("PlayerLevelUpdated", {player = player})
         end
+
+        local last_update = player:GetValue("ExpLastUpdate")
+
+        if Server:GetElapsedSeconds() - last_update > 60 then
+            self:UpdateDB(steamID, exp_data)
+            player:SetValue("ExpLastUpdate", Server:GetElapsedSeconds())
+        end
+    else
+        self:UpdateDB(steamID, exp_data)
     end
 
 end
@@ -337,6 +423,8 @@ function sExp:ClientModuleLoad(args)
     if self.global_multiplier > 1 then
         Chat:Send(args.player, string.format("Global EXP multiplier is currently set to %.2f!", self.global_multiplier), Color(0, 255, 0))
     end
+
+    args.player:SetValue("ExpLastUpdate", Server:GetElapsedSeconds())
 
 end
 

@@ -63,9 +63,10 @@ function cSecondLife:SecondLifeDectivate(args)
 
         self.fx[args.id] = nil
 
-        Game:FireEvent("ply.unpause")
+        if args.id == tostring(LocalPlayer:GetSteamId()) then
+            Game:FireEvent("ply.unpause")
+        end
     end)
-
 
 end
 

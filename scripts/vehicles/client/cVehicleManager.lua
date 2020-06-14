@@ -5,6 +5,8 @@ function cVehicleManager:__init()
     self.owned_vehicles = {} -- My owned vehicles
     self.in_gas_station = false
 
+    self.vehicle_health_display_timer = Timer()
+
     self.text = 
     {
         size = 17,
@@ -87,8 +89,10 @@ function cVehicleManager:LocalPlayerInput(args)
 
             if not data then return false end
 
+            if closest_vehicle:GetValue("Destroyed") then return false end
+
             if data.owner_steamid ~= tostring(LocalPlayer:GetSteamId())
-            and not IsAFriend(LocalPlayer, data.owner_steamid) then 
+            and not AreFriends(LocalPlayer, data.owner_steamid) then 
 
                 local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 10)
 
@@ -134,12 +138,70 @@ end
 
 function cVehicleManager:Render(args)
 
-    if LocalPlayer:InVehicle() then return end
+    if LocalPlayer:InVehicle() then
+        self:RenderCurrentVehicleData()
+        return
+    end
 
     local aim = LocalPlayer:GetAimTarget()
 
     if aim.entity and aim.entity.__type == "Vehicle" then
         self:RenderVehicleDataClassic(aim.entity)
+    end
+
+end
+
+function cVehicleManager:RenderCurrentVehicleData()
+
+    if LocalPlayer:GetValue("InventoryOpen") then return end
+
+    self:DrawCurrentVehicleSpeed()
+    self:DrawCurrentVehicleHealth()
+
+end
+
+function cVehicleManager:DrawCurrentVehicleSpeed()
+
+    local v = LocalPlayer:GetVehicle()
+    local speed = math.round(-(-v:GetAngle() * v:GetLinearVelocity()).z)
+    local text = string.format("%.0f km/h", speed * 3.6)
+
+    if math.abs(speed) < 1 then return end
+
+    local size = Render.Size.y * 0.04
+    local margin = Vector2(-10, -10)
+    local text_size = Render:GetTextSize(text, size)
+    local pos = Vector2(Render.Size.x - text_size.x, Render.Size.y - text_size.y)
+    Render:DrawText(pos + margin + Vector2(2,2), text, Color.Black, size)
+    Render:DrawText(pos + margin, text, Color.White, size)
+
+end
+
+function cVehicleManager:DrawCurrentVehicleHealth()
+
+    local v = LocalPlayer:GetVehicle()
+    self.vehicle_health = v:GetHealth()
+
+    if self.vehicle_health ~= self.last_vehicle_health then
+        self.last_vehicle_health = self.vehicle_health
+        self.vehicle_health_display_timer:Restart()
+    end
+
+    if self.vehicle_health_display_timer:GetSeconds() < 5 then
+
+        -- Render vehicle health
+        local text = string.format("%.0f%%", self.vehicle_health * 100)
+
+        local alpha = 255 - 255 * math.min(1, self.vehicle_health_display_timer:GetSeconds() / 5)
+        local color = Color.FromHSV(120 * self.vehicle_health, 0.9, 0.9)
+        color.a = alpha
+        
+        local size = Render.Size.y * 0.04
+        local margin = Vector2(0, -10)
+        local text_size = Render:GetTextSize(text, size)
+        local pos = Vector2(Render.Size.x / 2 - text_size.x / 2, Render.Size.y - text_size.y)
+        Render:DrawText(pos + margin, text, color, size)
+
     end
 
 end
@@ -170,10 +232,12 @@ function cVehicleManager:RenderVehicleDataClassic(v)
     
     if not self:InBoundingBox(v) then return end
 
+    if v:GetValue("Destroyed") then return end
+
     local color = self.text.color
     local circle_color = self.text.locked_color
 
-    local friendly_vehicle = tostring(data.owner_steamid) == tostring(LocalPlayer:GetSteamId()) or IsAFriend(LocalPlayer, data.owner_steamid)
+    local friendly_vehicle = tostring(data.owner_steamid) == tostring(LocalPlayer:GetSteamId()) or AreFriends(LocalPlayer, data.owner_steamid)
     
     if friendly_vehicle then
         circle_color = self.text.unlocked_color
@@ -229,7 +293,7 @@ function cVehicleManager:SecondTick()
 
             -- Only allow friends or owner to sync destruction
             if data.owner_steamid == tostring(LocalPlayer:GetSteamId())
-            or IsAFriend(LocalPlayer, data.owner_steamid) then 
+            or AreFriends(LocalPlayer, data.owner_steamid) then 
 
                 if v:GetHealth() <= 0.2 and not v:GetValue("Remove") then
                     Network:Send(var("Vehicles/VehicleDestroyed"):get(), {vehicle = v})

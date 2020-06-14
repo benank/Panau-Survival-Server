@@ -287,14 +287,31 @@ function Nametags:DrawCircleTag( pos, dist, colour )
     self:DrawCircle( pos, scale, scale, colour )
 end
 
+function Nametags:CanDraw(p)
+
+    -- Always render admins
+    if p:GetValue("Admin") then return true end
+
+    if AreFriends(LocalPlayer, tostring(p:GetSteamId())) then return true end
+    
+    if LocalPlayer:GetValue("Admin") then return true end
+
+    if LocalPlayer:GetValue("InSafezone") and not p:GetValue("InSafezone") then
+        
+        local exp = LocalPlayer:GetValue("Exp")
+
+        if exp and exp.level == 0 then return true end
+
+    elseif LocalPlayer:GetValue("InSafezone") and p:GetValue("InSafezone") then return true end
+
+    return false
+
+end
+
 function Nametags:DrawPlayer( player_data )
     local p         = player_data[1]
 
-    -- Do not render tags if they are not a friend, not in sz, or not staff
-    if not IsAFriend(LocalPlayer, tostring(p:GetSteamId()))
-    and not LocalPlayer:GetValue("InSafezone")
-    and not IsAdmin(LocalPlayer)
-    and not p:GetValue("Admin") then return end
+    if not self:CanDraw(p) then return end
 
     local dist      = player_data[2]
 
@@ -400,7 +417,7 @@ end
 
 function Nametags:Render()
     -- If we're not supposed to draw now, then take us out
-    if not self.enabled or Game:GetState() ~= GUIState.Game then
+    if not self.enabled or Game:GetState() ~= GUIState.Game or LocalPlayer:GetValue("MapOpen") then
         return
     end
 

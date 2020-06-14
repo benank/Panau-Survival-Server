@@ -13,8 +13,16 @@ function sEvac:UseItem(args, player)
     if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed
         and player_iu.item.name == "EVAC" then
 
-        if not args.waypoint or args.waypoint:Distance(Vector3(0,0,0)) < 1 then
+        if not args.waypoint or args.waypoint:Distance(Vector3(0,0,0)) < 1 or not args.waypoint_set then
             Chat:Send(player, "You must set a waypoint first before using this item!", Color.Red)
+            return
+        end
+
+        
+        local num_grapples = Inventory.GetNumOfItem({player = player, item_name = "Grapplehook"})
+
+        if num_grapples == 0 then
+            Chat:Send(player, "You must have a grapplehook to use this item!", Color.Red)
             return
         end
 
