@@ -417,7 +417,7 @@ end
 
 function Nametags:Render()
     -- If we're not supposed to draw now, then take us out
-    if not self.enabled or Game:GetState() ~= GUIState.Game then
+    if not self.enabled or Game:GetState() ~= GUIState.Game or LocalPlayer:GetValue("MapOpen") then
         return
     end
 

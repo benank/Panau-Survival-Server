@@ -381,6 +381,15 @@ function sMines:CompleteItemUsage(args, player)
             return
         end
 
+        local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues().blacklist
+
+        for _, area in pairs(BlacklistedAreas) do
+            if player:GetPosition():Distance(area.pos) < area.size then
+                Chat:Send(player, "You cannot place mines here!", Color.Red)
+                return
+            end
+        end
+
         local sub = nil
         sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(player:GetSteamId()), function(args)
         
