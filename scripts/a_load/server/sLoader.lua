@@ -45,14 +45,12 @@ function sLoader:TogglePlayerEnabled(player, enabled)
     if not IsValid(player) then return end
     if not enabled then
 
-        print("DISABLED")
         player:SetValue("Loading", true)
         player:SetStreamDistance(0)
         player:SetEnabled(false)
 
     elseif enabled then
 
-        print("ENABLED")
         player:SetEnabled(true)
         player:SetStreamDistance(self.default_stream_distance)
         player:SetValue("Loading", false)
