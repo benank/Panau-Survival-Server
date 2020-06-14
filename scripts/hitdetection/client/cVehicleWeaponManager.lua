@@ -100,7 +100,10 @@ function cVehicleWeaponManager:LocalPlayerInput(args)
     if Game:GetState() ~= GUIState.Game then return end
 
     if self.overheated and self.fire_actions[args.input] then self:StopFiringInput() return false end
-    if self.fire_actions[args.input] and LocalPlayer:GetValue("InventoryOpen") then self:StopFiringInput() return false end
+    if self.fire_actions[args.input] and (LocalPlayer:GetValue("InventoryOpen") or LocalPlayer:GetValue("MapOpen")) then 
+        self:StopFiringInput() 
+        return false
+    end
 
     if self.heat_actions[args.input] ~= nil then
 
