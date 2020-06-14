@@ -48,7 +48,7 @@ function cObjectPlacer:__init()
 end
 
 --[[
-    Starts placement of an objects. 
+    Starts placement of an object. 
 
     args (in table):
         model (string): model of the object you are placing
