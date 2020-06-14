@@ -613,18 +613,20 @@ function Map:Draw()
 	local scale = Map.IconScale
 
 	for k, location in pairs(Map.Locations) do
-		local position = Map:WorldToScreen(location.position)
+		if location.position then
+			local position = Map:WorldToScreen(location.position)
 
-		if k == "Home" then
-			location.position = LocalPlayer:GetValue("HomePosition")
-		end
-
-		if position.x > 0 and position.y > 0 and position.x < Render.Width and position.y < Render.Height then
-			if location:IsActive(position, scale * (PDA:IsUsingGamepad() and 2 or 1)) then
-				Map.ActiveLocation = location
+			if k == "Home" then
+				location.position = LocalPlayer:GetValue("HomePosition")
 			end
 
-			location:Draw(position, scale)
+			if position.x > 0 and position.y > 0 and position.x < Render.Width and position.y < Render.Height then
+				if location:IsActive(position, scale * (PDA:IsUsingGamepad() and 2 or 1)) then
+					Map.ActiveLocation = location
+				end
+
+				location:Draw(position, scale)
+			end
 		end
 	end
 
