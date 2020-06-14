@@ -15,6 +15,9 @@ DamageEntity.Food = 18
 DamageEntity.MeleeGrapple = 19
 DamageEntity.MeleeKick = 20
 DamageEntity.MeleeSlidingKick = 21
+DamageEntity.CruiseMissile = 22
+DamageEntity.AreaBombing = 23
+DamageEntity.TacticalNuke = 24
 
 DamageEntityNames = 
 {
@@ -40,4 +43,7 @@ DamageEntityNames =
     [DamageEntity.MeleeGrapple] = "Grapplehook",
     [DamageEntity.MeleeKick] = "Melee Kick",
     [DamageEntity.MeleeSlidingKick] = "Melee Sliding Kick",
+    [DamageEntity.CruiseMissile] = "Cruise Missile",
+    [DamageEntity.AreaBombing] = "Area Bombing",
+    [DamageEntity.TacticalNuke] = "Tactical Nuke",
 }
