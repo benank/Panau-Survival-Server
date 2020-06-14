@@ -4,7 +4,11 @@ function GrenadeBullet:__init(args)
     getter_setter(self, "active")
     self:SetActive(true)
     getter_setter(self, "id")
-    self:SetId(args.id)
+    if not self.SetId then
+        self.id = args.id
+    else
+        self:SetId(args.id)
+    end
     self.weapon_enum = args.weapon_enum
     self.velocity = args.velocity
 
