@@ -77,6 +77,8 @@ end
 
 function sStash:UpdateToDB()
     -- Updates stash to DB, including contents and access type
+
+    if self.lootbox.tier == Lootbox.Types.Workbench then return end
     
 	local command = SQL:Command("UPDATE stashes SET contents = ?, name = ?, access_mode = ?, health = ?, steamID = ? WHERE id = (?)")
 	command:Bind(1, Serialize(self.lootbox.contents))
@@ -95,6 +97,9 @@ function sStash:ContentsChanged(player)
 end
 
 function sStash:Sync(player)
+    if not IsValid(player) then return end
+    if tostring(player:GetSteamId()) ~= self.owner_id then return end
+    if self.lootbox.tier == Lootbox.Types.ProximityAlarm then return end
     Network:Send(player, "Stashes/Sync", self:GetSyncData()) 
 end
 

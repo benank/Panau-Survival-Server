@@ -135,6 +135,13 @@ function cLootboxUI:PressDismountStashButton(btn)
 
     if not current_box.stash then return end
 
+    if current_box.tier == Lootbox.Types.Workbench then
+        Network:Send("Workbenches/StartCombine", {
+            id = current_box.stash.id
+        })
+        return
+    end
+
     local is_owner = current_box.stash.owner_id == tostring(LocalPlayer:GetSteamId())
 
     if not is_owner then return end
@@ -194,6 +201,12 @@ function cLootboxUI:UpdateLootboxTitle(locked)
 
         if is_owner then
             self.stash_dismount_button:Show()
+            self.stash_dismount_button:SetText("DISMOUNT")
+            self.stash_dismount_button:SetTextColor(Color.Red)
+            self.stash_dismount_button:SetTextNormalColor(Color.Red)
+            self.stash_dismount_button:SetTextHoveredColor(Color.Red)
+            self.stash_dismount_button:SetTextPressedColor(Color.Red)
+            self.stash_dismount_button:SetTextDisabledColor(Color.Red)
 
             if current_box.stash.can_change_access then
                 self.access_mode_menu:Show()
@@ -201,7 +214,17 @@ function cLootboxUI:UpdateLootboxTitle(locked)
                 self.access_mode_menu:Hide()
             end
         else
-            self.stash_dismount_button:Hide()
+            if current_box.tier == Lootbox.Types.Workbench and count_table(current_box.contents) > 0 then
+                self.stash_dismount_button:Show()
+                self.stash_dismount_button:SetText("COMBINE")
+                self.stash_dismount_button:SetTextColor(Color(0, 230, 0))
+                self.stash_dismount_button:SetTextNormalColor(Color(0, 230, 0))
+                self.stash_dismount_button:SetTextHoveredColor(Color(0, 230, 0))
+                self.stash_dismount_button:SetTextPressedColor(Color(0, 230, 0))
+                self.stash_dismount_button:SetTextDisabledColor(Color(0, 230, 0))
+            else
+                self.stash_dismount_button:Hide()
+            end
             self.access_mode_menu:Hide()
         end
 

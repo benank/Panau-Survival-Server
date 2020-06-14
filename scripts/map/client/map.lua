@@ -9,7 +9,11 @@ Location.Type = {
 	MilHarb     = "MilHarb",
 	MilStrong   = "MilStrong",
 	OilRig      = "OilRig",
-	Waypoint    = "Waypoint"
+    Waypoint    = "Waypoint",
+	Workbench   = "Workbench",
+	Home 		= "Home",
+	Skull 		= "Skull"
+	
 }
 
 Location.TypeName = {
@@ -21,39 +25,76 @@ Location.TypeName = {
 	MilHarb     = "Military Harbor",
 	MilStrong   = "Military Stronghold",
 	OilRig      = "Oil Rig",
-	Waypoint    = "Waypoint"
+    Waypoint    = "Waypoint",
+	Workbench   = "Workbench",
+	Home 		= "Home",
+	Skull		= "Skull"
 }
 
+IconSizeUV = 1 / 18
+
 Location.Icon = {
-	Sheet  = Image.Create(AssetLocation.Game, "pda_icons_dif.dds"),
+	Sheet  = IconSheet,
 	Size   = Vector2.One * 64,
-	UVSize = Vector2.One * 0.125,
+	UVSize = Vector2(IconSizeUV, 1),
 	UV     = {
-		Comm        = Vector2(0.125 * 6, 0.125 * 1),
-		CivCity     = Vector2(0.125 * 6, 0.125 * 2),
-		CivVil      = Vector2(0.125 * 4, 0.125 * 2),
-		MilLocation = Vector2(0.125 * 1, 0.125 * 1),
-		MilAir      = Vector2(0.125 * 5, 0.125 * 1),
-		MilHarb     = Vector2(0.125 * 1, 0.125 * 2),
-		MilStrong   = Vector2(0.125 * 3, 0.125 * 3),
-		OilRig      = Vector2(0.125 * 2, 0.125 * 2),
-		Waypoint    = Vector2(0.125 * 7, 0.125 * 3)
+		AirDrop     = Vector2(IconSizeUV * 0, 0),
+		Question    = Vector2(IconSizeUV * 1, 0),
+		Exclamation = Vector2(IconSizeUV * 2, 0),
+		Home        = Vector2(IconSizeUV * 3, 0),
+		Landclaim   = Vector2(IconSizeUV * 4, 0),
+		Skull       = Vector2(IconSizeUV * 5, 0),
+		Workbench   = Vector2(IconSizeUV * 6, 0),
+		Comm        = Vector2(IconSizeUV * 7, 0),
+		CivCity     = Vector2(IconSizeUV * 8, 0),
+		OilRig      = Vector2(IconSizeUV * 9, 0),
+		MilHarb     = Vector2(IconSizeUV * 10, 0),
+		MilAir      = Vector2(IconSizeUV * 11, 0),
+		MilLocation = Vector2(IconSizeUV * 12, 0),
+		MilStrong   = Vector2(IconSizeUV * 12, 0),
+		CivVil      = Vector2(IconSizeUV * 13, 0),
+		MilBorder   = Vector2(IconSizeUV * 14, 0),
+		Border      = Vector2(IconSizeUV * 15, 0),
+		Shine       = Vector2(IconSizeUV * 16, 0),
+		Waypoint    = Vector2(IconSizeUV * 17, 0),
+
 	}
 }
 
 Location.Color = 
 {
-    Green = Color(0, 255, 0, 80),
-    Red = Color(255, 0, 0, 80)
+    Green = Color(0, 160, 8, 255),
+	Red = Color(182, 26, 0, 255),
+	Yellow = Color(223, 153, 0, 255),
+	White = Color(230, 230, 230, 255),
+	Blue = Color(6, 60, 135, 255),
+	None = Color(0, 0, 0, 0),
+	Gray = Color(31, 31, 31, 255),
+	Purple = Color(112, 24, 119, 255)
 }
 
 Waypoint:Remove()
 
-function Location:__init(name, position, type, color)
+MilitaryTypes = 
+{
+	MilLocation = true,
+	MilHarb     = true,
+	MilStrong   = true,
+}
+
+function Location:__init(name, position, type, color, show_on_minimap)
 	self.name     = name
 	self.position = position
     self.type     = type
-    self.color    = color
+	self.color    = color or Location.Color.Gray
+	self.show_on_minimap = show_on_minimap == true
+
+	if MilitaryTypes[self.type] then
+		self.border = Location.Icon.UV.MilBorder
+	else
+		self.border = Location.Icon.UV.Border
+	end
+
 end
 
 function Location:GetTypeName()
@@ -73,21 +114,41 @@ function Location:IsActive(position, scale)
 end
 
 function Location:DrawIcon(position, scale)
+
+	-- Draw shine
+	if self.color ~= Location.Color.None then
+		Location.Icon.Sheet:Draw(
+			position - (Location.Icon.Size * scale / 2), 
+			Location.Icon.Size * scale, 
+			Location.Icon.UV.Shine, 
+			Location.Icon.UV.Shine + Location.Icon.UVSize)
+	end
+	
 	Location.Icon.Sheet:Draw(
-        position - (Location.Icon.Size * scale / 2), 
-        Location.Icon.Size * scale, 
-        Location.Icon.UV[self.type], 
-        Location.Icon.UV[self.type] + Location.Icon.UVSize)
+		position - (Location.Icon.Size * scale / 2), 
+		Location.Icon.Size * scale, 
+		Location.Icon.UV[self.type], 
+		Location.Icon.UV[self.type] + Location.Icon.UVSize)
+
+	if self.color == Location.Color.None then return end
+
+	-- Draw border
+	Location.Icon.Sheet:Draw(
+		position - (Location.Icon.Size * scale / 2), 
+		Location.Icon.Size * scale, 
+		self.border, 
+		self.border + Location.Icon.UVSize)
+	
 end
 
 function Location:DrawColor(position, scale)
     if not self.color then return end
-    Render:FillArea(position - (Location.Icon.Size * scale / 2), Location.Icon.Size * scale, self.color)
+    Render:FillArea(position - (Location.Icon.Size * scale / 2) + Vector2(2,2), Location.Icon.Size * scale - Vector2(4,4), self.color)
 end
 
 function Location:Draw(position, scale)
-    self:DrawIcon(position, scale)
     self:DrawColor(position, scale)
+    self:DrawIcon(position, scale)
 end
 
 function Location:DrawTitle(position, scale)
@@ -108,7 +169,7 @@ Map = {
 	IconScale      = 0.4,
 	WaypointScale  = 1.5,
 	ActiveLocation = nil,
-	Waypoint       = Location("Waypoint", Vector3(), Location.Type.Waypoint),
+	Waypoint       = Location("Waypoint", Vector3(), Location.Type.Waypoint, Location.Color.None),
 	Locations      = {
 		Location("Kepulauan", Vector3(-1396.228, 276.0449, 10460.26), Location.Type.Comm),
 		Location("Negeri Gunung Berawn", Vector3(7826.969, 254.5643, 8466.012), Location.Type.MilLocation, Location.Color.Green),
@@ -233,7 +294,7 @@ Map = {
 		--Location("Paya Luas", Vector3(12028.47, 187.8509, -10679.78), Location.Type.MilAir),
 		Location("Paya Luas", Vector3(12028.47, 206.8509, -10679.78), Location.Type.MilAir, Location.Color.Green),
 		Location("Kampung Sri Puteri", Vector3(-5166.081, 338.7373, -7321.45), Location.Type.CivVil),
-		Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.MilLocation, Location.Color.Red),
+		Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.Skull, Location.Color.Red),
 		Location("Gunung Rata", Vector3(860.4727, 287.4586, 11726.06), Location.Type.MilLocation),
 		Location("Kem Harimau Putih", Vector3(11212.44, 399.179, 848.4565), Location.Type.MilLocation),
 		--Location("Palau Dayang Terlena", Vector3(-11911.88, 609.6496, 4799.679), Location.Type.MilAir),
@@ -451,7 +512,7 @@ Map = {
 		Location("Bandar Kolam Dalam", Vector3(9983.953, 212.7729, -9679.302), Location.Type.CivVil),
 		Location("Pelantar Gas Telok Beting Timur", Vector3(15525.08, 236.3287, -4305.083), Location.Type.OilRig),
 		--Location("PAN MILSAT", Vector3(7056.561, 776.8174, 1036.695), Location.Type.MilLocation),
-		Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.MilLocation, Location.Color.Red),
+		Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.Skull, Location.Color.Red),
 		Location("Cape Carnival", Vector3(13788.11, 222.02, -2315.564), Location.Type.MilLocation, Location.Color.Green),
 		Location("Port Gurun Lautan Lama", Vector3(-13579.83, 209.6284, 6453.933), Location.Type.MilHarb),
 		Location("Kampung Padang Luas", Vector3(10851.88, 200.9827, -8668.016), Location.Type.MilHarb, Location.Color.Green),
@@ -466,7 +527,7 @@ Map = {
 		Location("Kampung Tanah Bernilai", Vector3(11262.32, 245.0957, 3103.462), Location.Type.CivVil),
 		Location("Kem Sungai Floodgates", Vector3(-8053.476, 185.5706, 3221.842), Location.Type.MilLocation),
 		Location("Kampung Sirip Tajam", Vector3(-6937.369, 212.0635, -11319.59), Location.Type.CivVil),
-		Location("Pulau Berapi", Vector3(-1549.777, 208.8105, 939.5184), Location.Type.MilHarb, Location.Color.Green),
+		Location("Skull Island", Vector3(-1549.777, 208.8105, 939.5184), Location.Type.Skull, Location.Color.Red),
 		Location("Fasility Gunung Hutan Tinggi", Vector3(12864.55, 595.9291, 12905.51), Location.Type.MilLocation),
 		Location("Kampung Pasir Panjang", Vector3(-11559.06, 591.258, 3106.423), Location.Type.CivVil),
 		Location("Kampung Tanjung Luas", Vector3(2414.036, 202.7877, 4478.184), Location.Type.CivVil),
@@ -502,6 +563,15 @@ Map = {
 		-- NON-SETTLEMENTS
 		-- Location("Hantu Island", Vector3(-14091.01, 688.75, -14145.97), Location.Type.MilStrong),
 		-- Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green)
+		
+		-- Workbenches
+		["Southern Workbench"] = Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench, Location.Color.Purple, true),
+		["Eastern Workbench"] = Location("Eastern Workbench", Vector3(11455.59, 444, -516.274), Location.Type.Workbench, Location.Color.Purple, true),
+		["Northern Workbench"] = Location("Northern Workbench", Vector3(3018.479, 206.1557, -11952.077), Location.Type.Workbench, Location.Color.Purple, true),
+		["Western Workbench"] = Location("Western Workbench", Vector3(-7116.8, 388.98, 2928.25), Location.Type.Workbench, Location.Color.Purple, true),
+
+		-- Home
+		["Home"] = Location("Home", Vector3(), Location.Type.Home, Location.Color.Blue)
 	}
 }
 
@@ -542,8 +612,12 @@ function Map:Draw()
 
 	local scale = Map.IconScale
 
-	for k, location in ipairs(Map.Locations) do
+	for k, location in pairs(Map.Locations) do
 		local position = Map:WorldToScreen(location.position)
+
+		if k == "Home" then
+			location.position = LocalPlayer:GetValue("HomePosition")
+		end
 
 		if position.x > 0 and position.y > 0 and position.x < Render.Width and position.y < Render.Height then
 			if location:IsActive(position, scale * (PDA:IsUsingGamepad() and 2 or 1)) then
@@ -586,7 +660,7 @@ function Map:Draw()
 	end
 
 	if Map.ActiveLocation then
-		Map.ActiveLocation:DrawTitle(Map:WorldToScreen(Map.ActiveLocation.position), scale)
+		Map.ActiveLocation:DrawTitle(Map:WorldToScreen(Map.ActiveLocation.position) + Vector2(0, 4), scale)
 	end
 
 	if PDA:IsUsingGamepad() then
@@ -604,14 +678,6 @@ function Map:Draw()
 		Render:DrawLine(center + height, center + offsetHeight, Color.White)
     end
     
-    -- Home position
-    local home_pos = LocalPlayer:GetValue("HomePosition")
-
-    if home_pos then
-        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 3, Color.Black)
-        Render:FillCircle(Map:WorldToScreen(home_pos), Location.Icon.Size.x * scale / 4, Color.Orange)
-    end
-
     if math.floor(PDA.timer:GetSeconds() * 4) % 2 == 0 then
         local pos = Map:WorldToScreen(LocalPlayer:GetPosition())
         local size = Location.Icon.Size.x * scale * 0.6
@@ -632,6 +698,25 @@ function Map:Draw()
     end
 
     self:DrawLegend()
+
+	collectgarbage()
+end
+
+function Map:DrawMinimap()
+
+	local scale = Map.IconScale
+
+	for k, location in pairs(Map.Locations) do
+
+		if location.show_on_minimap then
+			local minimap_pos, on_screen = Render:WorldToMinimap(location.position)
+
+			if on_screen then
+				location:Draw(minimap_pos, scale)
+			end
+		end
+
+	end
 
 	collectgarbage()
 end
@@ -657,3 +742,10 @@ function Map:DrawLegend()
 	Render:DrawText(position - (size_y) + (Vector2.Down * (Location.Icon.Size.y / 2) * scale) + (Vector2.Down * TextSize.VeryLarge * scale / 2), text, Color.White, TextSize.VeryLarge, scale)
 
 end
+
+Events:Subscribe("Workbenches/UpdateState", function(args)
+	if Map.Locations[args.name] then
+		Map.Locations[args.name].color = args.state == 2 and Location.Color.Yellow or Location.Color.Purple
+		Map.Locations[args.name].name = args.state == 1 and args.name or args.name .. " (Active)"
+	end
+end)
