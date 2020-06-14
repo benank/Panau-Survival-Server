@@ -4,11 +4,7 @@ function ProjectileBullet:__init(args)
     getter_setter(self, "active")
     self:SetActive(true)
     getter_setter(self, "id")
-    if not self.SetId then
-        self.id = args.id
-    else
-        self:SetId(args.id)
-    end
+    self.id = args.id
     self.weapon_enum = args.weapon_enum
     self.velocity = args.velocity
     self.bloom = args.bloom or 0
@@ -39,6 +35,14 @@ function ProjectileBullet:__init(args)
     self.initial_probe = true
 
     self.lock_position = false
+end
+
+function ProjectileBullet:SetId(id)
+    self.id = id
+end
+
+function ProjectileBullet:GetId()
+    return self.id
 end
 
 function ProjectileBullet:GetBloom()

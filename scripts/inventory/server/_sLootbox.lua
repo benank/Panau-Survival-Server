@@ -136,11 +136,13 @@ end
 function sLootbox:AddStack(_stack)
 
     if not _stack then
-        error("sLootbox:AddStack failed: _stack does not exist")
+        print("sLootbox:AddStack failed: _stack does not exist")
+        return
     end
 
     if not _stack.contents or not _stack.contents[1] then
-        error("sLootbox:AddStack failed: _stack does have valid contents")
+        print("sLootbox:AddStack failed: _stack does have valid contents")
+        return
     end
 
     for k, stack in pairs(self.contents) do
