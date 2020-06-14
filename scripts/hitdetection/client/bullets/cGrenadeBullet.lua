@@ -36,11 +36,11 @@ function GrenadeBullet:__init(args)
     self.lock_position = false
 end
 
-function ProjectileBullet:SetId(id)
+function GrenadeBullet:SetId(id)
     self.id = id
 end
 
-function ProjectileBullet:GetId()
+function GrenadeBullet:GetId()
     return self.id
 end
 
