@@ -67,6 +67,10 @@ function sExp:ItemExplode(args)
     -- Check owner id for friend or self
     if not args.owner_id then return end
 
+    if args.exp_enabled ~= nil then
+        if not args.exp_enabled then return end
+    end
+
     if not IsValid(args.player) then return end
     if args.owner_id == tostring(args.player:GetSteamId()) then return end
 
@@ -150,9 +154,6 @@ function sExp:PlayerKilled(args)
     if args.player:GetValue("SecondLifeEquipped") then return end
 
     local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
-
-    -- Within neutralzone, don't lose exp
-    if args.player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius then return end
 
     -- Subtract exp from player who died
     local exp_data = args.player:GetValue("Exp")
@@ -311,7 +312,8 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
     local gained_level = false
 
     if exp_data.combat_exp == exp_data.combat_max_exp
-    and exp_data.explore_exp == exp_data.explore_max_exp then
+    and exp_data.explore_exp == exp_data.explore_max_exp
+    and exp_data.level < Exp.Max_Level then
         exp_data = self:PlayerGainLevel(exp_data)
 
         Events:Fire("SendPlayerPersistentMessage", {
@@ -330,6 +332,8 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
         end
         
         gained_level = true
+
+        self:UpdateDB(steamID, exp_data)
     end
 
     if IsValid(player) then

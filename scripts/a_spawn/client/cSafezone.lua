@@ -37,7 +37,7 @@ function cSafezone:RenderText(args)
 
     elseif self.in_neutralzone then
 
-        self:RenderSafezoneText("In Neutralzone", "You don't lose anything on death here", config.neutralzone.color)
+        self:RenderSafezoneText("In Neutralzone", "You don't lose items on death here", config.neutralzone.color)
 
     end
 

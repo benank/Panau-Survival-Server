@@ -140,7 +140,7 @@ end
 
 function cSurvivalHUD:Render(args)
 
-    if Game:GetState() ~= GUIState.Game then return end
+    if Game:GetState() ~= GUIState.Game or LocalPlayer:GetValue("MapOpen") then return end
 
     local inventory_open = LocalPlayer:GetValue("InventoryOpen")
 

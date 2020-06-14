@@ -19,7 +19,6 @@ Events:Subscribe("PlayerDeath", function(args)
 
         Network:Broadcast("Hitdetection/SecondLifeActivate", {position = player:GetPosition(), id = tostring(player:GetSteamId())})
         player:SetNetworkValue("Invincible", true)
-        player:SetHealth(0.01)
         player:SetValue("StreamDistance", player:GetStreamDistance())
         player:SetStreamDistance(0)
 
@@ -42,11 +41,15 @@ Events:Subscribe("PlayerDeath", function(args)
 
         
         Thread(function()
-            while IsValid(player) and player:GetHealth() < 1 or player:GetValue("Loading") do
+            while IsValid(player) and (player:GetValue("Loading") or not player:GetValue("SecondLifeSpawned")) do
                 Timer.Sleep(1000)
             end
 
+            Timer.Sleep(4000)
+
             if not IsValid(player) then return end
+
+            player:SetValue("SecondLifeSpawned", false)
 
             Network:Broadcast("Hitdetection/SecondLifeDectivate", {position = player:GetPosition(), id = tostring(player:GetSteamId())})
             player:SetHealth(1)
@@ -65,6 +68,7 @@ Events:Subscribe("PlayerDeath", function(args)
         
             if args.player == player then
                 
+                args.player:SetValue("SecondLifeSpawned", true)
                 args.player:SetPosition(death_pos)
 
                 Events:Unsubscribe(sub)

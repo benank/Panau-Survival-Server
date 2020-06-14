@@ -311,6 +311,15 @@ function sProxAlarms:FinishProxPlacement(args, player)
         self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
     end
 
+    local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues().blacklist
+
+    for _, area in pairs(BlacklistedAreas) do
+        if player:GetPosition():Distance(area.pos) < area.size then
+            Chat:Send(player, "You cannot place proximity alarms here!", Color.Red)
+            return
+        end
+    end
+
     if args.model and DisabledPlacementModels[args.model] then
         Chat:Send(player, "Placing proximity alarm failed!", Color.Red)
         return
