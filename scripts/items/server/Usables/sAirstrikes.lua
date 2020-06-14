@@ -25,6 +25,14 @@ function sAirStrikes:PlaceAirstrike(args, player)
 
     if args.position:Distance(player:GetPosition()) > 1000 then return end
 
+    local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+
+    -- If they are within sz radius * 2, we don't let them place that close
+    if args.position:GetPosition():Distance(self.sz_config.neutralzone.position) < self.sz_config.neutralzone.radius * 1.5 then
+        Chat:Send(player, "Cannot use this while near the neutralzone!", Color.Red)
+        return
+    end
+
     Inventory.RemoveItem({
         item = using_item.item,
         index = using_item.index,
