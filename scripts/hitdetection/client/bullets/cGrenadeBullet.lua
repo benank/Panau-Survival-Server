@@ -4,7 +4,7 @@ function GrenadeBullet:__init(args)
     getter_setter(self, "active")
     self:SetActive(true)
     getter_setter(self, "id")
-    self:SetId(args.id)
+    self.id = args.id
     self.weapon_enum = args.weapon_enum
     self.velocity = args.velocity
 
@@ -34,6 +34,14 @@ function GrenadeBullet:__init(args)
     self.initial_probe = true
 
     self.lock_position = false
+end
+
+function GrenadeBullet:SetId(id)
+    self.id = id
+end
+
+function GrenadeBullet:GetId()
+    return self.id
 end
 
 function GrenadeBullet:PreTick(delta)
