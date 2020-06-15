@@ -279,17 +279,17 @@ LootItems =
     {
         ["AIRSTRIKE"] = 
         {
-            rarity = 0.018,
+            rarity = 0.025,
             items = 
             {
-                ["Cruise Missile"] = {rarity = 0.625, min = 1, max = 2},
-                ["Area Bombing"] = {rarity = 0.25, min = 1, max = 1},
-                ["Tactical Nuke"] = {rarity = 0.125, min = 1, max = 1},
+                ["Cruise Missile"] = {rarity = 0.7, min = 1, max = 2},
+                ["Area Bombing"] = {rarity = 0.2, min = 1, max = 1},
+                ["Tactical Nuke"] = {rarity = 0.1, min = 1, max = 1},
             }
         },
         ["AMMO"] = 
         {
-            rarity = 0.426,
+            rarity = 0.419,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 4, max = 8},
