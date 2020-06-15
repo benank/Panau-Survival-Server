@@ -2,10 +2,17 @@ class 'sAirStrikes'
 
 function sAirStrikes:__init()
 
+    self.cooldown = 10 -- Must wait 10 seconds before you can use another
+
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
+    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Network:Subscribe("items/PlaceAirstrike", self, self.PlaceAirstrike)
     Network:Subscribe("items/CancelAirstrikePlacement", self, self.CancelAirstrikePlacement)
 
+end
+
+function sAirStrikes:ClientModuleLoad(args)
+    args.player:SetValue("LastAirstrikeTime", Server:GetElapsedSeconds())
 end
 
 function sAirStrikes:GetAirstrikeData(airstrike)
@@ -32,6 +39,8 @@ function sAirStrikes:PlaceAirstrike(args, player)
         Chat:Send(player, "Cannot use this while near the neutralzone!", Color.Red)
         return
     end
+
+    args.player:SetValue("LastAirstrikeTime", Server:GetElapsedSeconds())
 
     Inventory.RemoveItem({
         item = using_item.item,
@@ -105,6 +114,13 @@ end
 function sAirStrikes:UseItem(args)
 
     if not ItemsConfig.airstrikes[args.item.name] then return end
+
+    local last_time = args.player:GetValue("LastAirstrikeTime")
+
+    if Server:GetElapsedSeconds() - last_time < self.cooldown then
+        Chat:Send(player, "You muse wait before using this!", Color.Red)
+        return
+    end
 
     Inventory.OperationBlock({player = args.player, change = 1}) -- Block inventory operations until they finish placing or cancel
     args.player:SetValue("AirstrikeUsingItem", args)
