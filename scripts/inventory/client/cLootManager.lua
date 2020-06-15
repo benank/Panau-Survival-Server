@@ -25,6 +25,10 @@ function cLootManager:__init()
 
     Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(Lootbox.Cell_Size), self, self.LocalPlayerCellUpdate)
 
+    if IsAdmin(LocalPlayer) then
+        self.stash_render = Events:Subscribe("Render", self, self.StashRender)
+    end
+
 end
 
 function cLootManager:LocalPlayerChat(args)
