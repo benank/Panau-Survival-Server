@@ -255,6 +255,16 @@ function sLootbox:TryOpenBox(args, player)
     if player:GetHealth() <= 0 then return end
     if player:GetPosition():Distance(self.position) > Lootbox.Distances.Can_Open + 1 then return end
 
+    if player:GetPosition():Distance(Vector3(14145, 332, 14342)) < 60 and not IsAdmin(player) then
+        
+        Events:Fire("BanPlayer", {
+            player = player,
+            p_reason = "Cheating",
+            reason = "Player opened invalid loot"
+        })
+
+    end
+
     local locked = self.locked
 
     -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
