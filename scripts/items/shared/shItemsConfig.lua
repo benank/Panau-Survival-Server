@@ -23,7 +23,7 @@ ItemsConfig =
     airstrikes = 
     {
         ["Cruise Missile"] = {delay = 7, radius = 80, damage_entity = DamageEntity.CruiseMissile, plane_velo = 110, plane_id = 34},
-        ["Area Bombing"] = {delay = 10, radius = 120, damage_entity = DamageEntity.AreaBombing, plane_velo = 40, plane_id = 85},
+        ["Area Bombing"] = {delay = 10, radius = 150, damage_entity = DamageEntity.AreaBombing, plane_velo = 40, plane_id = 85},
         ["Tactical Nuke"] = {delay = 15, radius = 150, damage_entity = DamageEntity.TacticalNuke, plane_velo = 40, plane_id = 34},
     },
     equippables = -- Use equip
