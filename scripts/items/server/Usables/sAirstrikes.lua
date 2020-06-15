@@ -40,7 +40,7 @@ function sAirStrikes:PlaceAirstrike(args, player)
         return
     end
 
-    args.player:SetValue("LastAirstrikeTime", Server:GetElapsedSeconds())
+    player:SetValue("LastAirstrikeTime", Server:GetElapsedSeconds())
 
     Inventory.RemoveItem({
         item = using_item.item,
@@ -118,7 +118,7 @@ function sAirStrikes:UseItem(args)
     local last_time = args.player:GetValue("LastAirstrikeTime")
 
     if Server:GetElapsedSeconds() - last_time < self.cooldown then
-        Chat:Send(player, "You muse wait before using this!", Color.Red)
+        Chat:Send(args.player, "You muse wait before using this!", Color.Red)
         return
     end
 
