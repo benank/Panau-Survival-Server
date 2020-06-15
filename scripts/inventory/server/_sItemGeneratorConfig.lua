@@ -178,9 +178,17 @@ LootItems =
     },
     [Lootbox.Types.Level3] = 
     {
+        ["AIRSTRIKE"] = 
+        {
+            rarity = 0.015,
+            items = 
+            {
+                ["Cruise Missile"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
         ["AMMO"] = 
         {
-            rarity = 0.37,
+            rarity = 0.388,
             items = 
             {
                 ["Sawn-Off Ammo"] = {rarity = 0.1, min = 3, max = 6},
@@ -212,19 +220,19 @@ LootItems =
         },
         ["EXPLOSIVE"] = 
         {
-            rarity = 0.1,
+            rarity = 0.09,
             items = 
             {
-                ["Smoke Grenade"] = {rarity = 0.2, min = 1, max = 2},
-                ["Toxic Grenade"] = {rarity = 0.2, min = 1, max = 2},
-                ["Mine"] = {rarity = 0.2, min = 1, max = 1},
-                ["Claymore"] = {rarity = 0.2, min = 1, max = 1},
-                ["Molotov"] = {rarity = 0.2, min = 1, max = 1},
+                ["Smoke Grenade"] = {rarity = 0.02, min = 1, max = 2},
+                ["Toxic Grenade"] = {rarity = 0.25, min = 1, max = 2},
+                ["Mine"] = {rarity = 0.25, min = 1, max = 1},
+                ["Claymore"] = {rarity = 0.24, min = 1, max = 1},
+                ["Molotov"] = {rarity = 0.24, min = 1, max = 1},
             }
         },
         ["GEAR"] = 
         {
-            rarity = 0.047,
+            rarity = 0.042,
             items = 
             {
                 ["Grapplehook"] = {rarity = 0.1, min = 1, max = 1},
@@ -235,7 +243,7 @@ LootItems =
         },
         ["HEALTH"] = 
         {
-            rarity = 0.153,
+            rarity = 0.145,
             items = 
             {
                 ["Healthpack"] = {rarity = 1, min = 1, max = 1},
@@ -243,7 +251,7 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.18,
+            rarity = 0.17,
             items = 
             {
                 ["Vehicle Repair"] = {rarity = 0.18, min = 1, max = 2},
@@ -269,9 +277,19 @@ LootItems =
     },
     [Lootbox.Types.Level4] = 
     {
+        ["AIRSTRIKE"] = 
+        {
+            rarity = 0.025,
+            items = 
+            {
+                ["Cruise Missile"] = {rarity = 0.7, min = 1, max = 2},
+                ["Area Bombing"] = {rarity = 0.2, min = 1, max = 1},
+                ["Tactical Nuke"] = {rarity = 0.1, min = 1, max = 1},
+            }
+        },
         ["AMMO"] = 
         {
-            rarity = 0.45,
+            rarity = 0.419,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 4, max = 8},
@@ -302,7 +320,7 @@ LootItems =
         },
         ["EXPLOSIVE"] = 
         {
-            rarity = 0.084,
+            rarity = 0.09,
             items = 
             {
                 ["Claymore"] = {rarity = 0.408, min = 1, max = 1},

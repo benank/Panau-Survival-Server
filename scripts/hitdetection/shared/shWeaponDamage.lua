@@ -94,7 +94,10 @@ function WeaponDamage:__init()
         [DamageEntity.Claymore] = {damage = 500, radius = 10, knockback = 12, v_mod = 0.015},
         [DamageEntity.C4] = {damage = 400, radius = 40, knockback = 20, v_mod = 0.03},
         [DamageEntity.HEGrenade] = {damage = 200, radius = 7, knockback = 5, v_mod = 0.009},
-        [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 30, v_mod = 0.008}
+        [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 30, v_mod = 0.008},
+        [DamageEntity.CruiseMissile] = {damage = 200, radius = 80, knockback = 30, v_mod = 0.1},
+        [DamageEntity.AreaBombing] = {damage = 200, radius = 25, knockback = 15, v_mod = 0.1}, -- Individual bombs
+        [DamageEntity.TacticalNuke] = {damage = 900, radius = 150, knockback = 60, v_mod = 0.1},
     }
     
     self.WeaponHitType = 

@@ -140,7 +140,7 @@ Items =
     {
         name = "Area Bombing",
         category = "Explosives",
-        stacklimit = 2,
+        stacklimit = 3,
         can_use = true
     },
     {
@@ -178,7 +178,7 @@ Items =
     {
         name = "Cruise Missile",
         category = "Explosives",
-        stacklimit = 2,
+        stacklimit = 5,
         can_use = true
     },
     {
