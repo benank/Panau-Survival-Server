@@ -33,7 +33,7 @@ function Vehicle:GetHealth()
     
     local client_health = VehicleGetHealth(self)
     
-    return client_health < self:GetValue("Health") and client_health or self:GetValue("Health")
+    return (client_health and client_health < self:GetValue("Health")) and client_health or self:GetValue("Health")
 
 end
 

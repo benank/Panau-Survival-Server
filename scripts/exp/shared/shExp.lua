@@ -35,6 +35,9 @@ Exp =
         [DamageEntity.MeleeGrapple] = 200,
         [DamageEntity.MeleeKick] = 220,
         [DamageEntity.MeleeSlidingKick] = 200,
+        [DamageEntity.CruiseMissile] = 180,
+        [DamageEntity.AreaBombing] = 160,
+        [DamageEntity.TacticalNuke] = 160,
     },
     Hack = 
     {

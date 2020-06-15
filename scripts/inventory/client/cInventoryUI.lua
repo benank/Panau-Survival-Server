@@ -712,21 +712,21 @@ function cInventoryUI:LeftClickItemButton(button)
         return
     end
 
+    local cat = button:GetDataString("stack_category")
+    local index = button:GetDataNumber("stack_index")
+    if not Inventory.contents[cat] then return end
+    local stack = Inventory.contents[cat][index]
+    if not stack then return end
+
     if button:GetDataBool("dropping") then
         -- Adjusting the drop amount
         self:MouseScroll({delta = 1}) -- Simulate mousescroll to change drop amount
     else
-        if Key:IsDown(VirtualKey.LShift) then
+        if Key:IsDown(VirtualKey.LShift) and stack:GetProperty("durable") then
             -- Trying to shift a stack
             self:ShiftStack(button)
         else
             -- Equipping or using an item
-            local cat = button:GetDataString("stack_category")
-            local index = button:GetDataNumber("stack_index")
-            if not Inventory.contents[cat] then return end
-            local stack = Inventory.contents[cat][index]
-            if not stack then return end
-
             if stack:GetProperty("can_equip") then
                 Network:Send("Inventory/ToggleEquipped" .. self.steam_id, {cat = cat, index = index})
             else
