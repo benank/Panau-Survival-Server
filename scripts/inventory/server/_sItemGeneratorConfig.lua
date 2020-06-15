@@ -180,7 +180,7 @@ LootItems =
     {
         ["AIRSTRIKE"] = 
         {
-            rarity = 0.03,
+            rarity = 0.015,
             items = 
             {
                 ["Cruise Missile"] = {rarity = 1, min = 1, max = 1},
@@ -188,7 +188,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.37,
+            rarity = 0.388,
             items = 
             {
                 ["Sawn-Off Ammo"] = {rarity = 0.1, min = 3, max = 6},
@@ -220,7 +220,7 @@ LootItems =
         },
         ["EXPLOSIVE"] = 
         {
-            rarity = 0.085,
+            rarity = 0.09,
             items = 
             {
                 ["Smoke Grenade"] = {rarity = 0.02, min = 1, max = 2},
@@ -251,7 +251,7 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.178,
+            rarity = 0.17,
             items = 
             {
                 ["Vehicle Repair"] = {rarity = 0.18, min = 1, max = 2},
@@ -279,7 +279,7 @@ LootItems =
     {
         ["AIRSTRIKE"] = 
         {
-            rarity = 0.05,
+            rarity = 0.025,
             items = 
             {
                 ["Cruise Missile"] = {rarity = 0.625, min = 1, max = 2},
@@ -289,7 +289,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.4,
+            rarity = 0.419,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 4, max = 8},
@@ -320,7 +320,7 @@ LootItems =
         },
         ["EXPLOSIVE"] = 
         {
-            rarity = 0.084,
+            rarity = 0.09,
             items = 
             {
                 ["Claymore"] = {rarity = 0.408, min = 1, max = 1},
