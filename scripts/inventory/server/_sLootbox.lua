@@ -255,7 +255,7 @@ function sLootbox:TryOpenBox(args, player)
     if player:GetHealth() <= 0 then return end
     if player:GetPosition():Distance(self.position) > Lootbox.Distances.Can_Open + 1 then return end
 
-    if player:GetPosition():Distance(Vector3(14145, 332, 14342)) < 60 and not IsAdmin(player) then
+    if player:GetPosition():Distance(Vector3(14145, 332, 14342)) < 50 and not IsAdmin(player) then
         
         Events:Fire("BanPlayer", {
             player = player,

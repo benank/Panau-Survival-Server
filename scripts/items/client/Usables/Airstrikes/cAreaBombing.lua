@@ -84,6 +84,7 @@ function cAreaBombing:Strike()
             local direction = Vector3(math.random() - 0.5, 0, math.random() - 0.5):Normalized()
             local pos = self.position + direction * self.radius * math.random()
             local ray = Physics:Raycast(pos + Vector3.Up * 500, Vector3.Down, 0, 1000)
+            ray.position.y = math.max(200, ray.position.y)
                 
             ClientEffect.Play(AssetLocation.Game, {
                 position = ray.position,
