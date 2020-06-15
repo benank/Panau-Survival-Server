@@ -2,7 +2,7 @@ class 'cAreaBombing'
 
 function cAreaBombing:__init(args)
 
-    self.num_bombs = 15
+    self.num_bombs = 20
 
     self.position = args.position
     self.time_elapsed = args.timer
