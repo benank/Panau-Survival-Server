@@ -119,7 +119,7 @@ function sAirStrikes:UseItem(args)
 
     if Server:GetElapsedSeconds() - last_time < self.cooldown then
         Chat:Send(args.player, 
-            string.format("You must wait %.0f seconds before using this!", self.cooldown - (Server:GetElapsedSeconds() - last_time)), Color.Red)
+            string.format("You must wait %.0f seconds before using this!", self.cooldown - (Server:GetElapsedSeconds() - last_time)) + 1, Color.Red)
         return
     end
 
