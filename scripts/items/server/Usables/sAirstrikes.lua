@@ -118,7 +118,8 @@ function sAirStrikes:UseItem(args)
     local last_time = args.player:GetValue("LastAirstrikeTime")
 
     if Server:GetElapsedSeconds() - last_time < self.cooldown then
-        Chat:Send(args.player, string.format("You muse wait %.0f seconds before using this!", Server:GetElapsedSeconds() - last_time), Color.Red)
+        Chat:Send(args.player, 
+            string.format("You muse wait %.0f seconds before using this!", self.cooldown - Server:GetElapsedSeconds() - last_time), Color.Red)
         return
     end
 
