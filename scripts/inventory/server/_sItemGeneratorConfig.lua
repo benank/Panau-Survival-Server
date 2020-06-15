@@ -279,7 +279,7 @@ LootItems =
     {
         ["AIRSTRIKE"] = 
         {
-            rarity = 0.025,
+            rarity = 0.018,
             items = 
             {
                 ["Cruise Missile"] = {rarity = 0.625, min = 1, max = 2},
@@ -289,7 +289,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.419,
+            rarity = 0.426,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 4, max = 8},
