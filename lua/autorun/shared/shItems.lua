@@ -290,7 +290,7 @@ Items =
     {
         name = "C4",
         category = "Explosives",
-        stacklimit = 1,
+        stacklimit = 2,
         can_use = true,
         can_stack = true,
         non_persistent_custom_data = true
