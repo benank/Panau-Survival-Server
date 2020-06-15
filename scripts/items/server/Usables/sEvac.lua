@@ -19,7 +19,8 @@ function sEvac:UseItem(args, player)
         end
 
         
-        local num_grapples = Inventory.GetNumOfItem({player = player, item_name = "Grapplehook"})
+        local num_grapples = Inventory.GetNumOfItem({player = player, item_name = "Grapplehook"}) + 
+            Inventory.GetNumOfItem({player = player, item_name = "RocketGrapple"})
 
         if num_grapples == 0 then
             Chat:Send(player, "You must have a grapplehook to use this item!", Color.Red)
