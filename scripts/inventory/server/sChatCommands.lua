@@ -63,7 +63,34 @@ Events:Subscribe("PlayerChat", function(args)
             contents = {}
         })
 
+    elseif args.text == "/badstash" and IsAdmin(args.player) then
+
+        local current_box = args.player:GetValue("CurrentLootbox")
+
+        if not current_box or not current_box.stash then return end
+        if current_box.stash.owner_id == "SERVER" then return end
+
+        local contents_string = ""
+
+        for index, _stack in pairs(current_box.contents) do
+            local items = {}
+            for _, item in pairs(_stack.contents) do
+                items[_] = shItem(item)
+            end
+            local stack = shStack({contents = items})
+            contents_string = contents_string .. stack:ToString() .. "\n"
+        end
+
+        Events:Fire("Discord", {
+            channel = "Stashes",
+            content = string.format("%s [%s] removed [%s]'s stash. ID: %d\nContents: %s", 
+                args.player:GetName(), tostring(args.player:GetSteamId()), current_box.stash.owner_id, current_box.stash.id, contents_string)
+        })
     
+        sStashes:DeleteStash({id = current_box.stash.id})
+
+        Chat:Send(args.player, "Stash removed.", Color.Red)
+
     elseif split[1] == "/rem" and split[2] then
 
         local text = string.gsub(args.text, "/rem ", "")

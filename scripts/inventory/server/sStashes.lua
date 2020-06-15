@@ -314,18 +314,29 @@ function sStashes:DeleteStash(args, player)
 
     if not stash_instance then return end
 
+    local owner_id = stash_instance.owner_id
+
     -- Create dropbox with contents
     self.stashes_by_uid[stash_instance.lootbox.uid] = nil
     self.stashes[args.id] = nil
     stash_instance:Remove()
 
-    if IsValid(player) then
-        local player_stashes = player:GetValue("Stashes")
+    local owner = nil
+
+    for p in Server:GetPlayers() do
+        if tostring(p:GetSteamId()) == owner_id then
+            owner = p
+            break
+        end
+    end
+
+    if IsValid(owner) then
+        local player_stashes = owner:GetValue("Stashes")
 
         player_stashes[args.id] = nil
 
-        player:SetValue("Stashes", player_stashes)
-        self:SyncStashesToPlayer(player)
+        owner:SetValue("Stashes", player_stashes)
+        self:SyncStashesToPlayer(owner)
     end
 
 end
