@@ -450,7 +450,6 @@ end
 function sHitDetection:VehicleExplosionHit(args, player)
 
     if not IsValid(player) then return end
-    if player:GetValue("InSafezone") then return end
 
     assert(args.hit_vehicles and count_table(args.hit_vehicles) > 0, "hit_vehicles is invalid")
     assert(args.type, "type is invalid")
