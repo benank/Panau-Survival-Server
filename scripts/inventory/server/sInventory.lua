@@ -293,10 +293,10 @@ function sInventory:ToggleEquipped(args, player)
     Events:Fire("Inventory/ToggleEquipped", 
         {player = self.player, index = index, item = self.contents[args.cat][index].contents[1]:Copy():GetSyncObject()})
 
+    self:CheckForOverflow()
+
     -- Sync it
-    Timer.SetTimeout(100, function()
-        self:Sync({sync_full = true})
-    end)
+    self:Sync({sync_full = true})
 
 end
 
@@ -393,12 +393,20 @@ function sInventory:CheckForOverflow()
 
         -- Send the player a chat message
         local chat_msg = "Inventory overflow! You dropped: "
+        local items_dropped = ""
         for index, stack in pairs(stacks_to_drop) do
-            chat_msg = chat_msg .. string.format("%s (%s)", tostring(stack:GetProperty("name")), tostring(stack:GetAmount()))
+            items_dropped = items_dropped .. string.format("%s (%s)", tostring(stack:GetProperty("name")), tostring(stack:GetAmount()))
             if index < #stacks_to_drop then
-                chat_msg = chat_msg .. ", "
+                items_dropped = items_dropped .. ", "
             end
         end
+        chat_msg = chat_msg .. items_dropped
+
+        Events:Fire("Discord", {
+            channel = "Inventory",
+            content = string.format("%s [%s] inventory overflow and dropped: \n%s", 
+                self.player:GetName(), tostring(self.player:GetSteamId()), items_dropped)
+        })
 
         Chat:Send(self.player, chat_msg, Color.Red)
 
@@ -406,6 +414,8 @@ function sInventory:CheckForOverflow()
 
         -- Full sync in case they dropped from multiple categories
         self:Sync({sync_full = true})
+
+        self:CheckForOverflow()
     end
     
 end
@@ -969,6 +979,8 @@ function sInventory:RemoveStack(args)
 
         end
 
+        self:CheckForOverflow()
+
     else
 
         -- Remove by stack uid
@@ -991,6 +1003,8 @@ function sInventory:RemoveStack(args)
             end
 
         end
+
+        self:CheckForOverflow()
 
         if not args.stack then return end
 
@@ -1021,12 +1035,16 @@ function sInventory:RemoveStack(args)
                                 self:Sync({index = index, cat = cat, sync_remove = true})
                             end
 
+                            self:CheckForOverflow()
+
                             return
 
                         else
 
                             self.contents[cat][index] = stack
                             self:Sync({index = index, stack = self.contents[cat][index], sync_stack = true})
+
+                            self:CheckForOverflow()
 
                         end
 
@@ -1037,6 +1055,7 @@ function sInventory:RemoveStack(args)
             end
         end
 
+        self:CheckForOverflow()
 
         if not args.stack then return end
 
@@ -1076,6 +1095,7 @@ function sInventory:RemoveStack(args)
                     break
                 end
 
+                self:CheckForOverflow()
 
             end
 
@@ -1148,8 +1168,6 @@ function sInventory:Sync(args)
             end
         end
     end
-
-    self:CheckForOverflow()
 
     if args.sync_full then -- Sync entire inventory
         Network:Send(self.player, "InventoryUpdated", 
