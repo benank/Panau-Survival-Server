@@ -32,7 +32,7 @@ function sPerks:PlayerChat(args)
         self:SavePlayer(target_player)
 
         Chat:Send(args.player, string.format("Gave %d points to %s.", tonumber(words[3]), target_player:GetName()), Color.Yellow)
-        Chat:Send(target_player, string.format("You have been awarded %d perk points!", tonumber(words[3]), Color.Yellow))
+        Chat:Send(target_player, string.format("You have been awarded %d perk points!", tonumber(words[3])), Color.Yellow)
 
         Events:Fire("Discord", {
             channel = "Experience",
