@@ -2095,3 +2095,27 @@ ExpPerksById = {}
 for _, data in pairs(ExpPerks) do
     ExpPerksById[data.id] = data
 end
+
+PerkPointsPerLevel = 2 -- 2 Perk points are gained every level
+
+ExpPerkChoiceText = 
+{
+    [10] = 
+    {
+        text = "Choose what backpack to add 2 slots to",
+        choices = 
+        {
+            "Combat Backpack",
+            "Explorer Backpack"
+        }
+    },
+    [12] = 
+    {
+        text = "Choose what backpack to add 2 slots to",
+        choices = 
+        {
+            "Combat Backpack",
+            "Explorer Backpack"
+        }
+    },
+}

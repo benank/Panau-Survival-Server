@@ -56,6 +56,7 @@ function cPerkMenu:__init()
 
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
     Events:Subscribe("PlayerExpUpdated", self, self.PlayerExpUpdated)
+    Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
 
     Events:Subscribe( "Render", self, self.Render )
     Events:Subscribe( "KeyUp", self, self.KeyUp )
@@ -67,17 +68,80 @@ function cPerkMenu:ModulesLoad()
     self:UpdateCategoryNames()
 end
 
+function cPerkMenu:PlayerPerksUpdated()
+    self:UpdateCategoryNames()
+    self:UpdatePerks()
+end
+
 function cPerkMenu:PlayerExpUpdated()
-    -- Delay for server to update values
-    Timer.SetTimeout(2000, function()
-        self:UpdateCategoryNames()
-    end)
+    self:UpdatePerks()
 end
 
 function cPerkMenu:UpdateCategoryNames()
 
     -- Update perk points title
+    if LocalPlayer:GetValue("Perks") then
+        self.categories["Perks"].button:SetText(string.format("Perks (%d points)", LocalPlayer:GetValue("Perks").points))
+    end
 
+end
+
+-- Updates all perks and buttons with proper colors, text, tooltips, etc
+function cPerkMenu:UpdatePerks()
+
+    local exp = LocalPlayer:GetValue("Exp")
+    local perks = LocalPlayer:GetValue("Perks")
+
+    if not exp or not perks then return end
+
+    for id, data in pairs(self.categories["Perks"].perks) do
+        local perk_data = ExpPerksById[id]
+
+        local locked = (exp.level < perk_data.level_req or perks.points < perk_data.cost) and not perks.unlocked_perks[id]
+        
+        -- It has a prereq perk
+        if perk_data.perk_req > 0 then
+            locked = locked or not perks.unlocked_perks[perk_data.perk_req]
+        end
+
+        data.item:GetCellContents(1):SetTextColor(exp.level >= perk_data.level_req and Color.White or Color.Red)
+        data.item:GetCellContents(4):SetTextColor(perks.points >= perk_data.cost and Color.White or Color.Red)
+
+        local btn = data.item:FindChildByName("button_Unlock", true)
+
+        -- Update button with "Unlock", "Locked", or "Unlocked"
+        if locked then
+            -- Locked perk
+            btn:SetText("Locked")
+            btn:SetTextNormalColor(Color.Red)
+            btn:SetTextHoveredColor(Color.Red)
+            btn:SetTextPressedColor(Color.Red)
+            btn:SetTextDisabledColor(Color.Red)
+            btn:SetToggleable(false)
+            
+        elseif not perks.unlocked_perks[id] then
+            -- Perk that can be unlocked
+            btn:SetText("Unlock")
+            btn:SetTextNormalColor(Color.White)
+            btn:SetTextHoveredColor(Color.White)
+            btn:SetTextPressedColor(Color.White)
+            btn:SetTextDisabledColor(Color.White)
+            btn:SetToggleable(false)
+
+        else
+            -- Unlocked perk
+            btn:SetText("Unlocked")
+            btn:SetTextNormalColor(Color(0, 230, 0))
+            btn:SetTextHoveredColor(Color(0, 230, 0))
+            btn:SetTextPressedColor(Color(0, 230, 0))
+            btn:SetTextDisabledColor(Color(0, 230, 0))
+            btn:SetToggleable(true)
+            btn:SetToggleState(true)
+
+        end
+        
+
+    end
 
 end
 
@@ -121,7 +185,7 @@ function cPerkMenu:AddPerk(data)
     {
         [6] = "Unlock"
     }
-    
+
     for index, name in pairs(button_names) do
         local btn = Button.Create(item, "button_" .. name)
         btn:SetText(name)
