@@ -49,6 +49,15 @@ function cPerkMenu:__init()
     Events:Subscribe( "Render", self, self.Render )
     Events:Subscribe( "KeyUp", self, self.KeyUp )
 
+    Events:Subscribe("SecondTick", self, self.SecondTick)
+
+end
+
+-- Update every second to reset colors if clicked on
+function cPerkMenu:SecondTick()
+    if LocalPlayer:GetValue("Perks") and LocalPlayer:GetValue("Exp") then
+        self:UpdatePerks()
+    end
 end
 
 function cPerkMenu:CreateConfirmMenu()
@@ -173,13 +182,6 @@ function cPerkMenu:SetItemColor(item, color)
         item:SetTextDisabledColor(color)
     end
 
-    if item.SetColorBright then
-        item:SetColorBright(color)
-        item:SetColorDark(color)
-        item:SetColorHighlight(color)
-        item:SetColorNormal(color)
-    end
-
 end
 
 -- Updates all perks and buttons with proper colors, text, tooltips, etc
@@ -235,7 +237,7 @@ function cPerkMenu:UpdatePerks()
             --btn:SetBackgroundVisible(false)
 
             if ExpPerkChoiceText[id] then
-                btn:SetTooltip(string.format("You chose: %s", ExpPerkChoiceText[id].choices[perks.unlocked_perks[id]]))
+                btn:SetToolTip(string.format("You chose: %s", ExpPerkChoiceText[id].choices[perks.unlocked_perks[id]]))
             end
 
         end
@@ -270,6 +272,7 @@ function cPerkMenu:AddPerk(data)
     for i = 0, 5 do
         if i == self.column_index.Details then
             item:GetCellContents(i):SetWidth(300)
+            item:GetCellContents(i):SetMouseInputEnabled(false)
             item:GetCellContents(i):SetLineSpacing(1.25) 
             item:GetCellContents(i):SetWrap(true)
         end
