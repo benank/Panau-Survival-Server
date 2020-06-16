@@ -38,7 +38,7 @@ ExpPerks =
         cost = 0,
         id = 4,
         position = 4,
-        enabled = false
+        enabled = true
     },
     {
         name = "SMG",
@@ -68,7 +68,7 @@ ExpPerks =
         cost = 0,
         id = 7,
         position = 7,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -78,7 +78,7 @@ ExpPerks =
         cost = 0,
         id = 8,
         position = 8,
-        enabled = false
+        enabled = true
     },
     {
         name = "Assault Rifle",
@@ -98,7 +98,7 @@ ExpPerks =
         cost = 0,
         id = 10,
         position = 10,
-        enabled = false
+        enabled = true
     },
     {
         name = "SMG",
@@ -118,7 +118,7 @@ ExpPerks =
         cost = 1,
         id = 12,
         position = 12,
-        enabled = false
+        enabled = true
     },
     {
         name = "Shotgun",
@@ -198,7 +198,7 @@ ExpPerks =
         cost = 0,
         id = 20,
         position = 20,
-        enabled = false
+        enabled = true
     },
     {
         name = "Player Movement",
@@ -248,7 +248,7 @@ ExpPerks =
         cost = 0,
         id = 25,
         position = 25,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -258,7 +258,7 @@ ExpPerks =
         cost = 0,
         id = 26,
         position = 26,
-        enabled = false
+        enabled = true
     },
     {
         name = "Nitro",
@@ -308,7 +308,7 @@ ExpPerks =
         cost = 0,
         id = 31,
         position = 31,
-        enabled = false
+        enabled = true
     },
     {
         name = "SMG",
@@ -368,7 +368,7 @@ ExpPerks =
         cost = 0,
         id = 37,
         position = 37,
-        enabled = false
+        enabled = true
     },
     {
         name = "Arena",
@@ -458,7 +458,7 @@ ExpPerks =
         cost = 0,
         id = 46,
         position = 46,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",
@@ -468,7 +468,7 @@ ExpPerks =
         cost = 0,
         id = 47,
         position = 47,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -478,7 +478,7 @@ ExpPerks =
         cost = 0,
         id = 48,
         position = 48,
-        enabled = false
+        enabled = true
     },
     {
         name = "Rocket Grapple",
@@ -618,7 +618,7 @@ ExpPerks =
         cost = 0,
         id = 62,
         position = 62,
-        enabled = false
+        enabled = true
     },
     {
         name = "Shotgun",
@@ -638,7 +638,7 @@ ExpPerks =
         cost = 0,
         id = 64,
         position = 64,
-        enabled = false
+        enabled = true
     },
     {
         name = "Rocket Launcher",
@@ -658,7 +658,7 @@ ExpPerks =
         cost = 0,
         id = 66,
         position = 66,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -668,7 +668,7 @@ ExpPerks =
         cost = 0,
         id = 67,
         position = 67,
-        enabled = false
+        enabled = true
     },
     {
         name = "Damage Resistance",
@@ -698,7 +698,7 @@ ExpPerks =
         cost = 2,
         id = 70,
         position = 70,
-        enabled = false
+        enabled = true
     },
     {
         name = "Player Movement",
@@ -718,7 +718,7 @@ ExpPerks =
         cost = 0,
         id = 72,
         position = 72,
-        enabled = false
+        enabled = true
     },
     {
         name = "Grapplehook",
@@ -768,7 +768,7 @@ ExpPerks =
         cost = 0,
         id = 77,
         position = 77,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -778,7 +778,7 @@ ExpPerks =
         cost = 0,
         id = 78,
         position = 78,
-        enabled = false
+        enabled = true
     },
     {
         name = "Backpack",
@@ -788,7 +788,7 @@ ExpPerks =
         cost = 0,
         id = 79,
         position = 79,
-        enabled = false
+        enabled = true
     },
     {
         name = "Shotgun",
@@ -858,7 +858,7 @@ ExpPerks =
         cost = 0,
         id = 86,
         position = 86,
-        enabled = false
+        enabled = true
     },
     {
         name = "Ping",
@@ -908,7 +908,7 @@ ExpPerks =
         cost = 0,
         id = 91,
         position = 91,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",
@@ -918,7 +918,7 @@ ExpPerks =
         cost = 0,
         id = 92,
         position = 92,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -928,7 +928,7 @@ ExpPerks =
         cost = 0,
         id = 93,
         position = 93,
-        enabled = false
+        enabled = true
     },
     {
         name = "Player Movement",
@@ -998,7 +998,7 @@ ExpPerks =
         cost = 0,
         id = 100,
         position = 100,
-        enabled = false
+        enabled = true
     },
     {
         name = "Arena",
@@ -1058,7 +1058,7 @@ ExpPerks =
         cost = 3,
         id = 106,
         position = 106,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
@@ -1068,7 +1068,7 @@ ExpPerks =
         cost = 0,
         id = 107,
         position = 107,
-        enabled = false
+        enabled = true
     },
     {
         name = "Area Bombing",
@@ -1118,7 +1118,7 @@ ExpPerks =
         cost = 0,
         id = 112,
         position = 112,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -1128,7 +1128,7 @@ ExpPerks =
         cost = 0,
         id = 113,
         position = 113,
-        enabled = false
+        enabled = true
     },
     {
         name = "C4",
@@ -1188,7 +1188,7 @@ ExpPerks =
         cost = 0,
         id = 119,
         position = 119,
-        enabled = false
+        enabled = true
     },
     {
         name = "Backpack",
@@ -1258,7 +1258,7 @@ ExpPerks =
         cost = 0,
         id = 126,
         position = 126,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -1268,7 +1268,7 @@ ExpPerks =
         cost = 0,
         id = 127,
         position = 127,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
@@ -1278,7 +1278,7 @@ ExpPerks =
         cost = 0,
         id = 128,
         position = 128,
-        enabled = false
+        enabled = true
     },
     {
         name = "Teleport: Safezone",
@@ -1348,7 +1348,7 @@ ExpPerks =
         cost = 0,
         id = 135,
         position = 135,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",
@@ -1358,7 +1358,7 @@ ExpPerks =
         cost = 0,
         id = 136,
         position = 136,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -1368,7 +1368,7 @@ ExpPerks =
         cost = 0,
         id = 137,
         position = 137,
-        enabled = false
+        enabled = true
     },
     {
         name = "Rocket Grapple",
@@ -1408,7 +1408,7 @@ ExpPerks =
         cost = 0,
         id = 141,
         position = 141,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
@@ -1428,7 +1428,7 @@ ExpPerks =
         cost = 0,
         id = 143,
         position = 143,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -1438,7 +1438,7 @@ ExpPerks =
         cost = 0,
         id = 144,
         position = 144,
-        enabled = false
+        enabled = true
     },
     {
         name = "Building",
@@ -1508,7 +1508,7 @@ ExpPerks =
         cost = 0,
         id = 151,
         position = 151,
-        enabled = false
+        enabled = true
     },
     {
         name = "C4",
@@ -1538,7 +1538,7 @@ ExpPerks =
         cost = 0,
         id = 154,
         position = 154,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -1548,7 +1548,7 @@ ExpPerks =
         cost = 0,
         id = 155,
         position = 155,
-        enabled = false
+        enabled = true
     },
     {
         name = "Parachute",
@@ -1578,7 +1578,7 @@ ExpPerks =
         cost = 0,
         id = 158,
         position = 158,
-        enabled = false
+        enabled = true
     },
     {
         name = "Explosives Detector",
@@ -1638,7 +1638,7 @@ ExpPerks =
         cost = 0,
         id = 164,
         position = 164,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",
@@ -1648,7 +1648,7 @@ ExpPerks =
         cost = 0,
         id = 165,
         position = 165,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -1658,7 +1658,7 @@ ExpPerks =
         cost = 0,
         id = 166,
         position = 166,
-        enabled = false
+        enabled = true
     },
     {
         name = "Claymore",
@@ -1698,7 +1698,7 @@ ExpPerks =
         cost = 0,
         id = 170,
         position = 170,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -1708,7 +1708,7 @@ ExpPerks =
         cost = 0,
         id = 171,
         position = 171,
-        enabled = false
+        enabled = true
     },
     {
         name = "Rocket Grapple",
@@ -1758,7 +1758,7 @@ ExpPerks =
         cost = 0,
         id = 176,
         position = 176,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -1768,7 +1768,7 @@ ExpPerks =
         cost = 0,
         id = 177,
         position = 177,
-        enabled = false
+        enabled = true
     },
     {
         name = "Sniper Rifle",
@@ -1828,7 +1828,7 @@ ExpPerks =
         cost = 0,
         id = 183,
         position = 183,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -1838,7 +1838,7 @@ ExpPerks =
         cost = 0,
         id = 184,
         position = 184,
-        enabled = false
+        enabled = true
     },
     {
         name = "Rocket Launcher",
@@ -1888,7 +1888,7 @@ ExpPerks =
         cost = 0,
         id = 189,
         position = 189,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -1898,7 +1898,7 @@ ExpPerks =
         cost = 0,
         id = 190,
         position = 190,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
@@ -1948,7 +1948,7 @@ ExpPerks =
         cost = 0,
         id = 195,
         position = 195,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -1958,7 +1958,7 @@ ExpPerks =
         cost = 0,
         id = 196,
         position = 196,
-        enabled = false
+        enabled = true
     },
     {
         name = "Claymore",
@@ -2008,7 +2008,7 @@ ExpPerks =
         cost = 0,
         id = 201,
         position = 201,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -2018,7 +2018,7 @@ ExpPerks =
         cost = 0,
         id = 202,
         position = 202,
-        enabled = false
+        enabled = true
     },
     {
         name = "Grenade Launcher",
@@ -2058,7 +2058,7 @@ ExpPerks =
         cost = 0,
         id = 206,
         position = 206,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -2068,7 +2068,7 @@ ExpPerks =
         cost = 0,
         id = 207,
         position = 207,
-        enabled = false
+        enabled = true
     },
     {
         name = "Rocket Launcher",
@@ -2098,7 +2098,7 @@ ExpPerks =
         cost = 0,
         id = 210,
         position = 210,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -2108,7 +2108,7 @@ ExpPerks =
         cost = 0,
         id = 211,
         position = 211,
-        enabled = false
+        enabled = true
     },
     {
         name = "Machine Gun",
@@ -2148,7 +2148,7 @@ ExpPerks =
         cost = 0,
         id = 215,
         position = 215,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -2158,7 +2158,7 @@ ExpPerks =
         cost = 0,
         id = 216,
         position = 216,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
@@ -2178,7 +2178,7 @@ ExpPerks =
         cost = 0,
         id = 218,
         position = 218,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -2188,7 +2188,7 @@ ExpPerks =
         cost = 0,
         id = 219,
         position = 219,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
@@ -2218,7 +2218,7 @@ ExpPerks =
         cost = 0,
         id = 222,
         position = 222,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -2228,7 +2228,7 @@ ExpPerks =
         cost = 0,
         id = 223,
         position = 223,
-        enabled = false
+        enabled = true
     },
     {
         name = "Rocket Launcher",
@@ -2268,7 +2268,7 @@ ExpPerks =
         cost = 0,
         id = 227,
         position = 227,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -2278,7 +2278,7 @@ ExpPerks =
         cost = 0,
         id = 228,
         position = 228,
-        enabled = false
+        enabled = true
     },
     {
         name = "Machine Gun",
@@ -2308,7 +2308,7 @@ ExpPerks =
         cost = 0,
         id = 231,
         position = 231,
-        enabled = false
+        enabled = true
     },
     {
         name = "Stashes",
@@ -2318,7 +2318,7 @@ ExpPerks =
         cost = 0,
         id = 232,
         position = 232,
-        enabled = false
+        enabled = true
     },
 }
 
