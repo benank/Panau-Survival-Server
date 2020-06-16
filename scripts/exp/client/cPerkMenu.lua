@@ -24,6 +24,17 @@ function cPerkMenu:__init()
         [3] = "Leaderboard"
     }
 
+    self.column_index = 
+    {
+        Id = 0,
+        Perk = 1,
+        Details = 2,
+        Cost = 3,
+        LevelReq = 4,
+        PerkReq = 5,
+        Unlock = 6
+    }
+
     self:CreateConfirmMenu()
     self:LoadCategories()
     self:CreatePerksMenu()
@@ -37,7 +48,6 @@ function cPerkMenu:__init()
     Events:Subscribe( "Render", self, self.Render )
     Events:Subscribe( "KeyUp", self, self.KeyUp )
 
-    Events:Subscribe("SecondTick", self, self.SecondTick)
 end
 
 function cPerkMenu:CreateConfirmMenu()
@@ -118,6 +128,14 @@ end
 function cPerkMenu:ConfirmPerkButton()
 
     -- Player pressed confirm perk button to unlock a perk
+    if not self.current_unlocking_choice or not self.current_unlocking_perk_id then return end
+
+    Network:Send("Perks/Unlock", {
+        id = self.current_unlocking_perk_id,
+        choice = self.current_unlocking_choice
+    })
+
+    self.confirm_menu:Hide()
 
 end
 
@@ -161,8 +179,9 @@ function cPerkMenu:UpdatePerks()
             locked = locked or not perks.unlocked_perks[perk_data.perk_req]
         end
 
-        data.item:GetCellContents(1):SetTextColor(exp.level >= perk_data.level_req and Color.White or Color.Red)
-        data.item:GetCellContents(4):SetTextColor(perks.points >= perk_data.cost and Color.White or Color.Red)
+        data.item:GetCellContents(self.column_index.LevelReq):SetTextColor(exp.level >= perk_data.level_req and Color.White or Color.Red)
+        data.item:GetCellContents(self.column_index.Cost):SetTextColor(perks.points >= perk_data.cost and Color.White or Color.Red)
+        data.item:GetCellContents(self.column_index.PerkReq):SetTextColor((perk_data.perk_req > 0 and not perks.unlocked_perks[perk_data.perk_req]) and Color.Red or Color.White)
 
         local btn = data.item:FindChildByName("button_Unlock", true)
 
@@ -170,16 +189,17 @@ function cPerkMenu:UpdatePerks()
         if locked then
             -- Locked perk
             btn:SetText("Locked")
+            btn:SetBackgroundVisible(false)
             btn:SetTextNormalColor(Color.Red)
             btn:SetTextHoveredColor(Color.Red)
             btn:SetTextPressedColor(Color.Red)
             btn:SetTextDisabledColor(Color.Red)
             btn:SetToggleable(false)
             btn:SetDataBool("Unlockable", false)
-            btn:SetBackgroundVisible(false)
             
         elseif not perks.unlocked_perks[id] then
             -- Perk that can be unlocked
+            btn:SetBackgroundVisible(true)
             btn:SetText("Unlock")
             btn:SetTextNormalColor(Color.White)
             btn:SetTextHoveredColor(Color.White)
@@ -187,7 +207,7 @@ function cPerkMenu:UpdatePerks()
             btn:SetTextDisabledColor(Color.White)
             btn:SetToggleable(false)
             btn:SetDataBool("Unlockable", true)
-            btn:SetBackgroundVisible(true)
+            btn:Toggle()
 
         else
             -- Unlocked perk
@@ -196,6 +216,7 @@ function cPerkMenu:UpdatePerks()
             btn:SetTextHoveredColor(Color(0, 230, 0))
             btn:SetTextPressedColor(Color(0, 230, 0))
             btn:SetTextDisabledColor(Color(0, 230, 0))
+            btn:Toggle()
             btn:SetToggleable(true)
             btn:SetToggleState(true)
             btn:SetDataBool("Unlockable", false)
@@ -205,11 +226,6 @@ function cPerkMenu:UpdatePerks()
         
 
     end
-
-end
-
-
-function cPerkMenu:SecondTick()
 
 end
 
@@ -228,15 +244,15 @@ function cPerkMenu:AddPerk(data)
     local list = self.categories["Perks"].list
     
 	local item = list:AddItem( tostring(data.id) )
-	item:SetCellText( 0, tostring(data.id) )
-	item:SetCellText( 1, tostring(data.level_req) )
-	item:SetCellText( 2, data.name )
-	item:SetCellText( 3, data.description )
-	item:SetCellText( 4, data.cost > 0 and tostring(data.cost) or "Free" )
-    item:SetCellText( 5, data.perk_req > 0 and tostring(data.perk_req) or "" )
+	item:SetCellText( self.column_index.Id, "#" .. tostring(data.id) )
+	item:SetCellText( self.column_index.Perk, data.name )
+	item:SetCellText( self.column_index.Details, data.description )
+	item:SetCellText( self.column_index.Cost, data.cost > 0 and tostring(data.cost) or "Free" )
+	item:SetCellText( self.column_index.LevelReq, tostring(data.level_req) )
+    item:SetCellText( self.column_index.PerkReq, data.perk_req > 0 and "#" .. tostring(data.perk_req) or "" )
 
     for i = 0, 5 do
-        if i == 3 then
+        if i == self.column_index.Details then
             item:GetCellContents(i):SetWidth(300)
             item:GetCellContents(i):SetLineSpacing(1.25) 
             item:GetCellContents(i):SetWrap(true)
@@ -266,6 +282,7 @@ end
 function cPerkMenu:PressPerkButton(btn)
 
     self.current_unlocking_choice = nil
+    btn:Toggle()
 
     if not btn:GetDataBool("Unlockable") then return end
 
@@ -281,28 +298,9 @@ function cPerkMenu:PressPerkButton(btn)
     else
         -- This perk only has one option, so show confirmation menu
         self.confirm_menu:Show()
+        self.current_unlocking_choice = 1
 
     end
-
-end
-
-function cPerkMenu:ConfirmDeleteButton(btn)
-    if self.deleting.type == "vehicle" then
-
-        Events:Fire("Vehicles/DeleteVehicle", {
-            vehicle_id = self.deleting.id
-        })
-
-    elseif self.deleting.type == "stash" then
-
-        Events:Fire("Stashes/DeleteStash", {
-            id = self.deleting.id
-        })
-
-    end
-
-    self.deleting.btn:Hide()
-    self.delete_confirm_menu:Hide()
 
 end
 
@@ -310,15 +308,14 @@ function cPerkMenu:CreatePerksMenu()
     
 	local list = SortedList.Create( self.categories["Perks"].window )
 	list:SetDock( GwenPosition.Fill )
-	list:AddColumn( "ID", 60 )
-	list:AddColumn( "Level Req.", 80 )
+	list:AddColumn( "#", 60 )
 	list:AddColumn( "Perk", 200 )
 	list:AddColumn( "Details" )
 	list:AddColumn( "Cost", 60 )
+	list:AddColumn( "Level Req.", 80 )
 	list:AddColumn( "Perk Req.", 80 )
 	list:AddColumn( "Unlock", 80 )
     list:SetButtonsVisible( true )
-    list:SetPadding(Vector2(0,0), Vector2(0,0))
 
     self.categories["Perks"].list = list
     self.categories["Perks"].perks = {}

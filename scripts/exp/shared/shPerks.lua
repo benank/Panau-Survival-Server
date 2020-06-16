@@ -2098,26 +2098,416 @@ end
 
 PerkPointsPerLevel = 2 -- 2 Perk points are gained every level
 
+PerkPointBonusesPerLevel = 
+{
+    [5] = 1,
+    [10] = 1,
+    [15] = 1,
+    [20] = 1,
+    [25] = 1,
+    [30] = 1,
+    [35] = 1,
+    [40] = 1,
+    [45] = 1,
+    [50] = 1,
+    [55] = 1,
+    [60] = 1,
+    [65] = 1,
+    [70] = 1,
+    [75] = 1,
+    [80] = 1,
+    [85] = 1,
+    [90] = 1,
+    [95] = 1,
+    [100] = 1,
+}
 ExpPerkChoiceText = 
 {
     [10] = 
     {
-        text = "Choose what backpack to add 2 slots to:",
+        text = "Confirm your choice for perk: Backpack",
         choices = 
         {
-            "Combat Backpack",
-            "Explorer Backpack"
+            "2 extra slots in Combat Backpack",
+            "2 extra slots in Explorer Backpack"
         }
     },
-    [12] = 
+    [21] = 
     {
-        text = "Choose a category to have a protected slot:",
+        text = "Confirm your choice for perk: Player Movement",
         choices = 
         {
-            "Weapons",
-            "Explosives",
-            "Supplies",
-            "Survival",
+            "20% extra swim speed",
+            "20% extra sprint speed"
+        }
+    },
+    [27] = 
+    {
+        text = "Confirm your choice for perk: Nitro",
+        choices = 
+        {
+            "20% extra duration",
+            "20% extra power"
+        }
+    },
+    [37] = 
+    {
+        text = "Confirm your choice for perk: Backpack",
+        choices = 
+        {
+            "2 extra slots in Combat Backpack",
+            "2 extra slots in Explorer Backpack"
+        }
+    },
+    [42] = 
+    {
+        text = "Confirm your choice for perk: Building",
+        choices = 
+        {
+            "500 extra build items per LandClaim",
+            "500m extra build height"
+        }
+    },
+    [49] = 
+    {
+        text = "Confirm your choice for perk: Rocket Grapple",
+        choices = 
+        {
+            "10% extra durability",
+            "10% extra range"
+        }
+    },
+    [57] = 
+    {
+        text = "Confirm your choice for perk: Explosives Detector",
+        choices = 
+        {
+            "25% extra durability",
+            "25% extra range"
+        }
+    },
+    [64] = 
+    {
+        text = "Confirm your choice for perk: Backpack",
+        choices = 
+        {
+            "2 extra slots in Combat Backpack",
+            "2 extra slots in Explorer Backpack"
+        }
+    },
+    [68] = 
+    {
+        text = "Confirm your choice for perk: Damage Resistance",
+        choices = 
+        {
+            "25% extra fire resistance",
+            "25% extra radiation resistance"
+        }
+    },
+    [71] = 
+    {
+        text = "Confirm your choice for perk: Player Movement",
+        choices = 
+        {
+            "20% extra swim speed",
+            "20% extra sprint speed"
+        }
+    },
+    [74] = 
+    {
+        text = "Confirm your choice for perk: Cruise Missile",
+        choices = 
+        {
+            "5% extra damage",
+            "10% extra range"
+        }
+    },
+    [79] = 
+    {
+        text = "Confirm your choice for perk: Backpack",
+        choices = 
+        {
+            "2 extra slots in Combat Backpack",
+            "2 extra slots in Explorer Backpack"
+        }
+    },
+    [81] = 
+    {
+        text = "Confirm your choice for perk: Nitro",
+        choices = 
+        {
+            "20% extra duration",
+            "20% extra power"
+        }
+    },
+    [83] = 
+    {
+        text = "Confirm your choice for perk: Building",
+        choices = 
+        {
+            "500 extra build items per LandClaim",
+            "500m extra build height"
+        }
+    },
+    [87] = 
+    {
+        text = "Confirm your choice for perk: Ping",
+        choices = 
+        {
+            "25% extra range",
+            "20% extra chance to not appear in pings"
+        }
+    },
+    [94] = 
+    {
+        text = "Confirm your choice for perk: Player Movement",
+        choices = 
+        {
+            "20% extra swim speed",
+            "20% extra sprint speed"
+        }
+    },
+    [100] = 
+    {
+        text = "Confirm your choice for perk: Backpack",
+        choices = 
+        {
+            "2 extra slots in Combat Backpack",
+            "2 extra slots in Explorer Backpack"
+        }
+    },
+    [102] = 
+    {
+        text = "Confirm your choice for perk: Hacker",
+        choices = 
+        {
+            "1 extra second to solve Hacker puzzles",
+            "10% extra chance that Hacker won't be consumed when used"
+        }
+    },
+    [105] = 
+    {
+        text = "Confirm your choice for perk: Rocket Grapple",
+        choices = 
+        {
+            "20% extra durability",
+            "20% extra range"
+        }
+    },
+    [108] = 
+    {
+        text = "Confirm your choice for perk: Area Bombing",
+        choices = 
+        {
+            "10% extra damage",
+            "5 extra bombs"
+        }
+    },
+    [116] = 
+    {
+        text = "Confirm your choice for perk: Explosives Detector",
+        choices = 
+        {
+            "50% extra durability",
+            "50% extra range"
+        }
+    },
+    [120] = 
+    {
+        text = "Confirm your choice for perk: Backpack",
+        choices = 
+        {
+            "2 extra slots in Combat Backpack",
+            "2 extra slots in Explorer Backpack"
+        }
+    },
+    [121] = 
+    {
+        text = "Confirm your choice for perk: Nitro",
+        choices = 
+        {
+            "20% extra duration",
+            "20% extra power"
+        }
+    },
+    [124] = 
+    {
+        text = "Confirm your choice for perk: Player Movement",
+        choices = 
+        {
+            "20% extra swim speed",
+            "20% extra sprint speed"
+        }
+    },
+    [131] = 
+    {
+        text = "Confirm your choice for perk: Cruise Missile",
+        choices = 
+        {
+            "10% extra damage",
+            "20% extra range"
+        }
+    },
+    [138] = 
+    {
+        text = "Confirm your choice for perk: Rocket Grapple",
+        choices = 
+        {
+            "30% extra durability",
+            "30% extra range"
+        }
+    },
+    [140] = 
+    {
+        text = "Confirm your choice for perk: Tactical Nuke",
+        choices = 
+        {
+            "10% extra damage",
+            "10% extra range"
+        }
+    },
+    [145] = 
+    {
+        text = "Confirm your choice for perk: Building",
+        choices = 
+        {
+            "500 extra build items per LandClaim",
+            "500m extra build height"
+        }
+    },
+    [146] = 
+    {
+        text = "Confirm your choice for perk: Player Movement",
+        choices = 
+        {
+            "20% extra swim speed",
+            "20% extra sprint speed"
+        }
+    },
+    [147] = 
+    {
+        text = "Confirm your choice for perk: Damage Resistance",
+        choices = 
+        {
+            "50% extra fire resistance",
+            "50% extra radiation resistance"
+        }
+    },
+    [153] = 
+    {
+        text = "Confirm your choice for perk: Ping",
+        choices = 
+        {
+            "50% extra range",
+            "40% extra chance to not appear in pings"
+        }
+    },
+    [159] = 
+    {
+        text = "Confirm your choice for perk: Explosives Detector",
+        choices = 
+        {
+            "75% extra durability",
+            "75% extra range"
+        }
+    },
+    [169] = 
+    {
+        text = "Confirm your choice for perk: Hacker",
+        choices = 
+        {
+            "1 extra second to solve Hacker puzzles",
+            "10% extra chance that Hacker won't be consumed when used"
+        }
+    },
+    [172] = 
+    {
+        text = "Confirm your choice for perk: Rocket Grapple",
+        choices = 
+        {
+            "40% extra durability",
+            "40% extra range"
+        }
+    },
+    [173] = 
+    {
+        text = "Confirm your choice for perk: Area Bombing",
+        choices = 
+        {
+            "20% extra damage",
+            "10 extra bombs"
+        }
+    },
+    [180] = 
+    {
+        text = "Confirm your choice for perk: Building",
+        choices = 
+        {
+            "500 extra build items per LandClaim",
+            "500m extra build height"
+        }
+    },
+    [187] = 
+    {
+        text = "Confirm your choice for perk: Ping",
+        choices = 
+        {
+            "75% extra range",
+            "60% extra chance to not appear in pings"
+        }
+    },
+    [192] = 
+    {
+        text = "Confirm your choice for perk: Damage Resistance",
+        choices = 
+        {
+            "75% extra fire resistance",
+            "75% extra radiation resistance"
+        }
+    },
+    [194] = 
+    {
+        text = "Confirm your choice for perk: Rocket Grapple",
+        choices = 
+        {
+            "50% extra durability",
+            "50% extra range"
+        }
+    },
+    [198] = 
+    {
+        text = "Confirm your choice for perk: Tactical Nuke",
+        choices = 
+        {
+            "20% extra damage",
+            "20% extra range"
+        }
+    },
+    [205] = 
+    {
+        text = "Confirm your choice for perk: Hacker",
+        choices = 
+        {
+            "1 extra second to solve Hacker puzzles",
+            "10% extra chance that Hacker won't be consumed when used"
+        }
+    },
+    [213] = 
+    {
+        text = "Confirm your choice for perk: Building",
+        choices = 
+        {
+            "500 extra build items per LandClaim",
+            "500m extra build height"
+        }
+    },
+    [214] = 
+    {
+        text = "Confirm your choice for perk: Parachute Thrusters / Wingsuit",
+        choices = 
+        {
+            "Unlock Parachute Thrusters",
+            "Unlock Wingsuit"
         }
     },
 }
