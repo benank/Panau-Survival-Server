@@ -1101,8 +1101,10 @@ function sInventory:RemoveStack(args)
 
                 end
 
+
+
                 -- Got more items to remove, so keep going
-                if return_stack then
+                if return_stack and return_stack:GetAmount() > 0 then
                     args.stack = return_stack
                 else -- Otherwise break, we are done
 
