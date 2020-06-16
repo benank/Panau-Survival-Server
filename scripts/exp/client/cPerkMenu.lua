@@ -252,7 +252,9 @@ function cPerkMenu:AddAllPerksToMenu()
     -- Add all perks from ExpPerks to the menu
 
     for _, perk_data in pairs(ExpPerks) do
-        self:AddPerk(perk_data)
+        if perk_data.enabled then
+            self:AddPerk(perk_data)
+        end
     end
 
 end
