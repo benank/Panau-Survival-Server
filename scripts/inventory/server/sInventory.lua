@@ -121,6 +121,15 @@ end
 -- Updates the number of slots in each category based on level
 function sInventory:UpdateNumSlotsBasedOnLevel()
 
+    if not self.player:GetValue("Exp") then
+        Timer.SetTimeout(500, function()
+            if IsValid(self.player) then
+                self:UpdateNumSlotsBasedOnLevel()
+            end
+        end)
+        return
+    end
+
     local level = self.player:GetValue("Exp").level
 
     for cat_name, slot_data in pairs(self.slots) do
