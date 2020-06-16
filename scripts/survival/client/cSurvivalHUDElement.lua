@@ -13,6 +13,8 @@ function cSurvivalHUDElement:__init(args)
     self.large_size = args.large_size
     self.small_size = args.small_size
 
+    self.dual_complete_color = Color(190, 190, 190, 150)
+
     if self.dual then
         self.level = 0
         self:UpdateExp()
@@ -61,42 +63,26 @@ function cSurvivalHUDElement:RenderLarge()
         fill_size = fill_size / 2
     end
 
-    local percent = math.min(1, self.percent)
+    local percent = math.min(1, math.floor(self.percent * 100) / 100)
     
     Render:FillArea(
         text_size, 
         Vector2(fill_size * percent, self.large_size.y), 
-        self.color)
+        (self.dual and self.percent == 1) and self.dual_complete_color or self.color)
 
     if self.dual then
         Render:FillArea(
             text_size + Vector2(fill_size * self.percent, 0), 
             Vector2(fill_size * self.percent2, self.large_size.y), 
-            self.color2)
-
-        if self.percent2 == 1 then
-            Render:DrawLine(
-                text_size + Vector2(fill_size * self.percent, 0) + Vector2(fill_size * self.percent2, 0),
-                text_size + Vector2(fill_size * self.percent, 0) + Vector2(fill_size * self.percent2, self.large_size.y),
-                Color.Yellow
-            )
-        end
-
-        if self.percent == 1 then
-            Render:DrawLine(
-                text_size + Vector2(fill_size * self.percent, 0),
-                text_size + Vector2(fill_size * self.percent, self.large_size.y),
-                Color.Yellow
-            )
-        end
+            self.percent2 == 1 and self.dual_complete_color or self.color2)
     end
 
     SurvivalManager.hud:DrawBorder(text_size, self.large_size - percent_size)
 
-    local percent_text = string.format("%.0f%%", self.percent * 100)
+    local percent_text = string.format("%.0f%%", math.floor(self.percent * 100))
 
     if self.dual then
-        percent_text = string.format("%.0f%%", (self.percent + self.percent2) * 100 / 2)
+        percent_text = string.format("%.0f%%", math.floor((self.percent + self.percent2) * 100 / 2))
     end
 
     local text_width = Render:GetTextWidth(percent_text, 18)
@@ -121,18 +107,19 @@ function cSurvivalHUDElement:RenderSmall()
         fill_size = fill_size / 2
     end
 
-    local percent = math.min(1, self.percent)
+    local percent = math.min(1, math.floor(self.percent * 100) / 100)
     
     Render:FillArea(
         Vector2.Zero, 
         Vector2(fill_size * percent, self.small_size.y), 
-        self.color)
+        (self.dual and percent == 1) and self.dual_complete_color or self.color)
 
     if self.dual then
+        local percent_2 = math.floor(self.percent2 * 100) / 100
         Render:FillArea(
             Vector2.Zero + Vector2(fill_size * self.percent, 0), 
             Vector2(fill_size * self.percent2, self.small_size.y), 
-            self.color2)
+            percent_2 == 1 and self.dual_complete_color or self.color2)
     end
 
 
