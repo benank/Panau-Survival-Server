@@ -2102,7 +2102,7 @@ ExpPerkChoiceText =
 {
     [10] = 
     {
-        text = "Choose what backpack to add 2 slots to",
+        text = "Choose what backpack to add 2 slots to:",
         choices = 
         {
             "Combat Backpack",
@@ -2111,11 +2111,13 @@ ExpPerkChoiceText =
     },
     [12] = 
     {
-        text = "Choose what backpack to add 2 slots to",
+        text = "Choose a category to have a protected slot:",
         choices = 
         {
-            "Combat Backpack",
-            "Explorer Backpack"
+            "Weapons",
+            "Explosives",
+            "Supplies",
+            "Survival",
         }
     },
 }

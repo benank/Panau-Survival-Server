@@ -12,31 +12,6 @@ function cPerkMenu:__init()
     self.window:SetTitle( "Player Stats & Perks" )
     self.window:Subscribe( "WindowClosed", self, self.Close )
 
-    self.delete_confirm_menu = Window.Create()
-    self.delete_confirm_menu:SetTitle("Are you sure you want to delete?")
-    self.delete_confirm_menu:SetSize(Vector2(400, 140))
-    self.delete_confirm_menu:SetPosition(Render.Size / 2 - self.delete_confirm_menu:GetSize() / 2)
-    self.delete_confirm_menu:SetClampMovement(false)
-    
-    local delete_text = Label.Create(self.delete_confirm_menu)
-    delete_text:SetText("Are you sure you want to delete?\nThis action cannot be undone.")
-    delete_text:SetTextSize(20)
-    delete_text:SetSize( Vector2(self.delete_confirm_menu:GetSize().x, 40) )
-    delete_text:SetMargin(Vector2(0, 10), Vector2(0, 0))
-    delete_text:SetAlignment(GwenPosition.Center)
-    delete_text:SetDock( GwenPosition.Top )
-
-    local delete_btn = Button.Create(self.delete_confirm_menu)
-    delete_btn:SetText("Delete")
-    delete_btn:SetTextColor(Color.Red)
-    delete_btn:SetTextSize(20)
-    delete_btn:SetSize( Vector2(self.delete_confirm_menu:GetSize().x, 40) )
-    delete_btn:SetMargin(Vector2(0, 10), Vector2(0, 0))
-    delete_btn:SetDock( GwenPosition.Bottom )
-    delete_btn:Subscribe("Press", self, self.ConfirmDeleteButton)
-
-    self.delete_confirm_menu:Hide()
-
     self.tab_control = TabControl.Create( self.window )
     self.tab_control:SetDock( GwenPosition.Fill )
 
@@ -49,6 +24,7 @@ function cPerkMenu:__init()
         [3] = "Leaderboard"
     }
 
+    self:CreateConfirmMenu()
     self:LoadCategories()
     self:CreatePerksMenu()
     self:AddAllPerksToMenu()
@@ -62,6 +38,87 @@ function cPerkMenu:__init()
     Events:Subscribe( "KeyUp", self, self.KeyUp )
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
+end
+
+function cPerkMenu:CreateConfirmMenu()
+
+    self.confirm_menu = Window.Create()
+    self.confirm_menu:SetTitle("Confirmation")
+    self.confirm_menu:SetSize(Vector2(400, 140))
+    self.confirm_menu:SetPosition(Render.Size / 2 - self.confirm_menu:GetSize() / 2)
+    self.confirm_menu:SetClampMovement(false)
+    
+    local confirm_text = Label.Create(self.confirm_menu)
+    confirm_text:SetText("Are you sure you want to unlock this perk?\nThis action cannot be undone.")
+    confirm_text:SetTextSize(20)
+    confirm_text:SetSize( Vector2(self.confirm_menu:GetSize().x, 40) )
+    confirm_text:SetMargin(Vector2(0, 10), Vector2(0, 0))
+    confirm_text:SetAlignment(GwenPosition.Center)
+    confirm_text:SetDock( GwenPosition.Top )
+
+    local confirm_btn = Button.Create(self.confirm_menu)
+    confirm_btn:SetText("Unlock Perk")
+    confirm_btn:SetTextSize(20)
+    confirm_btn:SetSize( Vector2(self.confirm_menu:GetSize().x, 40) )
+    confirm_btn:SetMargin(Vector2(0, 10), Vector2(0, 0))
+    confirm_btn:SetDock( GwenPosition.Bottom )
+    confirm_btn:Subscribe("Press", self, self.ConfirmPerkButton)
+
+    self.confirm_menu:Hide()
+
+end
+
+function cPerkMenu:CreateChoiceMenu(choice_data)
+
+    if self.choice_menu then
+        self.choice_menu = self.choice_menu:Remove()
+    end
+
+    self.choice_menu = Window.Create()
+    self.choice_menu:SetTitle("Perk Choice")
+    self.choice_menu:SetSize(Vector2(500, 100 + 50 * count_table(choice_data.choices)))
+    self.choice_menu:SetPosition(Render.Size / 2 - self.choice_menu:GetSize() / 2)
+    self.choice_menu:SetClampMovement(false)
+    
+    local confirm_text = Label.Create(self.choice_menu)
+    confirm_text:SetText(choice_data.text)
+    confirm_text:SetTextSize(20)
+    confirm_text:SetSize( Vector2(self.choice_menu:GetSize().x, 40) )
+    confirm_text:SetMargin(Vector2(0, 10), Vector2(0, 0))
+    confirm_text:SetAlignment(GwenPosition.Center)
+    confirm_text:SetDock( GwenPosition.Top )
+
+    for choice_index, choice_text in ipairs(choice_data.choices) do
+
+        local confirm_btn = Button.Create(self.choice_menu)
+        confirm_btn:SetText(choice_text)
+        confirm_btn:SetTextSize(20)
+        confirm_btn:SetHeight( 40 )
+        confirm_btn:SetMargin(Vector2(0, 10), Vector2(0, 0))
+        confirm_btn:SetDock( GwenPosition.Bottom )
+        confirm_btn:SetDataNumber("choice_index", choice_index)
+        confirm_btn:Subscribe("Press", self, self.PressChoiceButton)
+
+    end
+
+end
+
+function cPerkMenu:PressChoiceButton(btn)
+
+    if not btn:GetDataNumber("choice_index") then return end
+
+    self.current_unlocking_choice = btn:GetDataNumber("choice_index")
+
+    self.choice_menu = self.choice_menu:Remove()
+
+    self.confirm_menu:Show()
+
+end
+
+function cPerkMenu:ConfirmPerkButton()
+
+    -- Player pressed confirm perk button to unlock a perk
+
 end
 
 function cPerkMenu:ModulesLoad()
@@ -118,6 +175,8 @@ function cPerkMenu:UpdatePerks()
             btn:SetTextPressedColor(Color.Red)
             btn:SetTextDisabledColor(Color.Red)
             btn:SetToggleable(false)
+            btn:SetDataBool("Unlockable", false)
+            btn:SetBackgroundVisible(false)
             
         elseif not perks.unlocked_perks[id] then
             -- Perk that can be unlocked
@@ -127,6 +186,8 @@ function cPerkMenu:UpdatePerks()
             btn:SetTextPressedColor(Color.White)
             btn:SetTextDisabledColor(Color.White)
             btn:SetToggleable(false)
+            btn:SetDataBool("Unlockable", true)
+            btn:SetBackgroundVisible(true)
 
         else
             -- Unlocked perk
@@ -137,6 +198,8 @@ function cPerkMenu:UpdatePerks()
             btn:SetTextDisabledColor(Color(0, 230, 0))
             btn:SetToggleable(true)
             btn:SetToggleState(true)
+            btn:SetDataBool("Unlockable", false)
+            --btn:SetBackgroundVisible(false)
 
         end
         
@@ -201,6 +264,25 @@ function cPerkMenu:AddPerk(data)
 end
 
 function cPerkMenu:PressPerkButton(btn)
+
+    self.current_unlocking_choice = nil
+
+    if not btn:GetDataBool("Unlockable") then return end
+
+    local perk_id = btn:GetDataNumber("perk_id")
+    if not perk_id then return end
+
+    self.current_unlocking_perk_id = perk_id
+
+    if ExpPerkChoiceText[perk_id] then
+        -- This perk has multiple choices, so show the menu
+        self:CreateChoiceMenu(ExpPerkChoiceText[perk_id])
+
+    else
+        -- This perk only has one option, so show confirmation menu
+        self.confirm_menu:Show()
+
+    end
 
 end
 
@@ -303,7 +385,11 @@ function cPerkMenu:SetActive( active )
     if self.active ~= active then
         self.active = active
         Mouse:SetVisible( self.active )
-        self.delete_confirm_menu:Hide()
+        self.confirm_menu:Hide()
+
+        if self.choice_menu then
+            self.choice_menu = self.choice_menu:Remove()
+        end
 
         if self.active then
             self.lpi = Events:Subscribe( "LocalPlayerInput", self, self.LocalPlayerInput )
