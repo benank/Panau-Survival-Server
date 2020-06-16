@@ -967,8 +967,6 @@ function sInventory:RemoveStack(args)
         -- If we are not removing the entire stack
         if args.stack:GetAmount() < self.contents[cat][args.index]:GetAmount() then
 
-            print(args.stack:ToString())
-
             local leftover_stack, removed_stack = self.contents[cat][args.index]:RemoveStack(args.stack)
 
             if leftover_stack and leftover_stack:GetAmount() > 0 then
