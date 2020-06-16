@@ -162,6 +162,15 @@ function cPerkMenu:UpdateCategoryNames()
 
 end
 
+function cPerkMenu:SetItemColor(item, color)
+
+    item:SetTextColor(color)
+    item:SetTextNormalColor(color)
+    item:SetTextHoveredColor(color)
+    item:SetTextPressedColor(color)
+    item:SetTextDisabledColor(color)
+end
+
 -- Updates all perks and buttons with proper colors, text, tooltips, etc
 function cPerkMenu:UpdatePerks()
 
@@ -170,7 +179,8 @@ function cPerkMenu:UpdatePerks()
 
     if not exp or not perks then return end
 
-    for id, data in pairs(self.categories["Perks"].perks) do
+    for _, data in pairs(self.categories["Perks"].perks) do
+        local id = data.id
         local perk_data = ExpPerksById[id]
 
         local locked = (exp.level < perk_data.level_req or perks.points < perk_data.cost) and not perks.unlocked_perks[id]
@@ -180,9 +190,9 @@ function cPerkMenu:UpdatePerks()
             locked = locked or not perks.unlocked_perks[perk_data.perk_req]
         end
 
-        data.item:GetCellContents(self.column_index.LevelReq):SetTextColor(exp.level >= perk_data.level_req and Color.White or Color.Red)
-        data.item:GetCellContents(self.column_index.Cost):SetTextColor(perks.points >= perk_data.cost and Color.White or Color.Red)
-        data.item:GetCellContents(self.column_index.PerkReq):SetTextColor((perk_data.perk_req > 0 and not perks.unlocked_perks[perk_data.perk_req]) and Color.Red or Color.White)
+        self:SetItemColor(data.item:GetCellContents(self.column_index.LevelReq), exp.level >= perk_data.level_req and Color.White or Color.Red)
+        self:SetItemColor(data.item:GetCellContents(self.column_index.Cost), perks.points >= perk_data.cost and Color.White or Color.Red)
+        self:SetItemColor(data.item:GetCellContents(self.column_index.PerkReq), (perk_data.perk_req > 0 and not perks.unlocked_perks[perk_data.perk_req]) and Color.Red or Color.White)
 
         local btn = data.item:FindChildByName("button_Unlock", true)
 
@@ -191,10 +201,7 @@ function cPerkMenu:UpdatePerks()
             -- Locked perk
             btn:SetText("Locked")
             btn:SetBackgroundVisible(false)
-            btn:SetTextNormalColor(Color.Red)
-            btn:SetTextHoveredColor(Color.Red)
-            btn:SetTextPressedColor(Color.Red)
-            btn:SetTextDisabledColor(Color.Red)
+            self:SetItemColor(btn, Color.Red)
             btn:SetToggleable(false)
             btn:SetDataBool("Unlockable", false)
             
@@ -202,10 +209,7 @@ function cPerkMenu:UpdatePerks()
             -- Perk that can be unlocked
             btn:SetBackgroundVisible(true)
             btn:SetText("Unlock")
-            btn:SetTextNormalColor(Color.White)
-            btn:SetTextHoveredColor(Color.White)
-            btn:SetTextPressedColor(Color.White)
-            btn:SetTextDisabledColor(Color.White)
+            self:SetItemColor(btn, Color.White)
             btn:SetToggleable(false)
             btn:SetDataBool("Unlockable", true)
             btn:Toggle()
@@ -213,15 +217,16 @@ function cPerkMenu:UpdatePerks()
         else
             -- Unlocked perk
             btn:SetText("Unlocked")
-            btn:SetTextNormalColor(Color(0, 230, 0))
-            btn:SetTextHoveredColor(Color(0, 230, 0))
-            btn:SetTextPressedColor(Color(0, 230, 0))
-            btn:SetTextDisabledColor(Color(0, 230, 0))
+            self:SetItemColor(btn, Color(0, 230, 0))
             btn:Toggle()
             btn:SetToggleable(true)
             btn:SetToggleState(true)
             btn:SetDataBool("Unlockable", false)
             --btn:SetBackgroundVisible(false)
+
+            if ExpPerkChoiceText[id] then
+                btn:SetTooltip(string.format("You chose: %s", ExpPerkChoiceText[id].choices[perks.unlocked_perks[id]]))
+            end
 
         end
         
