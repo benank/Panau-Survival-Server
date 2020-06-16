@@ -11,6 +11,8 @@ function sInventory:__init(player)
     self.initial_sync = false
     self.steamID = tostring(player:GetSteamId().id)
     self.operation_block = 0 -- Increment/decrement this to disable inventory operations
+
+    self.backpack_slots = {}
     
     self.events = {}
     self.network_events = {}
@@ -215,25 +217,32 @@ function sInventory:ToggleBackpackEquipped(args)
     if not args.equipped then
         -- Unequipped backpack
         -- Delay in case they are equipping another backpack at the same time
-        --Timer.SetTimeout(500, function()
         for cat, slots_to_add in pairs(args.slots) do
             self.slots[cat].backpack = self.slots[cat].backpack - slots_to_add
         end
 
-            -- No need to check for overflow here because sync does it
-
         if not args.no_sync then
             self:Sync({sync_slots = true})
         end
-        --end)
+
+        self.backpack_slots[args.name] = nil
 
     else
+
+        -- If they already have it equipped, remove existing slots
+        if self.backpack_slots[args.name] then
+            for cat, slots_to_add in pairs(self.backpack_slots[args.name]) do
+                self.slots[cat].backpack = self.slots[cat].backpack - slots_to_add
+            end
+        end
+
+        self.backpack_slots[args.name] = args.slots
 
         for cat, slots_to_add in pairs(args.slots) do
             self.slots[cat].backpack = self.slots[cat].backpack + slots_to_add
         end
 
-        --self:Sync({sync_slots = true})
+        self:Sync({sync_slots = true})
 
     end
 

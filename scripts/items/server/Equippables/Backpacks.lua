@@ -5,16 +5,55 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
     UpdateEquippedItem(args.player, args.item.name, args.item)
 
-    local slots = ItemsConfig.equippables.backpacks[args.item.name].slots
-
     local equipped_visuals = args.player:GetValue("EquippedVisuals")
     equipped_visuals[args.item.name] = args.item.equipped
     args.player:SetNetworkValue("EquippedVisuals", equipped_visuals)
 
-    Events:Fire("Inventory.ToggleBackpackEquipped-" .. tostring(args.player:GetSteamId().id), 
-        {equipped = args.item.equipped == true, no_sync = args.no_sync, slots = slots})
+    if args.item.name ~= "Combat Backpack" and args.item.name ~= "Explorer Backpack" then
+
+        Events:Fire("Inventory.ToggleBackpackEquipped-" .. tostring(args.player:GetSteamId().id), 
+            {equipped = item.equipped == true, name = item.name, slots = ItemsConfig.equippables.backpacks[args.item.name].slots})
+
+    else
+        UpdateBackpackSlots(args.player, args.item)
+    end
 
 end)
+
+function GetBackpackSlots(type, perks)
+
+    local slots = deepcopy(ItemsConfig.equippables.backpacks[type].slots)
+
+    local choice_index = type == "Combat Backpack" and 1 or 2
+
+    for perk_id, choice in pairs(perks.unlocked_perks) do
+        if BackpackPerks[perk_id] and choice == choice_index then
+            for category, bonus in pairs(BackpackPerks[perk_id][choice_index]) do
+                slots[category] = slots[category] + bonus
+            end
+        end
+    end
+
+    return slots
+
+end
+
+Events:Subscribe("PlayerPerksUpdated", function(args)
+    UpdateBackpackSlots(args.player, GetEquippedItem("Combat Backpack", args.player) or GetEquippedItem("Explorer Backpack", args.player))
+end)
+
+function UpdateBackpackSlots(player, item)
+
+    if not item then return end
+
+    local perks = player:GetValue("Perks")
+
+    if not perks then return end
+
+    Events:Fire("Inventory.ToggleBackpackEquipped-" .. tostring(player:GetSteamId().id), 
+        {equipped = item.equipped == true, name = item.name, slots = GetBackpackSlots(item.name, perks)})
+
+end
 
 local backpack_hits = {}
 

@@ -77,6 +77,40 @@ ItemsConfig =
     }
 }
 
+BackpackPerks = 
+{
+    [10] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    },
+    [37] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    },
+    [64] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    },
+    [79] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    },
+    [100] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    },
+    [120] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    }
+}
+
 DisabledPlacementModels = 
 {
     ["geo.cbb.eez/go152-a.lod"] = true,

@@ -122,7 +122,7 @@ function sVehicleManager:PlayerPerksUpdated(args)
     local old_max_vehicles = args.player:GetValue("MaxVehicles")
     local new_max_vehicles = self:GetPlayerMaxVehicles(args.player)
 
-    if old_max_vehicles ~= new_max_vehicles then
+    if old_max_vehicles ~= new_max_vehicles and old_max_vehicles then
         Chat:Send(args.player, string.format("You can now own up to %d vehicles!", new_max_vehicles), Color(0, 255, 255))
     end
 
