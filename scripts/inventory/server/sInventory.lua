@@ -818,7 +818,7 @@ function sInventory:ModifyDurabilityRemote(args)
                     self:Sync({index = index, stack = stack, sync_stack = true})
                 else
                     self:OnItemBreak(item:Copy())
-                    self:RemoveItem({item = item, index = index})
+                    self:RemoveItem({item = item, index = index, remove_by_uid = true})
                 end
 
                 return
@@ -967,10 +967,22 @@ function sInventory:RemoveStack(args)
         -- If we are not removing the entire stack
         if args.stack:GetAmount() < self.contents[cat][args.index]:GetAmount() then
 
-            local split_stack = self.contents[cat][args.index]:Split(args.stack:GetAmount())
+            print(args.stack:ToString())
+
+            local leftover_stack, removed_stack = self.contents[cat][args.index]:RemoveStack(args.stack)
+
+            if leftover_stack and leftover_stack:GetAmount() > 0 then
+                print("**Unable to remove some items!**")
+                print(string.format("Player: %s [%s]", tostring(self.player:GetSteamId())))
+                print(leftover_stack:ToString())
+                print(debug.traceback())
+            end
+
             self:Sync({index = args.index, stack = self.contents[cat][args.index], sync_stack = true})
 
-            self:CheckIfStackHasOneEquippedThenUnequip(split_stack)
+            if removed_stack then
+                self:CheckIfStackHasOneEquippedThenUnequip(removed_stack)
+            end
 
         else
 
@@ -1142,7 +1154,8 @@ function sInventory:CheckIfStackHasOneEquippedThenUnequip(stack)
 end
 
 function sInventory:RemoveItem(args)
-    self:RemoveStack({stack = shStack({contents = {args.item}}), index = args.index})
+    args.stack = shStack({contents = {args.item}})
+    self:RemoveStack(args)
 end
 
 function sInventory:ModifyStack(stack, index)
