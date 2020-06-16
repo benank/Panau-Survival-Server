@@ -34,12 +34,12 @@ function cInventoryUIStyle:__init()
         color = Color(110, 124, 164, 255),
         color_under = Color(110, 124, 164, 120),
         position = Vector2(10, 10),
-        radius = Render.Size.y / 180
+        radius = math.min(6, Render.Size.y / 180)
     }
 
     self.car_paint_icon = 
     {
-        margin = Render.Size.y / 216,
+        margin = math.min(5, Render.Size.y / 216),
         border_color = Color.White
     }
 

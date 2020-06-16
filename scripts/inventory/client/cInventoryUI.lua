@@ -69,7 +69,7 @@ function cInventoryUI:CreateWindow()
     if self.window then self.window:Remove() end
 
     self.window = BaseWindow.Create("Inventory")
-    self.window:SetSize(Vector2(math.max(InventoryUIStyle.default_inv_size, Render.Size.x * 0.55), Render.Size.y))
+    self.window:SetSize(Vector2(math.min(1000, math.max(InventoryUIStyle.default_inv_size, Render.Size.x * 0.55)), Render.Size.y))
     self.window:SetPosition(Render.Size - self.window:GetSize())
     self.window:Hide()
     self.window:Focus()
@@ -83,7 +83,7 @@ function cInventoryUI:RecalculateInventoryResolution()
     {
         padding = self.padding, -- Padding on all sides is the same
         button_size = Vector2(
-            (self.window:GetSize().x - self.padding * #Inventory.config.categories) / #Inventory.config.categories, Render.Size.y / 27),
+            (self.window:GetSize().x - self.padding * #Inventory.config.categories) / #Inventory.config.categories, math.min(40, Render.Size.y / 27)),
         cat_offsets = {} -- Per category offsets
     }
 
