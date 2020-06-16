@@ -66,11 +66,7 @@ local drop_slot_amounts =
     [39] = 16,
     [42] = 17,
     [45] = 18,
-    [48] = 19,
-    [51] = 20,
-    [54] = 21,
-    [57] = 22,
-    [60] = 23
+    [48] = 19
 }
 
 function GetNumSlotsDroppedOnDeath(level)
