@@ -36,7 +36,7 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.ToggleBackpackEquipped-" .. self.steamID, self, self.ToggleBackpackEquipped))
 
     table.insert(self.events, Events:Subscribe("PlayerKilled", self, self.PlayerKilled))
-    table.insert(self.events, Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated))
+    table.insert(self.events, Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated))
 
     table.insert(self.network_events, Network:Subscribe("Inventory/Shift" .. self.steamID, self, self.ShiftStack))
     table.insert(self.network_events, Network:Subscribe("Inventory/ToggleEquipped" .. self.steamID, self, self.ToggleEquipped))
@@ -59,7 +59,9 @@ function sInventory:Load()
         self.slots[cat_info.name] = {default = cat_info.slots, level = 0, backpack = 0}
     end
 
-    self:UpdateNumSlotsBasedOnLevel()
+    if self.player:GetValue("Perks") then
+        self:UpdateNumSlotsBasedOnPerks()
+    end
 
 	local query = SQL:Query("SELECT contents FROM inventory WHERE steamID = (?) LIMIT 1")
     query:Bind(1, self.steamID)
@@ -103,11 +105,11 @@ function sInventory:Load()
 
 end
 
-function sInventory:PlayerLevelUpdated(args)
+function sInventory:PlayerPerksUpdated(args)
     if args.player ~= self.player then return end
 
     local old_slots = deepcopy(self.slots)
-    self:UpdateNumSlotsBasedOnLevel()
+    self:UpdateNumSlotsBasedOnPerks()
     self:Sync({sync_slots = true})
 
     for cat_name, slot_data in pairs(self.slots) do
@@ -119,12 +121,12 @@ function sInventory:PlayerLevelUpdated(args)
 end
 
 -- Updates the number of slots in each category based on level
-function sInventory:UpdateNumSlotsBasedOnLevel()
+function sInventory:UpdateNumSlotsBasedOnPerks()
 
-    local level = self.player:GetValue("Exp").level
+    local perks = self.player:GetValue("Perks")
 
     for cat_name, slot_data in pairs(self.slots) do
-        self.slots[cat_name].level = GetNumSlotsInCategoryFromLevel(cat_name, level)
+        self.slots[cat_name].level = GetNumSlotsInCategoryFromPerks(cat_name, perks.unlocked_perks)
     end
 
 end

@@ -208,7 +208,7 @@ function sPerks:ClientModuleLoad(args)
     
     args.player:SetNetworkValue("Perks", perk_data)
 
-    Events:Fire("PlayerPerksUpdated", {player = player})
+    Events:Fire("PlayerPerksUpdated", {player = args.player})
 
 end
 

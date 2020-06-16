@@ -23,7 +23,7 @@ function sVehicleManager:__init()
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("LoadFlowFinish", self, self.LoadFlowFinish)
-    Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
+    Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
     Events:Subscribe("PlayerEnterVehicle", self, self.PlayerEnterVehicle)
 
@@ -118,15 +118,33 @@ function sVehicleManager:PlayerChat(args)
 
 end
 
-function sVehicleManager:PlayerLevelUpdated(args)
+function sVehicleManager:PlayerPerksUpdated(args)
     local old_max_vehicles = args.player:GetValue("MaxVehicles")
-    local new_max_vehicles = GetMaxFromLevel(args.player:GetValue("Exp").level, config.player_max_vehicles)
+    local new_max_vehicles = self:GetPlayerMaxVehicles(args.player)
 
     if old_max_vehicles ~= new_max_vehicles then
         Chat:Send(args.player, string.format("You can now own up to %d vehicles!", new_max_vehicles), Color(0, 255, 255))
     end
 
     args.player:SetNetworkValue("MaxVehicles", new_max_vehicles)
+end
+
+function sVehicleManager:GetPlayerMaxVehicles(player)
+
+    local perks = player:GetValue("Perks")
+
+    if not perks then return 0 end
+
+    local new_max_vehicles = config.player_max_vehicles_base
+
+    for perk_id, bonus in pairs(config.player_max_vehicles) do
+        if perks.unlocked_perks[perk_id] then
+            new_max_vehicles = new_max_vehicles + bonus
+        end
+    end
+
+    return new_max_vehicles
+
 end
 
 -- Called every minute, saves all owned vehicles in the server
@@ -693,7 +711,7 @@ function sVehicleManager:LoadFlowFinish(args)
         return
     end
     
-    args.player:SetNetworkValue("MaxVehicles", GetMaxFromLevel(args.player:GetValue("Exp").level, config.player_max_vehicles))
+    args.player:SetNetworkValue("MaxVehicles", self:GetPlayerMaxVehicles(args.player))
 
     local result = SQL:Query("SELECT * FROM vehicles WHERE owner_steamid = (?)")
     result:Bind(1, tostring(args.player:GetSteamId()))
