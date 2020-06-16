@@ -45,15 +45,17 @@ function cSurvivalHUDElement:RenderLarge()
         return
     end
 
+    local conversion = Render.Size.y / 1080
+
     local text = string.format("%s:", self.name)
 
     if self.level then
         text = string.format("%s %s:", self.name, self.level)
     end
 
-    Render:DrawText(Vector2.Zero, text, Color.White, 18)
+    Render:DrawText(Vector2.Zero, text, Color.White, 18 * conversion)
 
-    local text_size = Vector2(self.level == 100 and 90 or 80, 0)
+    local text_size = Vector2(self.level == 100 and 90 or 80, 0) * conversion
     local percent_size = Vector2(50, 0)
     local margin = 4
 
@@ -86,7 +88,7 @@ function cSurvivalHUDElement:RenderLarge()
     end
 
     local text_width = Render:GetTextWidth(percent_text, 18)
-    Render:DrawText(Vector2(margin + self.large_size.x - percent_size.x / 2 - text_width / 2, 0), percent_text, Color.White, 18)
+    Render:DrawText(Vector2(margin + self.large_size.x - percent_size.x / 2 - text_width / 2, 0), percent_text, Color.White, 18 * conversion)
 
 end
 

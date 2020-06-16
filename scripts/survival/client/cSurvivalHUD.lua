@@ -2,14 +2,16 @@ class 'cSurvivalHUD'
 
 function cSurvivalHUD:__init()
 
-    self.small_element_size = Vector2(140, 12)
-    self.large_element_size = Vector2(300, 18)
+    local conversion = Render.Size.y / 1080
 
-    self.start_pos = Vector2(Render.Size.x - 14, 50)
+    self.small_element_size = conversion * Vector2(140, 12)
+    self.large_element_size = conversion * Vector2(300, 18)
+
+    self.start_pos = Vector2(Render.Size.x - 20 * conversion, 60 * conversion)
     self.small_margin = 10
     self.window_color = Color(0, 0, 0, 150)
-    self.window_margin = Vector2(6, 6)
-    self.border_size = Vector2(2,2)
+    self.window_margin = conversion * Vector2(6, 6)
+    self.border_size = conversion * Vector2(2,2)
     self.border_color = Color(200, 200, 200)
 
     self.HealthIndex = 1

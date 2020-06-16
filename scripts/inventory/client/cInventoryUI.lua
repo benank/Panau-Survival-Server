@@ -69,7 +69,7 @@ function cInventoryUI:CreateWindow()
     if self.window then self.window:Remove() end
 
     self.window = BaseWindow.Create("Inventory")
-    self.window:SetSize(Vector2(math.min(Render.Size.x * 0.9, InventoryUIStyle.default_inv_size), Render.Size.y))
+    self.window:SetSize(Vector2(math.max(InventoryUIStyle.default_inv_size, Render.Size.x * 0.55), Render.Size.y))
     self.window:SetPosition(Render.Size - self.window:GetSize())
     self.window:Hide()
     self.window:Focus()
@@ -82,14 +82,12 @@ function cInventoryUI:RecalculateInventoryResolution()
     self.inv_dimensions = 
     {
         padding = self.padding, -- Padding on all sides is the same
-        text_size = math.min(20, Render.Size.y / 54),
-        category_title_text_size = 16,
         button_size = Vector2(
-            (self.window:GetSize().x - self.padding * #Inventory.config.categories) / #Inventory.config.categories, 40),
+            (self.window:GetSize().x - self.padding * #Inventory.config.categories) / #Inventory.config.categories, Render.Size.y / 27),
         cat_offsets = {} -- Per category offsets
     }
 
-    self.inv_dimensions.text_size = self.inv_dimensions.button_size.x * 0.0785
+    self.inv_dimensions.text_size = self.inv_dimensions.button_size.y * 0.5
     self.inv_dimensions.category_title_text_size = self.inv_dimensions.button_size.x * 0.065
 
 end
@@ -427,7 +425,7 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     text_shadow:SetTextSize(self.inv_dimensions.text_size)
     text_shadow:SetTextColor(Color.Black)
     text_shadow:SetAlignment(GwenPosition.Center)
-    text_shadow:SetPosition(Vector2(2,2))
+    text_shadow:SetPosition(Vector2(1,1))
     text_shadow:SetTextPadding(Vector2(0, 4), Vector2(0, 0))
 
     local text = Label.Create(itemWindow, "text")
