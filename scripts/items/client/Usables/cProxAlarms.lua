@@ -158,6 +158,10 @@ end
 function cProxAlarms:PlaceObject(args)
     if not self.placing_alarm then return end
 
+    if args.entity and args.entity.__type == "ClientStaticObject" then
+        args.model = args.entity:GetModel()
+    end
+
     Network:Send("items/PlaceProx", {
         position = args.position,
         angle = args.angle
