@@ -165,10 +165,21 @@ end
 function cPerkMenu:SetItemColor(item, color)
 
     item:SetTextColor(color)
-    item:SetTextNormalColor(color)
-    item:SetTextHoveredColor(color)
-    item:SetTextPressedColor(color)
-    item:SetTextDisabledColor(color)
+    
+    if item.SetTextNormalColor then
+        item:SetTextNormalColor(color)
+        item:SetTextHoveredColor(color)
+        item:SetTextPressedColor(color)
+        item:SetTextDisabledColor(color)
+    end
+
+    if item.SetColorBright then
+        item:SetColorBright(color)
+        item:SetColorDark(color)
+        item:SetColorHighlight(color)
+        item:SetColorNormal(color)
+    end
+
 end
 
 -- Updates all perks and buttons with proper colors, text, tooltips, etc
