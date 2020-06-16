@@ -179,8 +179,7 @@ function cPerkMenu:UpdatePerks()
 
     if not exp or not perks then return end
 
-    for _, data in pairs(self.categories["Perks"].perks) do
-        local id = data.id
+    for id, data in pairs(self.categories["Perks"].perks) do
         local perk_data = ExpPerksById[id]
 
         local locked = (exp.level < perk_data.level_req or perks.points < perk_data.cost) and not perks.unlocked_perks[id]
