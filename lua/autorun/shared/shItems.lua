@@ -617,15 +617,6 @@ Items =
         equip_type = "weapon_2h"
     },
     {
-        name = "SMRT-GRP",
-        category = "Supplies",
-        stacklimit = 2,
-        can_equip = true,
-        durable = true,
-        max_durability = 500,
-        equip_type = "grapple_upgrade"
-    },
-    {
         name = "Wingsuit",
         category = "Supplies",
         stacklimit = 1,
