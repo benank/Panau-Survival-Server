@@ -7,6 +7,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 1,
+        position = 1,
         enabled = false
     },
     {
@@ -16,6 +17,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 2,
+        position = 2,
         enabled = false
     },
     {
@@ -25,6 +27,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 3,
+        position = 3,
         enabled = false
     },
     {
@@ -34,6 +37,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 4,
+        position = 4,
         enabled = false
     },
     {
@@ -43,6 +47,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 5,
+        position = 5,
         enabled = false
     },
     {
@@ -52,6 +57,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 6,
+        position = 6,
         enabled = false
     },
     {
@@ -61,6 +67,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 7,
+        position = 7,
         enabled = false
     },
     {
@@ -70,6 +77,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 8,
+        position = 8,
         enabled = false
     },
     {
@@ -79,15 +87,17 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 9,
+        position = 9,
         enabled = false
     },
     {
         name = "Backpack",
-        description = "Add 2 slots to your backpack (Choose between Combat Backpack and Explorer Backpack)",
+        description = "Choose: 2 extra slots in Combat Backpack or 2 extra slots in Explorer Backpack",
         level_req = 5,
         perk_req = 0,
         cost = 0,
         id = 10,
+        position = 10,
         enabled = false
     },
     {
@@ -97,15 +107,17 @@ ExpPerks =
         perk_req = 5,
         cost = 1,
         id = 11,
+        position = 11,
         enabled = false
     },
     {
         name = "Workbench",
-        description = "Allows you to use workbenches to combine items",
+        description = "You can now use workbenches to combine items",
         level_req = 5,
         perk_req = 0,
         cost = 1,
         id = 12,
+        position = 12,
         enabled = false
     },
     {
@@ -115,6 +127,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 13,
+        position = 13,
         enabled = false
     },
     {
@@ -124,6 +137,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 14,
+        position = 14,
         enabled = false
     },
     {
@@ -133,6 +147,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 15,
+        position = 15,
         enabled = false
     },
     {
@@ -142,6 +157,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 16,
+        position = 16,
         enabled = false
     },
     {
@@ -151,6 +167,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 17,
+        position = 17,
         enabled = false
     },
     {
@@ -160,6 +177,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 18,
+        position = 18,
         enabled = false
     },
     {
@@ -169,6 +187,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 19,
+        position = 19,
         enabled = false
     },
     {
@@ -178,15 +197,17 @@ ExpPerks =
         perk_req = 4,
         cost = 0,
         id = 20,
+        position = 20,
         enabled = false
     },
     {
         name = "Player Movement",
-        description = "Allows you to move 20% faster (Choose between swim speed and sprint speed)",
+        description = "Choose: 20% extra swim speed or 20% extra sprint speed",
         level_req = 6,
         perk_req = 0,
         cost = 1,
         id = 21,
+        position = 21,
         enabled = false
     },
     {
@@ -196,6 +217,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 22,
+        position = 22,
         enabled = false
     },
     {
@@ -205,6 +227,7 @@ ExpPerks =
         perk_req = 11,
         cost = 1,
         id = 23,
+        position = 23,
         enabled = false
     },
     {
@@ -214,6 +237,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 24,
+        position = 24,
         enabled = false
     },
     {
@@ -223,6 +247,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 25,
+        position = 25,
         enabled = false
     },
     {
@@ -232,15 +257,17 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 26,
+        position = 26,
         enabled = false
     },
     {
         name = "Nitro",
-        description = "Choose between 20% extra duration and 20% extra power",
+        description = "Choose: 20% extra duration or 20% extra power",
         level_req = 8,
         perk_req = 1,
         cost = 1,
         id = 27,
+        position = 27,
         enabled = false
     },
     {
@@ -250,6 +277,7 @@ ExpPerks =
         perk_req = 17,
         cost = 2,
         id = 28,
+        position = 28,
         enabled = false
     },
     {
@@ -259,6 +287,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 29,
+        position = 29,
         enabled = false
     },
     {
@@ -268,6 +297,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 30,
+        position = 30,
         enabled = false
     },
     {
@@ -277,6 +307,7 @@ ExpPerks =
         perk_req = 20,
         cost = 0,
         id = 31,
+        position = 31,
         enabled = false
     },
     {
@@ -286,6 +317,7 @@ ExpPerks =
         perk_req = 23,
         cost = 2,
         id = 32,
+        position = 32,
         enabled = false
     },
     {
@@ -295,6 +327,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 33,
+        position = 33,
         enabled = false
     },
     {
@@ -304,6 +337,7 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 34,
+        position = 34,
         enabled = false
     },
     {
@@ -313,6 +347,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 35,
+        position = 35,
         enabled = false
     },
     {
@@ -322,15 +357,17 @@ ExpPerks =
         perk_req = 19,
         cost = 2,
         id = 36,
+        position = 36,
         enabled = false
     },
     {
         name = "Backpack",
-        description = "Add 2 slots to your backpack (Choose between Combat Backpack and Explorer Backpack)",
+        description = "Choose: 2 extra slots in Combat Backpack or 2 extra slots in Explorer Backpack",
         level_req = 10,
         perk_req = 10,
         cost = 0,
         id = 37,
+        position = 37,
         enabled = false
     },
     {
@@ -340,6 +377,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 38,
+        position = 38,
         enabled = false
     },
     {
@@ -349,6 +387,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 39,
+        position = 39,
         enabled = false
     },
     {
@@ -358,6 +397,7 @@ ExpPerks =
         perk_req = 9,
         cost = 1,
         id = 40,
+        position = 40,
         enabled = false
     },
     {
@@ -367,15 +407,17 @@ ExpPerks =
         perk_req = 13,
         cost = 1,
         id = 41,
+        position = 41,
         enabled = false
     },
     {
         name = "Building",
-        description = "Choose between 500 extra build items per LandClaim or 500m extra build height",
+        description = "Choose: 500 extra build items per LandClaim or 500m extra build height",
         level_req = 11,
         perk_req = 34,
         cost = 1,
         id = 42,
+        position = 42,
         enabled = false
     },
     {
@@ -385,6 +427,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 43,
+        position = 43,
         enabled = false
     },
     {
@@ -394,6 +437,7 @@ ExpPerks =
         perk_req = 32,
         cost = 2,
         id = 44,
+        position = 44,
         enabled = false
     },
     {
@@ -403,6 +447,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 45,
+        position = 45,
         enabled = false
     },
     {
@@ -412,6 +457,7 @@ ExpPerks =
         perk_req = 31,
         cost = 0,
         id = 46,
+        position = 46,
         enabled = false
     },
     {
@@ -421,6 +467,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 47,
+        position = 47,
         enabled = false
     },
     {
@@ -430,15 +477,17 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 48,
+        position = 48,
         enabled = false
     },
     {
         name = "Rocket Grapple",
-        description = "Choose between 10% extra durability or 10% extra range",
+        description = "Choose: 10% extra durability or 10% extra range",
         level_req = 12,
         perk_req = 29,
         cost = 1,
         id = 49,
+        position = 49,
         enabled = false
     },
     {
@@ -448,6 +497,7 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 50,
+        position = 50,
         enabled = false
     },
     {
@@ -457,6 +507,7 @@ ExpPerks =
         perk_req = 44,
         cost = 3,
         id = 51,
+        position = 51,
         enabled = false
     },
     {
@@ -466,6 +517,7 @@ ExpPerks =
         perk_req = 15,
         cost = 1,
         id = 52,
+        position = 52,
         enabled = false
     },
     {
@@ -475,6 +527,7 @@ ExpPerks =
         perk_req = 34,
         cost = 1,
         id = 53,
+        position = 53,
         enabled = false
     },
     {
@@ -484,6 +537,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 54,
+        position = 54,
         enabled = false
     },
     {
@@ -493,6 +547,7 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 55,
+        position = 55,
         enabled = false
     },
     {
@@ -502,15 +557,17 @@ ExpPerks =
         perk_req = 30,
         cost = 3,
         id = 56,
+        position = 56,
         enabled = false
     },
     {
         name = "Explosives Detector",
-        description = "Choose between 25% extra durability or 25% extra range",
+        description = "Choose: 25% extra durability or 25% extra range",
         level_req = 14,
         perk_req = 3,
         cost = 1,
         id = 57,
+        position = 57,
         enabled = false
     },
     {
@@ -520,6 +577,7 @@ ExpPerks =
         perk_req = 35,
         cost = 2,
         id = 58,
+        position = 58,
         enabled = false
     },
     {
@@ -529,6 +587,7 @@ ExpPerks =
         perk_req = 6,
         cost = 1,
         id = 59,
+        position = 59,
         enabled = false
     },
     {
@@ -538,6 +597,7 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 60,
+        position = 60,
         enabled = false
     },
     {
@@ -547,6 +607,7 @@ ExpPerks =
         perk_req = 45,
         cost = 3,
         id = 61,
+        position = 61,
         enabled = false
     },
     {
@@ -556,6 +617,7 @@ ExpPerks =
         perk_req = 46,
         cost = 0,
         id = 62,
+        position = 62,
         enabled = false
     },
     {
@@ -565,15 +627,17 @@ ExpPerks =
         perk_req = 41,
         cost = 1,
         id = 63,
+        position = 63,
         enabled = false
     },
     {
         name = "Backpack",
-        description = "Add 2 slots to your backpack (Choose between Combat Backpack and Explorer Backpack)",
+        description = "Choose: 2 extra slots in Combat Backpack or 2 extra slots in Explorer Backpack",
         level_req = 15,
         perk_req = 37,
         cost = 0,
         id = 64,
+        position = 64,
         enabled = false
     },
     {
@@ -583,6 +647,7 @@ ExpPerks =
         perk_req = 0,
         cost = 6,
         id = 65,
+        position = 65,
         enabled = false
     },
     {
@@ -592,6 +657,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 66,
+        position = 66,
         enabled = false
     },
     {
@@ -601,15 +667,17 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 67,
+        position = 67,
         enabled = false
     },
     {
         name = "Damage Resistance",
-        description = "Increases damage resistance by 25% (Choose between fire restistance and radiation resistance)",
+        description = "Choose: 25% extra fire resistance or 25% extra radiation resistance",
         level_req = 16,
         perk_req = 0,
         cost = 2,
         id = 68,
+        position = 68,
         enabled = false
     },
     {
@@ -619,6 +687,7 @@ ExpPerks =
         perk_req = 40,
         cost = 1,
         id = 69,
+        position = 69,
         enabled = false
     },
     {
@@ -628,15 +697,17 @@ ExpPerks =
         perk_req = 12,
         cost = 2,
         id = 70,
+        position = 70,
         enabled = false
     },
     {
         name = "Player Movement",
-        description = "Allows you to move 40% faster (Choose between swim speed and sprint speed)",
+        description = "Choose: 20% extra swim speed or 20% extra sprint speed",
         level_req = 17,
         perk_req = 21,
         cost = 2,
         id = 71,
+        position = 71,
         enabled = false
     },
     {
@@ -646,6 +717,7 @@ ExpPerks =
         perk_req = 62,
         cost = 0,
         id = 72,
+        position = 72,
         enabled = false
     },
     {
@@ -655,15 +727,17 @@ ExpPerks =
         perk_req = 33,
         cost = 2,
         id = 73,
+        position = 73,
         enabled = false
     },
     {
         name = "Cruise Missile",
-        description = "Choose between 5% extra damage and 10% extra range",
+        description = "Choose: 5% extra damage or 10% extra range",
         level_req = 19,
         perk_req = 24,
         cost = 2,
         id = 74,
+        position = 74,
         enabled = false
     },
     {
@@ -673,6 +747,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 75,
+        position = 75,
         enabled = false
     },
     {
@@ -682,6 +757,7 @@ ExpPerks =
         perk_req = 35,
         cost = 0,
         id = 76,
+        position = 76,
         enabled = false
     },
     {
@@ -691,6 +767,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 77,
+        position = 77,
         enabled = false
     },
     {
@@ -700,15 +777,17 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 78,
+        position = 78,
         enabled = false
     },
     {
         name = "Backpack",
-        description = "Add 2 slots to your backpack (Choose between Combat Backpack and Explorer Backpack)",
+        description = "Choose: 2 extra slots in Combat Backpack or 2 extra slots in Explorer Backpack",
         level_req = 20,
         perk_req = 64,
         cost = 0,
         id = 79,
+        position = 79,
         enabled = false
     },
     {
@@ -718,15 +797,17 @@ ExpPerks =
         perk_req = 63,
         cost = 2,
         id = 80,
+        position = 80,
         enabled = false
     },
     {
         name = "Nitro",
-        description = "Choose between 20% extra duration and 20% extra power",
+        description = "Choose: 20% extra duration or 20% extra power",
         level_req = 20,
         perk_req = 27,
         cost = 2,
         id = 81,
+        position = 81,
         enabled = false
     },
     {
@@ -736,15 +817,17 @@ ExpPerks =
         perk_req = 53,
         cost = 2,
         id = 82,
+        position = 82,
         enabled = false
     },
     {
         name = "Building",
-        description = "Choose between 500 extra build items per LandClaim or 500m extra build height",
+        description = "Choose: 500 extra build items per LandClaim or 500m extra build height",
         level_req = 20,
         perk_req = 42,
         cost = 2,
         id = 83,
+        position = 83,
         enabled = false
     },
     {
@@ -754,6 +837,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 84,
+        position = 84,
         enabled = false
     },
     {
@@ -763,6 +847,7 @@ ExpPerks =
         perk_req = 60,
         cost = 4,
         id = 85,
+        position = 85,
         enabled = false
     },
     {
@@ -772,15 +857,17 @@ ExpPerks =
         perk_req = 72,
         cost = 0,
         id = 86,
+        position = 86,
         enabled = false
     },
     {
         name = "Ping",
-        description = "Choose between 25% extra range or 20% extra chance to not appear in pings",
+        description = "Choose: 25% extra range or 20% extra chance to not appear in pings",
         level_req = 21,
         perk_req = 0,
         cost = 2,
         id = 87,
+        position = 87,
         enabled = false
     },
     {
@@ -790,6 +877,7 @@ ExpPerks =
         perk_req = 69,
         cost = 2,
         id = 88,
+        position = 88,
         enabled = false
     },
     {
@@ -799,6 +887,7 @@ ExpPerks =
         perk_req = 43,
         cost = 2,
         id = 89,
+        position = 89,
         enabled = false
     },
     {
@@ -808,6 +897,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 90,
+        position = 90,
         enabled = false
     },
     {
@@ -817,6 +907,7 @@ ExpPerks =
         perk_req = 86,
         cost = 0,
         id = 91,
+        position = 91,
         enabled = false
     },
     {
@@ -826,6 +917,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 92,
+        position = 92,
         enabled = false
     },
     {
@@ -835,15 +927,17 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 93,
+        position = 93,
         enabled = false
     },
     {
         name = "Player Movement",
-        description = "Allows you to move 60% faster (Choose between swim speed and sprint speed)",
+        description = "Choose: 20% extra swim speed or 20% extra sprint speed",
         level_req = 24,
         perk_req = 71,
         cost = 2,
         id = 94,
+        position = 94,
         enabled = false
     },
     {
@@ -853,6 +947,7 @@ ExpPerks =
         perk_req = 2,
         cost = 1,
         id = 95,
+        position = 95,
         enabled = false
     },
     {
@@ -862,6 +957,7 @@ ExpPerks =
         perk_req = 52,
         cost = 1,
         id = 96,
+        position = 96,
         enabled = false
     },
     {
@@ -871,6 +967,7 @@ ExpPerks =
         perk_req = 58,
         cost = 2,
         id = 97,
+        position = 97,
         enabled = false
     },
     {
@@ -880,6 +977,7 @@ ExpPerks =
         perk_req = 80,
         cost = 2,
         id = 98,
+        position = 98,
         enabled = false
     },
     {
@@ -889,15 +987,17 @@ ExpPerks =
         perk_req = 0,
         cost = 5,
         id = 99,
+        position = 99,
         enabled = false
     },
     {
         name = "Backpack",
-        description = "Add 2 slots to your backpack (Choose between Combat Backpack and Explorer Backpack)",
+        description = "Choose: 2 extra slots in Combat Backpack or 2 extra slots in Explorer Backpack",
         level_req = 25,
         perk_req = 79,
         cost = 0,
         id = 100,
+        position = 100,
         enabled = false
     },
     {
@@ -907,15 +1007,17 @@ ExpPerks =
         perk_req = 38,
         cost = 3,
         id = 101,
+        position = 101,
         enabled = false
     },
     {
         name = "Hacker",
-        description = "Choose between 1 extra second to solve Hacker puzzles or 10% extra chance that Hacker won't be consumed when used",
+        description = "Choose: 1 extra second to solve Hacker puzzles or 10% extra chance that Hacker won't be consumed when used",
         level_req = 25,
         perk_req = 16,
         cost = 2,
         id = 102,
+        position = 102,
         enabled = false
     },
     {
@@ -925,6 +1027,7 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 103,
+        position = 103,
         enabled = false
     },
     {
@@ -934,15 +1037,17 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 104,
+        position = 104,
         enabled = false
     },
     {
         name = "Rocket Grapple",
-        description = "Choose between 20% extra durability or 20% extra range",
+        description = "Choose: 20% extra durability or 20% extra range",
         level_req = 26,
         perk_req = 49,
         cost = 2,
         id = 105,
+        position = 105,
         enabled = false
     },
     {
@@ -952,6 +1057,7 @@ ExpPerks =
         perk_req = 70,
         cost = 3,
         id = 106,
+        position = 106,
         enabled = false
     },
     {
@@ -961,15 +1067,17 @@ ExpPerks =
         perk_req = 91,
         cost = 0,
         id = 107,
+        position = 107,
         enabled = false
     },
     {
         name = "Area Bombing",
-        description = "Choose between 10% extra damage or 5 extra bombs",
+        description = "Choose: 10% extra damage or 5 extra bombs",
         level_req = 27,
         perk_req = 54,
         cost = 1,
         id = 108,
+        position = 108,
         enabled = false
     },
     {
@@ -979,6 +1087,7 @@ ExpPerks =
         perk_req = 55,
         cost = 1,
         id = 109,
+        position = 109,
         enabled = false
     },
     {
@@ -988,6 +1097,7 @@ ExpPerks =
         perk_req = 73,
         cost = 3,
         id = 110,
+        position = 110,
         enabled = false
     },
     {
@@ -997,6 +1107,7 @@ ExpPerks =
         perk_req = 88,
         cost = 2,
         id = 111,
+        position = 111,
         enabled = false
     },
     {
@@ -1006,6 +1117,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 112,
+        position = 112,
         enabled = false
     },
     {
@@ -1015,6 +1127,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 113,
+        position = 113,
         enabled = false
     },
     {
@@ -1024,6 +1137,7 @@ ExpPerks =
         perk_req = 56,
         cost = 3,
         id = 114,
+        position = 114,
         enabled = false
     },
     {
@@ -1033,15 +1147,17 @@ ExpPerks =
         perk_req = 50,
         cost = 1,
         id = 115,
+        position = 115,
         enabled = false
     },
     {
         name = "Explosives Detector",
-        description = "Choose between 50% extra durability or 50% extra range",
+        description = "Choose: 50% extra durability or 50% extra range",
         level_req = 29,
         perk_req = 57,
         cost = 2,
         id = 116,
+        position = 116,
         enabled = false
     },
     {
@@ -1051,6 +1167,7 @@ ExpPerks =
         perk_req = 76,
         cost = 0,
         id = 117,
+        position = 117,
         enabled = false
     },
     {
@@ -1060,6 +1177,7 @@ ExpPerks =
         perk_req = 98,
         cost = 3,
         id = 118,
+        position = 118,
         enabled = false
     },
     {
@@ -1069,24 +1187,27 @@ ExpPerks =
         perk_req = 107,
         cost = 0,
         id = 119,
+        position = 119,
         enabled = false
     },
     {
         name = "Backpack",
-        description = "Add 2 slots to your backpack (Choose between Combat Backpack and Explorer Backpack)",
+        description = "Choose: 2 extra slots in Combat Backpack or 2 extra slots in Explorer Backpack",
         level_req = 30,
         perk_req = 100,
         cost = 0,
         id = 120,
+        position = 120,
         enabled = false
     },
     {
         name = "Nitro",
-        description = "Choose between 20% extra duration and 20% extra power",
+        description = "Choose: 20% extra duration or 20% extra power",
         level_req = 30,
         perk_req = 81,
         cost = 3,
         id = 121,
+        position = 121,
         enabled = false
     },
     {
@@ -1096,6 +1217,7 @@ ExpPerks =
         perk_req = 65,
         cost = 1,
         id = 122,
+        position = 122,
         enabled = false
     },
     {
@@ -1105,15 +1227,17 @@ ExpPerks =
         perk_req = 6,
         cost = 2,
         id = 123,
+        position = 123,
         enabled = false
     },
     {
         name = "Player Movement",
-        description = "Allows you to move 80% faster (Choose between swim speed and sprint speed)",
+        description = "Choose: 20% extra swim speed or 20% extra sprint speed",
         level_req = 31,
         perk_req = 94,
         cost = 3,
         id = 124,
+        position = 124,
         enabled = false
     },
     {
@@ -1123,6 +1247,7 @@ ExpPerks =
         perk_req = 111,
         cost = 3,
         id = 125,
+        position = 125,
         enabled = false
     },
     {
@@ -1132,6 +1257,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 126,
+        position = 126,
         enabled = false
     },
     {
@@ -1141,6 +1267,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 127,
+        position = 127,
         enabled = false
     },
     {
@@ -1150,6 +1277,7 @@ ExpPerks =
         perk_req = 119,
         cost = 0,
         id = 128,
+        position = 128,
         enabled = false
     },
     {
@@ -1159,6 +1287,7 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 129,
+        position = 129,
         enabled = false
     },
     {
@@ -1168,15 +1297,17 @@ ExpPerks =
         perk_req = 89,
         cost = 2,
         id = 130,
+        position = 130,
         enabled = false
     },
     {
         name = "Cruise Missile",
-        description = "Choose between 10% extra damage and 20% extra range",
+        description = "Choose: 10% extra damage or 20% extra range",
         level_req = 34,
         perk_req = 74,
         cost = 3,
         id = 131,
+        position = 131,
         enabled = false
     },
     {
@@ -1186,6 +1317,7 @@ ExpPerks =
         perk_req = 97,
         cost = 2,
         id = 132,
+        position = 132,
         enabled = false
     },
     {
@@ -1195,6 +1327,7 @@ ExpPerks =
         perk_req = 103,
         cost = 4,
         id = 133,
+        position = 133,
         enabled = false
     },
     {
@@ -1204,6 +1337,7 @@ ExpPerks =
         perk_req = 96,
         cost = 2,
         id = 134,
+        position = 134,
         enabled = false
     },
     {
@@ -1213,6 +1347,7 @@ ExpPerks =
         perk_req = 128,
         cost = 0,
         id = 135,
+        position = 135,
         enabled = false
     },
     {
@@ -1222,6 +1357,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 136,
+        position = 136,
         enabled = false
     },
     {
@@ -1231,15 +1367,17 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 137,
+        position = 137,
         enabled = false
     },
     {
         name = "Rocket Grapple",
-        description = "Choose between 30% extra durability or 30% extra range",
+        description = "Choose: 30% extra durability or 30% extra range",
         level_req = 37,
         perk_req = 105,
         cost = 2,
         id = 138,
+        position = 138,
         enabled = false
     },
     {
@@ -1249,15 +1387,17 @@ ExpPerks =
         perk_req = 39,
         cost = 2,
         id = 139,
+        position = 139,
         enabled = false
     },
     {
         name = "Tactical Nuke",
-        description = "Choose between 10% extra damage or 10% extra range",
+        description = "Choose: 10% extra damage or 10% extra range",
         level_req = 38,
         perk_req = 75,
         cost = 3,
         id = 140,
+        position = 140,
         enabled = false
     },
     {
@@ -1267,6 +1407,7 @@ ExpPerks =
         perk_req = 135,
         cost = 0,
         id = 141,
+        position = 141,
         enabled = false
     },
     {
@@ -1276,6 +1417,7 @@ ExpPerks =
         perk_req = 117,
         cost = 0,
         id = 142,
+        position = 142,
         enabled = false
     },
     {
@@ -1285,6 +1427,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 143,
+        position = 143,
         enabled = false
     },
     {
@@ -1294,33 +1437,37 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 144,
+        position = 144,
         enabled = false
     },
     {
         name = "Building",
-        description = "Choose between 500 extra build items per LandClaim or 500m extra build height",
+        description = "Choose: 500 extra build items per LandClaim or 500m extra build height",
         level_req = 40,
         perk_req = 83,
         cost = 2,
         id = 145,
+        position = 145,
         enabled = false
     },
     {
         name = "Player Movement",
-        description = "Allows you to move 100% faster (Choose between swim speed and sprint speed)",
+        description = "Choose: 20% extra swim speed or 20% extra sprint speed",
         level_req = 40,
         perk_req = 124,
         cost = 4,
         id = 146,
+        position = 146,
         enabled = false
     },
     {
         name = "Damage Resistance",
-        description = "Increases damage resistance by 50% (Choose between fire restistance and radiation resistance)",
+        description = "Choose: 50% extra fire resistance or 50% extra radiation resistance",
         level_req = 40,
         perk_req = 68,
         cost = 3,
         id = 147,
+        position = 147,
         enabled = false
     },
     {
@@ -1330,6 +1477,7 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 148,
+        position = 148,
         enabled = false
     },
     {
@@ -1339,6 +1487,7 @@ ExpPerks =
         perk_req = 109,
         cost = 1,
         id = 149,
+        position = 149,
         enabled = false
     },
     {
@@ -1348,6 +1497,7 @@ ExpPerks =
         perk_req = 82,
         cost = 3,
         id = 150,
+        position = 150,
         enabled = false
     },
     {
@@ -1357,6 +1507,7 @@ ExpPerks =
         perk_req = 141,
         cost = 0,
         id = 151,
+        position = 151,
         enabled = false
     },
     {
@@ -1366,15 +1517,17 @@ ExpPerks =
         perk_req = 114,
         cost = 4,
         id = 152,
+        position = 152,
         enabled = false
     },
     {
         name = "Ping",
-        description = "Choose between 50% extra range or 40% extra chance to not appear in pings",
+        description = "Choose: 50% extra range or 40% extra chance to not appear in pings",
         level_req = 42,
         perk_req = 87,
         cost = 3,
         id = 153,
+        position = 153,
         enabled = false
     },
     {
@@ -1384,6 +1537,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 154,
+        position = 154,
         enabled = false
     },
     {
@@ -1393,6 +1547,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 155,
+        position = 155,
         enabled = false
     },
     {
@@ -1402,6 +1557,7 @@ ExpPerks =
         perk_req = 130,
         cost = 3,
         id = 156,
+        position = 156,
         enabled = false
     },
     {
@@ -1411,6 +1567,7 @@ ExpPerks =
         perk_req = 132,
         cost = 3,
         id = 157,
+        position = 157,
         enabled = false
     },
     {
@@ -1420,15 +1577,17 @@ ExpPerks =
         perk_req = 151,
         cost = 0,
         id = 158,
+        position = 158,
         enabled = false
     },
     {
         name = "Explosives Detector",
-        description = "Choose between 75% extra durability or 75% extra range",
+        description = "Choose: 75% extra durability or 75% extra range",
         level_req = 45,
         perk_req = 116,
         cost = 3,
         id = 159,
+        position = 159,
         enabled = false
     },
     {
@@ -1438,6 +1597,7 @@ ExpPerks =
         perk_req = 122,
         cost = 1,
         id = 160,
+        position = 160,
         enabled = false
     },
     {
@@ -1447,6 +1607,7 @@ ExpPerks =
         perk_req = 134,
         cost = 2,
         id = 161,
+        position = 161,
         enabled = false
     },
     {
@@ -1456,6 +1617,7 @@ ExpPerks =
         perk_req = 115,
         cost = 1,
         id = 162,
+        position = 162,
         enabled = false
     },
     {
@@ -1465,6 +1627,7 @@ ExpPerks =
         perk_req = 90,
         cost = 2,
         id = 163,
+        position = 163,
         enabled = false
     },
     {
@@ -1474,6 +1637,7 @@ ExpPerks =
         perk_req = 158,
         cost = 0,
         id = 164,
+        position = 164,
         enabled = false
     },
     {
@@ -1483,6 +1647,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 165,
+        position = 165,
         enabled = false
     },
     {
@@ -1492,6 +1657,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 166,
+        position = 166,
         enabled = false
     },
     {
@@ -1501,6 +1667,7 @@ ExpPerks =
         perk_req = 95,
         cost = 2,
         id = 167,
+        position = 167,
         enabled = false
     },
     {
@@ -1510,15 +1677,17 @@ ExpPerks =
         perk_req = 142,
         cost = 0,
         id = 168,
+        position = 168,
         enabled = false
     },
     {
         name = "Hacker",
-        description = "Choose between 1 extra second to solve Hacker puzzles or 10% extra chance that Hacker won't be consumed when used",
+        description = "Choose: 1 extra second to solve Hacker puzzles or 10% extra chance that Hacker won't be consumed when used",
         level_req = 50,
         perk_req = 102,
         cost = 3,
         id = 169,
+        position = 169,
         enabled = false
     },
     {
@@ -1528,6 +1697,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 170,
+        position = 170,
         enabled = false
     },
     {
@@ -1537,24 +1707,27 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 171,
+        position = 171,
         enabled = false
     },
     {
         name = "Rocket Grapple",
-        description = "Choose between 40% extra durability or 40% extra range",
+        description = "Choose: 40% extra durability or 40% extra range",
         level_req = 53,
         perk_req = 138,
         cost = 3,
         id = 172,
+        position = 172,
         enabled = false
     },
     {
         name = "Area Bombing",
-        description = "Choose between 20% extra damage or 10 extra bombs",
+        description = "Choose: 20% extra damage or 10 extra bombs",
         level_req = 54,
         perk_req = 108,
         cost = 2,
         id = 173,
+        position = 173,
         enabled = false
     },
     {
@@ -1564,6 +1737,7 @@ ExpPerks =
         perk_req = 157,
         cost = 3,
         id = 174,
+        position = 174,
         enabled = false
     },
     {
@@ -1573,6 +1747,7 @@ ExpPerks =
         perk_req = 156,
         cost = 4,
         id = 175,
+        position = 175,
         enabled = false
     },
     {
@@ -1582,6 +1757,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 176,
+        position = 176,
         enabled = false
     },
     {
@@ -1591,6 +1767,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 177,
+        position = 177,
         enabled = false
     },
     {
@@ -1600,6 +1777,7 @@ ExpPerks =
         perk_req = 161,
         cost = 3,
         id = 178,
+        position = 178,
         enabled = false
     },
     {
@@ -1609,15 +1787,17 @@ ExpPerks =
         perk_req = 149,
         cost = 2,
         id = 179,
+        position = 179,
         enabled = false
     },
     {
         name = "Building",
-        description = "Choose between 500 extra build items per LandClaim or 500m extra build height",
+        description = "Choose: 500 extra build items per LandClaim or 500m extra build height",
         level_req = 58,
         perk_req = 145,
         cost = 3,
         id = 180,
+        position = 180,
         enabled = false
     },
     {
@@ -1627,6 +1807,7 @@ ExpPerks =
         perk_req = 150,
         cost = 4,
         id = 181,
+        position = 181,
         enabled = false
     },
     {
@@ -1636,6 +1817,7 @@ ExpPerks =
         perk_req = 168,
         cost = 0,
         id = 182,
+        position = 182,
         enabled = false
     },
     {
@@ -1645,6 +1827,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 183,
+        position = 183,
         enabled = false
     },
     {
@@ -1654,6 +1837,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 184,
+        position = 184,
         enabled = false
     },
     {
@@ -1663,6 +1847,7 @@ ExpPerks =
         perk_req = 160,
         cost = 2,
         id = 185,
+        position = 185,
         enabled = false
     },
     {
@@ -1672,15 +1857,17 @@ ExpPerks =
         perk_req = 123,
         cost = 3,
         id = 186,
+        position = 186,
         enabled = false
     },
     {
         name = "Ping",
-        description = "Choose between 75% extra range or 60% extra chance to not appear in pings",
+        description = "Choose: 75% extra range or 60% extra chance to not appear in pings",
         level_req = 63,
         perk_req = 153,
         cost = 4,
         id = 187,
+        position = 187,
         enabled = false
     },
     {
@@ -1690,6 +1877,7 @@ ExpPerks =
         perk_req = 162,
         cost = 2,
         id = 188,
+        position = 188,
         enabled = false
     },
     {
@@ -1699,6 +1887,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 189,
+        position = 189,
         enabled = false
     },
     {
@@ -1708,6 +1897,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 190,
+        position = 190,
         enabled = false
     },
     {
@@ -1717,15 +1907,17 @@ ExpPerks =
         perk_req = 174,
         cost = 3,
         id = 191,
+        position = 191,
         enabled = false
     },
     {
         name = "Damage Resistance",
-        description = "Increases damage resistance by 75% (Choose between fire restistance and radiation resistance)",
+        description = "Choose: 75% extra fire resistance or 75% extra radiation resistance",
         level_req = 65,
         perk_req = 147,
         cost = 4,
         id = 192,
+        position = 192,
         enabled = false
     },
     {
@@ -1735,15 +1927,17 @@ ExpPerks =
         perk_req = 139,
         cost = 3,
         id = 193,
+        position = 193,
         enabled = false
     },
     {
         name = "Rocket Grapple",
-        description = "Choose between 50% extra durability or 50% extra range",
+        description = "Choose: 50% extra durability or 50% extra range",
         level_req = 67,
         perk_req = 172,
         cost = 4,
         id = 194,
+        position = 194,
         enabled = false
     },
     {
@@ -1753,6 +1947,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 195,
+        position = 195,
         enabled = false
     },
     {
@@ -1762,6 +1957,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 196,
+        position = 196,
         enabled = false
     },
     {
@@ -1771,15 +1967,17 @@ ExpPerks =
         perk_req = 167,
         cost = 2,
         id = 197,
+        position = 197,
         enabled = false
     },
     {
         name = "Tactical Nuke",
-        description = "Choose between 20% extra damage or 20% extra range",
+        description = "Choose: 20% extra damage or 20% extra range",
         level_req = 69,
         perk_req = 140,
         cost = 4,
         id = 198,
+        position = 198,
         enabled = false
     },
     {
@@ -1789,6 +1987,7 @@ ExpPerks =
         perk_req = 182,
         cost = 0,
         id = 199,
+        position = 199,
         enabled = false
     },
     {
@@ -1798,6 +1997,7 @@ ExpPerks =
         perk_req = 163,
         cost = 3,
         id = 200,
+        position = 200,
         enabled = false
     },
     {
@@ -1807,6 +2007,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 201,
+        position = 201,
         enabled = false
     },
     {
@@ -1816,6 +2017,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 202,
+        position = 202,
         enabled = false
     },
     {
@@ -1825,6 +2027,7 @@ ExpPerks =
         perk_req = 179,
         cost = 2,
         id = 203,
+        position = 203,
         enabled = false
     },
     {
@@ -1834,15 +2037,17 @@ ExpPerks =
         perk_req = 191,
         cost = 4,
         id = 204,
+        position = 204,
         enabled = false
     },
     {
         name = "Hacker",
-        description = "Choose between 1 extra second to solve Hacker puzzles or 10% extra chance that Hacker won't be consumed when used",
+        description = "Choose: 1 extra second to solve Hacker puzzles or 10% extra chance that Hacker won't be consumed when used",
         level_req = 75,
         perk_req = 169,
         cost = 4,
         id = 205,
+        position = 205,
         enabled = false
     },
     {
@@ -1852,6 +2057,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 206,
+        position = 206,
         enabled = false
     },
     {
@@ -1861,6 +2067,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 207,
+        position = 207,
         enabled = false
     },
     {
@@ -1870,6 +2077,7 @@ ExpPerks =
         perk_req = 185,
         cost = 2,
         id = 208,
+        position = 208,
         enabled = false
     },
     {
@@ -1879,6 +2087,7 @@ ExpPerks =
         perk_req = 199,
         cost = 0,
         id = 209,
+        position = 209,
         enabled = false
     },
     {
@@ -1888,6 +2097,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 210,
+        position = 210,
         enabled = false
     },
     {
@@ -1897,6 +2107,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 211,
+        position = 211,
         enabled = false
     },
     {
@@ -1906,24 +2117,27 @@ ExpPerks =
         perk_req = 188,
         cost = 2,
         id = 212,
+        position = 212,
         enabled = false
     },
     {
         name = "Building",
-        description = "Choose between 500 extra build items per LandClaim or 500m extra build height",
+        description = "Choose: 500 extra build items per LandClaim or 500m extra build height",
         level_req = 82,
         perk_req = 180,
         cost = 4,
         id = 213,
+        position = 213,
         enabled = false
     },
     {
         name = "Parachute Thrusters / Wingsuit",
-        description = "Unlocks item (Choose between Parachute Thrusters or Wingsuit)",
+        description = "Choose: unlock Parachute Thrusters or unlock Wingsuit",
         level_req = 83,
         perk_req = 0,
         cost = 4,
         id = 214,
+        position = 214,
         enabled = false
     },
     {
@@ -1933,6 +2147,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 215,
+        position = 215,
         enabled = false
     },
     {
@@ -1942,6 +2157,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 216,
+        position = 216,
         enabled = false
     },
     {
@@ -1951,6 +2167,7 @@ ExpPerks =
         perk_req = 204,
         cost = 4,
         id = 217,
+        position = 217,
         enabled = false
     },
     {
@@ -1960,6 +2177,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 218,
+        position = 218,
         enabled = false
     },
     {
@@ -1969,6 +2187,7 @@ ExpPerks =
         perk_req = 216,
         cost = 0,
         id = 219,
+        position = 219,
         enabled = false
     },
     {
@@ -1978,6 +2197,7 @@ ExpPerks =
         perk_req = 209,
         cost = 0,
         id = 220,
+        position = 220,
         enabled = false
     },
     {
@@ -1987,6 +2207,7 @@ ExpPerks =
         perk_req = 203,
         cost = 3,
         id = 221,
+        position = 221,
         enabled = false
     },
     {
@@ -1996,6 +2217,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 222,
+        position = 222,
         enabled = false
     },
     {
@@ -2005,6 +2227,7 @@ ExpPerks =
         perk_req = 219,
         cost = 0,
         id = 223,
+        position = 223,
         enabled = false
     },
     {
@@ -2014,6 +2237,7 @@ ExpPerks =
         perk_req = 208,
         cost = 3,
         id = 224,
+        position = 224,
         enabled = false
     },
     {
@@ -2023,6 +2247,7 @@ ExpPerks =
         perk_req = 200,
         cost = 4,
         id = 225,
+        position = 225,
         enabled = false
     },
     {
@@ -2032,6 +2257,7 @@ ExpPerks =
         perk_req = 217,
         cost = 4,
         id = 226,
+        position = 226,
         enabled = false
     },
     {
@@ -2041,6 +2267,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 227,
+        position = 227,
         enabled = false
     },
     {
@@ -2050,6 +2277,7 @@ ExpPerks =
         perk_req = 223,
         cost = 0,
         id = 228,
+        position = 228,
         enabled = false
     },
     {
@@ -2059,6 +2287,7 @@ ExpPerks =
         perk_req = 212,
         cost = 3,
         id = 229,
+        position = 229,
         enabled = false
     },
     {
@@ -2068,6 +2297,7 @@ ExpPerks =
         perk_req = 220,
         cost = 0,
         id = 230,
+        position = 230,
         enabled = false
     },
     {
@@ -2077,6 +2307,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 231,
+        position = 231,
         enabled = false
     },
     {
@@ -2086,6 +2317,7 @@ ExpPerks =
         perk_req = 228,
         cost = 0,
         id = 232,
+        position = 232,
         enabled = false
     },
 }

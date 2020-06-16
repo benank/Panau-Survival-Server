@@ -262,12 +262,12 @@ function cPerkMenu:AddPerk(data)
     local list = self.categories["Perks"].list
     
 	local item = list:AddItem( tostring(data.id) )
-	item:SetCellText( self.column_index.Id, "#" .. tostring(data.id) )
+	item:SetCellText( self.column_index.Id, "#" .. tostring(data.position) )
 	item:SetCellText( self.column_index.Perk, data.name )
 	item:SetCellText( self.column_index.Details, data.description )
 	item:SetCellText( self.column_index.Cost, data.cost > 0 and tostring(data.cost) or "Free" )
 	item:SetCellText( self.column_index.LevelReq, tostring(data.level_req) )
-    item:SetCellText( self.column_index.PerkReq, data.perk_req > 0 and "#" .. tostring(data.perk_req) or "" )
+    item:SetCellText( self.column_index.PerkReq, data.perk_req > 0 and "#" .. tostring(ExpPerksById[data.perk_req].position) or "" )
 
     for i = 0, 5 do
         if i == self.column_index.Details then
