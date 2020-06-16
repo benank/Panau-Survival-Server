@@ -351,10 +351,13 @@ function cPerkMenu:CreatePerksMenu()
 				column = 0
 			end
 
-			local a_value = a:GetCellText(column)
-			local b_value = b:GetCellText(column)
+			local a_value = a:GetCellText(column):gsub("#", "")
+			local b_value = b:GetCellText(column):gsub("#", "")
 
-			if column == 0 or column == 2 then
+            if column == self.column_index.Id 
+            or column == self.column_index.Cost
+            or column == self.column_index.LevelReq
+            or column == self.column_index.PerkReq then
 				local a_num = tonumber(a_value)
 				local b_num = tonumber(b_value)
 
