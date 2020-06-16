@@ -21,8 +21,49 @@ function cLootManager:__init()
     Network:Subscribe(var("Inventory/ForceCloseLootbox"):get(), self, self.ForceCloseLootbox)
     
     Events:Subscribe("ModuleUnload", self, self.Unload)
+    Events:Subscribe(var("LocalPlayerChat"):get(), self, self.LocalPlayerChat)
 
     Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(Lootbox.Cell_Size), self, self.LocalPlayerCellUpdate)
+
+    if IsAdmin(LocalPlayer) then
+        self.stash_render = Events:Subscribe("Render", self, self.StashRender)
+    end
+
+end
+
+function cLootManager:LocalPlayerChat(args)
+
+    if not IsAdmin(LocalPlayer) then return end
+
+    if args.text == "/showstashes" then
+        if not self.stash_render then
+            self.stash_render = Events:Subscribe("Render", self, self.StashRender)
+        else
+            self.stash_render = Events:Unsubscribe(self.stash_render)
+        end
+    end
+
+end
+
+function cLootManager:StashRender(args)
+
+    if not IsAdmin(LocalPlayer) then return end
+
+    for x, data in pairs(self.loot) do
+        for y, data in pairs(self.loot[x]) do
+            for id, box in pairs(self.loot[x][y]) do
+                if Lootbox.Stashes[box.tier] then
+                    local pos, on_screen = Render:WorldToScreen(box.position)
+                    if on_screen then
+                        Render:FillCircle(pos, 12, Color.Black)
+                        Render:FillCircle(pos, 10, Color.Red)
+                        Render:DrawText(pos + Vector2(22, 2), box.stash.owner_id, Color.Black, 24)
+                        Render:DrawText(pos + Vector2(20, 0), box.stash.owner_id, Color.Red, 24)
+                    end
+                end
+            end
+        end
+    end
 
 end
 

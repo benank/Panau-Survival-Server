@@ -121,6 +121,15 @@ end
 -- Updates the number of slots in each category based on level
 function sInventory:UpdateNumSlotsBasedOnLevel()
 
+    if not self.player:GetValue("Exp") then
+        Timer.SetTimeout(500, function()
+            if IsValid(self.player) then
+                self:UpdateNumSlotsBasedOnLevel()
+            end
+        end)
+        return
+    end
+
     local level = self.player:GetValue("Exp").level
 
     for cat_name, slot_data in pairs(self.slots) do
@@ -293,10 +302,10 @@ function sInventory:ToggleEquipped(args, player)
     Events:Fire("Inventory/ToggleEquipped", 
         {player = self.player, index = index, item = self.contents[args.cat][index].contents[1]:Copy():GetSyncObject()})
 
+    self:CheckForOverflow()
+
     -- Sync it
-    Timer.SetTimeout(100, function()
-        self:Sync({sync_full = true})
-    end)
+    self:Sync({sync_full = true})
 
 end
 
@@ -393,12 +402,20 @@ function sInventory:CheckForOverflow()
 
         -- Send the player a chat message
         local chat_msg = "Inventory overflow! You dropped: "
+        local items_dropped = ""
         for index, stack in pairs(stacks_to_drop) do
-            chat_msg = chat_msg .. string.format("%s (%s)", tostring(stack:GetProperty("name")), tostring(stack:GetAmount()))
+            items_dropped = items_dropped .. string.format("%s (%s)", tostring(stack:GetProperty("name")), tostring(stack:GetAmount()))
             if index < #stacks_to_drop then
-                chat_msg = chat_msg .. ", "
+                items_dropped = items_dropped .. ", "
             end
         end
+        chat_msg = chat_msg .. items_dropped
+
+        Events:Fire("Discord", {
+            channel = "Inventory",
+            content = string.format("%s [%s] inventory overflow and dropped: \n%s", 
+                self.player:GetName(), tostring(self.player:GetSteamId()), items_dropped)
+        })
 
         Chat:Send(self.player, chat_msg, Color.Red)
 
@@ -406,6 +423,8 @@ function sInventory:CheckForOverflow()
 
         -- Full sync in case they dropped from multiple categories
         self:Sync({sync_full = true})
+
+        self:CheckForOverflow()
     end
     
 end
@@ -799,7 +818,7 @@ function sInventory:ModifyDurabilityRemote(args)
                     self:Sync({index = index, stack = stack, sync_stack = true})
                 else
                     self:OnItemBreak(item:Copy())
-                    self:RemoveItem({item = item, index = index})
+                    self:RemoveItem({item = item, index = index, remove_by_uid = true})
                 end
 
                 return
@@ -948,10 +967,20 @@ function sInventory:RemoveStack(args)
         -- If we are not removing the entire stack
         if args.stack:GetAmount() < self.contents[cat][args.index]:GetAmount() then
 
-            local split_stack = self.contents[cat][args.index]:Split(args.stack:GetAmount())
+            local leftover_stack, removed_stack = self.contents[cat][args.index]:RemoveStack(args.stack)
+
+            if leftover_stack and leftover_stack:GetAmount() > 0 then
+                print("**Unable to remove some items!**")
+                print(string.format("Player: %s [%s]", tostring(self.player:GetSteamId())))
+                print(leftover_stack:ToString())
+                print(debug.traceback())
+            end
+
             self:Sync({index = args.index, stack = self.contents[cat][args.index], sync_stack = true})
 
-            self:CheckIfStackHasOneEquippedThenUnequip(split_stack)
+            if removed_stack then
+                self:CheckIfStackHasOneEquippedThenUnequip(removed_stack)
+            end
 
         else
 
@@ -968,6 +997,8 @@ function sInventory:RemoveStack(args)
             end
 
         end
+
+        self:CheckForOverflow()
 
     else
 
@@ -991,6 +1022,8 @@ function sInventory:RemoveStack(args)
             end
 
         end
+
+        self:CheckForOverflow()
 
         if not args.stack then return end
 
@@ -1021,12 +1054,16 @@ function sInventory:RemoveStack(args)
                                 self:Sync({index = index, cat = cat, sync_remove = true})
                             end
 
+                            self:CheckForOverflow()
+
                             return
 
                         else
 
                             self.contents[cat][index] = stack
                             self:Sync({index = index, stack = self.contents[cat][index], sync_stack = true})
+
+                            self:CheckForOverflow()
 
                         end
 
@@ -1037,6 +1074,7 @@ function sInventory:RemoveStack(args)
             end
         end
 
+        self:CheckForOverflow()
 
         if not args.stack then return end
 
@@ -1063,8 +1101,10 @@ function sInventory:RemoveStack(args)
 
                 end
 
+
+
                 -- Got more items to remove, so keep going
-                if return_stack then
+                if return_stack and return_stack:GetAmount() > 0 then
                     args.stack = return_stack
                 else -- Otherwise break, we are done
 
@@ -1076,6 +1116,7 @@ function sInventory:RemoveStack(args)
                     break
                 end
 
+                self:CheckForOverflow()
 
             end
 
@@ -1113,7 +1154,8 @@ function sInventory:CheckIfStackHasOneEquippedThenUnequip(stack)
 end
 
 function sInventory:RemoveItem(args)
-    self:RemoveStack({stack = shStack({contents = {args.item}}), index = args.index})
+    args.stack = shStack({contents = {args.item}})
+    self:RemoveStack(args)
 end
 
 function sInventory:ModifyStack(stack, index)
@@ -1148,8 +1190,6 @@ function sInventory:Sync(args)
             end
         end
     end
-
-    self:CheckForOverflow()
 
     if args.sync_full then -- Sync entire inventory
         Network:Send(self.player, "InventoryUpdated", 

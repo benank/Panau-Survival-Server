@@ -192,7 +192,7 @@ function EquippableRocketGrapple:Render(args)
         self.grapple.moved = true
         self.grapple.object:SetPosition(self.grapple.end_pos)
         self.grapple.timer:Restart()
-    elseif self.grapple.timer:GetMilliseconds() > 1 and self.grapple.moved and self.grapple.active then
+    elseif self.grapple.timer:GetMilliseconds() > 1 and self.grapple.moved and self.grapple.active and IsValid(self.grapple.object) then
         self.grapple.object:Remove()
         self.grapple.object = nil
         self.grapple.moved = false

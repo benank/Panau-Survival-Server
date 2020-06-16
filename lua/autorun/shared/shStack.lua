@@ -126,16 +126,17 @@ end
 function shStack:RemoveStack(_stack)
 
     local stack = _stack:Copy()
+    local removed_stack = {}
 
     while stack:GetAmount() > 0 and self:GetAmount() > 0 do
 
-        self:RemoveItem(stack:RemoveItem(nil, nil, true))
+        table.insert(removed_stack, self:RemoveItem(stack:RemoveItem(nil, nil, true)))
 
     end
 
-    if stack and stack:GetAmount() > 0 then
-        return stack
-    end
+    removed_stack = count_table(removed_stack) > 0 and shStack({contents = removed_stack}) or nil
+
+    return stack, removed_stack
 
 end
 
@@ -181,8 +182,7 @@ function shStack:RemoveItem(_item, index, only_one)
         -- Remove by uid
         for i = 1, self:GetAmount() do
             if self.contents[i].uid == item.uid then
-                table.remove(self.contents, i)
-                return
+                return table.remove(self.contents, i)
             end
         end
 
@@ -224,7 +224,7 @@ function shStack:Split(amount)
 
     local removed_items = {}
 
-    if #self.contents > 1 then
+    if count_table(self.contents) > 1 then
         for i = 1, amount do
             table.insert(removed_items, table.remove(self.contents, 1))
         end

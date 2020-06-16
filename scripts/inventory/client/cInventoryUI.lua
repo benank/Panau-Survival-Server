@@ -357,7 +357,7 @@ function cInventoryUI:UpdateCategoryTitle(cat)
     self.categoryTitles[cat].shadow:SetText(self:GetCategoryTitleText(cat))
     self.categoryTitles[cat].shadow:SetPosition(self:GetCategoryTitlePosition(cat) + Vector2(1,1))
 
-    local is_full = #Inventory.contents[cat] == self:GetNumSlotsInCategory(cat)
+    local is_full = #Inventory.contents[cat] >= self:GetNumSlotsInCategory(cat)
     self.categoryTitles[cat].text:SetTextColor(
         is_full and InventoryUIStyle.category_title_colors.Full or InventoryUIStyle.category_title_colors.Normal)
 end

@@ -5,6 +5,7 @@ function sBans:__init()
     self.pending_bans = {} -- Banned players who have not logged on yet to be banned.
 
     Events:Subscribe("DiscordBan", self, self.DiscordBan)
+    Events:Subscribe("DiscordUnBan", self, self.DiscordUnBan)
     Events:Subscribe("KickPlayer", self, self.KickPlayer)
     Events:Subscribe("BanPlayer", self, self.BanPlayer)
     Events:Subscribe("PlayerAuthenticate", self, self.PlayerAuthenticate)
@@ -22,6 +23,24 @@ function sBans:PlayerAuthenticate(args)
 
         self.pending_bans[args.player:GetSteamId()] = nil
     end
+end
+
+function sBans:DiscordUnBan(args)
+
+    args.steam_id = tostring(args.steam_id)
+    assert(type(args.steam_id) == "string" and args.steam_id:len() > 0, "Invalid ban steam id specified")
+    
+    Server:RemoveBan(SteamId(args.steam_id))
+
+    local msg = string.format("%s unbanned.", args.steam_id)
+
+    print(msg)
+    Events:Fire("Discord", {
+        channel = "Bans",
+        content = msg
+    })
+
+    self.pending_bans[tostring(args.steam_id)] = nil
 end
 
 function sBans:DiscordBan(args)

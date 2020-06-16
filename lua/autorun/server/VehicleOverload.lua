@@ -32,8 +32,10 @@ function Vehicle:GetHealth()
     if not IsValid(self) then return end
     
     local client_health = VehicleGetHealth(self)
+    if not client_health then return self:GetValue("Health") end
+    if not self:GetValue("Health") then self:SetValue("Health", client_health) end
     
-    return (client_health and client_health < self:GetValue("Health")) and client_health or self:GetValue("Health")
+    return client_health < self:GetValue("Health") and client_health or self:GetValue("Health")
 
 end
 

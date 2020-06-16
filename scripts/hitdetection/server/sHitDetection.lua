@@ -450,7 +450,6 @@ end
 function sHitDetection:VehicleExplosionHit(args, player)
 
     if not IsValid(player) then return end
-    if player:GetValue("InSafezone") then return end
 
     assert(args.hit_vehicles and count_table(args.hit_vehicles) > 0, "hit_vehicles is invalid")
     assert(args.type, "type is invalid")
@@ -488,6 +487,8 @@ function sHitDetection:VehicleExplosionHit(args, player)
                 v:SetHealth(v:GetHealth() - damage)
 
                 local v_data = v:GetValue("VehicleData")
+
+                if not v_data then return end
 
                 local msg = string.format("%s [ID: %s] [Owner: %s] was damaged by %s from [%s] for %.2f damage", 
                     v:GetName(), tostring(v_data.vehicle_id), tostring(v_data.owner_steamid), 
