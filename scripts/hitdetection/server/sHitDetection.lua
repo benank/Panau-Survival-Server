@@ -488,6 +488,8 @@ function sHitDetection:VehicleExplosionHit(args, player)
 
                 local v_data = v:GetValue("VehicleData")
 
+                if not v_data then return end
+
                 local msg = string.format("%s [ID: %s] [Owner: %s] was damaged by %s from [%s] for %.2f damage", 
                     v:GetName(), tostring(v_data.vehicle_id), tostring(v_data.owner_steamid), 
                     DamageEntityNames[args.type], args.attacker_id, damage * 100)
