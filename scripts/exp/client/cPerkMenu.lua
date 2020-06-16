@@ -9,7 +9,7 @@ function cPerkMenu:__init()
     self.window:SetSizeRel( Vector2( 0.5, 0.5 ) )
     self.window:SetPositionRel( Vector2( 0.5, 0.5 ) - self.window:GetSizeRel()/2 )
     self.window:SetVisible( self.active )
-    self.window:SetMinimumSize(self.window:GetSize() / 2)
+    self.window:SetMinimumSize(self.window:GetSize() * 0.75)
     self.window:SetTitle( "Player Stats & Perks" )
     self.window:Subscribe( "WindowClosed", self, self.Close )
 
