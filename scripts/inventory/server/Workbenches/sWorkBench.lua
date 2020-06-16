@@ -35,6 +35,14 @@ function sWorkBench:BeginCombining(player)
 
     if self.state ~= WorkBenchState.Idle then return end
 
+    local perks = player:GetValue("Perks")
+
+    if not perks.unlocked_perks[WorkBenchConfig.use_perk_req] then
+        Chat:Send(player, 
+            string.format("You must unlock the Workbench perk (#%d) in order to use this.", WorkBenchConfig.use_perk_req), Color.Red)
+        return
+    end
+
     if not self:CanConbineItems() then
         Chat:Send(player, "These items cannot be combined.", Color.Red)
         return
@@ -51,7 +59,9 @@ function sWorkBench:BeginCombining(player)
     local combined_dura = self:GetCombinedDurability()
     local max_dura = self.lootbox.contents[1].contents[1].max_durability
     local name = self.lootbox.contents[1]:GetProperty("name")
-    local combine_time = combined_dura / max_dura * WorkBenchConfig.time_to_combine
+    local durability_percent = combined_dura / max_dura
+
+    combine_time = self:GetCombineTime(durability_percent, player)
 
     self.combine_time = combine_time
 
@@ -88,6 +98,28 @@ function sWorkBench:BeginCombining(player)
         })
     
     end)
+
+end
+
+function sWorkBench:GetCombineTime(total_durability_percent, player)
+
+    local num_items = 0
+    local max_dura_percent = math.min(total_durability_percent, WorkBenchConfig.maximum_durability)
+
+    for _, stack in pairs(self.lootbox.contents) do
+        num_items = num_items + stack:GetAmount()
+    end
+
+    local perks = player:GetValue("Perks")
+    local perk_mod = 1
+
+    for perk_id, _ in pairs(perks.unlocked_perks) do
+        if WorkBenchConfig.perks[perk_id] then
+            perk_mod = math.min(perk_mod, WorkBenchConfig.perks[perk_id])
+        end
+    end
+
+    return math.min(240 * perk_mod, math.ceil(max_dura_percent * max_dura_percent * 9.6 / total_durability_percent * num_items * perk_mod))
 
 end
 
