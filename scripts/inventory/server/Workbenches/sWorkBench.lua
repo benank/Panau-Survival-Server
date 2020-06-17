@@ -38,9 +38,10 @@ function sWorkBench:BeginCombining(player)
     local perks = player:GetValue("Perks")
 
     if not perks.unlocked_perks[WorkBenchConfig.use_perk_req] then
+        local perks_by_id = SharedObject.GetByName("ExpPerksById"):GetValue("Perks")
         Chat:Send(player, 
             string.format("You must unlock the Workbench perk (#%d) in order to use this. Hit F2 to open the perks menu.", 
-                WorkBenchConfig.use_perk_req), Color.Red)
+            perks_by_id[WorkBenchConfig.use_perk_req].position), Color.Red)
         return
     end
 

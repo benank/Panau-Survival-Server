@@ -57,7 +57,7 @@ function WeaponHitDetection:CheckPlayerSplash(args)
     and ((ray.entity.__type == "Player" and ray.entity == player) 
     or (ray.entity.__type == "LocalPlayer" and ray.entity == player)) then
 
-        local damage = WeaponDamage:CalculatePlayerDamage(player, args.weapon_enum, BoneEnum.Spine1, args.distance_travelled)
+        local damage = WeaponDamage:CalculatePlayerDamage(player, args.weapon_enum, BoneEnum.Spine1, args.distance_travelled, LocalPlayer)
         local falloff = 1 - ray.distance / radius
         damage = damage * falloff
 
@@ -119,7 +119,7 @@ function WeaponHitDetection:LocalPlayerBulletSplash(args)
         and ray.entity.__type == "Vehicle"
         and ray.entity == vehicle then
 
-            local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, args.distance_travelled)
+            local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, args.distance_travelled, LocalPlayer)
             local falloff = 1 - ray.distance / radius
             damage = damage * falloff
 
@@ -268,7 +268,7 @@ function WeaponHitDetection:LocalPlayerBulletSplashEntityHit(args)
     if args.entity_type == "Player" then
         local victim = Player.GetById(args.entity_id)
 
-        local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, BoneEnum.Spine1, args.distance_travelled) * 100
+        local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, BoneEnum.Spine1, args.distance_travelled, LocalPlayer) * 100
 
         if damage == 0 then return end
 
@@ -289,7 +289,7 @@ function WeaponHitDetection:LocalPlayerBulletSplashEntityHit(args)
 
     elseif args.entity_type == "Vehicle" then
 
-        local damage = WeaponDamage:CalculateVehicleDamage(args.entity, args.weapon_enum, args.distance_travelled) * 100
+        local damage = WeaponDamage:CalculateVehicleDamage(args.entity, args.weapon_enum, args.distance_travelled, LocalPlayer) * 100
 
         if damage == 0 then return end
 
@@ -319,7 +319,7 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
         local victim = Player.GetById(args.entity_id)
         local bone = victim:GetClosestBone(args.hit_position)
 
-        local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, bone, args.distance_travelled) * 100
+        local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, bone, args.distance_travelled, LocalPlayer) * 100
 
         if damage == 0 then return end
 
@@ -343,7 +343,7 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
 
     elseif args.entity_type == "Vehicle" then
 
-        local damage = WeaponDamage:CalculateVehicleDamage(args.entity, args.weapon_enum, args.distance_travelled) * 100
+        local damage = WeaponDamage:CalculateVehicleDamage(args.entity, args.weapon_enum, args.distance_travelled, LocalPlayer) * 100
 
         if damage == 0 then return end
 

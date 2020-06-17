@@ -99,6 +99,67 @@ function WeaponDamage:__init()
         [DamageEntity.AreaBombing] = {damage = 200, radius = 25, knockback = 15, v_mod = 0.1}, -- Individual bombs
         [DamageEntity.TacticalNuke] = {damage = 900, radius = 150, knockback = 60, v_mod = 0.1},
     }
+
+    self.WeaponDamagePerks = 
+    {
+        [WeaponEnum.SMG] = 
+        {
+            [11] = 1.05,
+            [23] = 1.10,
+            [32] = 1.15,
+            [44] = 1.20,
+            [51] = 1.25,
+
+        },
+        [WeaponEnum.Assault] = 
+        {
+            [40] = 1.05,
+            [69] = 1.10,
+            [88] = 1.15,
+            [111] = 1.20,
+            [125] = 1.25,
+        },
+        [WeaponEnum.Shotgun] = 
+        {
+            [41] = 1.05,
+            [63] = 1.10,
+            [80] = 1.15,
+            [98] = 1.20,
+            [118] = 1.25,
+        },
+        [WeaponEnum.Sniper] = 
+        {
+            [52] = 1.05,
+            [96] = 1.10,
+            [134] = 1.15,
+            [161] = 1.20,
+            [178] = 1.25,
+        },
+        [WeaponEnum.GrenadeLauncher] = 
+        {
+            [109] = 1.05,
+            [149] = 1.10,
+            [179] = 1.15,
+            [203] = 1.20,
+            [221] = 1.25,
+        },
+        [WeaponEnum.MachineGun] = 
+        {
+            [115] = 1.05,
+            [162] = 1.10,
+            [188] = 1.15,
+            [212] = 1.20,
+            [229] = 1.25,
+        },
+        [WeaponEnum.RocketLauncher] = 
+        {
+            [122] = 1.05,
+            [160] = 1.10,
+            [185] = 1.15,
+            [208] = 1.20,
+            [224] = 1.25,
+        }
+    }
     
     self.WeaponHitType = 
     {
@@ -160,7 +221,7 @@ function WeaponDamage:GetDamageForWeapon(weapon_enum)
     return self.weapon_damages[weapon_enum]
 end
 
-function WeaponDamage:CalculateVehicleDamage(vehicle, weapon_enum, distance)
+function WeaponDamage:CalculateVehicleDamage(vehicle, weapon_enum, distance, attacker)
 
     if vehicle:GetValue("InSafezone") then return 0 end
     if vehicle:GetHealth() <= 0 then return 0 end
@@ -170,13 +231,28 @@ function WeaponDamage:CalculateVehicleDamage(vehicle, weapon_enum, distance)
     local falloff_modifier = self.weapon_damages[weapon_enum].falloff(distance, self.weapon_damages[weapon_enum].distance_falloff)
     local vehicle_armor = self.vehicle_armors[vehicle:GetModelId()] or self.default_vehicle_armor
 
-    local damage = base_damage * falloff_modifier * v_mod * vehicle_armor
+    local perks = attacker:GetValue("Perks")
+    local possible_perks = self.WeaponDamagePerks[weapon_enum]
+
+    local perk_mod = 1
+
+    if perks and possible_perks then
+
+        for perk_id, weapon_damage_mod in pairs(possible_perks) do
+            if perks.unlocked_perks[perk_id] then
+                perk_mod = math.max(perk_mod, weapon_damage_mod)
+            end
+        end
+
+    end
+
+    local damage = base_damage * falloff_modifier * v_mod * vehicle_armor * perk_mod
 
     return damage
 
 end
 
-function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, distance)
+function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, distance, attacker)
 
     if victim:GetValue("InSafezone") then return 0 end
     if victim:GetHealth() <= 0 then return 0 end
@@ -191,7 +267,22 @@ function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, dist
         return base_damage
     end
 
-    local damage = base_damage * bone_damage_modifier * armor_mod * falloff_modifier
+    local perks = attacker:GetValue("Perks")
+    local possible_perks = self.WeaponDamagePerks[weapon_enum]
+
+    local perk_mod = 1
+
+    if perks and possible_perks then
+
+        for perk_id, weapon_damage_mod in pairs(possible_perks) do
+            if perks.unlocked_perks[perk_id] then
+                perk_mod = math.max(perk_mod, weapon_damage_mod)
+            end
+        end
+
+    end
+
+    local damage = base_damage * bone_damage_modifier * armor_mod * falloff_modifier * perk_mod
 
     return damage
 end

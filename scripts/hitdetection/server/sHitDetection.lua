@@ -613,7 +613,7 @@ function sHitDetection:DetectPlayerHit(args, player)
     if player:GetValue("InSafezone") then return end
     if victim:GetValue("InSafezone") then return end
 
-    local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, args.bone_enum, args.distance_travelled)
+    local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, args.bone_enum, args.distance_travelled, player)
 
     self:ApplyDamage({
         player = victim,
@@ -648,7 +648,7 @@ function sHitDetection:DetectVehicleHit(args, player)
     if player:GetValue("InSafezone") then return end
     if vehicle:GetDriver() and vehicle:GetDriver():GetValue("InSafezone") then return end
 
-    local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, args.distance_travelled)
+    local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, args.distance_travelled, player)
 
     if damage <= 0 then return end
     if vehicle:GetHealth() <= 0 then return end
@@ -684,7 +684,7 @@ function sHitDetection:DetectPlayerSplashHit(args, player)
     if victim:GetValue("InSafezone") then return end
 
     local damage = 
-        WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, BoneEnum.Spine1, args.distance_travelled) * args.damage_falloff
+        WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, BoneEnum.Spine1, args.distance_travelled, player) * args.damage_falloff
 
     self:ApplyDamage({
         player = victim,
@@ -720,7 +720,7 @@ function sHitDetection:DetectVehicleSplashHit(args, player)
     if player:GetValue("InSafezone") then return end
     if vehicle:GetDriver() and vehicle:GetDriver():GetValue("InSafezone") then return end
 
-    local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, 0) * args.damage_falloff
+    local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, 0, player) * args.damage_falloff
 
     if damage <= 0 then return end
     if vehicle:GetHealth() <= 0 then return end
