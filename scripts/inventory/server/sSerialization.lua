@@ -99,7 +99,7 @@ function Deserialize(data, has_categories)
                 
                 elseif (split3[k]:sub(1, 1) == "N" and k > 3) then -- Custom property/data
                 
-                    local replaced = split3[k]:gsub("N", "")
+                    local replaced = split3[k]:sub(2, split3[k]:len())
                     local replaced_split = splitstr(replaced, ">")
                     if replaced_split[1] and replaced_split[2] then
                         item_data.custom_data[replaced_split[1]] = replaced_split[2]
