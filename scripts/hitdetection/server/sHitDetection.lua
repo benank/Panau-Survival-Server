@@ -484,7 +484,7 @@ function sHitDetection:VehicleExplosionHit(args, player)
                 local armor = WeaponDamage.vehicle_armors[v:GetModelId()] or 1
                 damage = damage * explosive_data.v_mod * armor
 
-                v:SetHealth(v:GetHealth() - damage)
+                v:SetHealth(v:GetHealth() - damage / 100)
 
                 local v_data = v:GetValue("VehicleData")
 
@@ -492,7 +492,7 @@ function sHitDetection:VehicleExplosionHit(args, player)
 
                 local msg = string.format("%s [ID: %s] [Owner: %s] was damaged by %s from [%s] for %.2f damage", 
                     v:GetName(), tostring(v_data.vehicle_id), tostring(v_data.owner_steamid), 
-                    DamageEntityNames[args.type], args.attacker_id, damage * 100)
+                    DamageEntityNames[args.type], args.attacker_id, damage)
 
                 Events:Fire("Discord", {
                     channel = "Hitdetection",
