@@ -37,7 +37,7 @@ function cExplosivesDetector:CheckForNearbyExplosives()
             local is_friendly = obj.owner_id == tostring(LocalPlayer:GetSteamId()) or AreFriends(LocalPlayer, obj.owner_id)
             nearby_explosives[id] = {
                 pos = obj.position, 
-                name = string.format("Claymore%s", is_friendly and " (Friendly)" or ""), 
+                name = string.format("Claymore%s", is_friendly and " (Friendly)" or " (Enemy)"), 
                 is_mine = is_friendly,
                 show_name = dist < self.range * 0.75}
         end
@@ -50,7 +50,7 @@ function cExplosivesDetector:CheckForNearbyExplosives()
             local is_friendly = obj.owner_id == tostring(LocalPlayer:GetSteamId()) or AreFriends(LocalPlayer, obj.owner_id)
             nearby_explosives[id] = {
                 pos = obj.position, 
-                name = string.format("Mine%s", is_friendly and " (Friendly)" or ""), 
+                name = string.format("Mine%s", is_friendly and " (Friendly)" or " (Enemy)"), 
                 is_mine = is_friendly,
                 show_name = dist < self.range * 0.75}
         end
