@@ -217,7 +217,13 @@ function WeaponHitDetection:FireVehicleWeapon(args)
         local bullet = bullet_config.type(bullet_data)
         self.bullet_id_counter = self.bullet_id_counter + 1
         
-        self.bloom = math.min(self.bloom + bullet_config.bloom, self.max_bloom)
+        local bloom_to_add = bullet_config.bloom
+
+        if self.bloom < 4 then
+            bloom_to_add = bloom_to_add * 0.4
+        end
+
+        self.bloom = math.min(self.bloom + bloom_to_add, self.max_bloom)
 
         self.bullets[bullet:GetId()] = bullet
 
@@ -255,7 +261,13 @@ function WeaponHitDetection:FireWeapon(args)
         local bullet = bullet_config.type(bullet_data)
         self.bullet_id_counter = self.bullet_id_counter + 1
         
-        self.bloom = math.min(self.bloom + bullet_config.bloom, self.max_bloom)
+        local bloom_to_add = bullet_config.bloom
+
+        if self.bloom < 2 then
+            bloom_to_add = bloom_to_add * 0.5
+        end
+
+        self.bloom = math.min(self.bloom + bloom_to_add, self.max_bloom)
 
         self.bullets[bullet:GetId()] = bullet
 
