@@ -259,12 +259,38 @@ function sInventory:ShiftStack(args, player)
 
 end
 
+function sInventory:CanUseOrEquipItem(item)
+
+    if not ITEM_UNLOCKS_ENABLED then return true end
+
+    local perk_required = Item_Unlocks[item.name]
+    if perk_required then
+
+        local perks = self.player:GetValue("Perks")
+
+        if not perks then return false end
+
+        if perks.unlocked_perks[perk_required] then
+            return true 
+        else
+            Chat:Send(self.player, string.format("%s requires perk #%d.", item.name, perk_required), Color.Red)
+            return false
+        end
+
+    end
+
+    return true
+
+end
+
 function sInventory:ToggleEquipped(args, player)
 
     if not self:CanPlayerPerformOperations(player) then return end
     if not args.index or not args.cat then return end
     if not self.contents[args.cat] or not self.contents[args.cat][args.index] then return end
     if not self.contents[args.cat][args.index]:GetProperty("can_equip") then return end
+
+    if not self:CanUseOrEquipItem(self.contents[args.cat][args.index].contents[1]) then return end
 
     local uid = self.contents[args.cat][args.index].uid
     local item_uid = self.contents[args.cat][args.index].contents[1].uid
@@ -437,6 +463,8 @@ function sInventory:UseItem(args, player)
     if not args.index or not args.cat then return end
     if not self.contents[args.cat] or not self.contents[args.cat][args.index] then return end
     if not self.contents[args.cat][args.index]:GetProperty("can_use") then return end
+
+    if not self:CanUseOrEquipItem(self.contents[args.cat][args.index].contents[1]) then return end
 
     local copy = self.contents[args.cat][args.index].contents[1]:Copy()
     copy.amount = 1
