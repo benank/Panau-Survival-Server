@@ -51,8 +51,8 @@ Network:Subscribe("items/NitroDecreaseDura", function(args, player)
     local stack_index = -1
 
     for index, stack in pairs(inv[item.category]) do
-        for _, item in pairs(stack.contents) do
-            if item.uid == item.uid then
+        for _, _item in pairs(stack.contents) do
+            if _item.uid == item.uid then
                 stack_index = index
                 break
             end
