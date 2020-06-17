@@ -40,9 +40,13 @@ function EquippableGrapplehook:Render(args)
     
     if self.sync_timer:GetSeconds() > 2 and self.dura_change > 0 then
         if EquippableRocketGrapple:GetEquipped() then
-            Network:Send(var("items/RocketGrappleDecreaseDura"):get(), {uid = self.uid, change = math.ceil(self.dura_change)})
+            local perk_mods = EquippableRocketGrapple:GetPerkMods()
+            
+            self.dura_change = self.dura_change * perk_mods[1]
+
+            Network:Send(var("items/RocketGrappleDecreaseDura"):get(), {uid = self.uid, change = self.dura_change})
         else
-            Network:Send(var("items/GrapplehookDecreaseDura"):get(), {uid = self.uid, change = math.ceil(self.dura_change)})
+            Network:Send(var("items/GrapplehookDecreaseDura"):get(), {uid = self.uid, change = self.dura_change})
         end
         
         self.sync_timer:Restart()
