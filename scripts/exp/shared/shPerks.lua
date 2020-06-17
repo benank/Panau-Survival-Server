@@ -8,7 +8,7 @@ ExpPerks =
         cost = 1,
         id = 1,
         position = 1,
-        enabled = false
+        enabled = true
     },
     {
         name = "Claymore",
@@ -268,7 +268,7 @@ ExpPerks =
         cost = 1,
         id = 27,
         position = 27,
-        enabled = false
+        enabled = true
     },
     {
         name = "Military Helmet",
@@ -808,7 +808,7 @@ ExpPerks =
         cost = 2,
         id = 81,
         position = 81,
-        enabled = false
+        enabled = true
     },
     {
         name = "Building: LandClaim",
@@ -1208,7 +1208,7 @@ ExpPerks =
         cost = 3,
         id = 121,
         position = 121,
-        enabled = false
+        enabled = true
     },
     {
         name = "Rocket Launcher",

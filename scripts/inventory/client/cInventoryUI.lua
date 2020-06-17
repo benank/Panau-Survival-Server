@@ -87,7 +87,7 @@ function cInventoryUI:RecalculateInventoryResolution()
         cat_offsets = {} -- Per category offsets
     }
 
-    self.inv_dimensions.text_size = self.inv_dimensions.button_size.y * 0.5
+    self.inv_dimensions.text_size = self.inv_dimensions.button_size.y * 0.475
     self.inv_dimensions.category_title_text_size = self.inv_dimensions.button_size.x * 0.065
 
 end

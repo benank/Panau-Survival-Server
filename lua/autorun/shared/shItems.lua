@@ -203,7 +203,7 @@ Items =
     {
         name = "Nitro",
         category = "Supplies",
-        stacklimit = 10,
+        stacklimit = 5,
         can_equip = true,
         equip_type = "nitro",
         durable = true,

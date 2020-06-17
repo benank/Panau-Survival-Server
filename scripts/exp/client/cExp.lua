@@ -3,6 +3,19 @@ class 'cExp'
 function cExp:__init()
 
     Events:Subscribe("NetworkObjectValueChange", self, self.NetworkObjectValueChange)
+    Events:Subscribe("ModulesLoaded", self, self.ModulesLoaded)
+
+end
+
+function cExp:ModulesLoaded()
+
+    if LocalPlayer:GetValue("Perks") then
+        Events:Fire("PlayerPerksUpdated", args.value)
+    end
+
+    if LocalPlayer:GetValue("Exp") then
+        Events:Fire("PlayerExpUpdated", args.value)
+    end
 
 end
 

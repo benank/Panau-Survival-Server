@@ -34,6 +34,7 @@ ItemsConfig =
         ["Explosives Detector"] = {dura_per_sec = 5, dura_per_activation = 15, battery_dura_per_sec = 25},
         ["Cloud Strider Boots"] = {dura_per_5_sec = 1},
         ["Stick Disguise"] = {dura_per_hit = 2},
+        ["Nitro"] = {dura_per_sec = 20},
         weapons = 
         {
             ["Handgun"] = {dura_per_use = 1, weapon_id = Weapon.Handgun, equip_slot = WeaponSlot.Right},
