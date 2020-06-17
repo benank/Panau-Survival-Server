@@ -114,6 +114,14 @@ function WeaponDamage:__init()
             [114] = 1.20,
             [152] = 1.30
         },
+        [DamageEntity.HEGrenade] = 
+        {
+            [234] = 1.10,
+            [235] = 1.20,
+            [236] = 1.30,
+            [237] = 1.40,
+            [238] = 1.50,
+        },
     }
 
     self.WeaponDamagePerks = 
