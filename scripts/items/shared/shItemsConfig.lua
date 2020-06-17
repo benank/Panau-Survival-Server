@@ -75,6 +75,19 @@ ItemsConfig =
             ["Warp Grenade"] = DamageEntity.None,
             ["Laser Grenade"] = DamageEntity.LaserGrenade,
         }
+    },
+    use_time_perks = 
+    {
+        ["Bandages"] = 
+        {
+            [19] = 0.75,
+            [36] = 0.5
+        },
+        ["Healthpack"] = 
+        {
+            [60] = 0.75,
+            [85] = 0.5
+        },
     }
 }
 

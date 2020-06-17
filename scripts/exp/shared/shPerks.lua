@@ -188,7 +188,7 @@ ExpPerks =
         cost = 1,
         id = 19,
         position = 19,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
@@ -298,7 +298,7 @@ ExpPerks =
         cost = 2,
         id = 30,
         position = 30,
-        enabled = true
+        enabled = false
     },
     {
         name = "Inventory",
@@ -358,7 +358,7 @@ ExpPerks =
         cost = 2,
         id = 36,
         position = 36,
-        enabled = false
+        enabled = true
     },
     {
         name = "Backpack",
@@ -598,7 +598,7 @@ ExpPerks =
         cost = 3,
         id = 60,
         position = 60,
-        enabled = false
+        enabled = true
     },
     {
         name = "Kevlar Vest",
@@ -848,7 +848,7 @@ ExpPerks =
         cost = 4,
         id = 85,
         position = 85,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
