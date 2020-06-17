@@ -39,7 +39,8 @@ function sWorkBench:BeginCombining(player)
 
     if not perks.unlocked_perks[WorkBenchConfig.use_perk_req] then
         Chat:Send(player, 
-            string.format("You must unlock the Workbench perk (#%d) in order to use this.", WorkBenchConfig.use_perk_req), Color.Red)
+            string.format("You must unlock the Workbench perk (#%d) in order to use this. Hit F2 to open the perks menu.", 
+                WorkBenchConfig.use_perk_req), Color.Red)
         return
     end
 

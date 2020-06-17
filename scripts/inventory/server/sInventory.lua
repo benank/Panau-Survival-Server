@@ -273,7 +273,8 @@ function sInventory:CanUseOrEquipItem(item)
         if perks.unlocked_perks[perk_required] then
             return true 
         else
-            Chat:Send(self.player, string.format("%s requires perk #%d.", item.name, perk_required), Color.Red)
+            Chat:Send(self.player, string.format("%s requires perk #%d. Hit F2 to open the perks menu.", 
+                item.name, perk_required), Color.Red)
             return false
         end
 
