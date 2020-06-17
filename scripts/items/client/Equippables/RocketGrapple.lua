@@ -59,7 +59,9 @@ function EquippableRocketGrapple:FireGrapplehookPre()
 			}
 			self.grapple.object = ClientStaticObject.Create(args)
 			self.grapple.end_pos = ray.position + ang * Vector3.Forward * 1.5
-			self.grapple.active = true
+            self.grapple.active = true
+            self.distance = ray.distance
+            self.end_pos = ray.position
 
 			self.grapple.timer:Restart()
 
@@ -130,6 +132,11 @@ function EquippableRocketGrapple:HandlePlayerRocketGrapple(player)
     local parachuting = base_state == AnimationState.SParachute
     
     local rocket_grappling = grappling and speed > 10 and not parachuting
+
+    if player == LocalPlayer and not self.distance then
+        rocket_grappling = false
+    end
+
     if rocket_grappling then
         local arm_pos = player:GetBonePosition("ragdoll_AttachHandLeft")
         if not self.grapple_fx[player:GetId()] then
@@ -178,13 +185,18 @@ function EquippableRocketGrapple:Render(args)
     self:HandlePlayerRocketGrapple(LocalPlayer)
 
 	local localplayer_velo = LocalPlayer:GetLinearVelocity()
-	local speed = math.abs((-LocalPlayer:GetAngle() * localplayer_velo).z)
+    local speed = math.abs((-LocalPlayer:GetAngle() * localplayer_velo).z)
+    
+    if not self.grappling and not self.grapple.active then
+        self.distance = nil
+    end
 
     if self.grappling 
     and not parachuting
 	and speed > 10 
 	and speed < self.speed_mod * self.speed_base
-	and ray.distance > self.speed_dist then
+    and ray.distance > self.speed_dist
+    and self.distance then
 		LocalPlayer:SetLinearVelocity(localplayer_velo * 1.05)
 	end
 
@@ -192,7 +204,7 @@ function EquippableRocketGrapple:Render(args)
         self.grapple.moved = true
         self.grapple.object:SetPosition(self.grapple.end_pos)
         self.grapple.timer:Restart()
-    elseif self.grapple.timer:GetMilliseconds() > 1 and self.grapple.moved and self.grapple.active and IsValid(self.grapple.object) then
+    elseif self.grapple.timer:GetMilliseconds() > 100 and self.grapple.moved and self.grapple.active and IsValid(self.grapple.object) then
         self.grapple.object:Remove()
         self.grapple.object = nil
         self.grapple.moved = false
@@ -203,7 +215,7 @@ end
 
 function EquippableRocketGrapple:RenderGrappleDistance(ray)
 
-    if ray.distance < 80 then return end
+    if ray.distance < 80 and not self.distance then return end
 
 	local triangleColor = Color(0,200,0,150)
 	
@@ -213,7 +225,11 @@ function EquippableRocketGrapple:RenderGrappleDistance(ray)
 	
 	if self.grappling then
 		triangleColor = Color(0,0,200,150)
-	end
+    end
+    
+    if self.distance then
+        ray.distance = LocalPlayer:GetPosition():Distance(self.end_pos)
+    end
 	
 	if ray.distance < 1000 then
 
