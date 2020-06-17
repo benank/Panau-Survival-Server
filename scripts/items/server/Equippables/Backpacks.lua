@@ -12,7 +12,7 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
     if args.item.name ~= "Combat Backpack" and args.item.name ~= "Explorer Backpack" then
 
         Events:Fire("Inventory.ToggleBackpackEquipped-" .. tostring(args.player:GetSteamId().id), 
-            {equipped = item.equipped == true, name = item.name, slots = ItemsConfig.equippables.backpacks[args.item.name].slots})
+            {equipped = args.item.equipped == true, name = args.item.name, slots = ItemsConfig.equippables.backpacks[args.item.name].slots})
 
     else
         UpdateBackpackSlots(args.player, args.item)
