@@ -49,7 +49,6 @@ function cNitro:PlayerPerksUpdated()
     end
 
     self.boost_amount = boost
-    print(self.boost_amount)
 
 end
 
