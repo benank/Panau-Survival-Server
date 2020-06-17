@@ -184,27 +184,21 @@ function sExp:AwardExpToKillerOnKill(args)
 
     local killed_exp = args.player:GetValue("Exp")
     
-    if not self.recent_killers[player_id] then
-        self.recent_killers[player_id] = {}
-    end
-
-    local last_killed_ids = self.recent_killers[player_id]
-
-    local expire_time = last_killed_ids[killer_id]
+    local expire_time = self.recent_killers[player_id]
 
     if expire_time then
         -- If they have been killed recently, check the time
         local diff = Server:GetElapsedSeconds() - expire_time
 
         if diff > Exp.KillExpireTime then
-            self.recent_killers[player_id][killer_id] = nil
+            self.recent_killers[player_id] = nil
         else
             exp_earned = 0
         end
+    end
 
-    else
-        -- If they have not been killed recently, add them to the list
-        self.recent_killers[player_id][killer_id] = Server:GetElapsedSeconds()
+    if not self.recent_killers[player_id] then
+        self.recent_killers[player_id] = Server:GetElapsedSeconds()
     end
 
     if exp_earned == 0 then return end

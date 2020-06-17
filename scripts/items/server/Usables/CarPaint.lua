@@ -11,6 +11,8 @@ local cLookup = {
     ["Yellow"] = Color(255,255,0),
     ["White"] = Color(255,255,255),
     ["Black"] = Color(0,0,0),
+    ["Brown"] = Color(94,66,27),
+    ["DarkGreen"] = Color(38,71,14),
 }
 
 Network:Subscribe("items/CompleteItemUsage", function(args, player)
@@ -29,6 +31,11 @@ Network:Subscribe("items/CompleteItemUsage", function(args, player)
 
         if player:GetPosition():Distance(args.forward_ray.position) > ItemsConfig.usables[player_iu.item.name].range then
             Chat:Send(player, "You must move closer to the vehicle to use this item!", Color.Red)
+            return
+        end
+
+        if not cLookup[player_iu.item.custom_data.color] then
+            print("**Custom color for car paint not found!** " .. player_iu.item.custom_data.color)
             return
         end
 

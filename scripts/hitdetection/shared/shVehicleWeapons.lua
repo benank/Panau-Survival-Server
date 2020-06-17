@@ -6,6 +6,10 @@ function VehicleWeapons:__init()
     self.vehicles_with_weapons = 
     {
         -- Each has weapon1, weapon2 ids for use with weaponenum
+        [16] = 
+        {
+            [VehicleSeat.MountedGun1] = {FireLeft = WeaponEnum.V_MachineGun}
+        }, -- YP-107 Phoenix 
         [18] = 
         {
             [VehicleSeat.MountedGun1] = {FireLeft = WeaponEnum.V_Minigun}

@@ -81,8 +81,10 @@ function shItem:GetCustomData()
 			["Lime"] = 0.1,
 			["Orange"] = 0.1,
 			["Yellow"] = 0.1,
-			["White"] = 0.05,
-			["Black"] = 0.05,
+			["White"] = 0.025,
+            ["Black"] = 0.025,
+            ["Brown"] = 0.025,
+            ["DarkGreen"] = 0.025
 		}
 	
 		-- Selects color and assigns to the item
