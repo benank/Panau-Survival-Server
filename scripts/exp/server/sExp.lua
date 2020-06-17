@@ -145,6 +145,11 @@ end
 
 function sExp:PlayerKilled(args)
 
+    local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+
+    if args.player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius
+    and args.player:GetValue("Exp").level > 3 then return end
+
     -- Give killer exp
     if args.killer then
         self:AwardExpToKillerOnKill(args)
@@ -152,8 +157,6 @@ function sExp:PlayerKilled(args)
     
     -- No exp lost if using Second Life
     if args.player:GetValue("SecondLifeEquipped") then return end
-
-    local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
     -- Subtract exp from player who died
     local exp_data = args.player:GetValue("Exp")
