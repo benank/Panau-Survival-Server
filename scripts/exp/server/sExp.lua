@@ -147,7 +147,8 @@ function sExp:PlayerKilled(args)
 
     local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
-    if args.player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius then return end
+    if args.player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius
+    and args.player:GetValue("Exp").level > 3 then return end
 
     -- Give killer exp
     if args.killer then
