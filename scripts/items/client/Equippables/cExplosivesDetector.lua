@@ -34,10 +34,11 @@ function cExplosivesDetector:CheckForNearbyExplosives()
     for id, obj in pairs(cClaymores.CSO_register) do
         local dist = obj.position:Distance(local_pos)
         if dist < self.range and IsValid(obj.object) then
+            local is_friendly = obj.owner_id == tostring(LocalPlayer:GetSteamId()) or AreFriends(LocalPlayer, obj.owner_id)
             nearby_explosives[id] = {
                 pos = obj.position, 
-                name = "Claymore", 
-                is_mine = obj.owner_id == tostring(LocalPlayer:GetSteamId()) or AreFriends(LocalPlayer, obj.owner_id),
+                name = string.format("Claymore%s", is_friendly and " (Friendly)" or ""), 
+                is_mine = is_friendly,
                 show_name = dist < self.range * 0.75}
         end
         Timer.Sleep(1)
@@ -46,10 +47,11 @@ function cExplosivesDetector:CheckForNearbyExplosives()
     for id, obj in pairs(cMines.CSO_register) do
         local dist = obj.position:Distance(local_pos)
         if dist < self.range and IsValid(obj.object) then
+            local is_friendly = obj.owner_id == tostring(LocalPlayer:GetSteamId()) or AreFriends(LocalPlayer, obj.owner_id)
             nearby_explosives[id] = {
                 pos = obj.position, 
-                name = "Mine", 
-                is_mine = obj.owner_id == tostring(LocalPlayer:GetSteamId()) or AreFriends(LocalPlayer, obj.owner_id),
+                name = string.format("Mine%s", is_friendly and " (Friendly)" or ""), 
+                is_mine = is_friendly,
                 show_name = dist < self.range * 0.75}
         end
         Timer.Sleep(1)
