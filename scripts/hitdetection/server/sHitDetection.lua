@@ -481,25 +481,47 @@ function sHitDetection:VehicleExplosionHit(args, player)
                 if not data.in_fov then
                     damage = damage * WeaponDamage.FOVDamageModifier
                 end
-                
-                local armor = WeaponDamage.vehicle_armors[v:GetModelId()] or 1
-                damage = damage * explosive_data.v_mod * armor
 
-                v:SetHealth(v:GetHealth() - damage)
+                local sub
+                sub = Events:Subscribe("GetPlayerPerksById" .. tostring(args.attacker_id), function(perks)
 
-                local v_data = v:GetValue("VehicleData")
+                    local perk_mod = 1
+                    local damage_perks = WeaponDamage.ExplosiveDamagePerks[args.type]
 
-                local msg = string.format("%s [ID: %s] [Owner: %s] was damaged by %s from [%s] for %.2f damage", 
-                    v:GetName(), tostring(v_data.vehicle_id), tostring(v_data.owner_steamid), 
-                    DamageEntityNames[args.type], args.attacker_id, damage * 100)
+                    if damage_perks and perks then
 
-                Events:Fire("Discord", {
-                    channel = "Hitdetection",
-                    content = msg
-                })
+                        for perk_id, weapon_damage_mod in pairs(damage_perks) do
+                            if perks.unlocked_perks[perk_id] then
+                                perk_mod = math.max(perk_mod, weapon_damage_mod)
+                            end
+                        end
 
-                v:SetLinearVelocity(v:GetLinearVelocity() + (data.hit_dir * explosive_data.radius * explosive_data.knockback * (armor * 0.15)))
+                    end
 
+                    local armor = WeaponDamage.vehicle_armors[v:GetModelId()] or 1
+                    damage = damage * explosive_data.v_mod * armor * perk_mod
+
+                    v:SetHealth(v:GetHealth() - damage)
+
+                    local v_data = v:GetValue("VehicleData")
+
+                    local msg = string.format("%s [ID: %s] [Owner: %s] was damaged by %s from [%s] for %.2f damage", 
+                        v:GetName(), tostring(v_data.vehicle_id), tostring(v_data.owner_steamid), 
+                        DamageEntityNames[args.type], args.attacker_id, damage * 100)
+
+                    Events:Fire("Discord", {
+                        channel = "Hitdetection",
+                        content = msg
+                    })
+
+                    v:SetLinearVelocity(v:GetLinearVelocity() + (data.hit_dir * explosive_data.radius * explosive_data.knockback * (armor * 0.15)))
+
+                    sub = Events:Unsubscribe(sub)
+
+                end)
+
+                Events:Fire("GetPlayerPerksById", {steam_id = args.attacker_id})
+    
             end
 
         end
@@ -528,22 +550,44 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
     if not args.in_fov then
         damage = damage * WeaponDamage.FOVDamageModifier
     end
+
+    local sub
+    sub = Events:Subscribe("GetPlayerPerksById" .. tostring(args.attacker_id), function(perks)
+
+        local perk_mod = 1
+        local damage_perks = WeaponDamage.ExplosiveDamagePerks[args.type]
+
+        if damage_perks and perks then
+
+            for perk_id, weapon_damage_mod in pairs(damage_perks) do
+                if perks.unlocked_perks[perk_id] then
+                    perk_mod = math.max(perk_mod, weapon_damage_mod)
+                end
+            end
+
+        end
+
+        damage = damage * WeaponDamage:GetArmorMod(player, hit_type, damage, original_damage) * perk_mod
+
+        self:ApplyDamage({
+            player = player, 
+            damage = damage / 100, 
+            source = args.type, 
+            attacker_id = args.attacker_id
+        })
+
+        Events:Fire("HitDetection/PlayerExplosionItemHit", {
+            player = player,
+            damage = damage,
+            type = args.type
+        })
+
+        sub = Events:Unsubscribe(sub)
+
+    end)
+
+    Events:Fire("GetPlayerPerksById", {steam_id = args.attacker_id})
     
-    damage = damage * WeaponDamage:GetArmorMod(player, hit_type, damage, original_damage)
-
-    self:ApplyDamage({
-        player = player, 
-        damage = damage / 100, 
-        source = args.type, 
-        attacker_id = args.attacker_id
-    })
-
-    Events:Fire("HitDetection/PlayerExplosionItemHit", {
-        player = player,
-        damage = damage,
-        type = args.type
-    })
-
 end
 
 function sHitDetection:ExplosionHit(args, player)

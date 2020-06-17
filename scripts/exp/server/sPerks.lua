@@ -9,6 +9,8 @@ function sPerks:__init()
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
+    Events:Subscribe("GetPlayerPerksById", self, self.GetPlayerPerks)
+
 end
 
 function sPerks:PlayerChat(args)
@@ -162,6 +164,25 @@ function sPerks:DeserializePerks(unlocked_perks)
 
     return parsed
 
+end
+
+function sPerks:GetPlayerPerks(args)
+
+	local query = SQL:Query("SELECT * FROM perks WHERE steamID = (?) LIMIT 1")
+    query:Bind(1, args.steam_id)
+    
+    local result = query:Execute()
+
+    local perk_data = {}
+    
+    if #result > 0 then -- if already in DB
+        
+        perk_data.points = tonumber(result[1].points)
+        perk_data.unlocked_perks = self:DeserializePerks(result[1].unlocked_perks)
+
+    end
+
+    Events:Fire("GetPlayerPerksById" .. args.steam_id, perk_data)
 end
 
 function sPerks:ClientModuleLoad(args)

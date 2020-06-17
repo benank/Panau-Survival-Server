@@ -48,7 +48,7 @@ ExpPerks =
         cost = 1,
         id = 5,
         position = 5,
-        enabled = true
+        enabled = false
     },
     {
         name = "EVAC",
@@ -178,7 +178,7 @@ ExpPerks =
         cost = 2,
         id = 18,
         position = 18,
-        enabled = false
+        enabled = true
     },
     {
         name = "Bandages",
@@ -268,7 +268,7 @@ ExpPerks =
         cost = 1,
         id = 27,
         position = 27,
-        enabled = false
+        enabled = true
     },
     {
         name = "Military Helmet",
@@ -298,7 +298,7 @@ ExpPerks =
         cost = 2,
         id = 30,
         position = 30,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
@@ -558,7 +558,7 @@ ExpPerks =
         cost = 3,
         id = 56,
         position = 56,
-        enabled = false
+        enabled = true
     },
     {
         name = "Explosives Detector",
@@ -808,7 +808,7 @@ ExpPerks =
         cost = 2,
         id = 81,
         position = 81,
-        enabled = false
+        enabled = true
     },
     {
         name = "Building: LandClaim",
@@ -948,7 +948,7 @@ ExpPerks =
         cost = 1,
         id = 95,
         position = 95,
-        enabled = false
+        enabled = true
     },
     {
         name = "Sniper Rifle",
@@ -1138,7 +1138,7 @@ ExpPerks =
         cost = 3,
         id = 114,
         position = 114,
-        enabled = false
+        enabled = true
     },
     {
         name = "Machine Gun",
@@ -1208,7 +1208,7 @@ ExpPerks =
         cost = 3,
         id = 121,
         position = 121,
-        enabled = false
+        enabled = true
     },
     {
         name = "Rocket Launcher",
@@ -1518,7 +1518,7 @@ ExpPerks =
         cost = 4,
         id = 152,
         position = 152,
-        enabled = false
+        enabled = true
     },
     {
         name = "Ping",
@@ -1668,7 +1668,7 @@ ExpPerks =
         cost = 2,
         id = 167,
         position = 167,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
@@ -1968,7 +1968,7 @@ ExpPerks =
         cost = 2,
         id = 197,
         position = 197,
-        enabled = false
+        enabled = true
     },
     {
         name = "Tactical Nuke",

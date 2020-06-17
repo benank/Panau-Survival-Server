@@ -100,6 +100,22 @@ function WeaponDamage:__init()
         [DamageEntity.TacticalNuke] = {damage = 900, radius = 150, knockback = 60, v_mod = 0.1},
     }
 
+    self.ExplosiveDamagePerks = 
+    {
+        [DamageEntity.Claymore] = 
+        {
+            [95] = 1.10,
+            [167] = 1.20,
+            [197] = 1.30
+        },
+        [DamageEntity.C4] = 
+        {
+            [56] = 1.10,
+            [114] = 1.20,
+            [152] = 1.30
+        },
+    }
+
     self.WeaponDamagePerks = 
     {
         [WeaponEnum.SMG] = 
