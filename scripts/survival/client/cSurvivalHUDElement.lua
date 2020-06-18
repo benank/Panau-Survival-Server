@@ -59,24 +59,25 @@ function cSurvivalHUDElement:RenderLarge()
     local percent_size = Vector2(50, 0)
     local margin = 4
 
-    local fill_size = self.large_size.x - text_size.x - percent_size.x
+    local fill_size_y = self.large_size.y
+    local fill_size_x = self.large_size.x - text_size.x - percent_size.x
 
     if self.dual then
-        fill_size = fill_size / 2
+        fill_size_y = fill_size_y / 2
     end
 
     local percent = math.min(1, math.floor(self.percent * 100) / 100)
     
     Render:FillArea(
         text_size, 
-        Vector2(fill_size * percent, self.large_size.y), 
-        (self.dual and self.percent == 1) and self.dual_complete_color or self.color)
+        Vector2(fill_size_x * percent, fill_size_y), 
+        self.color)
 
     if self.dual then
         Render:FillArea(
-            text_size + Vector2(fill_size * self.percent, 0), 
-            Vector2(fill_size * self.percent2, self.large_size.y), 
-            self.percent2 == 1 and self.dual_complete_color or self.color2)
+            text_size + Vector2(0, fill_size_y), 
+            Vector2(fill_size_x * self.percent2, fill_size_y), 
+            self.color2)
     end
 
     SurvivalManager.hud:DrawBorder(text_size, self.large_size - percent_size)
@@ -103,25 +104,26 @@ function cSurvivalHUDElement:RenderSmall()
         return
     end
 
-    local fill_size = self.small_size.x
+    local fill_size_y = self.small_size.y
+    local fill_size_x = self.small_size.x
 
     if self.dual then
-        fill_size = fill_size / 2
+        fill_size_y = fill_size_y / 2
     end
 
     local percent = math.min(1, math.floor(self.percent * 100) / 100)
     
     Render:FillArea(
         Vector2.Zero, 
-        Vector2(fill_size * percent, self.small_size.y), 
-        (self.dual and percent == 1) and self.dual_complete_color or self.color)
+        Vector2(fill_size_x * percent, fill_size_y), 
+        self.color)
 
     if self.dual then
         local percent_2 = math.floor(self.percent2 * 100) / 100
         Render:FillArea(
-            Vector2.Zero + Vector2(fill_size * self.percent, 0), 
-            Vector2(fill_size * self.percent2, self.small_size.y), 
-            percent_2 == 1 and self.dual_complete_color or self.color2)
+            Vector2(0, fill_size_y), 
+            Vector2(fill_size_x * self.percent2, fill_size_y), 
+            self.color2)
     end
 
 
