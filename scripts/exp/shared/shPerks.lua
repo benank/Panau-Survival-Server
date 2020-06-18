@@ -1608,7 +1608,7 @@ ExpPerks =
         cost = 3,
         id = 156,
         position = 161,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
@@ -1738,7 +1738,7 @@ ExpPerks =
         cost = 3,
         id = 169,
         position = 174,
-        enabled = false
+        enabled = true
     },
     {
         name = "HE Grenade",
@@ -1808,7 +1808,7 @@ ExpPerks =
         cost = 4,
         id = 175,
         position = 181,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",
