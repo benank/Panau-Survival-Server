@@ -238,7 +238,7 @@ ExpPerks =
         cost = 2,
         id = 24,
         position = 24,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",
@@ -528,7 +528,7 @@ ExpPerks =
         cost = 2,
         id = 54,
         position = 53,
-        enabled = false
+        enabled = true
     },
     {
         name = "Machine Gun",
@@ -748,7 +748,7 @@ ExpPerks =
         cost = 2,
         id = 74,
         position = 75,
-        enabled = false
+        enabled = true
     },
     {
         name = "Tactical Nuke",
@@ -758,7 +758,7 @@ ExpPerks =
         cost = 2,
         id = 75,
         position = 76,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
@@ -1098,7 +1098,7 @@ ExpPerks =
         cost = 1,
         id = 108,
         position = 110,
-        enabled = false
+        enabled = true
     },
     {
         name = "Grenade Launcher",
@@ -1338,7 +1338,7 @@ ExpPerks =
         cost = 3,
         id = 131,
         position = 134,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
@@ -1438,7 +1438,7 @@ ExpPerks =
         cost = 3,
         id = 140,
         position = 144,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
@@ -1788,7 +1788,7 @@ ExpPerks =
         cost = 2,
         id = 173,
         position = 179,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
@@ -2038,7 +2038,7 @@ ExpPerks =
         cost = 4,
         id = 198,
         position = 204,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
