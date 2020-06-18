@@ -38,7 +38,7 @@ end
 
 function EquippableGrapplehook:Render(args)
     
-    if self.sync_timer:GetSeconds() > 2 and self.dura_change > 0 then
+    if self.sync_timer:GetSeconds() > 5 and self.dura_change > 0 then
         if EquippableRocketGrapple:GetEquipped() then
             local perk_mods = EquippableRocketGrapple:GetPerkMods()
             
