@@ -264,6 +264,13 @@ function sInventory:CanUseOrEquipItem(item)
     if not ITEM_UNLOCKS_ENABLED then return true end
 
     local perk_required = Item_Unlocks[item.name]
+    local name = item.name
+
+    if item.name == "EVAC" and count_table(item.custom_data) > 0 then
+        name = "Secret EVAC"
+        perk_required = Item_Unlocks[name]
+    end
+
     if perk_required then
 
         local perks = self.player:GetValue("Perks")
@@ -275,7 +282,7 @@ function sInventory:CanUseOrEquipItem(item)
         else
             local perks_by_id = SharedObject.GetByName("ExpPerksById"):GetValue("Perks")
             Chat:Send(self.player, string.format("%s requires perk #%d. Hit F2 to open the perks menu.", 
-                item.name, perks_by_id[perk_required].position), Color.Red)
+            name, perks_by_id[perk_required].position), Color.Red)
             return false
         end
 

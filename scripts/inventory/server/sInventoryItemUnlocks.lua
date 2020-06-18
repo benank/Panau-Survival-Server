@@ -26,5 +26,6 @@ Item_Unlocks =
     ["Kevlar Vest"] = 61,
     ["Rocket Launcher"] = 65,
     ["Tactical Nuke"] = 75,
-    ["Second Life"] = 104
+    ["Second Life"] = 104,
+    ["Secret EVAC"] = 59
 }
