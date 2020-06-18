@@ -285,9 +285,9 @@ function shStack:GetSyncObject()
 end
 
 function shStack:ToString()
-    local str = ""
+    local str = "\t"
     for k,v in pairs(self.contents) do
-        str = str .. v:ToString() .. " "
+        str = str .. v:ToString() .. "\n\t"
     end
     return str
 end
