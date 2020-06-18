@@ -1018,7 +1018,7 @@ ExpPerks =
         cost = 2,
         id = 102,
         position = 102,
-        enabled = false
+        enabled = true
     },
     {
         name = "Arena",
@@ -2108,7 +2108,7 @@ ExpPerks =
         cost = 4,
         id = 205,
         position = 211,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",

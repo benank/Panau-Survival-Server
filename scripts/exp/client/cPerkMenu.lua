@@ -96,7 +96,7 @@ function cPerkMenu:CreateChoiceMenu(choice_data)
 
     self.choice_menu = Window.Create()
     self.choice_menu:SetTitle("Perk Choice")
-    self.choice_menu:SetSize(Vector2(500, 100 + 50 * count_table(choice_data.choices)))
+    self.choice_menu:SetSize(Vector2(600, 100 + 50 * count_table(choice_data.choices)))
     self.choice_menu:SetPosition(Render.Size / 2 - self.choice_menu:GetSize() / 2)
     self.choice_menu:SetClampMovement(false)
     
