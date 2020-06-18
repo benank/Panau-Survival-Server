@@ -151,7 +151,9 @@ function sPerks:DeserializePerks(unlocked_perks)
             local split2 = perk_id:split("_")
             local id = tonumber(split2[1])
             local choice = tonumber(split2[2])
-            parsed[id] = choice
+            if id ~= nil and choice ~= nil then
+                parsed[id] = choice
+            end
 
         else
 
