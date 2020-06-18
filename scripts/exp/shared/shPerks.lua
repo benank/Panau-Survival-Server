@@ -28,7 +28,7 @@ ExpPerks =
         cost = 1,
         id = 3,
         position = 3,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
@@ -558,7 +558,7 @@ ExpPerks =
         cost = 1,
         id = 57,
         position = 56,
-        enabled = false
+        enabled = true
     },
     {
         name = "Grenade Launcher",
@@ -1178,7 +1178,7 @@ ExpPerks =
         cost = 2,
         id = 116,
         position = 118,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
@@ -1208,7 +1208,7 @@ ExpPerks =
         cost = 0,
         id = 120,
         position = 121,
-        enabled = false
+        enabled = true
     },
     {
         name = "Rocket Launcher",
@@ -1648,7 +1648,7 @@ ExpPerks =
         cost = 3,
         id = 159,
         position = 165,
-        enabled = false
+        enabled = true
     },
     {
         name = "Machine Gun",
