@@ -69,9 +69,6 @@ end
 -- Explosions from items, like mines
 function cHitDetection:Explosion(args)
 
-    if LocalPlayer:GetValue(var("InSafezone"):get()) then return end
-    if LocalPlayer:GetValue("Invincible") then return end
-
     local explosive_data = WeaponDamage.ExplosiveBaseDamage[args.type]
 
     if explosive_data then
@@ -79,6 +76,9 @@ function cHitDetection:Explosion(args)
         local radius = explosive_data.radius * 1.5 -- Make it larger to account for possible perks
         args.radius = radius
         self:CheckForVehicleExplosionDamage(args)
+
+        if LocalPlayer:GetValue(var("InSafezone"):get()) then return end
+        if LocalPlayer:GetValue("Invincible") then return end
 
         local from_pos = args.position + Vector3.Up
         local to_pos = LocalPlayer:GetBonePosition(var("ragdoll_Spine"):get())

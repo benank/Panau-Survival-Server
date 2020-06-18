@@ -60,7 +60,7 @@ function sStashes:C4DetonateOnStash(args)
             })
         end
 
-        self:DeleteStash({id = stash.id}, owner)
+        self:DeleteStash({id = stash.id}, owner or args.player)
 
         Events:Fire("Discord", {
             channel = "Stashes",
@@ -257,6 +257,11 @@ function sStashes:DismountStash(args, player)
 
     table.insert(contents, stack)
 
+    self:DiscordMessageWithContents(
+        string.format("%s [%s] dismounted stash %d [%s] [Tier: %d]", 
+            player:GetName(), tostring(player:GetSteamId()), stash_instance.id, stash_instance.owner_id, stash_instance.lootbox.tier),
+        stash_instance.lootbox.contents)
+
     local type = stash_instance.lootbox.tier
 
     local angle = type == Lootbox.Types.ProximityAlarm and Angle() or stash_instance.lootbox.angle
@@ -300,6 +305,21 @@ function sStashes:RenameStash(args, player)
     stash_instance:ChangeName(args.name, player)
 end
 
+function sStashes:DiscordMessageWithContents(message, contents)
+
+    local msg = message .. "\nContents:\n"
+
+    for _, stack in pairs(contents) do
+        msg = msg .. stack:ToString() .. "\n"
+    end
+
+    Events:Fire("Discord", {
+        channel = "Stashes",
+        content = msg
+    })
+
+end
+
 function sStashes:ClientModuleLoad(args)
 
     args.player:SetNetworkValue("MaxStashes", self:GetPlayerMaxStashes(args.player))
@@ -335,6 +355,12 @@ function sStashes:DeleteStash(args, player)
     if not stash_instance then return end
 
     local owner_id = stash_instance.owner_id
+
+    self:DiscordMessageWithContents(
+        string.format("%s [%s] deleted stash %d [%s] [Tier: %d]", 
+            IsValid(player) and player:GetName() or "NONE", IsValid(player) and tostring(player:GetSteamId()) or "NONE", 
+            stash_instance.id, stash_instance.owner_id, stash_instance.lootbox.tier),
+        stash_instance.lootbox.contents)
 
     -- Create dropbox with contents
     self.stashes_by_uid[stash_instance.lootbox.uid] = nil

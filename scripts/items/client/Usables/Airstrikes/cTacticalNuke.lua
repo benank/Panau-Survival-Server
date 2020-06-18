@@ -68,8 +68,8 @@ function cTacticalNuke:Initialize()
         self.missile_timer = Timer()
         self.fx.missile = ClientStaticObject.Create({
             position = self.position + Vector3.Up * 500,
-            angle = Angle(0, math.pi / 2, 0),
-            model = "general.blz/wea51-a.lod"
+            angle = Angle(0, math.pi, 0),
+            model = "f3m04.rocket01.eez/key016_01-p1.lod"
         })
 
     end)

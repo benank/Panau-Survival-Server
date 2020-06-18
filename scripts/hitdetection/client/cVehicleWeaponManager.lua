@@ -11,7 +11,7 @@ function cVehicleWeaponManager:__init()
 
     self.fire_delays = -- Delays between shots for vehicle weapons
     {
-        [WeaponEnum.V_Minigun] = 40,
+        [WeaponEnum.V_Minigun] = 30,
         [WeaponEnum.V_MachineGun] = 200,
         [WeaponEnum.V_Cannon] = 100
     }

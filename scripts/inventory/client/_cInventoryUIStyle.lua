@@ -55,6 +55,8 @@ function cInventoryUIStyle:__init()
         ["Yellow"] = Color(255,255,0),
         ["White"] = Color(255,255,255),
         ["Black"] = Color(0,0,0),
+        ["Brown"] = Color(94,66,27),
+        ["DarkGreen"] = Color(38,71,14),
     }
 
     self.category_title_colors = {Normal = Color.White, Full = Color.Red}
