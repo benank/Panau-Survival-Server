@@ -463,13 +463,33 @@ function sHitDetection:VehicleExplosionHit(args, player)
 
     for vehicle_id, data in pairs(args.hit_vehicles) do
 
-        local v = Vehicle.GetById(vehicle_id)
+        local sub
+        sub = Events:Subscribe("GetPlayerPerksById" .. tostring(args.attacker_id), function(perks)
 
-        if IsValid(v) then
+            local v = Vehicle.GetById(vehicle_id)
+
+            if not IsValid(v) then return end
             
+            local perk_mods = {[1] = 1, [2] = 1}
+            local damage_perks = WeaponDamage.ExplosiveDamagePerks[args.type]
+    
+            if damage_perks and perks then
+    
+                for perk_id, perk_mod_data in pairs(damage_perks) do
+                    local choice = perks.unlocked_perks[perk_id]
+                    if perk_mod_data[choice] then
+                        perk_mods[choice] = math.max(perk_mods[choice], perk_mod_data[choice])
+                    end
+                end
+
+            end
+
+            local radius = explosive_data.radius
+            radius = radius * perk_mods[2]
+
             local v_pos = v:GetPosition()
             local dist = data.dist -- Use clientside distance in case of desync
-            local percent_modifier = math.max(0, 1 - dist / explosive_data.radius)
+            local percent_modifier = math.max(0, 1 - dist / radius)
 
             if percent_modifier > 0 then
 
@@ -480,9 +500,9 @@ function sHitDetection:VehicleExplosionHit(args, player)
                 if not data.in_fov then
                     damage = damage * WeaponDamage.FOVDamageModifier
                 end
-                
+
                 local armor = WeaponDamage.vehicle_armors[v:GetModelId()] or 1
-                damage = damage * explosive_data.v_mod * armor
+                damage = damage * explosive_data.v_mod * armor * perk_mods[1]
 
                 v:SetHealth(v:GetHealth() - damage / 100)
 
@@ -499,11 +519,15 @@ function sHitDetection:VehicleExplosionHit(args, player)
                     content = msg
                 })
 
-                v:SetLinearVelocity(v:GetLinearVelocity() + (data.hit_dir * explosive_data.radius * explosive_data.knockback * (armor * 0.15)))
+                v:SetLinearVelocity(v:GetLinearVelocity() + (data.hit_dir * radius * explosive_data.knockback * (armor * 0.15)))
+
+                sub = Events:Unsubscribe(sub)
 
             end
 
-        end
+        end)
+
+        Events:Fire("GetPlayerPerksById", {steam_id = args.attacker_id})
 
     end
     
@@ -517,34 +541,60 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
 
     if not explosive_data then return end
 
-    local dist = args.position:Distance(args.local_position)
-    local percent_modifier = math.max(0, 1 - dist / explosive_data.radius)
+    local sub
+    sub = Events:Subscribe("GetPlayerPerksById" .. tostring(args.attacker_id), function(perks)
 
-    if percent_modifier == 0 then return end
+        local perk_mods = {[1] = 1, [2] = 1}
+        local damage_perks = WeaponDamage.ExplosiveDamagePerks[args.type]
 
-    local hit_type = WeaponHitType.Explosive
-    local original_damage = explosive_data.damage * percent_modifier
-    local damage = original_damage
+        if damage_perks and perks then
 
-    if not args.in_fov then
-        damage = damage * WeaponDamage.FOVDamageModifier
-    end
+            for perk_id, perk_mod_data in pairs(damage_perks) do
+                local choice = perks.unlocked_perks[perk_id]
+                if perk_mod_data[choice] then
+                    perk_mods[choice] = math.max(perk_mods[choice], perk_mod_data[choice])
+                end
+            end
+
+        end
+
+        local radius = explosive_data.radius
+        radius = radius * perk_mods[2]
+
+        local dist = args.position:Distance(args.local_position)
+        local percent_modifier = math.max(0, 1 - dist / radius)
+
+        if percent_modifier == 0 then return end
+
+        local hit_type = WeaponHitType.Explosive
+        local original_damage = explosive_data.damage * percent_modifier
+        local damage = original_damage
+
+        if not args.in_fov then
+            damage = damage * WeaponDamage.FOVDamageModifier
+        end
+
+        damage = damage * WeaponDamage:GetArmorMod(player, hit_type, damage, original_damage) * perk_mods[1]
+
+        self:ApplyDamage({
+            player = player, 
+            damage = damage / 100, 
+            source = args.type, 
+            attacker_id = args.attacker_id
+        })
+
+        Events:Fire("HitDetection/PlayerExplosionItemHit", {
+            player = player,
+            damage = damage,
+            type = args.type
+        })
+
+        sub = Events:Unsubscribe(sub)
+
+    end)
+
+    Events:Fire("GetPlayerPerksById", {steam_id = args.attacker_id})
     
-    damage = damage * WeaponDamage:GetArmorMod(player, hit_type, damage, original_damage)
-
-    self:ApplyDamage({
-        player = player, 
-        damage = damage / 100, 
-        source = args.type, 
-        attacker_id = args.attacker_id
-    })
-
-    Events:Fire("HitDetection/PlayerExplosionItemHit", {
-        player = player,
-        damage = damage,
-        type = args.type
-    })
-
 end
 
 function sHitDetection:ExplosionHit(args, player)
@@ -614,7 +664,7 @@ function sHitDetection:DetectPlayerHit(args, player)
     if player:GetValue("InSafezone") then return end
     if victim:GetValue("InSafezone") then return end
 
-    local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, args.bone_enum, args.distance_travelled)
+    local damage = WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, args.bone_enum, args.distance_travelled, player)
 
     self:ApplyDamage({
         player = victim,
@@ -649,7 +699,7 @@ function sHitDetection:DetectVehicleHit(args, player)
     if player:GetValue("InSafezone") then return end
     if vehicle:GetDriver() and vehicle:GetDriver():GetValue("InSafezone") then return end
 
-    local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, args.distance_travelled)
+    local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, args.distance_travelled, player)
 
     if damage <= 0 then return end
     if vehicle:GetHealth() <= 0 then return end
@@ -685,7 +735,7 @@ function sHitDetection:DetectPlayerSplashHit(args, player)
     if victim:GetValue("InSafezone") then return end
 
     local damage = 
-        WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, BoneEnum.Spine1, args.distance_travelled) * args.damage_falloff
+        WeaponDamage:CalculatePlayerDamage(victim, args.weapon_enum, BoneEnum.Spine1, args.distance_travelled, player) * args.damage_falloff
 
     self:ApplyDamage({
         player = victim,
@@ -721,7 +771,7 @@ function sHitDetection:DetectVehicleSplashHit(args, player)
     if player:GetValue("InSafezone") then return end
     if vehicle:GetDriver() and vehicle:GetDriver():GetValue("InSafezone") then return end
 
-    local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, 0) * args.damage_falloff
+    local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, 0, player) * args.damage_falloff
 
     if damage <= 0 then return end
     if vehicle:GetHealth() <= 0 then return end

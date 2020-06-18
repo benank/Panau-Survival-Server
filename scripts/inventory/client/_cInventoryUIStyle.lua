@@ -3,7 +3,7 @@ class 'cInventoryUIStyle'
 function cInventoryUIStyle:__init()
 
     self.background_alpha = 160
-    self.default_inv_size = 1000 -- 800 px wide for the entire inventory
+    self.default_inv_size = 600
     self.colors = 
     {
         default = 
@@ -34,12 +34,12 @@ function cInventoryUIStyle:__init()
         color = Color(110, 124, 164, 255),
         color_under = Color(110, 124, 164, 120),
         position = Vector2(10, 10),
-        radius = 6
+        radius = math.min(6, Render.Size.y / 180)
     }
 
     self.car_paint_icon = 
     {
-        margin = 5,
+        margin = math.min(5, Render.Size.y / 216),
         border_color = Color.White
     }
 

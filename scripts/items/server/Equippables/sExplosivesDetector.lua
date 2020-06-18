@@ -24,6 +24,12 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
 end)
 
+ExplosivesDetectorPerks = 
+{
+    [57] = {[1] = 0.75},
+    [116] = {[1] = 0.5}
+}
+
 Timer.SetInterval(5000, function()
 
     for p in Server:GetPlayers() do
@@ -31,7 +37,17 @@ Timer.SetInterval(5000, function()
             local item = GetEquippedItem("Explosives Detector", p)
             if item then
 
-                item.durability = item.durability - dura_data.dura_per_sec
+                local perks = p:GetValue("Perks")
+                local perk_modifier = 1
+
+                for perk_id, perk_data in pairs(ExplosivesDetectorPerks) do
+                    local choice = perks.unlocked_perks[perk_id]
+                    if choice and perk_data[choice] then
+                        perk_modifier = math.min(perk_modifier, perk_data[choice])
+                    end
+                end
+
+                item.durability = item.durability - math.min(1, math.floor(dura_data.dura_per_sec * perk_modifier))
                 Inventory.ModifyDurability({
                     player = p,
                     item = item

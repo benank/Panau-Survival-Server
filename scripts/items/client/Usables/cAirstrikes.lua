@@ -81,8 +81,23 @@ end
 
 function cAirstrikes:StartAirstrikePlacement(args)
 
+    local perks = LocalPlayer:GetValue("Perks")
+    local radius_modifier = 1
+    local possible_perks = AirstrikePerks[args.name]
+
+    if args.name ~= "Area Bombing" then
+        for perk_id, perk_mod_data in pairs(possible_perks) do
+            local choice = perks.unlocked_perks[perk_id]
+            if perk_mod_data[choice] then
+                radius_modifier = math.max(radius_modifier, perk_mod_data[choice])
+            end
+        end
+    end
+
+    local radius = ItemsConfig.airstrikes[args.name].radius * radius_modifier
+
     Events:Fire(var("build/StartAirstrikePlacement"):get(), {
-        radius = ItemsConfig.airstrikes[args.name].radius
+        radius = radius
     })
 
     self.place_subs = 

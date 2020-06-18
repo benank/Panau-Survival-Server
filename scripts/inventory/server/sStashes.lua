@@ -12,7 +12,7 @@ function sStashes:__init()
     Network:Subscribe("Stashes/Dismount", self, self.DismountStash)
     Network:Subscribe("Stashes/UpdateStashAccessMode", self, self.UpdateStashAccessMode)
 
-    Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated)
+    Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("Items/PlaceProximityAlarm", self, self.PlaceProximityAlarm)
     Events:Subscribe("Inventory/ModifyStashStackRemote", self, self.ModifyStashStackRemote)
     Events:Subscribe("items/DestroyProximityAlarm", self, self.DestroyProximityAlarm)
@@ -205,15 +205,35 @@ function sStashes:PlaceProximityAlarm(args)
     self:PlaceStash(args.position, args.angle, Lootbox.Types.ProximityAlarm, args.player)
 end
 
-function sStashes:PlayerLevelUpdated(args)
+function sStashes:PlayerPerksUpdated(args)
+    local perks = args.player:GetValue("Perks")
     local old_max_stashes = args.player:GetValue("MaxStashes")
-    local new_max_stashes = GetMaxFromLevel(args.player:GetValue("Exp").level, Stashes_Per_Level)
+    
+    local new_max_stashes = self:GetPlayerMaxStashes(args.player)
 
-    if old_max_stashes ~= new_max_stashes then
+    if old_max_stashes ~= new_max_stashes and old_max_stashes then
         Chat:Send(args.player, string.format("You can place up to %d stashes!", new_max_stashes), Color(0, 255, 255))
     end
 
     args.player:SetNetworkValue("MaxStashes", new_max_stashes)
+end
+
+function sStashes:GetPlayerMaxStashes(player)
+
+    local perks = player:GetValue("Perks")
+
+    if not perks then return 0 end
+
+    local new_max_stashes = Initial_Stash_Amount
+
+    for perk_id, bonus in pairs(Stashes_Per_Perk) do
+        if perks.unlocked_perks[perk_id] then
+            new_max_stashes = new_max_stashes + bonus
+        end
+    end
+
+    return new_max_stashes
+
 end
 
 function sStashes:DismountStash(args, player)
@@ -302,7 +322,7 @@ end
 
 function sStashes:ClientModuleLoad(args)
 
-    args.player:SetNetworkValue("MaxStashes", GetMaxFromLevel(args.player:GetValue("Exp").level, Stashes_Per_Level))
+    args.player:SetNetworkValue("MaxStashes", self:GetPlayerMaxStashes(args.player))
     
     local player_stashes = {}
     local steam_id = tostring(args.player:GetSteamId())

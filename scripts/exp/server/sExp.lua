@@ -423,6 +423,9 @@ function sExp:ClientModuleLoad(args)
 
     args.player:SetValue("ExpLastUpdate", Server:GetElapsedSeconds())
 
+    -- Call sPerks after loading exp
+    sPerks:ClientModuleLoad(args)
+
 end
 
 sExp = sExp()

@@ -14,5 +14,10 @@ WorkBenchConfig =
     max_items_at_once = 3, -- How many items can be put in the workbench at once
     maximum_durability = 5, -- Max durability is 5x normal
     durability_bonus = 0.1, -- x% durability bonus upon one finished combination
-    time_to_combine = 45 -- Combined durability / max_durability * time_to_combine = seconds it takes to combine
+    use_perk_req = 12, -- Perk required to use workbenches
+    perks = -- Perks that decrease combine time
+    {
+        [70] = 1 - 0.25,
+        [106] = 1 - 0.5
+    }
 }

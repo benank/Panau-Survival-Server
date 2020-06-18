@@ -61,7 +61,6 @@ Timer.SetInterval(1000, function()
             if IsValid(item_hits.player) then
                 local item = item_hits.item
 
-                print("update")
                 item.durability = item.durability - item_hits.dura
                 Inventory.ModifyDurability({
                     player = item_hits.player,

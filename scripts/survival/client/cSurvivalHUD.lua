@@ -2,20 +2,22 @@ class 'cSurvivalHUD'
 
 function cSurvivalHUD:__init()
 
-    self.small_element_size = Vector2(140, 12)
-    self.large_element_size = Vector2(300, 18)
+    local conversion = Render.Size.y / 1080
 
-    self.start_pos = Vector2(Render.Size.x - 14, 50)
+    self.small_element_size = conversion * Vector2(140, 12)
+    self.large_element_size = conversion * Vector2(300, 18)
+
+    self.start_pos = Vector2(Render.Size.x - 20 * conversion, 60 * conversion)
     self.small_margin = 10
     self.window_color = Color(0, 0, 0, 150)
-    self.window_margin = Vector2(6, 6)
-    self.border_size = Vector2(2,2)
+    self.window_margin = conversion * Vector2(6, 6)
+    self.border_size = conversion * Vector2(2,2)
     self.border_color = Color(200, 200, 200)
 
-    self.HealthIndex = 1
-    self.FoodIndex = 2
-    self.WaterIndex = 3
-    self.LevelIndex = 5
+    self.LevelIndex = 1
+    self.HealthIndex = 2
+    self.FoodIndex = 3
+    self.WaterIndex = 4
     self.SeparatorIndex = 5
     self.HelmetIndex = 6
     self.VestIndex = 7
@@ -23,9 +25,21 @@ function cSurvivalHUD:__init()
     self.hud_elements = 
     {
         cSurvivalHUDElement({
+            name = "Level",
+            percent = 0.5,
+            percent2 = 0.5,
+            color = Color(255, 26, 0), -- Combat
+            color2 = Color(23, 97, 226), -- Exploration
+            dual = true,
+            level = true,
+            small_size = self.small_element_size,
+            large_size = self.large_element_size,
+            visible = true
+        }),
+        cSurvivalHUDElement({
             name = "Health",
             percent = 0.75,
-            color = Color(155, 157, 11),
+            color = Color(223, 153, 0),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
@@ -41,19 +55,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Water",
             percent = 0.25,
-            color = Color(46, 13, 161),
-            small_size = self.small_element_size,
-            large_size = self.large_element_size,
-            visible = true
-        }),
-        cSurvivalHUDElement({
-            name = "Level",
-            percent = 0.5,
-            percent2 = 0.5,
-            color = Color(170, 36, 35), -- Combat
-            color2 = Color(35, 139, 170), -- Exploration
-            dual = true,
-            level = true,
+            color = Color(23, 97, 226),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
