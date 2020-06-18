@@ -28,8 +28,8 @@ function cSurvivalHUD:__init()
             name = "Level",
             percent = 0.5,
             percent2 = 0.5,
-            color = Color(170, 36, 35), -- Combat
-            color2 = Color(35, 139, 170), -- Exploration
+            color = Color(255, 26, 0), -- Combat
+            color2 = Color(23, 97, 226), -- Exploration
             dual = true,
             level = true,
             small_size = self.small_element_size,
@@ -39,7 +39,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Health",
             percent = 0.75,
-            color = Color(155, 157, 11),
+            color = Color(223, 153, 0),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
@@ -55,7 +55,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Water",
             percent = 0.25,
-            color = Color(46, 13, 161),
+            color = Color(23, 97, 226),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
