@@ -608,7 +608,7 @@ ExpPerks =
         cost = 1,
         id = 59,
         position = 61,
-        enabled = false
+        enabled = true
     },
     {
         name = "Shotgun",
@@ -918,7 +918,7 @@ ExpPerks =
         cost = 1,
         id = 90,
         position = 92,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
@@ -1678,7 +1678,7 @@ ExpPerks =
         cost = 2,
         id = 163,
         position = 168,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
@@ -2058,7 +2058,7 @@ ExpPerks =
         cost = 3,
         id = 200,
         position = 206,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",
@@ -2308,7 +2308,7 @@ ExpPerks =
         cost = 4,
         id = 225,
         position = 231,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
