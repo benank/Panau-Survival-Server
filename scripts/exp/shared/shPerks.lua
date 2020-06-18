@@ -288,7 +288,7 @@ ExpPerks =
         cost = 2,
         id = 29,
         position = 29,
-        enabled = true
+        enabled = false
     },
     {
         name = "Inventory",
@@ -438,7 +438,7 @@ ExpPerks =
         cost = 1,
         id = 43,
         position = 44,
-        enabled = false
+        enabled = true
     },
     {
         name = "SMG",
@@ -908,7 +908,7 @@ ExpPerks =
         cost = 2,
         id = 89,
         position = 91,
-        enabled = false
+        enabled = true
     },
     {
         name = "Hunger and Thirst",
@@ -1328,7 +1328,7 @@ ExpPerks =
         cost = 2,
         id = 130,
         position = 133,
-        enabled = false
+        enabled = true
     },
     {
         name = "Cruise Missile",

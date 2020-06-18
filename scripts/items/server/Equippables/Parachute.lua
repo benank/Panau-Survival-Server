@@ -31,7 +31,14 @@ Events:Subscribe("SecondTick", function()
     end
 end)
 
-Timer.SetInterval(3000, function()
+local parachute_perks =
+{
+    [43] = 0.9,
+    [89] = 0.75,
+    [130] = 0.5
+}
+
+Timer.SetInterval(5000, function()
 
     for player in Server:GetPlayers() do
 
@@ -41,7 +48,17 @@ Timer.SetInterval(3000, function()
             if parachuting_value and parachuting_value > 0 then
                 local item = GetEquippedItem("Parachute", player)
                 if not item then return end
-                item.durability = item.durability - parachuting_value
+
+                local perks = player:GetValue("Perks")
+                local perk_mod = 1
+
+                for perk_id, dura_mod in pairs(parachute_perks) do
+                    if perks.unlocked_perks[perk_id] then
+                        perk_mod = math.min(perk_mod, dura_mod)
+                    end
+                end
+
+                item.durability = item.durability - math.max(1, math.floor(parachuting_value * perk_mod))
                 Inventory.ModifyDurability({
                     player = player,
                     item = item
