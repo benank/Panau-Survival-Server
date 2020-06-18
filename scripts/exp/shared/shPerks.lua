@@ -8,7 +8,7 @@ ExpPerks =
         cost = 1,
         id = 1,
         position = 1,
-        enabled = false
+        enabled = true
     },
     {
         name = "Claymore",
@@ -18,7 +18,7 @@ ExpPerks =
         cost = 1,
         id = 2,
         position = 2,
-        enabled = false
+        enabled = true
     },
     {
         name = "Explosives Detector",
@@ -48,7 +48,7 @@ ExpPerks =
         cost = 1,
         id = 5,
         position = 5,
-        enabled = false
+        enabled = true
     },
     {
         name = "EVAC",
@@ -58,7 +58,7 @@ ExpPerks =
         cost = 1,
         id = 6,
         position = 6,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",
@@ -88,7 +88,7 @@ ExpPerks =
         cost = 1,
         id = 9,
         position = 9,
-        enabled = false
+        enabled = true
     },
     {
         name = "Backpack",
@@ -128,7 +128,7 @@ ExpPerks =
         cost = 1,
         id = 13,
         position = 13,
-        enabled = false
+        enabled = true
     },
     {
         name = "Molotov",
@@ -138,7 +138,7 @@ ExpPerks =
         cost = 1,
         id = 14,
         position = 14,
-        enabled = false
+        enabled = true
     },
     {
         name = "Sniper Rifle",
@@ -148,7 +148,7 @@ ExpPerks =
         cost = 1,
         id = 15,
         position = 15,
-        enabled = false
+        enabled = true
     },
     {
         name = "Hacker",
@@ -158,7 +158,7 @@ ExpPerks =
         cost = 1,
         id = 16,
         position = 16,
-        enabled = false
+        enabled = true
     },
     {
         name = "Police Helmet",
@@ -168,7 +168,7 @@ ExpPerks =
         cost = 1,
         id = 17,
         position = 17,
-        enabled = false
+        enabled = true
     },
     {
         name = "Bandages",
@@ -238,7 +238,7 @@ ExpPerks =
         cost = 2,
         id = 24,
         position = 24,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",
@@ -278,7 +278,7 @@ ExpPerks =
         cost = 2,
         id = 28,
         position = 28,
-        enabled = false
+        enabled = true
     },
     {
         name = "RocketGrapple",
@@ -288,7 +288,7 @@ ExpPerks =
         cost = 2,
         id = 29,
         position = 29,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
@@ -318,7 +318,7 @@ ExpPerks =
         cost = 2,
         id = 30,
         position = 32,
-        enabled = false
+        enabled = true
     },
     {
         name = "SMG",
@@ -498,7 +498,7 @@ ExpPerks =
         cost = 2,
         id = 45,
         position = 50,
-        enabled = false
+        enabled = true
     },
     {
         name = "Sniper Rifle",
@@ -528,7 +528,7 @@ ExpPerks =
         cost = 2,
         id = 54,
         position = 53,
-        enabled = false
+        enabled = true
     },
     {
         name = "Machine Gun",
@@ -538,7 +538,7 @@ ExpPerks =
         cost = 3,
         id = 50,
         position = 54,
-        enabled = false
+        enabled = true
     },
     {
         name = "SMG",
@@ -568,7 +568,7 @@ ExpPerks =
         cost = 3,
         id = 55,
         position = 57,
-        enabled = false
+        enabled = true
     },
     {
         name = "C4",
@@ -648,7 +648,7 @@ ExpPerks =
         cost = 3,
         id = 61,
         position = 65,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",
@@ -688,7 +688,7 @@ ExpPerks =
         cost = 6,
         id = 65,
         position = 69,
-        enabled = false
+        enabled = true
     },
     {
         name = "Assault Rifle",
@@ -758,7 +758,7 @@ ExpPerks =
         cost = 2,
         id = 75,
         position = 76,
-        enabled = false
+        enabled = true
     },
     {
         name = "LandClaim",
@@ -1058,7 +1058,7 @@ ExpPerks =
         cost = 2,
         id = 104,
         position = 106,
-        enabled = false
+        enabled = true
     },
     {
         name = "RocketGrapple",
