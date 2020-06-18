@@ -73,7 +73,7 @@ function cNitro:ToggleEquipped(args)
         self.lpi = Events:Unsubscribe(self.lpi)
     end
 
-    if not self.equipped and LocalPlayer:InVehicle() and self.boosting then
+    if not self.equipped and LocalPlayer:InVehicle() then
         
         Network:Send("items/DeactivateNitro", {
             id = LocalPlayer:GetVehicle():GetId()
