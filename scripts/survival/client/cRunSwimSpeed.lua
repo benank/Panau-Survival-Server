@@ -35,11 +35,15 @@ function cRunSwimSpeed:GetPerkMods()
 
     local perks = LocalPlayer:GetValue("Perks")
 
-    for perk_id, perk_mod_data in pairs(self.perks) do
-        local choice = perks.unlocked_perks[perk_id]
-        if choice and perk_mod_data[choice] then
-            perk_mods[choice] = perk_mods[choice] + perk_mod_data[choice]
+    if perks then
+
+        for perk_id, perk_mod_data in pairs(self.perks) do
+            local choice = perks.unlocked_perks[perk_id]
+            if choice and perk_mod_data[choice] then
+                perk_mods[choice] = perk_mods[choice] + perk_mod_data[choice]
+            end
         end
+
     end
 
     return perk_mods
