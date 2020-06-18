@@ -2,7 +2,32 @@ class 'sEvac'
 
 function sEvac:__init()
 
+    self.perks = 
+    {
+        [123] = {[1] = 0.1},
+        [186] = {[1] = 0.2}
+    }
+
     Network:Subscribe("items/CompleteItemUsage", self, self.UseItem)
+
+end
+
+function sEvac:GetPerkMods(player)
+
+    local perks = player:GetValue("Perks")
+
+    if not perks then return end
+
+    local perk_mods = {[1] = 0}
+
+    for perk_id, perk_mod_data in pairs(self.perks) do
+        local choice = perks.unlocked_perks[perk_id]
+        if choice and perk_mod_data[choice] then
+            perk_mods[choice] = math.max(perk_mods[choice], perk_mod_data[choice])
+        end
+    end
+
+    return perk_mods
 
 end
 
@@ -27,11 +52,21 @@ function sEvac:UseItem(args, player)
             return
         end
 
-        Inventory.RemoveItem({
-            item = player_iu.item,
-            index = player_iu.index,
-            player = player
-        })
+        local perk_mods = self:GetPerkMods(player)
+
+        local chance_to_keep = math.random()
+
+        if chance_to_keep <= perk_mods[1] then
+            Chat:Send(player, "Your EVAC was kept after using it, thanks to your perks!", Color(0, 220, 0))
+        else
+
+            Inventory.RemoveItem({
+                item = player_iu.item,
+                index = player_iu.index,
+                player = player
+            })
+
+        end
 
         local target_pos = Vector3(
             math.clamp(args.waypoint.x, -16384, 16384),

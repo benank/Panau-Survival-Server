@@ -1258,7 +1258,7 @@ ExpPerks =
         cost = 2,
         id = 123,
         position = 126,
-        enabled = false
+        enabled = true
     },
     {
         name = "Player Movement",
@@ -1918,7 +1918,7 @@ ExpPerks =
         cost = 3,
         id = 186,
         position = 192,
-        enabled = false
+        enabled = true
     },
     {
         name = "Machine Gun",
