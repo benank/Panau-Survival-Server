@@ -101,9 +101,6 @@ function Player:GetVehicle() if not v(self) then return end return PlayerGetVehi
 PlayerGiveWeapon = Player.GiveWeapon
 function Player:GiveWeapon(number, weapon) if not v(self) then return end return PlayerGiveWeapon(self,number, weapon) end
 
-PlayerInVehicle = Player.InVehicle
-function Player:InVehicle() if not v(self) then return end PlayerInVehicle(self) end
-
 PlayerKick = Player.Kick
 function Player:Kick(reason) if not v(self) then return end return PlayerKick(self, reason) end
 

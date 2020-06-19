@@ -203,7 +203,7 @@ Items =
     {
         name = "Nitro",
         category = "Supplies",
-        stacklimit = 10,
+        stacklimit = 5,
         can_equip = true,
         equip_type = "nitro",
         durable = true,
@@ -290,7 +290,7 @@ Items =
     {
         name = "C4",
         category = "Explosives",
-        stacklimit = 1,
+        stacklimit = 2,
         can_use = true,
         can_stack = true,
         non_persistent_custom_data = true
@@ -615,15 +615,6 @@ Items =
         durable = true,
         max_durability = 1000,
         equip_type = "weapon_2h"
-    },
-    {
-        name = "SMRT-GRP",
-        category = "Supplies",
-        stacklimit = 2,
-        can_equip = true,
-        durable = true,
-        max_durability = 500,
-        equip_type = "grapple_upgrade"
     },
     {
         name = "Wingsuit",

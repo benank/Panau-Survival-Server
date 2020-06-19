@@ -162,8 +162,18 @@ end
 
 function shItem:ToString()
 
-    return self.name .. " [x" .. self.amount .. "] "
+    local msg = self.name .. " [x" .. self.amount .. "] "
     .. "SL: " .. self.stacklimit .. " Dura: " .. tostring(self.durability) .. "/" .. tostring(self.max_durability)
+
+    if count_table(self.custom_data) > 0 then
+        msg = msg .. " "
+        for key, value in pairs(self.custom_data) do
+            msg = msg .. tostring(key) .. ": " .. tostring(value) .. " "
+        end
+    end
+
+    return msg
+
 end
 
 function concat_bool(b)

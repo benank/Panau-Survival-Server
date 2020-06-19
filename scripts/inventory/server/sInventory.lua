@@ -11,6 +11,8 @@ function sInventory:__init(player)
     self.initial_sync = false
     self.steamID = tostring(player:GetSteamId().id)
     self.operation_block = 0 -- Increment/decrement this to disable inventory operations
+
+    self.backpack_slots = {}
     
     self.events = {}
     self.network_events = {}
@@ -36,7 +38,7 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.ToggleBackpackEquipped-" .. self.steamID, self, self.ToggleBackpackEquipped))
 
     table.insert(self.events, Events:Subscribe("PlayerKilled", self, self.PlayerKilled))
-    table.insert(self.events, Events:Subscribe("PlayerLevelUpdated", self, self.PlayerLevelUpdated))
+    table.insert(self.events, Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated))
 
     table.insert(self.network_events, Network:Subscribe("Inventory/Shift" .. self.steamID, self, self.ShiftStack))
     table.insert(self.network_events, Network:Subscribe("Inventory/ToggleEquipped" .. self.steamID, self, self.ToggleEquipped))
@@ -59,7 +61,9 @@ function sInventory:Load()
         self.slots[cat_info.name] = {default = cat_info.slots, level = 0, backpack = 0}
     end
 
-    self:UpdateNumSlotsBasedOnLevel()
+    if self.player:GetValue("Perks") then
+        self:UpdateNumSlotsBasedOnPerks()
+    end
 
 	local query = SQL:Query("SELECT contents FROM inventory WHERE steamID = (?) LIMIT 1")
     query:Bind(1, self.steamID)
@@ -103,11 +107,11 @@ function sInventory:Load()
 
 end
 
-function sInventory:PlayerLevelUpdated(args)
+function sInventory:PlayerPerksUpdated(args)
     if args.player ~= self.player then return end
 
     local old_slots = deepcopy(self.slots)
-    self:UpdateNumSlotsBasedOnLevel()
+    self:UpdateNumSlotsBasedOnPerks()
     self:Sync({sync_slots = true})
 
     for cat_name, slot_data in pairs(self.slots) do
@@ -119,21 +123,12 @@ function sInventory:PlayerLevelUpdated(args)
 end
 
 -- Updates the number of slots in each category based on level
-function sInventory:UpdateNumSlotsBasedOnLevel()
+function sInventory:UpdateNumSlotsBasedOnPerks()
 
-    if not self.player:GetValue("Exp") then
-        Timer.SetTimeout(500, function()
-            if IsValid(self.player) then
-                self:UpdateNumSlotsBasedOnLevel()
-            end
-        end)
-        return
-    end
-
-    local level = self.player:GetValue("Exp").level
+    local perks = self.player:GetValue("Perks")
 
     for cat_name, slot_data in pairs(self.slots) do
-        self.slots[cat_name].level = GetNumSlotsInCategoryFromLevel(cat_name, level)
+        self.slots[cat_name].level = GetNumSlotsInCategoryFromPerks(cat_name, perks.unlocked_perks)
     end
 
 end
@@ -222,25 +217,32 @@ function sInventory:ToggleBackpackEquipped(args)
     if not args.equipped then
         -- Unequipped backpack
         -- Delay in case they are equipping another backpack at the same time
-        --Timer.SetTimeout(500, function()
         for cat, slots_to_add in pairs(args.slots) do
             self.slots[cat].backpack = self.slots[cat].backpack - slots_to_add
         end
 
-            -- No need to check for overflow here because sync does it
-
         if not args.no_sync then
             self:Sync({sync_slots = true})
         end
-        --end)
+
+        self.backpack_slots[args.name] = nil
 
     else
+
+        -- If they already have it equipped, remove existing slots
+        if self.backpack_slots[args.name] then
+            for cat, slots_to_add in pairs(self.backpack_slots[args.name]) do
+                self.slots[cat].backpack = self.slots[cat].backpack - slots_to_add
+            end
+        end
+
+        self.backpack_slots[args.name] = args.slots
 
         for cat, slots_to_add in pairs(args.slots) do
             self.slots[cat].backpack = self.slots[cat].backpack + slots_to_add
         end
 
-        --self:Sync({sync_slots = true})
+        self:Sync({sync_slots = true})
 
     end
 
@@ -257,12 +259,47 @@ function sInventory:ShiftStack(args, player)
 
 end
 
+function sInventory:CanUseOrEquipItem(item)
+
+    if not ITEM_UNLOCKS_ENABLED then return true end
+
+    local perk_required = Item_Unlocks[item.name]
+    local name = item.name
+
+    if item.name == "EVAC" and count_table(item.custom_data) > 0 then
+        name = "Secret EVAC"
+        perk_required = Item_Unlocks[name]
+    end
+
+    if perk_required then
+
+        local perks = self.player:GetValue("Perks")
+
+        if not perks then return false end
+
+        if perks.unlocked_perks[perk_required] then
+            return true 
+        else
+            local perks_by_id = SharedObject.GetByName("ExpPerksById"):GetValue("Perks")
+            Chat:Send(self.player, string.format("%s requires perk #%d. Hit F2 to open the perks menu.", 
+            name, perks_by_id[perk_required].position), Color.Red)
+            return false
+        end
+
+    end
+
+    return true
+
+end
+
 function sInventory:ToggleEquipped(args, player)
 
     if not self:CanPlayerPerformOperations(player) then return end
     if not args.index or not args.cat then return end
     if not self.contents[args.cat] or not self.contents[args.cat][args.index] then return end
     if not self.contents[args.cat][args.index]:GetProperty("can_equip") then return end
+
+    if not self:CanUseOrEquipItem(self.contents[args.cat][args.index].contents[1]) then return end
 
     local uid = self.contents[args.cat][args.index].uid
     local item_uid = self.contents[args.cat][args.index].contents[1].uid
@@ -435,6 +472,8 @@ function sInventory:UseItem(args, player)
     if not args.index or not args.cat then return end
     if not self.contents[args.cat] or not self.contents[args.cat][args.index] then return end
     if not self.contents[args.cat][args.index]:GetProperty("can_use") then return end
+
+    if not self:CanUseOrEquipItem(self.contents[args.cat][args.index].contents[1]) then return end
 
     local copy = self.contents[args.cat][args.index].contents[1]:Copy()
     copy.amount = 1

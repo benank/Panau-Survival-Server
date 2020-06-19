@@ -2,42 +2,46 @@
 local slot_amounts = 
 {
     ["Survival"] = {
-        [0] = 0,
-        [12] = 1,
-        [28] = 2,
-        [40] = 3,
-        [52] = 4
+        [46] = 1,
+        [91] = 1,
+        [135] = 1,
+        [164] = 1,
     },
     ["Supplies"] = {
-        [0] = 0,
-        [9] = 1,
-        [21] = 2,
-        [33] = 3,
-        [45] = 4
+        [31] = 1,
+        [86] = 1,
+        [128] = 1,
+        [158] = 1,
     },
     ["Explosives"] = {
-        [0] = 0,
-        [6] = 1,
-        [18] = 2,
-        [30] = 3,
-        [42] = 4
+        [20] = 1,
+        [72] = 1,
+        [119] = 1,
+        [151] = 1,
     },
     ["Weapons"] = {
-        [0] = 0,
-        [3] = 1,
-        [15] = 2,
-        [27] = 3,
-        [39] = 4
+        [4] = 1,
+        [62] = 1,
+        [107] = 1,
+        [141] = 1,
     }
 }
 
-function GetNumSlotsInCategoryFromLevel(category, level)
+function GetNumSlotsInCategoryFromPerks(category, perks)
     if not slot_amounts[category] then
         print(string.format("Category %s not found in GetNumSlotsInCategory", category))
         return 0
     end
 
-    return GetMaxFromLevel(level, slot_amounts[category])
+    local amount = 0
+
+    for id, perk in pairs(perks) do
+        if slot_amounts[category][id] then
+            amount = amount + slot_amounts[category][id]
+        end
+    end
+
+    return amount
 end
 
 -- Amount of slots dropped on death per level
@@ -62,11 +66,7 @@ local drop_slot_amounts =
     [39] = 16,
     [42] = 17,
     [45] = 18,
-    [48] = 19,
-    [51] = 20,
-    [54] = 21,
-    [57] = 22,
-    [60] = 23
+    [48] = 19
 }
 
 function GetNumSlotsDroppedOnDeath(level)
