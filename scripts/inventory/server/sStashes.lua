@@ -303,6 +303,7 @@ function sStashes:RenameStash(args, player)
     if not stash_instance then return end
 
     stash_instance:ChangeName(args.name, player)
+
 end
 
 function sStashes:DiscordMessageWithContents(message, contents)
@@ -341,6 +342,9 @@ function sStashes:ClientModuleLoad(args)
 end
 
 function sStashes:SyncStashesToPlayer(player)
+    for k, v in pairs(player:GetValue("Stashes")) do
+        output_table(v)
+    end
     Network:Send(player, "Stashes/SyncMyStashes", player:GetValue("Stashes"))
 end
 
