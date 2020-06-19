@@ -175,7 +175,7 @@ function sPerks:GetPlayerPerks(args)
     
     local result = query:Execute()
 
-    local perk_data = {}
+    local perk_data = {points = 0, unlocked_perks = {}}
     
     if #result > 0 then -- if already in DB
         
