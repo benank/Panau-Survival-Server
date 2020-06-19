@@ -96,6 +96,8 @@ function EquippableGrapplehook:HandleGrapplehookSpeedPerks()
 
     if perk_speed_mod == 1 then return end -- No speed mods
 
+    local base_state = LocalPlayer:GetBaseState()
+
     local parachuting = base_state == AnimationState.SParachute
 
     local cam_pos = Camera:GetPosition()
