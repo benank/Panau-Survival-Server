@@ -1,5 +1,7 @@
 class 'cDroneManager'
 
+DRONE_SPEED = 10
+
 function cDroneManager:__init()
 
     self.drones = {}
@@ -18,12 +20,21 @@ function cDroneManager:PostTick(args)
     for _, drone in pairs(self.drones) do
         drone:PostTick(args)
 
-        drone.target_position = LocalPlayer:GetPosition() + Vector3.Up * 5 + Vector3.Left * 15
+        drone.target_position = LocalPlayer:GetPosition() + Vector3.Up * 4 + Vector3.Left * 10
 
         local angle = Angle.FromVectors(Vector3.Forward, local_pos - drone.position)
         angle.roll = 0
-        drone:SetPosition(math.lerp(drone.position, drone.target_position, 2 * args.delta))
-        drone:SetAngle(Angle.Slerp(drone.angle, angle, 0.5))
+
+        local dir = drone.target_position - drone.position
+        local velo = dir:Length() > 1 and ((dir):Normalized() * DRONE_SPEED) or Vector3.Zero
+
+        drone:SetLinearVelocity(math.lerp(drone.velocity, velo, 0.01))
+
+        drone:SetAngle(Angle.Slerp(drone.angle, angle, 0.05))
+
+        if math.random() < 0.05 then
+            drone.body:CreateShootingEffect(math.random() > 0.5 and DroneBodyPiece.LeftGun or DroneBodyPiece.RightGun)
+        end
     end
 
 end

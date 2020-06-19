@@ -1,4 +1,3 @@
--- effect id 41 for engine
 -- 46 destruction
 -- 50 for muzzle flash
 -- 53 rocket launcher
@@ -6,3 +5,89 @@
 -- 5 for missile explosion
 -- 151 for on fire
 -- 167 for smoking
+
+drone going down sound
+local sound = ClientSound.Create(AssetLocation.Game, {
+			bank_id = 6,
+			sound_id = 8,
+			position = LocalPlayer:GetPosition(),
+			angle = Angle()
+})
+
+sound:SetParameter(0,0.75)
+sound:SetParameter(1,-180)
+
+
+-- be on the lookout for suspicious activity
+local sound = ClientSound.Create(AssetLocation.Game, {
+			bank_id = 40,
+			sound_id = 86,
+			position = LocalPlayer:GetPosition(),
+			angle = Angle()
+})
+
+sound:SetParameter(0,0.75)
+sound:SetParameter(1,0)
+
+
+-- intruder alert
+local sound = ClientSound.Create(AssetLocation.Game, {
+			bank_id = 40,
+			sound_id = 81,
+			position = LocalPlayer:GetPosition(),
+			angle = Angle()
+})
+
+sound:SetParameter(0,0.75)
+sound:SetParameter(1,0)
+
+
+-- enemy prescense within the area
+local sound = ClientSound.Create(AssetLocation.Game, {
+			bank_id = 40,
+			sound_id = 80,
+			position = LocalPlayer:GetPosition(),
+			angle = Angle()
+})
+
+sound:SetParameter(0,0.75)
+sound:SetParameter(1,0)
+
+
+-- trespasser in the area
+local sound = ClientSound.Create(AssetLocation.Game, {
+			bank_id = 40,
+			sound_id = 72,
+			position = LocalPlayer:GetPosition(),
+			angle = Angle()
+})
+
+sound:SetParameter(0,0.75)
+sound:SetParameter(1,0)
+
+
+
+-- intruder alert
+local sound = ClientSound.Create(AssetLocation.Game, {
+			bank_id = 40,
+			sound_id = 71,
+			position = LocalPlayer:GetPosition(),
+			angle = Angle()
+})
+
+sound:SetParameter(0,0.75)
+sound:SetParameter(1,0)
+
+
+-- hostile has been spotted, locate and kill
+local sound = ClientSound.Create(AssetLocation.Game, {
+			bank_id = 40,
+			sound_id = 69,
+			position = LocalPlayer:GetPosition(),
+			angle = Angle()
+})
+
+sound:SetParameter(0,0.75)
+sound:SetParameter(1,0)
+
+
