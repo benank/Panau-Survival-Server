@@ -169,7 +169,8 @@ function sStashes:DestroyProximityAlarm(args)
 
     if not stash_instance then return end
 
-    if stash_instance.owner_id ~= tostring(args.player:GetSteamId()) then
+    if stash_instance.owner_id ~= tostring(args.player:GetSteamId())
+    and args.give_exp then
         Events:Fire("Stashes/DestroyStash", {
             tier = stash_instance.lootbox.tier,
             player = args.player
@@ -303,6 +304,7 @@ function sStashes:RenameStash(args, player)
     if not stash_instance then return end
 
     stash_instance:ChangeName(args.name, player)
+
 end
 
 function sStashes:DiscordMessageWithContents(message, contents)

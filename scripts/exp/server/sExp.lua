@@ -185,6 +185,9 @@ function sExp:AwardExpToKillerOnKill(args)
 
     if not exp_earned or exp_earned == 0 then return end
 
+    if args.player:GetValue("RespawnerLastSet") and 
+    Server:GetElapsedSeconds() - args.player:GetValue("RespawnerLastSet") < 60 * 60 then return end
+
     local killed_exp = args.player:GetValue("Exp")
     
     local expire_time = self.recent_killers[player_id]
@@ -214,6 +217,14 @@ function sExp:AwardExpToKillerOnKill(args)
             break
         end
     end
+
+    if IsValid(killer) then
+
+        if killer:GetValue("RespawnerLastSet") and 
+        Server:GetElapsedSeconds() - killer:GetValue("RespawnerLastSet") < 60 * 60 then return end
+
+    end
+
 
     local killer_exp = {}
 
