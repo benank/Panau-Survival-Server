@@ -285,7 +285,7 @@ function sSpawnManager:PlayerSpawn(args)
 		if pos:Distance(target_pos) > 1000 then
 			Events:Fire("Discord", {
 				channel = "Errors",
-				content = string.format("%s [%s] was more than 500m away from their spawn position 1km 10s after spawning",
+				content = string.format("%s [%s] was more than 1km away from their spawn position 10s after spawning",
 					args.player:GetName(), tostring(args.player:GetSteamId()))
 			})
 		end
