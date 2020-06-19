@@ -342,9 +342,6 @@ function sStashes:ClientModuleLoad(args)
 end
 
 function sStashes:SyncStashesToPlayer(player)
-    for k, v in pairs(player:GetValue("Stashes")) do
-        output_table(v)
-    end
     Network:Send(player, "Stashes/SyncMyStashes", player:GetValue("Stashes"))
 end
 
