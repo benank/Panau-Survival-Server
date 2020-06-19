@@ -248,16 +248,49 @@ end
 function sSpawnManager:PlayerSpawn(args)
     args.player:SetValue("Spawn/KilledRecently", false)
     
-    if args.player:GetValue("SecondLifeActive") then return end
+	if args.player:GetValue("SecondLifeActive") then return end
+	
+	local target_pos
 
     if args.player:GetValue("FirstSpawn") then
-        args.player:SetPosition(self:GetRespawnPosition(args.player))
+        target_pos = self:GetRespawnPosition(args.player)
     else
-        args.player:SetPosition(args.player:GetValue("SpawnPosition"))
-    end
+        target_pos = args.player:GetValue("SpawnPosition")
+	end
+	
+	args.player:SetPosition(target_pos)
 
     args.player:SetValue("FirstSpawn", true)
     args.player:SetHealth(1)
+
+	local pos = args.player:GetPosition()
+	local s_pos = args.player:GetValue("SpawnPosition")
+
+	Events:Fire("Discord", {
+		channel = "Positions",
+		content = string.format("%s [%s] spawned at X: %.4f Y: %.4f Z: %.4f\nSpawn pos: X: %.4f Y: %.4f Z: %.4f",
+			args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, target_pos.x, target_pos.y, target_pos.z)
+	})
+
+	Timer.SetTimeout(10 * 1000, function()
+		if not IsValid(args.player) then return end
+		pos = args.player:GetPosition()
+
+		Events:Fire("Discord", {
+			channel = "Positions",
+			content = string.format("%s [%s] position 10s after spawning X: %.4f Y: %.4f Z: %.4f\nSpawn pos: X: %.4f Y: %.4f Z: %.4f",
+				args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, target_pos.x, target_pos.y, target_pos.z)
+		})
+
+		if pos:Distance(target_pos) > 1000 then
+			Events:Fire("Discord", {
+				channel = "Errors",
+				content = string.format("%s [%s] was more than 500m away from their spawn position 1km 10s after spawning",
+					args.player:GetName(), tostring(args.player:GetSteamId()))
+			})
+		end
+	end)
+
 
 	return false
 end
