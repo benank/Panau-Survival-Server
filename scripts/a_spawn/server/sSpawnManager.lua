@@ -111,6 +111,14 @@ function sSpawnManager:PlayerQuit(args)
 
     self:UpdatePlayer(args.player)
 
+	local pos = args.player:GetPosition()
+
+	Events:Fire("Discord", {
+		channel = "Positions",
+		content = string.format("%s [%s] quit at X: %.4f Y: %.4f Z: %.4f",
+			args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z)
+	})
+
 end
 
 function sSpawnManager:UpdatePlayer(player)
@@ -189,6 +197,25 @@ function sSpawnManager:PlayerJoin(args)
 	})
 	
 	args.player:SetValue("SpawnLastUpdate", Server:GetElapsedSeconds())
+
+	local pos = args.player:GetPosition()
+	local s_pos = args.player:GetValue("SpawnPosition")
+	Events:Fire("Discord", {
+		channel = "Positions",
+		content = string.format("%s [%s] joined at X: %.4f Y: %.4f Z: %.4f\nSpawn pos: X: %.4f Y: %.4f Z: %.4f",
+			args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, s_pos.x, s_pos.y, s_pos.z)
+	})
+
+	Timer.SetTimeout(15 * 1000, function()
+		if not IsValid(args.player) then return end
+		pos = args.player:GetPosition()
+
+		Events:Fire("Discord", {
+			channel = "Positions",
+			content = string.format("%s [%s] position 15s after joining X: %.4f Y: %.4f Z: %.4f\nSpawn pos: X: %.4f Y: %.4f Z: %.4f",
+				args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, s_pos.x, s_pos.y, s_pos.z)
+		})
+	end)
 
 end
 
