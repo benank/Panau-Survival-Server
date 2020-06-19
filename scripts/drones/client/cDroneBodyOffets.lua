@@ -14,7 +14,9 @@ DroneGunOffsets =
     [DroneBodyPiece.TopGun] = {position = Vector3(0, 0.35, -0.15), angle = Angle()},
 }
 
-DroneEffectOffset = {position = Vector3(0, 0, 0.05), angle = Angle(0, math.pi / 2, 0)}
+DroneEffectOffset = {position = Vector3(0, 0, 0.05), angle = Angle(0, math.pi, 0)}
+
+DroneMuzzleFlashOffset = {position = Vector3(), angle = Angle(-math.pi / 2, 0, 0)}
 
 DroneBodyObjects = 
 {

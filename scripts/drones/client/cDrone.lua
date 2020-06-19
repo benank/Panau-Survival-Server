@@ -5,23 +5,31 @@ function cDrone:__init(args)
     self.position = args.position
     self.angle = args.angle
 
-    self.body = cDroneBody(args)
+    self.velocity = Vector3()
 
-    self.target_position = self.position
+    args.parent = self
+    self.body = cDroneBody(self)
 
+end
+
+function cDrone:SetLinearVelocity(velo)
+    self.velocity = velo
 end
 
 function cDrone:SetPosition(pos)
     self.position = pos
-    self.body:SetPosition(pos)
+    self.body:SetPosition()
 end
 
 function cDrone:SetAngle(ang)
     self.angle = ang
-    self.body:SetAngle(ang)
+    self.body:SetAngle()
 end
 
 function cDrone:PostTick(args)
+
+    self.position = self.position + self.velocity * args.delta
+
     self.body:PostTick(args)
 end
 
