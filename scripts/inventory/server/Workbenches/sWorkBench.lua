@@ -59,7 +59,7 @@ function sWorkBench:BeginCombining(player)
 
     Events:Fire("Discord", {
         channel = "Inventory",
-        content = string.format("%s [%s] started a combination of %s at the %s", 
+        content = string.format("%s [%s] started a combine of %s at the %s", 
             player:GetName(), tostring(player:GetSteamId()), self.lootbox.contents[1]:GetProperty("name"), self.name)
     })
 
