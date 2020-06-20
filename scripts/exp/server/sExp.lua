@@ -342,6 +342,10 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
         gained_level = true
 
         self:UpdateDB(steamID, exp_data)
+
+        if not IsValid(player) then
+            sPerks:OfflinePlayerGainedLevel(steamID, exp_data.level)
+        end
     end
 
     if IsValid(player) then

@@ -93,6 +93,37 @@ function sPerks:Unlock(args, player)
 
 end
 
+function sPerks:OfflinePlayerGainedLevel(steam_id, level)
+    -- Player was offline when they gained a level - give perk points
+    
+	local query = SQL:Query("SELECT * FROM perks WHERE steamID = (?) LIMIT 1")
+    query:Bind(1, steam_id)
+    
+    local result = query:Execute()
+
+    local perk_data = {points = 0, unlocked_perks = {}}
+    
+    if #result > 0 then -- if already in DB
+        
+        perk_data.points = tonumber(result[1].points)
+        perk_data.unlocked_perks = self:DeserializePerks(result[1].unlocked_perks)
+
+    end
+
+    perk_data.points = perk_data.points + PerkPointsPerLevel
+
+    if PerkPointBonusesPerLevel[level] then
+        perk_data.points = perk_data.points + PerkPointBonusesPerLevel[level]
+    end
+
+    local update = SQL:Command("UPDATE perks SET points = ?, unlocked_perks = ? WHERE steamID = (?)")
+	update:Bind(1, perk_data.points)
+	update:Bind(2, self:SerializePerks(perk_data.unlocked_perks))
+	update:Bind(3, steam_id)
+    update:Execute()
+
+end
+
 function sPerks:PlayerLevelUpdated(args)
 
     local perks = args.player:GetValue("Perks")
@@ -105,6 +136,8 @@ function sPerks:PlayerLevelUpdated(args)
     end
 
     args.player:SetNetworkValue("Perks", perks)
+
+    self:SavePlayer(args.player)
 
     Chat:Send(args.player, 
         string.format("You have %d perk points - open the perk menu with F2 to spend them!", perks.points), Color.Yellow)
