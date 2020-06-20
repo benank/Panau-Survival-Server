@@ -62,6 +62,9 @@ function cInventoryUIStyle:__init()
     self.category_title_colors = {Normal = Color.White, Full = Color.Red}
     self.border_size = 2
 
+    self.dura_background_color = Color(255, 255, 255, 50)
+    self.tooltip_bg_color = Color(0, 0, 0, 200)
+
     self.item_colors = 
     {
         blue = Color(17, 84, 135, self.background_alpha), -- armor, grapples, para, grenades, radio

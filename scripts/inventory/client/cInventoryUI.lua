@@ -202,10 +202,11 @@ function cInventoryUI:PopulateEntry(args)
     local button = itemwindow:FindChildByName("button", true)
     local button_bg = itemwindow:FindChildByName("button_bg", true)
     local durability = itemwindow:FindChildByName("dura", true)
+    local durability_bg = itemwindow:FindChildByName("dura_bg", true)
     local equip_outer = itemwindow:FindChildByName("equip_outer", true)
     local equip_inner = itemwindow:FindChildByName("equip_inner", true)
 
-    for i = 1, 5 do
+    for i = 1, 4 do
         itemwindow:FindChildByName(string.format("dura_%dx", i), true):Hide()
     end
 
@@ -225,28 +226,35 @@ function cInventoryUI:PopulateEntry(args)
         
         if stack:GetProperty("durable") then
 
+            durability_bg:Show()
+
             local durability_amt = stack.contents[1].durability / stack.contents[1].max_durability
-            local num_dura_x = math.floor(durability_amt)
+            local num_dura_x = math.min(4, math.floor(durability_amt))
+
+            itemwindow:FindChildByName("tooltip_text", true):SetText(
+                string.format("%.0f%%", durability_amt * 100)
+            )
 
             if durability_amt >= 1 then
                 durability_amt = durability_amt - num_dura_x
             end
 
-            durability:SetSizeAutoRel(Vector2(durability_amt * 0.9, 0.1))
+            durability:SetSizeAutoRel(Vector2(durability_amt, 1))
             durability:SetColor(self:GetDurabilityColor(durability_amt))
             durability:Show()
 
-            for i = 1, 5 do
+            for i = 1, 4 do
                 if i <= num_dura_x then
-                    itemwindow:FindChildByName(string.format("dura_%dx", i), true):Show()
+                    itemwindow:FindChildByName(string.format("dura_%dx", i), true):SetColor(Color.White)
                 else
-                    itemwindow:FindChildByName(string.format("dura_%dx", i), true):Hide()
+                    itemwindow:FindChildByName(string.format("dura_%dx", i), true):SetColor(InventoryUIStyle.dura_background_color)
                 end
+                itemwindow:FindChildByName(string.format("dura_%dx", i), true):Show()
             end
 
         else
 
-            durability:Hide()
+            durability_bg:Hide()
 
         end
 
@@ -441,21 +449,43 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     button:SetTextHoveredColor(colors.text_hover)
     button:SetTextPressedColor(colors.text_hover)
 
-    local durability = Rectangle.Create(itemWindow, "dura")
-    durability:SetPositionRel(Vector2(0.05, 0.7))
-    durability:Hide()
+    local dura_tooltip_bg = Rectangle.Create(itemWindow, "dura_tooltip_bg")
+    dura_tooltip_bg:SetPositionRel(Vector2(0.8, 0))
+    dura_tooltip_bg:SetSizeAutoRel(Vector2(0.21, 0.475))
+    dura_tooltip_bg:SetColor(InventoryUIStyle.tooltip_bg_color)
+    dura_tooltip_bg:Hide()
+
+    local tooltip_text = Label.Create(dura_tooltip_bg, "tooltip_text")
+    tooltip_text:SetSizeAutoRel(Vector2(1, 1))
+    tooltip_text:SetTextSize(self.inv_dimensions.text_size * 0.9)
+    tooltip_text:SetTextColor(Color.White)
+    tooltip_text:SetAlignment(GwenPosition.Center)
+    tooltip_text:SetTextPadding(Vector2(0, 2), Vector2(0, 0))
+
+    local total_dura_width = 0.9
+    local total_dura_height = 0.15
+
+    local dura_bar_total_width = 0.2
+    local dura_bar_margin = 0.01
+    local dura_bar_width = (dura_bar_total_width - dura_bar_margin * 4) / 4
+
+    local durability_bg = Rectangle.Create(itemWindow, "dura_bg")
+    durability_bg:SetPositionRel(Vector2(0.05, 0.75))
+    durability_bg:SetSizeAutoRel(Vector2(total_dura_width - dura_bar_total_width - dura_bar_margin, total_dura_height))
+    durability_bg:SetColor(InventoryUIStyle.dura_background_color)
+    durability_bg:Hide()
+
+    local durability = Rectangle.Create(durability_bg, "dura")
+    durability:SetSizeRel(Vector2(1, 1))
 
     -- Create extra dura bars
-    local dura_bar_margin = 0.01
-    local dura_bar_width = (0.9 - dura_bar_margin * 5) / 5
-    for i = 1, 5 do
+    for i = 1, 4 do
 
         local dura_x = Rectangle.Create(itemWindow, string.format("dura_%dx", i))
-        local pos = Vector2(0.05 + (dura_bar_width + dura_bar_margin) * (i - 1), 0.85)
+        local pos = Vector2(total_dura_width - dura_bar_total_width + dura_bar_margin * i + dura_bar_width * i, 0.75)
         dura_x:SetPositionRel(pos)
-        dura_x:SetSizeAutoRel(Vector2(dura_bar_width, 0.05))
-        dura_x:SetColor(Color.White)
-        dura_x:Hide()
+        dura_x:SetSizeAutoRel(Vector2(dura_bar_width, total_dura_height))
+        dura_x:SetColor(InventoryUIStyle.dura_background_color)
     
     end
 
@@ -542,19 +572,30 @@ function cInventoryUI:HoverEnterButton(button)
     -- Called when the mouse hovers over a button
     self.hovered_button = button
     button:SetDataBool("hovered", true)
-    
+
+    local cat = button:GetDataString("stack_category")
+    local index = button:GetDataNumber("stack_index")
+
     InventoryUIStyle:UpdateItemColor(button:GetParent())
 
     if button:GetDataString("stack_category") == "loot" then
         return
     end
 
+    if not Inventory.contents[cat] or not Inventory.contents[cat][index] then return end
+
+    if Inventory.contents[cat][index]:GetProperty("durable") then
+        button:GetParent():FindChildByName("dura_tooltip_bg", true):Show()
+    end
+    
 end
 
 function cInventoryUI:HoverLeaveButton(button)
     -- Called when the mouse stops hovering over a button
     self.hovered_button = nil
     button:SetDataBool("hovered", false)
+
+    button:GetParent():FindChildByName("dura_tooltip_bg", true):Hide()
 
     InventoryUIStyle:UpdateItemColor(button:GetParent())
 
