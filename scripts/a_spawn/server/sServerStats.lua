@@ -13,13 +13,15 @@ function sServerStats:__init()
 end
 
 function sServerStats:ClientModuleLoad(args)
-    self.stats["PlayersOnline"] = self.stats["PlayersOnline"] + 1
+    self.stats["PlayersOnline"] = Server:GetPlayerCount()
     self:RefreshOnlinePlayers()
 end
 
 function sServerStats:PlayerQuit(args)
-    self.stats["PlayersOnline"] = self.stats["PlayersOnline"] - 1
-    self:RefreshOnlinePlayers()
+    Timer.SetTimeout(1000, function()
+        self.stats["PlayersOnline"] = Server:GetPlayerCount()
+        self:RefreshOnlinePlayers()
+    end)
 end
 
 function sServerStats:RefreshOnlinePlayers()
