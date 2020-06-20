@@ -68,7 +68,13 @@ function cRunSwimSpeed:PostTick(args)
 
         LocalPlayer:SetLinearVelocity(LocalPlayer:GetAngle() * Vector3.Forward * 10)
 
-    elseif self.run_states[base_state] and perk_mods[2] > 1 and speed < self.base_run_speed * perk_mods[2] then
+    elseif self.run_states[base_state] and perk_mods[2] > 1 and speed < self.base_run_speed * perk_mods[2] and speed > 3 then
+
+        local ray = Physics:Raycast(LocalPlayer:GetPosition() + Vector3.Up, Vector3.Down, 0, 1.5)
+        if ray.distance == 1.5 then return end
+
+        local ray2 = Physics:Raycast(LocalPlayer:GetPosition() + Vector3(0, 0.1, 0), LocalPlayer:GetAngle() * Vector3.Forward, 0, 1)
+        if ray2.distance < 1 then return end
 
         LocalPlayer:SetLinearVelocity(LocalPlayer:GetLinearVelocity() * 1.05)
 
