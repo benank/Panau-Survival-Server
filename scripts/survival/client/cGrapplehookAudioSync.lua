@@ -18,20 +18,15 @@ function GrapplehookAudioSync:FireGrapplehookPre()
 end
 
 function GrapplehookAudioSync:SyncedGrapplehookSound(args)
-    local sound = ClientEffect.Create(AssetLocation.Game, {
+
+    if Camera:GetPosition():Distance(args.position) > 100 then return end
+
+    ClientEffect.Play(AssetLocation.Game, {
         position = args.position,
         angle = Angle(),
         effect_id = args.sound
     })
 
-    
-    sound:SetParameter(0,0)
-    sound:SetParameter(1, 1 - math.min(1, Camera:GetPosition():Distance(args.position) / 200))
-
-    Timer.SetTimeout(1000, function()
-        sound:Remove()
-    end)
-    
 end
 
 function GrapplehookAudioSync:FireGrapplehook()
