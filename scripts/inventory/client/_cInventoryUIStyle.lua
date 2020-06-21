@@ -31,8 +31,8 @@ function cInventoryUIStyle:__init()
 
     self.equipped_icon = 
     {
-        color = Color(110, 124, 164, 255),
-        color_under = Color(110, 124, 164, 120),
+        color = Color(255, 255, 255, 255),
+        color_under = Color(255, 255, 255, 64),
         position = Vector2(10, 10),
         radius = math.min(6, Render.Size.y / 180)
     }
@@ -80,9 +80,6 @@ function cInventoryUIStyle:__init()
         purple = Color(52, 29, 145, self.background_alpha), -- boss drop items
         white = Color(230, 230, 230, self.background_alpha), -- unused for now
         locked = Color(230, 10, 10, self.background_alpha), -- locked
-
-
-
     }
 
     self.item_color_map = 
