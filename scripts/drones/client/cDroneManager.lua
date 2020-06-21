@@ -33,6 +33,11 @@ function cDroneManager:LocalPlayerChat(args)
 
     if args.text == "/drone" then
 
+        table.insert(self.drones, cDrone({
+            position = LocalPlayer:GetPosition() + Vector3.Up * 2 + Vector3(0.5 - math.random(), 0, 0.5 - math.random()):Normalized() * 10,
+            angle = LocalPlayer:GetAngle()
+        }))
+
     elseif args.text == "/drones" then
 
         for i = 1, 50 do
