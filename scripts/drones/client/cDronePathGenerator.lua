@@ -7,10 +7,11 @@ function cDronePathGenerator:__init()
 end
 
 function cDronePathGenerator:GetRandomRoadOffset(road)
+    local radius = road.radius / 2
     return Vector3(
-            road.radius - math.random() * road.radius * 2, 
-            self.height + math.random() * 100,
-            road.radius - math.random() * road.radius * 2)
+        radius - math.random() * radius * 2, 
+        self.height + math.random() * 100,
+        radius - math.random() * radius * 2)
 end
 
 function cDronePathGenerator:GeneratePathNearPoint(origin, radius, callback)
