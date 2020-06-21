@@ -57,7 +57,67 @@ end
 
 function cDrone:Move(args)
 
-    self.target = LocalPlayer
+    if IsValid(self.target) then
+        self:TrackTarget(args)
+    else
+        self:Wander(args)
+    end
+
+end
+
+-- Makes a drone wander through the sky
+function cDrone:Wander(args)
+
+    if not self.path and not self.generating_path then
+        self.generating_path = true
+        cDronePathGenerator:GeneratePathNearPoint(self.position, 500, function(edges)
+            
+            self.path = edges
+            self.path_index = 1
+            self.generating_path = false
+
+        end)
+    end
+
+    if self.path then
+
+        -- Traverse path
+        local target_pos = self.path[self.path_index]
+
+        local wandering_speed = DRONE_SPEED / 2 
+
+        local dir = target_pos - self.position
+        local velo = dir:Length() > 1 and (dir:Normalized() * wandering_speed) or Vector3.Zero
+
+        self:SetLinearVelocity(math.lerp(self.velocity, velo, 0.01))
+
+        -- Face towards target position
+        local angle = Angle.FromVectors(Vector3.Forward, target_pos - self.position)
+        angle.roll = 0
+
+        self:SetAngle(Angle.Slerp(self.angle, angle, 0.05))
+
+        local diff = self.position - target_pos
+
+        -- If the node was reached, go to the next one
+        if math.abs(diff.x) < 2 and math.abs(diff.z) < 2 then
+            self.path_index = self.path_index + 1
+
+            _debug(string.format("Path node %d/%d", self.path_index, count_table(self.path)))
+
+            -- Path completed
+            if self.path_index > count_table(self.path) then
+                -- Set path to nil to find a new path
+                self.path = nil
+            end
+        end
+
+    end
+
+end
+
+-- Makes a drone track a target and face towards them 
+function cDrone:TrackTarget(args)
     self.target_position = self.target:GetPosition() + self.offset
 
     local target_pos = self.target_position
@@ -99,10 +159,6 @@ function cDrone:Move(args)
     angle.roll = 0
 
     self:SetAngle(Angle.Slerp(self.angle, angle, 0.05))
-
-    --[[if math.random() < 0.05 then
-        drone.body:CreateShootingEffect(math.random() > 0.5 and DroneBodyPiece.LeftGun or DroneBodyPiece.RightGun)
-    end]]
 
 end
 
