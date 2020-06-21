@@ -14,6 +14,8 @@ Network:Subscribe("items/CompleteItemUsage", function(args, player)
                 return
             end
         end
+
+        player:SetValue("RespawnerLastSet", Server:GetElapsedSeconds())
     
         Events:Fire("SetHomePosition", {
             player = player,

@@ -23,17 +23,18 @@ ItemsConfig =
     airstrikes = 
     {
         ["Cruise Missile"] = {delay = 7, radius = 80, damage_entity = DamageEntity.CruiseMissile, plane_velo = 110, plane_id = 34},
-        ["Area Bombing"] = {delay = 10, radius = 120, damage_entity = DamageEntity.AreaBombing, plane_velo = 40, plane_id = 85},
+        ["Area Bombing"] = {delay = 10, radius = 120, damage_entity = DamageEntity.AreaBombing, plane_velo = 40, plane_id = 85, num_bombs = 30},
         ["Tactical Nuke"] = {delay = 15, radius = 150, damage_entity = DamageEntity.TacticalNuke, plane_velo = 40, plane_id = 34},
     },
     equippables = -- Use equip
     {
         ["Grapplehook"] = {dura_per_sec = 1},
-        ["RocketGrapple"] = {dura_per_sec = 3},
-        ["Parachute"] = {dura_per_sec = 1},
+        ["RocketGrapple"] = {dura_per_sec = 4},
+        ["Parachute"] = {dura_per_sec = 1.25},
         ["Explosives Detector"] = {dura_per_sec = 5, dura_per_activation = 15, battery_dura_per_sec = 25},
         ["Cloud Strider Boots"] = {dura_per_5_sec = 1},
         ["Stick Disguise"] = {dura_per_hit = 2},
+        ["Nitro"] = {dura_per_sec = 20},
         weapons = 
         {
             ["Handgun"] = {dura_per_use = 1, weapon_id = Weapon.Handgun, equip_slot = WeaponSlot.Right},
@@ -74,8 +75,77 @@ ItemsConfig =
             ["Warp Grenade"] = DamageEntity.None,
             ["Laser Grenade"] = DamageEntity.LaserGrenade,
         }
+    },
+    use_time_perks = 
+    {
+        ["Bandages"] = 
+        {
+            [19] = 0.75,
+            [36] = 0.5
+        },
+        ["Healthpack"] = 
+        {
+            [60] = 0.75,
+            [85] = 0.5
+        },
     }
 }
+
+BackpackPerks = 
+{
+    [10] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    },
+    [37] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    },
+    [64] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    },
+    [79] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    },
+    [100] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    },
+    [120] = 
+    {
+        [1] = {Weapons = 0, Explosives = 1, Supplies = 1, Survival = 0},
+        [2] = {Weapons = 0, Explosives = 0, Supplies = 1, Survival = 1},
+    }
+}
+
+
+-- Num bombs perks for Area Bombing (bonuses)
+AirstrikePerks = 
+{
+    ["Area Bombing"] = 
+    {
+        [108] = {[2] = 5},
+        [173] = {[2] = 10}
+    },
+    ["Cruise Missile"] = 
+    {
+        [74] =  {[2] = 1.10},
+        [131] = {[2] = 1.20}
+    },
+    ["Tactical Nuke"] = 
+    {
+        [140] = {[2] = 1.10},
+        [198] = {[2] = 1.20}
+    },
+}
+
 
 DisabledPlacementModels = 
 {

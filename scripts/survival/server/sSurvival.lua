@@ -6,6 +6,14 @@ function sSurvivalManager:__init()
     self.players_dying = {} -- Players who are dying from hunger or thirst being 0
     self.damage_interval = 5 -- Every 5 seconds, dying players are damaged
 
+    self.perks = 
+    {
+        [90] = 0.8,
+        [163] = 0.6,
+        [200] = 0.4,
+        [225] = 0.2
+    }
+
     self:SetupIntervals()
 
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
@@ -110,8 +118,10 @@ function sSurvivalManager:PlayerSpawn(args)
 
         local survival = args.player:GetValue("Survival")
 
-        survival.hunger = config.respawn.hunger
-        survival.thirst = config.respawn.thirst
+        if not args.player:GetValue("Suicided") then
+            survival.hunger = config.respawn.hunger
+            survival.thirst = config.respawn.thirst
+        end
 
         args.player:SetValue("Survival", survival)
         self:CheckForDyingPlayer(args.player)
@@ -121,6 +131,7 @@ function sSurvivalManager:PlayerSpawn(args)
 
     end
 
+    args.player:SetValue("Suicided", nil)
 end
 
 function sSurvivalManager:SetupIntervals()
@@ -178,8 +189,20 @@ function sSurvivalManager:AdjustSurvivalStats(player)
 
     local zone_mod = config.decaymods[player:GetValue("ClimateZone")] or config.decaymods[ClimateZone.City]
 
-    survival.hunger = math.max(survival.hunger - config.decay.hunger * zone_mod.hunger, 0)
-    survival.thirst = math.max(survival.thirst - config.decay.thirst * zone_mod.thirst, 0)
+    local perks = player:GetValue("Perks")
+
+    if not perks then return end
+
+    local perk_mod = 1
+
+    for perk_id, perk_mod_data in pairs(self.perks) do
+        if perks.unlocked_perks[perk_id] then
+            perk_mod = math.min(perk_mod, perk_mod_data)
+        end
+    end
+
+    survival.hunger = math.max(survival.hunger - config.decay.hunger * zone_mod.hunger * perk_mod, 0)
+    survival.thirst = math.max(survival.thirst - config.decay.thirst * zone_mod.thirst * perk_mod, 0)
 
     player:SetValue("Survival", survival)
     self:CheckForDyingPlayer(player)

@@ -73,7 +73,8 @@ function cHitDetection:Explosion(args)
 
     if explosive_data then
 
-        args.radius = explosive_data.radius
+        local radius = explosive_data.radius * 1.5 -- Make it larger to account for possible perks
+        args.radius = radius
         self:CheckForVehicleExplosionDamage(args)
 
         if LocalPlayer:GetValue(var("InSafezone"):get()) then return end
@@ -87,7 +88,7 @@ function cHitDetection:Explosion(args)
         local in_fov = ray.entity and ray.entity.__type == "LocalPlayer"
     
         local dist = args.position:Distance(args.local_position)
-        local percent_modifier = math.max(0, 1 - dist / explosive_data.radius)
+        local percent_modifier = math.max(0, 1 - dist / radius)
     
         if percent_modifier == 0 then return end
 

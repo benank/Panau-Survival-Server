@@ -2,6 +2,8 @@ class 'sProxAlarms'
 
 function sProxAlarms:__init()
 
+    self.recent_ids = {}
+
     self.network_subs = {}
     self.alarms = {}
 
@@ -191,9 +193,17 @@ function sProxAlarms:DestroyProx(args, player)
     Network:Send(player, "items/ProxExplode", {position = alarm.position})
     Network:SendNearby(player, "items/ProxExplode", {position = alarm.position})
 
+    -- self.recent_ids
+    local give_exp = true
+
+    if self.recent_ids[alarm.stash.owner_id] and Server:GetElapsedSeconds() - self.recent_ids[alarm.stash.owner_id] < 60 * 60 then
+        give_exp = false
+    end
+
     Events:Fire("items/DestroyProximityAlarm", {
         id = alarm.stash.id,
-        player = player
+        player = player,
+        give_exp = give_exp
     })
 
     -- Remove alarm
@@ -224,6 +234,8 @@ function sProxAlarms:PlaceProx(position, angle, player)
         angle = angle,
         player = player
     })
+
+    self.recent_ids[tostring(player:GetSteamId())] = Server:GetElapsedSeconds()
 
 end
 
