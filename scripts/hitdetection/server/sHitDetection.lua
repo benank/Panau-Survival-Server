@@ -405,7 +405,6 @@ function sHitDetection:PlayerDeath(args)
         Events:Fire("PlayerKilled", {player = args.player, killer = last_damaged and last_damaged.steam_id, reason = args.reason})
     end
 
-    args.player:SetValue("Suicided", nil)
     args.player:SetValue("LastDamaged", nil)
 end
 

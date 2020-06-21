@@ -118,8 +118,10 @@ function sSurvivalManager:PlayerSpawn(args)
 
         local survival = args.player:GetValue("Survival")
 
-        survival.hunger = config.respawn.hunger
-        survival.thirst = config.respawn.thirst
+        if not args.player:GetValue("Suicided") then
+            survival.hunger = config.respawn.hunger
+            survival.thirst = config.respawn.thirst
+        end
 
         args.player:SetValue("Survival", survival)
         self:CheckForDyingPlayer(args.player)
@@ -129,6 +131,7 @@ function sSurvivalManager:PlayerSpawn(args)
 
     end
 
+    args.player:SetValue("Suicided", nil)
 end
 
 function sSurvivalManager:SetupIntervals()
