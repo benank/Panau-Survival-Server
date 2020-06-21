@@ -9,7 +9,7 @@ Location.Type = {
 	MilHarb     = "MilHarb",
 	MilStrong   = "MilStrong",
 	OilRig      = "OilRig",
-    Waypoint    = "Waypoint",
+        Waypoint    = "Waypoint",
 	Workbench   = "Workbench",
 	Home 		= "Home",
 	Skull 		= "Skull"
@@ -25,7 +25,7 @@ Location.TypeName = {
 	MilHarb     = "Military Harbor",
 	MilStrong   = "Military Stronghold",
 	OilRig      = "Oil Rig",
-    Waypoint    = "Waypoint",
+        Waypoint    = "Waypoint",
 	Workbench   = "Workbench",
 	Home 		= "Home",
 	Skull		= "Skull"
@@ -63,14 +63,19 @@ Location.Icon = {
 
 Location.Color = 
 {
-    Green = Color(0, 160, 8, 255),
-	Red = Color(182, 26, 0, 255),
+	Red = Color(154, 0, 2, 255),
+	Orange = Color(213, 89, 0, 255),
 	Yellow = Color(223, 153, 0, 255),
+        LightGreen = Color(75, 195, 54, 255),
+        Green = Color(22, 149, 0, 255),
+	LightBlue = Color(0, 172, 175, 255),
+	Blue = Color(0, 99, 166, 255),
+        Fuschia = Color(158, 25, 57, 255),
+        Pink = Color(144, 61, 143, 255)
+	Purple = Color(52, 29, 145, 255)
 	White = Color(230, 230, 230, 255),
-	Blue = Color(6, 60, 135, 255),
-	None = Color(0, 0, 0, 0),
 	Gray = Color(31, 31, 31, 255),
-	Purple = Color(112, 24, 119, 255)
+	None = Color(0, 0, 0, 0),
 }
 
 Waypoint:Remove()
@@ -260,7 +265,7 @@ Map = {
 		Location("Kem Gunung Dataran Tinggi", Vector3(-1052.722, 1625.267, -7010.672), Location.Type.MilLocation),
 		Location("Kepulauan Selatan Kappa", Vector3(7255.745, 315.0965, 12576.37), Location.Type.Comm),
 		--Location("Kem Komodor Da Silva", Vector3(-7829.07, 200.9365, -7073.327), Location.Type.MilHarb),
-		Location("Kem Komodor Da Silva", Vector3(-7674.010254, 203.999985, -6887.556152), Location.Type.MilHarb),
+		Location("Kem Komodor Da Silva", Vector3(-7674.010254, 203.999985, -6887.556152), Location.Type.MilHarb, Location.Color.Green),
 		Location("Negeri Tenggara", Vector3(9213.208, 220.8273, 4055.901), Location.Type.MilLocation),
 		Location("Kampung Tokong Tua", Vector3(-5916.205, 317.8293, -10349.15), Location.Type.CivVil),
 		Location("Kampung Ketam Laut", Vector3(-7874.091, 207.2763, -2346.648), Location.Type.CivVil, Location.Color.Green),
@@ -356,7 +361,7 @@ Map = {
 		Location("Pekan Pinggir Jalan", Vector3(2073.858, 220.4868, 2690.451), Location.Type.CivVil),
 		Location("Banjaran Berawan Besar Alpha", Vector3(7482.525, 1021.973, -7577.403), Location.Type.Comm),
 		--Location("Banjaran Gundin", Vector3(-4684.034, 415.1115, -11277.62), Location.Type.MilAir),
-		Location("Banjaran Gundin", Vector3(-4515.668945, 432.914185, -11271.915039), Location.Type.MilAir),
+		Location("Banjaran Gundin", Vector3(-4515.668945, 432.914185, -11271.915039), Location.Type.MilAir, Location.Color.Green),
 		Location("Tanah Raya Timur lota", Vector3(9404.302, 1151.02, -4025.884), Location.Type.Comm),
 		--Location("Emas Hitam Oil Refinery", Vector3(11577.3, 228.0705, -9371.375), Location.Type.U_Stronghold),
 		--Location("Emas Hitam Oil Refinery", Vector3(11577.3, 228.0705, -9371.375), Location.Type.MilStrong),
@@ -502,7 +507,7 @@ Map = {
 		Location("Negeri Cengkih", Vector3(-2776.455, 258.1857, 6473.779), Location.Type.MilLocation),
 		Location("Kem Gunung Kudus", Vector3(6884.855, 1453.407, -3508.609), Location.Type.MilLocation),
 		Location("Bandar Lembah Raja", Vector3(7329.622, 206.4881, 10797.03), Location.Type.CivVil),
-		Location("Teluk Permata", Vector3(-6929.283, 206.2196, -10623.56), Location.Type.MilAir),
+		Location("Teluk Permata", Vector3(-6929.283, 206.2196, -10623.56), Location.Type.MilAir, Location.Color.Green),
 		Location("Kampung Redup", Vector3(3111.436, 698.4831, -8113.143), Location.Type.CivVil),
 		Location("Pelantar Gas Ledakan Besar", Vector3(13410.08, 236.3287, -13485.48), Location.Type.OilRig),
 		Location("Kuala Jernih", Vector3(-6426.869, 358.8262, 4094.197), Location.Type.MilLocation),
@@ -565,10 +570,10 @@ Map = {
 		-- Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green)
 		
 		-- Workbenches
-		["Southern Workbench"] = Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench, Location.Color.Purple, true),
-		["Eastern Workbench"] = Location("Eastern Workbench", Vector3(11455.59, 444, -516.274), Location.Type.Workbench, Location.Color.Purple, true),
-		["Northern Workbench"] = Location("Northern Workbench", Vector3(3018.479, 206.1557, -11952.077), Location.Type.Workbench, Location.Color.Purple, true),
-		["Western Workbench"] = Location("Western Workbench", Vector3(-7116.8, 388.98, 2928.25), Location.Type.Workbench, Location.Color.Purple, true),
+		["Southern Workbench"] = Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench, Location.Color.Pink, true),
+		["Eastern Workbench"] = Location("Eastern Workbench", Vector3(11455.59, 444, -516.274), Location.Type.Workbench, Location.Color.Pink, true),
+		["Northern Workbench"] = Location("Northern Workbench", Vector3(3018.479, 206.1557, -11952.077), Location.Type.Workbench, Location.Color.Pink, true),
+		["Western Workbench"] = Location("Western Workbench", Vector3(-7116.8, 388.98, 2928.25), Location.Type.Workbench, Location.Color.Pink, true),
 
 		-- Home
 		["Home"] = Location("Home", Vector3(), Location.Type.Home, Location.Color.Blue)
@@ -747,7 +752,7 @@ end
 
 Events:Subscribe("Workbenches/UpdateState", function(args)
 	if Map.Locations[args.name] then
-		Map.Locations[args.name].color = args.state == 2 and Location.Color.Yellow or Location.Color.Purple
+		Map.Locations[args.name].color = args.state == 2 and Location.Color.Yellow or Location.Color.Pink
 		Map.Locations[args.name].name = args.state == 1 and args.name or args.name .. " (Active)"
 	end
 end)
