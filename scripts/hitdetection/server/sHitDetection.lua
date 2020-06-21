@@ -40,7 +40,7 @@ function sHitDetection:__init()
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
 
-    Events:Subscribe("PlayerChat", self, self.PlayerChat)
+    Network:Subscribe("Hitdetection/Respawn", self, self.Respawn)
 
 end
 
@@ -205,44 +205,45 @@ function sHitDetection:AdminKill(args)
 
 end
 
-function sHitDetection:PlayerChat(args)
-    if args.text == "/respawn" then
+function sHitDetection:Respawn(args, player)
 
-        if args.player:GetValue("Loading") then return end
+    if player:GetHealth() <= 0 then return end
+    if player:GetValue("dead") then return end
 
-        if args.player:InVehicle() then
-            Chat:Send(args.player, "You must exit the vehicle to use this command.", Color.Red)
-            return
-        end
+    if player:GetValue("Loading") then return end
 
-        local survival = args.player:GetValue("Survival")
-
-        if not survival then return end
-
-        if survival.hunger <= 10 or survival.thirst <= 20 then
-            Chat:Send(args.player, "You cannot use this command right now.", Color.Red)
-            return
-        end
-
-        self:ApplyDamage({
-            player = args.player, 
-            damage = WeaponDamage.SuicideDamage, 
-            source = DamageEntity.Suicide
-        })
-
-        local last_damaged = args.player:GetValue("LastDamaged")
-
-        if last_damaged then
-            if Server:GetElapsedSeconds() - last_damaged.timer > self.last_damage_timeout then
-                args.player:SetValue("Suicided", true)
-            else
-                args.player:SetValue("Suicided", nil)
-            end
-        else
-            args.player:SetValue("Suicided", true)
-        end
-
+    if player:InVehicle() then
+        Chat:Send(player, "You must exit the vehicle to use this command.", Color.Red)
+        return
     end
+
+    local survival = player:GetValue("Survival")
+
+    if not survival then return end
+
+    if survival.hunger <= 10 or survival.thirst <= 20 then
+        Chat:Send(player, "You cannot use this command right now.", Color.Red)
+        return
+    end
+
+    self:ApplyDamage({
+        player = player, 
+        damage = WeaponDamage.SuicideDamage, 
+        source = DamageEntity.Suicide
+    })
+
+    local last_damaged = player:GetValue("LastDamaged")
+
+    if last_damaged then
+        if Server:GetElapsedSeconds() - last_damaged.timer > self.last_damage_timeout then
+            player:SetValue("Suicided", true)
+        else
+            player:SetValue("Suicided", nil)
+        end
+    else
+        player:SetValue("Suicided", true)
+    end
+
 end
 
 function sHitDetection:CheckPendingHits()
