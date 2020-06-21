@@ -20,6 +20,11 @@ function sItemUse:InventoryUseItem(args)
 
     if not args.item or not IsValid(args.player) then return end
 
+    Events:Fire("Discord", {
+        channel = "Item Usage",
+        content = string.format("%s [%s] used %s", args.player:GetName(), tostring(args.player:GetSteamId()), args.item.name)
+    })
+
     local player_iu = args.player:GetValue("ItemUse")
 
     if ItemsConfig.usables[args.item.name] and not player_iu.using then
@@ -73,6 +78,12 @@ function sItemUse:InventoryUseItem(args)
                 player_iu2.using = false
             end
             args.player:SetValue("ItemUse", player_iu2)
+
+            Events:Fire("Discord", {
+                channel = "Item Usage",
+                content = string.format("%s [%s] finished using %s", args.player:GetName(), tostring(args.player:GetSteamId()), args.item.name)
+            })
+
         end)
 
         args.player:SetValue("ItemUse", player_iu)
