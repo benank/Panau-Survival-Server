@@ -32,10 +32,10 @@ function cDroneBody:GameRender(args)
     --Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.RightGun)), 5, Color.Yellow)
     --Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.TopGun)), 5, Color.Green)
 
-    local left_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.LeftGun), self.parent.angle * Angle(-0.005, 0, 0) * Vector3.Forward, 0, 100)
+    local left_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.LeftGun), self.parent.angle * Angle(-0.005, 0, 0) * Vector3.Forward, 0, 100, false)
     Render:DrawLine(self:GetGunPosition(DroneBodyPiece.LeftGun), left_ray.position, Color.Red)
 
-    local right_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.RightGun), self.parent.angle * Angle(0.005, 0, 0) * Vector3.Forward, 0, 100)
+    local right_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.RightGun), self.parent.angle * Angle(0.005, 0, 0) * Vector3.Forward, 0, 100, false)
     Render:DrawLine(self:GetGunPosition(DroneBodyPiece.RightGun), right_ray.position, Color.Red)
 end
 

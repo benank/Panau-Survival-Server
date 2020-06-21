@@ -1,5 +1,26 @@
 Cell_Size = 512
 
+Drone_Follow_Offsets = 
+{
+    x = {min = 7, max = 15},
+    y = {min = 2, max = 15},
+    z = {min = 7, max = 15}
+}
+
+function GetRandomFollowOffset()
+    local dir = Vector3(0.5 - math.random(), 0, 0.5 - math.random()):Normalized()
+
+    dir.x = dir.x * (Drone_Follow_Offsets.x.max - Drone_Follow_Offsets.x.min) * math.random()
+    dir.x = dir.x < 0 and dir.x - Drone_Follow_Offsets.x.min or dir.x + Drone_Follow_Offsets.x.min
+
+    dir.y = (Drone_Follow_Offsets.y.max - Drone_Follow_Offsets.y.min) * math.random() + Drone_Follow_Offsets.y.min
+
+    dir.z = dir.z * (Drone_Follow_Offsets.z.max - Drone_Follow_Offsets.z.min) * math.random()
+    dir.z = dir.z < 0 and dir.z - Drone_Follow_Offsets.z.min or dir.z + Drone_Follow_Offsets.z.min
+
+    return dir
+end
+
 Drone_Configuration = 
 {
     speed = {base = 7, per_level = 0.5},
