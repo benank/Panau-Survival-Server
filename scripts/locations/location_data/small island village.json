@@ -1,0 +1,10 @@
+{
+  "name":"Small Island Village",
+  "radius":50,
+  "center":{
+    "y":213.581024,
+    "z":-385.558533,
+    "x":-5021.896973
+  },
+  "objects":[]
+}

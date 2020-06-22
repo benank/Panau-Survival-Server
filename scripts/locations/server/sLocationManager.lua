@@ -7,7 +7,11 @@ function sLocationManager:__init()
 end
 
 function sLocationManager:AddLocation(data)
-    self.locations[data.name] = sLocation(data)
+    local location = sLocation(data)
+    self.locations[string.lower(data.name)] = location
+    
+    return location
+
 end
 
 sLocationManager = sLocationManager()

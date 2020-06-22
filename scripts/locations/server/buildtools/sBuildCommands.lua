@@ -18,53 +18,62 @@ function sBuildCommands:PlayerChat(args)
     if words[2] == "create" then
         -- Create a new location if it does not exist
 
-        if not words[3] then
-            Chat:Send(args.player, "You must specify a location name!", Color.Red)
-            return
-        end
+        local radius = tonumber(words[3])
 
-        if not words[4] then
+        if not radius then
             Chat:Send(args.player, "You must specify a location radius!", Color.Red)
             return
         end
 
-        local name = string.lower(words[3])
-        local radius = tonumber(words[4])
+        local name = args.text:gsub(words[1], ""):gsub(words[2], ""):gsub(words[3], ""):trim()
+
+        if not name then
+            Chat:Send(args.player, "You must specify a location name!", Color.Red)
+            return
+        end
 
         if radius <= 0 then
             Chat:Send(args.player, "You must specify a location radius greater than 0!", Color.Red)
             return
         end
 
+        if sLocationManager.locations[string.lower(name)] then
+            Chat:Send(args.player, "This location has already been created!", Color.Red)
+            return
+        end
+
         -- create new location, assign it to player
-        sLocationManager:AddLocation({
+        local location = sLocationManager:AddLocation({
             name = name,
             radius = radius,
-            center = args.player:GetCameraPosition()
+            center = args.player:GetPosition(),
+            objects = {}
         })
 
-        args.player:SetNetworkValue("Build_Location", name)
+        -- Save location to file for the first time
+        sLocationLoader:SaveLocation(location)
+
+        args.player:SetNetworkValue("Build_Location", string.lower(name))
 
     elseif words[2] == "build" then
         -- Start building at an existing location
 
-        if not words[3] then
+        local name = args.text:gsub(words[1], ""):gsub(words[2], ""):trim()
+
+        if not name then
             Chat:Send(args.player, "You must specify a location name!", Color.Red)
             return
         end
 
-        -- check if location exists
-        local name = string.lower(words[3])
-
-        if not sLocationManager.locations[name] then
+        if not sLocationManager.locations[string.lower(name)] then
             Chat:Send(args.player, "This location does not exist! Maybe try creating it first?", Color.Red)
             return
         end
 
         -- set current location to specified one
-        args.player:SetNetworkValue("Build_Location", name)
+        args.player:SetNetworkValue("Build_Location", string.lower(name))
 
-        Chat:Send(args.player, string.format("Now building at %s", words[3]), Color(0, 255, 0))
+        Chat:Send(args.player, string.format("Now building at %s", name), Color(0, 255, 0))
 
     elseif words[2] == "save" then
         -- Save player's current location
@@ -79,7 +88,7 @@ function sBuildCommands:PlayerChat(args)
             return
         end
 
-        sLocationManager.locations[current_location]:Save()
+        sLocationLoader:SaveLocation(sLocationManager.locations[current_location])
 
     end
 

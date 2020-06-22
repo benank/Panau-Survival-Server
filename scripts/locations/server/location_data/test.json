@@ -1,6 +1,0 @@
-{
-    "name": "test location",
-    "radius": 100,
-    "center": {"x": 100, "y": 100, "z": 100},
-    "objects": []
-}
