@@ -13,6 +13,9 @@ function sHitDetection:__init()
 
     self.pending_armor_aggregation = {}
 
+    self.combat_log_time = 20
+    self.players_in_combat = {}
+
     self:CheckPendingHits()
 
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
@@ -40,8 +43,26 @@ function sHitDetection:__init()
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
 
+    Events:Subscribe("LoadStatus", self, self.LoadStatus)
+
     Network:Subscribe("Hitdetection/Respawn", self, self.Respawn)
 
+end
+
+function sHitDetection:LoadStatus(args)
+    if self.players_in_combat[tostring(args.player:GetSteamId())] then
+
+        args.player:SetValue("FirstSpawn", true)
+        self:ApplyDamage({
+            player = args.player,
+            damage = 999,
+            source = DamageEntity.CombatLog,
+            attacker_id = self.players_in_combat[tostring(args.player:GetSteamId())].attacker_id
+        })
+
+        self.players_in_combat[tostring(args.player:GetSteamId())] = nil
+
+    end
 end
 
 function sHitDetection:ClientModuleLoad(args)
@@ -61,7 +82,8 @@ function sHitDetection:ApplyDamage(args)
     if args.player:GetValue("Invincible") then return end
     if args.player:GetValue("InSafezone") 
     and args.source ~= DamageEntity.Suicide 
-    and args.source ~= DamageEntity.AdminKill then return end
+    and args.source ~= DamageEntity.AdminKill
+    and args.source ~= DamageEntity.CombatLog then return end
 
     local old_hp = args.player:GetHealth()
 
@@ -123,6 +145,9 @@ function sHitDetection:ApplyDamage(args)
         end
 
     end
+
+    args.player:SetNetworkValue("InCombat", true)
+    self.players_in_combat[tostring(args.player:GetSteamId())] = {time = Server:GetElapsedSeconds(), attacker_id = args.attacker_id}
 
     print(msg)
     Events:Fire("Discord", {
@@ -406,6 +431,9 @@ function sHitDetection:PlayerDeath(args)
         Events:Fire("PlayerKilled", {player = args.player, killer = last_damaged and last_damaged.steam_id, reason = args.reason})
     end
 
+    args.player:SetNetworkValue("InCombat", false)
+    self.players_in_combat[tostring(args.player:GetSteamId())] = nil
+
     args.player:SetValue("LastDamaged", nil)
 end
 
@@ -442,6 +470,15 @@ function sHitDetection:SecondTick()
                 attacker_id = attacker_id
             })
 
+        end
+
+        if IsValid(p) and p:GetValue("InCombat") then
+            local combat_time = self.players_in_combat[tostring(p:GetSteamId())].time
+
+            if Server:GetElapsedSeconds() - combat_time >= self.combat_log_time then
+                p:SetNetworkValue("InCombat", false)
+                self.players_in_combat[tostring(p:GetSteamId())] = nil
+            end
         end
     end
 
