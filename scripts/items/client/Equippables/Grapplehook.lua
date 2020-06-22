@@ -19,6 +19,16 @@ function EquippableGrapplehook:__init()
         [Action.DeployParachuteWhileReelingAction] = true,
         [Action.Kick] = true
     }
+
+    self.base_speed = 40
+
+    self.perk_speeds = 
+    {
+        [33] = 1.25,
+        [73] = 1.50,
+        [110] = 1.75,
+        [233] = 2.00,
+    }
     
     self:ToggleEnabled(false)
 
@@ -28,11 +38,15 @@ end
 
 function EquippableGrapplehook:Render(args)
     
-    if self.sync_timer:GetSeconds() > 2 and self.dura_change > 0 then
+    if self.sync_timer:GetSeconds() > 5 and self.dura_change > 0 then
         if EquippableRocketGrapple:GetEquipped() then
-            Network:Send(var("items/RocketGrappleDecreaseDura"):get(), {uid = self.uid, change = math.ceil(self.dura_change)})
+            local perk_mods = EquippableRocketGrapple:GetPerkMods()
+            
+            self.dura_change = self.dura_change * perk_mods[1]
+
+            Network:Send(var("items/RocketGrappleDecreaseDura"):get(), {uid = self.uid, change = self.dura_change})
         else
-            Network:Send(var("items/GrapplehookDecreaseDura"):get(), {uid = self.uid, change = math.ceil(self.dura_change)})
+            Network:Send(var("items/GrapplehookDecreaseDura"):get(), {uid = self.uid, change = self.dura_change})
         end
         
         self.sync_timer:Restart()
@@ -53,12 +67,53 @@ function EquippableGrapplehook:Render(args)
 		
 	end
 
-	self.grappling = base_state == AnimationState.SReelFlight or left_arm_state == AnimationState.LaSGrapple
+    self.grappling = base_state == AnimationState.SReelFlight or left_arm_state == AnimationState.LaSGrapple
 
+    self:HandleGrapplehookSpeedPerks()
+    
     -- Basic grapplehook durability
     if self.grappling then
         self.dura_change = self.dura_change + args.delta
     end
+
+end
+
+function EquippableGrapplehook:HandleGrapplehookSpeedPerks()
+
+    if not self.grappling then return end
+
+    local perks = LocalPlayer:GetValue("Perks")
+
+    if not perks then return end
+
+    local perk_speed_mod = 1
+
+    for perk_id, speed_mod in pairs(self.perk_speeds) do
+        if perks.unlocked_perks[perk_id] then
+            perk_speed_mod = math.max(perk_speed_mod, speed_mod)
+        end
+    end
+
+    if perk_speed_mod == 1 then return end -- No speed mods
+
+    local base_state = LocalPlayer:GetBaseState()
+
+    local parachuting = base_state == AnimationState.SParachute
+
+    local cam_pos = Camera:GetPosition()
+    if IsNaN(cam_pos.x) or IsNaN(cam_pos.y) or IsNaN(cam_pos.z) then return end
+	local ray = Physics:Raycast(cam_pos, Camera:GetAngle() * Vector3.Forward, 0, 1000)
+
+	local localplayer_velo = LocalPlayer:GetLinearVelocity()
+    local speed = math.abs((-LocalPlayer:GetAngle() * localplayer_velo).z)
+    
+    if self.grappling 
+    and not parachuting
+	and speed > 5 
+	and speed < self.base_speed * perk_speed_mod
+    and ray.distance > 15 then
+		LocalPlayer:SetLinearVelocity(localplayer_velo * 1.1)
+	end
 
 end
 

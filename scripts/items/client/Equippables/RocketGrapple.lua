@@ -6,7 +6,8 @@ function EquippableRocketGrapple:__init()
     
     self.dura_change = 0
     self.sync_timer = Timer()
-    self.range = 1000
+    self.base_range = 1000
+    self.range = self.base_range
     self.position = Vector3.Zero
 
 
@@ -17,10 +18,61 @@ function EquippableRocketGrapple:__init()
 
     self.grapple_fx = {}
 
+    self.perks = 
+    {
+        [49] = 
+        {
+            [1] = 0.9, -- Durability
+            [2] = 1.1 -- Range
+        },
+        [105] = 
+        {
+            [1] = 0.8, -- Durability
+            [2] = 1.2 -- Range
+        },
+        [138] = 
+        {
+            [1] = 0.7, -- Durability
+            [2] = 1.3 -- Range
+        },
+        [172] = 
+        {
+            [1] = 0.6, -- Durability
+            [2] = 1.4 -- Range
+        },
+        [194] = 
+        {
+            [1] = 0.5, -- Durability
+            [2] = 1.5 -- Range
+        },
+    }
+
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("Render", self, self.Render)
 
 	Network:Subscribe(var("items/ToggleEquippedRocketGrapple"):get(), self, self.ToggleEquippedRocketGrapple)
+end
+
+-- Returns the durability and range perks in a table
+function EquippableRocketGrapple:GetPerkMods()
+
+    local perks = LocalPlayer:GetValue("Perks")
+
+    if not perks then return end
+
+    local perk_mods = {[1] = 1, [2] = 1}
+
+    for perk_id, perk_mod_data in pairs(self.perks) do
+        local choice = perks.unlocked_perks[perk_id]
+        if choice == 1 then
+            perk_mods[choice] = math.min(perk_mods[choice], perk_mod_data[choice])
+        elseif choice == 2 then
+            perk_mods[choice] = math.max(perk_mods[choice], perk_mod_data[choice])
+        end
+    end
+
+    return perk_mods
+
 end
 
 function EquippableRocketGrapple:GetEquipped()
@@ -59,7 +111,9 @@ function EquippableRocketGrapple:FireGrapplehookPre()
 			}
 			self.grapple.object = ClientStaticObject.Create(args)
 			self.grapple.end_pos = ray.position + ang * Vector3.Forward * 1.5
-			self.grapple.active = true
+            self.grapple.active = true
+            self.distance = ray.distance
+            self.end_pos = ray.position
 
 			self.grapple.timer:Restart()
 
@@ -130,6 +184,11 @@ function EquippableRocketGrapple:HandlePlayerRocketGrapple(player)
     local parachuting = base_state == AnimationState.SParachute
     
     local rocket_grappling = grappling and speed > 10 and not parachuting
+
+    if player == LocalPlayer and not self.distance then
+        rocket_grappling = false
+    end
+
     if rocket_grappling then
         local arm_pos = player:GetBonePosition("ragdoll_AttachHandLeft")
         if not self.grapple_fx[player:GetId()] then
@@ -164,27 +223,35 @@ function EquippableRocketGrapple:Render(args)
 	
 	if left_arm_state == 408 then -- hook attaches to something
 		
-	end
+    end
+    
+    local perk_mods = self:GetPerkMods()
+    self.range = self.base_range * perk_mods[2]
 
     self.grappling = base_state == AnimationState.SReelFlight or left_arm_state == AnimationState.LaSGrapple
     local parachuting = base_state == AnimationState.SParachute
 
     local cam_pos = Camera:GetPosition()
     if IsNaN(cam_pos.x) or IsNaN(cam_pos.y) or IsNaN(cam_pos.z) then return end
-	local ray = Physics:Raycast(cam_pos, Camera:GetAngle() * Vector3.Forward, 0, 1000)
+	local ray = Physics:Raycast(cam_pos, Camera:GetAngle() * Vector3.Forward, 2, self.range)
 
 	self:RenderGrappleDistance(ray)
 
     self:HandlePlayerRocketGrapple(LocalPlayer)
 
 	local localplayer_velo = LocalPlayer:GetLinearVelocity()
-	local speed = math.abs((-LocalPlayer:GetAngle() * localplayer_velo).z)
+    local speed = math.abs((-LocalPlayer:GetAngle() * localplayer_velo).z)
+    
+    if not self.grappling and not self.grapple.active and not IsValid(self.grapple.object) then
+        self.distance = nil
+    end
 
     if self.grappling 
     and not parachuting
 	and speed > 10 
 	and speed < self.speed_mod * self.speed_base
-	and ray.distance > self.speed_dist then
+    and ray.distance > self.speed_dist
+    and self.distance then
 		LocalPlayer:SetLinearVelocity(localplayer_velo * 1.05)
 	end
 
@@ -192,7 +259,7 @@ function EquippableRocketGrapple:Render(args)
         self.grapple.moved = true
         self.grapple.object:SetPosition(self.grapple.end_pos)
         self.grapple.timer:Restart()
-    elseif self.grapple.timer:GetMilliseconds() > 1 and self.grapple.moved and self.grapple.active and IsValid(self.grapple.object) then
+    elseif self.grapple.timer:GetMilliseconds() > 100 and self.grapple.moved and self.grapple.active and IsValid(self.grapple.object) then
         self.grapple.object:Remove()
         self.grapple.object = nil
         self.grapple.moved = false
@@ -203,7 +270,7 @@ end
 
 function EquippableRocketGrapple:RenderGrappleDistance(ray)
 
-    if ray.distance < 80 then return end
+    if ray.distance < 80 and not self.distance then return end
 
 	local triangleColor = Color(0,200,0,150)
 	
@@ -213,9 +280,13 @@ function EquippableRocketGrapple:RenderGrappleDistance(ray)
 	
 	if self.grappling then
 		triangleColor = Color(0,0,200,150)
-	end
-	
-	if ray.distance < 1000 then
+    end
+    
+    if self.distance then
+        ray.distance = LocalPlayer:GetPosition():Distance(self.end_pos)
+    end
+
+	if ray.distance < self.range then
 
 		local str 		= 		string.format("%i m", tostring(ray.distance))
 		local size 		= 		Render.Size.x / 100

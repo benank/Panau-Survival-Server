@@ -58,6 +58,42 @@ function sAirStrikes:PlaceAirstrike(args, player)
         seed = math.random(9999999999)
     }
 
+    if using_item.item.name == "Area Bombing" then
+
+        -- Check for bomb increase perks
+
+        local perks = player:GetValue("Perks")
+        local extra_bombs = 0
+        local possible_perks = AirstrikePerks[using_item.item.name]
+
+        for perk_id, perk_mod_data in pairs(possible_perks) do
+            local choice = perks.unlocked_perks[perk_id]
+            if perk_mod_data[choice] then
+                extra_bombs = math.max(extra_bombs, perk_mod_data[choice])
+            end
+        end
+
+        airstrike_data.num_bombs = ItemsConfig.airstrikes["Area Bombing"].num_bombs + extra_bombs
+
+    else
+
+        -- Check for radius perks
+
+        local perks = player:GetValue("Perks")
+        local radius_modifier = 1
+        local possible_perks = AirstrikePerks[using_item.item.name]
+
+        for perk_id, perk_mod_data in pairs(possible_perks) do
+            local choice = perks.unlocked_perks[perk_id]
+            if perk_mod_data[choice] then
+                radius_modifier = math.max(radius_modifier, perk_mod_data[choice])
+            end
+        end
+
+        airstrike_data.radius = ItemsConfig.airstrikes[using_item.item.name].radius * radius_modifier
+
+    end
+
     local drop_position = args.position + Vector3.Up * 500
     local direction = Vector3(math.random() - 0.5, 0, math.random() - 0.5):Normalized()
     local start_position = drop_position - direction * 500

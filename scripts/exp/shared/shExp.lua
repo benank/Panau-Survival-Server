@@ -14,48 +14,48 @@ Exp =
     },    
     Kill = 
     {
-        [DamageEntity.None] = 40,
-        [DamageEntity.Physics] = 120,
-        [DamageEntity.Bullet] = 180,
-        [DamageEntity.Explosion] = 180,
-        [DamageEntity.Vehicle] = 100,
-        [DamageEntity.ToxicGrenade] = 160,
-        [DamageEntity.Molotov] = 160,
-        [DamageEntity.Mine] = 100,
-        [DamageEntity.Claymore] = 100,
-        [DamageEntity.HEGrenade] = 160,
-        [DamageEntity.LaserGrenade] = 140,
+        [DamageEntity.None] = 20,
+        [DamageEntity.Physics] = 60,
+        [DamageEntity.Bullet] = 90,
+        [DamageEntity.Explosion] = 90,
+        [DamageEntity.Vehicle] = 50,
+        [DamageEntity.ToxicGrenade] = 80,
+        [DamageEntity.Molotov] = 80,
+        [DamageEntity.Mine] = 50,
+        [DamageEntity.Claymore] = 50,
+        [DamageEntity.HEGrenade] = 80,
+        [DamageEntity.LaserGrenade] = 70,
         [DamageEntity.Hunger] = 0,
         [DamageEntity.Thirst] = 0,
-        [DamageEntity.VehicleGuard] = 80,
+        [DamageEntity.VehicleGuard] = 40,
         [DamageEntity.WarpGrenade] = 0,
-        [DamageEntity.Suicide] = 120,
+        [DamageEntity.Suicide] = 60,
         [DamageEntity.AdminKill] = 0,
-        [DamageEntity.C4] = 170,
-        [DamageEntity.MeleeGrapple] = 50,
-        [DamageEntity.MeleeKick] = 60,
-        [DamageEntity.MeleeSlidingKick] = 50,
-        [DamageEntity.CruiseMissile] = 180,
-        [DamageEntity.AreaBombing] = 160,
-        [DamageEntity.TacticalNuke] = 160,
+        [DamageEntity.C4] = 80,
+        [DamageEntity.MeleeGrapple] = 30,
+        [DamageEntity.MeleeKick] = 30,
+        [DamageEntity.MeleeSlidingKick] = 30,
+        [DamageEntity.CruiseMissile] = 90,
+        [DamageEntity.AreaBombing] = 80,
+        [DamageEntity.TacticalNuke] = 80,
     },
     Hack = 
     {
-        [13] = 75, -- Locked Stash
-        [14] = 15 -- Proximity Alarm
+        [13] = 60, -- Locked Stash
+        [14] = 12 -- Proximity Alarm
     },
     DestroyStash = 
     {
-        [11] = 50, -- Barrel Stash
-        [12] = 100, -- Garbage Stash
-        [13] = 150, -- Locked Stash
-        [14] = 15 -- Proximity alarm
+        [11] = 30, -- Barrel Stash
+        [12] = 50, -- Garbage Stash
+        [13] = 100, -- Locked Stash
+        [14] = 6 -- Proximity alarm
     },
     DestroyExplosive = 
     {
-        [DamageEntity.Mine] = 6,
-        [DamageEntity.Claymore] = 6,
-        [DamageEntity.C4] = 15
+        [DamageEntity.Mine] = 5,
+        [DamageEntity.Claymore] = 5,
+        [DamageEntity.C4] = 10
     },
     KillExpireTime = 60 * 60 * 8, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
     LevelCutoffs = -- Level cutoffs for no exp for these players

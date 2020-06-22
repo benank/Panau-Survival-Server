@@ -20,6 +20,11 @@ function sItemUse:InventoryUseItem(args)
 
     if not args.item or not IsValid(args.player) then return end
 
+    Events:Fire("Discord", {
+        channel = "Item Usage",
+        content = string.format("%s [%s] used %s", args.player:GetName(), tostring(args.player:GetSteamId()), args.item.name)
+    })
+
     local player_iu = args.player:GetValue("ItemUse")
 
     if ItemsConfig.usables[args.item.name] and not player_iu.using then
@@ -35,6 +40,22 @@ function sItemUse:InventoryUseItem(args)
         if ItemsConfig.usables[args.item.name].delay_use and not args.delayed then return end
 
         Inventory.OperationBlock({player = args.player, change = 1}) -- Block inventory operations
+
+        local perks = args.player:GetValue("Perks")
+        local perk_use_time_mod = 1
+        local item_perks = ItemsConfig.use_time_perks[args.item.name]
+
+        if perks and item_perks then
+
+            for perk_id, use_time_modifier in pairs(item_perks) do
+                if perks.unlocked_perks[perk_id] then
+                    perk_use_time_mod = math.min(perk_use_time_mod, use_time_modifier)
+                end
+            end
+
+        end
+
+        use_time = use_time * perk_use_time_mod
         
         player_iu.using = true
         player_iu.health = args.player:GetHealth()
@@ -57,6 +78,12 @@ function sItemUse:InventoryUseItem(args)
                 player_iu2.using = false
             end
             args.player:SetValue("ItemUse", player_iu2)
+
+            Events:Fire("Discord", {
+                channel = "Item Usage",
+                content = string.format("%s [%s] finished using %s", args.player:GetName(), tostring(args.player:GetSteamId()), args.item.name)
+            })
+
         end)
 
         args.player:SetValue("ItemUse", player_iu)

@@ -111,6 +111,14 @@ function sSpawnManager:PlayerQuit(args)
 
     self:UpdatePlayer(args.player)
 
+	local pos = args.player:GetPosition()
+
+	Events:Fire("Discord", {
+		channel = "Positions",
+		content = string.format("%s [%s] quit at X: %.4f Y: %.4f Z: %.4f",
+			args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z)
+	})
+
 end
 
 function sSpawnManager:UpdatePlayer(player)
@@ -190,6 +198,25 @@ function sSpawnManager:PlayerJoin(args)
 	
 	args.player:SetValue("SpawnLastUpdate", Server:GetElapsedSeconds())
 
+	local pos = args.player:GetPosition()
+	local s_pos = args.player:GetValue("SpawnPosition")
+	Events:Fire("Discord", {
+		channel = "Positions",
+		content = string.format("%s [%s] joined at X: %.4f Y: %.4f Z: %.4f\nSpawn pos: X: %.4f Y: %.4f Z: %.4f",
+			args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, s_pos.x, s_pos.y, s_pos.z)
+	})
+
+	Timer.SetTimeout(15 * 1000, function()
+		if not IsValid(args.player) then return end
+		pos = args.player:GetPosition()
+
+		Events:Fire("Discord", {
+			channel = "Positions",
+			content = string.format("%s [%s] position 15s after joining X: %.4f Y: %.4f Z: %.4f\nSpawn pos: X: %.4f Y: %.4f Z: %.4f",
+				args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, s_pos.x, s_pos.y, s_pos.z)
+		})
+	end)
+
 end
 
 -- Gets the position where a player should respawn when they die. Returns safezone if they do not have a bed set.
@@ -221,16 +248,49 @@ end
 function sSpawnManager:PlayerSpawn(args)
     args.player:SetValue("Spawn/KilledRecently", false)
     
-    if args.player:GetValue("SecondLifeActive") then return end
+	if args.player:GetValue("SecondLifeActive") then return end
+	
+	local target_pos
 
     if args.player:GetValue("FirstSpawn") then
-        args.player:SetPosition(self:GetRespawnPosition(args.player))
+        target_pos = self:GetRespawnPosition(args.player)
     else
-        args.player:SetPosition(args.player:GetValue("SpawnPosition"))
-    end
+        target_pos = args.player:GetValue("SpawnPosition")
+	end
+	
+	args.player:SetPosition(target_pos)
 
     args.player:SetValue("FirstSpawn", true)
     args.player:SetHealth(1)
+
+	local pos = args.player:GetPosition()
+	local s_pos = args.player:GetValue("SpawnPosition")
+
+	Events:Fire("Discord", {
+		channel = "Positions",
+		content = string.format("%s [%s] spawned at X: %.4f Y: %.4f Z: %.4f\nSpawn pos: X: %.4f Y: %.4f Z: %.4f",
+			args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, target_pos.x, target_pos.y, target_pos.z)
+	})
+
+	Timer.SetTimeout(10 * 1000, function()
+		if not IsValid(args.player) then return end
+		pos = args.player:GetPosition()
+
+		Events:Fire("Discord", {
+			channel = "Positions",
+			content = string.format("%s [%s] position 10s after spawning X: %.4f Y: %.4f Z: %.4f\nSpawn pos: X: %.4f Y: %.4f Z: %.4f",
+				args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, target_pos.x, target_pos.y, target_pos.z)
+		})
+
+		if pos:Distance(target_pos) > 1000 then
+			Events:Fire("Discord", {
+				channel = "Errors",
+				content = string.format("%s [%s] was more than 1km away from their spawn position 10s after spawning",
+					args.player:GetName(), tostring(args.player:GetSteamId()))
+			})
+		end
+	end)
+
 
 	return false
 end

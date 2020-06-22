@@ -93,14 +93,34 @@ end
 
 -- Called when the contents of the stash are changed by player
 function sStash:ContentsChanged(player)
+    if tostring(player:GetSteamId()) == self.owner_id then
+        self:Sync(player)
+    else
 
+        local owner = nil
+
+        for p in Server:GetPlayers() do
+            if tostring(p:GetSteamId()) == self.owner_id then
+                owner = p
+            end
+        end
+
+        if IsValid(owner) then
+            self:Sync(owner)
+        end
+
+    end
 end
 
 function sStash:Sync(player)
     if not IsValid(player) then return end
     if tostring(player:GetSteamId()) ~= self.owner_id then return end
     if self.lootbox.tier == Lootbox.Types.ProximityAlarm then return end
-    Network:Send(player, "Stashes/Sync", self:GetSyncData()) 
+    Network:Send(player, "Stashes/Sync", self:GetSyncData())
+
+    local player_stashes = player:GetValue("Stashes")
+    player_stashes[self.id] = self:GetSyncData()
+    player:SetValue("Stashes", player_stashes)
 end
 
 -- Removes the stash from the world, DB, and owner's menu

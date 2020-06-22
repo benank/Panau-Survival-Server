@@ -23,7 +23,7 @@ Network:Subscribe("items/RocketGrappleDecreaseDura", function(args, player)
         UpdateEquippedItem(player, "Grapplehook", nil)
     end
 
-    item.durability = item.durability - change * ItemsConfig.equippables["RocketGrapple"].dura_per_sec
+    item.durability = item.durability - math.ceil(change * ItemsConfig.equippables["RocketGrapple"].dura_per_sec)
     Inventory.ModifyDurability({
         player = player,
         item = item

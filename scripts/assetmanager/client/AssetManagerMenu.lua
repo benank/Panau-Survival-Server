@@ -57,7 +57,7 @@ function AssetManagerMenu:__init()
 
 
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
-    Events:Subscribe("PlayerExpUpdated", self, self.PlayerExpUpdated)
+    Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
 
     Events:Subscribe( "Render", self, self.Render )
     Events:Subscribe( "KeyUp", self, self.KeyUp )
@@ -75,7 +75,7 @@ function AssetManagerMenu:ModulesLoad()
     self:UpdateCategoryNames()
 end
 
-function AssetManagerMenu:PlayerExpUpdated()
+function AssetManagerMenu:PlayerPerksUpdated()
     -- Delay for server to update values
     Timer.SetTimeout(2000, function()
         self:UpdateCategoryNames()

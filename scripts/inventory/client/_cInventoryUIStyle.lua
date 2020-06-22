@@ -2,8 +2,8 @@ class 'cInventoryUIStyle'
 
 function cInventoryUIStyle:__init()
 
-    self.background_alpha = 160
-    self.default_inv_size = 1000 -- 800 px wide for the entire inventory
+    self.background_alpha = 200
+    self.default_inv_size = 600
     self.colors = 
     {
         default = 
@@ -31,15 +31,15 @@ function cInventoryUIStyle:__init()
 
     self.equipped_icon = 
     {
-        color = Color(110, 124, 164, 255),
-        color_under = Color(110, 124, 164, 120),
+        color = Color(255, 255, 255, 255),
+        color_under = Color(255, 255, 255, 128),
         position = Vector2(10, 10),
-        radius = 6
+        radius = math.min(6, Render.Size.y / 180)
     }
 
     self.car_paint_icon = 
     {
-        margin = 5,
+        margin = math.min(5, Render.Size.y / 216),
         border_color = Color.White
     }
 
@@ -62,18 +62,24 @@ function cInventoryUIStyle:__init()
     self.category_title_colors = {Normal = Color.White, Full = Color.Red}
     self.border_size = 2
 
+    self.dura_background_color = Color(255, 255, 255, 50)
+    self.tooltip_bg_color = Color(0, 0, 0, 200)
+
     self.item_colors = 
     {
-        blue = Color(17, 84, 135, self.background_alpha), -- armor, grapples, para, grenades, radio
-        red = Color(120, 10, 10, self.background_alpha), -- cruise missile, nuke, area bombing
         brightred = Color(200, 10, 10, self.background_alpha), -- C4 selected
+        red = Color(154, 0, 2, self.background_alpha), -- cruise missile, nuke, area bombing
+        orange = Color(213, 89, 0, self.background_alpha), -- unused for now
+        yellow = Color(223, 153, 0, self.background_alpha), -- landclaim, ping, bping, evac, vehicle repair, backtrak, hacker, woet
+        lightgreen = Color(75, 195, 54, self.background_alpha), -- food/drink items
+        green = Color(22, 149, 0, self.background_alpha), -- healing items
+        lightblue = Color(0, 172, 175, self.background_alpha), -- build items
+        blue = Color(0, 99, 166, self.background_alpha), -- armor, grapples, para, grenades, radio
+        fuschia = Color(158, 25, 57, self.background_alpha), -- unused for now
+        pink = Color(144, 61, 143, self.background_alpha), -- backpacks, scuba gear, explosive detector
+        purple = Color(52, 29, 145, self.background_alpha), -- boss drop items
+        white = Color(230, 230, 230, self.background_alpha), -- unused for now
         locked = Color(230, 10, 10, self.background_alpha), -- locked
-        pink = Color(140, 63, 140, self.background_alpha), -- backpacks, scuba gear, explosive detector
-        yellow = Color(155, 145, 29, self.background_alpha), -- landclaim, ping, bping, evac, vehicle repair, backtrak, hacker, woet
-        darkgreen = Color(24, 99, 24, self.background_alpha), -- food/drink items
-        green = Color(20, 155, 22, self.background_alpha), -- healing items
-        lightblue = Color(11, 118, 137, self.background_alpha), -- build items
-        purple = Color(84, 55, 229, self.background_alpha), -- boss drop items
     }
 
     self.item_color_map = 
@@ -111,21 +117,21 @@ function cInventoryUIStyle:__init()
         ["AntiGrav Grenade"] = self.item_colors.blue,
         ["Warp Grenade"] = self.item_colors.blue,
         ["Flashbang"] = self.item_colors.blue,
-        ["Apple Juice"] = self.item_colors.darkgreen,
-        ["Can of Beans"] = self.item_colors.darkgreen,
-        ["Can of Ham"] = self.item_colors.darkgreen,
-        ["Can of Peaches"] = self.item_colors.darkgreen,
-        ["Chips"] = self.item_colors.darkgreen,
-        ["Spicy Chips"] = self.item_colors.darkgreen,
-        ["Chocolate"] = self.item_colors.darkgreen,
-        ["Coffee"] = self.item_colors.darkgreen,
-        ["Cookies"] = self.item_colors.darkgreen,
-        ["Energy Drink"] = self.item_colors.darkgreen,
-        ["Iced Tea"] = self.item_colors.darkgreen,
-        ["Macadamia Nuts"] = self.item_colors.darkgreen,
-        ["Peanuts"] = self.item_colors.darkgreen,
-        ["Pretzel"] = self.item_colors.darkgreen,
-        ["Water"] = self.item_colors.darkgreen,
+        ["Apple Juice"] = self.item_colors.lightgreen,
+        ["Can of Beans"] = self.item_colors.lightgreen,
+        ["Can of Ham"] = self.item_colors.lightgreen,
+        ["Can of Peaches"] = self.item_colors.lightgreen,
+        ["Chips"] = self.item_colors.lightgreen,
+        ["Spicy Chips"] = self.item_colors.lightgreen,
+        ["Chocolate"] = self.item_colors.lightgreen,
+        ["Coffee"] = self.item_colors.lightgreen,
+        ["Cookies"] = self.item_colors.lightgreen,
+        ["Energy Drink"] = self.item_colors.lightgreen,
+        ["Iced Tea"] = self.item_colors.lightgreen,
+        ["Macadamia Nuts"] = self.item_colors.lightgreen,
+        ["Peanuts"] = self.item_colors.lightgreen,
+        ["Pretzel"] = self.item_colors.lightgreen,
+        ["Water"] = self.item_colors.lightgreen,
         ["Grapplehook"] = self.item_colors.blue,
         ["RocketGrapple"] = self.item_colors.blue,
         ["Explosives Detector"] = self.item_colors.yellow,
@@ -133,7 +139,7 @@ function cInventoryUIStyle:__init()
         ["Radio"] = self.item_colors.blue,
         ["SMRT-GRP"] = self.item_colors.blue,
         ["Wingsuit"] = self.item_colors.blue,
-        ["CamelBak"] = self.item_colors.darkgreen,
+        ["CamelBak"] = self.item_colors.lightgreen,
         ["Cloud Strider Boots"] = self.item_colors.purple,
         ["Second Life"] = self.item_colors.purple,
         ["Master Hacker"] = self.item_colors.purple,
