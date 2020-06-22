@@ -1,4 +1,4 @@
-IsTest = false
+IsTest = true
 function _debug(s)
 	if not IsTest then return end
 	if Server then

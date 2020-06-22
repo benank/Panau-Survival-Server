@@ -2,7 +2,7 @@
 class("FreeCam")
 
 function FreeCam:__init()
-	self.speed = 1 -- Default speed
+	self.speed = 0.75 -- Default speed
 	self.speedSetting = Config.speedSetting
 	self.speedUp = Config.speedUp
 	self.speedDown = Config.speedDown
