@@ -13,7 +13,7 @@ ItemsConfig =
         ["Vehicle Guard"] = {use_time = 3, range = 5},
         ["BackTrack"] = {use_time = 3},
         ["EVAC"] = {use_time = 5},
-        ["Respawner"] = {use_time = 3}, -- Temp
+        ["Respawner"] = {use_time = 10}, -- Temp
         ["Car Paint"] = {use_time = 3, range = 5},
         ["Hacker"] = {use_time = 3},
         ["Master Hacker"] = {use_time = 5},

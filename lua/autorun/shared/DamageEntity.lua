@@ -18,6 +18,7 @@ DamageEntity.MeleeSlidingKick = 21
 DamageEntity.CruiseMissile = 22
 DamageEntity.AreaBombing = 23
 DamageEntity.TacticalNuke = 24
+DamageEntity.CombatLog = 25
 
 DamageEntityNames = 
 {
@@ -46,4 +47,5 @@ DamageEntityNames =
     [DamageEntity.CruiseMissile] = "Cruise Missile",
     [DamageEntity.AreaBombing] = "Area Bombing",
     [DamageEntity.TacticalNuke] = "Tactical Nuke",
+    [DamageEntity.CombatLog] = "Combat Log",
 }
