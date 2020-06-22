@@ -241,8 +241,6 @@ function sSpawnManager:DelayedSpawn(args)
 
 			local target_pos = args.player:GetValue("SpawnPosition")
 			
-			print("DELAY SPAWN")
-			
 			args.player:SetPosition(target_pos)
 			args.player:SetValue("IsOkToSavePosition", args.player:GetValue("IsOkToSavePosition") - 1)
 
@@ -256,7 +254,6 @@ function sSpawnManager:DelayedSpawn(args)
 end
 
 function sSpawnManager:PlayerSpawn(args)
-	print("PLAYER SPAWN")
     args.player:SetValue("Spawn/KilledRecently", false)
     
 	if args.player:GetValue("SecondLifeActive") then return end
@@ -264,10 +261,8 @@ function sSpawnManager:PlayerSpawn(args)
 	local target_pos
 
 	if args.player:GetValue("FirstSpawn") then
-		print("RESPAWN POS")
         target_pos = self:GetRespawnPosition(args.player)
     else
-		print("SPAWN POS")
         target_pos = args.player:GetValue("SpawnPosition")
 	end
 	
