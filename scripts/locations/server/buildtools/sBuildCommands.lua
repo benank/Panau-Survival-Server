@@ -5,11 +5,65 @@ function sBuildCommands:__init()
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
+    Network:Subscribe("BuildTools/SetCurrentObject", self, self.SetCurrentObject)
+    Network:Subscribe("BuildTools/PlaceObject", self, self.PlaceObject)
+
+end
+
+function sBuildCommands:PlaceObject(args, player)
+
+    local location_name = player:GetValue("Build_Location")
+
+    local location = sLocationManager.locations[location_name]
+    if not location then return end
+
+    local current_object = player:GetValue("CurrentObject")
+
+    local object_data = 
+    {
+        model = current_object.model,
+        collision = current_object.collision,
+        position = args.position,
+        angle = args.angle
+    }
+
+    location:AddObject(object_data)
+
+end
+
+
+function sBuildCommands:SetCurrentObject(args, player)
+    player:SetNetworkValue("CurrentObject", {
+        model = args.model,
+        collision = args.collision
+    })
 end
 
 function sBuildCommands:PlayerChat(args)
 
     local words = args.text:split(" ")
+
+    if words[1] == "/setobject" then
+
+        local model = words[2]
+        local collision = words[3]
+
+        if not model or not collision then
+            Chat:Send(args.player, "You must specify both a model and collision!", Color.Red)
+            return
+        end
+
+        args.player:SetNetworkValue("CurrentObject", {
+            model = model,
+            collision = collision
+        })
+
+        Chat:Send(args.player, string.format("Set current object model to %s and collision to %s", 
+            model, collision), Color(0, 255, 0))
+
+        return
+
+    end
 
     if words[1] ~= "/location" then return end
 
@@ -89,6 +143,26 @@ function sBuildCommands:PlayerChat(args)
         end
 
         sLocationLoader:SaveLocation(sLocationManager.locations[current_location])
+
+    elseif words[2] == "tp" then
+
+        local name = args.text:gsub(words[1], ""):gsub(words[2], ""):trim()
+
+        if not name then
+            Chat:Send(args.player, "You must specify a location name!", Color.Red)
+            return
+        end
+
+        local location = sLocationManager.locations[string.lower(name)]
+
+        if not location then
+            Chat:Send(args.player, "This location does not exist! Maybe try creating it first?", Color.Red)
+            return
+        end
+
+        args.player:SetPosition(location.center + Vector3.Up * 500)
+
+        Chat:Send(args.player, string.format("Teleported to %s", name), Color(0, 255, 0))
 
     end
 

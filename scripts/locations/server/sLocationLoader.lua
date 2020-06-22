@@ -26,7 +26,6 @@ function sLocationLoader:SaveLocation(location)
     local objects_serialized = {}
 
     for index, object_data in pairs(location.objects) do
-        output_table(object_data)
         objects_serialized[index] = self:SerializeObjectData(object_data)
     end
 

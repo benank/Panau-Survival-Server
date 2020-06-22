@@ -1,5 +1,5 @@
-function ModelViewer:__init()	; EventBase.__init(self)
-								; NetworkBase.__init(self)
+function ModelViewer:__init()	 EventBase.__init(self)
+								 NetworkBase.__init(self)
 
 	self:EventSubscribe( "PlayerChat" )
 	self:EventSubscribe( "PlayerQuit" )
@@ -118,6 +118,12 @@ function ModelViewer:PlayerChat( e )
 		return false
 	elseif e.text == "/plant" then
 		table.insert(plants, {model = self.object:GetModel(), collision = self.object:GetCollision()})
+	elseif e.text == "/useobject" then
+		e.player:SetNetworkValue("CurrentObject", {
+			model = self.object:GetModel(),
+			collision = self.object:GetCollision()
+		})
+		Chat:Send(e.player, "Now using current object as build object.", Color(0, 255, 0))
 	elseif e.text == "/generate" then
 		local name = "PlantList" .. tostring(math.random(0, 9999)) .. ".txt"
 		local file = io.open(name, "w")
