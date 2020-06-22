@@ -141,13 +141,13 @@ function sLootManager:LoadFromFile()
                 end
 			end
 		end
-		file:close()
+        file:close()
+        
+        print(string.format("Loaded: %d tier 1, %d tier 2, %d tier 3, %d tier 4", 
+            tiers[Lootbox.Types.Level1], tiers[Lootbox.Types.Level2], tiers[Lootbox.Types.Level3], tiers[Lootbox.Types.Level4]))
 	else
 		print("Fatal Error: Could not load loot from file")
     end
-    
-    print(string.format("Loaded: %d tier 1, %d tier 2, %d tier 3, %d tier 4", 
-        tiers[Lootbox.Types.Level1], tiers[Lootbox.Types.Level2], tiers[Lootbox.Types.Level3], tiers[Lootbox.Types.Level4]))
 
 end
 
