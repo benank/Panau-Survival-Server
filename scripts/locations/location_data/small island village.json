@@ -1,28 +1,37 @@
 {
+  "radius":50,
   "objects":[{
-      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
-      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
       "position":{
-        "y":208.069077,
         "z":-413.957123,
-        "x":-5010.96582
+        "x":-5010.96582,
+        "y":208.069077
       },
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
       "angle":"-0.039336,0,0.003524,0.99922"
     },{
-      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
       "position":{
-        "y":208.207993,
         "z":-426.27243,
-        "x":-5006.170898
+        "x":-5006.170898,
+        "y":208.207993
       },
       "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
       "angle":"0.030758,0,0.042057,0.998642"
+    },{
+      "position":{
+        "z":-415.538788,
+        "x":-5011.570312,
+        "y":251.884293
+      },
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "angle":"0.671082,0,0.106663,0.733671"
     }],
+  "name":"Small Island Village",
   "center":{
-    "y":213.581024,
     "z":-385.558533,
-    "x":-5021.896973
-  },
-  "radius":50,
-  "name":"Small Island Village"
+    "x":-5021.896973,
+    "y":213.581024
+  }
 }

@@ -12,9 +12,13 @@ function cBuildObjectPlacer:__init()
         [2] = 0,
         [3] = 0
     }
+    self.offset = Vector3()
     self.range = 1000
 
+    self.display_bb = false
+
     self.rotation_axis = 1
+    self.rotation_mode = true
 
     self.text_color = Color(211, 167, 167)
     self.text = 
@@ -22,8 +26,9 @@ function cBuildObjectPlacer:__init()
         "Left Click: Place",
         "Right Click: Abort",
         "Mouse Wheel: Rotate",
-        "R: Change Rotation Axis (Axis: %d)",
-        "Shift + Mouse Wheel: Rotation speed (%.0f deg)"
+        "R: Change rotation/translation mode (Rotation Mode: %s)",
+        "Z: Change Offset Axis (Axis: %d)",
+        "Shift + Mouse Wheel: Rotation/Translation speed (%.0f)"
     }
 
     self.subs = {}
@@ -52,6 +57,30 @@ function cBuildObjectPlacer:__init()
     }
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("LocalPlayerChat", self, self.LocalPlayerChat)
+end
+
+function cBuildObjectPlacer:LocalPlayerChat(args)
+    
+    if args.text == "/displaybb" then
+        self.display_bb = not self.display_bb
+    elseif args.text == "/reset" then
+        self.rotation_offset = 
+        {
+            [1] = 0,
+            [2] = 0,
+            [3] = 0
+        }
+        self.offset = Vector3()
+
+        self.display_bb = false
+
+        self.rotation_axis = 1
+        self.rotation_mode = true
+
+    end
+
+
 end
 
 --[[
@@ -90,11 +119,6 @@ function cBuildObjectPlacer:StartObjectPlacement(args)
         Events:Subscribe("KeyUp", self, self.KeyUp)
     }
 
-    self.display_bb = args.display_bb == true
-    self.angle_offset = args.angle ~= nil and args.angle or Angle()
-    self.offset = args.offset or Vector3()
-    self.bb_mod = args.bb_mod or 1
-    
     self.object = ClientStaticObject.Create({
         position = Vector3(),
         angle = self.angle_offset,
@@ -210,6 +234,8 @@ function cBuildObjectPlacer:RenderText(can_place_here)
                 self:DrawShadowedText(render_position, string.format(text, self.rotation_speed), self.text_color, text_size)
             elseif index == count_table(self.text) - 1 then
                 self:DrawShadowedText(render_position, string.format(text, self.rotation_axis), self.text_color, text_size)
+            elseif index == count_table(self.text) - 2 then
+                self:DrawShadowedText(render_position, string.format(text, tostring(self.rotation_mode)), self.text_color, text_size)
             else
                 self:DrawShadowedText(render_position, text, self.text_color, text_size)
             end
@@ -245,13 +271,17 @@ end
 
 function cBuildObjectPlacer:KeyUp(args)
 
-    if args.key == string.byte("R") then
+    if args.key == string.byte("Z") then
 
         self.rotation_axis = self.rotation_axis + 1
 
         if self.rotation_axis > 3 then
             self.rotation_axis = 1
         end
+
+    elseif args.key == string.byte("R") then
+
+        self.rotation_mode = not self.rotation_mode
 
     end
 
@@ -262,7 +292,13 @@ function cBuildObjectPlacer:MouseScroll(args)
     local change = math.ceil(args.delta)
 
     if not Key:IsDown(VirtualKey.Shift) then
-        self.rotation_offset[self.rotation_axis] = self.rotation_offset[self.rotation_axis] + change * self.rotation_speed
+        if self.rotation_mode then
+            self.rotation_offset[self.rotation_axis] = self.rotation_offset[self.rotation_axis] + change * self.rotation_speed
+        else
+            local axes = {[1] = "x", [2] = "y", [3] = "z"}
+            local axis = axes[self.rotation_axis]
+            self.offset[axis] = self.offset[axis] + change * self.rotation_speed * 0.01
+        end
     else
         self.rotation_speed = self.rotation_speed + 1 * change
         self.rotation_speed = math.min(90, math.max(0, self.rotation_speed))

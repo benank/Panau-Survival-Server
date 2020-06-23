@@ -59,10 +59,14 @@ function cBuildMode:RenderSelectedObject(args)
 
     if not IsValid(self.selected_object) then return end
 
-    local t = Transform3():Translate(self.selected_object:GetPosition()):Rotate(Camera:GetAngle() * Angle(0, math.pi / 2, 0))
+    local pos, on_screen = Render:WorldToScreen(self.selected_object:GetPosition())
+
+    if not on_screen then return end
+
+    local t = Transform2():Translate(pos)
     Render:SetTransform(t)
 
-    Render:FillCircle(Vector3.Zero, 0.5, Color(0, 200, 0, 150))
+    Render:FillCircle(Vector2.Zero, 50, Color(0, 200, 0, 150))
 
     Render:ResetTransform()
 
@@ -93,7 +97,7 @@ function cBuildMode:GetLookAtObject()
     if not ray.entity or ray.entity.__type ~= "ClientStaticObject" then return end
 
     local object = ray.entity
-    if not object:GetValue("LocationId") then return end -- Not a valid location object
+    if not object:GetValue("LocationName") then return end -- Not a valid location object
 
     return object
 
