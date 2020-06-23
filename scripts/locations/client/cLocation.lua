@@ -24,7 +24,7 @@ function cLocation:SpawnObjects()
 
     Thread(function()
     
-        for index, object_data in pairs(self.object_data) do
+        for index, object_data in ipairs(self.object_data) do
 
             local object = ClientStaticObject.Create({
                 position = object_data.position,
@@ -34,6 +34,7 @@ function cLocation:SpawnObjects()
             })
 
             object:SetValue("LocationName", self.name)
+            object:SetValue("ObjectIndex", index)
 
             self.objects[index] = object
 

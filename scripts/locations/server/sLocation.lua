@@ -20,6 +20,11 @@ function sLocation:AddObject(args)
 
     if not BUILDING_ENABLED then return end
 
+    if args.position:Distance(self.center) > self.radius then
+        Chat:Broadcast("Attempted to place object outside of location!", Color.Red)
+        return
+    end
+
     table.insert(self.objects, args)
 
     -- Sync newly placed object to everyone

@@ -15,6 +15,10 @@ function cBuildObjectPlacer:__init()
     self.offset = Vector3()
     self.range = 1000
 
+    self.normal_angle_frozen = Angle()
+
+    self.frozen = false
+
     self.display_bb = false
 
     self.rotation_axis = 1
@@ -26,6 +30,7 @@ function cBuildObjectPlacer:__init()
         "Left Click: Place",
         "Right Click: Abort",
         "Mouse Wheel: Rotate",
+        "X: Toggle Frozen (Frozen: %s)",
         "R: Change rotation/translation mode (Rotation Mode: %s)",
         "Z: Change Offset Axis (Axis: %d)",
         "Shift + Mouse Wheel: Rotation/Translation speed (%.0f)"
@@ -98,10 +103,8 @@ end
 ]]
 function cBuildObjectPlacer:StartObjectPlacement(args)
 
-    assert(type(args.model) == "string", "args.model expected to be a string")
-
     if not LocalPlayer:GetValue("Build_Location") then
-        Chat:Print("You must be building at a location to spawn objects!", Color.Red)
+        Chat:Print("You must be building at a location to place objects!", Color.Red)
         return
     end
 
@@ -119,11 +122,28 @@ function cBuildObjectPlacer:StartObjectPlacement(args)
         Events:Subscribe("KeyUp", self, self.KeyUp)
     }
 
-    self.object = ClientStaticObject.Create({
-        position = Vector3(),
-        angle = self.angle_offset,
-        model = args.model
-    })
+    self.angle_offset = args.angle or Angle()
+
+    self.frozen = IsValid(args.object)
+
+    if not args.object then
+        self.object = ClientStaticObject.Create({
+            position = Vector3(),
+            angle = self.angle_offset,
+            model = args.model
+        })
+    else
+        self.object = args.object
+        self.position = self.object:GetPosition()
+        
+        self.rotation_offset = 
+        {
+            [1] = 0,
+            [2] = 0,
+            [3] = 0
+        }
+        self.offset = Vector3()
+    end
 
     self.rotation_yaw = 0
 
@@ -197,6 +217,8 @@ function cBuildObjectPlacer:Render(args)
         self:CreateModel()
     end
 
+    local position = self.position
+
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, self.range)
     self.forward_ray = ray
     self.entity = ray.entity
@@ -210,12 +232,25 @@ function cBuildObjectPlacer:Render(args)
         self.rotation_offset[2] * conversion,
         self.rotation_offset[3] * conversion
     )
-    local ang = Angle.FromVectors(Vector3.Up, ray.normal) * rotation_offset * self.angle_offset
-    self.object:SetAngle(ang)
 
-    self.object:SetPosition(ray.position + ang * self.offset)
+    self.normal_angle = Angle.FromVectors(Vector3.Up, ray.normal)
+    local ang = self.normal_angle * rotation_offset * self.angle_offset
 
-    self.can_place_here = can_place_here
+    local angle = self.normal_angle_frozen * rotation_offset * self.angle_offset
+
+    if not self.frozen then
+        angle = ang
+    end
+
+    self.object:SetAngle(angle)
+
+    if not self.frozen then
+        position = ray.position
+    end
+
+    self.object:SetPosition(position + angle * self.offset)
+
+    self.can_place_here = true
     self:RenderText(can_place_here)
 
 end
@@ -227,18 +262,16 @@ function cBuildObjectPlacer:RenderText(can_place_here)
     local render_position = Render.Size / 2 + Vector2(20, 20)
 
     for index, text in ipairs(self.text) do
-        if index == 1 and not can_place_here then
-            self:DrawShadowedText(render_position, "CANNOT PLACE HERE", Color.Red, text_size)
+        if index == count_table(self.text) then
+            self:DrawShadowedText(render_position, string.format(text, self.rotation_speed), self.text_color, text_size)
+        elseif index == count_table(self.text) - 1 then
+            self:DrawShadowedText(render_position, string.format(text, self.rotation_axis), self.text_color, text_size)
+        elseif index == count_table(self.text) - 2 then
+            self:DrawShadowedText(render_position, string.format(text, tostring(self.rotation_mode)), self.text_color, text_size)
+        elseif index == count_table(self.text) - 3 then
+            self:DrawShadowedText(render_position, string.format(text, tostring(self.frozen)), self.text_color, text_size)
         else
-            if index == count_table(self.text) then
-                self:DrawShadowedText(render_position, string.format(text, self.rotation_speed), self.text_color, text_size)
-            elseif index == count_table(self.text) - 1 then
-                self:DrawShadowedText(render_position, string.format(text, self.rotation_axis), self.text_color, text_size)
-            elseif index == count_table(self.text) - 2 then
-                self:DrawShadowedText(render_position, string.format(text, tostring(self.rotation_mode)), self.text_color, text_size)
-            else
-                self:DrawShadowedText(render_position, text, self.text_color, text_size)
-            end
+            self:DrawShadowedText(render_position, text, self.text_color, text_size)
         end
 
         render_position = render_position + Vector2(0, Render:GetTextHeight(text) + 4)
@@ -280,9 +313,17 @@ function cBuildObjectPlacer:KeyUp(args)
         end
 
     elseif args.key == string.byte("R") then
-
         self.rotation_mode = not self.rotation_mode
+    elseif args.key == string.byte("X") then
+        
+        self.frozen = not self.frozen
+        self.position = self.object:GetPosition()
 
+        if self.frozen then
+            self.normal_angle_frozen = self.normal_angle
+        else
+            self.normal_angle_frozen = Angle()
+        end
     end
 
 end

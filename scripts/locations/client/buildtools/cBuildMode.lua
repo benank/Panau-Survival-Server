@@ -116,16 +116,21 @@ function cBuildMode:MouseUp(args)
         if cBuildObjectPlacer.placing then return end
         self.selected_object = self:GetLookAtObject()
 
-
     elseif args.button == 3 then
 
         -- Middle click, duplicate object
-        local object = self:GetLookAtObject()
+        local object = self.selected_object
 
         if not IsValid(object) then return end
 
         cBuildObjectPlacer:StartObjectPlacement({
-            model = object:GetModel()
+            object = ClientStaticObject.Create({
+                position = object:GetPosition(),
+                angle = object:GetAngle(),
+                model = object:GetModel(),
+                collision = object:GetCollision()
+            }),
+            angle = object:GetAngle()
         })
 
         Network:Send("BuildTools/SetCurrentObject", {
@@ -150,6 +155,18 @@ function cBuildMode:KeyUp(args)
         else
             cBuildObjectPlacer:StopObjectPlacement()
         end
+
+    elseif args.key == VirtualKey.Delete then
+
+        if not IsValid(self.selected_object) then return end
+
+        self.selected_object:Remove()
+
+        -- TODO: remove object with id from location
+
+    elseif args.key == string.byte("P") then
+
+        -- Duplicate object at position so it can be moved while frozen
 
     end
 
