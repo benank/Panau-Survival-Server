@@ -178,7 +178,7 @@ function sSpawnManager:PlayerJoin(args)
 		args.player:SetValue("IsOkToSavePosition", 1)
 		args.player:SetValue("RespawnPosition", spawn_pos)
 		args.player:SetValue("SpawnPosition", spawn_pos)
-		self:DelayedSpawn({position = spawn_pos, player = args.player, timeout = 5})
+		self:DelayedSpawn({position = spawn_pos, player = args.player, timeout = 3})
 
 		local command = SQL:Command("INSERT INTO positions (steamID, x, y, z, homeX, homeY, homeZ) VALUES (?, ?, ?, ?, ?, ?, ?)")
 		command:Bind(1, steamid)
@@ -236,10 +236,18 @@ end
 
 function sSpawnManager:DelayedSpawn(args)
 
-	Timer.SetTimeout(args.timeout, function()
-		if IsValid(args.player) and args.position then
-			args.player:SetPosition(args.position)
+	Timer.SetTimeout(args.timeout * 1000, function()
+		if IsValid(args.player) then
+
+			local target_pos = args.player:GetValue("SpawnPosition")
+			
+			args.player:SetPosition(target_pos)
 			args.player:SetValue("IsOkToSavePosition", args.player:GetValue("IsOkToSavePosition") - 1)
+
+			Events:Fire("DelayedSpawn", {
+				player = args.player
+			})
+
 		end
 	end)
 
@@ -252,7 +260,7 @@ function sSpawnManager:PlayerSpawn(args)
 	
 	local target_pos
 
-    if args.player:GetValue("FirstSpawn") then
+	if args.player:GetValue("FirstSpawn") then
         target_pos = self:GetRespawnPosition(args.player)
     else
         target_pos = args.player:GetValue("SpawnPosition")
@@ -297,6 +305,14 @@ end
 
 function sSpawnManager:PlayerDeath(args)
 	args.player:SetValue("Spawn/KilledRecently", true)
+
+	Timer.SetTimeout(5000, function()
+	
+		if not IsValid(args.player) then return end
+
+		self:PlayerSpawn({player = args.player})
+	
+	end)
 end
 
 sSpawnManager = sSpawnManager()

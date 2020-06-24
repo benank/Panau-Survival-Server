@@ -39,6 +39,10 @@ function cSafezone:RenderText(args)
 
         self:RenderSafezoneText("In Neutralzone", "You don't lose items on death here", config.neutralzone.color)
 
+    elseif LocalPlayer:GetValue("InCombat") then
+
+        self:RenderSafezoneText("In Combat", "Do not log off now", Color(255, 0, 0, 150))
+
     end
 
 end
