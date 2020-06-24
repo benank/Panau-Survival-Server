@@ -29,7 +29,7 @@ function cSurvivalHUD:__init()
             percent = 0.5,
             percent2 = 0.5,
             color = Color(255, 26, 0), -- Combat
-            color2 = Color(23, 97, 226), -- Exploration
+            color2 = Color(223, 153, 0), -- Exploration
             dual = true,
             level = true,
             small_size = self.small_element_size,
@@ -39,7 +39,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Health",
             percent = 0.75,
-            color = Color(223, 153, 0),
+            color = Color(22, 149, 0),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
@@ -47,7 +47,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Food",
             percent = 1.0,
-            color = Color(12, 160, 16),
+            color = Color(0, 112, 115),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
@@ -55,7 +55,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Water",
             percent = 0.25,
-            color = Color(23, 97, 226),
+            color = Color(0, 172, 175),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
@@ -70,7 +70,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Helmet",
             percent = 0.5,
-            color = Color(123, 125, 13),
+            color = Color(213, 89, 0),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = false
@@ -78,7 +78,7 @@ function cSurvivalHUD:__init()
         cSurvivalHUDElement({
             name = "Vest",
             percent = 0.5,
-            color = Color(130, 97, 14),
+            color = Color(213, 89, 0),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = false

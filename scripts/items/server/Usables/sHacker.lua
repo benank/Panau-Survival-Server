@@ -84,7 +84,8 @@ function sHacker:UseItem(args, player)
 
         local current_box = player:GetValue("CurrentLootbox")
         if not current_box or (not current_box.locked and not hackable_tiers[current_box.tier])
-        or (current_box.stash.access_mode ~= 3 and current_box.stash.owner_id ~= tostring(player:GetSteamId()))
+        or current_box.stash.access_mode == 1
+        or current_box.stash.owner_id == tostring(player:GetSteamId())
         or AreFriends(player, current_box.stash.owner_id) then
             Chat:Send(player, "You must open a hackable object first!", Color.Red)
             return
