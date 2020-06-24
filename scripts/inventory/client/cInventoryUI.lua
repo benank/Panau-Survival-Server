@@ -209,7 +209,7 @@ function cInventoryUI:PopulateEntry(args)
     for i = 1, 4 do
         itemwindow:FindChildByName(string.format("dura_%dx", i), true):Hide()
     end
-
+    
     if not args.empty and not args.locked then
 
         if not stack then -- No item found, hide the entry
@@ -272,7 +272,7 @@ function cInventoryUI:PopulateEntry(args)
         itemwindow:SetDataNumber("loot_index", args.index)
         itemwindow:SetDataBool("locked", true)
 
-        durability:Hide()
+        durability_bg:Hide()
 
         InventoryUIStyle:UpdateItemColor(itemwindow)
 
@@ -288,7 +288,7 @@ function cInventoryUI:PopulateEntry(args)
         itemwindow:SetDataBool("loot", args.loot == true)
         itemwindow:SetDataNumber("loot_index", args.index)
 
-        durability:Hide()
+        durability_bg:Hide()
 
         itemwindow:SetDataBool("locked", false)
         InventoryUIStyle:UpdateItemColor(itemwindow)
