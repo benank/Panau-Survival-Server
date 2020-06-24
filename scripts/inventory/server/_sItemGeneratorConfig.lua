@@ -252,10 +252,10 @@ LootItems =
             rarity = 0.02,
             items = 
             {
-                ["Grapplehook"] = {rarity = 0.2, min = 1, max = 1},
-                ["Explosives Detector"] = {rarity = 0.5, min = 1, max = 1},
-                ["Combat Backpack"] = {rarity = 0.15, min = 1, max = 1},
-                ["Explorer Backpack"] = {rarity = 0.15, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.1, min = 1, max = 1},
+                ["Explosives Detector"] = {rarity = 0.55, min = 1, max = 1},
+                ["Combat Backpack"] = {rarity = 0.175, min = 1, max = 1},
+                ["Explorer Backpack"] = {rarity = 0.175, min = 1, max = 1},
             }
         },
         ["HEALTH"] = 
@@ -307,7 +307,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.536,
+            rarity = 0.551,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 3, max = 6},
@@ -349,14 +349,14 @@ LootItems =
         },
         ["GEAR"] = 
         {
-            rarity = 0.038,
+            rarity = 0.023,
             items = 
             {
-                ["Grapplehook"] = {rarity = 0.264, min = 1, max = 1},
-                ["Combat Backpack"] = {rarity = 0.263, min = 1, max = 1},
-                ["Explorer Backpack"] = {rarity = 0.263, min = 1, max = 1},
-                ["Parachute"] = {rarity = 0.105, min = 1, max = 1},
-                ["RocketGrapple"] = {rarity = 0.105, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.218, min = 1, max = 1},
+                ["Combat Backpack"] = {rarity = 0.217, min = 1, max = 1},
+                ["Explorer Backpack"] = {rarity = 0.217, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.174, min = 1, max = 1},
+                ["RocketGrapple"] = {rarity = 0.174, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
