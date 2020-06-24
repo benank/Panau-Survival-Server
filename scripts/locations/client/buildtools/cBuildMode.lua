@@ -6,6 +6,9 @@ function cBuildMode:__init()
 
     self.enabled = false -- Whether build mode is enabled or not
     self.selected_object = nil
+    self.groupmode = false
+    
+    self.selected_objects = {}
 
     self.disabled_build_actions = -- Actions to disable while in build mode
     {
@@ -50,6 +53,10 @@ function cBuildMode:RenderHud(args)
     
     local location = LocalPlayer:GetValue("Build_Location") or "None"
     Render:DrawText(pos, string.format("Location: %s", location), color, text_size)
+    pos = pos + Vector2(0, text_height)
+
+    local groupmode = tostring(self.groupmode)
+    Render:DrawText(pos, string.format("Group Mode Enabled: %s", groupmode), color, text_size)
     pos = pos + Vector2(0, text_height)
 
 
@@ -112,31 +119,60 @@ function cBuildMode:MouseUp(args)
 
     elseif args.button == 2 then 
 
-        -- Right click, select object
+        -- Right click, select object and begin editing it
         if cBuildObjectPlacer.placing then return end
-        self.selected_object = self:GetLookAtObject()
+
+        if not self.groupmode then
+            self.selected_object = self:GetLookAtObject()
+
+            cBuildObjectPlacer:StartObjectPlacement({
+                object = self.selected_object,
+                angle = self.selected_object:GetAngle()
+            })
+
+            Network:Send("BuildTools/SetCurrentObject", {
+                model = self.selected_object:GetModel(),
+                collision = self.selected_object:GetCollision()
+            })
+        else
+
+            local object = self:GetLookAtObject()
+            if not self.selected_objects[object:GetId()] then
+                self.selected_objects[object:GetId()] = object
+            else
+                self.selected_objects[object:GetId()] = nil
+            end
+
+        end
 
     elseif args.button == 3 then
 
-        -- Middle click, duplicate object
-        local object = self.selected_object
+        -- Middle click, duplicate object(s)
 
-        if not IsValid(object) then return end
+        if not self.groupmode then
+            local object = self.selected_object
 
-        cBuildObjectPlacer:StartObjectPlacement({
-            object = ClientStaticObject.Create({
-                position = object:GetPosition(),
-                angle = object:GetAngle(),
+            if not IsValid(object) then return end
+
+            cBuildObjectPlacer:StartObjectPlacement({
+                object = ClientStaticObject.Create({
+                    position = object:GetPosition(),
+                    angle = object:GetAngle(),
+                    model = object:GetModel(),
+                    collision = object:GetCollision()
+                }),
+                angle = object:GetAngle()
+            })
+
+            Network:Send("BuildTools/SetCurrentObject", {
                 model = object:GetModel(),
                 collision = object:GetCollision()
-            }),
-            angle = object:GetAngle()
-        })
+            })
+        else
 
-        Network:Send("BuildTools/SetCurrentObject", {
-            model = object:GetModel(),
-            collision = object:GetCollision()
-        })
+            -- Duplicate all objects and start placing
+
+        end
 
     end
 
@@ -146,27 +182,43 @@ function cBuildMode:KeyUp(args)
 
     if args.key == string.byte("Q") then
 
-        if not LocalPlayer:GetValue("CurrentObject") then return end
+        if not self.groupmode then
+            if not LocalPlayer:GetValue("CurrentObject") then return end
 
-        if not cBuildObjectPlacer.placing then
-            cBuildObjectPlacer:StartObjectPlacement({
-                model = LocalPlayer:GetValue("CurrentObject").model
-            })
+            if not cBuildObjectPlacer.placing then
+                cBuildObjectPlacer:StartObjectPlacement({
+                    model = LocalPlayer:GetValue("CurrentObject").model
+                })
+            else
+                cBuildObjectPlacer:StopObjectPlacement()
+            end
         else
-            cBuildObjectPlacer:StopObjectPlacement()
+
+            -- Spawn entire group of objects with anchor point as the center
+
         end
 
     elseif args.key == VirtualKey.Delete then
 
-        if not IsValid(self.selected_object) then return end
+        if not self.groupmode then
 
-        self.selected_object:Remove()
+            if not IsValid(self.selected_object) then return end
 
-        -- TODO: remove object with id from location
+            self.selected_object:Remove()
 
-    elseif args.key == string.byte("P") then
+            -- TODO: remove object with id from location
 
-        -- Duplicate object at position so it can be moved while frozen
+        else
+
+            for id, obj in pairs(self.selected_objects) do
+                if IsValid(obj) then obj:Remove() end
+            end
+
+            self.selected_objects = {}
+
+            -- TODO: remove all objects from location
+
+        end
 
     end
 
@@ -215,5 +267,10 @@ function cBuildMode:LocalPlayerChat(args)
     end
 
     if not self.enabled then return end
+
+    if args.text == "/groupmode" then
+        self.groupmode = not self.groupmode
+        self.selected_objects = {}
+    end
 
 end

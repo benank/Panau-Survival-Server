@@ -368,7 +368,7 @@ function cBuildObjectPlacer:MouseUp(args)
 end
 
 function cBuildObjectPlacer:StopObjectPlacement()
-    if IsValid(self.object) then
+    if IsValid(self.object) and not self.object:GetValue("LocationName") then
         self.object:Remove()
     end
 
