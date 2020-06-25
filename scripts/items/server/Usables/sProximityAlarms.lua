@@ -29,8 +29,6 @@ function sProxAlarms:__init()
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
-    Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
-
     Timer.SetInterval(1000 * 60 * 60, function()
         self:LowerBatteryDurabilities()
     end)

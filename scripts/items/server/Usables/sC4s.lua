@@ -149,6 +149,8 @@ end
 function sC4s:DestroyC4(args, player)
     if not args.id or not self.wnos[args.id] then return end
 
+    sItemExplodeManager:Add(function()
+    
     local c4 = self.wnos[args.id]
 
     if not c4 then return end
@@ -187,8 +189,10 @@ function sC4s:DestroyC4(args, player)
         player = player,
         owner_id = owner_id,
         type = DamageEntity.C4,
-        detonation_source_id = args.detonation_source_id or (player and tostring(player:GetSteamId() or nil))
+        detonation_source_id = args.detonation_source_id or (IsValid(player) and tostring(player:GetSteamId() or nil))
     })
+
+    end)
 
 end
 

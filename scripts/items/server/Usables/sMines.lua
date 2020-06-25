@@ -89,12 +89,16 @@ end
 function sMines:DestroyMine(args, player)
     if not args.id or not self.mines[args.id] then return end
 
+    sItemExplodeManager:Add(function()
+    
     local mine = self.mines[args.id]
 
-    if mine.exploded then return end
+    if not mine or mine.exploded then return end
 
-    Network:Send(player, "items/MineDestroy", {position = mine.position, id = mine.id, owner_id = mine.owner_id})
-    Network:SendNearby(player, "items/MineDestroy", {position = mine.position, id = mine.id, owner_id = mine.owner_id})
+    if IsValid(player) then
+        Network:Send(player, "items/MineDestroy", {position = mine.position, id = mine.id, owner_id = mine.owner_id})
+        Network:SendNearby(player, "items/MineDestroy", {position = mine.position, id = mine.id, owner_id = mine.owner_id})
+    end
 
     local cmd = SQL:Command("DELETE FROM mines where id = ?")
     cmd:Bind(1, args.id)
@@ -121,6 +125,8 @@ function sMines:DestroyMine(args, player)
         no_detonation_source = args.no_detonation_source,
         exp_enabled = exp_enabled
     })
+
+    end)
 
 end
 
