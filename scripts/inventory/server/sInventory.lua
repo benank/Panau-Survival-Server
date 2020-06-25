@@ -1063,7 +1063,7 @@ function sInventory:RemoveStack(args)
         end
 
         self:CheckForOverflow()
-
+        
         if not args.stack then return end
 
         if args.stack:GetAmount() == 1 then
@@ -1106,6 +1106,8 @@ function sInventory:RemoveStack(args)
 
                         end
 
+                        args.stack = nil
+
                     end
 
                 end
@@ -1139,8 +1141,6 @@ function sInventory:RemoveStack(args)
                     end
 
                 end
-
-
 
                 -- Got more items to remove, so keep going
                 if return_stack and return_stack:GetAmount() > 0 then
