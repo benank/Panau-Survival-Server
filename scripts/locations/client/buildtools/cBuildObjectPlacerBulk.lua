@@ -1,6 +1,6 @@
-class 'cBuildObjectPlacer'
+class 'cBuildObjectPlacerBulk'
 
-function cBuildObjectPlacer:__init()
+function cBuildObjectPlacerBulk:__init()
 
     self.placing = false
     self.rotation_speed = 15
@@ -20,6 +20,8 @@ function cBuildObjectPlacer:__init()
     self.frozen = false
 
     self.display_bb = false
+
+    self.objects = {}
 
     self.rotation_axis = 1
     self.rotation_mode = true
@@ -65,7 +67,7 @@ function cBuildObjectPlacer:__init()
     Events:Subscribe("LocalPlayerChat", self, self.LocalPlayerChat)
 end
 
-function cBuildObjectPlacer:LocalPlayerChat(args)
+function cBuildObjectPlacerBulk:LocalPlayerChat(args)
     
     if args.text == "/displaybb" then
         self.display_bb = not self.display_bb
@@ -101,7 +103,7 @@ end
         disable_ceil (bool): whether or not to disable placement on ceilings
 
 ]]
-function cBuildObjectPlacer:StartObjectPlacement(args)
+function cBuildObjectPlacerBulk:StartObjectPlacement(args)
 
     if not LocalPlayer:GetValue("Build_Location") then
         Chat:Print("You must be building at a location to place objects!", Color.Red)
@@ -126,27 +128,17 @@ function cBuildObjectPlacer:StartObjectPlacement(args)
 
     self.frozen = IsValid(args.object)
 
-    if not args.object then
-        self.object = ClientStaticObject.Create({
-            position = Vector3(),
-            angle = self.angle_offset,
-            model = args.model
-        })
-    else
-        self.object = args.object
-        self.position = self.object:GetPosition()
-        
-        self.rotation_offset = 
-        {
-            [1] = 0,
-            [2] = 0,
-            [3] = 0
-        }
-        self.offset = Vector3()
+    self.objects = args.objects
 
-        self.original_position = self.object:GetPosition()
-        self.original_rotation = self.object:GetAngle()
-    end
+    self.position = self.object:GetPosition()
+    
+    self.rotation_offset = 
+    {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0
+    }
+    self.offset = Vector3()
 
     self.rotation_yaw = 0
 
@@ -154,7 +146,7 @@ function cBuildObjectPlacer:StartObjectPlacement(args)
 
 end
 
-function cBuildObjectPlacer:CreateModel()
+function cBuildObjectPlacerBulk:CreateModel()
     
     local bb1, bb2 = self.object:GetBoundingBox()
 
@@ -207,11 +199,11 @@ function cBuildObjectPlacer:CreateModel()
     self.vertices = vertices
 end
 
-function cBuildObjectPlacer:LocalPlayerInput(args)
+function cBuildObjectPlacerBulk:LocalPlayerInput(args)
     if self.blockedActions[args.input] then return false end
 end
 
-function cBuildObjectPlacer:Render(args)
+function cBuildObjectPlacerBulk:Render(args)
 
     if not self.placing then return end
     if not IsValid(self.object) then return end
@@ -258,7 +250,7 @@ function cBuildObjectPlacer:Render(args)
 
 end
 
-function cBuildObjectPlacer:RenderText(can_place_here)
+function cBuildObjectPlacerBulk:RenderText(can_place_here)
 
     local text_size = 18
 
@@ -282,12 +274,12 @@ function cBuildObjectPlacer:RenderText(can_place_here)
 
 end
 
-function cBuildObjectPlacer:DrawShadowedText(pos, text, color, number)
+function cBuildObjectPlacerBulk:DrawShadowedText(pos, text, color, number)
     Render:DrawText(pos + Vector2(2,2), text, Color.Black, number)
     Render:DrawText(pos, text, color, number)
 end
 
-function cBuildObjectPlacer:GameRender(args)
+function cBuildObjectPlacerBulk:GameRender(args)
     -- Render bounding box
     if not self.placing then return end
     if not IsValid(self.object) then return end
@@ -305,7 +297,7 @@ function cBuildObjectPlacer:GameRender(args)
     })
 end
 
-function cBuildObjectPlacer:KeyUp(args)
+function cBuildObjectPlacerBulk:KeyUp(args)
 
     if args.key == string.byte("Z") then
 
@@ -331,7 +323,7 @@ function cBuildObjectPlacer:KeyUp(args)
 
 end
 
-function cBuildObjectPlacer:MouseScroll(args)
+function cBuildObjectPlacerBulk:MouseScroll(args)
     
     local change = math.ceil(args.delta)
 
@@ -349,7 +341,7 @@ function cBuildObjectPlacer:MouseScroll(args)
     end
 end
 
-function cBuildObjectPlacer:MouseUp(args)
+function cBuildObjectPlacerBulk:MouseUp(args)
 
     if args.button == 1 then
         -- Left click, place object
@@ -357,29 +349,23 @@ function cBuildObjectPlacer:MouseUp(args)
         if self.can_place_here then
             cBuildMode:PlaceObject({
                 position = self.object:GetPosition(),
-                angle = self.object:GetAngle(),
-                object_id = self.object:GetValue("ObjectIndex")
+                angle = self.object:GetAngle()
             })
             self:StopObjectPlacement()
-            self.object:Remove()
         end
 
     elseif args.button == 2 then 
         -- Right click, cancel placement
         self:StopObjectPlacement()
 
-        if self.object:GetValue("ObjectIndex") then
-            self.object:SetPosition(self.original_position)
-            self.object:SetAngle(self.original_rotation)
-        else
-            self.object:Remove()
-        end
-
     end
 
 end
 
-function cBuildObjectPlacer:StopObjectPlacement()
+function cBuildObjectPlacerBulk:StopObjectPlacement()
+    if IsValid(self.object) and not self.object:GetValue("LocationName") then
+        self.object:Remove()
+    end
 
     for k,v in pairs(self.subs) do
         Events:Unsubscribe(v)
@@ -391,7 +377,6 @@ function cBuildObjectPlacer:StopObjectPlacement()
     self.placing = false
 end
 
-function cBuildObjectPlacer:ModuleUnload()
-    if IsValid(self.object) then self.object:Remove() end
+function cBuildObjectPlacerBulk:ModuleUnload()
     self:StopObjectPlacement()
 end

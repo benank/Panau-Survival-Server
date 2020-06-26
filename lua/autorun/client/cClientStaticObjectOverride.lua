@@ -19,5 +19,5 @@ function ClientStaticObject:SetValue(s, value)
 end
 
 function ClientStaticObject:GetValue(s)
-	return CSOs[self:GetId()].values[s]
+	return CSOs[self:GetId()] and CSOs[self:GetId()].values[s]
 end

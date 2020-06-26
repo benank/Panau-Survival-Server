@@ -25,7 +25,12 @@ function sLocation:AddObject(args)
         return
     end
 
-    table.insert(self.objects, args)
+    if not args.object_id then
+        table.insert(self.objects, args)
+        args.object_id = count_table(self.objects)
+    else
+        self.objects[args.object_id] = args
+    end
 
     -- Sync newly placed object to everyone
     Network:Broadcast("locations/AddObjectToLocation", {

@@ -14,11 +14,35 @@ function cLocation:__init(args)
 
 end
 
+function cLocation:AddOrUpdateObject(args)
+
+    if args.object.object_id and IsValid(self.objects[args.object.object_id]) then
+        self.objects[args.object.object_id]:Remove()
+    end
+
+    self:SpawnObject(args.object, args.object.object_id)
+
+end
+
+function cLocation:SpawnObject(args, index)
+
+    local object = ClientStaticObject.Create({
+        position = args.position,
+        angle = args.angle,
+        model = args.model,
+        collision = args.collision
+    })
+
+    object:SetValue("LocationName", self.name)
+    object:SetValue("ObjectIndex", index)
+
+    self.objects[index] = object
+
+end
+
 function cLocation:SpawnObjects()
 
     if self.spawning or self.spawned then return end
-
-    _debug("SPAWN OBJECTS")
 
     self.spawning = true
 
@@ -26,18 +50,7 @@ function cLocation:SpawnObjects()
     
         for index, object_data in ipairs(self.object_data) do
 
-            local object = ClientStaticObject.Create({
-                position = object_data.position,
-                angle = object_data.angle,
-                model = object_data.model,
-                collision = object_data.collision
-            })
-
-            object:SetValue("LocationName", self.name)
-            object:SetValue("ObjectIndex", index)
-
-            self.objects[index] = object
-
+            self:SpawnObject(object_data, index)
             Timer.Sleep(1)
 
         end
@@ -59,8 +72,6 @@ function cLocation:RemoveAllObjects()
 
     if not self.spawned then return end
     if self.removing_objects then return end
-
-    _debug("REMOVE OBJECTS")
 
     self.removing_objects = true
 

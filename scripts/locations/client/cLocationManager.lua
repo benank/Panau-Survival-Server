@@ -5,6 +5,7 @@ function cLocationManager:__init()
     self.locations = {}
 
     Network:Subscribe("locations/SyncLocation", self, self.SyncLocation)
+    Network:Subscribe("locations/AddObjectToLocation", self, self.AddObjectToLocation)
 
     Thread(function()
         while true do
@@ -40,6 +41,12 @@ end
 
 function cLocationManager:SyncLocation(args)
     self.locations[args.name] = cLocation(args)
+end
+
+function cLocationManager:AddObjectToLocation(args)
+    local location = self.locations[args.name]
+    if not location then return end
+    location:AddOrUpdateObject(args)
 end
 
 function cLocationManager:ModuleUnload()

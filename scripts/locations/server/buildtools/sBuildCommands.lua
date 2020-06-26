@@ -24,7 +24,8 @@ function sBuildCommands:PlaceObject(args, player)
         model = current_object.model,
         collision = current_object.collision,
         position = args.position,
-        angle = args.angle
+        angle = args.angle,
+        object_id = args.object_id
     }
 
     location:AddObject(object_data)

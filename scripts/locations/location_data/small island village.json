@@ -1,91 +1,118 @@
 {
-  "radius":50,
   "objects":[{
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"-0.039336,0,0.003524,0.99922",
       "position":{
         "y":208.069077,
         "x":-5010.96582,
         "z":-413.957123
-      },
-      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
-      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
-      "angle":"-0.039336,0,0.003524,0.99922"
+      }
     },{
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"0.030758,0,0.042057,0.998642",
       "position":{
         "y":208.207993,
         "x":-5006.170898,
         "z":-426.27243
-      },
-      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
-      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
-      "angle":"0.030758,0,0.042057,0.998642"
+      }
     },{
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"0.671082,0,0.106663,0.733671",
       "position":{
         "y":251.884293,
         "x":-5011.570312,
         "z":-415.538788
-      },
-      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
-      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
-      "angle":"0.671082,0,0.106663,0.733671"
+      }
     },{
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"0.647683,0.038389,-0.206099,0.7325",
       "position":{
         "y":218.582123,
         "x":-5010.897949,
         "z":-414.020203
-      },
-      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
-      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
-      "angle":"0.647683,0.038389,-0.206099,0.7325"
+      }
     },{
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"-0.312247,-0.545101,0.603715,-0.490811",
       "position":{
         "y":218.582123,
         "x":-5010.897949,
         "z":-414.020203
-      },
-      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
-      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
-      "angle":"-0.312247,-0.545101,0.603715,-0.490811"
+      }
     },{
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"0.603715,-0.490811,0.312247,0.545101",
       "position":{
         "y":218.582123,
         "x":-5010.897949,
         "z":-414.020203
-      },
-      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
-      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
-      "angle":"0.603715,-0.490811,0.312247,0.545101"
+      }
     },{
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"-0.206099,0.7325,-0.647683,-0.038389",
       "position":{
         "y":218.582123,
         "x":-5010.897949,
         "z":-414.020203
-      },
-      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
-      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
-      "angle":"-0.206099,0.7325,-0.647683,-0.038389"
+      }
     },{
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"0.456113,-0.63034,0.160525,0.607342",
       "position":{
         "y":218.582123,
         "x":-5010.897949,
         "z":-414.020203
-      },
-      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
-      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
-      "angle":"0.456113,-0.63034,0.160525,0.607342"
+      }
     },{
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"-0.343666,0.780258,-0.473726,-0.220622",
       "position":{
         "y":218.582123,
         "x":-5010.897949,
         "z":-414.020203
-      },
-      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      }
+    },{
       "model":"f2m07.researchfacility.flz/key028_01-q.lod",
-      "angle":"-0.343666,0.780258,-0.473726,-0.220622"
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"-0.082717,0,0.038955,0.995811",
+      "position":{
+        "y":217.270111,
+        "x":-4966.664551,
+        "z":-389.536774
+      }
+    },{
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"0.597823,0.783119,-0.169748,0.022764",
+      "position":{
+        "y":214.799469,
+        "x":-4964.147461,
+        "z":-389.002594
+      }
+    },{
+      "model":"f2m07.researchfacility.flz/key028_01-q.lod",
+      "collision":"f2m07.researchfacility.flz/key028_01_lod1-q_col.pfx",
+      "angle":"-0.347618,0.280142,0.206207,0.870724",
+      "position":{
+        "y":212.943298,
+        "x":-4963.134766,
+        "z":-422.330383
+      }
     }],
-  "name":"Small Island Village",
+  "radius":200,
   "center":{
     "y":213.581024,
     "x":-5021.896973,
     "z":-385.558533
-  }
+  },
+  "name":"Small Island Village"
 }
