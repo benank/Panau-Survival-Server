@@ -1,0 +1,2 @@
+km06.base.flz/key015_01-z1_02.lod
+km06.base.flz/key015_01_lod1-z1_02_col.pfx
