@@ -355,13 +355,15 @@ function cBuildObjectPlacer:MouseUp(args)
         -- Left click, place object
 
         if self.can_place_here then
-            cBuildMode:PlaceObject({
-                position = self.object:GetPosition(),
-                angle = self.object:GetAngle(),
-                object_id = self.object:GetValue("ObjectIndex")
-            })
+            if IsValid(self.object) then
+                cBuildMode:PlaceObject({
+                    position = self.object:GetPosition(),
+                    angle = self.object:GetAngle(),
+                    object_id = self.object:GetValue("ObjectIndex")
+                })
+                self.object:Remove()
+            end
             self:StopObjectPlacement()
-            self.object:Remove()
         end
 
     elseif args.button == 2 then 
