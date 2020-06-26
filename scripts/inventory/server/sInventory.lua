@@ -895,17 +895,39 @@ function sInventory:OnItemBreak(item)
     end
 end
 
+function sInventory:GetNumOfItem(item_name)
+
+    local item = Items_indexed[item_name]
+    if not item then
+        print("Failed to sInventory:GetNumOfItem because item was invalid")
+        return
+    end
+
+    local count = 0
+    for index, stack in pairs(self.contents[item.category]) do
+        if stack:GetProperty("name") == item.name then
+            count = count + stack:GetAmount()
+        end
+    end
+
+    return count
+
+end
+
 -- Adds a stack to the inventory, and will try to add it to specified index if possible
 -- Will also try to add it to an empty inventory space if new_space is true
 -- Syncs automatically
 function sInventory:AddStack(args)
 
     local item_data = Items_indexed[args.stack:GetProperty("name")]
+    local max_items_added = args.stack:GetAmount()
 
     if item_data.max_held then
         -- If you can only hold a certain amount of this item
 
-        local num_of_this_item = Inventory.GetNumOfItem({player = self.player, item_name = args.stack:GetProperty("name")})
+        local num_of_this_item = self:GetNumOfItem(args.stack:GetProperty("name"))
+
+        max_items_added = math.max(item_data.max_held - num_of_this_item, 0)
 
         if num_of_this_item >= item_data.max_held then
             Chat:Send(self.player, 
@@ -913,6 +935,11 @@ function sInventory:AddStack(args)
             return args.stack
         end
 
+    end
+
+    -- No items to add
+    if max_items_added == 0 then
+        return args.stack
     end
 
     local cat = args.stack:GetProperty("category")
@@ -955,9 +982,11 @@ function sInventory:AddStack(args)
                 -- First, try to stack it with existing stacks of the same item
                 while args.stack:GetProperty("name") == istack:GetProperty("name")
                 and istack:GetAmount() < istack:GetProperty("stacklimit")
-                and args.stack:GetAmount() > 0 do
+                and args.stack:GetAmount() > 0
+                and max_items_added > 0 do
 
                     local return_item = istack:AddItem(args.stack:RemoveItem(nil, 1))
+                    max_items_added = max_items_added - 1
 
                     if return_item then
                         args.stack:AddItem(return_item)
@@ -974,13 +1003,18 @@ function sInventory:AddStack(args)
     end
 
     -- Still have some left, so check empty spaces now
-    while args.stack:GetAmount() > 0 and self:HaveEmptySpaces(cat) do
+    while args.stack:GetAmount() > 0 and self:HaveEmptySpaces(cat) and max_items_added > 0 do
 
         local index = #self.contents[cat] + 1
         self.contents[cat][index] = args.stack:Copy()
         args.stack.contents = {} -- Clear stack contents
         self:Sync({index = index, stack = self.contents[cat][index], sync_stack = true})
+        max_items_added = max_items_added - 1
     
+    end
+
+    if args.stack:GetAmount() > 0 and max_items_added == 0 then
+        return args.stack
     end
 
     if args.stack:GetAmount() > 0 then
