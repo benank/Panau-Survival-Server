@@ -167,9 +167,9 @@ function ModelViewer:RequestObjectChange( e, sender )
 end
 
 function ModelViewer:TimeChange( time, sender )
-	self.world:SetTime( time )
+	--self.world:SetTime( time )
 
-	Network:SendToPlayers( self.viewers, "TimeChange", { time, sender } )
+	--Network:SendToPlayers( self.viewers, "TimeChange", { time, sender } )
 end
 
 objects = {}
