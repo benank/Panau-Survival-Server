@@ -9,6 +9,7 @@ function sLocationLoader:__init()
 
     self.locations_to_load = 
     {
+        "triple"
     }
     
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
