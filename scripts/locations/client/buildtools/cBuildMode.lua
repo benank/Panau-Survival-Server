@@ -124,6 +124,7 @@ function cBuildMode:MouseUp(args)
 
         if not self.groupmode then
             self.selected_object = self:GetLookAtObject()
+            if not IsValid(self.selected_object) then return end
 
             cBuildObjectPlacer:StartObjectPlacement({
                 object = self.selected_object,
