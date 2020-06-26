@@ -10,7 +10,8 @@ function sLocationLoader:__init()
     self.locations_to_load = 
     {
         "triple",
-        "Mesa"
+        "Mesa",
+        "Red Gates"
     }
     
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)

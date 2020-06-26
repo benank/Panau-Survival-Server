@@ -205,10 +205,12 @@ function cBuildMode:KeyUp(args)
 
             if not IsValid(self.selected_object) then return end
 
+            Network:Send("BuildTools/DeleteObject", {
+                object_id = self.selected_object:GetValue("ObjectIndex")
+            })
+
             self.selected_object:Remove()
-
-            -- TODO: remove object with id from location
-
+            
         else
 
             for id, obj in pairs(self.selected_objects) do

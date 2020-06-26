@@ -7,6 +7,25 @@ function sBuildCommands:__init()
 
     Network:Subscribe("BuildTools/SetCurrentObject", self, self.SetCurrentObject)
     Network:Subscribe("BuildTools/PlaceObject", self, self.PlaceObject)
+    Network:Subscribe("BuildTools/DeleteObject", self, self.DeleteObject)
+
+end
+
+function sBuildCommands:DeleteObject(args, player)
+
+    local location_name = player:GetValue("Build_Location")
+
+    local location = sLocationManager.locations[location_name]
+    if not location then return end
+
+    if not args.object_id then return end
+
+    location.objects[args.object_id] = nil
+
+    Network:Broadcast("BuildTools/DeleteObject", {
+        name = location_name,
+        object_id = args.object_id
+    })
 
 end
 

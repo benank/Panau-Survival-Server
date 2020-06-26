@@ -24,6 +24,16 @@ function cLocation:AddOrUpdateObject(args)
 
 end
 
+function cLocation:RemoveObject(args)
+    if not self.objects[args.object_id] then return end
+
+    if IsValid(self.objects[args.object_id]) then
+        self.objects[args.object_id]:Remove()
+    end
+
+    self.objects[args.object_id] = nil
+end
+
 function cLocation:SpawnObject(args, index)
 
     local object = ClientStaticObject.Create({
@@ -48,7 +58,7 @@ function cLocation:SpawnObjects()
 
     Thread(function()
     
-        for index, object_data in ipairs(self.object_data) do
+        for index, object_data in pairs(self.object_data) do
 
             self:SpawnObject(object_data, index)
             Timer.Sleep(1)

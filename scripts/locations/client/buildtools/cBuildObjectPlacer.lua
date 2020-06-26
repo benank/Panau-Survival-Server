@@ -368,10 +368,10 @@ function cBuildObjectPlacer:MouseUp(args)
         -- Right click, cancel placement
         self:StopObjectPlacement()
 
-        if self.object:GetValue("ObjectIndex") then
+        if IsValid(self.object) and self.object:GetValue("ObjectIndex") then
             self.object:SetPosition(self.original_position)
             self.object:SetAngle(self.original_rotation)
-        else
+        elseif IsValid(self.object) then
             self.object:Remove()
         end
 
