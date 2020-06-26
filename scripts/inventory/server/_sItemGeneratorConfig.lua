@@ -5,7 +5,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.425,
+            rarity = 0.355,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 5, max = 10},
@@ -65,7 +65,7 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.03,
+            rarity = 0.1,
             items = 
             {
                 ["Woet"] = {rarity = 0.4, min = 1, max = 1},
@@ -171,11 +171,12 @@ LootItems =
             rarity = 0.15,
             items = 
             {
-                ["BackTrack"] = {rarity = 0.2, min = 1, max = 1},
+                ["Woet"] = {rarity = 0.08, min = 1, max = 1},
+                ["BackTrack"] = {rarity = 0.08, min = 1, max = 1},
                 ["Vehicle Guard"] = {rarity = 0.2, min = 1, max = 1},
                 ["Vehicle Repair"] = {rarity = 0.2, min = 1, max = 1},
                 ["Car Paint"] = {rarity = 0.1, min = 1, max = 1},
-                ["Nitro"] = {rarity = 0.1, min = 1, max = 1},
+                ["Nitro"] = {rarity = 0.14, min = 1, max = 1},
                 ["Battery"] = {rarity = 0.2, min = 1, max = 1},
             }
         },
