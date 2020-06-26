@@ -35,7 +35,7 @@ function Grenades:PlayerInsideToxicGrenadeArea(args, player)
 end
 
 function Grenades:GrenadeExploded(args, player)
-    if args.position and args.radius < 100 then
+    if args.position and args.radius < 100 and args.type ~= "Molotov" then
         Events:Fire("items/ItemExplode", {
             position = args.position,
             radius = args.radius,
