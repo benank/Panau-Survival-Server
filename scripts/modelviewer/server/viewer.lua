@@ -8,7 +8,7 @@ function ModelViewer:__init()	 EventBase.__init(self)
 	self:NetworkSubscribe( "RequestObjectChange" )
 	self:NetworkSubscribe( "TimeChange" )
 
-	self.position = Vector3( 4339, 6175, -4631 )
+	self.position = Vector3( 0, 6175, 0 )
 	self.viewers = {}
 
 	self.world = World.Create()
@@ -198,11 +198,6 @@ function Spawn(file_name)
 		Chat:Broadcast("Couldnt find " .. file_name, Color.Red)
 	end
 end
-Spawn("turretpiece1.txt")
-pos = pos + Vector3(0, .5, 0)
-Spawn("turretpiece2.txt")
-pos = pos + Vector3(0, .6, 0)
-Spawn("turretpiece3.txt")
 
 function Despawn()
 	for index, static in pairs(objects) do
