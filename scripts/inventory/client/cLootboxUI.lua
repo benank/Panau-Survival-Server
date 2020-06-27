@@ -322,7 +322,7 @@ function cLootboxUI:Update(args)
         ClientInventory.ui:PopulateEntry({index = args.index, loot = true, stash = args.stash, window = self.window})
     end
 
-    if not self.window:GetVisible() or (#LootManager.current_box.contents == 0 and not args.stash) then
+    if not self.window:GetVisible() --[[or (#LootManager.current_box.contents == 0 and not args.stash and not LocalPlayer:GetValue("InSafezone"))]] then
         --self:RepositionWindow(args.stash and args.stash.capacity or nil)
         self:RepositionWindow()
         self:ToggleVisible()
