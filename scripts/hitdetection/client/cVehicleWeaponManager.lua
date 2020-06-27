@@ -52,6 +52,7 @@ function cVehicleWeaponManager:__init()
     Events:Subscribe("LocalPlayerEnterVehicle", self, self.LocalPlayerEnterVehicle)
     Events:Subscribe("LocalPlayerExitVehicle", self, self.LocalPlayerExitVehicle)
     Events:Subscribe("SecondTick", self, self.SecondTick)
+    Events:Subscribe("Render", self, self.Render)
 
     if LocalPlayer:InVehicle() or LocalPlayer:GetValue("VehicleMG") then
         self:SubscribeVehicleEvents()
@@ -151,6 +152,8 @@ function cVehicleWeaponManager:Render(args)
     -- Overheat resets on heat reaching 0
     self.overheated = self.overheated and current_heat > 0
 
+    if not LocalPlayer:InVehicle() and not LocalPlayer:GetValue("VehicleMG") then return end
+
     if not self:IsValidVehicleWeaponAction() then return end
 
     self:DrawWeaponHitHud()
@@ -235,8 +238,7 @@ end
 function cVehicleWeaponManager:SubscribeVehicleEvents()
     self.vehicle_events = 
     {
-        Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput),
-        Events:Subscribe("Render", self, self.Render)
+        Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     }
 end
 
