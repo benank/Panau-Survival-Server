@@ -85,6 +85,7 @@ function cItemUse:CompleteUsage()
     local ray = Physics:Raycast(LocalPlayer:GetPosition(), Vector3.Down, 0, 5)
     if ray.entity and ray.entity.__type == "ClientStaticObject" then
         ray.model = ray.entity:GetModel()
+        ray.collision = ray.entity:GetCollision()
         ray.entity = nil
         ray.hit_type = "ClientStaticObject"
     end
@@ -92,6 +93,7 @@ function cItemUse:CompleteUsage()
     local forward_ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 500)
     if forward_ray.entity and forward_ray.entity.__type == "ClientStaticObject" then
         forward_ray.model = forward_ray.entity:GetModel()
+        forward_ray.collision = forward_ray.entity:GetCollision()
         forward_ray.entity = nil
         forward_ray.hit_type = "ClientStaticObject"
     end

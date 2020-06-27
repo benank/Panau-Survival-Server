@@ -49,6 +49,8 @@ Events:Subscribe("PlayerChat", function(args)
         else
             Chat:Send(args.player, string.format("Player with id %d not found", tonumber(words[2])), Color.Yellow)
         end
+    elseif words[1] == "/heal" then
+        args.player:SetHealth(1)
     end
 
 

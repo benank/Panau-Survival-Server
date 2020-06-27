@@ -118,6 +118,8 @@ function sSurvivalManager:PlayerSpawn(args)
 
         local survival = args.player:GetValue("Survival")
 
+        if not survival then return end
+
         if not args.player:GetValue("Suicided") then
             survival.hunger = config.respawn.hunger
             survival.thirst = config.respawn.thirst

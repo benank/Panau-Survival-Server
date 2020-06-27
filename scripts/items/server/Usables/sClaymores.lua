@@ -432,7 +432,7 @@ function sClaymores:FinishClaymorePlacement(args, player)
         end
     end
 
-    if args.model and DisabledPlacementModels[args.model] then
+    if args.collision and DisabledPlacementCollisions[args.collision] then
         Chat:Send(player, "Placing claymore failed!", Color.Red)
         return
     end
