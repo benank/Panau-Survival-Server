@@ -34,8 +34,14 @@ function EquippableParachute:ToggleEnabled(enabled)
         self.action_block = nil
         Game:FireEvent("ply.parachute.enable")
     else
+
+        if LocalPlayer:GetBaseState() == AnimationState.SParachute then
+            LocalPlayer:SetBaseState(AnimationState.SFallToSkydive)
+        end
+
         self.action_block = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
         Game:FireEvent("ply.parachute.disable")
+
     end
 end
 
