@@ -160,6 +160,8 @@ function sExp:PlayerKilled(args)
 
     -- Subtract exp from player who died
     local exp_data = args.player:GetValue("Exp")
+    if not exp_data then return end
+    
     local exp_lost = GetExpLostOnDeath(exp_data.level)
     exp_data.combat_exp = math.max(0, exp_data.combat_exp - exp_lost)
     exp_data.explore_exp = math.max(0, exp_data.explore_exp - exp_lost)

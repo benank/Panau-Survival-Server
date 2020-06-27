@@ -257,13 +257,15 @@ function EquippableRocketGrapple:Render(args)
 
     if self.grapple.timer:GetMilliseconds() > 600 and not self.grapple.moved and self.grapple.active then
         self.grapple.moved = true
-        self.grapple.object:SetPosition(self.grapple.end_pos)
+        if IsValid(self.grapple.object) then
+            self.grapple.object:SetPosition(self.grapple.end_pos)
+        end
         self.grapple.timer:Restart()
     elseif self.grapple.timer:GetMilliseconds() > 100 and self.grapple.moved and self.grapple.active and IsValid(self.grapple.object) then
-        self.grapple.object:Remove()
-        self.grapple.object = nil
         self.grapple.moved = false
         self.grapple.active = false
+        self.grapple.object:Remove()
+        self.grapple.object = nil
     end
 
 end
