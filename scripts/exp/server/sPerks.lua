@@ -203,6 +203,8 @@ end
 
 function sPerks:GetPlayerPerks(args)
 
+    if not args.steam_id then return end
+
 	local query = SQL:Query("SELECT * FROM perks WHERE steamID = (?) LIMIT 1")
     query:Bind(1, args.steam_id)
     
