@@ -13,20 +13,28 @@ function cLootbox:__init(args)
     self.contents = args.contents or {}
     self.stash = args.stash
     self.locked = args.locked
+    self.hidden = false
 
     self:CreateModel()
 
 end
 
-function cLootbox:Remove()
+function cLootbox:Remove(no_event)
 
-    Events:Fire("Inventory/LootboxRemove", {
-        id = self.uid,
-        tier = self.tier,
-        cso_id = self.cso_id
-    })
+    if not no_event then
+        Events:Fire("Inventory/LootboxRemove", {
+            id = self.uid,
+            tier = self.tier,
+            cso_id = self.cso_id
+        })
 
-    self.active = false
+        self.active = false
+    end
+
+    if no_event then
+        self.hidden = true
+    end
+
     for _, obj in pairs(self.static_objects) do
         if IsValid(obj) then 
             obj:Remove()
@@ -34,9 +42,11 @@ function cLootbox:Remove()
         end
     end
 
+    self.static_objects = {}
+
 end
 
-function cLootbox:CreateModel()
+function cLootbox:CreateModel(no_event)
 
     if not self.active then return end
 
@@ -85,14 +95,18 @@ function cLootbox:CreateModel()
         LootManager.objects[obj:GetId()] = obj
     end
 
+    self.hidden = false
+
     self.cso_id = self.static_objects[1]:GetId()
 
-    Events:Fire("Inventory/LootboxCreate", {
-        id = self.uid,
-        cso_id = self.static_objects[1]:GetId(),
-        tier = self.tier,
-        position = self.position,
-        angle = self.angle
-    })
+    if not no_event then
+        Events:Fire("Inventory/LootboxCreate", {
+            id = self.uid,
+            cso_id = self.static_objects[1]:GetId(),
+            tier = self.tier,
+            position = self.position,
+            angle = self.angle
+        })
+    end
 
 end

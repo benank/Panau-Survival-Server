@@ -10,6 +10,41 @@ function cStashes:__init()
     Network:Subscribe("Stashes/Sync", self, self.SyncStash)
     Events:Subscribe("Stashes/DeleteStash", self, self.DeleteStash)
 
+    Thread(function()
+        while true do
+            Timer.Sleep(1000)
+            self:CheckStashModels()
+        end
+    end)
+
+end
+
+function cStashes:CheckStashModels()
+
+    local cam_pos = Camera:GetPosition()
+
+    -- Hide locked stashes until you get close
+    for x, _ in pairs(LootManager.loot) do
+        for y, _ in pairs(LootManager.loot[x]) do
+            for uid, lootbox in pairs(LootManager.loot[x][y]) do
+
+                if lootbox.tier == Lootbox.Types.LockedStash then
+
+                    local dist = cam_pos:Distance(lootbox.position)
+
+                    if dist > 30 and not lootbox.hidden then
+                        lootbox:Remove(true)
+                    elseif dist < 30 and lootbox.hidden then
+                        lootbox:CreateModel(true)
+                    end
+
+                end
+
+                Timer.Sleep(1)
+            end
+        end
+    end
+
 end
 
 function cStashes:DeleteStash(args)

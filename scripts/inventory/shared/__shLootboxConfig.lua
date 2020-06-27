@@ -162,8 +162,8 @@ Lootbox.Models =
     },
     [Lootbox.Types.BarrelStash] = 
     {
-        model = "38x11.nl/go231-a.lod",
-        col = "38x11.nl/go231_lod1-a_col.pfx",
+        model = "38x11.nlz/go231-a.lod",
+        col = "38x11.nlz/go231_lod1-a_col.pfx",
         offset = Vector3(0, 0, 0),
         look_offset = Vector3(0, 0.4, 0)
     },
@@ -182,19 +182,19 @@ Lootbox.Models =
     },
     [Lootbox.Types.VendingMachineFood] = 
     {
-        model = "59x36.nl/go158-a1.lod",
-        col = "59x36.nl/go158_lod1-a1_col.pfx",
-        model_dst = "59x36.nl/go158-a1_dst.lod",
-        col_dst = "59x36.nl/go158_lod1-a1_dst_col.pfx",
+        model = "59x36.nlz/go158-a1.lod",
+        col = "59x36.nlz/go158_lod1-a1_col.pfx",
+        model_dst = "59x36.nlz/go158-a1_dst.lod",
+        col_dst = "59x36.nlz/go158_lod1-a1_dst_col.pfx",
         offset = Vector3(0, 0, 0),
         look_offset = Vector3(0, 1, -1)
     },
     [Lootbox.Types.VendingMachineDrink] = 
     {
-        model = "59x36.nl/go158-a.lod",
-        col = "59x36.nl/go158_lod1-a_col.pfx",
-        model_dst = "59x36.nl/go158-a_dst.lod",
-        col_dst = "59x36.nl/go158_lod1-a_dst_col.pfx",
+        model = "59x36.nlz/go158-a.lod",
+        col = "59x36.nlz/go158_lod1-a_col.pfx",
+        model_dst = "59x36.nlz/go158-a_dst.lod",
+        col_dst = "59x36.nlz/go158_lod1-a_dst_col.pfx",
         offset = Vector3(0, 0, 0),
         look_offset = Vector3(0, 1, -1)
     },
@@ -208,7 +208,7 @@ Lootbox.Models =
     [Lootbox.Types.Workbench] = 
     {
         model = "pickup.boost.vehicle.eez/pu02-a.lod",
-        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        col = "km05.hotelbuilding01.nlz/key030_01_lod1-n_col.pfx",
         offset = Vector3(0, 0, 0),
         look_offset = Vector3(0, 0.4, 0)
     }
