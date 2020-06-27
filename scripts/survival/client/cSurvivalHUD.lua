@@ -29,7 +29,7 @@ function cSurvivalHUD:__init()
             percent = 0.5,
             percent2 = 0.5,
             color = Color(255, 26, 0), -- Combat
-            color2 = Color(223, 153, 0), -- Exploration
+            color2 = Color(23, 97, 226), -- Exploration
             dual = true,
             level = true,
             small_size = self.small_element_size,
