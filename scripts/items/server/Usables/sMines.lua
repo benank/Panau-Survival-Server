@@ -376,7 +376,7 @@ function sMines:CompleteItemUsage(args, player)
             self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
         end
 
-        if args.ray.model and DisabledPlacementModels[args.ray.model] then
+        if args.ray.collision and DisabledPlacementCollisions[args.ray.collision] then
             Chat:Send(player, "Placing mine failed!", Color.Red)
             return
         end

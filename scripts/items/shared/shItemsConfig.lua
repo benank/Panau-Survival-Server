@@ -147,10 +147,11 @@ AirstrikePerks =
 }
 
 
-DisabledPlacementModels = 
+DisabledPlacementCollisions = 
 {
-    ["geo.cbb.eez/go152-a.lod"] = true,
-    ["38x11.nl/go231-a.lod"] = true,
-    ["f1t16.garbage_can.eez/go225-a.lod"] = true,
-    ["areaset03.blz/go161-a1_dst.lod"] = true
+    ["km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx"] = true,
+    ["38x11.nlz/go231_lod1-a_col.pfx"] = true,
+    ["f1t16.garbage_can.eez/go225_lod1-a_col.pfx"] = true,
+    ["areaset03.blz/go161_lod1-a1_dst_col.pfx"] = true,
+    ["km02.towercomplex.flz/key013_01_lod1-g_col.pfx"] = true
 }

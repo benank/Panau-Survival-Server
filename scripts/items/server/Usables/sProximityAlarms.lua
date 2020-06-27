@@ -330,7 +330,7 @@ function sProxAlarms:FinishProxPlacement(args, player)
         end
     end
 
-    if args.model and DisabledPlacementModels[args.model] then
+    if args.collision and DisabledPlacementCollisions[args.collision] then
         Chat:Send(player, "Placing proximity alarm failed!", Color.Red)
         return
     end
