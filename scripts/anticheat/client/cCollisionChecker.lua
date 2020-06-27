@@ -3,13 +3,13 @@ class 'cCollisionChecker'
 function cCollisionChecker:__init()
 
     self.strikes = var(0)
-    self.max_strikes = 5
+    self.max_strikes = 10
 
     self.object = ClientStaticObject.Create({
         position = LocalPlayer:GetPosition(),
         angle = Angle(),
         model = ' ',
-        collision = 'km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx'
+        collision = '34x09.nlz/go003_lod1-a_col.pfx'
     })
 
     self.timer = Timer()
@@ -22,7 +22,7 @@ function cCollisionChecker:Render(args)
 
     local basepos = Camera:GetPosition() + Vector3(0, 300, 0)
 
-    self.object:SetPosition(basepos - Vector3(0, 1, 0))
+    self.object:SetPosition(basepos - Vector3(0, 1.5, 0))
 
     local ray = Physics:Raycast(basepos, Vector3.Down, 0, 3)
 
