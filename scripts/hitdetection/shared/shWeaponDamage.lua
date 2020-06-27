@@ -2,10 +2,6 @@ class "WeaponDamage"
 
 function WeaponDamage:__init()
 
-    if Server then
-        self.pending_armor_aggregation = {}
-    end
-
     -- Start losing damage at distance_falloff / 2, and 0 damage past distance_falloff
     local falloff_func = function(distance, distance_falloff)
         return math.clamp(1 - (distance - distance_falloff / 2) / (distance_falloff / 2), 0, 1)

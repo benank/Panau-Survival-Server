@@ -18,7 +18,7 @@ Events:Subscribe("HitDetection/ArmorDamaged", function(args)
     local item = GetEquippedItem(args.armor_name, args.player)
     if not item then return end
     local change = args.damage_diff
-    if not damage_diff or change < 1 then change = 1 end
+    if not change or change < 1 then change = 1 end
 
     item.durability = item.durability - change * ItemsConfig.equippables.armor[item.name].dura_per_hit
     Inventory.ModifyDurability({

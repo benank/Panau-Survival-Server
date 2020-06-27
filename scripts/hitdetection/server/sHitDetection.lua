@@ -272,24 +272,7 @@ function sHitDetection:Respawn(args, player)
 end
 
 function sHitDetection:CheckPendingHits()
-    
-    Timer.SetInterval(10, function()
-        if count_table(self.pending_hits) > 0 then
-            local data = table.remove(self.pending_hits)
 
-            for _, v in pairs(data.pending) do
-
-                if v.type == WeaponHitType.Explosive then
-                    self:ExplosionHit(v, data.player)
-                else
-                    self:BulletHit(v, data.player)
-                end
-
-            end
-        end
-    end)
-
-    
     Timer.SetInterval(500, function()
         if count_table(self.pending_armor_aggregation) > 0 then
 
