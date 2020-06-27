@@ -2,6 +2,9 @@ class 'cCollisionChecker'
 
 function cCollisionChecker:__init()
 
+    self.strikes = var(0)
+    self.max_strikes = 5
+
     self.object = ClientStaticObject.Create({
         position = LocalPlayer:GetPosition(),
         angle = Angle(),
@@ -25,7 +28,13 @@ function cCollisionChecker:Render(args)
 
     if ray.distance == 3 and self.timer:GetSeconds() > 1 then
         self.timer:Restart()
+        self.strikes:set(tonumber(self.strikes:get()) + 1)
+    end
+
+    if tonumber(self.strikes:get()) >= self.max_strikes and not IsAdmin(LocalPlayer) then
+        self.timer:Restart()
         Network:Send(var("anticheat/collisioncheck"):get())
+        self.strikes:set(0)
     end
 
 end
