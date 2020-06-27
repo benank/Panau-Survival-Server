@@ -26,7 +26,7 @@ function cCollisionChecker:Render(args)
 
     local ray = Physics:Raycast(basepos, Vector3.Down, 0, 3)
 
-    if ray.distance == 3 and self.timer:GetSeconds() > 1 then
+    if ray.distance == 3 and self.timer:GetSeconds() > 3 then
         self.timer:Restart()
         self.strikes:set(tonumber(self.strikes:get()) + 1)
     end
