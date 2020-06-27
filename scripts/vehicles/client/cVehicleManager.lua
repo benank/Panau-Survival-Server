@@ -322,17 +322,19 @@ function cVehicleManager:SecondTick()
 
             local vehicle_pos = v:GetPosition()
             local in_gas_station = false
+            local station_index = 0
 
             for _, pos in pairs(gasStations) do
                 if pos:Distance(vehicle_pos) < config.gas_station_radius then
                     in_gas_station = true
+                    station_index = _
                 end
             end
 
             if self.in_gas_station and not in_gas_station then
                 Network:Send("Vehicles/ExitGasStation")
             elseif not self.in_gas_station and in_gas_station then
-                Network:Send("Vehicles/EnterGasStation")
+                Network:Send("Vehicles/EnterGasStation", {index = station_index})
             end
                 
             self.in_gas_station = in_gas_station
