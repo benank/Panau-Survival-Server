@@ -1,2 +1,0 @@
-km06.base.flz/city_t04_sakural-whole.lod
-km06.base.flz/city_t04_sakural_lod1-whole_col.pfx

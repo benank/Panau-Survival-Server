@@ -1,2 +1,0 @@
-f2s04.base.flz/key009_01-j.lod
-f2s04.base.flz/key009_01_lod1-j_col.pfx
