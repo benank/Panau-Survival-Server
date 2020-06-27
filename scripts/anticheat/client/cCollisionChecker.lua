@@ -3,7 +3,7 @@ class 'cCollisionChecker'
 function cCollisionChecker:__init()
 
     self.strikes = var(0)
-    self.max_strikes = 10
+    self.max_strikes = 5
 
     self.object = ClientStaticObject.Create({
         position = LocalPlayer:GetPosition(),
@@ -26,7 +26,7 @@ function cCollisionChecker:Render(args)
 
     local ray = Physics:Raycast(basepos, Vector3.Down, 0, 3)
 
-    if ray.distance == 3 and self.timer:GetSeconds() > 3 then
+    if ray.distance == 3 and self.timer:GetSeconds() > 1 and not LocalPlayer:GetValue("Loading") then
         self.timer:Restart()
         self.strikes:set(tonumber(self.strikes:get()) + 1)
     end

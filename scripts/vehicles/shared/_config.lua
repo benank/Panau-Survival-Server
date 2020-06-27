@@ -81,7 +81,7 @@ config =
     },
     owned_despawn_time = 5, -- Minutes it takes for vehicles to despawn after owner leaves
     gas_station_radius = 20,
-    gas_station_repair_per_second = 0.03, -- 3% per second
+    gas_station_repair_per_second = 0.015, -- 1.5% per second
     decals = -- List of all possible vehicle decals
     {
         "MilStandard",
