@@ -12,7 +12,8 @@ function sLocationLoader:__init()
         "triple",
         "Mesa",
         "Red Gates",
-        "Arena"
+        "Arena",
+        "Pirate Den"
     }
     
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
