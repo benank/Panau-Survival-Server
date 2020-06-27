@@ -15,6 +15,11 @@ function cCollisionChecker:__init()
     self.timer = Timer()
 
     Events:Subscribe(var("Render"):get(), self, self.Render)
+    Events:Subscribe(var("LocalPlayerDeath"):get(), self, self.LocalPlayerDeath)
+end
+
+function cCollisionChecker:LocalPlayerDeath()
+    self.strikes:set(0)
 end
 
 function cCollisionChecker:Render(args)
@@ -26,7 +31,7 @@ function cCollisionChecker:Render(args)
 
     local ray = Physics:Raycast(basepos, Vector3.Down, 0, 3)
 
-    if ray.distance == 3 and self.timer:GetSeconds() > 1 and not LocalPlayer:GetValue("Loading") then
+    if ray.distance == 3 and self.timer:GetSeconds() > 1 and not LocalPlayer:GetValue("Loading") and LocalPlayer:GetHealth() > 0 then
         self.timer:Restart()
         self.strikes:set(tonumber(self.strikes:get()) + 1)
     end
