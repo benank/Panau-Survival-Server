@@ -11,7 +11,8 @@ function sLocationLoader:__init()
     {
         "triple",
         "Mesa",
-        "Red Gates"
+        "Red Gates",
+        "Arena"
     }
     
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
