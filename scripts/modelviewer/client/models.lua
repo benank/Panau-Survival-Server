@@ -3,7 +3,7 @@
 -- Lua scripts are compressed when sent to the client, so this should compress down extremely well
 
 models = {
-	["climate/zone_0/vegetation_0.blz"] = {
+	["climate/zone_0/vegetation_0.nlz"] = {
 		{'City_B10_roofbush-Whole.lod', 'City_B10_roofbush_lod1-Whole_col.pfx'},
 		{'City_B11_roofbush-Whole.lod', 'City_B11_roofbush_lod1-Whole_col.pfx'},
 		{'Desert_Particle-Needlebush_Leaf.lod', 'Desert_Particle_lod1-Needlebush_Leaf_col.pfx'},
@@ -124,7 +124,7 @@ models = {
 		{'jungle_T20_ThaiPalmXL-TrunkA.lod', 'jungle_T20_ThaiPalmXL_lod1-TrunkA_col.pfx'},
 		{'jungle_T20_ThaiPalmXL-Whole.lod', 'jungle_T20_ThaiPalmXL_lod1-Whole_col.pfx'},
 	},
-	["climate/zone_1/vegetation_1.blz"] = {
+	["climate/zone_1/vegetation_1.nlz"] = {
 		{'Arctic_B11_bushtreeL-Whole.lod', 'Arctic_B11_bushtreeL_lod1-Whole_col.pfx'},
 		{'Arctic_B12_bushtreeM-Whole.lod', 'Arctic_B12_bushtreeM_lod1-Whole_col.pfx'},
 		{'Arctic_B13_bushtreeS-Whole.lod', 'Arctic_B13_bushtreeS_lod1-Whole_col.pfx'},
@@ -157,7 +157,7 @@ models = {
 		{'Arctic_T28_bushtreeL-TrunkC.lod', 'Arctic_T28_bushtreeL_lod1-TrunkC_col.pfx'},
 		{'Arctic_T28_bushtreeL-Whole.lod', 'Arctic_T28_bushtreeL_lod1-Whole_col.pfx'},
 	},
-	["climate/zone_2/vegetation_2.blz"] = {
+	["climate/zone_2/vegetation_2.nlz"] = {
 		{'City_T01_SakuraL-Stump.lod', 'City_T01_SakuraL_lod1-Stump_col.pfx'},
 		{'City_T01_SakuraL-TrunkA.lod', 'City_T01_SakuraL_lod1-TrunkA_col.pfx'},
 		{'City_T01_SakuraL-Whole.lod', 'City_T01_SakuraL_lod1-Whole_col.pfx'},
@@ -189,7 +189,7 @@ models = {
 		{'Desert_T05_NeedleBushClM-Whole.lod', 'Desert_T05_NeedleBushClM_lod1-Whole_col.pfx'},
 		{'Desert_T06_NeedleBushClS-Whole.lod', 'Desert_T06_NeedleBushClS_lod1-Whole_col.pfx'},
 	},
-	["climate/zone_3/vegetation_3.blz"] = {
+	["climate/zone_3/vegetation_3.nlz"] = {
 		{'City_T14_SideWalkM-Stump.lod', 'City_T14_SideWalkM_lod1-Stump_col.pfx'},
 		{'City_T14_SideWalkM-Trunk.lod', 'City_T14_SideWalkM_lod1-Trunk_col.pfx'},
 		{'City_T14_SideWalkM-Whole.lod', 'City_T14_SideWalkM_lod1-Whole_col.pfx'},
@@ -2293,7 +2293,7 @@ models = {
 		{'v105-steering01-standard01r.lod', 'v105_lod1-steering01_lod1-standard01r_col.pfx'},
 		{'v105-weapon.lod', 'v105_lod1-weapon_col.pfx'},
 	},
-	["global/areasets/areaset01.blz"] = {
+	["global/areasets/areaset01.nlz"] = {
 		{'gb011-a.lod', 'gb011_lod1-a_col.pfx'},
 		{'gb011-b.lod', 'gb011_lod1-b_col.pfx'},
 		{'gb011-c.lod', 'gb011_lod1-c_col.pfx'},
@@ -2420,7 +2420,7 @@ models = {
 		{'go236-g.lod', 'go236_lod1-g_col.pfx'},
 		{'go236-h.lod', 'go236_lod1-h_col.pfx'},
 	},
-	["global/areasets/areaset02.blz"] = {
+	["global/areasets/areaset02.nlz"] = {
 		{'gb029-a.lod', 'gb029_lod1-a_col.pfx'},
 		{'gb051-a.lod', 'gb051_lod1-a_col.pfx'},
 		{'gb051-b.lod', 'gb051_lod1-b_col.pfx'},
@@ -2455,7 +2455,7 @@ models = {
 		{'go150-b.lod', 'go150_lod1-b_col.pfx'},
 		{'go150-c.lod', 'go150_lod1-c_col.pfx'},
 	},
-	["global/areasets/areaset03.blz"] = {
+	["global/areasets/areaset03.nlz"] = {
 		{'gb019-a.lod', 'gb019_lod1-a_col.pfx'},
 		{'gb021-a.lod', 'gb021_lod1-a_col.pfx'},
 		{'gb021-b.lod', 'gb021_lod1-b_col.pfx'},
@@ -2500,7 +2500,7 @@ models = {
 		{'go161-a1_dst.lod', 'go161_lod1-a1_dst_col.pfx'},
 		{'go161-a2_dst.lod', 'go161_lod1-a2_dst_col.pfx'},
 	},
-	["global/areasets/areaset04.blz"] = {
+	["global/areasets/areaset04.nlz"] = {
 		{'gb202-a.lod', 'gb202_lod1-a_col.pfx'},
 		{'gb202-b.lod', 'gb202_lod1-b_col.pfx'},
 		{'gb202-c.lod', 'gb202_lod1-c_col.pfx'},
@@ -2533,7 +2533,7 @@ models = {
 		{'go232-b.lod', 'go232_lod1-b_col.pfx'},
 		{'go232-c.lod', 'go232_lod1-c_col.pfx'},
 	},
-	["global/areasets/areaset05.blz"] = {
+	["global/areasets/areaset05.nlz"] = {
 		{'gb001-a.lod', 'gb001_lod1-a_col.pfx'},
 		{'gb001-a_dst.lod', 'gb001_lod1-a_dst_col.pfx'},
 		{'gb001-b.lod', 'gb001_lod1-b_col.pfx'},
@@ -2612,7 +2612,7 @@ models = {
 		{'gb243-a.lod', 'gb243_lod1-a_col.pfx'},
 		{'go238-a.lod', 'go238_lod1-a_col.pfx'},
 	},
-	["global/areasets/areaset06.blz"] = {
+	["global/areasets/areaset06.nlz"] = {
 		{'gb007-a.lod', 'gb007_lod1-a_col.pfx'},
 		{'gb044-a.lod', 'gb044_lod1-a_col.pfx'},
 		{'gb184-a.lod', 'gb184_lod1-a_col.pfx'},
@@ -2635,7 +2635,7 @@ models = {
 		{'gb184-r.lod', 'gb184_lod1-r_col.pfx'},
 		{'gb184-s.lod', 'gb184_lod1-s_col.pfx'},
 	},
-	["global/areasets/areaset07.blz"] = {
+	["global/areasets/areaset07.nlz"] = {
 		{'gb009-a.lod', 'gb009_lod1-a_col.pfx'},
 		{'gb009-b.lod', 'gb009_lod1-b_col.pfx'},
 		{'gb017-a.lod', 'gb017_lod1-a_col.pfx'},
@@ -2676,7 +2676,7 @@ models = {
 		{'go235-a.lod', 'go235_lod1-a_col.pfx'},
 		{'go235-b.lod', 'go235_lod1-b_col.pfx'},
 	},
-	["global/areasets/areaset08.blz"] = {
+	["global/areasets/areaset08.nlz"] = {
 		{'gb036_01-base.lod', 'gb036_01_lod1-base_col.pfx'},
 		{'gb036_01-dock.lod', 'gb036_01_lod1-dock_col.pfx'},
 		{'gb036_01-drillhouse.lod', 'gb036_01_lod1-drillhouse_col.pfx'},
@@ -2708,7 +2708,7 @@ models = {
 		{'gb036_02-towerhut.lod', 'gb036_02_lod1-towerhut_col.pfx'},
 		{'gb036_02-winch.lod', 'gb036_02_lod1-winch_col.pfx'},
 	},
-	["global/areasets/areaset09.blz"] = {
+	["global/areasets/areaset09.nlz"] = {
 		{'gb250-a.lod', 'gb250_lod1-a_col.pfx'},
 		{'gb250-b.lod', 'gb250_lod1-b_col.pfx'},
 		{'gb250-c.lod', 'gb250_lod1-c_col.pfx'},
@@ -2719,7 +2719,7 @@ models = {
 		{'gb250-g_dst.lod', 'gb250_lod1-g_dst_col.pfx'},
 		{'gb250-h.lod', 'gb250_lod1-h_col.pfx'},
 	},
-	["global/areasets/areaset13.blz"] = {
+	["global/areasets/areaset13.nlz"] = {
 		{'cs_animsigns-a.lod', 'cs_animsigns_lod1-a_col.pfx'},
 		{'cs_animsigns-a_text_1.lod', 'cs_animsigns_lod1-a_text_1_col.pfx'},
 		{'cs_animsigns-a_text_2.lod', 'cs_animsigns_lod1-a_text_2_col.pfx'},
@@ -2946,7 +2946,7 @@ models = {
 		{'gp_050_2-c.lod', 'gp_050_2_lod1-c_col.pfx'},
 		{'gp_050_2-d.lod', 'gp_050_2_lod1-d_col.pfx'},
 	},
-	["global/areasets/general.blz"] = {
+	["global/areasets/general.nlz"] = {
 		{'seagull-body.lod', 'seagull_lod1-body_col.pfx'},
 		{'seagull-leftwing.lod', 'seagull_lod1-leftwing_col.pfx'},
 		{'seagull-rightwing.lod', 'seagull_lod1-rightwing_col.pfx'},
@@ -3416,28 +3416,28 @@ models = {
 		{'wea55-b.lod', 'wea55_lod1-b_col.pfx'},
 		{'wea58-a.lod', 'wea58_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/f1_01.seq.blz"] = {
+	["global/cutscenes/f1_01.seq.nlz"] = {
 		{'cage-a.lod', 'cage_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/f1m03.seq.blz"] = {
+	["global/cutscenes/f1m03.seq.nlz"] = {
 		{'v015-body.lod', 'v015_lod1-body_col.pfx'},
 	},
-	["global/cutscenes/f1s02.seq.blz"] = {
+	["global/cutscenes/f1s02.seq.nlz"] = {
 		{'v062cutscene_roac-heli.lod', 'v062cutscene_roac_lod1-heli_col.pfx'},
 	},
-	["global/cutscenes/f2_00b.seq.blz"] = {
+	["global/cutscenes/f2_00b.seq.nlz"] = {
 		{'key040_1-part_i.lod', 'key040_1_lod1-part_i_col.pfx'},
 	},
-	["global/cutscenes/f2s01.seq.blz"] = {
+	["global/cutscenes/f2s01.seq.nlz"] = {
 		{'v062cutscene_ular-heli.lod', 'v062cutscene_ular_lod1-heli_col.pfx'},
 	},
-	["global/cutscenes/f3_01.seq.blz"] = {
+	["global/cutscenes/f3_01.seq.nlz"] = {
 		{'knife-knife.lod', 'knife_lod1-knife_col.pfx'},
 	},
-	["global/cutscenes/f3s01.seq.blz"] = {
+	["global/cutscenes/f3s01.seq.nlz"] = {
 		{'v062cutscene_reap-heli.lod', 'v062cutscene_reap_lod1-heli_col.pfx'},
 	},
-	["global/cutscenes/km00_00.seq.blz"] = {
+	["global/cutscenes/km00_00.seq.nlz"] = {
 		{'cutscenegrapple-grapple.lod', 'cutscenegrapple_lod1-grapple_col.pfx'},
 		{'sidewindercustscene-a.lod', 'sidewindercustscene_lod1-a_col.pfx'},
 		{'tyres01cutscene-truck1.lod', 'tyres01cutscene_lod1-truck1_col.pfx'},
@@ -3454,7 +3454,7 @@ models = {
 		{'v076-frontglassbrokenside.lod', 'v076_lod1-frontglassbrokenside_col.pfx'},
 		{'v076-frontglassbrokentop.lod', 'v076_lod1-frontglassbrokentop_col.pfx'},
 	},
-	["global/cutscenes/km01_00.seq.blz"] = {
+	["global/cutscenes/km01_00.seq.nlz"] = {
 		{'mc01-rico.lod', 'mc01_lod1-rico_col.pfx'},
 		{'cstext-jc2_logo.lod', 'cstext_lod1-jc2_logo_col.pfx'},
 		{'v062cutscene-bag.lod', 'v062cutscene_lod1-bag_col.pfx'},
@@ -3463,7 +3463,7 @@ models = {
 		{'v062cutscene-cableshort.lod', 'v062cutscene_lod1-cableshort_col.pfx'},
 		{'v062cutscene-cablewind.lod', 'v062cutscene_lod1-cablewind_col.pfx'},
 	},
-	["global/cutscenes/km01_01.seq.blz"] = {
+	["global/cutscenes/km01_01.seq.nlz"] = {
 		{'gp700_01-panay_picture_skinned.lod', 'gp700_01_lod1-panay_picture_skinned_col.pfx'},
 		{'v062cutscene_agency-bag.lod', 'v062cutscene_agency_lod1-bag_col.pfx'},
 		{'v062cutscene_agency-box.lod', 'v062cutscene_agency_lod1-box_col.pfx'},
@@ -3477,68 +3477,68 @@ models = {
 		{'wea28_gunmount-d.lod', 'wea28_gunmount_lod1-d_col.pfx'},
 		{'wea28_gunmount-e.lod', 'wea28_gunmount_lod1-e_col.pfx'},
 	},
-	["global/cutscenes/km01_02.seq.blz"] = {
+	["global/cutscenes/km01_02.seq.nlz"] = {
 		{'gp301-c.lod', 'gp301_lod1-c_col.pfx'},
 	},
-	["global/cutscenes/km01_03.seq.blz"] = {
+	["global/cutscenes/km01_03.seq.nlz"] = {
 		{'motorbiketyre-motorbiketyre.lod', 'motorbiketyre_lod1-motorbiketyre_col.pfx'},
 		{'v007cutscene-body.lod', 'v007cutscene_lod1-body_col.pfx'},
 		{'v007cutscene-steering.lod', 'v007cutscene_lod1-steering_col.pfx'},
 		{'v007cutscene-uppersteering.lod', 'v007cutscene_lod1-uppersteering_col.pfx'},
 	},
-	["global/cutscenes/km02_02a.seq.blz"] = {
+	["global/cutscenes/km02_02a.seq.nlz"] = {
 		{'gp700_01-granade_base.lod', 'gp700_01_lod1-granade_base_col.pfx'},
 	},
-	["global/cutscenes/km02_02a1.seq.blz"] = {
+	["global/cutscenes/km02_02a1.seq.nlz"] = {
 		{'cutscene_prop_whisky-a.lod', 'cutscene_prop_whisky_lod1-a_col.pfx'},
 		{'cutscene_prop_whisky-b.lod', 'cutscene_prop_whisky_lod1-b_col.pfx'},
 	},
-	["global/cutscenes/km02_03.seq.blz"] = {
+	["global/cutscenes/km02_03.seq.nlz"] = {
 		{'v020cutscene-body.lod', 'v020cutscene_lod1-body_col.pfx'},
 		{'v020cutscene-doorl.lod', 'v020cutscene_lod1-doorl_col.pfx'},
 		{'v020cutscene-doorr.lod', 'v020cutscene_lod1-doorr_col.pfx'},
 		{'v020cutscene-doorrdestruct.lod', 'v020cutscene_lod1-doorrdestruct_col.pfx'},
 		{'go168-c.lod', 'go168_lod1-c_col.pfx'},
 	},
-	["global/cutscenes/km03_00a.seq.blz"] = {
+	["global/cutscenes/km03_00a.seq.nlz"] = {
 		{'money-money.lod', 'money_lod1-money_col.pfx'},
 	},
-	["global/cutscenes/km03_00b.seq.blz"] = {
+	["global/cutscenes/km03_00b.seq.nlz"] = {
 		{'fance-a.lod', 'fance_lod1-a_col.pfx'},
 		{'walkie-walkie.lod', 'walkie_lod1-walkie_col.pfx'},
 	},
-	["global/cutscenes/km03_00e.seq.blz"] = {
+	["global/cutscenes/km03_00e.seq.nlz"] = {
 		{'gae01-punkt.lod', 'gae01_lod1-punkt_col.pfx'},
 	},
-	["global/cutscenes/km03_01a.seq.blz"] = {
+	["global/cutscenes/km03_01a.seq.nlz"] = {
 		{'blowpipe-a.lod', 'blowpipe_lod1-a_col.pfx'},
 		{'gp310-a.lod', 'gp310_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km03_01b.seq.blz"] = {
+	["global/cutscenes/km03_01b.seq.nlz"] = {
 		{'gp005-a.lod', 'gp005_lod1-a_col.pfx'},
 		{'gp008-a.lod', 'gp008_lod1-a_col.pfx'},
 		{'gp008-b.lod', 'gp008_lod1-b_col.pfx'},
 		{'gp309-a.lod', 'gp309_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km03_01c.seq.blz"] = {
+	["global/cutscenes/km03_01c.seq.nlz"] = {
 		{'gp002-a.lod', 'gp002_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km03_03.seq.blz"] = {
+	["global/cutscenes/km03_03.seq.nlz"] = {
 		{'tyrev016-a.lod', 'tyrev016_lod1-a_col.pfx'},
 		{'v044-v044.lod', 'v044_lod1-v044_col.pfx'},
 	},
-	["global/cutscenes/km03_03b.seq.blz"] = {
+	["global/cutscenes/km03_03b.seq.nlz"] = {
 		{'torturechair-a.lod', 'torturechair_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km04_00b.seq.blz"] = {
+	["global/cutscenes/km04_00b.seq.nlz"] = {
 		{'gp080-b.lod', 'gp080_lod1-b_col.pfx'},
 	},
-	["global/cutscenes/km04_03.seq.blz"] = {
+	["global/cutscenes/km04_03.seq.nlz"] = {
 		{'v017_cutscene-body.lod', 'v017_cutscene_lod1-body_col.pfx'},
 		{'v017cutscene-door_bl1.lod', 'v017cutscene_lod1-door_bl1_col.pfx'},
 		{'v017cutscene-door_cl1.lod', 'v017cutscene_lod1-door_cl1_col.pfx'},
 	},
-	["global/cutscenes/km04_06.seq.blz"] = {
+	["global/cutscenes/km04_06.seq.nlz"] = {
 		{'gp012-a.lod', 'gp012_lod1-a_col.pfx'},
 		{'gp307-a.lod', 'gp307_lod1-a_col.pfx'},
 		{'gp700_01-charcoal_grill.lod', 'gp700_01_lod1-charcoal_grill_col.pfx'},
@@ -3547,40 +3547,40 @@ models = {
 		{'gp700_01-file_mirikov.lod', 'gp700_01_lod1-file_mirikov_col.pfx'},
 		{'gp700_01-sunchair.lod', 'gp700_01_lod1-sunchair_col.pfx'},
 	},
-	["global/cutscenes/km04_08.seq.blz"] = {
+	["global/cutscenes/km04_08.seq.nlz"] = {
 		{'gp009-a.lod', 'gp009_lod1-a_col.pfx'},
 		{'gp308-a.lod', 'gp308_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km05_01.seq.blz"] = {
+	["global/cutscenes/km05_01.seq.nlz"] = {
 		{'go164_01-g.lod', 'go164_01_lod1-g_col.pfx'},
 	},
-	["global/cutscenes/km05_01b.seq.blz"] = {
+	["global/cutscenes/km05_01b.seq.nlz"] = {
 		{'v009cutscene-body.lod', 'v009cutscene_lod1-body_col.pfx'},
 	},
-	["global/cutscenes/km05_02b.seq.blz"] = {
+	["global/cutscenes/km05_02b.seq.nlz"] = {
 		{'cellphone-a.lod', 'cellphone_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km05_02c.seq.blz"] = {
+	["global/cutscenes/km05_02c.seq.nlz"] = {
 		{'v016-body.lod', 'v016_lod1-body_col.pfx'},
 		{'v016-lid_fl.lod', 'v016_lod1-lid_fl_col.pfx'},
 		{'v016-lid_fr.lod', 'v016_lod1-lid_fr_col.pfx'},
 	},
-	["global/cutscenes/km05_02d.seq.blz"] = {
+	["global/cutscenes/km05_02d.seq.nlz"] = {
 		{'gp700_01-controller.lod', 'gp700_01_lod1-controller_col.pfx'},
 		{'key030_02_satelite-a.lod', 'key030_02_satelite_lod1-a_col.pfx'},
 		{'key030_02_satelite-b.lod', 'key030_02_satelite_lod1-b_col.pfx'},
 		{'key030_02_satelite-c.lod', 'key030_02_satelite_lod1-c_col.pfx'},
 	},
-	["global/cutscenes/km05_02e.seq.blz"] = {
+	["global/cutscenes/km05_02e.seq.nlz"] = {
 		{'glas-a.lod', 'glas_lod1-a_col.pfx'},
 		{'key030_01-c1.lod', 'key030_01_lod1-c1_col.pfx'},
 		{'key030_01-x.lod', 'key030_01_lod1-x_col.pfx'},
 	},
-	["global/cutscenes/km06_01.seq.blz"] = {
+	["global/cutscenes/km06_01.seq.nlz"] = {
 		{'book-book.lod', 'book_lod1-book_col.pfx'},
 		{'key004_07-a.lod', 'key004_07_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km06_08.seq.blz"] = {
+	["global/cutscenes/km06_08.seq.nlz"] = {
 		{'chameleon-body.lod', 'chameleon_lod1-body_col.pfx'},
 		{'gp700_01-granade_handle.lod', 'gp700_01_lod1-granade_handle_col.pfx'},
 		{'gp700_01-granade_sprint.lod', 'gp700_01_lod1-granade_sprint_col.pfx'},
@@ -3589,126 +3589,126 @@ models = {
 		{'key015_01-door.lod', 'key015_01_lod1-door_col.pfx'},
 		{'key015_01-wall.lod', 'key015_01_lod1-wall_col.pfx'},
 	},
-	["global/cutscenes/km07_01.seq.blz"] = {
+	["global/cutscenes/km07_01.seq.nlz"] = {
 		{'gp302-a.lod', 'gp302_lod1-a_col.pfx'},
 		{'gp302-b.lod', 'gp302_lod1-b_col.pfx'},
 	},
-	["global/cutscenes/km07_02.seq.blz"] = {
+	["global/cutscenes/km07_02.seq.nlz"] = {
 		{'key014_02-ladder.lod', 'key014_02_lod1-ladder_col.pfx'},
 		{'key014_02-n.lod', 'key014_02_lod1-n_col.pfx'},
 		{'key014_02-p.lod', 'key014_02_lod1-p_col.pfx'},
 	},
-	["global/cutscenes/km07_04.seq.blz"] = {
+	["global/cutscenes/km07_04.seq.nlz"] = {
 		{'keypad-a.lod', 'keypad_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km07_07.seq.blz"] = {
+	["global/cutscenes/km07_07.seq.nlz"] = {
 		{'sheldonglasses-glasses.lod', 'sheldonglasses_lod1-glasses_col.pfx'},
 		{'gp008-c.lod', 'gp008_lod1-c_col.pfx'},
 		{'gp700_01-barbeque_3wurst.lod', 'gp700_01_lod1-barbeque_3wurst_col.pfx'},
 		{'gp700_01-barbeque_lizard.lod', 'gp700_01_lod1-barbeque_lizard_col.pfx'},
 		{'gp700_01-barbeque_wurst.lod', 'gp700_01_lod1-barbeque_wurst_col.pfx'},
 	},
-	["global/cutscenes/km07_07b.seq.blz"] = {
+	["global/cutscenes/km07_07b.seq.nlz"] = {
 		{'gp308-b.lod', 'gp308_lod1-b_col.pfx'},
 	},
-	["global/landmarks/02x45_landmark.blz"] = {
+	["global/landmarks/02x45_landmark.nlz"] = {
 		{'landmark-gb036.lod', 'landmark_lod1-gb036_col.pfx'},
 	},
-	["global/landmarks/28x33_landmark.blz"] = {
+	["global/landmarks/28x33_landmark.nlz"] = {
 		{'landmark-key014_01.lod', 'landmark_lod1-key014_01_col.pfx'},
 	},
-	["global/landmarks/28x34_landmark.blz"] = {
+	["global/landmarks/28x34_landmark.nlz"] = {
 		{'landmark-key014_02.lod', 'landmark_lod1-key014_02_col.pfx'},
 	},
-	["global/landmarks/bridge.1.2_landmark.blz"] = {
+	["global/landmarks/bridge.1.2_landmark.nlz"] = {
 		{'cs_island-cs_bridge_1_2.lod', 'cs_island_lod1-cs_bridge_1_2_col.pfx'},
 	},
-	["global/landmarks/bridge.1.4_landmark.blz"] = {
+	["global/landmarks/bridge.1.4_landmark.nlz"] = {
 		{'cs_island-cs_bridge_1_4.lod', 'cs_island_lod1-cs_bridge_1_4_col.pfx'},
 	},
-	["global/landmarks/bridge.1.4b_landmark.blz"] = {
+	["global/landmarks/bridge.1.4b_landmark.nlz"] = {
 		{'cs_island-cs_bridge_1_4b.lod', 'cs_island_lod1-cs_bridge_1_4b_col.pfx'},
 	},
-	["global/landmarks/bridge.2.3_landmark.blz"] = {
+	["global/landmarks/bridge.2.3_landmark.nlz"] = {
 		{'cs_island-cs_bridge_2_3.lod', 'cs_island_lod1-cs_bridge_2_3_col.pfx'},
 	},
-	["global/landmarks/bridge.3.4_landmark.blz"] = {
+	["global/landmarks/bridge.3.4_landmark.nlz"] = {
 		{'cs_island-cs_bridge_3_4.lod', 'cs_island_lod1-cs_bridge_3_4_col.pfx'},
 	},
-	["global/landmarks/city.district.a1.houses_landmark.blz"] = {
+	["global/landmarks/city.district.a1.houses_landmark.nlz"] = {
 		{'cs_island-cs_island_a1.lod', 'cs_island_lod1-cs_island_a1_col.pfx'},
 	},
-	["global/landmarks/city.district.a2.houses_landmark.blz"] = {
+	["global/landmarks/city.district.a2.houses_landmark.nlz"] = {
 		{'cs_island-cs_island_a2.lod', 'cs_island_lod1-cs_island_a2_col.pfx'},
 	},
-	["global/landmarks/city.district.b1.houses_landmark.blz"] = {
+	["global/landmarks/city.district.b1.houses_landmark.nlz"] = {
 		{'cs_island-cs_island_b1.lod', 'cs_island_lod1-cs_island_b1_col.pfx'},
 	},
-	["global/landmarks/city.district.b2.houses_landmark.blz"] = {
+	["global/landmarks/city.district.b2.houses_landmark.nlz"] = {
 		{'cs_island-cs_island_b2.lod', 'cs_island_lod1-cs_island_b2_col.pfx'},
 	},
-	["global/landmarks/city.district.c1.houses_landmark.blz"] = {
+	["global/landmarks/city.district.c1.houses_landmark.nlz"] = {
 		{'cs_island-cs_island_c1.lod', 'cs_island_lod1-cs_island_c1_col.pfx'},
 	},
-	["global/landmarks/city.district.c2.houses_landmark.blz"] = {
+	["global/landmarks/city.district.c2.houses_landmark.nlz"] = {
 		{'cs_island-cs_island_c2.lod', 'cs_island_lod1-cs_island_c2_col.pfx'},
 	},
-	["global/landmarks/city.district.d1.houses_landmark.blz"] = {
+	["global/landmarks/city.district.d1.houses_landmark.nlz"] = {
 		{'cs_island-cs_island_d1.lod', 'cs_island_lod1-cs_island_d1_col.pfx'},
 	},
-	["global/landmarks/city.district.d2.houses_landmark.blz"] = {
+	["global/landmarks/city.district.d2.houses_landmark.nlz"] = {
 		{'cs_island-cs_island_d2.lod', 'cs_island_lod1-cs_island_d2_col.pfx'},
 	},
-	["global/landmarks/city.district.d3.houses_landmark.blz"] = {
+	["global/landmarks/city.district.d3.houses_landmark.nlz"] = {
 		{'cs_island-cs_island_d3.lod', 'cs_island_lod1-cs_island_d3_col.pfx'},
 	},
-	["global/landmarks/f1m03.interiors_landmark.blz"] = {
+	["global/landmarks/f1m03.interiors_landmark.nlz"] = {
 		{'landmark-key003.lod', 'landmark_lod1-key003_col.pfx'},
 	},
-	["global/landmarks/f1m07milehigh_landmark.blz"] = {
+	["global/landmarks/f1m07milehigh_landmark.nlz"] = {
 		{'landmark-key001.lod', 'landmark_lod1-key001_col.pfx'},
 	},
-	["global/landmarks/f2m06base2empweapon_landmark.blz"] = {
+	["global/landmarks/f2m06base2empweapon_landmark.nlz"] = {
 		{'landmark-key005.lod', 'landmark_lod1-key005_col.pfx'},
 	},
-	["global/landmarks/f2m07.researchfacility_landmark.blz"] = {
+	["global/landmarks/f2m07.researchfacility_landmark.nlz"] = {
 		{'landmark-key028.lod', 'landmark_lod1-key028_col.pfx'},
 	},
-	["global/landmarks/f2m08.base_landmark.blz"] = {
+	["global/landmarks/f2m08.base_landmark.nlz"] = {
 		{'landmark-key021.lod', 'landmark_lod1-key021_col.pfx'},
 	},
-	["global/landmarks/f3m04.fryme_landmark.blz"] = {
+	["global/landmarks/f3m04.fryme_landmark.nlz"] = {
 		{'landmark-key016_01.lod', 'landmark_lod1-key016_01_col.pfx'},
 	},
-	["global/landmarks/f3m04.pads_landmark.blz"] = {
+	["global/landmarks/f3m04.pads_landmark.nlz"] = {
 		{'landmark-key016_02.lod', 'landmark_lod1-key016_02_col.pfx'},
 	},
-	["global/landmarks/f3m05.skyscraper_landmark.blz"] = {
+	["global/landmarks/f3m05.skyscraper_landmark.nlz"] = {
 		{'landmark-key019.lod', 'landmark_lod1-key019_col.pfx'},
 	},
-	["global/landmarks/km02.towercomplex_landmark.blz"] = {
+	["global/landmarks/km02.towercomplex_landmark.nlz"] = {
 		{'landmark-key013.lod', 'landmark_lod1-key013_col.pfx'},
 	},
-	["global/landmarks/km04.centerbase_landmark.blz"] = {
+	["global/landmarks/km04.centerbase_landmark.nlz"] = {
 		{'landmark-key004_01.lod', 'landmark_lod1-key004_01_col.pfx'},
 		{'landmark-key004_02.lod', 'landmark_lod1-key004_02_col.pfx'},
 	},
-	["global/landmarks/km04.waterfallhangar_landmark.blz"] = {
+	["global/landmarks/km04.waterfallhangar_landmark.nlz"] = {
 		{'landmark-key004_03.lod', 'landmark_lod1-key004_03_col.pfx'},
 	},
-	["global/landmarks/km05.hotelbuilding01_landmark.blz"] = {
+	["global/landmarks/km05.hotelbuilding01_landmark.nlz"] = {
 		{'landmark-key030.lod', 'landmark_lod1-key030_col.pfx'},
 	},
-	["locations/employers/challengeemp/cch00emp.flz"] = {
+	["locations/employers/challengeemp/cch00emp.nlz"] = {
 		{'gp702-a.lod', 'gp702_lod1-a_col.pfx'},
 	},
-	["locations/employers/challengeemp/cch04emp.flz"] = {
+	["locations/employers/challengeemp/cch04emp.nlz"] = {
 		{'gb012-a.lod', 'gb012_lod1-a_col.pfx'},
 		{'gb012-b.lod', 'gb012_lod1-b_col.pfx'},
 		{'gb012-b_dst.lod', 'gb012_lod1-b_dst_col.pfx'},
 		{'go038-a.lod', 'go038_lod1-a_col.pfx'},
 	},
-	["locations/employers/challengeemp/cch06emp.flz"] = {
+	["locations/employers/challengeemp/cch06emp.nlz"] = {
 		{'gb145-e.lod', 'gb145_lod1-e_col.pfx'},
 		{'gb145-f.lod', 'gb145_lod1-f_col.pfx'},
 		{'gb145-i.lod', 'gb145_lod1-i_col.pfx'},
@@ -3717,29 +3717,29 @@ models = {
 		{'go224-l.lod', 'go224_lod1-l_col.pfx'},
 		{'go234-a.lod', 'go234_lod1-a_col.pfx'},
 	},
-	["locations/employers/challengeemp/cch15emp.flz"] = {
+	["locations/employers/challengeemp/cch15emp.nlz"] = {
 		{'gb056-a.lod', 'gb056_lod1-a_col.pfx'},
 	},
-	["locations/employers/challengeemp/cch16emp.flz"] = {
+	["locations/employers/challengeemp/cch16emp.nlz"] = {
 		{'go156-a.lod', 'go156_lod1-a_col.pfx'},
 		{'go172-a.lod', 'go172_lod1-a_col.pfx'},
 		{'go172-b.lod', 'go172_lod1-b_col.pfx'},
 	},
-	["locations/employers/challengeemp/cch24emp.flz"] = {
+	["locations/employers/challengeemp/cch24emp.nlz"] = {
 		{'gb246-a.lod', 'gb246_lod1-a_col.pfx'},
 	},
-	["locations/employers/challengeemp/cch30emp.flz"] = {
+	["locations/employers/challengeemp/cch30emp.nlz"] = {
 		{'gb145-g.lod', 'gb145_lod1-g_col.pfx'},
 		{'go061-i.lod', 'go061_lod1-i_col.pfx'},
 	},
-	["locations/employers/challengeemp/cch37emp.flz"] = {
+	["locations/employers/challengeemp/cch37emp.nlz"] = {
 		{'gb097-a.lod', 'gb097_lod1-a_col.pfx'},
 	},
-	["locations/employers/challengeemp/cch63emp.flz"] = {
+	["locations/employers/challengeemp/cch63emp.nlz"] = {
 		{'go400-a.lod', 'go400_lod1-a_col.pfx'},
 		{'go400-b.lod', 'go400_lod1-b_col.pfx'},
 	},
-	["locations/employers/challengeemp/cch66emp.flz"] = {
+	["locations/employers/challengeemp/cch66emp.nlz"] = {
 		{'gb186-a.lod', 'gb186_lod1-a_col.pfx'},
 		{'gb186-b.lod', 'gb186_lod1-b_col.pfx'},
 		{'gb186-c.lod', 'gb186_lod1-c_col.pfx'},
@@ -3750,36 +3750,36 @@ models = {
 		{'go220-a.lod', 'go220_lod1-a_col.pfx'},
 		{'go220-a_dst.lod', 'go220_lod1-a_dst_col.pfx'},
 	},
-	["locations/employers/f1_roaches/f1m03emp/f1m03emp.flz"] = {
+	["locations/employers/f1_roaches/f1m03emp/f1m03emp.nlz"] = {
 		{'go210-a.lod', 'go210_lod1-a_col.pfx'},
 		{'go246-c.lod', 'go246_lod1-c_col.pfx'},
 		{'go246-e3.lod', 'go246_lod1-e3_col.pfx'},
 	},
-	["locations/employers/f1_roaches/f1s07emp/f1s07emp.flz"] = {
+	["locations/employers/f1_roaches/f1s07emp/f1s07emp.nlz"] = {
 		{'gb140-e.lod', 'gb140_lod1-e_col.pfx'},
 		{'gb140-f.lod', 'gb140_lod1-f_col.pfx'},
 		{'gb140-i.lod', 'gb140_lod1-i_col.pfx'},
 		{'go083-b.lod', 'go083_lod1-b_col.pfx'},
 		{'gp030-d.lod', 'gp030_lod1-d_col.pfx'},
 	},
-	["locations/employers/f1_roaches/f1t05emp/f1t05emp.flz"] = {
+	["locations/employers/f1_roaches/f1t05emp/f1t05emp.nlz"] = {
 		{'gb186-d.lod', 'gb186_lod1-d_col.pfx'},
 	},
-	["locations/employers/f1_roaches/f1t10emp/f1t10emp.flz"] = {
+	["locations/employers/f1_roaches/f1t10emp/f1t10emp.nlz"] = {
 		{'gp030-g.lod', 'gp030_lod1-g_col.pfx'},
 	},
-	["locations/employers/f1_roaches/f1t11emp/f1t11emp.flz"] = {
+	["locations/employers/f1_roaches/f1t11emp/f1t11emp.nlz"] = {
 		{'go083-a.lod', 'go083_lod1-a_col.pfx'},
 		{'gp030-h.lod', 'gp030_lod1-h_col.pfx'},
 	},
-	["locations/employers/f2_ularboys/f2m05emp/f2m05emp.flz"] = {
+	["locations/employers/f2_ularboys/f2m05emp/f2m05emp.nlz"] = {
 		{'go246-a.lod', 'go246_lod1-a_col.pfx'},
 		{'go246-e.lod', 'go246_lod1-e_col.pfx'},
 	},
-	["locations/employers/f2_ularboys/f2s04emp/f2s04emp.flz"] = {
+	["locations/employers/f2_ularboys/f2s04emp/f2s04emp.nlz"] = {
 		{'key040_1-part_b.lod', 'key040_1_lod1-part_b_col.pfx'},
 	},
-	["locations/employers/f2_ularboys/f2t04emp/f2t04emp.flz"] = {
+	["locations/employers/f2_ularboys/f2t04emp/f2t04emp.nlz"] = {
 		{'gb022-c.lod', 'gb022_lod1-c_col.pfx'},
 		{'go220-d.lod', 'go220_lod1-d_col.pfx'},
 		{'go220-d_dst.lod', 'go220_lod1-d_dst_col.pfx'},
@@ -3787,29 +3787,29 @@ models = {
 		{'go221-c.lod', 'go221_lod1-c_col.pfx'},
 		{'go223-d.lod', 'go223_lod1-d_col.pfx'},
 	},
-	["locations/employers/f2_ularboys/f2t07emp/f2t07emp.flz"] = {
+	["locations/employers/f2_ularboys/f2t07emp/f2t07emp.nlz"] = {
 		{'go210-a_dst.lod', 'go210_lod1-a_dst_col.pfx'},
 	},
-	["locations/employers/f3_reapers/f3m02emp/f3m02emp.flz"] = {
+	["locations/employers/f3_reapers/f3m02emp/f3m02emp.nlz"] = {
 		{'desert_g04_rockpillarxs-whole.lod', 'desert_g04_rockpillarxs_lod1-whole_col.pfx'},
 		{'desert_g06_rockpilel-whole.lod', 'desert_g06_rockpilel_lod1-whole_col.pfx'},
 	},
-	["locations/employers/f3_reapers/f3t07emp/f3t07emp.flz"] = {
+	["locations/employers/f3_reapers/f3t07emp/f3t07emp.nlz"] = {
 		{'gb022-b.lod', 'gb022_lod1-b_col.pfx'},
 		{'go220-c.lod', 'go220_lod1-c_col.pfx'},
 		{'go220-c_dst.lod', 'go220_lod1-c_dst_col.pfx'},
 	},
-	["locations/employers/f3_reapers/f3t12emp/f3t12emp.flz"] = {
+	["locations/employers/f3_reapers/f3t12emp/f3t12emp.nlz"] = {
 		{'desert_g01_rockpillarm-whole.lod', 'desert_g01_rockpillarm_lod1-whole_col.pfx'},
 		{'desert_g05_rockpilem-whole.lod', 'desert_g05_rockpilem_lod1-whole_col.pfx'},
 	},
-	["locations/employers/f3_reapers/f3t16emp/f3t16emp.flz"] = {
+	["locations/employers/f3_reapers/f3t16emp/f3t16emp.nlz"] = {
 		{'go246-b.lod', 'go246_lod1-b_col.pfx'},
 		{'go246-d.lod', 'go246_lod1-d_col.pfx'},
 		{'go246-e2.lod', 'go246_lod1-e2_col.pfx'},
 		{'go246-f.lod', 'go246_lod1-f_col.pfx'},
 	},
-	["locations/factionmissions/f1m03/f1m03.airport.flz"] = {
+	["locations/factionmissions/f1m03/f1m03.airport.nlz"] = {
 		{'gb246-b.lod', 'gb246_lod1-b_col.pfx'},
 		{'go121-i.lod', 'go121_lod1-i_col.pfx'},
 		{'go129-a2.lod', 'go129_lod1-a2_col.pfx'},
@@ -3822,7 +3822,7 @@ models = {
 		{'key_003-q3d.lod', 'key_003_lod1-q3d_col.pfx'},
 		{'key_003-q4.lod', 'key_003_lod1-q4_col.pfx'},
 	},
-	["locations/factionmissions/f1m03/f1m03.interiors.flz"] = {
+	["locations/factionmissions/f1m03/f1m03.interiors.nlz"] = {
 		{'gb008-h.lod', 'gb008_lod1-h_col.pfx'},
 		{'gb008-h2.lod', 'gb008_lod1-h2_col.pfx'},
 		{'gb008-h2_dst.lod', 'gb008_lod1-h2_dst_col.pfx'},
@@ -3878,10 +3878,10 @@ models = {
 		{'key030_01-v.lod', 'key030_01_lod1-v_col.pfx'},
 		{'key030_01-v_dst.lod', 'key030_01_lod1-v_dst_col.pfx'},
 	},
-	["locations/factionmissions/f1m07/f1m07baseend.flz"] = {
+	["locations/factionmissions/f1m07/f1m07baseend.nlz"] = {
 		{'go022-e.lod', 'go022_lod1-e_col.pfx'},
 	},
-	["locations/factionmissions/f1m07/f1m07milehigh.flz"] = {
+	["locations/factionmissions/f1m07/f1m07milehigh.nlz"] = {
 		{'go168-a.lod', 'go168_lod1-a_col.pfx'},
 		{'go168-b.lod', 'go168_lod1-b_col.pfx'},
 		{'go168-d.lod', 'go168_lod1-d_col.pfx'},
@@ -3944,7 +3944,7 @@ models = {
 		{'key001_03-e.lod', 'key001_03_lod1-e_col.pfx'},
 		{'key001_03-h.lod', 'key001_03_lod1-h_col.pfx'},
 	},
-	["locations/factionmissions/f2m01/f2m01.basen01.flz"] = {
+	["locations/factionmissions/f2m01/f2m01.basen01.nlz"] = {
 		{'gb120-h.lod', 'gb120_lod1-h_col.pfx'},
 		{'gb120-i.lod', 'gb120_lod1-i_col.pfx'},
 		{'go070-a.lod', 'go070_lod1-a_col.pfx'},
@@ -3967,13 +3967,13 @@ models = {
 		{'key006_5-k.lod', 'key006_5_lod1-k_col.pfx'},
 		{'key006_5-l.lod', 'key006_5_lod1-l_col.pfx'},
 	},
-	["locations/factionmissions/f2m01/f2m01.basen03.flz"] = {
+	["locations/factionmissions/f2m01/f2m01.basen03.nlz"] = {
 		{'gb223-c.lod', 'gb223_lod1-c_col.pfx'},
 		{'gb223-q.lod', 'gb223_lod1-q_col.pfx'},
 		{'go070-e.lod', 'go070_lod1-e_col.pfx'},
 		{'go070-j.lod', 'go070_lod1-j_col.pfx'},
 	},
-	["locations/factionmissions/f2m01/f2m01.village.flz"] = {
+	["locations/factionmissions/f2m01/f2m01.village.nlz"] = {
 		{'gb206-b.lod', 'gb206_lod1-b_col.pfx'},
 		{'gb206-d.lod', 'gb206_lod1-d_col.pfx'},
 		{'gb206-e.lod', 'gb206_lod1-e_col.pfx'},
@@ -3984,10 +3984,10 @@ models = {
 		{'desert_t03_needlebushs-whole.lod', 'desert_t03_needlebushs_lod1-whole_col.pfx'},
 		{'desert_t04_needlebushxs-whole.lod', 'desert_t04_needlebushxs_lod1-whole_col.pfx'},
 	},
-	["locations/factionmissions/f2m05/f2m05.docks.flz"] = {
+	["locations/factionmissions/f2m05/f2m05.docks.nlz"] = {
 		{'key026_01-n.lod', 'key026_01_lod1-n_col.pfx'},
 	},
-	["locations/factionmissions/f2m05/f2m05.stffront.flz"] = {
+	["locations/factionmissions/f2m05/f2m05.stffront.nlz"] = {
 		{'gb002-e.lod', 'gb002_lod1-e_col.pfx'},
 		{'gb002-i.lod', 'gb002_lod1-i_col.pfx'},
 		{'gb248-a.lod', 'gb248_lod1-a_col.pfx'},
@@ -4044,7 +4044,7 @@ models = {
 		{'key026_01-x.lod', 'key026_01_lod1-x_col.pfx'},
 		{'key026_01-z.lod', 'key026_01_lod1-z_col.pfx'},
 	},
-	["locations/factionmissions/f2m05/f2m05.stfleft.flz"] = {
+	["locations/factionmissions/f2m05/f2m05.stfleft.nlz"] = {
 		{'go300-a.lod', 'go300_lod1-a_col.pfx'},
 		{'key026_01-c.lod', 'key026_01_lod1-c_col.pfx'},
 		{'key026_01-c_1_dst.lod', 'key026_01_lod1-c_1_dst_col.pfx'},
@@ -4052,20 +4052,20 @@ models = {
 		{'key026_01-j_dst.lod', 'key026_01_lod1-j_dst_col.pfx'},
 		{'key026_01-u.lod', 'key026_01_lod1-u_col.pfx'},
 	},
-	["locations/factionmissions/f2m05/f2m05.stfright.flz"] = {
+	["locations/factionmissions/f2m05/f2m05.stfright.nlz"] = {
 		{'go005-a_dst.lod', 'go005_lod1-a_dst_col.pfx'},
 	},
-	["locations/factionmissions/f2m06/f2m06.bridges.flz"] = {
+	["locations/factionmissions/f2m06/f2m06.bridges.nlz"] = {
 		{'key005_01-o1.lod', 'key005_01_lod1-o1_col.pfx'},
 		{'key005_01-o2.lod', 'key005_01_lod1-o2_col.pfx'},
 	},
-	["locations/factionmissions/f2m06/f2m06.trees02.flz"] = {
+	["locations/factionmissions/f2m06/f2m06.trees02.nlz"] = {
 		{'key005_01-g.lod', 'key005_01_lod1-g_col.pfx'},
 	},
-	["locations/factionmissions/f2m06/f2m06.trees04.flz"] = {
+	["locations/factionmissions/f2m06/f2m06.trees04.nlz"] = {
 		{'key006_06-a.lod', 'key006_06_lod1-a_col.pfx'},
 	},
-	["locations/factionmissions/f2m06/f2m06airstrip.flz"] = {
+	["locations/factionmissions/f2m06/f2m06airstrip.nlz"] = {
 		{'go020-a.lod', 'go020_lod1-a_col.pfx'},
 		{'go020-b.lod', 'go020_lod1-b_col.pfx'},
 		{'go020-c.lod', 'go020_lod1-c_col.pfx'},
@@ -4074,7 +4074,7 @@ models = {
 		{'key005_03-b.lod', 'key005_03_lod1-b_col.pfx'},
 		{'key005_03-c.lod', 'key005_03_lod1-c_col.pfx'},
 	},
-	["locations/factionmissions/f2m06/f2m06base1barracks.flz"] = {
+	["locations/factionmissions/f2m06/f2m06base1barracks.nlz"] = {
 		{'key005_02-a.lod', 'key005_02_lod1-a_col.pfx'},
 		{'key005_02-b.lod', 'key005_02_lod1-b_col.pfx'},
 		{'key005_02-f.lod', 'key005_02_lod1-f_col.pfx'},
@@ -4083,7 +4083,7 @@ models = {
 		{'key005_04-c.lod', 'key005_04_lod1-c_col.pfx'},
 		{'key005_04-d.lod', 'key005_04_lod1-d_col.pfx'},
 	},
-	["locations/factionmissions/f2m06/f2m06base2empweapon.flz"] = {
+	["locations/factionmissions/f2m06/f2m06base2empweapon.nlz"] = {
 		{'key005_01-a.lod', 'key005_01_lod1-a_col.pfx'},
 		{'key005_01-b.lod', 'key005_01_lod1-b_col.pfx'},
 		{'key005_01-c.lod', 'key005_01_lod1-c_col.pfx'},
@@ -4110,18 +4110,18 @@ models = {
 		{'key005_core-core_dst2.lod', 'key005_core_lod1-core_dst2_col.pfx'},
 		{'key005_core-rotor.lod', 'key005_core_lod1-rotor_col.pfx'},
 	},
-	["locations/factionmissions/f2m06/f2m06base3trainingcamp.flz"] = {
+	["locations/factionmissions/f2m06/f2m06base3trainingcamp.nlz"] = {
 		{'gb025-a.lod', 'gb025_lod1-a_col.pfx'},
 		{'gb025-b.lod', 'gb025_lod1-b_col.pfx'},
 		{'go162-a.lod', 'go162_lod1-a_col.pfx'},
 	},
-	["locations/factionmissions/f2m06/f2m06base5warehouse.flz"] = {
+	["locations/factionmissions/f2m06/f2m06base5warehouse.nlz"] = {
 		{'go128-a.lod', 'go128_lod1-a_col.pfx'},
 		{'go129-a_dst.lod', 'go129_lod1-a_dst_col.pfx'},
 		{'go129-b_dst.lod', 'go129_lod1-b_dst_col.pfx'},
 		{'key005_05-a.lod', 'key005_05_lod1-a_col.pfx'},
 	},
-	["locations/factionmissions/f2m06/f2m06harbor.flz"] = {
+	["locations/factionmissions/f2m06/f2m06harbor.nlz"] = {
 		{'go070-m2.lod', 'go070_lod1-m2_col.pfx'},
 		{'go070-n2.lod', 'go070_lod1-n2_col.pfx'},
 		{'go070-f.lod', 'go070_lod1-f_col.pfx'},
@@ -4139,10 +4139,10 @@ models = {
 		{'go070-n3.lod', 'go070_lod1-n3_col.pfx'},
 		{'go070-l.lod', 'go070_lod1-l_col.pfx'},
 	},
-	["locations/factionmissions/f2m07/f2m07.ice.flz"] = {
+	["locations/factionmissions/f2m07/f2m07.ice.nlz"] = {
 		{'key028_02-i.lod', 'key028_02_lod1-i_col.pfx'},
 	},
-	["locations/factionmissions/f2m07/f2m07.researchfacility.flz"] = {
+	["locations/factionmissions/f2m07/f2m07.researchfacility.nlz"] = {
 		{'go050-d.lod', 'go050_lod1-d_col.pfx'},
 		{'go122-c.lod', 'go122_lod1-c_col.pfx'},
 		{'go141-c.lod', 'go141_lod1-c_col.pfx'},
@@ -4196,7 +4196,7 @@ models = {
 		{'key028_02-m.lod', 'key028_02_lod1-m_col.pfx'},
 		{'key028_02-o.lod', 'key028_02_lod1-o_col.pfx'},
 	},
-	["locations/factionmissions/f2m08/f2m08.base.flz"] = {
+	["locations/factionmissions/f2m08/f2m08.base.nlz"] = {
 		{'gb087-d.lod', 'gb087_lod1-d_col.pfx'},
 		{'gb087-e.lod', 'gb087_lod1-e_col.pfx'},
 		{'gb087-h.lod', 'gb087_lod1-h_col.pfx'},
@@ -4216,7 +4216,7 @@ models = {
 		{'key021_01-p.lod', 'key021_01_lod1-p_col.pfx'},
 		{'key021_01-q.lod', 'key021_01_lod1-q_col.pfx'},
 	},
-	["locations/factionmissions/f2m08/f2m08.base.lee.flz"] = {
+	["locations/factionmissions/f2m08/f2m08.base.lee.nlz"] = {
 		{'gb223-i.lod', 'gb223_lod1-i_col.pfx'},
 		{'gb223-j.lod', 'gb223_lod1-j_col.pfx'},
 		{'go121-b.lod', 'go121_lod1-b_col.pfx'},
@@ -4225,7 +4225,7 @@ models = {
 		{'go121-f.lod', 'go121_lod1-f_col.pfx'},
 		{'go173-l.lod', 'go173_lod1-l_col.pfx'},
 	},
-	["locations/factionmissions/f3m02/f3m02.radarstation.flz"] = {
+	["locations/factionmissions/f3m02/f3m02.radarstation.nlz"] = {
 		{'gb008-a.lod', 'gb008_lod1-a_col.pfx'},
 		{'gb008-a2.lod', 'gb008_lod1-a2_col.pfx'},
 		{'gb008-a4.lod', 'gb008_lod1-a4_col.pfx'},
@@ -4263,7 +4263,7 @@ models = {
 		{'desert_g03_rockpillars-whole.lod', 'desert_g03_rockpillars_lod1-whole_col.pfx'},
 		{'desert_g07_rockpiles-whole.lod', 'desert_g07_rockpiles_lod1-whole_col.pfx'},
 	},
-	["locations/factionmissions/f3m04/f3m04.fryme.flz"] = {
+	["locations/factionmissions/f3m04/f3m04.fryme.nlz"] = {
 		{'gb087-c.lod', 'gb087_lod1-c_col.pfx'},
 		{'go069-b.lod', 'go069_lod1-b_col.pfx'},
 		{'go120_02-c.lod', 'go120_02_lod1-c_col.pfx'},
@@ -4289,7 +4289,7 @@ models = {
 		{'key016_01-z8_.lod', 'key016_01_lod1-z8__col.pfx'},
 		{'key016_01-z9_.lod', 'key016_01_lod1-z9__col.pfx'},
 	},
-	["locations/factionmissions/f3m04/f3m04.hatch.flz"] = {
+	["locations/factionmissions/f3m04/f3m04.hatch.nlz"] = {
 		{'key016_01-r.lod', 'key016_01_lod1-r_col.pfx'},
 		{'key016_01-r2.lod', 'key016_01_lod1-r2_col.pfx'},
 		{'key016_01-r3.lod', 'key016_01_lod1-r3_col.pfx'},
@@ -4297,7 +4297,7 @@ models = {
 		{'key016_01-r5.lod', 'key016_01_lod1-r5_col.pfx'},
 		{'key016_01-r6.lod', 'key016_01_lod1-r6_col.pfx'},
 	},
-	["locations/factionmissions/f3m04/f3m04.pads.flz"] = {
+	["locations/factionmissions/f3m04/f3m04.pads.nlz"] = {
 		{'go166_01-b.lod', 'go166_01_lod1-b_col.pfx'},
 		{'key016_01-a.lod', 'key016_01_lod1-a_col.pfx'},
 		{'key016_01-a2.lod', 'key016_01_lod1-a2_col.pfx'},
@@ -4396,7 +4396,7 @@ models = {
 		{'key016_01-ld.lod', 'key016_01_lod1-ld_col.pfx'},
 		{'key016_03-a.lod', 'key016_03_lod1-a_col.pfx'},
 	},
-	["locations/factionmissions/f3m05/f3m05.skyscraper.flz"] = {
+	["locations/factionmissions/f3m05/f3m05.skyscraper.nlz"] = {
 		{'go166_01-c.lod', 'go166_01_lod1-c_col.pfx'},
 		{'gp030-b.lod', 'gp030_lod1-b_col.pfx'},
 		{'key019_01-a.lod', 'key019_01_lod1-a_col.pfx'},
@@ -4438,7 +4438,7 @@ models = {
 		{'key019_01-g5.lod', 'key019_01_lod1-g5_col.pfx'},
 		{'key019_01-g6.lod', 'key019_01_lod1-g6_col.pfx'},
 	},
-	["locations/factionmissions/f3m06/f3m06.afterski.flz"] = {
+	["locations/factionmissions/f3m06/f3m06.afterski.nlz"] = {
 		{'go242-f.lod', 'go242_lod1-f_col.pfx'},
 		{'key020_01-b.lod', 'key020_01_lod1-b_col.pfx'},
 		{'key020_01-e.lod', 'key020_01_lod1-e_col.pfx'},
@@ -4458,7 +4458,7 @@ models = {
 		{'key020_01-t2_dst.lod', 'key020_01_lod1-t2_dst_col.pfx'},
 		{'key020_01-z.lod', 'key020_01_lod1-z_col.pfx'},
 	},
-	["locations/factionmissions/f3m06/f3m06.forthslope.flz"] = {
+	["locations/factionmissions/f3m06/f3m06.forthslope.nlz"] = {
 		{'go242-a1.lod', 'go242_lod1-a1_col.pfx'},
 		{'go242-a2.lod', 'go242_lod1-a2_col.pfx'},
 		{'go242-e.lod', 'go242_lod1-e_col.pfx'},
@@ -4486,7 +4486,7 @@ models = {
 		{'key020_03-pillar_05_dst.lod', 'key020_03_lod1-pillar_05_dst_col.pfx'},
 		{'key020_03-pillar_base.lod', 'key020_03_lod1-pillar_base_col.pfx'},
 	},
-	["locations/factionmissions/f3m06/f3m06.lift01.flz"] = {
+	["locations/factionmissions/f3m06/f3m06.lift01.nlz"] = {
 		{'key020_01-i.lod', 'key020_01_lod1-i_col.pfx'},
 		{'key020_01-j.lod', 'key020_01_lod1-j_col.pfx'},
 		{'key020_01-k.lod', 'key020_01_lod1-k_col.pfx'},
@@ -4517,13 +4517,13 @@ models = {
 		{'key020_03-concrete_plates_03.lod', 'key020_03_lod1-concrete_plates_03_col.pfx'},
 		{'key020_03-concrete_plates_04.lod', 'key020_03_lod1-concrete_plates_04_col.pfx'},
 	},
-	["locations/factionmissions/f3m06/f3m06.slope01.flz"] = {
+	["locations/factionmissions/f3m06/f3m06.slope01.nlz"] = {
 		{'key020_02-a.lod', 'key020_02_lod1-a_col.pfx'},
 		{'key020_02-b.lod', 'key020_02_lod1-b_col.pfx'},
 		{'key020_02-c.lod', 'key020_02_lod1-c_col.pfx'},
 		{'key020_03-guard_house.lod', 'key020_03_lod1-guard_house_col.pfx'},
 	},
-	["locations/factiontasks/f1t09/f1t09.madcolonelsbackyard.flz"] = {
+	["locations/factiontasks/f1t09/f1t09.madcolonelsbackyard.nlz"] = {
 		{'gb140-a.lod', 'gb140_lod1-a_col.pfx'},
 		{'gb140-b.lod', 'gb140_lod1-b_col.pfx'},
 		{'gb140-d.lod', 'gb140_lod1-d_col.pfx'},
@@ -4531,11 +4531,11 @@ models = {
 		{'gb140-h.lod', 'gb140_lod1-h_col.pfx'},
 		{'gb140-j.lod', 'gb140_lod1-j_col.pfx'},
 	},
-	["locations/factiontasks/f1t10/f1t10.covers.flz"] = {
+	["locations/factiontasks/f1t10/f1t10.covers.nlz"] = {
 		{'go222-b.lod', 'go222_lod1-b_col.pfx'},
 		{'go400-c.lod', 'go400_lod1-c_col.pfx'},
 	},
-	["locations/factiontasks/f3t12/f3t12.oilplatform.flz"] = {
+	["locations/factiontasks/f3t12/f3t12.oilplatform.nlz"] = {
 		{'gb002-a.lod', 'gb002_lod1-a_col.pfx'},
 		{'gb002-b.lod', 'gb002_lod1-b_col.pfx'},
 		{'gb002-b_dst.lod', 'gb002_lod1-b_dst_col.pfx'},
@@ -4547,19 +4547,19 @@ models = {
 		{'gb002-k.lod', 'gb002_lod1-k_col.pfx'},
 		{'gb002-l.lod', 'gb002_lod1-l_col.pfx'},
 	},
-	["locations/generalinterests/bwc/bwc.flz"] = {
+	["locations/generalinterests/bwc/bwc.nlz"] = {
 		{'v320-body.lod', 'v320_lod1-body_col.pfx'},
 		{'v320-body_dst.lod', 'v320_lod1-body_dst_col.pfx'},
 		{'v320-mt01.lod', 'v320_lod1-mt01_col.pfx'},
 		{'v320-mt02.lod', 'v320_lod1-mt02_col.pfx'},
 	},
-	["locations/generalinterests/dcs/dcs.54.flz"] = {
+	["locations/generalinterests/dcs/dcs.54.nlz"] = {
 		{'go127-a1_dst.lod', 'go127_lod1-a1_dst_col.pfx'},
 		{'go127-a2_dst.lod', 'go127_lod1-a2_dst_col.pfx'},
 		{'go127-a3_dst.lod', 'go127_lod1-a3_dst_col.pfx'},
 		{'go127-b.lod', 'go127_lod1-b_col.pfx'},
 	},
-	["locations/keymissions/km01/km01.base.flz"] = {
+	["locations/keymissions/km01/km01.base.nlz"] = {
 		{'go120_08-d2.lod', 'go120_08_lod1-d2_col.pfx'},
 		{'go201-a.lod', 'go201_lod1-a_col.pfx'},
 		{'key004_01-e.lod', 'key004_01_lod1-e_col.pfx'},
@@ -4593,19 +4593,19 @@ models = {
 		{'v110-windowrl.lod', 'v110_lod1-windowrl_col.pfx'},
 		{'v110-windowrr.lod', 'v110_lod1-windowrr_col.pfx'},
 	},
-	["locations/keymissions/km02/km02.casinobridge.flz"] = {
+	["locations/keymissions/km02/km02.casinobridge.nlz"] = {
 		{'gb069-a.lod', 'gb069_lod1-a_col.pfx'},
 		{'gb069-b.lod', 'gb069_lod1-b_col.pfx'},
 		{'gb069-d.lod', 'gb069_lod1-d_col.pfx'},
 		{'gb069-e.lod', 'gb069_lod1-e_col.pfx'},
 		{'gb069-f.lod', 'gb069_lod1-f_col.pfx'},
 	},
-	["locations/keymissions/km02/km02.karlhideout.flz"] = {
+	["locations/keymissions/km02/km02.karlhideout.nlz"] = {
 		{'go061-j.lod', 'go061_lod1-j_col.pfx'},
 		{'go242-a.lod', 'go242_lod1-a_col.pfx'},
 		{'gp700_01-plank.lod', 'gp700_01_lod1-plank_col.pfx'},
 	},
-	["locations/keymissions/km02/km02.towercomplex.flz"] = {
+	["locations/keymissions/km02/km02.towercomplex.nlz"] = {
 		{'go141-b.lod', 'go141_lod1-b_col.pfx'},
 		{'gp030-k.lod', 'gp030_lod1-k_col.pfx'},
 		{'gp030-l.lod', 'gp030_lod1-l_col.pfx'},
@@ -4668,16 +4668,16 @@ models = {
 		{'key013_06-b_dst.lod', 'key013_06_lod1-b_dst_col.pfx'},
 		{'key013_06-b_on.lod', 'key013_06_lod1-b_on_col.pfx'},
 	},
-	["locations/keymissions/km02/km02.waterfall.far.flz"] = {
+	["locations/keymissions/km02/km02.waterfall.far.nlz"] = {
 		{'key013_02-a.lod', 'key013_02_lod1-a_col.pfx'},
 		{'key013_02-b.lod', 'key013_02_lod1-b_col.pfx'},
 		{'key013_02-c.lod', 'key013_02_lod1-c_col.pfx'},
 		{'key013_02-d.lod', 'key013_02_lod1-d_col.pfx'},
 	},
-	["locations/keymissions/km03/km03.ambush.flz"] = {
+	["locations/keymissions/km03/km03.ambush.nlz"] = {
 		{'desert_formation-whole.lod', 'desert_formation_lod1-whole_col.pfx'},
 	},
-	["locations/keymissions/km03/km03.gamblinghouse.flz"] = {
+	["locations/keymissions/km03/km03.gamblinghouse.nlz"] = {
 		{'key032_01-f.lod', 'key032_01_lod1-f_col.pfx'},
 		{'key032_01-f1_dst.lod', 'key032_01_lod1-f1_dst_col.pfx'},
 		{'key032_01-f2_dst.lod', 'key032_01_lod1-f2_dst_col.pfx'},
@@ -4709,7 +4709,7 @@ models = {
 		{'key032_01-y2.lod', 'key032_01_lod1-y2_col.pfx'},
 		{'key032_01-z.lod', 'key032_01_lod1-z_col.pfx'},
 	},
-	["locations/keymissions/km03/km03.shipwreck.flz"] = {
+	["locations/keymissions/km03/km03.shipwreck.nlz"] = {
 		{'gb147-a.lod', 'gb147_lod1-a_col.pfx'},
 		{'gb241-p.lod', 'gb241_lod1-p_col.pfx'},
 		{'go061-g.lod', 'go061_lod1-g_col.pfx'},
@@ -4721,7 +4721,7 @@ models = {
 		{'key032_02-a5.lod', 'key032_02_lod1-a5_col.pfx'},
 		{'key032_02-a6.lod', 'key032_02_lod1-a6_col.pfx'},
 	},
-	["locations/keymissions/km03/km03.whitetigercamp.flz"] = {
+	["locations/keymissions/km03/km03.whitetigercamp.nlz"] = {
 		{'key032_03-a.lod', 'key032_03_lod1-a_col.pfx'},
 		{'key032_03-a1.lod', 'key032_03_lod1-a1_col.pfx'},
 		{'key032_03-b.lod', 'key032_03_lod1-b_col.pfx'},
@@ -4763,21 +4763,21 @@ models = {
 		{'key032_03-r_2_dst.lod', 'key032_03_lod1-r_2_dst_col.pfx'},
 		{'key032_03-r_dst.lod', 'key032_03_lod1-r_dst_col.pfx'},
 	},
-	["locations/keymissions/km04/km04.basecliff.flz"] = {
+	["locations/keymissions/km04/km04.basecliff.nlz"] = {
 		{'speaker-a.lod', 'speaker_lod1-a_col.pfx'},
 		{'key004_01-a.lod', 'key004_01_lod1-a_col.pfx'},
 		{'key004_01-a1.lod', 'key004_01_lod1-a1_col.pfx'},
 		{'key004_01-b.lod', 'key004_01_lod1-b_col.pfx'},
 		{'key004_01-c.lod', 'key004_01_lod1-c_col.pfx'},
 	},
-	["locations/keymissions/km04/km04.basecom.flz"] = {
+	["locations/keymissions/km04/km04.basecom.nlz"] = {
 		{'go120_02-b.lod', 'go120_02_lod1-b_col.pfx'},
 		{'go120_02-b2.lod', 'go120_02_lod1-b2_col.pfx'},
 	},
-	["locations/keymissions/km04/km04.basesilocylinders.flz"] = {
+	["locations/keymissions/km04/km04.basesilocylinders.nlz"] = {
 		{'go120_08-b2.lod', 'go120_08_lod1-b2_col.pfx'},
 	},
-	["locations/keymissions/km04/km04.destructables.flz"] = {
+	["locations/keymissions/km04/km04.destructables.nlz"] = {
 		{'go166_01-a.lod', 'go166_01_lod1-a_col.pfx'},
 		{'key004_08-decal1.lod', 'key004_08_lod1-decal1_col.pfx'},
 		{'key004_08-decal2.lod', 'key004_08_lod1-decal2_col.pfx'},
@@ -4797,26 +4797,26 @@ models = {
 		{'key004_08-rotor.lod', 'key004_08_lod1-rotor_col.pfx'},
 		{'key004_08-tubes.lod', 'key004_08_lod1-tubes_col.pfx'},
 	},
-	["locations/keymissions/km04/km04.ice01.flz"] = {
+	["locations/keymissions/km04/km04.ice01.nlz"] = {
 		{'key004_4-a.lod', 'key004_4_lod1-a_col.pfx'},
 	},
-	["locations/keymissions/km04/km04.sheldonscamp.flz"] = {
+	["locations/keymissions/km04/km04.sheldonscamp.nlz"] = {
 		{'go224-k.lod', 'go224_lod1-k_col.pfx'},
 	},
-	["locations/keymissions/km04/km04.tramway.flz"] = {
+	["locations/keymissions/km04/km04.tramway.nlz"] = {
 		{'gb024-a.lod', 'gb024_lod1-a_col.pfx'},
 		{'gb024-b.lod', 'gb024_lod1-b_col.pfx'},
 		{'gb024-c.lod', 'gb024_lod1-c_col.pfx'},
 		{'gb024-d.lod', 'gb024_lod1-d_col.pfx'},
 	},
-	["locations/keymissions/km04/km04.waterfallhangar.flz"] = {
+	["locations/keymissions/km04/km04.waterfallhangar.nlz"] = {
 		{'gb201-a.lod', 'gb201_lod1-a_col.pfx'},
 		{'gb201-b.lod', 'gb201_lod1-b_col.pfx'},
 		{'gb201-c.lod', 'gb201_lod1-c_col.pfx'},
 		{'gb201-e.lod', 'gb201_lod1-e_col.pfx'},
 		{'gb201-f.lod', 'gb201_lod1-f_col.pfx'},
 	},
-	["locations/keymissions/km05/km05.hotelbuilding01.flz"] = {
+	["locations/keymissions/km05/km05.hotelbuilding01.nlz"] = {
 		{'gp030-c.lod', 'gp030_lod1-c_col.pfx'},
 		{'gp030-n1.lod', 'gp030_lod1-n1_col.pfx'},
 		{'key001-z.lod', 'key001_lod1-z_col.pfx'},
@@ -4882,14 +4882,14 @@ models = {
 		{'key030_01-z1.lod', 'key030_01_lod1-z1_col.pfx'},
 		{'key030_01-z3.lod', 'key030_01_lod1-z3_col.pfx'},
 	},
-	["locations/keymissions/km06/km06.base.01.flz"] = {
+	["locations/keymissions/km06/km06.base.01.nlz"] = {
 		{'gb025-f.lod', 'gb025_lod1-f_col.pfx'},
 		{'gb056-g.lod', 'gb056_lod1-g_col.pfx'},
 		{'gb241-m.lod', 'gb241_lod1-m_col.pfx'},
 		{'gb241-m1.lod', 'gb241_lod1-m1_col.pfx'},
 		{'go179-g.lod', 'go179_lod1-g_col.pfx'},
 	},
-	["locations/keymissions/km06/km06.base.flz"] = {
+	["locations/keymissions/km06/km06.base.nlz"] = {
 		{'key015_01-a.lod', 'key015_01_lod1-a_col.pfx'},
 		{'key015_01-a1.lod', 'key015_01_lod1-a1_col.pfx'},
 		{'key015_01-d.lod', 'key015_01_lod1-d_col.pfx'},
@@ -4929,26 +4929,26 @@ models = {
 		{'key015_01-z2f_dst.lod', 'key015_01_lod1-z2f_dst_col.pfx'},
 		{'city_t04_sakural-whole.lod', 'city_t04_sakural_lod1-whole_col.pfx'},
 	},
-	["locations/keymissions/km06/km06.factionleader01.flz"] = {
+	["locations/keymissions/km06/km06.factionleader01.nlz"] = {
 		{'gb120-e.lod', 'gb120_lod1-e_col.pfx'},
 	},
-	["locations/keymissions/km06/km06.sheldonrv.flz"] = {
+	["locations/keymissions/km06/km06.sheldonrv.nlz"] = {
 		{'gb056-d.lod', 'gb056_lod1-d_col.pfx'},
 		{'gb056-e.lod', 'gb056_lod1-e_col.pfx'},
 	},
-	["locations/metropolis/city.district.a1.houses.flz"] = {
+	["locations/metropolis/city.district.a1.houses.nlz"] = {
 		{'go166_01-d.lod', 'go166_01_lod1-d_col.pfx'},
 	},
-	["locations/metropolis/city.district.a1.roads.flz"] = {
+	["locations/metropolis/city.district.a1.roads.nlz"] = {
 		{'go201-d1.lod', 'go201_lod1-d1_col.pfx'},
 		{'go201-d2.lod', 'go201_lod1-d2_col.pfx'},
 		{'go201-e2.lod', 'go201_lod1-e2_col.pfx'},
 		{'city_b01_streethedgel-whole.lod', 'city_b01_streethedgel_lod1-whole_col.pfx'},
 	},
-	["locations/metropolis/city.gameplay.a1.flz"] = {
+	["locations/metropolis/city.gameplay.a1.nlz"] = {
 		{'gb192-g.lod', 'gb192_lod1-g_col.pfx'},
 	},
-	["locations/metropolis/city.harbor.a1.flz"] = {
+	["locations/metropolis/city.harbor.a1.nlz"] = {
 		{'gb002-f.lod', 'gb002_lod1-f_col.pfx'},
 		{'gb041-d2.lod', 'gb041_lod1-d2_col.pfx'},
 		{'gb087-f_chimney.lod', 'gb087_lod1-f_chimney_col.pfx'},
@@ -4966,7 +4966,7 @@ models = {
 		{'gb500-b.lod', 'gb500_lod1-b_col.pfx'},
 		{'gb500-c.lod', 'gb500_lod1-c_col.pfx'},
 	},
-	["locations/strongholds/f1s02/f1s02.base.flz"] = {
+	["locations/strongholds/f1s02/f1s02.base.nlz"] = {
 		{'gb004-c.lod', 'gb004_lod1-c_col.pfx'},
 		{'gb004-d.lod', 'gb004_lod1-d_col.pfx'},
 		{'gb004-e.lod', 'gb004_lod1-e_col.pfx'},
@@ -4981,16 +4981,16 @@ models = {
 		{'gb096-c.lod', 'gb096_lod1-c_col.pfx'},
 		{'go022-i.lod', 'go022_lod1-i_col.pfx'},
 	},
-	["locations/strongholds/f1s03/f1s03.base.flz"] = {
+	["locations/strongholds/f1s03/f1s03.base.nlz"] = {
 		{'gb145-h.lod', 'gb145_lod1-h_col.pfx'},
 		{'gb145-l.lod', 'gb145_lod1-l_col.pfx'},
 		{'gb247-j.lod', 'gb247_lod1-j_col.pfx'},
 	},
-	["locations/strongholds/f2s01/f2s01.base.flz"] = {
+	["locations/strongholds/f2s01/f2s01.base.nlz"] = {
 		{'go163_01-c.lod', 'go163_01_lod1-c_col.pfx'},
 		{'go176-a.lod', 'go176_lod1-a_col.pfx'},
 	},
-	["locations/strongholds/f2s04/f2s04.base.flz"] = {
+	["locations/strongholds/f2s04/f2s04.base.nlz"] = {
 		{'key009_01-a.lod', 'key009_01_lod1-a_col.pfx'},
 		{'key009_01-a2.lod', 'key009_01_lod1-a2_col.pfx'},
 		{'key009_01-a3.lod', 'key009_01_lod1-a3_col.pfx'},
@@ -5005,17 +5005,17 @@ models = {
 		{'key009_01-j2.lod', 'key009_01_lod1-j2_col.pfx'},
 		{'key009_01-z.lod', 'key009_01_lod1-z_col.pfx'},
 	},
-	["locations/strongholds/f2s07/f2s07.base.flz"] = {
+	["locations/strongholds/f2s07/f2s07.base.nlz"] = {
 		{'gb025-c.lod', 'gb025_lod1-c_col.pfx'},
 		{'gb025-d.lod', 'gb025_lod1-d_col.pfx'},
 		{'gb025-e.lod', 'gb025_lod1-e_col.pfx'},
 		{'gb223-n.lod', 'gb223_lod1-n_col.pfx'},
 	},
-	["locations/strongholds/f3s01/f3s01.base.flz"] = {
+	["locations/strongholds/f3s01/f3s01.base.nlz"] = {
 		{'gb093-b.lod', 'gb093_lod1-b_col.pfx'},
 		{'go047-d.lod', 'go047_lod1-d_col.pfx'},
 	},
-	["locations/strongholds/f3s04/f3s04.base.flz"] = {
+	["locations/strongholds/f3s04/f3s04.base.nlz"] = {
 		{'gb201-d.lod', 'gb201_lod1-d_col.pfx'},
 		{'go022-g.lod', 'go022_lod1-g_col.pfx'},
 		{'go122-f1.lod', 'go122_lod1-f1_col.pfx'},
@@ -5024,19 +5024,19 @@ models = {
 		{'go122-g2.lod', 'go122_lod1-g2_col.pfx'},
 		{'go122-h1.lod', 'go122_lod1-h1_col.pfx'},
 	},
-	["locations/strongholds/f3s06/f3s06.base.flz"] = {
+	["locations/strongholds/f3s06/f3s06.base.nlz"] = {
 		{'go201-f2.lod', 'go201_lod1-f2_col.pfx'},
 	},
-	["locations/unknown/kanttest.flz"] = {
+	["locations/unknown/kanttest.nlz"] = {
 		{'kanttest-a.lod', 'kanttest_lod1-a_col.pfx'},
 	},
-	["locations/wc/03/03x56.flz"] = {
+	["locations/wc/03/03x56.nlz"] = {
 		{'gb004-a_01_dst.lod', 'gb004_lod1-a_01_dst_col.pfx'},
 		{'gb004-a_02_dst.lod', 'gb004_lod1-a_02_dst_col.pfx'},
 		{'gb004-a_03_dst.lod', 'gb004_lod1-a_03_dst_col.pfx'},
 		{'gb004-a_04_dst.lod', 'gb004_lod1-a_04_dst_col.pfx'},
 	},
-	["locations/wc/04/04x40.flz"] = {
+	["locations/wc/04/04x40.nlz"] = {
 		{'gb221-a.lod', 'gb221_lod1-a_col.pfx'},
 		{'gb221-b.lod', 'gb221_lod1-b_col.pfx'},
 		{'gb221-b1_dst.lod', 'gb221_lod1-b1_dst_col.pfx'},
@@ -5045,13 +5045,13 @@ models = {
 		{'gb221-d.lod', 'gb221_lod1-d_col.pfx'},
 		{'gb221-d_dst.lod', 'gb221_lod1-d_dst_col.pfx'},
 	},
-	["locations/wc/04/04x60.flz"] = {
+	["locations/wc/04/04x60.nlz"] = {
 		{'gb056-b.lod', 'gb056_lod1-b_col.pfx'},
 		{'gb056-c.lod', 'gb056_lod1-c_col.pfx'},
 		{'gb186-h.lod', 'gb186_lod1-h_col.pfx'},
 		{'gb186-i.lod', 'gb186_lod1-i_col.pfx'},
 	},
-	["locations/wc/05/05x21.flz"] = {
+	["locations/wc/05/05x21.nlz"] = {
 		{'gb050-a.lod', 'gb050_lod1-a_col.pfx'},
 		{'gb225-a.lod', 'gb225_lod1-a_col.pfx'},
 		{'go224-a.lod', 'go224_lod1-a_col.pfx'},
@@ -5060,7 +5060,7 @@ models = {
 		{'go224-i.lod', 'go224_lod1-i_col.pfx'},
 		{'go224-j.lod', 'go224_lod1-j_col.pfx'},
 	},
-	["locations/wc/05/05x41.flz"] = {
+	["locations/wc/05/05x41.nlz"] = {
 		{'gb045-a.lod', 'gb045_lod1-a_col.pfx'},
 		{'go070-x.lod', 'go070_lod1-x_col.pfx'},
 		{'go083-c.lod', 'go083_lod1-c_col.pfx'},
@@ -5070,35 +5070,35 @@ models = {
 		{'go224-h.lod', 'go224_lod1-h_col.pfx'},
 		{'go230-g.lod', 'go230_lod1-g_col.pfx'},
 	},
-	["locations/wc/05/05x44.flz"] = {
+	["locations/wc/05/05x44.nlz"] = {
 		{'go022-h.lod', 'go022_lod1-h_col.pfx'},
 		{'desert_g08_rockpilexs-whole.lod', 'desert_g08_rockpilexs_lod1-whole_col.pfx'},
 	},
-	["locations/wc/07/07x58.flz"] = {
+	["locations/wc/07/07x58.nlz"] = {
 		{'gb120-d.lod', 'gb120_lod1-d_col.pfx'},
 	},
-	["locations/wc/07/07x59.flz"] = {
+	["locations/wc/07/07x59.nlz"] = {
 		{'gb241-k.lod', 'gb241_lod1-k_col.pfx'},
 	},
-	["locations/wc/07/07x60.flz"] = {
+	["locations/wc/07/07x60.nlz"] = {
 		{'gb069-c.lod', 'gb069_lod1-c_col.pfx'},
 	},
-	["locations/wc/08/08x59.flz"] = {
+	["locations/wc/08/08x59.nlz"] = {
 		{'go223-g.lod', 'go223_lod1-g_col.pfx'},
 		{'go224-c.lod', 'go224_lod1-c_col.pfx'},
 	},
-	["locations/wc/09/09x59.flz"] = {
+	["locations/wc/09/09x59.nlz"] = {
 		{'go093-a.lod', 'go093_lod1-a_col.pfx'},
 		{'go093-a_dst1.lod', 'go093_lod1-a_dst1_col.pfx'},
 		{'go093-a_dst2.lod', 'go093_lod1-a_dst2_col.pfx'},
 		{'go093-a_dst3.lod', 'go093_lod1-a_dst3_col.pfx'},
 	},
-	["locations/wc/11/11x50.flz"] = {
+	["locations/wc/11/11x50.nlz"] = {
 		{'gb241-r1.lod', 'gb241_lod1-r1_col.pfx'},
 		{'gb241-r2.lod', 'gb241_lod1-r2_col.pfx'},
 		{'go120_10-b.lod', 'go120_10_lod1-b_col.pfx'},
 	},
-	["locations/wc/11/11x50_reapershqdemo.flz"] = {
+	["locations/wc/11/11x50_reapershqdemo.nlz"] = {
 		{'go045-e.lod', 'go045_lod1-e_col.pfx'},
 		{'key041_1-key041_1_door.lod', 'key041_1_lod1-key041_1_door_col.pfx'},
 		{'key041_1-key041_1_exterior.lod', 'key041_1_lod1-key041_1_exterior_col.pfx'},
@@ -5107,27 +5107,27 @@ models = {
 		{'key041_1-key041_1_rockpile.lod', 'key041_1_lod1-key041_1_rockpile_col.pfx'},
 		{'key041_1-key041_1_torch.lod', 'key041_1_lod1-key041_1_torch_col.pfx'},
 	},
-	["locations/wc/11/11x57.flz"] = {
+	["locations/wc/11/11x57.nlz"] = {
 		{'wea34-d.lod', 'wea34_lod1-d_col.pfx'},
 	},
-	["locations/wc/16/16x55.flz"] = {
+	["locations/wc/16/16x55.nlz"] = {
 		{'go179-a.lod', 'go179_lod1-a_col.pfx'},
 		{'go179-a2.lod', 'go179_lod1-a2_col.pfx'},
 		{'go179-a3.lod', 'go179_lod1-a3_col.pfx'},
 		{'go179-a4.lod', 'go179_lod1-a4_col.pfx'},
 	},
-	["locations/wc/17/17x24.flz"] = {
+	["locations/wc/17/17x24.nlz"] = {
 		{'go201-b3.lod', 'go201_lod1-b3_col.pfx'},
 	},
-	["locations/wc/17/17x25.flz"] = {
+	["locations/wc/17/17x25.nlz"] = {
 		{'gb028-b.lod', 'gb028_lod1-b_col.pfx'},
 	},
-	["locations/wc/17/17x48.flz"] = {
+	["locations/wc/17/17x48.nlz"] = {
 		{'go666-a.lod', 'go666_lod1-a_col.pfx'},
 		{'go666-b.lod', 'go666_lod1-b_col.pfx'},
 		{'go666-c.lod', 'go666_lod1-c_col.pfx'},
 	},
-	["locations/wc/18/18x11.flz"] = {
+	["locations/wc/18/18x11.nlz"] = {
 		{'gb063-a.lod', 'gb063_lod1-a_col.pfx'},
 		{'gb063-b.lod', 'gb063_lod1-b_col.pfx'},
 		{'gb063-c.lod', 'gb063_lod1-c_col.pfx'},
@@ -5139,19 +5139,19 @@ models = {
 		{'gb063-i.lod', 'gb063_lod1-i_col.pfx'},
 		{'gb063-j.lod', 'gb063_lod1-j_col.pfx'},
 	},
-	["locations/wc/18/18x20.flz"] = {
+	["locations/wc/18/18x20.nlz"] = {
 		{'gb028-g.lod', 'gb028_lod1-g_col.pfx'},
 	},
-	["locations/wc/18/18x35.flz"] = {
+	["locations/wc/18/18x35.nlz"] = {
 		{'go070-w.lod', 'go070_lod1-w_col.pfx'},
 	},
-	["locations/wc/19/19x18.flz"] = {
+	["locations/wc/19/19x18.nlz"] = {
 		{'gb097-b.lod', 'gb097_lod1-b_col.pfx'},
 	},
-	["locations/wc/20/20x36.flz"] = {
+	["locations/wc/20/20x36.nlz"] = {
 		{'gb200-c.lod', 'gb200_lod1-c_col.pfx'},
 	},
-	["locations/wc/22/22x09.flz"] = {
+	["locations/wc/22/22x09.nlz"] = {
 		{'gb030-c.lod', 'gb030_lod1-c_col.pfx'},
 		{'gb041-c.lod', 'gb041_lod1-c_col.pfx'},
 		{'gb223-a.lod', 'gb223_lod1-a_col.pfx'},
@@ -5173,7 +5173,7 @@ models = {
 		{'go173-e.lod', 'go173_lod1-e_col.pfx'},
 		{'go173-g.lod', 'go173_lod1-g_col.pfx'},
 	},
-	["locations/wc/22/22x19.flz"] = {
+	["locations/wc/22/22x19.nlz"] = {
 		{'gb018-f.lod', 'gb018_lod1-f_col.pfx'},
 		{'gb200-b.lod', 'gb200_lod1-b_col.pfx'},
 		{'gb200-f.lod', 'gb200_lod1-f_col.pfx'},
@@ -5202,7 +5202,7 @@ models = {
 		{'wea34-f.lod', 'wea34_lod1-f_col.pfx'},
 		{'wea34-g.lod', 'wea34_lod1-g_col.pfx'},
 	},
-	["locations/wc/23/23x16.flz"] = {
+	["locations/wc/23/23x16.nlz"] = {
 		{'gb240-e.lod', 'gb240_lod1-e_col.pfx'},
 		{'go024-f.lod', 'go024_lod1-f_col.pfx'},
 		{'go024-f_dst.lod', 'go024_lod1-f_dst_col.pfx'},
@@ -5213,7 +5213,7 @@ models = {
 		{'go024-i_dst.lod', 'go024_lod1-i_dst_col.pfx'},
 		{'go164_01-b.lod', 'go164_01_lod1-b_col.pfx'},
 	},
-	["locations/wc/24/24x22.flz"] = {
+	["locations/wc/24/24x22.nlz"] = {
 		{'go224-n.lod', 'go224_lod1-n_col.pfx'},
 		{'key042_1-part_a.lod', 'key042_1_lod1-part_a_col.pfx'},
 		{'key042_1-part_b.lod', 'key042_1_lod1-part_b_col.pfx'},
@@ -5222,10 +5222,10 @@ models = {
 		{'key042_1-part_d.lod', 'key042_1_lod1-part_d_col.pfx'},
 		{'key042_1-part_d1.lod', 'key042_1_lod1-part_d1_col.pfx'},
 	},
-	["locations/wc/24/24x50.flz"] = {
+	["locations/wc/24/24x50.nlz"] = {
 		{'gb145-n.lod', 'gb145_lod1-n_col.pfx'},
 	},
-	["locations/wc/25/25x50.flz"] = {
+	["locations/wc/25/25x50.nlz"] = {
 		{'gb145-a.lod', 'gb145_lod1-a_col.pfx'},
 		{'gb145-c.lod', 'gb145_lod1-c_col.pfx'},
 		{'gb145-j.lod', 'gb145_lod1-j_col.pfx'},
@@ -5233,10 +5233,10 @@ models = {
 		{'gb145-m.lod', 'gb145_lod1-m_col.pfx'},
 		{'go224-b.lod', 'go224_lod1-b_col.pfx'},
 	},
-	["locations/wc/27/27x57.flz"] = {
+	["locations/wc/27/27x57.nlz"] = {
 		{'go070-t.lod', 'go070_lod1-t_col.pfx'},
 	},
-	["locations/wc/28/28x33.flz"] = {
+	["locations/wc/28/28x33.nlz"] = {
 		{'key014_01-a.lod', 'key014_01_lod1-a_col.pfx'},
 		{'key014_01-b.lod', 'key014_01_lod1-b_col.pfx'},
 		{'key014_01-c.lod', 'key014_01_lod1-c_col.pfx'},
@@ -5252,39 +5252,39 @@ models = {
 		{'key014_01-t3.lod', 'key014_01_lod1-t3_col.pfx'},
 		{'key014_01-t6.lod', 'key014_01_lod1-t6_col.pfx'},
 	},
-	["locations/wc/28/28x34.flz"] = {
+	["locations/wc/28/28x34.nlz"] = {
 		{'key014_01-a1.lod', 'key014_01_lod1-a1_col.pfx'},
 	},
-	["locations/wc/31/31x08.flz"] = {
+	["locations/wc/31/31x08.nlz"] = {
 		{'gb030-d.lod', 'gb030_lod1-d_col.pfx'},
 		{'gp030-j.lod', 'gp030_lod1-j_col.pfx'},
 	},
-	["locations/wc/31/31x14.flz"] = {
+	["locations/wc/31/31x14.nlz"] = {
 		{'gb223-k.lod', 'gb223_lod1-k_col.pfx'},
 		{'gb223-m.lod', 'gb223_lod1-m_col.pfx'},
 		{'go041-d.lod', 'go041_lod1-d_col.pfx'},
 		{'arctic_g01_rocksm-whole.lod', 'arctic_g01_rocksm_lod1-whole_col.pfx'},
 		{'arctic_g02_rocksm-whole.lod', 'arctic_g02_rocksm_lod1-whole_col.pfx'},
 	},
-	["locations/wc/31/31x43.flz"] = {
+	["locations/wc/31/31x43.nlz"] = {
 		{'gb096-d.lod', 'gb096_lod1-d_col.pfx'},
 	},
-	["locations/wc/31/31x45.flz"] = {
+	["locations/wc/31/31x45.nlz"] = {
 		{'gb063-n.lod', 'gb063_lod1-n_col.pfx'},
 	},
-	["locations/wc/32/32x08.flz"] = {
+	["locations/wc/32/32x08.nlz"] = {
 		{'gb028-e.lod', 'gb028_lod1-e_col.pfx'},
 	},
-	["locations/wc/32/32x14.flz"] = {
+	["locations/wc/32/32x14.nlz"] = {
 		{'go022-b.lod', 'go022_lod1-b_col.pfx'},
 		{'go022-c.lod', 'go022_lod1-c_col.pfx'},
 		{'arctic_g03_rockss-whole.lod', 'arctic_g03_rockss_lod1-whole_col.pfx'},
 	},
-	["locations/wc/32/32x34.flz"] = {
+	["locations/wc/32/32x34.nlz"] = {
 		{'key040_1-part_a.lod', 'key040_1_lod1-part_a_col.pfx'},
 		{'key040_1-part_d.lod', 'key040_1_lod1-part_d_col.pfx'},
 	},
-	["locations/wc/33/33x08.flz"] = {
+	["locations/wc/33/33x08.nlz"] = {
 		{'gb008-d.lod', 'gb008_lod1-d_col.pfx'},
 		{'gb008-d_dst_1.lod', 'gb008_lod1-d_dst_1_col.pfx'},
 		{'gb008-d_dst_2.lod', 'gb008_lod1-d_dst_2_col.pfx'},
@@ -5331,7 +5331,7 @@ models = {
 		{'go174-c.lod', 'go174_lod1-c_col.pfx'},
 		{'go174-d.lod', 'go174_lod1-d_col.pfx'},
 	},
-	["locations/wc/33/33x10.flz"] = {
+	["locations/wc/33/33x10.nlz"] = {
 		{'gb066-a.lod', 'gb066_lod1-a_col.pfx'},
 		{'gb066-b.lod', 'gb066_lod1-b_col.pfx'},
 		{'gb066-c.lod', 'gb066_lod1-c_col.pfx'},
@@ -5341,14 +5341,14 @@ models = {
 		{'go171-b.lod', 'go171_lod1-b_col.pfx'},
 		{'go171-b_dst.lod', 'go171_lod1-b_dst_col.pfx'},
 	},
-	["locations/wc/33/33x11.flz"] = {
+	["locations/wc/33/33x11.nlz"] = {
 		{'gb085-a.lod', 'gb085_lod1-a_col.pfx'},
 		{'go024-c.lod', 'go024_lod1-c_col.pfx'},
 		{'go024-c_dst.lod', 'go024_lod1-c_dst_col.pfx'},
 		{'go061-d.lod', 'go061_lod1-d_col.pfx'},
 		{'go142-d.lod', 'go142_lod1-d_col.pfx'},
 	},
-	["locations/wc/34/34x09.flz"] = {
+	["locations/wc/34/34x09.nlz"] = {
 		{'gb028-a.lod', 'gb028_lod1-a_col.pfx'},
 		{'gb028-c.lod', 'gb028_lod1-c_col.pfx'},
 		{'gb028-d.lod', 'gb028_lod1-d_col.pfx'},
@@ -5374,14 +5374,14 @@ models = {
 		{'go163_01-e.lod', 'go163_01_lod1-e_col.pfx'},
 		{'go163_01-f.lod', 'go163_01_lod1-f_col.pfx'},
 	},
-	["locations/wc/34/34x25.flz"] = {
+	["locations/wc/34/34x25.nlz"] = {
 		{'key041_1-key041_1_beds.lod', 'key041_1_lod1-key041_1_beds_col.pfx'},
 		{'key041_1-key041_1_beds_standing.lod', 'key041_1_lod1-key041_1_beds_standing_col.pfx'},
 	},
-	["locations/wc/34/34x30.flz"] = {
+	["locations/wc/34/34x30.nlz"] = {
 		{'key040_1-part_g.lod', 'key040_1_lod1-part_g_col.pfx'},
 	},
-	["locations/wc/35/35x10.flz"] = {
+	["locations/wc/35/35x10.nlz"] = {
 		{'gb035-c.lod', 'gb035_lod1-c_col.pfx'},
 		{'gb098-a.lod', 'gb098_lod1-a_col.pfx'},
 		{'gb152-a.lod', 'gb152_lod1-a_col.pfx'},
@@ -5392,20 +5392,20 @@ models = {
 		{'go230-d.lod', 'go230_lod1-d_col.pfx'},
 		{'go230-f.lod', 'go230_lod1-f_col.pfx'},
 	},
-	["locations/wc/35/35x12.flz"] = {
+	["locations/wc/35/35x12.nlz"] = {
 		{'go040-b.lod', 'go040_lod1-b_col.pfx'},
 		{'go143-a.lod', 'go143_lod1-a_col.pfx'},
 	},
-	["locations/wc/35/35x29.flz"] = {
+	["locations/wc/35/35x29.nlz"] = {
 		{'go168-k.lod', 'go168_lod1-k_col.pfx'},
 	},
-	["locations/wc/37/37x08.flz"] = {
+	["locations/wc/37/37x08.nlz"] = {
 		{'gb032-a.lod', 'gb032_lod1-a_col.pfx'},
 		{'gb032-b.lod', 'gb032_lod1-b_col.pfx'},
 		{'gb032-c.lod', 'gb032_lod1-c_col.pfx'},
 		{'go300-b.lod', 'go300_lod1-b_col.pfx'},
 	},
-	["locations/wc/37/37x10.flz"] = {
+	["locations/wc/37/37x10.nlz"] = {
 		{'gb020-a.lod', 'gb020_lod1-a_col.pfx'},
 		{'gb022-a.lod', 'gb022_lod1-a_col.pfx'},
 		{'gb022-d.lod', 'gb022_lod1-d_col.pfx'},
@@ -5456,20 +5456,20 @@ models = {
 		{'go230-e.lod', 'go230_lod1-e_col.pfx'},
 		{'go231-b.lod', 'go231_lod1-b_col.pfx'},
 	},
-	["locations/wc/37/37x42.flz"] = {
+	["locations/wc/37/37x42.nlz"] = {
 		{'gb145-b.lod', 'gb145_lod1-b_col.pfx'},
 		{'gb145-d.lod', 'gb145_lod1-d_col.pfx'},
 		{'gb145-o.lod', 'gb145_lod1-o_col.pfx'},
 	},
-	["locations/wc/37/37x43.flz"] = {
+	["locations/wc/37/37x43.nlz"] = {
 		{'gp071-g.lod', 'gp071_lod1-g_col.pfx'},
 	},
-	["locations/wc/38/38x11.flz"] = {
+	["locations/wc/38/38x11.nlz"] = {
 		{'go156-c.lod', 'go156_lod1-c_col.pfx'},
 		{'go163_01-a.lod', 'go163_01_lod1-a_col.pfx'},
 		{'go231-a.lod', 'go231_lod1-a_col.pfx'},
 	},
-	["locations/wc/38/38x12.flz"] = {
+	["locations/wc/38/38x12.nlz"] = {
 		{'gb018-c.lod', 'gb018_lod1-c_col.pfx'},
 		{'gb018-d.lod', 'gb018_lod1-d_col.pfx'},
 		{'gb018-e.lod', 'gb018_lod1-e_col.pfx'},
@@ -5502,7 +5502,7 @@ models = {
 		{'gp001-b.lod', 'gp001_lod1-b_col.pfx'},
 		{'gp001-c.lod', 'gp001_lod1-c_col.pfx'},
 	},
-	["locations/wc/39/39x11.flz"] = {
+	["locations/wc/39/39x11.nlz"] = {
 		{'gb035-a.lod', 'gb035_lod1-a_col.pfx'},
 		{'gb035-a_dst1.lod', 'gb035_lod1-a_dst1_col.pfx'},
 		{'gb035-a_dst2.lod', 'gb035_lod1-a_dst2_col.pfx'},
@@ -5535,7 +5535,7 @@ models = {
 		{'go237-c.lod', 'go237_lod1-c_col.pfx'},
 		{'go237-d.lod', 'go237_lod1-d_col.pfx'},
 	},
-	["locations/wc/40/40x11.flz"] = {
+	["locations/wc/40/40x11.nlz"] = {
 		{'gb010-a.lod', 'gb010_lod1-a_col.pfx'},
 		{'gb010-b2_dst.lod', 'gb010_lod1-b2_dst_col.pfx'},
 		{'gb010-b_dst.lod', 'gb010_lod1-b_dst_col.pfx'},
@@ -5669,37 +5669,37 @@ models = {
 		{'gp074-g.lod', 'gp074_lod1-g_col.pfx'},
 		{'gp074-h.lod', 'gp074_lod1-h_col.pfx'},
 	},
-	["locations/wc/41/41x42.flz"] = {
+	["locations/wc/41/41x42.nlz"] = {
 		{'go179-b.lod', 'go179_lod1-b_col.pfx'},
 		{'go224-g.lod', 'go224_lod1-g_col.pfx'},
 	},
-	["locations/wc/45/45x08.flz"] = {
+	["locations/wc/45/45x08.nlz"] = {
 		{'gb087-b.lod', 'gb087_lod1-b_col.pfx'},
 		{'gb087-k.lod', 'gb087_lod1-k_col.pfx'},
 	},
-	["locations/wc/47/47x37.flz"] = {
+	["locations/wc/47/47x37.nlz"] = {
 		{'go179-d.lod', 'go179_lod1-d_col.pfx'},
 	},
-	["locations/wc/53/53x12.flz"] = {
+	["locations/wc/53/53x12.nlz"] = {
 		{'gb008-a3.lod', 'gb008_lod1-a3_col.pfx'},
 		{'gb008-a3_dst.lod', 'gb008_lod1-a3_dst_col.pfx'},
 	},
-	["locations/wc/53/53x17.flz"] = {
+	["locations/wc/53/53x17.nlz"] = {
 		{'go120_06-e.lod', 'go120_06_lod1-e_col.pfx'},
 		{'go120_06-e2.lod', 'go120_06_lod1-e2_col.pfx'},
 	},
-	["locations/wc/53/53x19.flz"] = {
+	["locations/wc/53/53x19.nlz"] = {
 		{'key001-j.lod', 'key001_lod1-j_col.pfx'},
 		{'key001_03-f.lod', 'key001_03_lod1-f_col.pfx'},
 		{'key001_03-g.lod', 'key001_03_lod1-g_col.pfx'},
 	},
-	["locations/wc/62/62x32.flz"] = {
+	["locations/wc/62/62x32.nlz"] = {
 		{'go179-c.lod', 'go179_lod1-c_col.pfx'},
 	},
-	["missions/challenges/cch00/cch00.blz"] = {
+	["missions/challenges/cch00/cch00.nlz"] = {
 		{'go244-go244_lights.lod', 'go244_lod1-go244_lights_col.pfx'},
 	},
-	["missions/keymissions/km05/km05.blz"] = {
+	["missions/keymissions/km05/km05.nlz"] = {
 		{'gp703-a.lod', 'gp703_lod1-a_col.pfx'},
 	}
 }
