@@ -3,7 +3,7 @@ class 'cCollisionChecker'
 function cCollisionChecker:__init()
 
     self.strikes = var(0)
-    self.max_strikes = 5
+    self.max_strikes = 10
 
     self.object = ClientStaticObject.Create({
         position = LocalPlayer:GetPosition(),
