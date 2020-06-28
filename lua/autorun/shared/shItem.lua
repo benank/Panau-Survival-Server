@@ -102,6 +102,23 @@ function shItem:GetCustomData()
         
         -- 10% of woets are woet Xs
         self.custom_data.woet_x = math.random() < 0.05 and 1 or 0
+    elseif self.name == "LandClaim" and not self.custom_data.size then
+       
+        local sizes = 
+        {
+            {chance = 0.8, min = 40, max = 80},
+            {chance = 0.95, min = 80, max = 160},
+            {chance = 1.0, min = 150, max = 250}
+        }
+
+        local random = math.random()
+
+        for _, size_data in ipairs(sizes) do
+            if random <= size_data.chance then
+                self.custom_data.size = size_data.min + math.random(size_data.max - size_data.min)
+                break
+            end
+        end
 
     end
 	
