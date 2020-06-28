@@ -27,11 +27,11 @@ function cCollisionChecker:Render(args)
 
     local basepos = Camera:GetPosition() + Vector3(0, 300, 0)
 
-    self.object:SetPosition(basepos - Vector3(0, 1.5, 0))
+    self.object:SetPosition(basepos - Vector3(0, 2, 0))
 
-    local ray = Physics:Raycast(basepos, Vector3.Down, 0, 3)
+    local ray = Physics:Raycast(basepos, Vector3.Down, 0, 5)
 
-    if ray.distance == 3 and self.timer:GetSeconds() > 1 and not LocalPlayer:GetValue("Loading") and LocalPlayer:GetHealth() > 0 then
+    if ray.distance == 5 and self.timer:GetSeconds() > 1 and not LocalPlayer:GetValue("Loading") and LocalPlayer:GetHealth() > 0 then
         self.timer:Restart()
         self.strikes:set(tonumber(self.strikes:get()) + 1)
     end
