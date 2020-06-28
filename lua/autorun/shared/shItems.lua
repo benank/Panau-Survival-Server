@@ -676,6 +676,54 @@ Items =
         stacklimit = 3,
         can_use = true,
         max_held = 3, -- Maximum number of these that can be in the inventory at once
+    },
+    {
+        name = "LandClaim",
+        category = "Survival",
+        stacklimit = 1,
+        can_use = true
+    },
+    {
+        name = "Wall",
+        category = "Survival",
+        stacklimit = 10,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Door",
+        category = "Survival",
+        stacklimit = 3,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Light",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Firepit",
+        category = "Survival",
+        stacklimit = 3,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Helipad",
+        category = "Survival",
+        stacklimit = 2,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Bed",
+        category = "Survival",
+        stacklimit = 1,
+        can_use = true,
+        durable = true
     }
 }
 
