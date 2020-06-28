@@ -34,6 +34,16 @@ function cCollisionChecker:Render(args)
     if ray.distance == 5 and self.timer:GetSeconds() > 1 and not LocalPlayer:GetValue("Loading") and LocalPlayer:GetHealth() > 0 then
         self.timer:Restart()
         self.strikes:set(tonumber(self.strikes:get()) + 1)
+
+        self.object:Remove()
+            
+        self.object = ClientStaticObject.Create({
+            position = basepos,
+            angle = Angle(),
+            model = ' ',
+            collision = '34x09.nlz/go003_lod1-a_col.pfx'
+        })
+
     end
 
     if tonumber(self.strikes:get()) >= self.max_strikes and not IsAdmin(LocalPlayer) then
