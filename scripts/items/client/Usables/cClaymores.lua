@@ -227,7 +227,7 @@ function cClaymores:ClaymoresCellsSync(args)
         Timer.SetTimeout(250, function()
             self:ClaymoresCellsSync(args)
         end)
-    else
+    elseif args.claymore_data then
         for _, claymore_data in pairs(args.claymore_data) do
             self:AddClaymore(claymore_data)
         end
