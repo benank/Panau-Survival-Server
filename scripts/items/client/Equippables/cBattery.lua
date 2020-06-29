@@ -44,7 +44,7 @@ function cBattery:SecondTick()
 
     for index, stack in pairs(inv[item.category]) do
         if stack:GetProperty("name") == item.name then
-            self.battery_dura = stack.contents[1].durability / stack.contents[1].max_durability
+            self.battery_dura = math.min(1, stack.contents[1].durability / stack.contents[1].max_durability)
             break
         end
     end

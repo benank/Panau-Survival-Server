@@ -182,6 +182,8 @@ function sProxAlarms:DestroyProx(args, player)
 
     player = player or args.player
 
+    if not IsValid(player) then return end
+
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = alarm.stash.owner_id,
         message = string.format("Your proximity alarm was destroyed by %s %s", player:GetName(), WorldToMapString(alarm.position)),
