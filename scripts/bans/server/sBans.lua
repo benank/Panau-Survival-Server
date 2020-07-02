@@ -2,27 +2,10 @@ class 'sBans'
 
 function sBans:__init()
 
-    self.pending_bans = {} -- Banned players who have not logged on yet to be banned.
-
     Events:Subscribe("DiscordBan", self, self.DiscordBan)
     Events:Subscribe("DiscordUnBan", self, self.DiscordUnBan)
     Events:Subscribe("KickPlayer", self, self.KickPlayer)
     Events:Subscribe("BanPlayer", self, self.BanPlayer)
-    Events:Subscribe("PlayerAuthenticate", self, self.PlayerAuthenticate)
-end
-
-function sBans:PlayerAuthenticate(args)
-    if self.pending_bans[tostring(args.player:GetSteamId())] then
-        args.player:Ban("Banned")
-
-        Events:Fire("Discord", {
-            channel = "Bans",
-            content = string.format("%s [%s] was banned from a previous ban command while offline.", 
-                args.player:GetName(), args.player:GetSteamId())
-        })
-
-        self.pending_bans[args.player:GetSteamId()] = nil
-    end
 end
 
 function sBans:DiscordUnBan(args)
@@ -40,7 +23,6 @@ function sBans:DiscordUnBan(args)
         content = msg
     })
 
-    self.pending_bans[tostring(args.steam_id)] = nil
 end
 
 function sBans:DiscordBan(args)
@@ -63,12 +45,8 @@ function sBans:DiscordBan(args)
         end
     end
 
-    Events:Fire("Discord", {
-        channel = "Bans",
-        content = "Player was not on the server, but will be banned when they come on."
-    })
+    Server:AddBan(SteamId(args.steam_id))
 
-    self.pending_bans[tostring(args.steam_id)] = true
 end
 
 function sBans:KickPlayer(args)

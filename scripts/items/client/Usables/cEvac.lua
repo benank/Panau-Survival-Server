@@ -45,8 +45,9 @@ function cEvac:Render(args)
 
                     if obj:GetValue("Stage") == 4 then
                         local ray = Physics:Raycast(pos - Vector3(0, 8, 0), Vector3.Down, 0, 10)
+                        local entity_is_player = ray.entity and ray.entity.__type == "Player"
 
-                        if ray.distance < 10 then
+                        if ray.distance < 10 and not entity_is_player then
                             obj:SetValue("Completion", 1)
                         end
                     end

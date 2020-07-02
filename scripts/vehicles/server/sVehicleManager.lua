@@ -417,6 +417,9 @@ function sVehicleManager:PlayerQuit(args)
 end
 
 function sVehicleManager:PlayerExitVehicle(args)
+
+    args.vehicle:SetStreamDistance(500)
+
     local vehicle_data = args.vehicle:GetValue("VehicleData")
     if not vehicle_data then return end
 
@@ -584,6 +587,8 @@ end
 
 
 function sVehicleManager:PlayerEnterVehicle(args)
+
+    args.vehicle:SetStreamDistance(1000)
 
     local data = args.vehicle:GetValue("VehicleData")
     args.data = data
