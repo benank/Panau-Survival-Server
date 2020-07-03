@@ -20,8 +20,8 @@ function WeaponDamage:__init()
             function(distance, distance_falloff) -- Sniper gains full power at 200+ meters away
                 return math.clamp(distance / distance_falloff, 0, 1)
             end},
-        [WeaponEnum.SawnOffShotgun] =   {base = 0.15, v_mod = 0.05,   distance_falloff = 80,  falloff = falloff_func},
-        [WeaponEnum.Shotgun] =          {base = 0.18, v_mod = 0.05,   distance_falloff = 100, falloff = falloff_func},
+        [WeaponEnum.SawnOffShotgun] =   {base = 0.15, v_mod = 0.05,   distance_falloff = 16,  falloff = falloff_func},
+        [WeaponEnum.Shotgun] =          {base = 0.18, v_mod = 0.05,   distance_falloff = 22, falloff = falloff_func},
         
         -- Vehicle Weapons
         [WeaponEnum.V_Minigun] =        {base = 0.08, v_mod = 1,     distance_falloff = 500, falloff = falloff_func},
