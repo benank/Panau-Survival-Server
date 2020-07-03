@@ -72,7 +72,9 @@ function WeaponDamage:__init()
         [76] = 0.1 -- 	SAAS PP30 Ox
     }
 
-    self.FOVDamageModifier = 0.20 -- If hiding behind a wall, how much damage do you absorb 
+    self.FOVDamageModifier = 0.30 -- If hiding behind a wall, how much damage do you absorb 
+    self.FOVDamageModifierInVehicle = 0.50 -- If hiding in a vehicle how much damage do you absorb
+    self.FOVDamageModifierVehicle = 0.70 -- If hiding behind a wall, how much damage do you absorb (vehicle)
 
     self.FireEffectTime = 9 -- Time it takes for fire to go out 
     
@@ -88,12 +90,12 @@ function WeaponDamage:__init()
     {
         [DamageEntity.Mine] = {damage = 250, radius = 6, knockback = 10, v_mod = 0.02},
         [DamageEntity.Claymore] = {damage = 500, radius = 10, knockback = 12, v_mod = 0.015},
-        [DamageEntity.C4] = {damage = 400, radius = 40, knockback = 20, v_mod = 0.03},
+        [DamageEntity.C4] = {damage = 500, radius = 40, knockback = 20, v_mod = 0.25},
         [DamageEntity.HEGrenade] = {damage = 200, radius = 7, knockback = 5, v_mod = 0.009},
-        [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 30, v_mod = 0.008},
-        [DamageEntity.CruiseMissile] = {damage = 200, radius = 80, knockback = 20, v_mod = 0.1},
-        [DamageEntity.AreaBombing] = {damage = 200, radius = 25, knockback = 15, v_mod = 0.1}, -- Individual bombs
-        [DamageEntity.TacticalNuke] = {damage = 900, radius = 150, knockback = 40, v_mod = 0.1},
+        [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 15, v_mod = 0.008},
+        [DamageEntity.CruiseMissile] = {damage = 200, radius = 80, knockback = 18, v_mod = 0.15},
+        [DamageEntity.AreaBombing] = {damage = 200, radius = 25, knockback = 12, v_mod = 0.1}, -- Individual bombs
+        [DamageEntity.TacticalNuke] = {damage = 900, radius = 150, knockback = 25, v_mod = 0.2},
     }
 
     self.ExplosiveDamagePerks = 

@@ -518,7 +518,7 @@ function sHitDetection:VehicleExplosionHit(args, player)
                 local damage = original_damage
 
                 if not data.in_fov then
-                    damage = damage * WeaponDamage.FOVDamageModifier
+                    damage = damage * WeaponDamage.FOVDamageModifierVehicle
                 end
 
                 local armor = WeaponDamage.vehicle_armors[v:GetModelId()] or 1
@@ -539,7 +539,7 @@ function sHitDetection:VehicleExplosionHit(args, player)
                     content = msg
                 })
 
-                v:SetLinearVelocity(v:GetLinearVelocity() + (data.hit_dir * radius * explosive_data.knockback * (armor * 0.15)))
+                v:SetLinearVelocity(v:GetLinearVelocity() + (data.hit_dir * radius * explosive_data.knockback * (armor * 0.1)))
 
                 sub = Events:Unsubscribe(sub)
 
@@ -590,8 +590,10 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
         local original_damage = explosive_data.damage * percent_modifier
         local damage = original_damage
 
-        if not args.in_fov then
+        if not args.in_fov and not player:InVehicle() then
             damage = damage * WeaponDamage.FOVDamageModifier
+        elseif not args.in_fov and player:InVehicle() then
+            damage = damage * WeaponDamage.FOVDamageModifierInVehicle
         end
 
         damage = damage * WeaponDamage:GetArmorMod(player, hit_type, damage, original_damage) * perk_mods[1]
