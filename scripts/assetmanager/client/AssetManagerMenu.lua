@@ -48,12 +48,13 @@ function AssetManagerMenu:__init()
     {
         [1] = "Vehicles",
         [2] = "Stashes",
-        [3] = "Claims"
+        [3] = "Landclaims"
     }
 
     self:LoadCategories()
     self:CreateVehiclesMenu()
     self:CreateStashesMenu()
+    self:CreateLandclaimsMenu()
 
 
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
@@ -434,6 +435,78 @@ function AssetManagerMenu:PressStashButton(btn)
         self.delete_confirm_menu:Show()
 
     end
+end
+
+function AssetManagerMenu:CreateLandclaimsMenu()
+    
+	local list = SortedList.Create( self.categories["Landclaims"].window )
+	list:SetDock( GwenPosition.Fill )
+	list:AddColumn( "Name" )
+	list:AddColumn( "Size", 100 )
+	list:AddColumn( "Objects", 200 )
+	list:AddColumn( "Access Mode", 100 )
+	list:AddColumn( "Distance", 100 )
+	list:AddColumn( "Rename", 80 )
+	list:AddColumn( "Waypoint", 80 )
+	list:AddColumn( "Delete", 80 )
+    list:SetButtonsVisible( true )
+    list:SetPadding(Vector2(0,0), Vector2(0,0))
+
+    self.categories["Landclaims"].list = list
+    self.categories["Landclaims"].landclaims = {}
+
+	list:SetSort( 
+		function( column, a, b )
+			if column ~= -1 then
+				self.last_column = column
+			elseif column == -1 and self.last_column ~= -1 then
+				column = self.last_column
+			else
+				column = 0
+			end
+
+			local a_value = a:GetCellText(column)
+			local b_value = b:GetCellText(column)
+
+			if column == 0 or column == 2 then
+				local a_num = tonumber(a_value)
+				local b_num = tonumber(b_value)
+
+				if a_num ~= nil and b_num ~= nil then
+					a_value = a_num
+					b_value = b_num
+				end
+			end
+
+			if self.sort_dir then
+				return a_value > b_value
+			else
+				return a_value < b_value
+			end
+        end )
+        
+    self.landclaim_rename_menu = Window.Create()
+    self.landclaim_rename_menu:SetTitle("Rename")
+    self.landclaim_rename_menu:SetSize(Vector2(400, 140))
+    self.landclaim_rename_menu:SetPosition(Render.Size / 2 - self.landclaim_rename_menu:GetSize() / 2)
+    self.landclaim_rename_menu:SetClampMovement(false)
+    
+    self.landclaim_rename_input = TextBox.Create(self.landclaim_rename_menu)
+    self.landclaim_rename_input:SetTextSize(28)
+	self.landclaim_rename_input:SetMargin( Vector2( 4, 4 ), Vector2( 4, 4 ) )
+    self.landclaim_rename_input:SetDock( GwenPosition.Fill )
+    self.landclaim_rename_input:SetAlignment(GwenPosition.Center)
+
+    local rename_btn = Button.Create(self.landclaim_rename_menu)
+    rename_btn:SetText("Rename")
+    rename_btn:SetTextSize(20)
+    rename_btn:SetSize( Vector2(self.landclaim_rename_menu:GetSize().x, 40) )
+    rename_btn:SetMargin(Vector2(0, 10), Vector2(0, 0))
+    rename_btn:SetDock( GwenPosition.Bottom )
+    rename_btn:Subscribe("Press", self, self.PressRenameStashButton)
+
+    self.landclaim_rename_menu:Hide()
+
 end
 
 function AssetManagerMenu:CreateStashesMenu()
