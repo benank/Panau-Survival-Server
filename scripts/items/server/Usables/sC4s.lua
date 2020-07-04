@@ -199,9 +199,7 @@ end
 function sC4s:UseItem(args)
 
     if args.item.name ~= "C4" then return end
-    if args.player:InVehicle() then return end
 
-    -- TOOD: check if already placed. If placed, then explode
     if args.item.custom_data.id then
         -- Already placed, trigger it
 
@@ -209,7 +207,7 @@ function sC4s:UseItem(args)
             id = args.item.custom_data.id
         }, args.player)
 
-    else
+    elseif not args.player:InVehicle() then
 
         Inventory.OperationBlock({player = args.player, change = 1}) -- Block inventory operations until they finish placing or cancel
         args.player:SetValue("C4UsingItem", args)
