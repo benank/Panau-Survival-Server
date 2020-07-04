@@ -455,7 +455,7 @@ function sHitDetection:SecondTick()
 
         end
 
-        if IsValid(p) and p:GetValue("InCombat") then
+        if IsValid(p) and p:GetValue("InCombat") and self.players_in_combat[tostring(p:GetSteamId())] then
             local combat_time = self.players_in_combat[tostring(p:GetSteamId())].time
 
             if Server:GetElapsedSeconds() - combat_time >= self.combat_log_time then
