@@ -2,8 +2,6 @@ class 'cLoader'
 
 function cLoader:__init()
 
-    self.load_time = Client:GetElapsedSeconds()
-
     self.resources_needed = 0
     self.resources_loaded = 0
 
@@ -47,8 +45,8 @@ function cLoader:__init()
 
     self.window:Hide()
 
-    self.resources_for_gameload = 7
-    self.resources_for_loadscreen = 3
+    self.resources_for_gameload = 2
+    self.resources_for_loadscreen = 1
 
     self.delta = 0
 
@@ -59,13 +57,14 @@ function cLoader:__init()
     Events:Subscribe(var("loader/StartLoad"):get(), self, self.StartLoad) -- Call this to restart load, aka changing dimensions
 
     Events:Subscribe(var("ModulesLoad"):get(), self, self.ModulesLoad)
-    Events:Subscribe(var("GameLoad"):get(), self, self.GameLoad)
     Events:Subscribe(var("LocalPlayerDeath"):get(), self, self.LocalPlayerDeath)
 
-    Events:Subscribe("SecondTick", self, self.SecondTick)
+    Events:Subscribe(var("SecondTick"):get(), self, self.SecondTick)
 
     -- Fire event for when modules reload
     Events:Fire(var("LoaderReady"):get())
+
+    Events:Subscribe(var("loader/PlayerPositionSet"):get(), self, self.PlayerPositionSet)
 
 end
 
@@ -75,25 +74,28 @@ end
 
 -- Call this event to allow RegisterResource so you can have a load screen for different dimensions
 function cLoader:StartLoad()
-
     self.can_add_resources = true
-
 end
 
 function cLoader:SecondTick()
 
-    if self.active then
-
-        if Game:GetState() == GUIState.Game and not self.loadscreen_complete then
-            self.loadscreen_complete = true
-
-            Timer.SetTimeout(1000, function()
-                self.resources_loaded = self.resources_loaded + self.resources_for_loadscreen
-                self:UpdateResourceCount()
-                self:Stop()
-            end)
+    if self.active and not self.base_loadscreen_done then
+        if Game:GetState() == GUIState.Game then
+            self.base_loadscreen_done = true
+            self.resources_loaded = self.resources_loaded + self.resources_for_loadscreen
+            self:UpdateResourceCount()
+            self:Stop()
         end
+    end
 
+end
+
+function cLoader:PlayerPositionSet(args)
+    
+    if self.active then
+        self.resources_loaded = self.resources_loaded + self.resources_for_gameload
+        self:UpdateResourceCount()
+        self:Stop()
     end
 
 end
@@ -101,38 +103,11 @@ end
 function cLoader:InitialLoad()
 
     self.can_add_resources = true
-    self.resources_needed = self.resources_needed + self.resources_for_loadscreen
+    self.resources_needed = self.resources_needed + self.resources_for_gameload + self.resources_for_loadscreen
+    self.base_loadscreen_done = false
     
     self:UpdateResourceCount()
     self:Start()
-
-end
-
-function cLoader:GameLoad()
-
-    self.game_loaded = true
-    self.resources_needed = self.resources_needed + self.resources_for_gameload
-    self:UpdateResourceCount()
-    Thread(function()
-        local load_time_max = (Client:GetElapsedSeconds() - self.load_time) * 1500 + 1000
-        local load_time = 0
-        local interval = 100
-        local percent = interval / load_time_max
-
-        while load_time < load_time_max do
-            load_time = load_time + interval
-            self.resources_loaded = self.resources_loaded + self.resources_for_gameload * percent
-            self:UpdateResourceCount()
-            Timer.Sleep(interval)
-        end
-
-        if self.resources_loaded > self.resources_needed then
-            self.resources_loaded = self.resources_needed
-        end
-
-        self:UpdateResourceCount()
-        self:Stop()
-    end)
 
 end
 
@@ -140,16 +115,14 @@ function cLoader:LocalPlayerDeath()
 
     self.resources_needed = 0
     self.resources_loaded = 0
-    self.game_loaded = false
-    self.loadscreen_complete = false
 
     Thread(function()
         Timer.Sleep(5000)
-        self.load_time = Client:GetElapsedSeconds() - 4
-        self.resources_needed = self.resources_needed + self.resources_for_loadscreen
+        self.resources_needed = self.resources_needed + self.resources_for_gameload + self.resources_for_loadscreen
         self:UpdateResourceCount()
         self:Start()
-        
+        Timer.Sleep(3000)
+        self.base_loadscreen_done = false
     end)
 
 end
@@ -216,8 +189,8 @@ function cLoader:Start()
         self.window:Show()
     end
 
-    Game:FireEvent("ply.pause")
-    Game:FireEvent("ply.invulnerable")
+    Game:FireEvent(var("ply.pause"):get())
+    Game:FireEvent(var("ply.invulnerable"):get())
 
     if not IsValid(self.sound) then
         self:PlayMusic()
@@ -326,8 +299,8 @@ function cLoader:Stop()
         end
 
         self.window:Hide()
-        Game:FireEvent("ply.unpause")
-        Game:FireEvent("ply.vulnerable")
+        Game:FireEvent(var("ply.unpause"):get())
+        Game:FireEvent(var("ply.vulnerable"):get())
 
         if self.subs then
             for k,v in pairs(self.subs) do

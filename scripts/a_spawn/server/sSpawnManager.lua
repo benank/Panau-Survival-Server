@@ -5,7 +5,7 @@ class 'sSpawnManager'
 
 function sSpawnManager:__init()
 
-	Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
+	Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
 	Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
 	Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
 	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
@@ -144,7 +144,7 @@ function sSpawnManager:UpdatePlayer(player)
 
 end
 
-function sSpawnManager:PlayerJoin(args)
+function sSpawnManager:ClientModuleLoad(args)
 
     local steamid = tostring(args.player:GetSteamId().id)
     args.player:SetValue("FirstSpawn", false)
@@ -248,14 +248,23 @@ function sSpawnManager:DelayedSpawn(args)
 				player = args.player
 			})
 
+			Network:Send(args.player, "spawn/PlayerSetPosition")
+			
 		end
 	end)
 
 end
 
 function sSpawnManager:PlayerSpawn(args)
+
+	if not IsValid(args.player) then return end
+
     args.player:SetValue("Spawn/KilledRecently", false)
-    
+	
+	if args.player:GetValue("FirstSpawn") then
+		Network:Send(args.player, "spawn/PlayerSetPosition")
+	end
+
 	if args.player:GetValue("SecondLifeActive") then return end
 	
 	local target_pos
@@ -290,7 +299,7 @@ function sSpawnManager:PlayerSpawn(args)
 				args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, target_pos.x, target_pos.y, target_pos.z)
 		})
 
-		if pos:Distance(target_pos) > 1000 then
+		if args.player:GetPosition():Distance(target_pos) > 1000 then
 			Events:Fire("Discord", {
 				channel = "Errors",
 				content = string.format("%s [%s] was more than 1km away from their spawn position 10s after spawning",
@@ -305,14 +314,6 @@ end
 
 function sSpawnManager:PlayerDeath(args)
 	args.player:SetValue("Spawn/KilledRecently", true)
-
-	Timer.SetTimeout(5000, function()
-	
-		if not IsValid(args.player) then return end
-
-		self:PlayerSpawn({player = args.player})
-	
-	end)
 end
 
 sSpawnManager = sSpawnManager()
