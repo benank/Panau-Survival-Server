@@ -104,7 +104,7 @@ function sVehicleManager:PlayerChat(args)
         spawn_args.health = health
         local vehicle_data = self:GenerateVehicleData(spawn_args)
 
-        if split[3] then
+        if tonumber(split[3]) and tonumber(split[3]) >= 0 then
             vehicle_data.cost = tonumber(split[3])
         end
             
