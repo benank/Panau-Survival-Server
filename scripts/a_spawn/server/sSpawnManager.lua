@@ -274,6 +274,8 @@ function sSpawnManager:PlayerSpawn(args)
     else
         target_pos = args.player:GetValue("SpawnPosition")
 	end
+
+	if not target_pos then return end
 	
 	args.player:SetPosition(target_pos)
 
