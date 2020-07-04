@@ -274,12 +274,12 @@ function sSpawnManager:PlayerSpawn(args)
         target_pos = args.player:GetValue("SpawnPosition")
 	end
 
+    args.player:SetValue("FirstSpawn", true)
+	args.player:SetHealth(1)
+	
 	if not target_pos then return end
 	
 	args.player:SetPosition(target_pos)
-
-    args.player:SetValue("FirstSpawn", true)
-    args.player:SetHealth(1)
 
 	local pos = args.player:GetPosition()
 	local s_pos = args.player:GetValue("SpawnPosition")
