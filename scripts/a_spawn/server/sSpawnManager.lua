@@ -130,8 +130,7 @@ function sSpawnManager:UpdatePlayer(player)
 	local pos = player:GetPosition()
 	local steamid = tostring(player:GetSteamId().id)
 
-	if player:GetHealth() <= 0 or player:GetValue("Spawn/KilledRecently") or not player:GetEnabled() 
-		or (player:GetValue("dead")) then
+	if player:GetHealth() <= 0 or player:GetValue("Spawn/KilledRecently") or not player:GetEnabled() or (player:GetValue("dead")) then
 		pos = self:GetRespawnPosition(player)
 	end
 
