@@ -76,7 +76,6 @@ end
 
 function cEmotes:LocalPlayerInput(args)
     if not self.allowed_actions[args.input] then
-        print(args.input)
         self:StopSitting()
     end
 end
