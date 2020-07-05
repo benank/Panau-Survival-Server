@@ -22,6 +22,9 @@ function cEmotes:__init()
         [Action.VehicleFireLeft] = true,
         [Action.ThrowGrenade] = true,
         [Action.VehicleFireRight] = true,
+        [Action.SwitchTarget] = true,
+        [Action.GuiCancel] = true,
+        [Action.GuiPause] = true,
     }
 
     Events:Subscribe("LocalPlayerChat", self, self.LocalPlayerChat)
