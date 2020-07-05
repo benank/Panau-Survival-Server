@@ -25,6 +25,7 @@ function cEmotes:__init()
         [Action.SwitchTarget] = true,
         [Action.GuiCancel] = true,
         [Action.GuiPause] = true,
+        [Action.StuntJump] = true
     }
 
     Events:Subscribe("LocalPlayerChat", self, self.LocalPlayerChat)
@@ -75,6 +76,7 @@ end
 
 function cEmotes:LocalPlayerInput(args)
     if not self.allowed_actions[args.input] then
+        print(args.input)
         self:StopSitting()
     end
 end
