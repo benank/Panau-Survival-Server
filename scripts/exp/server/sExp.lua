@@ -178,6 +178,8 @@ end
 
 function sExp:AwardExpToKillerOnKill(args)
 
+    if AreFriends(args.player, args.killer) then return end
+
     local player_id = tostring(args.player:GetSteamId())
     local killer_id = args.killer
 
