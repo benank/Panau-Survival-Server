@@ -13,10 +13,16 @@ function cVehicleWeaponManager:__init()
     {
         [WeaponEnum.V_Minigun] = 30,
         [WeaponEnum.V_MachineGun] = 200,
-        [WeaponEnum.V_Cannon] = 100
+        [WeaponEnum.V_Minigun_Warmup] = 50,
+        [WeaponEnum.V_Cannon] = 100,
+        [WeaponEnum.V_Cannon_Slow] = 1250,
     }
 
     self.fire_delay = Timer()
+
+    self.warmup_timer = Timer() -- Timer for guns that warmup like the Winstons Amen minigun
+    self.firing = false
+    self.last_fire = 0
 
     -- Handles the FireVehicleWeapon event and the vehicle weapon heat system
 
@@ -26,8 +32,10 @@ function cVehicleWeaponManager:__init()
     {
         [WeaponEnum.V_Minigun] = 1.5,
         [WeaponEnum.V_MachineGun] = 4,
+        [WeaponEnum.V_Minigun_Warmup] = 1.75,
         [WeaponEnum.V_Rockets] = 0,
-        [WeaponEnum.V_Cannon] = 4
+        [WeaponEnum.V_Cannon] = 4,
+        [WeaponEnum.V_Cannon_Slow] = 0,
     }
 
     self.heat_actions = 
@@ -108,6 +116,13 @@ function cVehicleWeaponManager:LocalPlayerInput(args)
 
     if self.heat_actions[args.input] ~= nil then
 
+        if not self.firing then
+            self.warmup_timer:Restart()
+        end
+
+        self.firing = true
+        self.last_fire = Client:GetElapsedSeconds()
+
         -- Not a valid vehicle weapon
         local weapon = self:IsValidVehicleWeaponAction(args.input)
         if not weapon then return false end
@@ -118,9 +133,14 @@ function cVehicleWeaponManager:LocalPlayerInput(args)
         if self.fire_delays[weapon] and self.fire_delay:GetMilliseconds() < self.fire_delays[weapon] then return end
         self.fire_delay:Restart()
 
-        local current_heat = self.current_heat:get()
-        current_heat = math.min(self.max_heat, current_heat + self.heat_amounts[weapon])
-        self.current_heat:set(current_heat)
+        if weapon == WeaponEnum.V_Minigun_Warmup and self.warmup_timer:GetSeconds() < 1 then return end
+
+        local current_heat = tonumber(self.current_heat:get())
+
+        if args.input ~= Action.VehicleFireRight and args.input ~= Action.FireRight then
+            current_heat = math.min(self.max_heat, current_heat + self.heat_amounts[weapon])
+            self.current_heat:set(current_heat)
+        end
 
         if current_heat == self.max_heat then
             self.overheated = true
@@ -151,6 +171,10 @@ function cVehicleWeaponManager:Render(args)
 
     -- Overheat resets on heat reaching 0
     self.overheated = self.overheated and current_heat > 0
+
+    if Client:GetElapsedSeconds() - self.last_fire > 0.050 and self.firing then
+        self.firing = false
+    end
 
     if not LocalPlayer:InVehicle() and not LocalPlayer:GetValue("VehicleMG") then return end
 
@@ -204,7 +228,7 @@ function cVehicleWeaponManager:DrawWeaponHitHud(args)
 
     local v = LocalPlayer:GetVehicle() or LocalPlayer:GetValue("VehicleMG")
 
-    local angle = bullet_data.angle(Camera:GetAngle(), v:GetAngle())
+    local angle = bullet_data.angle(Camera:GetAngle(), v:GetAngle(), v:GetModelId())
     local ray = Physics:Raycast(LocalPlayer:GetBonePosition(BoneEnum.RightHand), angle * Vector3.Forward, 0, 1000)
 
     local pos, on_screen = Render:WorldToScreen(ray.position)

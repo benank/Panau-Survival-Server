@@ -139,6 +139,21 @@ function cWeaponBulletConfig:__init()
             indicator = true,
             angle = fixed_reticle_angle_func
         },
+        [WeaponEnum.V_Minigun_Warmup] = 
+        {
+            type = ProjectileBullet,
+            speed = 600,
+            bloom = 0.75,
+            bullet_size = 0.3,
+            indicator = true,
+            angle = function(cam_angle, v_angle, model_id)
+                if model_id == 69 then
+                    return cam_angle
+                else
+                    return fixed_reticle_angle_func(cam_angle, v_angle)
+                end
+            end
+        },
         [WeaponEnum.V_Rockets] = 
         {
             type = ProjectileBullet,
@@ -153,18 +168,35 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 300,
-            bloom = 4,
-            bullet_size = 0,
+            bloom = 6,
+            bullet_size = 0.5,
             splash = true,
             indicator = true,
             angle = fixed_reticle_angle_func
+        },
+        [WeaponEnum.V_Cannon_Slow] = 
+        {
+            type = ProjectileBullet,
+            speed = 300,
+            bloom = 10,
+            bullet_size = 0.5,
+            splash = true,
+            indicator = true,
+            angle = function(cam_angle, v_angle, model_id)
+                if model_id == 75 then
+                    return cam_angle
+                else
+                    return fixed_reticle_angle_func(cam_angle, v_angle)
+                end
+            end
         },
         [WeaponEnum.V_MachineGun] = 
         {
             type = ProjectileBullet,
             speed = 500,
-            bloom = 1,
+            bloom = 1.5,
             bullet_size = 0.5,
+            indicator = true,
             angle = function(cam_angle, v_angle)
                 return cam_angle
             end

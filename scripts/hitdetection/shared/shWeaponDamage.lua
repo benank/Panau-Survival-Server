@@ -25,8 +25,10 @@ function WeaponDamage:__init()
         
         -- Vehicle Weapons
         [WeaponEnum.V_Minigun] =        {base = 0.08, v_mod = 1,     distance_falloff = 500, falloff = falloff_func},
+        [WeaponEnum.V_Minigun_Warmup] = {base = 0.09, v_mod = 1,     distance_falloff = 600, falloff = falloff_func},
         [WeaponEnum.V_Rockets] =        {base = 0.30, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 12},
         [WeaponEnum.V_Cannon] =         {base = 0.15, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 6},
+        [WeaponEnum.V_Cannon_Slow] =    {base = 0.13, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
         [WeaponEnum.V_MachineGun] =     {base = 0.10, v_mod = 0.5,   distance_falloff = 300, falloff = falloff_func}
     }
 

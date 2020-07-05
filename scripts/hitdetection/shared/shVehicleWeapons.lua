@@ -10,6 +10,10 @@ function VehicleWeapons:__init()
         {
             [VehicleSeat.MountedGun1] = {FireLeft = WeaponEnum.V_MachineGun}
         }, -- YP-107 Phoenix 
+        [7] = 
+        {
+            [VehicleSeat.Driver] = {FireLeft = WeaponEnum.V_MachineGun}
+        }, -- Poloma Renegade 
         [18] = 
         {
             [VehicleSeat.MountedGun1] = {FireLeft = WeaponEnum.V_Minigun}
@@ -28,12 +32,12 @@ function VehicleWeapons:__init()
         }, -- Chepachet PVD
         [75] = 
         {
-            [VehicleSeat.Driver] = {FireRight = WeaponEnum.V_Cannon}
+            [VehicleSeat.Driver] = {FireLeft = WeaponEnum.V_Cannon_Slow}
         }, -- Tuk Tuk Boom Boom
         [69] = 
         {
-            [VehicleSeat.MountedGun1] = {FireLeft = WeaponEnum.V_Minigun},
-            [VehicleSeat.MountedGun2] = {FireLeft = WeaponEnum.V_Minigun}
+            [VehicleSeat.MountedGun1] = {FireLeft = WeaponEnum.V_Minigun_Warmup},
+            [VehicleSeat.MountedGun2] = {FireLeft = WeaponEnum.V_Minigun_Warmup}
         }, -- Winstons Amen 69
         [88] = 
         {

@@ -15,7 +15,7 @@ function ProjectileBullet:__init(args)
     self.is_splash = args.is_splash
     self.life_timer = Timer()
 
-    self.initial_position = LocalPlayer:GetBonePosition(BoneEnum.RightHand) + Vector3(0, 0.15, 0)
+    self.initial_position = args.start_position or LocalPlayer:GetBonePosition(BoneEnum.RightHand) + Vector3(0, 0.15, 0)
     self.current_position = Copy(self.initial_position)
     self.last_raycast_position = Copy(self.initial_position)
 
@@ -99,7 +99,7 @@ end
 
 function ProjectileBullet:BulletRaycast(raycast_position, raycast_distance_modifier)
     local raycast_distance = self.raycast_distance * raycast_distance_modifier
-    local raycast = Physics:Raycast(raycast_position, self.angle * Vector3.Forward, 0, raycast_distance, true)
+    local raycast = Physics:Raycast(raycast_position, self.angle * Vector3.Forward, 0, raycast_distance)
     if raycast.distance < raycast_distance or raycast.position.y < 199 then
         self:HitSomething(raycast)
     end

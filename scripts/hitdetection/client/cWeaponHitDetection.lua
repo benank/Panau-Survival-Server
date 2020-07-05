@@ -210,7 +210,7 @@ function WeaponHitDetection:FireVehicleWeapon(args)
             velocity = bullet_config.speed,
             is_splash = bullet_config.splash ~= nil,
             bloom = self.bloom,
-            angle = bullet_config.angle(Camera:GetAngle(), v:GetAngle()),
+            angle = bullet_config.angle(Camera:GetAngle(), v:GetAngle(), v:GetModelId()),
             bullet_size = bullet_config.bullet_size
         }
 
