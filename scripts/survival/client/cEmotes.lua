@@ -57,12 +57,14 @@ function cEmotes:LocalPlayerChat(args)
 end
 
 function cEmotes:StartSitting()
+    Camera:SetFOV(1.5)
     LocalPlayer:SetBaseState(AnimationState.SIdlePassengerVehicle)
     self.lpi = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
     self.sitting = true
 end
 
 function cEmotes:StopSitting()
+    Camera:SetFOV(0.8)
     self.sitting = false
     LocalPlayer:SetBaseState(AnimationState.SUprightIdle)
     Events:Unsubscribe(self.lpi)
