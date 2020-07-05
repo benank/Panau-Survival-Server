@@ -12,11 +12,17 @@ function cC4s:__init(args)
     Network:Subscribe(var("items/StartC4Placement"):get(), self, self.StartC4Placement)
     Network:Subscribe(var("items/C4Explode"):get(), self, self.C4Explode)
 
+    Network:Subscribe("items/PlayC4TriggerAnimation", self, self.PlayC4TriggerAnimation)
+
     Events:Subscribe("WorldNetworkObjectCreate", self, self.WorldNetworkObjectCreate)
     Events:Subscribe("WorldNetworkObjectDestroy", self, self.WorldNetworkObjectDestroy)
 
     Events:Subscribe(var("Inventory/LootboxCreate"):get(), self, self.LootboxCreate)
     Events:Subscribe(var("Inventory/LootboxRemove"):get(), self, self.LootboxRemove)
+end
+
+function cC4s:PlayC4TriggerAnimation()
+    LocalPlayer:SetLeftArmState(AnimationState.LaSTriggerBoom)
 end
 
 function cC4s:LootboxCreate(args)

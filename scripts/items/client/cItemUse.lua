@@ -102,6 +102,10 @@ function cItemUse:CompleteUsage()
     Network:Send(var("items/CompleteItemUsage"):get(), {ray = ray, forward_ray = forward_ray, waypoint = waypoint_pos, waypoint_set = waypoint_set})
     self:UnsubscribeEvents()
 
+    if self.item_name == "C4" or self.item_name == "Claymore" then
+        LocalPlayer:SetLeftArmState(AnimationState.LaSPlaceExplosives)
+    end
+
 end
 
 function cItemUse:LocalPlayerInput(args)
