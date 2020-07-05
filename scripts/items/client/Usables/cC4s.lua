@@ -2,7 +2,7 @@ class 'cC4s'
 
 function cC4s:__init(args)
 
-    self.near_stashes = {} -- [cso id] = stash id
+    self.near_stashes = {} -- [cso id] = lootbox uid
     self.c4s = {} -- [wno id] = cC4() 
 
     self.placing_c4 = false
@@ -61,7 +61,8 @@ function cC4s:StartC4Placement()
         model = 'f1t05bomb01.eez/key019_01-z.lod',
         display_bb = true,
         offset = Vector3(0, 0.05, 0),
-        place_entity = true
+        place_entity = true,
+        range = 4
     })
 
     self.place_subs = 

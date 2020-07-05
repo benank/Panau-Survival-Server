@@ -87,6 +87,11 @@ function sVehicleManager:PlayerChat(args)
     if split[1] == "/spawnv" and split[2] then
 
         local model_id = tonumber(split[2])
+
+        if not vCosts[model_id] then
+            Chat:Send(args.player, "Vehicle not supported.", Color.Red)
+            return
+        end
         
         local spawn_args = {}
         spawn_args.position = args.player:GetPosition()
@@ -104,7 +109,7 @@ function sVehicleManager:PlayerChat(args)
         spawn_args.health = health
         local vehicle_data = self:GenerateVehicleData(spawn_args)
 
-        if split[3] then
+        if tonumber(split[3]) and tonumber(split[3]) >= 0 then
             vehicle_data.cost = tonumber(split[3])
         end
             

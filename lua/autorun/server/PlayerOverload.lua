@@ -61,7 +61,7 @@ PlayerGetEquippedWeapon = Player.GetEquippedWeapon
 function Player:GetEquippedWeapon() if not v(self) then return end return PlayerGetEquippedWeapon(self) end
 
 PlayerGetHealth = Player.GetHealth
-function Player:GetHealth() if not v(self) then return end return self:GetValue("Health")--[[PlayerGetHealth(self)]] end
+function Player:GetHealth() if not v(self) then return end return self:GetValue("Health") or self:GetHealth_() end
 
 function Player:GetHealth_() if not v(self) then return end return PlayerGetHealth(self) end
 

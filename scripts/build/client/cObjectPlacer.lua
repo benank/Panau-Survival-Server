@@ -7,7 +7,8 @@ function cObjectPlacer:__init()
     self.display_bb = false
     self.angle_offset = Angle()
     self.rotation_yaw = 0
-    self.range = 8
+    self.default_range = 8
+    self.range = self.default_range
 
     self.text_color = Color(211, 167, 167)
     self.text = 
@@ -82,6 +83,7 @@ function cObjectPlacer:StartObjectPlacement(args)
     self.offset = args.offset or Vector3()
     self.place_entity = args.place_entity
     self.bb_mod = args.bb_mod or 1
+    self.range = args.range or self.default_range
 
     self.disable_walls = args.disable_walls
     self.disable_ceil = args.disable_ceil

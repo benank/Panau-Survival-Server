@@ -18,6 +18,8 @@ function WeaponEnum:__init()
     self.V_Rockets = 13--116
     self.V_Cannon = 14--134
     self.V_MachineGun = 15--28
+    self.V_Minigun_Warmup = 16
+    self.V_Cannon_Slow = 17
 
     self.descriptions = {
         [self.MachineGun] = "Machine Gun",
@@ -34,7 +36,9 @@ function WeaponEnum:__init()
         [self.V_Minigun] = "Vehicle Minigun",
         [self.V_Rockets] = "Vehicle Rockets",
         [self.V_Cannon] = "Vehicle Auto Cannon",
-        [self.V_MachineGun] = "Vehicle Machine Gun"
+        [self.V_MachineGun] = "Vehicle Machine Gun",
+        [self.V_Minigun_Warmup] = "Vehicle Minigun",
+        [self.V_Cannon_Slow] = "Vehicle Auto Cannon"
     }
 
     --] li""t is on https://wiki.jc-mp.com/Lua/Shared/Weapon

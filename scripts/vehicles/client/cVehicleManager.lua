@@ -246,7 +246,7 @@ function cVehicleManager:RenderVehicleDataClassic(v)
     local vehicle_name = tostring(v)
     local vehicle_name_height = Render:GetTextHeight(vehicle_name, self.text.size)
 
-    local cost_str = string.format("Cost: %d Lockpicks", data.cost)
+    local cost_str = string.format("Cost: %d Lockpicks", data.cost or "???")
     local cost_str_height = Render:GetTextHeight(vehicle_name, self.text.size)
 
     local health_str = string.format("Health: %.0f%%", v:GetHealth() * 100)
