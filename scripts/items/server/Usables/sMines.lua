@@ -396,6 +396,15 @@ function sMines:CompleteItemUsage(args, player)
             end
         end
 
+        local ModelChangeAreas = SharedObject.GetByName("ModelLocations"):GetValues()
+
+        for _, area in pairs(ModelChangeAreas) do
+            if player:GetPosition():Distance(area.pos) < 10 then
+                Chat:Send(player, "You cannot place mines here!", Color.Red)
+                return
+            end
+        end
+
         local sub = nil
         sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(player:GetSteamId()), function(args)
         
