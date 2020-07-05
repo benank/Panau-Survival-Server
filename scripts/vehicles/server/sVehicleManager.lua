@@ -993,8 +993,15 @@ function sVehicleManager:GetVehicleFromType(type)
 
     -- Now get template, if it exists
     if config.templates[args.model_id] then
-        if random() <= config.templates[args.model_id].chance then
-            args.template = table.randomvalue(config.templates[args.model_id].templates)
+        local sum = 0
+        local rand = random()
+
+        for template, chance in pairs(config.templates[args.model_id]) do
+            sum = sum + chance
+            if rand <= sum then
+                args.template = template
+                break
+            end
         end
     end
 

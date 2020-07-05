@@ -95,27 +95,28 @@ config =
     decal_chance = 0.2,
     templates = -- Use these templates for spawning
     {
-        [69] = {chance = 0.1, templates = {"Armed"}}, -- winstons amen party boat
-        [88] = {chance = 1, templates = {"Default"}}, -- only default mta powerruns without weapons spawn in the wild (use FullyUpgraded for MG and rockets, Armed for MG)
-        [5] = {chance = 0.6, templates = {"Cab", "Fishing"}},
-        [11] = {chance = 0.5, templates = {"Civil"}},
-        [35] = {chance = 0.01, templates = {"Armed"}}, -- Garret Traver Z with MG
-        [78] = {chance = 0.5, templates = {"Cab"}},
-        [91] = {chance = 0.6, templates = {"Hardtop", "Softtop"}},
-        [66] = {chance = 0.2, templates = {"Double"}},
-        [40] = {chance = 0.1, templates = {"Crane"}},
-        [56] = {chance = 1, templates = {"Cab"}}, -- default spawn (use WeaponUpgrade0 for cannon)
-        [84] = {chance = 0.5, templates = {"Cab"}},
-        [31] = {chance = 0.5, templates = {"Cab"}}, -- use MG for machine gun
-        [77] = {chance = 1, templates = {"Default"}}, -- default spawn (use MG for machine gun)
-        [18] = {chance = 0.1, templates = {"Cannon"}}, 
-        [87] = {chance = 0.5, templates = {"Cab", "Softtop"}},
-        [46] = {chance = 0.4, templates = {"Cab"}},
-        [37] = {chance = 0.01, templates = {"WeaponUpgrade1"}}, -- Adds rockets
-        [48] = {chance = 0.01, templates = {"BuggyMG"}}, -- Maddox Machine Gun
-        [3] = {chance = 0.01, templates = {"Armed"}}, -- Armed Rowlinson K22
-        [62] = {chance = 0.01, templates = {"Dome", "default"}}, -- Adds rockets or MG, Use UnArmed for unarmed vehicle
-        [7] = {chance = 1, templates = {"Default"}} -- default (use Armed for MG)
+        [69] = {["Armed"] = 0.1}, -- winstons amen party boat
+        [88] = {["Default"] = 1}, -- only default mta powerruns without weapons spawn in the wild (use FullyUpgraded for MG and rockets, Armed for MG)
+        [5] = {["Cab"] = 0.3, ["Fishing"] = 0.3},
+        [11] = {["Civil"] = 0.5},
+        --[35] = {["Armed"] = 0.01}, -- Garret Traver Z with MG
+        [78] = {["Cab"] = 0.5},
+        [91] = {["Hardtop"] = 0.3, ["Softtop"] = 0.3},
+        [66] = {["Double"] = 0.2},
+        [40] = {["Crane"] = 0.1},
+        [56] = {["Cab"] = 1}, -- default spawn (use WeaponUpgrade0 for cannon)
+        [84] = {["Cab"] = 0.5},
+        [31] = {["Cab"] = 0.5}, -- use MG for machine gun
+        [77] = {["Default"] = 1}, -- default spawn (use MG for machine gun)
+        --[18] = {["Cannon"] = 0.1}, 
+        [87] = {["Cab"] = 0.25, ["Softtop"] = 0.25},
+        [46] = {["Cab"] = 0.4},
+        --[37] = {["WeaponUpgrade1"] = 0.01}, -- Adds rockets
+        --[48] = {["BuggyMG"] = 0.05}, -- Maddox Machine Gun
+        [3] = {--[[["Armed"] = 0.01,]] ["FullyUpgraded"] = 0.2}, -- Armed Rowlinson K22
+        --[62] = {["Dome"] = 0.01, ["default"] = 0.03}, -- Adds rockets or MG, Use UnArmed for unarmed vehicle
+        [7] = {["Default"] = 1, --[[["Armed"] = 0.1]]}, -- default (use Armed for MG)
+        [81] = {["FullyUpgraded"] = 0.2}
     },
     colors = -- HSV car colors based on the biome they spawn in
     {
