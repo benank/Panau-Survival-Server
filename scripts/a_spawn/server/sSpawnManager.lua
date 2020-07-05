@@ -248,6 +248,7 @@ function sSpawnManager:DelayedSpawn(args)
 			})
 
 			Network:Send(args.player, "spawn/PlayerSetPosition")
+			args.player:SetValue("FirstSpawn", true)
 			
 		end
 	end)
@@ -274,7 +275,6 @@ function sSpawnManager:PlayerSpawn(args)
         target_pos = args.player:GetValue("SpawnPosition")
 	end
 
-    args.player:SetValue("FirstSpawn", true)
 	args.player:SetHealth(1)
 	
 	if not target_pos then return end
