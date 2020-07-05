@@ -46,7 +46,7 @@ function cLootbox:Remove(no_event)
 
 end
 
-function cLootbox:CreateModel(no_event)
+function cLootbox:CreateModel()
 
     if not self.active then return end
 
@@ -99,14 +99,12 @@ function cLootbox:CreateModel(no_event)
 
     self.cso_id = self.static_objects[1]:GetId()
 
-    if not no_event then
-        Events:Fire("Inventory/LootboxCreate", {
-            id = self.uid,
-            cso_id = self.static_objects[1]:GetId(),
-            tier = self.tier,
-            position = self.position,
-            angle = self.angle
-        })
-    end
+    Events:Fire("Inventory/LootboxCreate", {
+        id = self.uid,
+        cso_id = self.static_objects[1]:GetId(),
+        tier = self.tier,
+        position = self.position,
+        angle = self.angle
+    })
 
 end
