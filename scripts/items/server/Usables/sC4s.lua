@@ -207,6 +207,8 @@ function sC4s:UseItem(args)
             id = args.item.custom_data.id
         }, args.player)
 
+        Network:Send(args.player, "items/PlayC4TriggerAnimation")
+
     elseif not args.player:InVehicle() then
 
         Inventory.OperationBlock({player = args.player, change = 1}) -- Block inventory operations until they finish placing or cancel
