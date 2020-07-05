@@ -6,6 +6,8 @@ All server code for the JC2MP server Panau Survival
 2. Set `IKnowWhatImDoing` to true in the server's config.
 3. Delete `server.db` in case you've run the server before to ensure a clean start.
 4. Edit line 5 of `scripts/inventory/server/sLootManager.lua` and replace `"lootspawns/lootspawns.txt"` with `"lootspawns_old.txt"`. This will allow the loot to spawn using the old loot spawns data file.
+5. Copy `scripts/modelchanger/shModelLocations_old.lua` to `scripts/modelchanger/shared/shModelLocations.lua`
+5. Copy `scripts/modelchanger/shModelLocationsObject.lua` to `scripts/modelchanger/shared/shModelLocationsObject.lua`
 5. You're all set!
 
 ## Contributing Guidelines

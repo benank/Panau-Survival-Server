@@ -196,6 +196,16 @@ function cObjectPlacer:Render(args)
     for _, data in pairs(BlacklistedAreas) do
         if data.pos:Distance(ray.position) < data.size then
             can_place_here = false
+            break
+        end
+    end
+
+    local ModelChangeAreas = SharedObject.GetByName("ModelLocations"):GetValues()
+
+    for _, area in pairs(ModelChangeAreas) do
+        if ray.position:Distance(area.pos) < 10 then
+            can_place_here = false
+            break
         end
     end
 
