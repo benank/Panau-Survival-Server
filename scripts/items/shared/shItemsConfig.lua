@@ -19,6 +19,7 @@ ItemsConfig =
         ["Master Hacker"] = {use_time = 5},
         ["Ping"] = {max_distance = 5000, max_height = 4000},
         ["Combat Ping"] = {max_distance = 550, max_height = 200},
+        ["EMP"] = {range = 400, disable_time = 30, use_time = 10},
     },
     airstrikes = 
     {
