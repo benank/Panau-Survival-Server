@@ -2,6 +2,8 @@ class 'sFriends'
 
 function sFriends:__init()
 
+    self.recent_unfriends = {}
+
     SQL:Execute("CREATE TABLE IF NOT EXISTS friends (steam_id VARCHAR(20), friend_steamid VARCHAR(20))")
 
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
@@ -13,6 +15,12 @@ function sFriends:ClientModuleLoad(args)
     -- Load all friends and send to player
 
     local steam_id = tostring(args.player:GetSteamId())
+
+    args.player:SetValue("RecentUnfriends", self.recent_unfriends[steam_id] or {})
+
+    if not self.recent_unfriends[steam_id] then
+        self.recent_unfriends[steam_id] = {}
+    end
 
     -- Get all players that this player added
     local result = SQL:Query("SELECT * FROM friends WHERE steam_id = (?)")
@@ -144,6 +152,12 @@ function sFriends:RemoveFriend(args, player)
 
     Network:Send(player, "Friends/Update")
     Network:Send(removing_player, "Friends/Update")
+
+    self.recent_unfriends[player_steam_id][removing_steam_id] = Server:GetElapsedSeconds()
+    self.recent_unfriends[removing_steam_id][player_steam_id] = Server:GetElapsedSeconds()
+
+    player:SetValue("RecentUnfriends", self.recent_unfriends[player_steam_id])
+    removing_player:SetValue("RecentUnfriends", self.recent_unfriends[removing_steam_id])
 
     if friends_before then
         Chat:Send(player, "You are no longer friends with " .. removing_player:GetName() .. ".", Color(200, 0, 0))
