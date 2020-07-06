@@ -96,6 +96,8 @@ function cNitro:LocalPlayerInput(args)
 
     if args.input ~= boost_key then return end
 
+    if v:GetValue("DisabledByEMP") then return end
+
     local forward = v:GetAngle() * Vector3.Forward
     local speed = -(-v:GetAngle() * v:GetLinearVelocity()).z
     v:SetLinearVelocity(v:GetLinearVelocity() + forward * self.boost_amount)

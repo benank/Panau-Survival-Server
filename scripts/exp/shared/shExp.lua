@@ -57,7 +57,8 @@ Exp =
         [DamageEntity.Claymore] = 5,
         [DamageEntity.C4] = 10
     },
-    KillExpireTime = 60 * 60 * 8, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
+    KillExpireTime = 60 * 60 * 4, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
+    UnfriendTime = 60 * 60 * 24 * 7, -- Timer for killing a recently unfriended person
     LevelCutoffs = -- Level cutoffs for no exp for these players
     {
         [0] = -1,

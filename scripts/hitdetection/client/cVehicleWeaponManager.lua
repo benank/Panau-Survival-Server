@@ -116,6 +116,9 @@ function cVehicleWeaponManager:LocalPlayerInput(args)
 
     if self.heat_actions[args.input] ~= nil then
 
+        local v = LocalPlayer:GetVehicle() or LocalPlayer:GetValue("VehicleMG")
+        if not IsValid(v) or v:GetValue("DisabledByEMP") then return false end
+
         if not self.firing then
             self.warmup_timer:Restart()
         end

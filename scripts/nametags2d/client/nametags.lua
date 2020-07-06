@@ -15,6 +15,8 @@ function Nametags:__init()
     self.zero_health        = Color( 255,  78, 69 ) -- Zero health colour
     self.full_health        = Color( 55,  204, 73 ) -- Full health colour
 
+    self.FriendColor        = Color( 0, 200, 0 )
+
     self.size               = TextSize.Default -- Font size
 
     self:CreateSettings()
@@ -325,7 +327,7 @@ function Nametags:DrawPlayer( player_data )
 
         if radar_success then
             local size = Vector2( 6, 6 )
-            local color = p:GetColor()
+            local color = self.FriendColor
             color.a = (Game:GetSetting( GameSetting.HUDOpacity ) / 100) * 255
             Render:FillCircle(radar_pos_2d - size/2, size.x, color )
             Render:DrawCircle(radar_pos_2d - size/2, size.x, Color.Black )
