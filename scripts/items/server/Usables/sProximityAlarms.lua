@@ -200,6 +200,10 @@ function sProxAlarms:DestroyProx(args, player)
         give_exp = false
     end
 
+    if count_table(alarm.contents) == 0 then
+        give_exp = false
+    end
+
     Events:Fire("items/DestroyProximityAlarm", {
         id = alarm.stash.id,
         player = player,
