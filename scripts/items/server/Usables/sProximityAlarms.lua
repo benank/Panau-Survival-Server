@@ -196,7 +196,11 @@ function sProxAlarms:DestroyProx(args, player)
     -- self.recent_ids
     local give_exp = true
 
-    if self.recent_ids[alarm.stash.owner_id] and Server:GetElapsedSeconds() - self.recent_ids[alarm.stash.owner_id] < 60 * 60 then
+    if self.recent_ids[alarm.stash.owner_id] and Server:GetElapsedSeconds() - self.recent_ids[alarm.stash.owner_id] < 60 * 60 * 24 * 3 then
+        give_exp = false
+    end
+
+    if count_table(alarm.contents) == 0 then
         give_exp = false
     end
 
