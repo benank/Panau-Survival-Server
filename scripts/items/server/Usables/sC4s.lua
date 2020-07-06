@@ -269,7 +269,7 @@ function sC4s:TryPlaceC4(args, player)
         local sub
         sub = Network:Subscribe("items/CompleteItemUsage", function(_, _player)
         
-            if player ~= _player then return end
+            if not IsValid(player) or not IsValid(_player) or player ~= _player then return end
 
             local player_iu = player:GetValue("ItemUse")
 
