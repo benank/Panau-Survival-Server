@@ -18,7 +18,8 @@ function sLocationLoader:__init()
         "western workbench",
         "southern workbench",
         "eastern workbench",
-        "northern workbench"
+        "northern workbench",
+        "tunnels"
     }
     
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
