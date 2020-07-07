@@ -274,6 +274,11 @@ function cBuildMode:LocalPlayerChat(args)
     if args.text == "/groupmode" then
         self.groupmode = not self.groupmode
         self.selected_objects = {}
+    elseif args.text == "/spawnhere" then
+        Network:Send("BuildTools/PlaceObject", {
+            position = Camera:GetPosition(),
+            angle = Angle()
+        })
     end
 
 end
