@@ -3,7 +3,7 @@
 -- Lua scripts are compressed when sent to the client, so this should compress down extremely well
 
 models = {
-	["climate/zone_0/vegetation_0.nlz"] = {
+	["climate/zone_0/vegetation_0.blz"] = {
 		{'City_B10_roofbush-Whole.lod', 'City_B10_roofbush_lod1-Whole_col.pfx'},
 		{'City_B11_roofbush-Whole.lod', 'City_B11_roofbush_lod1-Whole_col.pfx'},
 		{'Desert_Particle-Needlebush_Leaf.lod', 'Desert_Particle_lod1-Needlebush_Leaf_col.pfx'},
@@ -124,7 +124,7 @@ models = {
 		{'jungle_T20_ThaiPalmXL-TrunkA.lod', 'jungle_T20_ThaiPalmXL_lod1-TrunkA_col.pfx'},
 		{'jungle_T20_ThaiPalmXL-Whole.lod', 'jungle_T20_ThaiPalmXL_lod1-Whole_col.pfx'},
 	},
-	["climate/zone_1/vegetation_1.nlz"] = {
+	["climate/zone_1/vegetation_1.blz"] = {
 		{'Arctic_B11_bushtreeL-Whole.lod', 'Arctic_B11_bushtreeL_lod1-Whole_col.pfx'},
 		{'Arctic_B12_bushtreeM-Whole.lod', 'Arctic_B12_bushtreeM_lod1-Whole_col.pfx'},
 		{'Arctic_B13_bushtreeS-Whole.lod', 'Arctic_B13_bushtreeS_lod1-Whole_col.pfx'},
@@ -157,7 +157,7 @@ models = {
 		{'Arctic_T28_bushtreeL-TrunkC.lod', 'Arctic_T28_bushtreeL_lod1-TrunkC_col.pfx'},
 		{'Arctic_T28_bushtreeL-Whole.lod', 'Arctic_T28_bushtreeL_lod1-Whole_col.pfx'},
 	},
-	["climate/zone_2/vegetation_2.nlz"] = {
+	["climate/zone_2/vegetation_2.blz"] = {
 		{'City_T01_SakuraL-Stump.lod', 'City_T01_SakuraL_lod1-Stump_col.pfx'},
 		{'City_T01_SakuraL-TrunkA.lod', 'City_T01_SakuraL_lod1-TrunkA_col.pfx'},
 		{'City_T01_SakuraL-Whole.lod', 'City_T01_SakuraL_lod1-Whole_col.pfx'},
@@ -189,7 +189,7 @@ models = {
 		{'Desert_T05_NeedleBushClM-Whole.lod', 'Desert_T05_NeedleBushClM_lod1-Whole_col.pfx'},
 		{'Desert_T06_NeedleBushClS-Whole.lod', 'Desert_T06_NeedleBushClS_lod1-Whole_col.pfx'},
 	},
-	["climate/zone_3/vegetation_3.nlz"] = {
+	["climate/zone_3/vegetation_3.blz"] = {
 		{'City_T14_SideWalkM-Stump.lod', 'City_T14_SideWalkM_lod1-Stump_col.pfx'},
 		{'City_T14_SideWalkM-Trunk.lod', 'City_T14_SideWalkM_lod1-Trunk_col.pfx'},
 		{'City_T14_SideWalkM-Whole.lod', 'City_T14_SideWalkM_lod1-Whole_col.pfx'},
@@ -2293,7 +2293,7 @@ models = {
 		{'v105-steering01-standard01r.lod', 'v105_lod1-steering01_lod1-standard01r_col.pfx'},
 		{'v105-weapon.lod', 'v105_lod1-weapon_col.pfx'},
 	},
-	["global/areasets/areaset01.nlz"] = {
+	["global/areasets/areaset01.blz"] = {
 		{'gb011-a.lod', 'gb011_lod1-a_col.pfx'},
 		{'gb011-b.lod', 'gb011_lod1-b_col.pfx'},
 		{'gb011-c.lod', 'gb011_lod1-c_col.pfx'},
@@ -2420,7 +2420,7 @@ models = {
 		{'go236-g.lod', 'go236_lod1-g_col.pfx'},
 		{'go236-h.lod', 'go236_lod1-h_col.pfx'},
 	},
-	["global/areasets/areaset02.nlz"] = {
+	["global/areasets/areaset02.blz"] = {
 		{'gb029-a.lod', 'gb029_lod1-a_col.pfx'},
 		{'gb051-a.lod', 'gb051_lod1-a_col.pfx'},
 		{'gb051-b.lod', 'gb051_lod1-b_col.pfx'},
@@ -2455,7 +2455,7 @@ models = {
 		{'go150-b.lod', 'go150_lod1-b_col.pfx'},
 		{'go150-c.lod', 'go150_lod1-c_col.pfx'},
 	},
-	["global/areasets/areaset03.nlz"] = {
+	["global/areasets/areaset03.blz"] = {
 		{'gb019-a.lod', 'gb019_lod1-a_col.pfx'},
 		{'gb021-a.lod', 'gb021_lod1-a_col.pfx'},
 		{'gb021-b.lod', 'gb021_lod1-b_col.pfx'},
@@ -2500,7 +2500,7 @@ models = {
 		{'go161-a1_dst.lod', 'go161_lod1-a1_dst_col.pfx'},
 		{'go161-a2_dst.lod', 'go161_lod1-a2_dst_col.pfx'},
 	},
-	["global/areasets/areaset04.nlz"] = {
+	["global/areasets/areaset04.blz"] = {
 		{'gb202-a.lod', 'gb202_lod1-a_col.pfx'},
 		{'gb202-b.lod', 'gb202_lod1-b_col.pfx'},
 		{'gb202-c.lod', 'gb202_lod1-c_col.pfx'},
@@ -2533,7 +2533,7 @@ models = {
 		{'go232-b.lod', 'go232_lod1-b_col.pfx'},
 		{'go232-c.lod', 'go232_lod1-c_col.pfx'},
 	},
-	["global/areasets/areaset05.nlz"] = {
+	["global/areasets/areaset05.blz"] = {
 		{'gb001-a.lod', 'gb001_lod1-a_col.pfx'},
 		{'gb001-a_dst.lod', 'gb001_lod1-a_dst_col.pfx'},
 		{'gb001-b.lod', 'gb001_lod1-b_col.pfx'},
@@ -2612,7 +2612,7 @@ models = {
 		{'gb243-a.lod', 'gb243_lod1-a_col.pfx'},
 		{'go238-a.lod', 'go238_lod1-a_col.pfx'},
 	},
-	["global/areasets/areaset06.nlz"] = {
+	["global/areasets/areaset06.blz"] = {
 		{'gb007-a.lod', 'gb007_lod1-a_col.pfx'},
 		{'gb044-a.lod', 'gb044_lod1-a_col.pfx'},
 		{'gb184-a.lod', 'gb184_lod1-a_col.pfx'},
@@ -2635,7 +2635,7 @@ models = {
 		{'gb184-r.lod', 'gb184_lod1-r_col.pfx'},
 		{'gb184-s.lod', 'gb184_lod1-s_col.pfx'},
 	},
-	["global/areasets/areaset07.nlz"] = {
+	["global/areasets/areaset07.blz"] = {
 		{'gb009-a.lod', 'gb009_lod1-a_col.pfx'},
 		{'gb009-b.lod', 'gb009_lod1-b_col.pfx'},
 		{'gb017-a.lod', 'gb017_lod1-a_col.pfx'},
@@ -2676,7 +2676,7 @@ models = {
 		{'go235-a.lod', 'go235_lod1-a_col.pfx'},
 		{'go235-b.lod', 'go235_lod1-b_col.pfx'},
 	},
-	["global/areasets/areaset08.nlz"] = {
+	["global/areasets/areaset08.blz"] = {
 		{'gb036_01-base.lod', 'gb036_01_lod1-base_col.pfx'},
 		{'gb036_01-dock.lod', 'gb036_01_lod1-dock_col.pfx'},
 		{'gb036_01-drillhouse.lod', 'gb036_01_lod1-drillhouse_col.pfx'},
@@ -2708,7 +2708,7 @@ models = {
 		{'gb036_02-towerhut.lod', 'gb036_02_lod1-towerhut_col.pfx'},
 		{'gb036_02-winch.lod', 'gb036_02_lod1-winch_col.pfx'},
 	},
-	["global/areasets/areaset09.nlz"] = {
+	["global/areasets/areaset09.blz"] = {
 		{'gb250-a.lod', 'gb250_lod1-a_col.pfx'},
 		{'gb250-b.lod', 'gb250_lod1-b_col.pfx'},
 		{'gb250-c.lod', 'gb250_lod1-c_col.pfx'},
@@ -2719,7 +2719,7 @@ models = {
 		{'gb250-g_dst.lod', 'gb250_lod1-g_dst_col.pfx'},
 		{'gb250-h.lod', 'gb250_lod1-h_col.pfx'},
 	},
-	["global/areasets/areaset13.nlz"] = {
+	["global/areasets/areaset13.blz"] = {
 		{'cs_animsigns-a.lod', 'cs_animsigns_lod1-a_col.pfx'},
 		{'cs_animsigns-a_text_1.lod', 'cs_animsigns_lod1-a_text_1_col.pfx'},
 		{'cs_animsigns-a_text_2.lod', 'cs_animsigns_lod1-a_text_2_col.pfx'},
@@ -2946,7 +2946,7 @@ models = {
 		{'gp_050_2-c.lod', 'gp_050_2_lod1-c_col.pfx'},
 		{'gp_050_2-d.lod', 'gp_050_2_lod1-d_col.pfx'},
 	},
-	["global/areasets/general.nlz"] = {
+	["global/areasets/general.blz"] = {
 		{'seagull-body.lod', 'seagull_lod1-body_col.pfx'},
 		{'seagull-leftwing.lod', 'seagull_lod1-leftwing_col.pfx'},
 		{'seagull-rightwing.lod', 'seagull_lod1-rightwing_col.pfx'},
@@ -3416,28 +3416,28 @@ models = {
 		{'wea55-b.lod', 'wea55_lod1-b_col.pfx'},
 		{'wea58-a.lod', 'wea58_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/f1_01.seq.nlz"] = {
+	["global/cutscenes/f1_01.seq.blz"] = {
 		{'cage-a.lod', 'cage_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/f1m03.seq.nlz"] = {
+	["global/cutscenes/f1m03.seq.blz"] = {
 		{'v015-body.lod', 'v015_lod1-body_col.pfx'},
 	},
-	["global/cutscenes/f1s02.seq.nlz"] = {
+	["global/cutscenes/f1s02.seq.blz"] = {
 		{'v062cutscene_roac-heli.lod', 'v062cutscene_roac_lod1-heli_col.pfx'},
 	},
-	["global/cutscenes/f2_00b.seq.nlz"] = {
+	["global/cutscenes/f2_00b.seq.blz"] = {
 		{'key040_1-part_i.lod', 'key040_1_lod1-part_i_col.pfx'},
 	},
-	["global/cutscenes/f2s01.seq.nlz"] = {
+	["global/cutscenes/f2s01.seq.blz"] = {
 		{'v062cutscene_ular-heli.lod', 'v062cutscene_ular_lod1-heli_col.pfx'},
 	},
-	["global/cutscenes/f3_01.seq.nlz"] = {
+	["global/cutscenes/f3_01.seq.blz"] = {
 		{'knife-knife.lod', 'knife_lod1-knife_col.pfx'},
 	},
-	["global/cutscenes/f3s01.seq.nlz"] = {
+	["global/cutscenes/f3s01.seq.blz"] = {
 		{'v062cutscene_reap-heli.lod', 'v062cutscene_reap_lod1-heli_col.pfx'},
 	},
-	["global/cutscenes/km00_00.seq.nlz"] = {
+	["global/cutscenes/km00_00.seq.blz"] = {
 		{'cutscenegrapple-grapple.lod', 'cutscenegrapple_lod1-grapple_col.pfx'},
 		{'sidewindercustscene-a.lod', 'sidewindercustscene_lod1-a_col.pfx'},
 		{'tyres01cutscene-truck1.lod', 'tyres01cutscene_lod1-truck1_col.pfx'},
@@ -3454,7 +3454,7 @@ models = {
 		{'v076-frontglassbrokenside.lod', 'v076_lod1-frontglassbrokenside_col.pfx'},
 		{'v076-frontglassbrokentop.lod', 'v076_lod1-frontglassbrokentop_col.pfx'},
 	},
-	["global/cutscenes/km01_00.seq.nlz"] = {
+	["global/cutscenes/km01_00.seq.blz"] = {
 		{'mc01-rico.lod', 'mc01_lod1-rico_col.pfx'},
 		{'cstext-jc2_logo.lod', 'cstext_lod1-jc2_logo_col.pfx'},
 		{'v062cutscene-bag.lod', 'v062cutscene_lod1-bag_col.pfx'},
@@ -3463,7 +3463,7 @@ models = {
 		{'v062cutscene-cableshort.lod', 'v062cutscene_lod1-cableshort_col.pfx'},
 		{'v062cutscene-cablewind.lod', 'v062cutscene_lod1-cablewind_col.pfx'},
 	},
-	["global/cutscenes/km01_01.seq.nlz"] = {
+	["global/cutscenes/km01_01.seq.blz"] = {
 		{'gp700_01-panay_picture_skinned.lod', 'gp700_01_lod1-panay_picture_skinned_col.pfx'},
 		{'v062cutscene_agency-bag.lod', 'v062cutscene_agency_lod1-bag_col.pfx'},
 		{'v062cutscene_agency-box.lod', 'v062cutscene_agency_lod1-box_col.pfx'},
@@ -3477,68 +3477,68 @@ models = {
 		{'wea28_gunmount-d.lod', 'wea28_gunmount_lod1-d_col.pfx'},
 		{'wea28_gunmount-e.lod', 'wea28_gunmount_lod1-e_col.pfx'},
 	},
-	["global/cutscenes/km01_02.seq.nlz"] = {
+	["global/cutscenes/km01_02.seq.blz"] = {
 		{'gp301-c.lod', 'gp301_lod1-c_col.pfx'},
 	},
-	["global/cutscenes/km01_03.seq.nlz"] = {
+	["global/cutscenes/km01_03.seq.blz"] = {
 		{'motorbiketyre-motorbiketyre.lod', 'motorbiketyre_lod1-motorbiketyre_col.pfx'},
 		{'v007cutscene-body.lod', 'v007cutscene_lod1-body_col.pfx'},
 		{'v007cutscene-steering.lod', 'v007cutscene_lod1-steering_col.pfx'},
 		{'v007cutscene-uppersteering.lod', 'v007cutscene_lod1-uppersteering_col.pfx'},
 	},
-	["global/cutscenes/km02_02a.seq.nlz"] = {
+	["global/cutscenes/km02_02a.seq.blz"] = {
 		{'gp700_01-granade_base.lod', 'gp700_01_lod1-granade_base_col.pfx'},
 	},
-	["global/cutscenes/km02_02a1.seq.nlz"] = {
+	["global/cutscenes/km02_02a1.seq.blz"] = {
 		{'cutscene_prop_whisky-a.lod', 'cutscene_prop_whisky_lod1-a_col.pfx'},
 		{'cutscene_prop_whisky-b.lod', 'cutscene_prop_whisky_lod1-b_col.pfx'},
 	},
-	["global/cutscenes/km02_03.seq.nlz"] = {
+	["global/cutscenes/km02_03.seq.blz"] = {
 		{'v020cutscene-body.lod', 'v020cutscene_lod1-body_col.pfx'},
 		{'v020cutscene-doorl.lod', 'v020cutscene_lod1-doorl_col.pfx'},
 		{'v020cutscene-doorr.lod', 'v020cutscene_lod1-doorr_col.pfx'},
 		{'v020cutscene-doorrdestruct.lod', 'v020cutscene_lod1-doorrdestruct_col.pfx'},
 		{'go168-c.lod', 'go168_lod1-c_col.pfx'},
 	},
-	["global/cutscenes/km03_00a.seq.nlz"] = {
+	["global/cutscenes/km03_00a.seq.blz"] = {
 		{'money-money.lod', 'money_lod1-money_col.pfx'},
 	},
-	["global/cutscenes/km03_00b.seq.nlz"] = {
+	["global/cutscenes/km03_00b.seq.blz"] = {
 		{'fance-a.lod', 'fance_lod1-a_col.pfx'},
 		{'walkie-walkie.lod', 'walkie_lod1-walkie_col.pfx'},
 	},
-	["global/cutscenes/km03_00e.seq.nlz"] = {
+	["global/cutscenes/km03_00e.seq.blz"] = {
 		{'gae01-punkt.lod', 'gae01_lod1-punkt_col.pfx'},
 	},
-	["global/cutscenes/km03_01a.seq.nlz"] = {
+	["global/cutscenes/km03_01a.seq.blz"] = {
 		{'blowpipe-a.lod', 'blowpipe_lod1-a_col.pfx'},
 		{'gp310-a.lod', 'gp310_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km03_01b.seq.nlz"] = {
+	["global/cutscenes/km03_01b.seq.blz"] = {
 		{'gp005-a.lod', 'gp005_lod1-a_col.pfx'},
 		{'gp008-a.lod', 'gp008_lod1-a_col.pfx'},
 		{'gp008-b.lod', 'gp008_lod1-b_col.pfx'},
 		{'gp309-a.lod', 'gp309_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km03_01c.seq.nlz"] = {
+	["global/cutscenes/km03_01c.seq.blz"] = {
 		{'gp002-a.lod', 'gp002_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km03_03.seq.nlz"] = {
+	["global/cutscenes/km03_03.seq.blz"] = {
 		{'tyrev016-a.lod', 'tyrev016_lod1-a_col.pfx'},
 		{'v044-v044.lod', 'v044_lod1-v044_col.pfx'},
 	},
-	["global/cutscenes/km03_03b.seq.nlz"] = {
+	["global/cutscenes/km03_03b.seq.blz"] = {
 		{'torturechair-a.lod', 'torturechair_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km04_00b.seq.nlz"] = {
+	["global/cutscenes/km04_00b.seq.blz"] = {
 		{'gp080-b.lod', 'gp080_lod1-b_col.pfx'},
 	},
-	["global/cutscenes/km04_03.seq.nlz"] = {
+	["global/cutscenes/km04_03.seq.blz"] = {
 		{'v017_cutscene-body.lod', 'v017_cutscene_lod1-body_col.pfx'},
 		{'v017cutscene-door_bl1.lod', 'v017cutscene_lod1-door_bl1_col.pfx'},
 		{'v017cutscene-door_cl1.lod', 'v017cutscene_lod1-door_cl1_col.pfx'},
 	},
-	["global/cutscenes/km04_06.seq.nlz"] = {
+	["global/cutscenes/km04_06.seq.blz"] = {
 		{'gp012-a.lod', 'gp012_lod1-a_col.pfx'},
 		{'gp307-a.lod', 'gp307_lod1-a_col.pfx'},
 		{'gp700_01-charcoal_grill.lod', 'gp700_01_lod1-charcoal_grill_col.pfx'},
@@ -3547,40 +3547,40 @@ models = {
 		{'gp700_01-file_mirikov.lod', 'gp700_01_lod1-file_mirikov_col.pfx'},
 		{'gp700_01-sunchair.lod', 'gp700_01_lod1-sunchair_col.pfx'},
 	},
-	["global/cutscenes/km04_08.seq.nlz"] = {
+	["global/cutscenes/km04_08.seq.blz"] = {
 		{'gp009-a.lod', 'gp009_lod1-a_col.pfx'},
 		{'gp308-a.lod', 'gp308_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km05_01.seq.nlz"] = {
+	["global/cutscenes/km05_01.seq.blz"] = {
 		{'go164_01-g.lod', 'go164_01_lod1-g_col.pfx'},
 	},
-	["global/cutscenes/km05_01b.seq.nlz"] = {
+	["global/cutscenes/km05_01b.seq.blz"] = {
 		{'v009cutscene-body.lod', 'v009cutscene_lod1-body_col.pfx'},
 	},
-	["global/cutscenes/km05_02b.seq.nlz"] = {
+	["global/cutscenes/km05_02b.seq.blz"] = {
 		{'cellphone-a.lod', 'cellphone_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km05_02c.seq.nlz"] = {
+	["global/cutscenes/km05_02c.seq.blz"] = {
 		{'v016-body.lod', 'v016_lod1-body_col.pfx'},
 		{'v016-lid_fl.lod', 'v016_lod1-lid_fl_col.pfx'},
 		{'v016-lid_fr.lod', 'v016_lod1-lid_fr_col.pfx'},
 	},
-	["global/cutscenes/km05_02d.seq.nlz"] = {
+	["global/cutscenes/km05_02d.seq.blz"] = {
 		{'gp700_01-controller.lod', 'gp700_01_lod1-controller_col.pfx'},
 		{'key030_02_satelite-a.lod', 'key030_02_satelite_lod1-a_col.pfx'},
 		{'key030_02_satelite-b.lod', 'key030_02_satelite_lod1-b_col.pfx'},
 		{'key030_02_satelite-c.lod', 'key030_02_satelite_lod1-c_col.pfx'},
 	},
-	["global/cutscenes/km05_02e.seq.nlz"] = {
+	["global/cutscenes/km05_02e.seq.blz"] = {
 		{'glas-a.lod', 'glas_lod1-a_col.pfx'},
 		{'key030_01-c1.lod', 'key030_01_lod1-c1_col.pfx'},
 		{'key030_01-x.lod', 'key030_01_lod1-x_col.pfx'},
 	},
-	["global/cutscenes/km06_01.seq.nlz"] = {
+	["global/cutscenes/km06_01.seq.blz"] = {
 		{'book-book.lod', 'book_lod1-book_col.pfx'},
 		{'key004_07-a.lod', 'key004_07_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km06_08.seq.nlz"] = {
+	["global/cutscenes/km06_08.seq.blz"] = {
 		{'chameleon-body.lod', 'chameleon_lod1-body_col.pfx'},
 		{'gp700_01-granade_handle.lod', 'gp700_01_lod1-granade_handle_col.pfx'},
 		{'gp700_01-granade_sprint.lod', 'gp700_01_lod1-granade_sprint_col.pfx'},
@@ -3589,26 +3589,26 @@ models = {
 		{'key015_01-door.lod', 'key015_01_lod1-door_col.pfx'},
 		{'key015_01-wall.lod', 'key015_01_lod1-wall_col.pfx'},
 	},
-	["global/cutscenes/km07_01.seq.nlz"] = {
+	["global/cutscenes/km07_01.seq.blz"] = {
 		{'gp302-a.lod', 'gp302_lod1-a_col.pfx'},
 		{'gp302-b.lod', 'gp302_lod1-b_col.pfx'},
 	},
-	["global/cutscenes/km07_02.seq.nlz"] = {
+	["global/cutscenes/km07_02.seq.blz"] = {
 		{'key014_02-ladder.lod', 'key014_02_lod1-ladder_col.pfx'},
 		{'key014_02-n.lod', 'key014_02_lod1-n_col.pfx'},
 		{'key014_02-p.lod', 'key014_02_lod1-p_col.pfx'},
 	},
-	["global/cutscenes/km07_04.seq.nlz"] = {
+	["global/cutscenes/km07_04.seq.blz"] = {
 		{'keypad-a.lod', 'keypad_lod1-a_col.pfx'},
 	},
-	["global/cutscenes/km07_07.seq.nlz"] = {
+	["global/cutscenes/km07_07.seq.blz"] = {
 		{'sheldonglasses-glasses.lod', 'sheldonglasses_lod1-glasses_col.pfx'},
 		{'gp008-c.lod', 'gp008_lod1-c_col.pfx'},
 		{'gp700_01-barbeque_3wurst.lod', 'gp700_01_lod1-barbeque_3wurst_col.pfx'},
 		{'gp700_01-barbeque_lizard.lod', 'gp700_01_lod1-barbeque_lizard_col.pfx'},
 		{'gp700_01-barbeque_wurst.lod', 'gp700_01_lod1-barbeque_wurst_col.pfx'},
 	},
-	["global/cutscenes/km07_07b.seq.nlz"] = {
+	["global/cutscenes/km07_07b.seq.blz"] = {
 		{'gp308-b.lod', 'gp308_lod1-b_col.pfx'},
 	},
 	["global/landmarks/02x45_landmark.nlz"] = {
