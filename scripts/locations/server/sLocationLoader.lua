@@ -14,7 +14,11 @@ function sLocationLoader:__init()
         "Red Gates",
         "Arena",
         "Pirate Den",
-        "safezone"
+        "safezone",
+        "western workbench",
+        "southern workbench",
+        "eastern workbench",
+        "northern workbench"
     }
     
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
