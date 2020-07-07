@@ -9,7 +9,7 @@ function sStash:__init(args)
     self.name = args.name
     self.health = math.min(args.health, Lootbox.Stashes[self.lootbox.tier].health)
     self.capacity = Lootbox.Stashes[self.lootbox.tier].capacity
-    self.can_change_access = self.lootbox.tier == Lootbox.Types.LockedStash
+    self.can_change_access = Lootbox.Stashes[self.lootbox.tier].can_change_access
 
     self.lootbox.stash = self
 
