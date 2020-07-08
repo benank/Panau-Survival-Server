@@ -43,6 +43,8 @@ function sVehicleManager:__init()
 
     Network:Subscribe("Vehicles/VehicleDestroyed", self, self.VehicleDestroyedClient)
 
+    Network:Subscribe("Vehicles/SyncAngle", self, self.VehiclesSyncAngle)
+
     Timer.SetInterval(1000, function()
         self:Tick1000()
     end)
@@ -297,6 +299,17 @@ function sVehicleManager:VehicleDestroyed(vehicle, vehicle_data_input)
     if IsValid(vehicle) then
         vehicle:Remove()
     end
+
+end
+
+function sVehicleManager:VehiclesSyncAngle(args, player)
+
+    if not args.id or not args.angle then return end
+
+    local v = Vehicle.GetById(args.id)
+    if not IsValid(v) then return end
+
+    v:SetAngle(args.angle)
 
 end
 

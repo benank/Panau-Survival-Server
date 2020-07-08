@@ -184,9 +184,10 @@ function cInventoryUIStyle:RenderItemWindow(itemWindow, stack, parent_window)
             Render:FillCircle(position, self.equipped_icon.radius, self.equipped_icon.color_under)
         end
 
+        local item = stack.contents[1]
+
         -- Render car paint
         if stack:GetProperty("name") == "Car Paint" then
-            local item = stack.contents[1]
             local color_data = self.car_paint_icon
             local size = Vector2(itemWindow:GetHeight() - color_data.margin * 2, itemWindow:GetHeight() - color_data.margin * 2)
 
@@ -201,6 +202,22 @@ function cInventoryUIStyle:RenderItemWindow(itemWindow, stack, parent_window)
             Render:DrawLine(start_pos, start_pos + Vector2(0, size.y), color_data.border_color)
             Render:DrawLine(start_pos + size, start_pos + size - Vector2(size.x, 0), color_data.border_color)
             Render:DrawLine(start_pos + size, start_pos + size - Vector2(0, size.y), color_data.border_color)
+
+        elseif item.name == "Woet" and tonumber(item.custom_data.woet_x) == 1 then
+
+            local text_size = ClientInventory.ui.inv_dimensions.text_size * 1.75
+            local render_text_size = Render:GetTextSize("X", text_size)
+            local size = Vector2(render_text_size.x * 2, itemWindow:GetHeight() / 2 - render_text_size.y / 2)
+
+            local start_pos = itemWindow:GetPosition() + base_pos + Vector2(itemWindow:GetWidth() - size.x, size.y)
+            
+            if not start_pos then return end
+
+            for i = 1, 5 do
+                local color = Color.FromHSV(185, i / 5, 1)
+                color.a = 255 * i / 5
+                Render:DrawText(start_pos + Vector2(10 - 2 * i, 0), "X", color, text_size)
+            end
 
         end
     end

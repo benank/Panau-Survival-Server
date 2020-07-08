@@ -285,6 +285,7 @@ Items =
         name = "Woet",
         category = "Supplies",
         stacklimit = 10,
+        can_stack = true,
         can_use = true
     },
     {

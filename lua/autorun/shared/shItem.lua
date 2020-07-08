@@ -98,7 +98,12 @@ function shItem:GetCustomData()
 			end
 		end
 		
-	end
+    elseif self.name == "Woet" and self.custom_data.woet_x == nil then
+        
+        -- 10% of woets are woet Xs
+        self.custom_data.woet_x = math.random() < 0.05 and 1 or 0
+
+    end
 	
 	-- Additional custom data will be added here
 

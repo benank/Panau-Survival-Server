@@ -68,7 +68,7 @@ function cC4s:StartC4Placement()
         display_bb = true,
         offset = Vector3(0, 0.05, 0),
         place_entity = true,
-        range = 4
+        range = 6
     })
 
     self.place_subs = 
@@ -108,7 +108,7 @@ function cC4s:PlaceObject(args)
         end
     end
 
-    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 5)
+    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 7)
 
     local send_data = {
         position = args.position,
