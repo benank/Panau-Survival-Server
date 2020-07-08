@@ -17,7 +17,13 @@ Network:Subscribe("items/CompleteItemUsage", function(args, player)
             return
         end
 
-        entity:SetAngularVelocity(Vector3(0, 0, 15))
+        if tonumber(player_iu.item.custom_data.woet_x) == 0 then
+            entity:SetAngularVelocity(Vector3(0, 0, 15))
+        else
+            local angle = entity:GetAngle()
+            angle.roll = 0
+            entity:SetAngle(angle)
+        end
 
         Inventory.RemoveItem({
             item = player_iu.item,

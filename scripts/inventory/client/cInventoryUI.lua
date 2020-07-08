@@ -761,7 +761,7 @@ function cInventoryUI:LeftClickItemButton(button)
         -- Adjusting the drop amount
         self:MouseScroll({delta = 1}) -- Simulate mousescroll to change drop amount
     else
-        if Key:IsDown(VirtualKey.LShift) and stack:GetProperty("durable") then
+        if Key:IsDown(VirtualKey.LShift) and stack:IsStackable() then
             -- Trying to shift a stack
             self:ShiftStack(button)
         else

@@ -39,6 +39,33 @@ function cVehicleManager:__init()
     Network:Subscribe(var("Vehicles/SyncOwnedVehicles"):get(), self, self.SyncOwnedVehicles)
     Network:Subscribe(var("Vehicles/VehicleGuardActivate"):get(), self, self.VehicleGuardActivate)
 
+    Events:Subscribe("LocalPlayerExitVehicle", self, self.LocalPlayerExitVehicle)
+
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+
+end
+
+function cVehicleManager:ModuleUnload()
+
+    if LocalPlayer:InVehicle() then
+        local v = LocalPlayer:GetVehicle()
+        Network:Send(var("Vehicles/SyncAngle"):get(), {
+            id = v:GetId(),
+            angle = v:GetAngle()
+        })
+    end
+
+end
+
+function cVehicleManager:LocalPlayerExitVehicle(args)
+
+    if IsValid(args.vehicle) and args.vehicle:GetHealth() > 0 then
+        Network:Send(var("Vehicles/SyncAngle"):get(), {
+            id = args.vehicle:GetId(),
+            angle = args.vehicle:GetAngle()
+        })
+    end
+
 end
 
 function cVehicleManager:VehicleGuardActivate(args)

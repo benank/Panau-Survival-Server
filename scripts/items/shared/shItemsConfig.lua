@@ -8,7 +8,7 @@ ItemsConfig =
         ["Proximity Alarm"] = {use_time = 4, delay_use = true, range = 10, battery_dura_per_hour = 100}, -- 10% per hour
         ["Bandages"] = {restore_hp = 0.2, use_time = 3},
         ["Healthpack"] = {restore_hp = 1.0, use_time = 10},
-        ["Woet"] = {use_time = 1, range = 5},
+        ["Woet"] = {use_time = 2, range = 10},
         ["Vehicle Repair"] = {use_time = 5, range = 5},
         ["Vehicle Guard"] = {use_time = 3, range = 5},
         ["BackTrack"] = {use_time = 3},

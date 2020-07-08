@@ -36,11 +36,11 @@ C4StashDamage = 100 -- 100 damage per C4
 
 Lootbox.Stashes = 
 {
-    [Lootbox.Types.BarrelStash] = {capacity = 10, name = "Barrel Stash", health = 100, default_access = StashAccessMode.Everyone},
-    [Lootbox.Types.GarbageStash] = {capacity = 12, name = "Garbage Stash", health = 200, default_access = StashAccessMode.Everyone},
-    [Lootbox.Types.LockedStash] = {capacity = 12, name = "Locked Stash", health = 400, default_access = StashAccessMode.OnlyMe},
-    [Lootbox.Types.ProximityAlarm] = {capacity = 1, name = "Proximity Alarm", health = 1, default_access = StashAccessMode.Everyone},
-    [Lootbox.Types.Workbench] = {capacity = 3, name = "Workbench", health = 1, default_access = StashAccessMode.Everyone},
+    [Lootbox.Types.BarrelStash] = {capacity = 10, name = "Barrel Stash", health = 100, default_access = StashAccessMode.Everyone, can_change_access = false},
+    [Lootbox.Types.GarbageStash] = {capacity = 12, name = "Garbage Stash", health = 200, default_access = StashAccessMode.Everyone, can_change_access = false},
+    [Lootbox.Types.LockedStash] = {capacity = 12, name = "Locked Stash", health = 400, default_access = StashAccessMode.OnlyMe, can_change_access = true},
+    [Lootbox.Types.ProximityAlarm] = {capacity = 1, name = "Proximity Alarm", health = 1, default_access = StashAccessMode.OnlyMe, can_change_access = true},
+    [Lootbox.Types.Workbench] = {capacity = 3, name = "Workbench", health = 1, default_access = StashAccessMode.Everyone, can_change_access = false},
 }
 
 Lootbox.GeneratorConfig = 
