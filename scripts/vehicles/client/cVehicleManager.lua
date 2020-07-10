@@ -41,20 +41,6 @@ function cVehicleManager:__init()
 
     Events:Subscribe("LocalPlayerExitVehicle", self, self.LocalPlayerExitVehicle)
 
-    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
-
-end
-
-function cVehicleManager:ModuleUnload()
-
-    if LocalPlayer:InVehicle() then
-        local v = LocalPlayer:GetVehicle()
-        Network:Send(var("Vehicles/SyncAngle"):get(), {
-            id = v:GetId(),
-            angle = v:GetAngle()
-        })
-    end
-
 end
 
 function cVehicleManager:LocalPlayerExitVehicle(args)
