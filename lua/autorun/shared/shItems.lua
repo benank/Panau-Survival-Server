@@ -171,7 +171,7 @@ Items =
     {
         name = "Car Paint",
         category = "Survival",
-        stacklimit = 5,
+        stacklimit = 10,
         can_use = true,
 		can_stack = true
     },
