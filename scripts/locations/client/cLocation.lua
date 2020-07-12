@@ -67,6 +67,7 @@ function cLocation:SpawnObjects()
     
         for index, object_data in pairs(self.object_data) do
 
+            object_data.position = Vector3(object_data.position.x, object_data.position.y, object_data.position.z)
             self:SpawnObject(object_data, index)
             Timer.Sleep(1)
 
