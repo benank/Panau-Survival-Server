@@ -20,12 +20,7 @@ function sBuildCommands:DeleteObject(args, player)
 
     if not args.object_id then return end
 
-    location.objects[args.object_id] = nil
-
-    Network:Broadcast("BuildTools/DeleteObject", {
-        name = location_name,
-        object_id = args.object_id
-    })
+    location:RemoveObject(args)
 
 end
 

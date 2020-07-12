@@ -27,11 +27,18 @@ end
 function cLocation:RemoveObject(args)
     if not self.objects[args.object_id] then return end
 
+    local num_objects = count_table(self.objects)
+
     if IsValid(self.objects[args.object_id]) then
         self.objects[args.object_id]:Remove()
     end
 
-    self.objects[args.object_id] = nil
+    for i = args.object_id, num_objects - 1 do
+        self.objects[i] = self.objects[i + 1]
+        self.objects[i]:SetValue("ObjectIndex", i)
+    end
+
+    self.objects[num_objects] = nil
 end
 
 function cLocation:SpawnObject(args, index)

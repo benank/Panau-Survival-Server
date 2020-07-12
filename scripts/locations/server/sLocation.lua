@@ -15,6 +15,26 @@ function sLocation:__init(args)
 
 end
 
+function sLocation:RemoveObject(args)
+
+    if not BUILDING_ENABLED then return end
+
+    local num_objects = count_table(self.objects)
+
+    for i = args.object_id, num_objects - 1 do
+        self.objects[i] = self.objects[i + 1]
+        self.objects[i].object_id = i
+    end
+
+    self.objects[num_objects] = nil
+
+    Network:Broadcast("BuildTools/DeleteObject", {
+        name = self.name,
+        object_id = args.object_id
+    })
+
+end
+
 -- Called during building to update the location after placing an object
 function sLocation:AddObject(args)
 
@@ -27,7 +47,8 @@ function sLocation:AddObject(args)
 
     if not args.object_id then
         table.insert(self.objects, args)
-        args.object_id = count_table(self.objects)
+        local id = count_table(self.objects)
+        args.object_id = id
     else
         self.objects[args.object_id] = args
     end

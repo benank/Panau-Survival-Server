@@ -381,7 +381,12 @@ function cBuildObjectPlacer:MouseUp(args)
 
 end
 
-function cBuildObjectPlacer:StopObjectPlacement()
+function cBuildObjectPlacer:StopObjectPlacement(remove_object)
+
+    if remove_object and IsValid(self.object) then
+        self.object:Remove()
+    end
+
 
     for k,v in pairs(self.subs) do
         Events:Unsubscribe(v)

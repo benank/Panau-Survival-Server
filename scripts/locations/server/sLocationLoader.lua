@@ -37,7 +37,9 @@ function sLocationLoader:SaveLocation(location)
     local objects_serialized = {}
 
     for index, object_data in pairs(location.objects) do
-        objects_serialized[index] = self:SerializeObjectData(object_data)
+        if object_data and count_table(object_data) > 0 then
+            objects_serialized[index] = self:SerializeObjectData(object_data)
+        end
     end
 
     local serialized = encode({
@@ -129,8 +131,12 @@ function sLocationLoader:LoadAllLocations(filepaths)
             local data = decode(content)
             data.center = self:DeserializeVector(data.center)
 
-            for index, object_data in pairs(data.objects) do
-                data.objects[index] = self:DeserializeObjectData(object_data)
+            local index = 1
+            for _, object_data in pairs(data.objects) do
+                if object_data and type(object_data) == "table" and count_table(object_data) > 0 then
+                    data.objects[index] = self:DeserializeObjectData(object_data)
+                    index = index + 1
+                end
             end
 
             print(string.format("Loaded location %s (%d objects)", data.name, count_table(data.objects)))
