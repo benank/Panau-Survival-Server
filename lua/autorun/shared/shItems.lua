@@ -53,7 +53,7 @@ Items =
     {
         name = "Bubbles",
         category = "Supplies",
-        stacklimit = 100,
+        stacklimit = 1000,
     },
     {
         name = "Combat Backpack",
