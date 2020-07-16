@@ -159,7 +159,7 @@ function cLandclaimPlacer:MouseUp(args)
         -- Left click, place object
 
         if self.can_place_here then
-            Events:Fire("build/PlaceLandclaim", {
+            Network:Send(var("build/PlaceLandclaim"):get(), {
                 position = self.position
             })
             self:StopPlacement()
