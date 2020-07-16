@@ -440,6 +440,10 @@ function sExp:ClientModuleLoad(args)
     exp_data.explore_max_exp = GetMaximumExp(exp_data.level)
 
     args.player:SetNetworkValue("Exp", exp_data)
+    
+    -- Call sPerks after loading exp
+    sPerks:ClientModuleLoad(args)
+
     Events:Fire("PlayerExpLoaded", {player = args.player})
 
     args.source = "exp"
@@ -450,9 +454,6 @@ function sExp:ClientModuleLoad(args)
     end
 
     args.player:SetValue("ExpLastUpdate", Server:GetElapsedSeconds())
-
-    -- Call sPerks after loading exp
-    sPerks:ClientModuleLoad(args)
 
 end
 

@@ -95,6 +95,11 @@ function AssetManagerMenu:UpdateCategoryNames()
             count_table(self.categories["Stashes"].stashes), LocalPlayer:GetValue("MaxStashes")))
     end
 
+    if LocalPlayer:GetValue("MaxLandclaims") ~= nil then
+        self.categories["Landclaims"].button:SetText(string.format("Landclaims (%d/%d)", 
+            count_table(self.categories["Landclaims"].landclaims), LocalPlayer:GetValue("MaxLandclaims")))
+    end
+
 end
 
 
