@@ -53,8 +53,7 @@ function MapEditor.ObjectManager:GetObjectFromScreenPoint(screenPointToTest)
 	local nearestObjectDistSquared = nil
 	self:IterateObjects(function(object)
 		if object:GetIsScreenPointWithin(screenPointToTest) then
-			local objectPos2d = Render:WorldToScreen(object:GetPosition())
-			local distanceSquared = screenPointToTest:DistanceSqr(objectPos2d)
+			local distanceSquared = Camera:GetPosition():DistanceSqr(object:GetPosition())
 			
 			if nearestObject == nil or distanceSquared < nearestObjectDistSquared then
 				nearestObject = object
