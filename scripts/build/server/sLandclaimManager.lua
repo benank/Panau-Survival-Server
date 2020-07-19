@@ -2,7 +2,7 @@ class 'sLandclaimManager'
 
 function sLandclaimManager:__init()
 
-    SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, build_access_mode INTEGER, objects BLOB)")
+    SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, name VARCHAR(20), radius INTEGER, expire_date VARCHAR, build_access_mode INTEGER, objects BLOB)")
 
     self.landclaims = {} -- [steam_id] = {[landclaim_id] = landclaim, [landclaim_id] = landclaim}
 
@@ -40,16 +40,47 @@ function sLandclaimManager:ClientModuleLoad(args)
 
 end
 
+function sLandclaimManager:AddClaim(claim_data)
+
+    if not self.landclaims[claim_data.owner_id] then
+        self.landclaims[claim_data.owner_id] = {}
+    end
+
+    self.landclaims[claim_data.owner_id][claim_data.id] = sLandclaim(claim_data)
+
+end
+
 function sLandclaimManager:PlaceLandclaim(radius, player)
 
     local position = player:GetPosition()
+
+    local landclaim_data = 
+    {
+        radius = radius,
+        position = position,
+        owner_id = tostring(player:GetSteamId()),
+        name = "LandClaim",
+        expiry_date = GetLandclaimExpireDate({is_new_landclaim = true}),
+        access_mode = LandclaimAccessModeEnum.OnlyMe,
+        objects = {}
+    }
     
-    
-    local cmd = SQL:Command("INSERT INTO landclaims (steamID, position, angle) VALUES (?, ?, ?)")
-    cmd:Bind(1, steamID)
-    cmd:Bind(2, tostring(position))
-    cmd:Bind(3, self:SerializeAngle(angle))
+    local cmd = SQL:Command("INSERT INTO landclaims (steamID, position, name, radius, expire_date, build_access_mode, objects) VALUES (?, ?, ?, ?, ?, ?, ?)")
+    cmd:Bind(1, landclaim_data.owner_id)
+    cmd:Bind(2, tostring(landclaim_data.position))
+    cmd:Bind(3, landclaim_data.name)
+    cmd:Bind(4, landclaim_data.radius)
+    cmd:Bind(5, landclaim_data.expiry_date)
+    cmd:Bind(6, landclaim_data.access_mode)
+    cmd:Bind(7, "")
     cmd:Execute()
+
+    
+    cmd = SQL:Query("SELECT last_insert_rowid() as insert_id FROM landclaims")
+    local result = cmd:Execute()
+    landclaim_data.id = tonumber(result[1].insert_id)
+
+    self:AddClaim(landclaim_data)
 
 end
 
@@ -59,16 +90,31 @@ end
 
 function sLandclaimManager:TryPlaceLandclaim(args, player)
 
-    local player_iu = player:GetValue("ItemUse")
+    print("try place landclaim")
+
+    local player_iu = player:GetValue("LandclaimUsingItem")
+    output_table(player_iu)
+
+    player:SetValue("LandclaimUsingItem", nil)
+    Inventory.OperationBlock({player = player, change = -1})
 
     if not player_iu then return end
+    print("try place landclaim2")
     if not player_iu.item then return end
+    print("try place landclaim3")
 
     local item = player_iu.item
 
     if item.name ~= "LandClaim" then return end
+    print("try place landclaim4")
 
-    local radius = item.custom_data.size
+    local radius = tonumber(item.custom_data.size)
+
+    if not radius then
+        self:SendPlayerErrorMessage(player)
+        return
+    end
+
 
     local position = player:GetPosition()
     
