@@ -8,3 +8,5 @@
 [Trix: original playerlist script](https://github.com/jc2mp/playerlist)
 
 [SinisterRectus: original Discord Bridge script](https://github.com/SinisterRectus/JC2MP-DiscordBridge)
+
+[dreadmullet: JC2MP map editor](https://github.com/dreadmullet/JC2-MP-MapEditor)
