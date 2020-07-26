@@ -284,10 +284,11 @@ function sExp:PlayerChat(args)
     if not IsAdmin(args.player) then return end
 
     local words = args.text:split(" ")
+    
+    if words[1] ~= "/expe" and words[1] ~= "/expc" and words[1] ~= "/expmod" then return end
+
     local target_id = tonumber(words[2])
     local target_amount = math.max(0, tonumber(words[3]))
-
-    if words[1] ~= "/expe" and words[1] ~= "/expc" and words[1] ~= "/expmod" then return end
 
     if not words[2] or not words[3] then
         Chat:Send(args.player, "Invalid arguments specified!", Color.Red)
