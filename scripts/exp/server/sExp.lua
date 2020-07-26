@@ -284,14 +284,54 @@ function sExp:PlayerChat(args)
     if not IsAdmin(args.player) then return end
 
     local words = args.text:split(" ")
+    local target_id = tonumber(words[2])
+    local target_amount = math.max(0, tonumber(words[3]))
 
-    if words[1] == "/expe" and words[2] then
-        self:GivePlayerExp(tonumber(words[2]), ExpType.Exploration, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
-    elseif words[1] == "/expc" and words[2] then
-        self:GivePlayerExp(tonumber(words[2]), ExpType.Combat, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
+    if words[1] ~= "/expe" and words[1] ~= "/expc" and words[1] ~= "/expmod" then return end
+
+    if not words[2] or not words[3] then
+        Chat:Send(args.player, "Invalid arguments specified!", Color.Red)
+        return
+    end
+
+    local target_player = Player.GetById(target_id)
+    if not IsValid(target_player) then
+        Chat:Send(args.player, "Player not found!", Color.Red)
+        return
+    end
+
+    if words[1] == "/expe" then
+        self:GivePlayerExp(target_amount, ExpType.Exploration, tostring(target_player:GetSteamId()), target_player:GetValue("Exp"), target_player)
+        Chat:Send(args.player, string.format("Gave %s %d exploration exp.", target_player:GetName(), target_amount), Color.Yellow)
+        Chat:Send(target_player, string.format("Received %d exploration exp!", target_amount), Color.Yellow)
+        
+        Events:Fire("Discord", {
+            channel = "Experience",
+            content = string.format("%s [%s] gave %d exploration exp to %s [%s].", 
+                args.player:GetName(), tostring(args.player:GetSteamId()), target_amount, target_player:GetName(), tostring(target_player:GetSteamId()))
+        })
+    
+    elseif words[1] == "/expc" then
+        self:GivePlayerExp(target_amount, ExpType.Combat, tostring(target_player:GetSteamId()), target_player:GetValue("Exp"), target_player)
+        Chat:Send(args.player, string.format("Gave %s %d combat exp.", target_player:GetName(), target_amount), Color.Yellow)
+        Chat:Send(target_player, string.format("Received %d combat exp!", target_amount), Color.Yellow)
+        
+        Events:Fire("Discord", {
+            channel = "Experience",
+            content = string.format("%s [%s] gave %d combat exp to %s [%s].", 
+                args.player:GetName(), tostring(args.player:GetSteamId()), target_amount, target_player:GetName(), tostring(target_player:GetSteamId()))
+        })
+    
     elseif words[1] == "/expmod" and words[2] then
         self.global_multiplier = tonumber(words[2])
         Chat:Broadcast(string.format("Global EXP multiplier set to %.2f!", self.global_multiplier), Color(0, 255, 0))
+        
+        Events:Fire("Discord", {
+            channel = "Experience",
+            content = string.format("%s [%s] activated a global exp multiplier of %.2f.", 
+                args.player:GetName(), tostring(args.player:GetSteamId()), self.global_multiplier)
+        })
+    
     end
 
 end
