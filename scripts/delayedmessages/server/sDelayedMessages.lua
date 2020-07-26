@@ -57,7 +57,7 @@ function sDelayedMessages:TryToSendToPlayer(args)
 
     assert(args.steam_id ~= nil, "args.steam_id was invalid")
     assert(args.message ~= nil, "args.message was invalid")
-    assert(args.message:len() < 100, "args.message was too long")
+    assert(args.message:len() < 200, "args.message was too long")
     
     args.color = args.color or Color.White
 
