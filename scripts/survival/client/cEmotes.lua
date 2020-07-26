@@ -3,6 +3,7 @@ class 'cEmotes'
 function cEmotes:__init()
 
     self.sitting = false
+    self.default_fov = Camera:GetFOV()
 
     self.allowed_actions = 
     {
@@ -68,7 +69,7 @@ function cEmotes:StartSitting()
 end
 
 function cEmotes:StopSitting()
-    Camera:SetFOV(0.8)
+    Camera:SetFOV(self.default_fov)
     self.sitting = false
     LocalPlayer:SetBaseState(AnimationState.SUprightIdle)
     Events:Unsubscribe(self.lpi)
