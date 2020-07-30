@@ -1,9 +1,64 @@
 class 'cDrone'
 
+--[[
+    Creates a new drone.
+
+    args (in table):
+        id = self.id,
+        level = self.level,
+        config = self.config,
+        max_health = self.max_health,
+        health = self.health,
+        personality = self.personality,
+        path_data = self:GetPathSyncData()
+
+        self:GetPathSyncData()
+            id = self.id,
+            position = self.position,
+            target_position = self.target_position,
+            target = self.target,
+            target_offset = self.target_offset,
+            current_path = self.current_path,
+            current_path_index = self.current_path_index,
+            state = self.state,
+            host = self.host
+
+]]
 function cDrone:__init(args)
 
+    
+    self.id = GetDroneId()
+    self.level = args.level
+    self.position = args.position -- Approximate position of the drone in the world
+
+    self.spawn_position = args.spawn_position -- Initial spawn position
+    self.tether_range = args.tether_range -- Max distance travelled from initial spawn position
+
+    self.target_position = self.position -- Target position that the drone is currently travelling to
+    self.target = nil -- Current active target that the drone is pursuing
+    self.target_offset = Vector3() -- Offset from the target the drone flies at
+
+    self.current_path = {} -- Table of points that the drone is currently pathing through
+    self.current_path_index = 1 -- Current index of the path the drone is on
+
+    self.config = GetDroneConfiguration(self.level)
+
+    self.max_health = self.config.health
+    self.health = self.max_health
+
+    self.state = DroneState.Wandering
+    self.personality = self.config.attack_on_sight and DronePersonality.Hostile or DronePersonality.Defensive
+
+    self.host = nil -- Player who currently "controls" the drone and dictates its pathfinding
+
+    self.host_interval = Timer.SetInterval(2500, function()
+        local updated = self:ReconsiderHost()
+        updated = self:ReconsiderTarget() or updated
+        if updated then self:Sync() end
+    end)
+
     self.position = args.position
-    self.angle = args.angle
+    self.angle = Angle()
 
     self.offset = args.offset or GetRandomFollowOffset()
 
@@ -15,6 +70,24 @@ function cDrone:__init(args)
 
     args.parent = self
     self.body = cDroneBody(self)
+
+end
+
+-- We are the host, so let's perform actions to make sure the drone has a path and other stuff
+function cDrone:PerformHostActions()
+
+    if not self.path then
+        self:
+
+end
+
+-- Updates from server with path/position sync info (see __init for full list of args)
+function cDrone:UpdatePathFromServer(args)
+
+end
+
+-- Updates from server with all sync info (see __init for full list of args)
+function cDrone:UpdateFromServer(args)
 
 end
 

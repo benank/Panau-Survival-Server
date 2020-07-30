@@ -7,7 +7,22 @@ function sDroneManager:__init()
 
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(Cell_Size), self, self.PlayerCellUpdate)
 
+    if IsTest then
+        Events:Subscribe("PlayerChat", self, self.PlayerChat)
+    end
+
 end
+
+function sDroneManager:PlayerChat(args)
+
+    if not IsAdmin(args.player) then return end
+
+    if args.text == "/drone" then
+        
+    end
+
+end
+
 
 -- Updates LootCells.Player
 function sDroneManager:UpdatePlayerInCell(args)
