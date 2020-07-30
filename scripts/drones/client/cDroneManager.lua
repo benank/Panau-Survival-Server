@@ -11,6 +11,43 @@ function cDroneManager:__init()
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("PostTick", self, self.PostTick)
 
+    Network:Subscribe("Drones/SingleSync", self, self.SingleDroneSync)
+    Network:Subscribe("Drones/DroneCellsSync", self, self.CellsDroneSync)
+
+    Thread(function()
+        while true do
+            for id, drone in pairs(self.drones) do
+                if drone.host == LocalPlayer then
+                    drone:PerformHostActions()
+                    Timer.Sleep(100)
+                end
+            end
+            Timer.Sleep(1500)
+        end
+    end)
+
+end
+
+function cDroneManager:CellsDroneSync(args)
+
+    for _, drone_data in pairs(args.drone_data) do
+        if not self.drones[drone_data.id] then
+            self.drones[drone_data.id] = cDrone(args)
+        else
+            self.drones[drone_data.id]:UpdateFromServer(args)
+        end
+    end
+
+end
+
+function cDroneManager:SingleDroneSync(args)
+
+    if not self.drones[args.id] then
+        self.drones[args.id] = cDrone(args)
+    else
+        self.drones[args.id]:UpdateFromServer(args)
+    end
+
 end
 
 function cDroneManager:PostTick(args)
@@ -31,14 +68,7 @@ end
 
 function cDroneManager:LocalPlayerChat(args)
 
-    if args.text == "/drone" then
-
-        table.insert(self.drones, cDrone({
-            position = LocalPlayer:GetPosition() + Vector3.Up * 2 + Vector3(0.5 - math.random(), 0, 0.5 - math.random()):Normalized() * 10,
-            angle = LocalPlayer:GetAngle()
-        }))
-
-    elseif args.text == "/drones" then
+    if args.text == "/drones" then
 
         for i = 1, 50 do
 
