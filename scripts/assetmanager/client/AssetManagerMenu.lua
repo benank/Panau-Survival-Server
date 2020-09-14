@@ -65,9 +65,10 @@ function AssetManagerMenu:__init()
 
     Events:Subscribe("Vehicles/OwnedVehiclesUpdate", self, self.OwnedVehiclesUpdate)
     Events:Subscribe("Vehicles/ResetVehiclesMenu", self, self.ResetVehiclesMenu)
-
+    Events:Subscribe("build/ResetLandclaimsMenu", self, self.ResetLandclaimsMenu)
     Events:Subscribe("Stashes/ResetStashesMenu", self, self.ResetStashesMenu)
     Events:Subscribe("Stashes/UpdateStashes", self, self.UpdateStashes)
+    Events:Subscribe("build/UpdateLandclaims", self, self.UpdateLandclaims)
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
 end
@@ -106,6 +107,7 @@ end
 function AssetManagerMenu:SecondTick()
     self:UpdateVehicleSecondTick()
     self:UpdateStashSecondTick()
+    self:UpdateLandclaimsSecondTick()
 end
 
 function AssetManagerMenu:UpdateVehicleSecondTick()
@@ -134,6 +136,15 @@ function AssetManagerMenu:UpdateStashSecondTick()
     end
 end
 
+function AssetManagerMenu:UpdateLandclaimsSecondTick()
+    for id, landclaim_data in pairs(self.categories["Landclaims"].landclaims) do
+
+        local pos = landclaim_data.data.position
+        landclaim_data.item:SetCellText( 5, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(pos)) )
+
+    end
+end
+
 function AssetManagerMenu:ResetStashesMenu()
     self.categories["Stashes"].list:Remove()
     self:CreateStashesMenu()
@@ -142,6 +153,31 @@ end
 function AssetManagerMenu:ResetVehiclesMenu()
     self.categories["Vehicles"].list:Remove()
     self:CreateVehiclesMenu()
+end
+
+function AssetManagerMenu:ResetLandclaimsMenu()
+    self.categories["Landclaims"].list:Remove()
+    self:CreateLandclaimsMenu()
+end
+
+function AssetManagerMenu:UpdateLandclaims(landclaims)
+    -- Remove non-existent stashes
+    for id, data in pairs(self.categories["Landclaims"].landclaims) do
+        if not landclaims[id] then
+            data.item:Remove()
+            self.categories["Landclaims"].landclaims[id] = nil
+        end
+    end
+
+    for id, landclaim_data in pairs(landclaims) do
+        if self.categories["Landclaims"].landclaims[id] then
+            self:UpdateLandclaim(landclaim_data)
+        else
+            self:AddLandclaim(landclaim_data)
+        end
+    end
+
+    self:UpdateCategoryNames()
 end
 
 function AssetManagerMenu:UpdateStashes(owned_stashes)
@@ -206,6 +242,18 @@ function AssetManagerMenu:UpdateStash(data)
     item:SetCellText( 0, tostring(data.name) )
     item:SetCellText( 1, string.format("%d/%d", data.num_items, data.capacity) )
     item:SetCellText( 2, tostring(data.access_mode) )
+end
+
+function AssetManagerMenu:UpdateLandclaim(data)
+    self.categories["Landclaims"].landclaims[data.id].data = data
+    local item = self.categories["Landclaims"].landclaims[data.id].item
+
+	item:SetCellText( 0, data.name )
+	item:SetCellText( 1, string.format("%.0f m", data.radius) )
+	item:SetCellText( 2, tostring(data.days_till_expiry) )
+    item:SetCellText( 3, tostring(0) )
+    item:SetCellText( 4, data.access_mode_string )
+    item:SetCellText( 5, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(data.position)) )
 end
 
 function AssetManagerMenu:GetFormattedDistanceString(dist)
@@ -368,6 +416,87 @@ function AssetManagerMenu:CreateVehiclesMenu()
 
 end
 
+function AssetManagerMenu:AddLandclaim(data)
+    
+    local list = self.categories["Landclaims"].list
+
+	local item = list:AddItem( tostring(data.id) )
+	item:SetCellText( 0, data.name )
+	item:SetCellText( 1, string.format("%.0f m", data.radius) )
+	item:SetCellText( 2, tostring(data.days_till_expiry) )
+    item:SetCellText( 3, tostring(0) )
+    item:SetCellText( 4, data.access_mode_string )
+    item:SetCellText( 5, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(data.position)) )
+
+    for i = 0, 5 do
+        item:GetCellContents(i):SetTextSize(20)
+        item:GetCellContents(i):SetPadding(Vector2(4,4), Vector2(4,4))
+
+        if i ~= 0 then
+            item:GetCellContents(i):SetAlignment(GwenPosition.Center)
+        end
+
+    end
+
+    local button_names = 
+    {
+        [6] = "Rename",
+        [7] = "Visible",
+        [8] = "Waypoint",
+        [9] = "Delete"
+    }
+    
+    for index, name in pairs(button_names) do
+        local btn = Button.Create(item, "button_" .. name)
+        btn:SetText(name)
+        btn:SetTextSize(16)
+        btn:SetAlignment(GwenPosition.Center)
+        btn:SetSize(Vector2(80,24))
+        btn:SetDataString("landclaim_id", tostring(data.id))
+        btn:SetDataString("type", name)
+        item:SetCellContents(index, btn)
+        btn:Subscribe("Press", self, self.PressLandclaimButton)
+    end
+
+    self.categories["Landclaims"].landclaims[tonumber(data.id)] = {item = item, data = data}
+    self:UpdateCategoryNames()
+
+end
+
+function AssetManagerMenu:PressLandclaimButton(btn)
+
+    if self.button_timer:GetSeconds() < 0.5 then return end
+    self.button_timer:Restart()
+    
+    local type = btn:GetDataString("type")
+    local landclaim_data = self.categories["Landclaims"].landclaims[tonumber(btn:GetDataString("landclaim_id"))]
+
+    if not landclaim_data then return end
+
+    if type == "Rename" then
+
+        self.landclaim_rename_menu:Show()
+        self.landclaim_rename_input:MakeCaratVisible()
+        self.landclaim_rename_input:SetCursorPosition(1)
+        self.landclaim_rename_input:Focus()
+        self.renaming_landclaim_id = tonumber(btn:GetDataString("landclaim_id"))
+
+    elseif type == "Waypoint" then
+
+        Waypoint:SetPosition(landclaim_data.data.position)
+
+    elseif type == "Visible" then
+
+        -- Toggle landclaim area visibility
+
+    elseif type == "Delete" then
+
+        --self.deleting = {type = "stash", id = tonumber(btn:GetDataString("stash_id")), btn = btn}
+        --self.delete_confirm_menu:Show()
+
+    end
+end
+
 function AssetManagerMenu:AddStash(data)
     
     local list = self.categories["Stashes"].list
@@ -510,10 +639,26 @@ function AssetManagerMenu:CreateLandclaimsMenu()
     rename_btn:SetSize( Vector2(self.landclaim_rename_menu:GetSize().x, 40) )
     rename_btn:SetMargin(Vector2(0, 10), Vector2(0, 0))
     rename_btn:SetDock( GwenPosition.Bottom )
-    rename_btn:Subscribe("Press", self, self.PressRenameStashButton)
+    rename_btn:Subscribe("Press", self, self.PressRenameLandclaimButton)
 
     self.landclaim_rename_menu:Hide()
 
+end
+
+function AssetManagerMenu:PressRenameLandclaimButton(btn)
+
+    local text = self.landclaim_rename_input:GetText()
+
+    if text then
+        text = text:sub(1, 30):trim()
+
+        Events:Fire("build/RenameLandclaim", {
+            id = self.renaming_landclaim_id,
+            name = text
+        })
+    end
+
+    self.landclaim_rename_menu:Hide()
 end
 
 function AssetManagerMenu:CreateStashesMenu()

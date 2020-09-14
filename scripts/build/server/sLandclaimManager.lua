@@ -7,9 +7,48 @@ function sLandclaimManager:__init()
     self.landclaims = {} -- [steam_id] = {[landclaim_id] = landclaim, [landclaim_id] = landclaim}
 
     Network:Subscribe("build/PlaceLandclaim", self, self.TryPlaceLandclaim)
+    Network:Subscribe("build/ReadyForInitialSync", self, self.PlayerReadyForInitialSync)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
-    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
 
+end
+
+function sLandclaimManager:LoadAllLandclaims()
+
+    print("Loading all landclaims...")
+
+    local result = SQL:Query("SELECT * FROM landclaims")
+    result = result:Execute()
+
+    if result and count_table(result) > 0 then
+        for _, data in ipairs(result) do
+            self:ParseLandclaimDataFromDB(data)
+        end
+        print(string.format("Loaded %d landclaims!", count_table(result)))
+    end
+
+end
+
+function sLandclaimManager:ParseLandclaimDataFromDB(data)
+    output_table(data)
+    local owner_id = tostring(data.steamID)
+    local landclaim_id = tonumber(data.id)
+
+    self:AddClaim({
+        radius = tonumber(data.radius),
+        position = DeserializePosition(tostring(data.position)),
+        owner_id = owner_id,
+        name = tostring(data.name),
+        expiry_date = tostring(data.expire_date),
+        access_mode = tonumber(data.build_access_mode),
+        objects = DeserializeObjects(data.objects),
+        id = landclaim_id
+    })
+
+end
+
+function sLandclaimManager:ModuleLoad()
+    self:LoadAllLandclaims()
 end
 
 function sLandclaimManager:GetPlayerMaxClaims(player)
@@ -34,10 +73,27 @@ function sLandclaimManager:PlayerPerksUpdated(args)
     args.player:SetNetworkValue("MaxLandclaims", self:GetPlayerMaxClaims(args.player))
 end
 
-function sLandclaimManager:ClientModuleLoad(args)
+function sLandclaimManager:PlayerReadyForInitialSync(args, player)
+    -- Send player data of all landclaims. They will manage streaming on the clientside.
+    Thread(function()
+        
+        local total_landclaims = 0
+        for steam_id, landclaims in pairs(self.landclaims) do
+            total_landclaims = total_landclaims + count_table(landclaims)
+        end
 
-    -- Send player landclaim data of their owned landclaims
+        -- Sync total number of landclaims so they can load the landclaims before loadscreen finishes
+        Network:Send(player, "build/SyncTotalLandclaims", {total = total_landclaims})
+        print("send total landclaims")
 
+        for steam_id, landclaims in pairs(self.landclaims) do
+            for id, landclaim in pairs(landclaims) do
+                -- Use separate network sends to prevent sending too much data at once and on a single frame
+                Timer.Sleep(1)
+                landclaim:SyncToPlayer(player)
+            end
+        end
+    end)
 end
 
 function sLandclaimManager:AddClaim(claim_data)
@@ -67,7 +123,7 @@ function sLandclaimManager:PlaceLandclaim(radius, player)
     
     local cmd = SQL:Command("INSERT INTO landclaims (steamID, position, name, radius, expire_date, build_access_mode, objects) VALUES (?, ?, ?, ?, ?, ?, ?)")
     cmd:Bind(1, landclaim_data.owner_id)
-    cmd:Bind(2, tostring(landclaim_data.position))
+    cmd:Bind(2, SerializePosition(landclaim_data.position))
     cmd:Bind(3, landclaim_data.name)
     cmd:Bind(4, landclaim_data.radius)
     cmd:Bind(5, landclaim_data.expiry_date)
@@ -90,23 +146,17 @@ end
 
 function sLandclaimManager:TryPlaceLandclaim(args, player)
 
-    print("try place landclaim")
-
     local player_iu = player:GetValue("LandclaimUsingItem")
-    output_table(player_iu)
 
     player:SetValue("LandclaimUsingItem", nil)
     Inventory.OperationBlock({player = player, change = -1})
 
     if not player_iu then return end
-    print("try place landclaim2")
     if not player_iu.item then return end
-    print("try place landclaim3")
 
     local item = player_iu.item
 
     if item.name ~= "LandClaim" then return end
-    print("try place landclaim4")
 
     local radius = tonumber(item.custom_data.size)
 

@@ -25,4 +25,4 @@ function GetAdjacentCells(cell)
     return adjacent
 end
 
-CELL_SIZES = {256, 512, 1024}
+CELL_SIZES = {256, 512, 1024, 2048, 4096}

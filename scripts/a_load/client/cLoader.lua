@@ -325,6 +325,7 @@ end
 function cLoader:RegisterResource(args)
 
     if not self.can_add_resources then return end
+    if not self.active then return end
 
     self.resources_needed = self.resources_needed + args.count
     self:UpdateResourceCount()
@@ -336,6 +337,7 @@ end
 function cLoader:CompleteResource(args)
 
     if not self.can_add_resources then return end
+    if not self.active then return end
     
     self.resources_loaded = self.resources_loaded + args.count
     self:UpdateResourceCount()

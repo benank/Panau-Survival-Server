@@ -9,6 +9,7 @@ function sLandclaim:__init(args)
     self.expiry_date = args.expiry_date
     self.access_mode = args.access_mode
     self.objects = args.objects
+    self.id = args.id
 
 end
 
@@ -32,6 +33,11 @@ function sLandclaim:Rename(name, player)
 
 end
 
+function sLandclaim:SyncToPlayer(player)
+    if not IsValid(player) then return end
+    Network:Send(player, "build/SyncLandclaim", self:GetSyncObject())
+end
+
 function sLandclaim:GetSyncObject()
 
     return {
@@ -41,7 +47,8 @@ function sLandclaim:GetSyncObject()
         name = self.name,
         expiry_date = self.expiry_date,
         access_mode = self.access_mode,
-        objects = self.objects
+        objects = self.objects,
+        id = self.id
     }
 
 end
