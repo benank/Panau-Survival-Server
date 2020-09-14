@@ -51,13 +51,15 @@ function cLandclaimManager:SyncLandclaim(args)
         self.landclaims[args.owner_id] = {}
     end
 
-    self.landclaims[args.owner_id][args.id] = cLandclaim(args)
+    local landclaim = cLandclaim(args)
+    self.landclaims[args.owner_id][args.id] = landclaim
 
     -- Sync owned landclaims to asset manager menu
     if args.owner_id == tostring(LocalPlayer:GetSteamId()) then
         _debug("send!")
         output_table(self:GetLocalPlayerOwnedLandclaims())
         Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims())
+        Events:Fire("build/AddLandclaimToMap", landclaim:GetSyncObject())
     end
 
 end

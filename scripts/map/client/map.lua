@@ -12,7 +12,8 @@ Location.Type = {
         Waypoint    = "Waypoint",
     Workbench   = "Workbench",
     Home 		= "Home",
-    Skull 		= "Skull"
+    Skull 		= "Skull",
+    Landclaim   = "Landclaim"
     
 }
 
@@ -28,7 +29,8 @@ Location.TypeName = {
         Waypoint    = "Waypoint",
     Workbench   = "Workbench",
     Home 		= "Home",
-    Skull		= "Skull"
+    Skull		= "Skull",
+    Landclaim   = "Landclaim"
 }
 
 IconSizeUV = 1 / 18
@@ -299,7 +301,7 @@ Map = {
         --Location("Paya Luas", Vector3(12028.47, 187.8509, -10679.78), Location.Type.MilAir),
         Location("Paya Luas", Vector3(12028.47, 206.8509, -10679.78), Location.Type.MilAir, Location.Color.Green),
         Location("Kampung Sri Puteri", Vector3(-5166.081, 338.7373, -7321.45), Location.Type.CivVil),
-        Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.Skull, Location.Color.Red),
+        Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.Skull, Location.Color.Red, true),
         Location("Gunung Rata", Vector3(860.4727, 287.4586, 11726.06), Location.Type.MilLocation),
         Location("Kem Harimau Putih", Vector3(11212.44, 399.179, 848.4565), Location.Type.MilLocation),
         --Location("Palau Dayang Terlena", Vector3(-11911.88, 609.6496, 4799.679), Location.Type.MilAir),
@@ -517,7 +519,7 @@ Map = {
         Location("Bandar Kolam Dalam", Vector3(9983.953, 212.7729, -9679.302), Location.Type.CivVil),
         Location("Pelantar Gas Telok Beting Timur", Vector3(15525.08, 236.3287, -4305.083), Location.Type.OilRig),
         --Location("PAN MILSAT", Vector3(7056.561, 776.8174, 1036.695), Location.Type.MilLocation),
-        Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.Skull, Location.Color.Red),
+        Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.Skull, Location.Color.Red, true),
         Location("Cape Carnival", Vector3(13788.11, 222.02, -2315.564), Location.Type.MilLocation, Location.Color.Green),
         Location("Port Gurun Lautan Lama", Vector3(-13579.83, 209.6284, 6453.933), Location.Type.MilHarb),
         Location("Kampung Padang Luas", Vector3(10851.88, 200.9827, -8668.016), Location.Type.MilHarb, Location.Color.Green),
@@ -532,7 +534,7 @@ Map = {
         Location("Kampung Tanah Bernilai", Vector3(11262.32, 245.0957, 3103.462), Location.Type.CivVil),
         Location("Kem Sungai Floodgates", Vector3(-8053.476, 185.5706, 3221.842), Location.Type.MilLocation),
         Location("Kampung Sirip Tajam", Vector3(-6937.369, 212.0635, -11319.59), Location.Type.CivVil),
-        Location("Skull Island", Vector3(-1549.777, 208.8105, 939.5184), Location.Type.Skull, Location.Color.Red),
+        Location("Skull Island", Vector3(-1549.777, 208.8105, 939.5184), Location.Type.Skull, Location.Color.Red, true),
         Location("Fasility Gunung Hutan Tinggi", Vector3(12864.55, 595.9291, 12905.51), Location.Type.MilLocation),
         Location("Kampung Pasir Panjang", Vector3(-11559.06, 591.258, 3106.423), Location.Type.CivVil),
         Location("Kampung Tanjung Luas", Vector3(2414.036, 202.7877, 4478.184), Location.Type.CivVil),
@@ -754,5 +756,31 @@ Events:Subscribe("Workbenches/UpdateState", function(args)
     if Map.Locations[args.name] then
         Map.Locations[args.name].color = args.state == 2 and Location.Color.Yellow or Location.Color.Pink
         Map.Locations[args.name].name = args.state == 1 and args.name or args.name .. " (Active)"
+    end
+end)
+
+local function GetFormattedLandclaimId(landclaim_data)
+    return string.format("LANDCLAIM_%s_%s", landclaim_data.owner_id, tostring(landclaim_data.id))
+end
+
+Events:Subscribe("build/AddLandclaimToMap", function(args)
+    local id = GetFormattedLandclaimId(args)
+    if not Map.Locations[id] then
+        Map.Locations[id] = Location(args.name, args.position, Location.Type.Landclaim, Location.Color.Blue, true)
+    end
+end)
+
+-- Called when the name of a landclaim changes
+Events:Subscribe("build/UpdateLandclaimOnMap", function(args)
+    local id = GetFormattedLandclaimId(args)
+    if Map.Locations[id] then
+        Map.Locations[id].name = args.name
+    end
+end)
+
+Events:Subscribe("build/RemoveLandclaimFromMap", function(args)
+    local id = GetFormattedLandclaimId(args)
+    if Map.Locations[id] then
+        Map.Locations[id] = nil
     end
 end)
