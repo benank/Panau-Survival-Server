@@ -2,7 +2,7 @@ class 'sLandclaimManager'
 
 function sLandclaimManager:__init()
 
-    SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, name VARCHAR(20), radius INTEGER, expire_date VARCHAR, build_access_mode INTEGER, objects BLOB)")
+    SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, name VARCHAR(20), size INTEGER, expire_date VARCHAR, build_access_mode INTEGER, objects BLOB)")
 
     self.landclaims = {} -- [steam_id] = {[landclaim_id] = landclaim, [landclaim_id] = landclaim}
 
@@ -35,9 +35,9 @@ function sLandclaimManager:ParseLandclaimDataFromDB(data)
     local landclaim_id = tonumber(data.id)
 
     self:AddClaim({
-        radius = tonumber(data.radius),
+        size = tonumber(data.size),
         position = DeserializePosition(tostring(data.position)),
-        owner_id = owner_id,
+        owner_id = tostring(owner_id),
         name = tostring(data.name),
         expiry_date = tostring(data.expire_date),
         access_mode = tonumber(data.build_access_mode),
@@ -84,13 +84,12 @@ function sLandclaimManager:PlayerReadyForInitialSync(args, player)
 
         -- Sync total number of landclaims so they can load the landclaims before loadscreen finishes
         Network:Send(player, "build/SyncTotalLandclaims", {total = total_landclaims})
-        print("send total landclaims")
 
         for steam_id, landclaims in pairs(self.landclaims) do
             for id, landclaim in pairs(landclaims) do
                 -- Use separate network sends to prevent sending too much data at once and on a single frame
                 Timer.Sleep(1)
-                landclaim:SyncToPlayer(player)
+                landclaim:Sync(player)
             end
         end
     end)
@@ -102,17 +101,19 @@ function sLandclaimManager:AddClaim(claim_data)
         self.landclaims[claim_data.owner_id] = {}
     end
 
-    self.landclaims[claim_data.owner_id][claim_data.id] = sLandclaim(claim_data)
+    local landclaim = sLandclaim(claim_data)
+    self.landclaims[claim_data.owner_id][claim_data.id] = landclaim
+    return landclaim
 
 end
 
-function sLandclaimManager:PlaceLandclaim(radius, player)
+function sLandclaimManager:PlaceLandclaim(size, player)
 
     local position = player:GetPosition()
 
     local landclaim_data = 
     {
-        radius = radius,
+        size = size,
         position = position,
         owner_id = tostring(player:GetSteamId()),
         name = "LandClaim",
@@ -121,11 +122,11 @@ function sLandclaimManager:PlaceLandclaim(radius, player)
         objects = {}
     }
     
-    local cmd = SQL:Command("INSERT INTO landclaims (steamID, position, name, radius, expire_date, build_access_mode, objects) VALUES (?, ?, ?, ?, ?, ?, ?)")
+    local cmd = SQL:Command("INSERT INTO landclaims (steamID, position, name, size, expire_date, build_access_mode, objects) VALUES (?, ?, ?, ?, ?, ?, ?)")
     cmd:Bind(1, landclaim_data.owner_id)
     cmd:Bind(2, SerializePosition(landclaim_data.position))
     cmd:Bind(3, landclaim_data.name)
-    cmd:Bind(4, landclaim_data.radius)
+    cmd:Bind(4, landclaim_data.size)
     cmd:Bind(5, landclaim_data.expiry_date)
     cmd:Bind(6, landclaim_data.access_mode)
     cmd:Bind(7, "")
@@ -136,7 +137,9 @@ function sLandclaimManager:PlaceLandclaim(radius, player)
     local result = cmd:Execute()
     landclaim_data.id = tonumber(result[1].insert_id)
 
-    self:AddClaim(landclaim_data)
+    local landclaim = self:AddClaim(landclaim_data)
+    landclaim:Sync()
+    Chat:Send(player, "LandClaim placed successfully!", Color.Green)
 
 end
 
@@ -158,9 +161,9 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
 
     if item.name ~= "LandClaim" then return end
 
-    local radius = tonumber(item.custom_data.size)
+    local size = tonumber(item.custom_data.size)
 
-    if not radius then
+    if not size then
         self:SendPlayerErrorMessage(player)
         return
     end
@@ -187,14 +190,14 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
     local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues().blacklist
 
     for _, area in pairs(BlacklistedAreas) do
-        if position:Distance(area.pos) < radius then
+        if position:Distance(area.pos) < size + 50 then
             self:SendPlayerErrorMessage(player)
             return
         end
     end
 
     -- If they are within nz radius * 3, we don't let them place that close
-    if position:Distance(self.sz_config.neutralzone.position) < self.sz_config.neutralzone.radius * 3 + radius then
+    if position:Distance(self.sz_config.neutralzone.position) < self.sz_config.neutralzone.radius * 3 + size then
         self:SendPlayerErrorMessage(player)
         return
     end
@@ -202,7 +205,7 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
     local ModelChangeAreas = SharedObject.GetByName("ModelLocations"):GetValues()
 
     for _, area in pairs(ModelChangeAreas) do
-        if position:Distance(area.pos) < 200 + radius then
+        if position:Distance(area.pos) < 200 + size then
             self:SendPlayerErrorMessage(player)
             return
         end
@@ -212,7 +215,7 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
     -- TODO: don't check for proximity for owned landclaims
     for steamid, landclaims in pairs(self.landclaims) do
         for id, landclaim in pairs(landclaims) do
-            if Distance2D(position, landclaim.position) < radius + landclaim.radius then
+            if Distance2D(position, landclaim.position) < size + landclaim.size + 100 then
                 self:SendPlayerErrorMessage(player)
                 return
             end
@@ -225,7 +228,7 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
         player = player
     })
 
-    self:PlaceLandclaim(radius, player)
+    self:PlaceLandclaim(size, player)
 
 end
 

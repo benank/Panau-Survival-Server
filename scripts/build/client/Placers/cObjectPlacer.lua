@@ -6,9 +6,16 @@ function cObjectPlacer:__init()
     self.rotation_speed = 15
     self.display_bb = false
     self.angle_offset = Angle()
-    self.rotation_yaw = 0
-    self.default_range = 8
+    self.rotation_offset = 
+    {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0
+    }
+    self.default_range = 10
     self.range = self.default_range
+    self.snap = false
+    self.rotation_axis = 1
 
     self.text_color = Color(211, 167, 167)
     self.text = 
@@ -16,7 +23,9 @@ function cObjectPlacer:__init()
         "Left Click: Place",
         "Right Click: Abort",
         "Mouse Wheel: Rotate",
-        "Shift + Mouse Wheel: Rotation speed (%.0f deg)"
+        "Shift + Mouse Wheel: Rotation speed (%.0f deg)",
+        "Q: Rotation Axis (Current: %d)",
+        "X: Toggle Snap (%s)"
     }
 
     self.subs = {}
@@ -41,6 +50,7 @@ function cObjectPlacer:__init()
         [Action.GuiPDAZoomIn] = true,
         [Action.NextWeapon] = true,
         [Action.PrevWeapon] = true,
+        [Action.Kick] = true,
         [Action.ExitVehicle] = true
     }
 
@@ -75,7 +85,8 @@ function cObjectPlacer:StartObjectPlacement(args)
         Events:Subscribe("GameRender", self, self.GameRender),
         Events:Subscribe("MouseScroll", self, self.MouseScroll),
         Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput),
-        Events:Subscribe("MouseUp", self, self.MouseUp)
+        Events:Subscribe("MouseUp", self, self.MouseUp),
+        Events:Subscribe("KeyUp", self, self.KeyUp)
     }
 
     self.display_bb = args.display_bb == true
@@ -94,7 +105,12 @@ function cObjectPlacer:StartObjectPlacement(args)
         model = args.model
     })
 
-    self.rotation_yaw = 0
+    self.rotation_offset = 
+    {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0
+    }
 
     self.placing = true
 
@@ -181,7 +197,13 @@ function cObjectPlacer:Render(args)
         end
     end
 
-    local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(self.rotation_yaw / 180 * math.pi, 0, 0) * self.angle_offset
+    local conversion = 1 / 180 * math.pi
+    local rotation_offset = Angle(
+        self.rotation_offset[1] * conversion,
+        self.rotation_offset[2] * conversion,
+        self.rotation_offset[3] * conversion
+    )
+    local ang = Angle.FromVectors(Vector3.Up, ray.normal) * rotation_offset * self.angle_offset
     self.object:SetAngle(ang)
 
     local pitch = math.abs(ang.pitch)
@@ -215,7 +237,7 @@ function cObjectPlacer:Render(args)
         self.object:SetPosition(Vector3())
     end
 
-    can_place_here = self:CheckBoundingBox() and can_place_here
+    can_place_here = self:CheckBoundingBox() and self:IsInOwnedLandclaim() and can_place_here
     self.can_place_here = can_place_here
     self:RenderText(can_place_here)
 
@@ -225,9 +247,27 @@ function cObjectPlacer:Render(args)
     })
 end
 
+-- Returns true if the object is within one of the LocalPlayer's owned landclaims
+function cObjectPlacer:IsInOwnedLandclaim()
+    local landclaims = LandclaimManager:GetLocalPlayerOwnedLandclaims()
+    local pos = self.object:GetPosition()
+
+    for id, landclaim in pairs(landclaims) do
+        local l_pos = landclaim.position
+        local size = landclaim.size / 2
+        if pos.x > l_pos.x - size and pos.x < l_pos.x + size 
+        and pos.z > l_pos.z - size and pos.z < l_pos.z + size then
+            return true
+        end
+    end
+
+    return false
+end
+
 function cObjectPlacer:CheckBoundingBox()
 
-    if self.vertices then
+    -- Don't check bounding box for build items because some of them are terrible
+    --[[if self.vertices then
         local angle = self.object:GetAngle()
         local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.25, 0)
         for i = 1, #self.vertices, 2 do
@@ -245,7 +285,7 @@ function cObjectPlacer:CheckBoundingBox()
         end
     else
         return false
-    end
+    end]]
 
     return true
 end
@@ -259,6 +299,12 @@ function cObjectPlacer:RenderText(can_place_here)
     for index, text in ipairs(self.text) do
         if index == 1 and not can_place_here then
             self:DrawShadowedText(render_position, "CANNOT PLACE HERE", Color.Red, text_size)
+        elseif index == 4 then
+            self:DrawShadowedText(render_position, string.format(text, self.rotation_speed), self.text_color, text_size)
+        elseif index == 5 then
+            self:DrawShadowedText(render_position, string.format(text, self.rotation_axis), self.text_color, text_size)
+        elseif index == 6 then
+            self:DrawShadowedText(render_position, string.format(text, self.snap and "Enabled" or "Disabled"), self.text_color, text_size)
         else
             self:DrawShadowedText(render_position, string.format(text, self.rotation_speed), self.text_color, text_size)
         end
@@ -296,7 +342,7 @@ function cObjectPlacer:MouseScroll(args)
     local change = math.ceil(args.delta)
 
     if not Key:IsDown(VirtualKey.Shift) then
-        self.rotation_yaw = self.rotation_yaw + change * self.rotation_speed
+        self.rotation_offset[self.rotation_axis] = self.rotation_offset[self.rotation_axis] + change * self.rotation_speed
     else
         self.rotation_speed = self.rotation_speed + 1 * change
         self.rotation_speed = math.min(90, math.max(0, self.rotation_speed))
@@ -327,6 +373,28 @@ function cObjectPlacer:MouseUp(args)
         })
         self:StopObjectPlacement()
 
+    end
+
+end
+
+function cObjectPlacer:KeyUp(args)
+
+    if args.key == string.byte("Z") then
+
+        self.rotation_axis = self.rotation_axis + 1
+
+        if self.rotation_axis > 3 then
+            self.rotation_axis = 1
+        end
+
+    elseif args.key == string.byte("Q") then
+        self.rotation_axis = self.rotation_axis + 1
+
+        if self.rotation_axis > 3 then
+            self.rotation_axis = 1
+        end
+    elseif args.key == string.byte("X") then
+        self.snap = not self.snap
     end
 
 end

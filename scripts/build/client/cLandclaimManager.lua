@@ -9,14 +9,46 @@ function cLandclaimManager:__init()
 
     self.landclaims = {}
 
+    self.delta = 0
+
     Events:Fire("build/ResetLandclaimsMenu")
 
     Network:Subscribe("build/SyncLandclaim", self, self.SyncLandclaim)
     Network:Subscribe("build/SyncTotalLandclaims", self, self.SyncTotalLandclaims)
     Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(self.cell_size), self, self.LocalPlayerCellUpdate)
+    Events:Subscribe("build/ToggleLandclaimVisibility", self, self.ToggleLandclaimVisibility)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("GameRender", self, self.GameRender)
 
     Network:Send("build/ReadyForInitialSync")
+
+end
+
+function cLandclaimManager:ToggleLandclaimVisibility(args)
+    if not args.id then return end
+
+    local my_claims = self.landclaims[tostring(LocalPlayer:GetSteamId())]
+    if not my_claims then return end
+
+    local landclaim = my_claims[args.id]
+    if not landclaim then return end
+
+    landclaim.visible = not landclaim.visible
+end
+
+function cLandclaimManager:GameRender(args)
+
+    local my_claims = self.landclaims[tostring(LocalPlayer:GetSteamId())]
+    if not my_claims then return end
+
+    self.delta = self.delta + args.delta
+
+    -- Render landclaim borders for the owner if they are enabled
+    for id, landclaim in pairs(my_claims) do
+        if landclaim.visible then
+            cLandclaimPlacer:RenderLandClaimBorder(landclaim.position, landclaim.size, self.delta)
+        end
+    end
 
 end
 

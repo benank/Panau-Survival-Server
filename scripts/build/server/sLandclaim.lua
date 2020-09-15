@@ -2,14 +2,38 @@ class 'sLandclaim'
 
 function sLandclaim:__init(args)
 
-    self.radius = args.radius
+    self.size = args.size -- Length of one side
     self.position = args.position
     self.owner_id = args.owner_id
     self.name = args.name
     self.expiry_date = args.expiry_date
     self.access_mode = args.access_mode
-    self.objects = args.objects
     self.id = args.id
+
+    self.obj_uid = 0
+
+    self:ParseObjects(args.objects)
+
+end
+
+function sLandclaim:GetNewUniqueObjectId()
+    self.obj_uid = self.obj_uid + 1
+    return self.obj_uid
+end
+
+function sLandclaim:ParseObjects(objects)
+
+    self.objects = {}
+
+    if not objects or tostring(objects):len() < 5 or count_table(objects) == 0 then return end
+
+    objects = decode(objects)
+
+    for _, object in pairs(objects) do
+        local id = self:GetNewUniqueObjectId()
+        object.id = id
+        self.objects[id] = sLandclaimObject(object)
+    end
 
 end
 
@@ -33,21 +57,55 @@ function sLandclaim:Rename(name, player)
 
 end
 
-function sLandclaim:SyncToPlayer(player)
-    if not IsValid(player) then return end
-    Network:Send(player, "build/SyncLandclaim", self:GetSyncObject())
+function sLandclaim:Sync(player)
+    if player and not IsValid(player) then return end
+    if player then
+        Network:Send(player, "build/SyncLandclaim", self:GetSyncObject())
+    else
+        Network:Broadcast("build/SyncLandclaim", self:GetSyncObject())
+    end
+end
+
+-- Updates the lanclaim's entry in the database
+function sLandclaim:UpdateToDB()
+    
+    local cmd = SQL:Command("UPDATE landclaims SET name = ?, expire_date = ?, build_access_mode = ?, objects = ? WHERE steamID = ? AND id = ?")
+    cmd:Bind(1, self.name)
+    cmd:Bind(2, self.expiry_date)
+    cmd:Bind(3, self.access_mode)
+    cmd:Bind(4, self:SerializeObjects())
+    cmd:Bind(5, self.owner_id)
+    cmd:Bind(6, self.id)
+    cmd:Execute()
+
+end
+
+function sLandclaim:SerializeObjects()
+    local data = {}
+    for id, object in pairs(self.objects) do
+        table.insert(data, object:GetSerializable())
+    end
+    return encode(data)
+end
+
+function sLandclaim:GetSyncObjects()
+    local data = {}
+    for id, object in pairs(self.objects) do
+        table.insert(data, object:GetSyncObject())
+    end
+    return data
 end
 
 function sLandclaim:GetSyncObject()
 
     return {
-        radius = self.radius,
+        size = self.size,
         position = self.position,
         owner_id = self.owner_id,
         name = self.name,
         expiry_date = self.expiry_date,
         access_mode = self.access_mode,
-        objects = self.objects,
+        objects = self:GetSyncObjects(),
         id = self.id
     }
 

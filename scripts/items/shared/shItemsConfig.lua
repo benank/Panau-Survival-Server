@@ -22,6 +22,17 @@ ItemsConfig =
         ["EMP"] = {range = 400, disable_time = 30, use_time = 10},
         ["LandClaim"] = {use_time = 30, delay_use = true},
     },
+    build = 
+    {
+        ["Wall"] = {model = "obj.jumpgarbage.eez/gb206-g.lod", angle = Angle(0, 0, 0.157), offset = Vector3(0, -0.25, 0)}, -- obj.jumpgarbage.eez/gb206_lod1-g_col.pfx
+        ["Light"] = {model = "general.blz/go063-f.lod"}, -- general.blz/go063_lod1-f_col.pfx
+        ["Helipad"] = {model = "31x08.flz/gb030-d.lod"}, -- 31x08.flz/gb030_lod1-d_col.pfx
+        ["Door"] = {model = "areaset05.blz/gb165-n.lod", disable_walls = true}, -- areaset05.blz/gb165_lod1-n_col.pfx
+        ["Firepit"] = {model = "33x08.flz/go113-a.lod", disable_walls = true, can_be_placed_anywhere = true, lifetime = 30}, -- 33x08.flz/go113_lod1-a_col.pfx
+        ["Bed"] = {model = "areaset01.blz/go080-d.lod", disable_walls = true}, -- areaset01.blz/go080_lod1-d_col.pfx
+        ["Chair"] = {model = "areaset01.blz/go080-c.lod", disable_walls = true}, -- areaset01.blz/go080_lod1-c_col.pfx
+        ["Stop Sign"] = {model = "general.blz/go200-f1.lod", disable_walls = true} -- general.blz/go200_lod1-f1_col.pfx
+    },
     airstrikes = 
     {
         ["Cruise Missile"] = {delay = 7, radius = 80, damage_entity = DamageEntity.CruiseMissile, plane_velo = 110, plane_id = 34},

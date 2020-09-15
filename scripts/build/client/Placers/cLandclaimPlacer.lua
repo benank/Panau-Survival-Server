@@ -34,6 +34,7 @@ function cLandclaimPlacer:__init()
         [Action.GuiPDAZoomIn] = true,
         [Action.NextWeapon] = true,
         [Action.PrevWeapon] = true,
+        [Action.Kick] = true,
         [Action.ExitVehicle] = true
     }
 

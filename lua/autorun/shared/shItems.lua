@@ -715,7 +715,7 @@ Items =
     {
         name = "Helipad",
         category = "Survival",
-        stacklimit = 2,
+        stacklimit = 1,
         can_use = true,
         durable = true
     },
@@ -723,6 +723,20 @@ Items =
         name = "Bed",
         category = "Survival",
         stacklimit = 1,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Chair",
+        category = "Survival",
+        stacklimit = 3,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Stop Sign",
+        category = "Survival",
+        stacklimit = 5,
         can_use = true,
         durable = true
     }

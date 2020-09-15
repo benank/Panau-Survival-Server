@@ -249,9 +249,9 @@ function AssetManagerMenu:UpdateLandclaim(data)
     local item = self.categories["Landclaims"].landclaims[data.id].item
 
 	item:SetCellText( 0, data.name )
-	item:SetCellText( 1, string.format("%.0f m", data.radius) )
+	item:SetCellText( 1, string.format("%.0f m", data.size) )
 	item:SetCellText( 2, tostring(data.days_till_expiry) )
-    item:SetCellText( 3, tostring(0) )
+    item:SetCellText( 3, tostring(count_table(data.objects)) )
     item:SetCellText( 4, data.access_mode_string )
     item:SetCellText( 5, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(data.position)) )
 end
@@ -422,9 +422,9 @@ function AssetManagerMenu:AddLandclaim(data)
 
 	local item = list:AddItem( tostring(data.id) )
 	item:SetCellText( 0, data.name )
-	item:SetCellText( 1, string.format("%.0f m", data.radius) )
+	item:SetCellText( 1, string.format("%.0f m", data.size) )
 	item:SetCellText( 2, tostring(data.days_till_expiry) )
-    item:SetCellText( 3, tostring(0) )
+    item:SetCellText( 3, tostring(count_table(data.objects)) )
     item:SetCellText( 4, data.access_mode_string )
     item:SetCellText( 5, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(data.position)) )
 
@@ -441,7 +441,7 @@ function AssetManagerMenu:AddLandclaim(data)
     local button_names = 
     {
         [6] = "Rename",
-        [7] = "Visible",
+        [7] = "Toggle",
         [8] = "Waypoint",
         [9] = "Delete"
     }
@@ -485,9 +485,10 @@ function AssetManagerMenu:PressLandclaimButton(btn)
 
         Waypoint:SetPosition(landclaim_data.data.position)
 
-    elseif type == "Visible" then
+    elseif type == "Toggle" then
 
         -- Toggle landclaim area visibility
+        Events:Fire("build/ToggleLandclaimVisibility", {id = landclaim_data.data.id})
 
     elseif type == "Delete" then
 
@@ -582,7 +583,7 @@ function AssetManagerMenu:CreateLandclaimsMenu()
 	list:AddColumn( "Access Mode", 100 )
 	list:AddColumn( "Distance", 100 )
 	list:AddColumn( "Rename", 80 )
-	list:AddColumn( "Visible", 80 )
+	list:AddColumn( "Visibility", 80 )
 	list:AddColumn( "Waypoint", 80 )
 	list:AddColumn( "Delete", 80 )
     list:SetButtonsVisible( true )

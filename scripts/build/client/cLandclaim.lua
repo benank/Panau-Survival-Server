@@ -2,7 +2,7 @@ class 'cLandclaim'
 
 function cLandclaim:__init(args)
 
-    self.radius = args.radius
+    self.size = args.size -- Length of one side
     self.position = args.position
     self.owner_id = args.owner_id
     self.name = args.name
@@ -10,6 +10,7 @@ function cLandclaim:__init(args)
     self.access_mode = args.access_mode
     self.objects = args.objects
     self.id = args.id
+    self.visible = false -- If this landclaim's border is visible to the owner or not, toggle-able by the menu
     
     self.cell = GetCell(self.position, LandclaimManager.cell_size)
 
@@ -51,7 +52,15 @@ function cLandclaim:Load()
     end
 end
 
+-- Parses objects into wrapper classes to handle streaming and custom attributes
+function cLandclaim:ParseObjects()
+
+end
+
 function cLandclaim:OnInit()
+
+    self:ParseObjects()
+
     local player_cell = GetCell(Camera:GetPosition(), LandclaimManager.cell_size)
     local adj_cells = GetAdjacentCells(player_cell)
 
@@ -104,7 +113,7 @@ end
 function cLandclaim:GetSyncObject()
 
     return {
-        radius = self.radius,
+        size = self.size,
         position = self.position,
         owner_id = self.owner_id,
         name = self.name,
