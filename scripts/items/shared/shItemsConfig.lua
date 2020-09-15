@@ -29,7 +29,6 @@ ItemsConfig =
         ["Light"] = {model = "general.blz/go063-f.lod"},
         ["Helipad"] = {model = "31x08.flz/gb030-d.lod"},
         ["Door"] = {model = "areaset05.blz/gb165-n.lod", disable_walls = true},
-        --["Firepit"] = {model = "33x08.flz/go113-a.lod", disable_walls = true, can_be_placed_anywhere = true, lifetime = 30},
         ["Bed"] = {model = "areaset01.blz/go080-d.lod", disable_walls = true},
         ["Chair"] = {model = "areaset01.blz/go080-c.lod", disable_walls = true},
         ["Stop Sign"] = {model = "general.blz/go200-f1.lod", disable_walls = true}

@@ -308,7 +308,7 @@ end
 function cObjectPlacer:CheckBoundingBox()
 
     -- Don't check bounding box for build items because some of them are terrible
-    --[[if self.vertices then
+    if self.vertices then
         local angle = self.object:GetAngle()
         local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.25, 0)
         for i = 1, #self.vertices, 2 do
@@ -320,13 +320,13 @@ function cObjectPlacer:CheckBoundingBox()
 
             local ray = Physics:Raycast(p1, diff, 0, len)
 
-            if ray.distance < len or ray.position.y <= 200 then
+            if (ray.distance < len and ray.entity) or ray.position.y <= 200 then
                 return false
             end
         end
     else
         return false
-    end]]
+    end
 
     return true
 end
