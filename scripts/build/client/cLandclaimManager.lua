@@ -21,7 +21,16 @@ function cLandclaimManager:__init()
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("GameRender", self, self.GameRender)
 
-    Network:Send("build/ReadyForInitialSync")
+    -- Wait until player position has been set to load landclaims
+    --Events:Subscribe(var("loader/BaseLoadscreenDone"):get(), function()
+    --    Thread(function()
+    --        local spawn_pos = LocalPlayer:GetValue("SpawnPosition")
+    --        while spawn_pos:Distance(LocalPlayer:GetPosition()) > 3 do
+     --           Timer.Sleep(250)
+    --        end
+            Network:Send("build/ReadyForInitialSync")
+    --    end)
+    --end) 
 
 end
 

@@ -81,6 +81,7 @@ function cLoader:SecondTick()
 
     if self.active and not self.base_loadscreen_done then
         if Game:GetState() == GUIState.Game then
+            Events:Fire(var("loader/BaseLoadscreenDone"):get())
             self.base_loadscreen_done = true
             self.resources_loaded = self.resources_loaded + self.resources_for_loadscreen
             self:UpdateResourceCount()
@@ -93,9 +94,12 @@ end
 function cLoader:PlayerPositionSet(args)
     
     if self.active then
-        self.resources_loaded = self.resources_loaded + self.resources_for_gameload
-        self:UpdateResourceCount()
-        self:Stop()
+        Timer.SetTimeout(2000, function()
+            Events:Fire(var("loader/PlayerPositionSetSuccess"):get())
+            self.resources_loaded = self.resources_loaded + self.resources_for_gameload
+            self:UpdateResourceCount()
+            self:Stop()
+        end)
     end
 
 end

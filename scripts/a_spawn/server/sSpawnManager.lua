@@ -167,7 +167,7 @@ function sSpawnManager:ClientModuleLoad(args)
 		args.player:SetValue("IsOkToSavePosition", 1)
 
 		self:DelayedSpawn({position = plypos, player = args.player, timeout = 5})
-		args.player:SetValue("SpawnPosition", plypos)
+		args.player:SetNetworkValue("SpawnPosition", plypos)
 		args.player:SetValue("RespawnPosition", self:GetRespawnPosition(args.player))
 
 	else -- if first join
@@ -248,7 +248,7 @@ function sSpawnManager:DelayedSpawn(args)
 			})
 
 			Network:Send(args.player, "spawn/PlayerSetPosition")
-			args.player:SetValue("FirstSpawn", true)
+            args.player:SetValue("FirstSpawn", true)
 			
 		end
 	end)
@@ -261,10 +261,6 @@ function sSpawnManager:PlayerSpawn(args)
 
     args.player:SetValue("Spawn/KilledRecently", false)
 	
-	if args.player:GetValue("FirstSpawn") then
-		Network:Send(args.player, "spawn/PlayerSetPosition")
-	end
-
 	if args.player:GetValue("SecondLifeActive") then return end
 	
 	local target_pos
@@ -280,6 +276,10 @@ function sSpawnManager:PlayerSpawn(args)
 	if not target_pos then return end
 	
 	args.player:SetPosition(target_pos)
+
+	if args.player:GetValue("FirstSpawn") then
+		Network:Send(args.player, "spawn/PlayerSetPosition")
+	end
 
 	local pos = args.player:GetPosition()
 	local s_pos = args.player:GetValue("SpawnPosition")

@@ -116,14 +116,30 @@ function cObjectPlacer:StartObjectPlacement(args)
 
 end
 
-function cObjectPlacer:CreateModel()
+function cObjectPlacer:GetBoundingBoxData(object)
     
     local bb1, bb2 = self.object:GetBoundingBox()
 
     local size = bb2 - bb1
-    local color = Color(255, 0, 0, 150)
 
-    offset = bb1 - self.object:GetPosition() - self.angle_offset * self.offset
+    local offset = bb1 - self.object:GetPosition() - self.angle_offset * self.offset
+
+    -- Custom bounding boxes because some are bad
+    if CustomBoundingBoxes[self.object:GetModel()] then
+        local custom_bb = CustomBoundingBoxes[self.object:GetModel()]
+        size = custom_bb.size
+        bb1 = -size / 2
+        bb2 = size / 2
+        offset = bb1 - self.object:GetPosition() - self.angle_offset * (self.offset + custom_bb.offset)
+    end
+
+    return bb1, bb2, size, offset
+end
+
+function cObjectPlacer:CreateModel()
+    
+    local color = Color(255, 0, 0, 150)
+    local bb1, bb2, size, offset = self:GetBoundingBoxData(self.object)
 
     local vertices = {}
 
@@ -206,15 +222,6 @@ function cObjectPlacer:Render(args)
     local ang = Angle.FromVectors(Vector3.Up, ray.normal) * rotation_offset * self.angle_offset
     self.object:SetAngle(ang)
 
-    local pitch = math.abs(ang.pitch)
-    local roll = math.abs(ang.roll)
-
-    if self.disable_walls and (pitch > math.pi / 6 or roll > math.pi / 6) then
-        can_place_here = false
-    elseif self.disable_ceil and (pitch > math.pi * 0.6 or roll > math.pi * 0.6) then
-        can_place_here = false
-    end
-
     for _, data in pairs(BlacklistedAreas) do
         if data.pos:Distance(ray.position) < data.size then
             can_place_here = false
@@ -232,9 +239,23 @@ function cObjectPlacer:Render(args)
     end
 
     if in_range then
-        self.object:SetPosition(ray.position + ang * self.offset)
+        if self.snap and IsValid(self.entity) then
+            self:Snap(ang)
+        else
+            self.object:SetPosition(ray.position + ang * self.offset)
+        end
     else
         self.object:SetPosition(Vector3())
+    end
+
+    local angle = self.object:GetAngle()
+    local pitch = math.abs(angle.pitch)
+    local roll = math.abs(angle.roll)
+
+    if self.disable_walls and (pitch > math.pi / 6 or roll > math.pi / 6) then
+        can_place_here = false
+    elseif self.disable_ceil and (pitch > math.pi * 0.6 or roll > math.pi * 0.6) then
+        can_place_here = false
     end
 
     can_place_here = self:CheckBoundingBox() and self:IsInOwnedLandclaim() and can_place_here
@@ -245,6 +266,29 @@ function cObjectPlacer:Render(args)
     Events:Fire("ObjectPlacerRender", {
         object = self.object
     })
+end
+
+function GetSign(n)
+    return n > 0 and 1 or n < 0 and -1 or 0
+end
+
+function cObjectPlacer:Snap(ang)
+    local relative_look_pos = -self.entity:GetAngle() * (self.forward_ray.position - self.entity:GetPosition())
+
+    local ent_bb1, ent_bb2, ent_size, ent_offset = self:GetBoundingBoxData(self.entity)
+    local obj_bb1, obj_bb2, obj_size, obj_offset = self:GetBoundingBoxData(self.object)
+
+    local rounded_relative_pos = Vector3()
+
+    if math.abs(relative_look_pos.x) > math.abs(relative_look_pos.y) and math.abs(relative_look_pos.x) > math.abs(relative_look_pos.z) then
+        rounded_relative_pos.x = ent_size.x * GetSign(relative_look_pos.x)
+    elseif math.abs(relative_look_pos.z) > math.abs(relative_look_pos.x) and math.abs(relative_look_pos.z) > math.abs(relative_look_pos.y) then
+        rounded_relative_pos.z = ent_size.z * GetSign(relative_look_pos.z)
+    end
+
+    self.object:SetAngle(self.entity:GetAngle())
+    self.object:SetPosition(self.entity:GetPosition() + (self.entity:GetAngle() * -self.angle_offset) * rounded_relative_pos)
+
 end
 
 -- Returns true if the object is within one of the LocalPlayer's owned landclaims
@@ -322,7 +366,7 @@ function cObjectPlacer:GameRender(args)
     if not IsValid(self.object) then return end
 
     if self.model and self.display_bb then
-        local t = Transform3():Translate(self.object:GetPosition()):Rotate(self.object:GetAngle())
+        local t = Transform3():Translate(self.object:GetPosition()):Rotate(self.object:GetAngle()):Rotate(-self.angle_offset)
         Render:SetTransform(t)
         self.model:Draw()
         Render:ResetTransform()

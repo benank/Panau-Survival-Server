@@ -739,6 +739,13 @@ Items =
         stacklimit = 5,
         can_use = true,
         durable = true
+    },
+    {
+        name = "Table",
+        category = "Survival",
+        stacklimit = 3,
+        can_use = true,
+        durable = true
     }
 }
 

@@ -5,6 +5,11 @@ BuildObjects =
         model = "obj.jumpgarbage.eez/gb206-g.lod", 
         collision = "obj.jumpgarbage.eez/gb206_lod1-g_col.pfx"
     },
+    ["Table"] = 
+    {
+        model = "37x10.nlz/go061-c.lod", 
+        collision = "37x10.nlz/go061_lod1-c_col.pfx"
+    },
     ["Light"] = 
     {
         model = "general.blz/go063-f.lod", 
