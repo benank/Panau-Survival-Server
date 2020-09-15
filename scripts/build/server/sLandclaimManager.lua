@@ -10,7 +10,32 @@ function sLandclaimManager:__init()
     Network:Subscribe("build/ReadyForInitialSync", self, self.PlayerReadyForInitialSync)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
+    Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
 
+end
+
+function sLandclaimManager:PlaceObjectInLandclaim(args)
+
+    if not IsValid(args.player) then return end
+
+    -- Find the first (and should be only) landclaim that contains this position
+    local target_landclaim = self:FindFirstLandclaimContainingPosition(args.position)
+
+    -- No valid landclaim found; can't place here
+    if not target_landclaim then return end
+
+    target_landclaim:PlaceObject(args)
+
+end
+
+function sLandclaimManager:FindFirstLandclaimContainingPosition(pos)
+    for steam_id, landclaims in pairs(self.landclaims) do
+        for id, landclaim in pairs(landclaims) do
+            if IsInSquare(landclaim.position, landclaim.size, pos) then
+                return landclaim
+            end
+        end
+    end
 end
 
 function sLandclaimManager:LoadAllLandclaims()
@@ -41,7 +66,7 @@ function sLandclaimManager:ParseLandclaimDataFromDB(data)
         name = tostring(data.name),
         expiry_date = tostring(data.expire_date),
         access_mode = tonumber(data.build_access_mode),
-        objects = DeserializeObjects(data.objects),
+        objects = data.objects,
         id = landclaim_id
     })
 
@@ -212,10 +237,9 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
     end
 
     -- Check for proximity to existing landclaims
-    -- TODO: don't check for proximity for owned landclaims
     for steamid, landclaims in pairs(self.landclaims) do
         for id, landclaim in pairs(landclaims) do
-            if Distance2D(position, landclaim.position) < size + landclaim.size + 100 then
+            if steamid ~= steam_id and Distance2D(position, landclaim.position) < size / 2 + landclaim.size / 2 + 100 then
                 self:SendPlayerErrorMessage(player)
                 return
             end

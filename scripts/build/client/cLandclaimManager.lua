@@ -15,6 +15,7 @@ function cLandclaimManager:__init()
 
     Network:Subscribe("build/SyncLandclaim", self, self.SyncLandclaim)
     Network:Subscribe("build/SyncTotalLandclaims", self, self.SyncTotalLandclaims)
+    Network:Subscribe("build/SyncSmallLandclaimUpdate", self, self.SyncSmallLandclaimUpdate)
     Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(self.cell_size), self, self.LocalPlayerCellUpdate)
     Events:Subscribe("build/ToggleLandclaimVisibility", self, self.ToggleLandclaimVisibility)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
@@ -22,6 +23,15 @@ function cLandclaimManager:__init()
 
     Network:Send("build/ReadyForInitialSync")
 
+end
+
+function cLandclaimManager:SyncSmallLandclaimUpdate(args)
+    if not self.landclaims[args.landclaim_owner_id] 
+    or not self.landclaims[args.landclaim_owner_id][args.landclaim_id] then return end
+
+    local landclaim = self.landclaims[args.landclaim_owner_id][args.landclaim_id]
+    landclaim:PlaceObject(args.object)
+    Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims())
 end
 
 function cLandclaimManager:ToggleLandclaimVisibility(args)
@@ -88,8 +98,6 @@ function cLandclaimManager:SyncLandclaim(args)
 
     -- Sync owned landclaims to asset manager menu
     if args.owner_id == tostring(LocalPlayer:GetSteamId()) then
-        _debug("send!")
-        output_table(self:GetLocalPlayerOwnedLandclaims())
         Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims())
         Events:Fire("build/AddLandclaimToMap", landclaim:GetSyncObject())
     end

@@ -25,7 +25,7 @@ function sLandclaim:ParseObjects(objects)
 
     self.objects = {}
 
-    if not objects or tostring(objects):len() < 5 or count_table(objects) == 0 then return end
+    if not objects or tostring(objects):len() < 5 then return end
 
     objects = decode(objects)
 
@@ -37,12 +37,58 @@ function sLandclaim:ParseObjects(objects)
 
 end
 
+function sLandclaim:CanPlayerPlaceObject(player)
+    if self.access_mode == LandclaimAccessModeEnum.OnlyMe then
+        return self.owner_id == tostring(player:GetSteamId())
+    elseif self.access_mode == LandclaimAccessModeEnum.Friends then
+        return AreFriends(player, self.owner_id)
+    elseif self.access_mode == LandclaimAccessModeEnum.Clan then
+        -- TODO: add clan check logic here
+        return self.owner_id == tostring(player:GetSteamId())
+    elseif self.access_mode == LandclaimAccessModeEnum.Everyone then
+        return true
+    end
+end
+
+function sLandclaim:SyncSmallUpdate(args)
+    args.landclaim_owner_id = self.owner_id
+    args.landclaim_id = self.id
+    Network:Broadcast("build/SyncSmallLandclaimUpdate", args)
+end
+
 -- Called when a player tries to place an object in the landclaim
-function sLandclaim:PlaceObject(args, player)
+function sLandclaim:PlaceObject(args)
+    if not self:CanPlayerPlaceObject(args.player) then return end
+
+    local object = 
+    {
+        id = self:GetNewUniqueObjectId(),
+        name = args.player_iu.item.name,
+        model = BuildObjects[args.player_iu.item.name].model,
+        collision = BuildObjects[args.player_iu.item.name].collision,
+        position = args.position,
+        angle = args.angle,
+        health = args.player_iu.durability
+    }
+
+    self.objects[object.id] = sLandclaimObject(object)
+
+    self:UpdateToDB()
+    self:SyncSmallUpdate({
+        type = "add_object",
+        object = self.objects[object.id]:GetSyncObject()
+    })
+
+    -- Remove item once it has been placed successfully
+    Inventory.RemoveItem({
+        item = args.player_iu.item,
+        index = args.player_iu.index,
+        player = args.player
+    })
 
 end
 
--- Called when a a player tries to remove an object in the landclaim
+-- Called when a player tries to remove an object in the landclaim
 function sLandclaim:RemoveObject(args, player)
 
 end
@@ -57,6 +103,7 @@ function sLandclaim:Rename(name, player)
 
 end
 
+-- Should only be used on initial sync, not on update
 function sLandclaim:Sync(player)
     if player and not IsValid(player) then return end
     if player then
@@ -91,7 +138,7 @@ end
 function sLandclaim:GetSyncObjects()
     local data = {}
     for id, object in pairs(self.objects) do
-        table.insert(data, object:GetSyncObject())
+        data[id] = object:GetSyncObject()
     end
     return data
 end

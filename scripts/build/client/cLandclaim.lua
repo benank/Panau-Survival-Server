@@ -8,7 +8,7 @@ function cLandclaim:__init(args)
     self.name = args.name
     self.expiry_date = args.expiry_date
     self.access_mode = args.access_mode
-    self.objects = args.objects
+    self.objects_data = args.objects
     self.id = args.id
     self.visible = false -- If this landclaim's border is visible to the owner or not, toggle-able by the menu
     
@@ -27,6 +27,9 @@ function cLandclaim:Unload()
     self.loading = true
 
     -- TODO: delete all objects
+    for id, object in pairs(self.objects) do
+        object:Remove()
+    end
 
     self.loading = false
     self.loaded = false
@@ -40,35 +43,54 @@ function cLandclaim:Load()
 
     self.loading = true
 
-    -- TODO: load objects
+    local sleep_count = 0
+    for id, object in pairs(self.objects) do
+        object:Create()
 
+        sleep_count = sleep_count + 1
+        if sleep_count % 100 == 0 then
+            Timer.Sleep(1)
+        end
+    end
 
     self.loaded = true
     self.loading = false
-    
+
     -- Finished loading objects
     if not self.ready then
         self:OnReady()
     end
+    
 end
 
 -- Parses objects into wrapper classes to handle streaming and custom attributes
 function cLandclaim:ParseObjects()
+    self.objects = {}
+    local sleep_count = 0
+    for id, object_data in pairs(self.objects_data) do
+        self.objects[id] = cLandclaimObject(object_data)
 
+        sleep_count = sleep_count + 1
+        if sleep_count % 500 == 0 then
+            Timer.Sleep(1)
+        end
+    end
 end
 
 function cLandclaim:OnInit()
 
-    self:ParseObjects()
+    Thread(function()
+        self:ParseObjects()
 
-    local player_cell = GetCell(Camera:GetPosition(), LandclaimManager.cell_size)
-    local adj_cells = GetAdjacentCells(player_cell)
+        local player_cell = GetCell(Camera:GetPosition(), LandclaimManager.cell_size)
+        local adj_cells = GetAdjacentCells(player_cell)
 
-    if self:IsInStreamingRange(adj_cells) then
-        self:Load()
-    else
-        self:OnReady()
-    end
+        --if self:IsInStreamingRange(adj_cells) then
+            self:Load()
+        --else
+        --    self:OnReady()
+        --end
+    end)
 end
 
 -- Returns whether or not this landclaim is in streaming range
@@ -91,7 +113,14 @@ end
 
 -- Called when a new object was placed in the landclaim
 function cLandclaim:PlaceObject(args)
+    if self.objects_data[args.id] then return end
 
+    self.objects_data[args.id] = args
+    self.objects[args.id] = cLandclaimObject(args)
+
+    if self.loaded then
+        self.objects[args.id]:Create()
+    end
 end
 
 -- Called when an object was removed from the landclaim (or destroyed)
@@ -119,7 +148,7 @@ function cLandclaim:GetSyncObject()
         name = self.name,
         expiry_date = self.expiry_date,
         access_mode = self.access_mode,
-        objects = self.objects,
+        objects = self.objects_data,
         id = self.id,
         days_till_expiry = GetLandclaimDaysTillExpiry(self.expiry_date),
         access_mode_string = LandclaimAccessModeEnum:GetDescription(self.access_mode)

@@ -253,10 +253,7 @@ function cObjectPlacer:IsInOwnedLandclaim()
     local pos = self.object:GetPosition()
 
     for id, landclaim in pairs(landclaims) do
-        local l_pos = landclaim.position
-        local size = landclaim.size / 2
-        if pos.x > l_pos.x - size and pos.x < l_pos.x + size 
-        and pos.z > l_pos.z - size and pos.z < l_pos.z + size then
+        if IsInSquare(landclaim.position, landclaim.size, pos) then
             return true
         end
     end

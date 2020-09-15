@@ -1,14 +1,3 @@
--- Serializes all objects in a landclaim into a string
-function SerializeObjects(objects)
-
-end
-
--- Deserializes the string of objects from DB to a table 
-function DeserializeObjects(objects)
-
-end
-
-
 function SerializeAngle(ang)
     return math.round(ang.x, 5) .. "," .. math.round(ang.y, 5) .. "," .. math.round(ang.z, 5) .. "," .. math.round(ang.w, 5)
 end
