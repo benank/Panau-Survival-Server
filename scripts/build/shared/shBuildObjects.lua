@@ -59,11 +59,10 @@ BuildObjects =
         disable_walls = true,
         unclaimed_decay = true
     },
-    ["Bars"] = 
+    ["Glass"] = 
     {
-        model = "f2s04.base.nlz/key009_01-h.lod", 
-        collision = "f2s04.base.nlz/key009_01_lod1-h_col.pfx", 
-        disable_walls = true,
+        model = "km02.towercomplex.nlz/key013_01-g2.lod", 
+        collision = "km02.towercomplex.nlz/key013_01_lod1-g2_col.pfx",
         unclaimed_decay = true
     }
 }

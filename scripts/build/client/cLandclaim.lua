@@ -13,10 +13,40 @@ function cLandclaim:__init(args)
     self.visible = false -- If this landclaim's border is visible to the owner or not, toggle-able by the menu
     
     self.cell = GetCell(self.position, LandclaimManager.cell_size)
+    self.adjacent_cells = GetAdjacentCells(self.cell)
 
     self.ready = false -- Check upon creation that is set to true when the landclaim is loaded, aka objects are spawned if needed
 
     self:OnInit()
+
+end
+
+function cLandclaim:LocalPlayerCellUpdate(args)
+
+    -- Retry cell update if it's loading, aka loading or unloading objects
+    if self.loading then
+        Thread(function()
+            Timer.Sleep(500)
+            self:LocalPlayerCellUpdate(args)
+        end)
+        return
+    end
+
+    -- Check if we should unload this landclaim
+    if self:IsInCellList(args.old_adjacent) then
+        Thread(function()
+            self:Unload()
+        end)
+        return
+    end
+
+    -- Check if we should load this landclaim
+    if self:IsInCellList(args.adjacent) then
+        Thread(function()
+            self:Load()
+        end)
+        return
+    end
 
 end
 
@@ -26,8 +56,14 @@ function cLandclaim:Unload()
 
     self.loading = true
 
+    local sleep_count = 0
     for id, object in pairs(self.objects) do
         object:Remove()
+
+        sleep_count = sleep_count + 1
+        if sleep_count % 500 == 0 then
+            Timer.Sleep(1)
+        end
     end
 
     self.loading = false
@@ -39,8 +75,6 @@ end
 function cLandclaim:Load()
 
     if self.loaded or self.loading then return end
-
-    self.loading = true
 
     local sleep_count = 0
     for id, object in pairs(self.objects) do
@@ -84,17 +118,17 @@ function cLandclaim:OnInit()
         local player_cell = GetCell(Camera:GetPosition(), LandclaimManager.cell_size)
         local adj_cells = GetAdjacentCells(player_cell)
 
-        --if self:IsInStreamingRange(adj_cells) then
+        if self:IsInCellList(adj_cells) then
             self:Load()
-        --else
-        --    self:OnReady()
-        --end
+        else
+            self:OnReady()
+        end
     end)
 end
 
 -- Returns whether or not this landclaim is in streaming range
-function cLandclaim:IsInStreamingRange(player_adj_cells)
-    for _, cell in pairs(player_adj_cells) do
+function cLandclaim:IsInCellList(adj_cells)
+    for _, cell in pairs(adj_cells) do
         if cell.x == self.cell.x and cell.y == self.cell.y then
             return true
         end

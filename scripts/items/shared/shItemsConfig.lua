@@ -31,7 +31,8 @@ ItemsConfig =
         ["Door"] = {model = "areaset05.blz/gb165-n.lod", disable_walls = true},
         ["Bed"] = {model = "areaset01.blz/go080-d.lod", disable_walls = true},
         ["Chair"] = {model = "areaset01.blz/go080-c.lod", disable_walls = true},
-        ["Stop Sign"] = {model = "general.blz/go200-f1.lod", disable_walls = true}
+        ["Stop Sign"] = {model = "general.blz/go200-f1.lod", disable_walls = true},
+        ["Glass"] = {model = "km02.towercomplex.nlz/key013_01-g2.lod", offset = Vector3(0, -0.8, -4.1)}
     },
     airstrikes = 
     {

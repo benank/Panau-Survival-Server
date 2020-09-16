@@ -5,7 +5,7 @@ function cLandclaimManager:__init()
     -- Preemptively register one resource while we wait for the total landclaim count sync
     Events:Fire("loader/RegisterResource", {count = 1})
 
-    self.cell_size = 4096
+    self.cell_size = 2048
 
     self.landclaims = {}
 
@@ -22,15 +22,21 @@ function cLandclaimManager:__init()
     Events:Subscribe("GameRender", self, self.GameRender)
 
     -- Wait until player position has been set to load landclaims
-    --Events:Subscribe(var("loader/BaseLoadscreenDone"):get(), function()
-    --    Thread(function()
-    --        local spawn_pos = LocalPlayer:GetValue("SpawnPosition")
-    --        while spawn_pos:Distance(LocalPlayer:GetPosition()) > 3 do
-     --           Timer.Sleep(250)
-    --        end
-            Network:Send("build/ReadyForInitialSync")
-    --    end)
-    --end) 
+    if LocalPlayer:GetValue("Loading") then
+        local sub
+        sub = Events:Subscribe(var("loader/BaseLoadscreenDone"):get(), function()
+            Thread(function()
+                local spawn_pos = LocalPlayer:GetValue("SpawnPosition")
+                while spawn_pos:Distance(LocalPlayer:GetPosition()) > 3 do
+                    Timer.Sleep(250)
+                end
+                Network:Send("build/ReadyForInitialSync")
+                Events:Unsubscribe(sub)
+            end)
+        end)
+    else
+        Network:Send("build/ReadyForInitialSync")
+    end
 
 end
 
@@ -92,6 +98,12 @@ function cLandclaimManager:ModuleUnload()
 end
 
 function cLandclaimManager:LocalPlayerCellUpdate(args)
+
+    for steam_id, landclaims in pairs(self.landclaims) do
+        for id, landclaim in pairs(landclaims) do
+            landclaim:LocalPlayerCellUpdate(args)
+        end
+    end
 
 end
 

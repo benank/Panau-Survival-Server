@@ -746,6 +746,13 @@ Items =
         stacklimit = 3,
         can_use = true,
         durable = true
+    },
+    {
+        name = "Glass",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true,
+        durable = true
     }
 }
 

@@ -63,7 +63,6 @@ function sLandclaimManager:LoadAllUnclaimedObjects()
 end
 
 function sLandclaimManager:ParseLandclaimDataFromDB(data)
-    output_table(data)
     local owner_id = tostring(data.steamID)
     local landclaim_id = tonumber(data.id)
 
