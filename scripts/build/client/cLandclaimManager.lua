@@ -18,6 +18,7 @@ function cLandclaimManager:__init()
     Network:Subscribe("build/SyncSmallLandclaimUpdate", self, self.SyncSmallLandclaimUpdate)
     Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(self.cell_size), self, self.LocalPlayerCellUpdate)
     Events:Subscribe("build/ToggleLandclaimVisibility", self, self.ToggleLandclaimVisibility)
+    Events:Subscribe("build/DeleteLandclaim", self, self.DeleteLandclaim)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("GameRender", self, self.GameRender)
 
@@ -40,20 +41,34 @@ function cLandclaimManager:__init()
 
 end
 
+function cLandclaimManager:DeleteLandclaim(args)
+    print(args.id)
+    local my_claims = self:GetLocalPlayerOwnedLandclaims()
+    if not my_claims[args.id] then return end
+    Network:Send("build/DeleteLandclaim", {id = args.id})
+end
+
 function cLandclaimManager:SyncSmallLandclaimUpdate(args)
     if not self.landclaims[args.landclaim_owner_id] 
     or not self.landclaims[args.landclaim_owner_id][args.landclaim_id] then return end
 
     local landclaim = self.landclaims[args.landclaim_owner_id][args.landclaim_id]
-    landclaim:PlaceObject(args.object)
-    Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims())
+
+    if args.type == "add_object" then
+        landclaim:PlaceObject(args.object)
+    elseif args.type == "state_change" then
+        landclaim.state = args.state
+    elseif args.type == "expiry_date_change" then
+        landclaim.expiry_date = args.expiry_date
+    end
+
+    Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))
 end
 
 function cLandclaimManager:ToggleLandclaimVisibility(args)
     if not args.id then return end
 
-    local my_claims = self.landclaims[tostring(LocalPlayer:GetSteamId())]
-    if not my_claims then return end
+    local my_claims = self:GetLocalPlayerOwnedLandclaims()
 
     local landclaim = my_claims[args.id]
     if not landclaim then return end
@@ -63,8 +78,7 @@ end
 
 function cLandclaimManager:GameRender(args)
 
-    local my_claims = self.landclaims[tostring(LocalPlayer:GetSteamId())]
-    if not my_claims then return end
+    local my_claims = self:GetLocalPlayerOwnedLandclaims()
 
     self.delta = self.delta + args.delta
 
@@ -77,12 +91,15 @@ function cLandclaimManager:GameRender(args)
 
 end
 
-function cLandclaimManager:GetLocalPlayerOwnedLandclaims()
+-- Gets all active landclaims owned by the localplayer. Returns sync object for all if get_sync_object is true
+function cLandclaimManager:GetLocalPlayerOwnedLandclaims(get_sync_object)
     local landclaims = self.landclaims[tostring(LocalPlayer:GetSteamId())] or {}
-    local landclaim_data = {}
 
+    local landclaim_data = {}
     for id, landclaim in pairs(landclaims) do
-        landclaim_data[id] = landclaim:GetSyncObject()
+        if landclaim:IsActive() then
+            landclaim_data[id] = get_sync_object and landclaim:GetSyncObject() or landclaim
+        end
     end
 
     return landclaim_data
@@ -119,7 +136,7 @@ function cLandclaimManager:SyncLandclaim(args)
 
     -- Sync owned landclaims to asset manager menu
     if args.owner_id == tostring(LocalPlayer:GetSteamId()) then
-        Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims())
+        Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))
         Events:Fire("build/AddLandclaimToMap", landclaim:GetSyncObject())
     end
 

@@ -13,16 +13,17 @@ end
         is_new_landclaim (bool): whether or not this landclaim was just placed
 
         if is_new_landclaim is not specified, you must include instead:
-            radius (number): radius of the landclaim
-            new_radius (number): radius of the landclaim being used
+            size (number): size of the landclaim
+            new_size (number): size of the landclaim being used
+            expiry_date (string): current expiry date of landclaim
 ]]
 function GetLandclaimExpireDate(args)
 
     local days_to_add = args.is_new_landclaim and
         Config.base_landclaim_lifetime or
-        math.clamp(1, math.ceil(args.new_radius / args.radius, 10) * Config.base_landclaim_lifetime)
+        math.max(1, math.ceil(args.new_size / args.size * Config.base_landclaim_lifetime)) + GetLandclaimDaysTillExpiry(args.expiry_date)
 
-    return GetLandclaimExpireDateFromTime(os.time() + DaysToSeconds(days_to_add))
+    return GetLandclaimExpireDateFromTime(os.time() + DaysToSeconds(days_to_add)), days_to_add
 
 end
 
@@ -33,8 +34,8 @@ function GetLandclaimExpireDateFromTime(time)
 end
 
 -- Gets the number of days until a landclaim expires
-function GetLandclaimDaysTillExpiry(expire_date)
-    local split = expire_date:split("-")
+function GetLandclaimDaysTillExpiry(expiry_date)
+    local split = expiry_date:split("-")
     local seconds = os.time{year = split[1], month = split[2], day = split[3]} - os.time()
-    return math.floor(SecondsToDays(seconds))
+    return math.ceil(SecondsToDays(seconds))
 end

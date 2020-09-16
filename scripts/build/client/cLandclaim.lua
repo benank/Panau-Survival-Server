@@ -10,6 +10,7 @@ function cLandclaim:__init(args)
     self.access_mode = args.access_mode
     self.objects_data = args.objects
     self.id = args.id
+    self.state = args.state
     self.visible = false -- If this landclaim's border is visible to the owner or not, toggle-able by the menu
     
     self.cell = GetCell(self.position, LandclaimManager.cell_size)
@@ -19,6 +20,10 @@ function cLandclaim:__init(args)
 
     self:OnInit()
 
+end
+
+function cLandclaim:IsActive()
+    return self.state == LandclaimStateEnum.Active
 end
 
 function cLandclaim:LocalPlayerCellUpdate(args)
@@ -184,7 +189,8 @@ function cLandclaim:GetSyncObject()
         objects = self.objects_data,
         id = self.id,
         days_till_expiry = GetLandclaimDaysTillExpiry(self.expiry_date),
-        access_mode_string = LandclaimAccessModeEnum:GetDescription(self.access_mode)
+        access_mode_string = LandclaimAccessModeEnum:GetDescription(self.access_mode),
+        state = self.state
     }
 
 end

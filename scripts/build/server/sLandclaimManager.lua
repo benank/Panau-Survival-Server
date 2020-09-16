@@ -2,20 +2,30 @@ class 'sLandclaimManager'
 
 function sLandclaimManager:__init()
 
-    SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, name VARCHAR(20), size INTEGER, expire_date VARCHAR, build_access_mode INTEGER, objects BLOB)")
+    SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, name VARCHAR(20), size INTEGER, expiry_date VARCHAR, access_mode INTEGER, state INTEGER, objects BLOB)")
     
-    -- Objects that used to be in landclaims, but those are now expired or were deleted.
-    -- Objects that are not walls or helipads decay over time
-    SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims_unclaimed_objects (objects BLOB)")
-
     self.landclaims = {} -- [steam_id] = {[landclaim_id] = landclaim, [landclaim_id] = landclaim}
 
     Network:Subscribe("build/PlaceLandclaim", self, self.TryPlaceLandclaim)
+    Network:Subscribe("build/DeleteLandclaim", self, self.DeleteLandclaim)
     Network:Subscribe("build/ReadyForInitialSync", self, self.PlayerReadyForInitialSync)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
 
+end
+
+function sLandclaimManager:DeleteLandclaim(args, player)
+    if not args.id then return end
+
+    local player_landclaims = self.landclaims[tostring(player:GetSteamId())]
+    if not player_landclaims then return end
+
+    local landclaim = player_landclaims[args.id]
+    if not landclaim then return end
+
+    landclaim:Delete(player)
+    Chat:Send(player, "Landclaim successfully deleted. Any objects that you didn't pick up will slowly decay over time.", Color.Yellow)
 end
 
 function sLandclaimManager:PlaceObjectInLandclaim(args)
@@ -53,8 +63,8 @@ function sLandclaimManager:LoadAllLandclaims()
         for _, data in ipairs(result) do
             self:ParseLandclaimDataFromDB(data)
         end
-        print(string.format("Loaded %d landclaims!", count_table(result)))
     end
+    print(string.format("Loaded %d landclaims!", count_table(result)))
 
 end
 
@@ -71,10 +81,11 @@ function sLandclaimManager:ParseLandclaimDataFromDB(data)
         position = DeserializePosition(tostring(data.position)),
         owner_id = tostring(owner_id),
         name = tostring(data.name),
-        expiry_date = tostring(data.expire_date),
-        access_mode = tonumber(data.build_access_mode),
+        expiry_date = tostring(data.expiry_date),
+        access_mode = tonumber(data.access_mode),
         objects = data.objects,
-        id = landclaim_id
+        id = landclaim_id,
+        state = tonumber(data.state)
     })
 
 end
@@ -140,6 +151,21 @@ function sLandclaimManager:AddClaim(claim_data)
 
 end
 
+function sLandclaimManager:UpdateLandclaimExpiry(size, landclaim, player)
+    -- A couple sanity checks in case something went terribly wrong
+    if landclaim.owner_id ~= tostring(player:GetSteamId()) then return end
+    if not IsInSquare(landclaim.position, landclaim.size, player:GetPosition()) then return end
+
+    local new_expiry_date, days_to_add = GetLandclaimExpireDate({
+        size = landclaim.size,
+        new_size = size,
+        expiry_date = landclaim.expiry_date
+    })
+    
+    landclaim:UpdateExpiryDate(new_expiry_date)
+    Chat:Send(player, string.format("Extended %s duration to %d days.", landclaim.name, days_to_add), Color.Green)
+end
+
 function sLandclaimManager:PlaceLandclaim(size, player)
 
     local position = player:GetPosition()
@@ -152,17 +178,19 @@ function sLandclaimManager:PlaceLandclaim(size, player)
         name = "LandClaim",
         expiry_date = GetLandclaimExpireDate({is_new_landclaim = true}),
         access_mode = LandclaimAccessModeEnum.OnlyMe,
+        state = LandclaimStateEnum.Active,
         objects = ""
     }
     
-    local cmd = SQL:Command("INSERT INTO landclaims (steamID, position, name, size, expire_date, build_access_mode, objects) VALUES (?, ?, ?, ?, ?, ?, ?)")
+    local cmd = SQL:Command("INSERT INTO landclaims (steamID, position, name, size, expiry_date, access_mode, state, objects) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
     cmd:Bind(1, landclaim_data.owner_id)
     cmd:Bind(2, SerializePosition(landclaim_data.position))
     cmd:Bind(3, landclaim_data.name)
     cmd:Bind(4, landclaim_data.size)
     cmd:Bind(5, landclaim_data.expiry_date)
     cmd:Bind(6, landclaim_data.access_mode)
-    cmd:Bind(7, "")
+    cmd:Bind(7, landclaim_data.state)
+    cmd:Bind(8, "")
     cmd:Execute()
 
     
@@ -253,7 +281,8 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
     -- Check for proximity to existing landclaims
     for steamid, landclaims in pairs(self.landclaims) do
         for id, landclaim in pairs(landclaims) do
-            if steamid ~= steam_id and Distance2D(position, landclaim.position) < size / 2 + landclaim.size / 2 + 100 then
+            if landclaim:IsActive()
+            and steamid ~= steam_id and Distance2D(position, landclaim.position) < size / 2 + landclaim.size / 2 + 100 then
                 self:SendPlayerErrorMessage(player)
                 return
             end
@@ -265,6 +294,14 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
         index = player_iu.index,
         player = player
     })
+
+    -- Check for proximity to existing owned landclaims
+    for id, landclaim in pairs(self.landclaims[tostring(player:GetSteamId())]) do
+        if landclaim:IsActive() and IsInSquare(landclaim.position, landclaim.size, position) then
+            self:UpdateLandclaimExpiry(size, landclaim, player)
+            return
+        end
+    end
 
     self:PlaceLandclaim(size, player)
 

@@ -365,6 +365,13 @@ function AssetManagerMenu:ConfirmDeleteButton(btn)
                 id = self.deleting.id
             }
         )
+    elseif self.deleting.type == "landclaim" then
+        Events:Fire(
+            "build/DeleteLandclaim",
+            {
+                id = self.deleting.id
+            }
+        )
     end
 
     self.deleting.btn:Hide()
@@ -488,9 +495,8 @@ function AssetManagerMenu:PressLandclaimButton(btn)
         -- Toggle landclaim area visibility
         Events:Fire("build/ToggleLandclaimVisibility", {id = landclaim_data.data.id})
     elseif type == "Delete" then
-
-    --self.deleting = {type = "stash", id = tonumber(btn:GetDataString("stash_id")), btn = btn}
-    --self.delete_confirm_menu:Show()
+        self.deleting = {type = "landclaim", id = landclaim_data.data.id, btn = btn}
+        self.delete_confirm_menu:Show()
     end
 end
 

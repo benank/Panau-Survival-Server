@@ -9,11 +9,19 @@ function sLandclaim:__init(args)
     self.expiry_date = args.expiry_date
     self.access_mode = args.access_mode
     self.id = args.id
+    self.state = args.state
 
     self.obj_uid = 0
 
     self:ParseObjects(args.objects)
 
+end
+
+-- Returns if the landclaim is valid, aka it hasn't been deleted and hasn't expired yet
+-- We do this to sort old landclaims from current, active ones but keep the old ones
+-- to persist the objects that were on them
+function sLandclaim:IsActive()
+    return self.state == LandclaimStateEnum.Active
 end
 
 function sLandclaim:GetNewUniqueObjectId()
@@ -38,6 +46,9 @@ function sLandclaim:ParseObjects(objects)
 end
 
 function sLandclaim:CanPlayerPlaceObject(player)
+
+    if not self.active then return end
+
     if self.access_mode == LandclaimAccessModeEnum.OnlyMe then
         return self.owner_id == tostring(player:GetSteamId())
     elseif self.access_mode == LandclaimAccessModeEnum.Friends then
@@ -90,6 +101,7 @@ end
 
 -- Called when a player tries to remove an object in the landclaim
 function sLandclaim:RemoveObject(args, player)
+    if not self:CanPlayerPlaceObject(args.player) then return end
 
 end
 
@@ -101,6 +113,27 @@ end
 -- Called when the owner tries to rename the landclaim
 function sLandclaim:Rename(name, player)
 
+end
+
+function sLandclaim:UpdateExpiryDate(new_expiry_date)
+    self.expiry_date = new_expiry_date
+    self:UpdateToDB()
+    
+    self:SyncSmallUpdate({
+        type = "expiry_date_change",
+        expiry_date = self.expiry_date
+    })
+end
+
+-- "Deletes" a landclaim by setting it to be inactive
+function sLandclaim:Delete(player)
+    self.state = LandclaimStateEnum.Inactive
+    self:UpdateToDB()
+    
+    self:SyncSmallUpdate({
+        type = "state_change",
+        state = self.state
+    })
 end
 
 -- Should only be used on initial sync, not on update
@@ -116,13 +149,14 @@ end
 -- Updates the lanclaim's entry in the database
 function sLandclaim:UpdateToDB()
     
-    local cmd = SQL:Command("UPDATE landclaims SET name = ?, expire_date = ?, build_access_mode = ?, objects = ? WHERE steamID = ? AND id = ?")
+    local cmd = SQL:Command("UPDATE landclaims SET name = ?, expiry_date = ?, access_mode = ?, state = ?, objects = ? WHERE steamID = ? AND id = ?")
     cmd:Bind(1, self.name)
     cmd:Bind(2, self.expiry_date)
     cmd:Bind(3, self.access_mode)
-    cmd:Bind(4, self:SerializeObjects())
-    cmd:Bind(5, self.owner_id)
-    cmd:Bind(6, self.id)
+    cmd:Bind(4, self.state)
+    cmd:Bind(5, self:SerializeObjects())
+    cmd:Bind(6, self.owner_id)
+    cmd:Bind(7, self.id)
     cmd:Execute()
 
 end
@@ -153,7 +187,8 @@ function sLandclaim:GetSyncObject()
         expiry_date = self.expiry_date,
         access_mode = self.access_mode,
         objects = self:GetSyncObjects(),
-        id = self.id
+        id = self.id,
+        state = self.state
     }
 
 end
