@@ -8,11 +8,26 @@ function sLandclaimManager:__init()
 
     Network:Subscribe("build/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Network:Subscribe("build/DeleteLandclaim", self, self.DeleteLandclaim)
+    Network:Subscribe("build/RenameLandclaim", self, self.RenameLandclaim)
     Network:Subscribe("build/ReadyForInitialSync", self, self.PlayerReadyForInitialSync)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
 
+end
+
+function sLandclaimManager:RenameLandclaim(args, player)
+    if not args.id or not args.name then return end
+    args.name = tostring(args.name)
+    args.name = args.name:sub(1, Config.landclaim_name_max_length)
+
+    local player_landclaims = self.landclaims[tostring(player:GetSteamId())]
+    if not player_landclaims then return end
+
+    local landclaim = player_landclaims[args.id]
+    if not landclaim then return end
+
+    landclaim:Rename(args.name, player)
 end
 
 function sLandclaimManager:DeleteLandclaim(args, player)

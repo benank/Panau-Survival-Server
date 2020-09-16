@@ -19,6 +19,7 @@ function cLandclaimManager:__init()
     Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(self.cell_size), self, self.LocalPlayerCellUpdate)
     Events:Subscribe("build/ToggleLandclaimVisibility", self, self.ToggleLandclaimVisibility)
     Events:Subscribe("build/DeleteLandclaim", self, self.DeleteLandclaim)
+    Events:Subscribe("build/RenameLandclaim", self, self.RenameLandclaim)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("GameRender", self, self.GameRender)
 
@@ -41,8 +42,13 @@ function cLandclaimManager:__init()
 
 end
 
+function cLandclaimManager:RenameLandclaim(args)
+    local my_claims = self:GetLocalPlayerOwnedLandclaims()
+    if not my_claims[args.id] then return end
+    Network:Send("build/RenameLandclaim", {id = args.id, name = args.name})
+end
+
 function cLandclaimManager:DeleteLandclaim(args)
-    print(args.id)
     local my_claims = self:GetLocalPlayerOwnedLandclaims()
     if not my_claims[args.id] then return end
     Network:Send("build/DeleteLandclaim", {id = args.id})
@@ -58,8 +64,15 @@ function cLandclaimManager:SyncSmallLandclaimUpdate(args)
         landclaim:PlaceObject(args.object)
     elseif args.type == "state_change" then
         landclaim.state = args.state
+
+        if not landclaim:IsActive() then
+            Events:Fire("build/RemoveLandclaimFromMap", landclaim:GetSyncObject())
+        end
     elseif args.type == "expiry_date_change" then
         landclaim.expiry_date = args.expiry_date
+    elseif args.type == "name_change" then
+        landclaim.name = args.name
+        Events:Fire("build/UpdateLandclaimOnMap", landclaim:GetSyncObject())
     end
 
     Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))

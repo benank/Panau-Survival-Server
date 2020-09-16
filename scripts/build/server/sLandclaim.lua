@@ -112,7 +112,13 @@ end
 
 -- Called when the owner tries to rename the landclaim
 function sLandclaim:Rename(name, player)
-
+    self.name = name
+    self:UpdateToDB()
+    
+    self:SyncSmallUpdate({
+        type = "name_change",
+        name = self.name
+    })
 end
 
 function sLandclaim:UpdateExpiryDate(new_expiry_date)

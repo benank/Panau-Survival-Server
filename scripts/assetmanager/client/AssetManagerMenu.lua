@@ -488,7 +488,7 @@ function AssetManagerMenu:PressLandclaimButton(btn)
         self.landclaim_rename_input:MakeCaratVisible()
         self.landclaim_rename_input:SetCursorPosition(1)
         self.landclaim_rename_input:Focus()
-        self.renaming_landclaim_id = tonumber(btn:GetDataString("landclaim_id"))
+        self.renaming_landclaim_id = landclaim_data.data.id
     elseif type == "Waypoint" then
         Waypoint:SetPosition(landclaim_data.data.position)
     elseif type == "Toggle" then
