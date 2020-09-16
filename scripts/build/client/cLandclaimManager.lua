@@ -127,14 +127,13 @@ function cLandclaimManager:ModuleUnload()
     end
 end
 
+-- Large scale cell updates for landclaims
 function cLandclaimManager:LocalPlayerCellUpdate(args)
-
     for steam_id, landclaims in pairs(self.landclaims) do
         for id, landclaim in pairs(landclaims) do
             landclaim:LocalPlayerCellUpdate(args)
         end
     end
-
 end
 
 -- Called by server when a single landclaim syncs, either on join or when a new one is placed

@@ -22,6 +22,35 @@ function cLandclaim:__init(args)
 
 end
 
+-- Individual distance checks for each object to determine whether it should have collision
+function cLandclaim:StartObjectStreamingThread()
+    Thread(function()
+        while self.loaded do
+
+            local player_pos = Camera:GetPosition()
+            local sleep_count = 0
+
+            for id, object in pairs(self.objects) do
+                local is_in_collision_range = object:IsInCollisionRange(player_pos)
+                local has_collision = object.has_collision
+
+                if is_in_collision_range and not has_collision then
+                    object:ToggleCollision(true)
+                elseif not is_in_collision_range and has_collision then
+                    object:ToggleCollision(false)
+                end
+
+                sleep_count = sleep_count + 1
+                if sleep_count % 10 == 0 then
+                    Timer.Sleep(1)
+                end
+            end
+
+            Timer.Sleep(1000)
+        end
+    end)
+end
+
 function cLandclaim:IsActive()
     return self.state == LandclaimStateEnum.Active
 end
@@ -83,7 +112,7 @@ function cLandclaim:Load()
 
     local sleep_count = 0
     for id, object in pairs(self.objects) do
-        object:Create()
+        object:Create(true)
 
         sleep_count = sleep_count + 1
         if sleep_count % 100 == 0 then
@@ -93,6 +122,7 @@ function cLandclaim:Load()
 
     self.loaded = true
     self.loading = false
+    self:StartObjectStreamingThread()
 
     -- Finished loading objects
     if not self.ready then

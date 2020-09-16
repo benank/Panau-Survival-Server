@@ -10,6 +10,9 @@ function cLandclaimObject:__init(args)
     self.health = args.health
     self.custom_data = args.custom_data
     self.extensions = self:GetExtensions()
+    self.spawned = false
+    self.has_collision = false
+    self.collision_range = LandclaimObjectCollisionRanges[self.name]
 
 end
 
@@ -22,12 +25,19 @@ function cLandclaimObject:Create(no_collision)
         model = self:GetModel(),
         collision = no_collision and "" or self:GetCollision()
     })
+    self.spawned = true
+    self.has_collision = not no_collision
 end
 
 -- Destroys the ClientStaticObject in the world
 function cLandclaimObject:Remove()
     if not IsValid(self.object) then return end
     self.object:Remove()
+    self.spawned = false
+end
+
+function cLandclaimObject:IsInCollisionRange(pos)
+    return self.position:Distance(pos) < self.collision_range
 end
 
 -- Destroys the current ClientStaticObject and replaces it with one that has/does not have collision

@@ -60,7 +60,7 @@ end
 function sLandclaimManager:FindFirstLandclaimContainingPosition(pos)
     for steam_id, landclaims in pairs(self.landclaims) do
         for id, landclaim in pairs(landclaims) do
-            if IsInSquare(landclaim.position, landclaim.size, pos) then
+            if landclaim:IsActive() and IsInSquare(landclaim.position, landclaim.size, pos) then
                 return landclaim
             end
         end

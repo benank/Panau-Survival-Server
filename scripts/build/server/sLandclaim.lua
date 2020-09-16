@@ -47,7 +47,7 @@ end
 
 function sLandclaim:CanPlayerPlaceObject(player)
 
-    if not self.active then return end
+    if not self:IsActive() then return end
 
     if self.access_mode == LandclaimAccessModeEnum.OnlyMe then
         return self.owner_id == tostring(player:GetSteamId())
@@ -69,7 +69,9 @@ end
 
 -- Called when a player tries to place an object in the landclaim
 function sLandclaim:PlaceObject(args)
+    print("hello!")
     if not self:CanPlayerPlaceObject(args.player) then return end
+    print("hello 2!")
 
     local object = 
     {
@@ -83,12 +85,14 @@ function sLandclaim:PlaceObject(args)
     }
 
     self.objects[object.id] = sLandclaimObject(object)
+    print("hello 3!")
 
     self:UpdateToDB()
     self:SyncSmallUpdate({
         type = "add_object",
         object = self.objects[object.id]:GetSyncObject()
     })
+    print("hello 4!")
 
     -- Remove item once it has been placed successfully
     Inventory.RemoveItem({
@@ -96,6 +100,7 @@ function sLandclaim:PlaceObject(args)
         index = args.player_iu.index,
         player = args.player
     })
+    print("hello 5!")
 
 end
 
