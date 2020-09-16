@@ -46,7 +46,7 @@ function cLandclaim:StartObjectStreamingThread()
                 end
             end
 
-            Timer.Sleep(1000)
+            Timer.Sleep(500)
         end
     end)
 end
