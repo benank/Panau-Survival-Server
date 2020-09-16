@@ -101,6 +101,9 @@ function cLandclaimPlacer:Render(args)
         can_place_here = false
     end
 
+    -- If it is within the map bounds
+    can_place_here = can_place_here and IsInSquare(Vector3(), 32768, self.position)
+
     self.can_place_here = can_place_here
     self:RenderText(can_place_here)
 
@@ -135,23 +138,27 @@ function cLandclaimPlacer:GameRender(args)
     if not self.position then return end
 
     self.delta = args.delta + self.delta
+    self:RenderLandClaimBorder(self.position, self.size, self.delta)
 
+end
+
+function cLandclaimPlacer:RenderLandClaimBorder(position, size, delta)
     for i = 1, 25 do
 
         -- draw border lines
-        local t = Transform3():Translate(self.position)
+        local pos = Vector3(position.x, Camera:GetPosition().y, position.z)
+        local t = Transform3():Translate(pos)
 
         for j = 1, 4 do
 
             t = t:Rotate(Angle(math.pi / 2, 0, 0))
             Render:SetTransform(t)
 
-            Render:FillArea(Vector3(-self.size / 2, i * 3 + (self.delta % 3) - 25, self.size / 2), Vector3(self.size, 0.5, 0), Color(0, 255, 0, 100))
+            Render:FillArea(Vector3(-size / 2, i * 3 + (delta % 3) - 25, size / 2), Vector3(size, 0.5, 0), Color(0, 255, 0, 100))
 
         end
 
     end
-
 end
 
 function cLandclaimPlacer:MouseUp(args)
@@ -160,7 +167,7 @@ function cLandclaimPlacer:MouseUp(args)
         -- Left click, place object
 
         if self.can_place_here then
-            Network:Send(var("build/PlaceLandclaim"):get(), {
+            Events:Fire("build/PlaceLandclaim", {
                 position = self.position
             })
             self:StopPlacement()

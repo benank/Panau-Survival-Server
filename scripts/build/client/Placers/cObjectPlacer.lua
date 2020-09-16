@@ -12,7 +12,7 @@ function cObjectPlacer:__init()
         [2] = 0,
         [3] = 0
     }
-    self.default_range = 10
+    self.default_range = 12
     self.range = self.default_range
     self.snap = false
     self.rotation_axis = 1

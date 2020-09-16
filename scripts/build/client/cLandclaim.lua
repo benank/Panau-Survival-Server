@@ -26,7 +26,6 @@ function cLandclaim:Unload()
 
     self.loading = true
 
-    -- TODO: delete all objects
     for id, object in pairs(self.objects) do
         object:Remove()
     end

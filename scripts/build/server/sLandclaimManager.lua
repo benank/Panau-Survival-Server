@@ -3,6 +3,10 @@ class 'sLandclaimManager'
 function sLandclaimManager:__init()
 
     SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, name VARCHAR(20), size INTEGER, expire_date VARCHAR, build_access_mode INTEGER, objects BLOB)")
+    
+    -- Objects that used to be in landclaims, but those are now expired or were deleted.
+    -- Objects that are not walls or helipads decay over time
+    SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims_unclaimed_objects (objects BLOB)")
 
     self.landclaims = {} -- [steam_id] = {[landclaim_id] = landclaim, [landclaim_id] = landclaim}
 
@@ -54,6 +58,10 @@ function sLandclaimManager:LoadAllLandclaims()
 
 end
 
+function sLandclaimManager:LoadAllUnclaimedObjects()
+    -- Load all unclaimed objects from DB and send to client
+end
+
 function sLandclaimManager:ParseLandclaimDataFromDB(data)
     output_table(data)
     local owner_id = tostring(data.steamID)
@@ -73,6 +81,7 @@ function sLandclaimManager:ParseLandclaimDataFromDB(data)
 end
 
 function sLandclaimManager:ModuleLoad()
+    self:LoadAllUnclaimedObjects()
     self:LoadAllLandclaims()
 end
 
@@ -144,7 +153,7 @@ function sLandclaimManager:PlaceLandclaim(size, player)
         name = "LandClaim",
         expiry_date = GetLandclaimExpireDate({is_new_landclaim = true}),
         access_mode = LandclaimAccessModeEnum.OnlyMe,
-        objects = {}
+        objects = ""
     }
     
     local cmd = SQL:Command("INSERT INTO landclaims (steamID, position, name, size, expire_date, build_access_mode, objects) VALUES (?, ?, ?, ?, ?, ?, ?)")
@@ -223,6 +232,12 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
 
     -- If they are within nz radius * 3, we don't let them place that close
     if position:Distance(self.sz_config.neutralzone.position) < self.sz_config.neutralzone.radius * 3 + size then
+        self:SendPlayerErrorMessage(player)
+        return
+    end
+
+    -- Not within map bounds
+    if not IsInSquare(Vector3(), 32768, position) then
         self:SendPlayerErrorMessage(player)
         return
     end
