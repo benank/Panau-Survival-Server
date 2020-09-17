@@ -688,6 +688,7 @@ Items =
         name = "Wall",
         category = "Survival",
         stacklimit = 10,
+        max_durability = 400,
         can_use = true,
         durable = true
     },
@@ -695,6 +696,7 @@ Items =
         name = "Door",
         category = "Survival",
         stacklimit = 3,
+        max_durability = 200,
         can_use = true,
         durable = true
     },
@@ -702,6 +704,7 @@ Items =
         name = "Light",
         category = "Survival",
         stacklimit = 5,
+        max_durability = 100,
         can_use = true,
         durable = true
     },
@@ -716,6 +719,7 @@ Items =
         name = "Helipad",
         category = "Survival",
         stacklimit = 1,
+        max_durability = 800,
         can_use = true,
         durable = true
     },
@@ -723,6 +727,7 @@ Items =
         name = "Bed",
         category = "Survival",
         stacklimit = 1,
+        max_durability = 100,
         can_use = true,
         durable = true
     },
@@ -730,6 +735,7 @@ Items =
         name = "Chair",
         category = "Survival",
         stacklimit = 3,
+        max_durability = 100,
         can_use = true,
         durable = true
     },
@@ -737,6 +743,7 @@ Items =
         name = "Stop Sign",
         category = "Survival",
         stacklimit = 5,
+        max_durability = 100,
         can_use = true,
         durable = true
     },
@@ -744,6 +751,7 @@ Items =
         name = "Table",
         category = "Survival",
         stacklimit = 3,
+        max_durability = 100,
         can_use = true,
         durable = true
     },
@@ -751,6 +759,7 @@ Items =
         name = "Glass",
         category = "Survival",
         stacklimit = 5,
+        max_durability = 100,
         can_use = true,
         durable = true
     },
@@ -758,6 +767,7 @@ Items =
         name = "Hedgehog",
         category = "Survival",
         stacklimit = 5,
+        max_durability = 200,
         can_use = true,
         durable = true
     }

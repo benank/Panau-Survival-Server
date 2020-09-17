@@ -13,6 +13,7 @@ function cLandclaim:__init(args, callback)
     self.state = args.state
     self.object_count = 0
     self.visible = false -- If this landclaim's border is visible to the owner or not, toggle-able by the menu
+    -- Setting it to visible also allows you to see the health of objects on the landclaim
     
     self.cell = GetCell(self.position, LandclaimManager.cell_size)
     self.adjacent_cells = GetAdjacentCells(self.cell)
@@ -117,6 +118,12 @@ function cLandclaim:Unload()
 
 end
 
+function cLandclaim:ModuleUnload()
+    for id, object in pairs(self.objects) do
+        object:Remove()
+    end
+end
+
 -- Loads in the objects in the landclaim. Assumes player is close enough.
 function cLandclaim:Load()
 
@@ -156,6 +163,7 @@ function cLandclaim:ParseObjects()
     self.objects = {}
     local sleep_count = 0
     for id, object_data in pairs(self.objects_data) do
+        object_data.landclaim = self
         self.objects[id] = cLandclaimObject(object_data)
 
         sleep_count = sleep_count + 1
@@ -204,6 +212,7 @@ function cLandclaim:PlaceObject(args)
     if self.objects_data[args.id] then return end
 
     self.objects_data[args.id] = args
+    args.landclaim = self
     self.objects[args.id] = cLandclaimObject(args)
 
     if self.loaded then

@@ -189,6 +189,7 @@ function cLandclaimPlacer:StopPlacement()
         Events:Unsubscribe(v)
     end
 
+    self.placing = false
     self.subs = {}
     self.model = nil
     self.vertices = nil

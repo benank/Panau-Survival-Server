@@ -3,15 +3,19 @@ class 'cLandclaimObject'
 -- Data container for objects within landclaims
 function cLandclaimObject:__init(args)
 
+    output_table(args)
+
     self.id = args.id -- Unique object id per claim, changes every reload
     self.name = args.name
     self.position = args.position
     self.angle = args.angle
     self.health = args.health
+    self.max_health = args.health -- Store max health for displaying HP
     self.custom_data = args.custom_data
     self.extensions = self:GetExtensions()
     self.spawned = false
     self.has_collision = false
+    self.landclaim = args.landclaim
     self.collision_range = LandclaimObjectCollisionRanges[self.name]
 
 end
@@ -25,6 +29,7 @@ function cLandclaimObject:Create(no_collision)
         model = self:GetModel(),
         collision = no_collision and "" or self:GetCollision()
     })
+    self.object:SetValue("LandclaimObject", self)
     self.spawned = true
     self.has_collision = not no_collision
 end

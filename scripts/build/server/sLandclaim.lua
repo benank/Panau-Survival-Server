@@ -79,7 +79,7 @@ function sLandclaim:PlaceObject(args)
         collision = BuildObjects[args.player_iu.item.name].collision,
         position = args.position,
         angle = args.angle,
-        health = args.player_iu.durability
+        health = args.player_iu.item.durability
     }
 
     self.objects[object.id] = sLandclaimObject(object)

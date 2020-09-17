@@ -19,5 +19,6 @@ function ClientStaticObject:SetValue(s, value)
 end
 
 function ClientStaticObject:GetValue(s)
+    if not CSOs[self:GetId()] then return end
 	return CSOs[self:GetId()].values[s]
 end

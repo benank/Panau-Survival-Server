@@ -122,7 +122,7 @@ function cLandclaimManager:ModuleUnload()
 
     for steam_id, landclaims in pairs(self.landclaims) do
         for id, landclaim in pairs(landclaims) do
-            landclaim:Unload()
+            landclaim:ModuleUnload()
         end
     end
 end

@@ -180,6 +180,7 @@ function cAirstrikePlacer:StopPlacement()
         Events:Unsubscribe(v)
     end
 
+    self.placing = false
     self.subs = {}
 end
 
