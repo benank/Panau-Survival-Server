@@ -149,7 +149,9 @@ function cLandclaimManager:SyncLandclaim(args)
     -- Sync owned landclaims to asset manager menu
     if args.owner_id == tostring(LocalPlayer:GetSteamId()) then
         Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))
-        Events:Fire("build/AddLandclaimToMap", landclaim:GetSyncObject())
+        if landclaim:IsActive() then
+            Events:Fire("build/AddLandclaimToMap", landclaim:GetSyncObject())
+        end
     end
 
 end
