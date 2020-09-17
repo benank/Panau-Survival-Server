@@ -12,7 +12,7 @@ end
 function cLandclaimObjectHealthDisplay:Render(args)
 
     -- Object was recently damaged so show the health
-    if self.timer and self.timer:GetSeconds() < self.display_time and self.landclaim_object then
+    if self.display_timer and self.display_timer:GetSeconds() < self.display_time and self.landclaim_object then
         self:RenderDisplay(self.landclaim_object)
         return
     end
@@ -39,8 +39,10 @@ function cLandclaimObjectHealthDisplay:RenderDisplay(landclaim_object)
 
     local health = landclaim_object.health
     local max_health = landclaim_object.max_health
-    local num_bars = math.ceil(health / C4Damage)
+    local num_bars = math.ceil(max_health / C4Damage)
     local remainder = health % C4Damage
+
+    if health <= 0 then return end
 
     local size = Vector2(Render.Size.x * 0.15, 40)
     local margin = Render.Size.x * 0.0025
@@ -57,7 +59,10 @@ function cLandclaimObjectHealthDisplay:RenderDisplay(landclaim_object)
     for i = 1, num_bars do
 
         -- All bars
-        local width_percent = (i == num_bars and remainder > 0) and remainder / C4Damage or 1
+        local total_running_hp = (i - 1) * C4Damage
+        local percent = math.min(1, math.max(0, health - total_running_hp) / C4Damage)
+
+        local width_percent = percent
         local bar_size_calc = Vector2(bar_size.x * width_percent, bar_size.y)
 
         Render:FillArea(position + (i - 1) * (bar_size_x + Vector2(bar_spacing, 0)) + Vector2(margin, margin), bar_size, Color(255, 255, 255, 100))

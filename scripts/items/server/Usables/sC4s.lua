@@ -176,6 +176,14 @@ function sC4s:DestroyC4(args, player)
         })
     end
 
+    local landclaim_data = c4:GetValue("LandclaimData")
+    if landclaim_data then
+        Events:Fire("items/C4DetonateOnBuildObject", {
+            landclaim_data = landclaim_data,
+            player = IsValid(c4:GetValue("Owner")) and c4:GetValue("Owner") or player
+        })
+    end
+
     Inventory.RemoveItem({
         item = c4:GetValue("Item"),
         player = c4:GetValue("Owner")
@@ -239,6 +247,7 @@ function sC4s:PlaceC4(args, item)
     c4:SetValue("Owner", args.player)
     c4:SetValue("Item", item)
     c4:SetValue("LootboxId", args.lootbox_uid)
+    c4:SetValue("LandclaimData", args.landclaim_data)
 
     self.wnos[c4:GetId()] = c4
 

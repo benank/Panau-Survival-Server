@@ -3,8 +3,6 @@ class 'cLandclaimObject'
 -- Data container for objects within landclaims
 function cLandclaimObject:__init(args)
 
-    output_table(args)
-
     self.id = args.id -- Unique object id per claim, changes every reload
     self.name = args.name
     self.position = args.position
@@ -32,12 +30,21 @@ function cLandclaimObject:Create(no_collision)
     self.object:SetValue("LandclaimObject", self)
     self.spawned = true
     self.has_collision = not no_collision
+    
+    local event = self.has_collision and "build/SpawnObject" or "build/DespawnObject"
+    Events:Fire(event, {
+        landclaim_id = self.landclaim.id,
+        landclaim_owner_id = self.landclaim.owner_id,
+        id = self.id,
+        cso_id = self.object:GetId()
+    })
 end
 
 -- Destroys the ClientStaticObject in the world
 function cLandclaimObject:Remove()
     if not IsValid(self.object) then return end
     self.object:Remove()
+    self.object = nil
     self.spawned = false
 end
 

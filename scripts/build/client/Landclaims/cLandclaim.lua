@@ -119,6 +119,8 @@ function cLandclaim:Unload()
 end
 
 function cLandclaim:ModuleUnload()
+    self.loaded = false
+    self.loading = false
     for id, object in pairs(self.objects) do
         object:Remove()
     end
@@ -224,6 +226,9 @@ end
 
 -- Called when an object was removed from the landclaim (or destroyed)
 function cLandclaim:RemoveObject(args)
+    self.objects[args.id]:Remove()
+    self.objects[args.id] = nil
+    self.objects_data[args.id] = nil
 
     self.object_count = self.object_count - 1
 end
@@ -231,6 +236,18 @@ end
 -- Called when an object on the landclaim is damaged
 function cLandclaim:DamageObject(args, player)
 
+    local object = self.objects[args.id]
+    object.health = args.health
+
+    if IsValid(player) and player == LocalPlayer then
+        -- Display HP
+        cLandclaimObjectHealthDisplay:Display(object)
+    end
+
+    if args.health <= 0 then
+        -- TODO: add destruction effect
+        self:RemoveObject(args)
+    end
 end
 
 -- Called when we try to rename the landclaim

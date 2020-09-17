@@ -107,7 +107,24 @@ end
 
 -- Called when an object on the landclaim is damaged
 function sLandclaim:DamageObject(args, player)
+    local id = args.landclaim_data.id
+    local object = self.objects[id]
+    if not object then return end
 
+    object:Damage(C4Damage)
+
+    if object.health <= 0 then
+        self.objects[id] = nil
+    end
+
+    self:UpdateToDB()
+
+    self:SyncSmallUpdate({
+        type = "object_damaged",
+        id = id,
+        health = object.health,
+        player = player
+    })
 end
 
 -- Called when the owner tries to rename the landclaim

@@ -12,6 +12,10 @@ function sLandclaimObject:__init(args)
 
 end
 
+function sLandclaimObject:Damage(amount)
+    self.health = math.max(0, self.health - math.abs(amount))
+end
+
 -- Get default custom data for an object when it is first placed, like a door access mode
 function sLandclaimObject:GetDefaultCustomData()
     

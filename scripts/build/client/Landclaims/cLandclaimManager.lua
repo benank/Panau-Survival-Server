@@ -73,6 +73,8 @@ function cLandclaimManager:SyncSmallLandclaimUpdate(args)
     elseif args.type == "name_change" then
         landclaim.name = args.name
         Events:Fire("build/UpdateLandclaimOnMap", landclaim:GetSyncObject())
+    elseif args.type == "object_damaged" then
+        landclaim:DamageObject(args, args.player)
     end
 
     Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))

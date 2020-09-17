@@ -13,6 +13,7 @@ function sLandclaimManager:__init()
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
+    Events:Subscribe("items/C4DetonateOnBuildObject", self, self.C4DetonateOnBuildObject)
 
     if IsTest then
         Events:Subscribe("PlayerChat", function(args)
@@ -22,6 +23,18 @@ function sLandclaimManager:__init()
         end)
     end
 
+end
+
+function sLandclaimManager:C4DetonateOnBuildObject(args)
+    if not IsValid(args.player) then return end
+
+    local landclaims = self.landclaims[args.landclaim_data.landclaim_owner_id]
+    if not landclaims then return end
+
+    local landclaim = landclaims[args.landclaim_data.landclaim_id]
+    if not landclaim then return end
+
+    landclaim:DamageObject(args, args.player)
 end
 
 function sLandclaimManager:ObjectTest(args)
