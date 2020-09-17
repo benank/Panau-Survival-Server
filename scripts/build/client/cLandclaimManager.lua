@@ -3,7 +3,7 @@ class 'cLandclaimManager'
 function cLandclaimManager:__init()
 
     -- Preemptively register one resource while we wait for the total landclaim count sync
-    Events:Fire("loader/RegisterResource", {count = 1})
+    Events:Fire("loader/RegisterResource", {count = 1, name = "Landclaim Preload"})
 
     self.cell_size = 2048
 
@@ -159,8 +159,8 @@ end
 function cLandclaimManager:SyncTotalLandclaims(args)
 
     -- Regsiter each landclaim as a loading resource so the load screen waits for them to fully load
-    Events:Fire("loader/RegisterResource", {count = args.total})
-    Events:Fire("loader/CompleteResource", {count = 1})
+    Events:Fire("loader/RegisterResource", {count = args.total, name = "Landclaims"})
+    Events:Fire("loader/CompleteResource", {count = 1, name = "Landclaim Preload"})
 
 end
 

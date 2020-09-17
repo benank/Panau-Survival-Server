@@ -190,7 +190,7 @@ function cLandclaim:OnReady()
     self.ready = true
 
     if LocalPlayer:GetValue("Loading") then
-        Events:Fire("loader/CompleteResource", {count = 1})
+        Events:Fire("loader/CompleteResource", {count = 1, name = "Landclaims"})
     end
 end
 
