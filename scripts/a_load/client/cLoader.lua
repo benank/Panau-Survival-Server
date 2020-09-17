@@ -254,6 +254,13 @@ function cLoader:PostRender(args)
         Render:DrawText(pos, text, color, fontsize)
         pos = pos + Vector2(0, text_height)
     end
+
+    local circle_pos = Vector2(Render.Size.x / 2, Render.Size.y / 2)
+    local circle_size = 400
+    local num_circles = 3
+    for i = 1, num_circles do
+        Render:FillCircle(circle_pos, math.sin(self.delta * 5 - i * 0.2) * circle_size, Color(255,255,255,50))
+    end
 end
 
 function cLoader:Render2(args)
