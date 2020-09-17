@@ -753,6 +753,13 @@ Items =
         stacklimit = 5,
         can_use = true,
         durable = true
+    },
+    {
+        name = "Hedgehog",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true,
+        durable = true
     }
 }
 

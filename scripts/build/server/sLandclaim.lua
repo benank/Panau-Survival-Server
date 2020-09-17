@@ -69,7 +69,7 @@ end
 
 -- Called when a player tries to place an object in the landclaim
 function sLandclaim:PlaceObject(args)
-    --if not self:CanPlayerPlaceObject(args.player) then return end
+    if not self:CanPlayerPlaceObject(args.player) then return end
 
     local object = 
     {
@@ -91,11 +91,11 @@ function sLandclaim:PlaceObject(args)
     })
 
     -- Remove item once it has been placed successfully
-    --[[Inventory.RemoveItem({
+    Inventory.RemoveItem({
         item = args.player_iu.item,
         index = args.player_iu.index,
         player = args.player
-    })]]
+    })
 
 end
 

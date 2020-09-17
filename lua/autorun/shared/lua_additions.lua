@@ -9,6 +9,21 @@ function count_table(table)
     return count
 end
 
+function count_table_async(table, callback)
+    Thread(function()
+        local count = 0
+
+        for k, v in pairs(table) do
+            count = count + 1
+            if count % 50 == 0 then
+                Timer.Sleep(1)
+            end
+        end
+
+        callback(count)
+    end)
+end
+
 function deepcopy(orig)
     local orig_type = type(orig)
     local copy

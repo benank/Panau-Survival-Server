@@ -1,6 +1,6 @@
 class 'cLandclaim'
 
-function cLandclaim:__init(args)
+function cLandclaim:__init(args, callback)
 
     self.size = args.size -- Length of one side
     self.position = args.position
@@ -11,6 +11,7 @@ function cLandclaim:__init(args)
     self.objects_data = args.objects
     self.id = args.id
     self.state = args.state
+    self.object_count = 0
     self.visible = false -- If this landclaim's border is visible to the owner or not, toggle-able by the menu
     
     self.cell = GetCell(self.position, LandclaimManager.cell_size)
@@ -18,7 +19,11 @@ function cLandclaim:__init(args)
 
     self.ready = false -- Check upon creation that is set to true when the landclaim is loaded, aka objects are spawned if needed
 
-    self:OnInit()
+    count_table_async(self.objects_data, function(count)
+        self.object_count = count
+        self:OnInit()
+        callback(self)
+    end)
 
 end
 
@@ -204,11 +209,14 @@ function cLandclaim:PlaceObject(args)
     if self.loaded then
         self.objects[args.id]:Create()
     end
+
+    self.object_count = self.object_count + 1
 end
 
 -- Called when an object was removed from the landclaim (or destroyed)
 function cLandclaim:RemoveObject(args)
 
+    self.object_count = self.object_count - 1
 end
 
 -- Called when an object on the landclaim is damaged
@@ -221,7 +229,6 @@ function cLandclaim:Rename(name, player)
 
 end
 
--- TODO: update with object counts and stuff for menu
 function cLandclaim:GetSyncObject()
 
     return {
@@ -231,7 +238,7 @@ function cLandclaim:GetSyncObject()
         name = self.name,
         expiry_date = self.expiry_date,
         access_mode = self.access_mode,
-        objects = self.objects_data,
+        object_count = self.object_count,
         id = self.id,
         days_till_expiry = GetLandclaimDaysTillExpiry(self.expiry_date),
         access_mode_string = LandclaimAccessModeEnum:GetDescription(self.access_mode),
