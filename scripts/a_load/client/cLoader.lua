@@ -259,8 +259,9 @@ function cLoader:PostRender(args)
     local circle_pos = Vector2(Render.Size.x / 2, Render.Size.y / 2)
     local circle_size = 400
     local num_circles = 3
+    local color = Color.FromHSV(self.delta * 0.5 * 360, 0.85, 0.85)
     for i = 1, num_circles do
-        Render:FillCircle(circle_pos, math.sin(self.delta * 5 - i * 0.2) * circle_size, Color(255,255,255,50))
+        Render:FillCircle(circle_pos, math.sin(self.delta * 5 - i * 0.5) * circle_size, Color(color.r,color.g,color.b,25))
     end
 end
 
