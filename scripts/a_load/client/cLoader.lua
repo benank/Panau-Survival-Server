@@ -18,10 +18,11 @@ function cLoader:__init()
     self.rectangle:SetSize(Render.Size)
 
     self.load_text = Label.Create(self.rectangle)
-    self.load_text:SetAlignment(GwenPosition.Center)
-    self.load_text:SetText("Loading")
+    self.load_text:SetAlignment(GwenPosition.CenterH)
+    self.load_text:SetPosition(Vector2(0, 50))
+    self.load_text:SetText("Joining Panau Survival")
     self.load_text:SetTextColor(Color.White)
-    self.load_text:SetTextSize(Render.Size.x * 0.05)
+    self.load_text:SetTextSize(Render.Size.x * 0.02)
     self.load_text:SetSizeRel(Vector2(1,1))
     self.load_text_dots = 0;
     self.max_load_text_dots = 3
@@ -232,11 +233,11 @@ function cLoader:Start()
         }
     end
 
-    if not self.dot_interval then
+    --[[if not self.dot_interval then
         self.dot_interval = Timer.SetInterval(500, function()
             self.load_text:SetText(self:GetLoadText())  
         end)
-    end
+    end]]
     
     LocalPlayer:SetValue("Loading", true)
     Events:Fire(var("LoadingStarted"):get())
@@ -277,7 +278,7 @@ end
 
 function cLoader:GetLoadText()
 
-    local text = "Loading"
+    local text = "Panau Survival is loading"
 
     for i = 1, self.load_text_dots do text = text .. "." end
 
