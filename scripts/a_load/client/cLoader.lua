@@ -348,12 +348,13 @@ function cLoader:Stop()
             end
         end
 
-        self.subs = {}
+        self.subs = nil
 
         self.can_add_resources = false
         self.first_load = false
 
         self.window:Hide()
+        self.load_text:SetText("")
 
         
         LocalPlayer:SetValue("Loading", false)

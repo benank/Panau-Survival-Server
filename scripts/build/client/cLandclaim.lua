@@ -8,7 +8,7 @@ function cLandclaim:__init(args, callback)
     self.name = args.name
     self.expiry_date = args.expiry_date
     self.access_mode = args.access_mode
-    self.objects_data = args.objects
+    self.objects_data = args.objects -- If you loop through this, please use count_table_async to avoid lag
     self.id = args.id
     self.state = args.state
     self.object_count = 0
