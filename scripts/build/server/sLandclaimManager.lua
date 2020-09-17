@@ -14,6 +14,48 @@ function sLandclaimManager:__init()
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
 
+    if IsTest then
+        Events:Subscribe("PlayerChat", function(args)
+            if args.text == "/objtest" then
+                self:ObjectTest(args)
+            end
+        end)
+    end
+
+end
+
+function sLandclaimManager:ObjectTest(args)
+    _debug("SPAWNING...")
+    local object_amount = 10000
+    local object_range = 300
+
+    local target_landclaim = self:FindFirstActiveLandclaimContainingPosition(args.player:GetPosition())
+
+    -- No valid landclaim found; can't place here
+    if not target_landclaim then return end
+
+    Thread(function()
+        for i = 1, object_amount do
+            target_landclaim:PlaceObject({
+                player_iu = {
+                    item = {
+                        name = "Wall",
+                        durability = 500
+                    }
+                },
+                position = target_landclaim.position + 
+                    Vector3(
+                        math.random() * target_landclaim.size - target_landclaim.size / 2, 
+                        math.random() * object_range, 
+                        math.random() * target_landclaim.size - target_landclaim.size / 2),
+                angle = Angle(math.random() * math.pi * 2, math.random() * math.pi * 2, math.random() * math.pi * 2),
+                --player = args.player
+            })
+            Timer.Sleep(1)
+            _debug(string.format("%d/%d", i, object_amount))
+        end
+        _debug("FINISHED")
+    end)
 end
 
 function sLandclaimManager:RenameLandclaim(args, player)
@@ -21,8 +63,7 @@ function sLandclaimManager:RenameLandclaim(args, player)
     args.name = tostring(args.name)
     args.name = args.name:sub(1, Config.landclaim_name_max_length)
 
-    local player_landclaims = self.landclaims[tostring(player:GetSteamId())]
-    if not player_landclaims then return end
+    local player_landclaims = self:GetPlayerActiveLandclaims(player)
 
     local landclaim = player_landclaims[args.id]
     if not landclaim then return end
@@ -33,8 +74,7 @@ end
 function sLandclaimManager:DeleteLandclaim(args, player)
     if not args.id then return end
 
-    local player_landclaims = self.landclaims[tostring(player:GetSteamId())]
-    if not player_landclaims then return end
+    local player_landclaims = self:GetPlayerActiveLandclaims(player)
 
     local landclaim = player_landclaims[args.id]
     if not landclaim then return end
@@ -48,7 +88,7 @@ function sLandclaimManager:PlaceObjectInLandclaim(args)
     if not IsValid(args.player) then return end
 
     -- Find the first (and should be only) landclaim that contains this position
-    local target_landclaim = self:FindFirstLandclaimContainingPosition(args.position)
+    local target_landclaim = self:FindFirstActiveLandclaimContainingPosition(args.position)
 
     -- No valid landclaim found; can't place here
     if not target_landclaim then return end
@@ -57,7 +97,7 @@ function sLandclaimManager:PlaceObjectInLandclaim(args)
 
 end
 
-function sLandclaimManager:FindFirstLandclaimContainingPosition(pos)
+function sLandclaimManager:FindFirstActiveLandclaimContainingPosition(pos)
     for steam_id, landclaims in pairs(self.landclaims) do
         for id, landclaim in pairs(landclaims) do
             if landclaim:IsActive() and IsInSquare(landclaim.position, landclaim.size, pos) then
@@ -223,6 +263,20 @@ function sLandclaimManager:SendPlayerErrorMessage(player)
     Chat:Send(player, "Placing landclaim failed!", Color.Red)
 end
 
+function sLandclaimManager:GetPlayerActiveLandclaims(player)
+
+    local player_landclaims = self.landclaims[tostring(player:GetSteamId())] or {}
+
+    local active_landclaims = {}
+    for id, landclaim in pairs(player_landclaims) do
+        if landclaim:IsActive() then
+            active_landclaims[id] = landclaim
+        end
+    end
+
+    return active_landclaims
+end
+
 function sLandclaimManager:TryPlaceLandclaim(args, player)
 
     local player_iu = player:GetValue("LandclaimUsingItem")
@@ -253,8 +307,9 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
     end
 
     local steam_id = tostring(player:GetSteamId())
-    local num_player_landclaims = self.landclaims[steam_id] and count_table(self.landclaims[steam_id]) or 0
-    if num_player_landclaims >= player:GetValue("MaxLandclaims") then
+
+    local player_landclaims = self:GetPlayerActiveLandclaims(player)
+    if count_table(player_landclaims) >= player:GetValue("MaxLandclaims") then
         Chat:Send(player, "You already have the maximum amount of landclaims placed!", Color.Red)
         return
     end
@@ -311,8 +366,8 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
     })
 
     -- Check for proximity to existing owned landclaims
-    for id, landclaim in pairs(self.landclaims[tostring(player:GetSteamId())]) do
-        if landclaim:IsActive() and IsInSquare(landclaim.position, landclaim.size, position) then
+    for id, landclaim in pairs(player_landclaims) do
+        if IsInSquare(landclaim.position, landclaim.size, position) then
             self:UpdateLandclaimExpiry(size, landclaim, player)
             return
         end

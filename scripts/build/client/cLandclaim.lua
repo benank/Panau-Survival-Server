@@ -25,10 +25,11 @@ end
 -- Individual distance checks for each object to determine whether it should have collision
 function cLandclaim:StartObjectStreamingThread()
     Thread(function()
-        while self.loaded do
+        while self.loaded or self.loading do
 
             local player_pos = Camera:GetPosition()
             local sleep_count = 0
+            local collision_sleep_count = 0
 
             for id, object in pairs(self.objects) do
                 local is_in_collision_range = object:IsInCollisionRange(player_pos)
@@ -36,17 +37,23 @@ function cLandclaim:StartObjectStreamingThread()
 
                 if is_in_collision_range and not has_collision then
                     object:ToggleCollision(true)
+                    collision_sleep_count = collision_sleep_count + 1
+                    if collision_sleep_count % 20 == 0 then
+                        Timer.Sleep(1)
+                    end
                 elseif not is_in_collision_range and has_collision then
                     object:ToggleCollision(false)
                 end
 
                 sleep_count = sleep_count + 1
-                if sleep_count % 10 == 0 then
+                -- Adjust this number to speed up checks at the cost of performance
+                if sleep_count % 200 == 0 then
                     Timer.Sleep(1)
                 end
             end
 
-            Timer.Sleep(500)
+            self.one_stream_iteration_done = true
+            Timer.Sleep(50)
         end
     end)
 end
@@ -86,7 +93,7 @@ end
 
 function cLandclaim:Unload()
 
-    if not self.loaded or self.loading then return end
+    if self.loaded or self.loading then return end
 
     self.loading = true
 
@@ -110,6 +117,8 @@ function cLandclaim:Load()
 
     if self.loaded or self.loading then return end
 
+    self.loading = true
+
     local sleep_count = 0
     for id, object in pairs(self.objects) do
         object:Create(true)
@@ -120,9 +129,15 @@ function cLandclaim:Load()
         end
     end
 
+    self.one_stream_iteration_done = false
+    self:StartObjectStreamingThread()
+
+    while not self.one_stream_iteration_done do
+        Timer.Sleep(100)
+    end
+
     self.loaded = true
     self.loading = false
-    self:StartObjectStreamingThread()
 
     -- Finished loading objects
     if not self.ready then

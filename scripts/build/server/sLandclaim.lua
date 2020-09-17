@@ -69,9 +69,7 @@ end
 
 -- Called when a player tries to place an object in the landclaim
 function sLandclaim:PlaceObject(args)
-    print("hello!")
-    if not self:CanPlayerPlaceObject(args.player) then return end
-    print("hello 2!")
+    --if not self:CanPlayerPlaceObject(args.player) then return end
 
     local object = 
     {
@@ -85,22 +83,19 @@ function sLandclaim:PlaceObject(args)
     }
 
     self.objects[object.id] = sLandclaimObject(object)
-    print("hello 3!")
 
     self:UpdateToDB()
     self:SyncSmallUpdate({
         type = "add_object",
         object = self.objects[object.id]:GetSyncObject()
     })
-    print("hello 4!")
 
     -- Remove item once it has been placed successfully
-    Inventory.RemoveItem({
+    --[[Inventory.RemoveItem({
         item = args.player_iu.item,
         index = args.player_iu.index,
         player = args.player
-    })
-    print("hello 5!")
+    })]]
 
 end
 
