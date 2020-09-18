@@ -67,11 +67,13 @@ function cLandclaimObjectMenu:TryToOpenMenu()
     local my_id = tostring(LocalPlayer:GetSteamId())
 
     -- No editing permissions
-    if not landclaim_object.landclaim:CanPlayerPlaceObject(LocalPlayer) then return end
     if not landclaim_object.landclaim:IsActive() then return end
 
     local options = {}
-    options.remove = true
+
+    if landclaim_object.landclaim:CanPlayerPlaceObject(LocalPlayer) then
+        options.remove = true
+    end
 
     if owner_id == my_id and landclaim_object.name == "Door" then
         options.access = true
@@ -85,7 +87,9 @@ function cLandclaimObjectMenu:TryToOpenMenu()
         end
     end
 
-    self:CreateMenu(options)
+    if count_table(options) > 0 then
+        self:CreateMenu(options)
+    end
 
 end
 
