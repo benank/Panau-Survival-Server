@@ -2,8 +2,8 @@ class 'sBuildItems'
 
 function sBuildItems:__init()
 
-    Network:Subscribe("items/CancelObjectPlacement", self, self.CancelObjectPlacement)
-    Network:Subscribe("items/PlaceBuildObject", self, self.FinishObjectPlacement)
+    Network:Subscribe("items/CancelLandclaimObjectPlacement", self, self.CancelObjectPlacement)
+    Network:Subscribe("items/PlaceLandclaimBuildObject", self, self.FinishObjectPlacement)
 
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
 end

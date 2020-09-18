@@ -10,7 +10,7 @@ end
 
 function cBuildItems:StartObjectPlacement(args)
 
-    Events:Fire("build/StartObjectPlacement", {
+    Events:Fire("build/StartLandclaimObjectPlacement", {
         model = ItemsConfig.build[args.name].model,
         disable_walls = ItemsConfig.build[args.name].disable_walls == true,
         angle = ItemsConfig.build[args.name].angle,
@@ -20,8 +20,8 @@ function cBuildItems:StartObjectPlacement(args)
 
     self.place_subs = 
     {
-        Events:Subscribe("build/PlaceObject", self, self.PlaceObject),
-        Events:Subscribe("build/CancelObjectPlacement", self, self.CancelObjectPlacement)
+        Events:Subscribe("build/PlaceLandclaimObject", self, self.PlaceObject),
+        Events:Subscribe("build/CancelLandclaimObjectPlacement", self, self.CancelObjectPlacement)
     }
     
     self.placing_object = true
@@ -34,7 +34,7 @@ function cBuildItems:PlaceObject(args)
         args.model = args.entity:GetModel()
     end
 
-    Network:Send("items/PlaceBuildObject", {
+    Network:Send("items/PlaceLandclaimBuildObject", {
         position = args.position,
         angle = args.angle,
         model = args.model
@@ -43,7 +43,7 @@ function cBuildItems:PlaceObject(args)
 end
 
 function cBuildItems:CancelObjectPlacement()
-    Network:Send("items/CancelObjectPlacement")
+    Network:Send("items/CancelLandclaimObjectPlacement")
     self:StopPlacement()
 end
 

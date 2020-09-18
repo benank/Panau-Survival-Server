@@ -65,7 +65,7 @@ function cLandclaim:StartObjectStreamingThread()
 end
 
 function cLandclaim:IsActive()
-    return self.state == LandclaimStateEnum.Active
+    return self.state == LandclaimStateEnum.Active and GetLandclaimDaysTillExpiry(self.expiry_date) > 0
 end
 
 function cLandclaim:LocalPlayerCellUpdate(args)

@@ -366,14 +366,14 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
     local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues().blacklist
 
     for _, area in pairs(BlacklistedAreas) do
-        if position:Distance(area.pos) < size + 50 then
+        if Distance2D(position, area.pos) < size + 50 then
             self:SendPlayerErrorMessage(player)
             return
         end
     end
 
     -- If they are within nz radius * 3, we don't let them place that close
-    if position:Distance(self.sz_config.neutralzone.position) < self.sz_config.neutralzone.radius * 3 + size then
+    if Distance2D(position, self.sz_config.neutralzone.position) < self.sz_config.neutralzone.radius * 3 + size then
         self:SendPlayerErrorMessage(player)
         return
     end
@@ -387,10 +387,19 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
     local ModelChangeAreas = SharedObject.GetByName("ModelLocations"):GetValues()
 
     for _, area in pairs(ModelChangeAreas) do
-        if position:Distance(area.pos) < 200 + size then
+        if Distance2D(position, area.pos) < 200 + size then
             self:SendPlayerErrorMessage(player)
             return
         end
+    end
+
+    if IsInLocation(position, size + 1500, DefaultLocations.Airport)
+    or IsInLocation(position, size + 1000, DefaultLocations.MilitaryBase) 
+    or IsInLocation(position, size + 1200, DefaultLocations.Seaport) 
+    or IsInLocation(position, size + 1200, DefaultLocations.Commercial)
+    or IsInLocation(position, size + 1000, DefaultLocations.Custom) then
+        self:SendPlayerErrorMessage(player)
+        return
     end
 
     -- Check for proximity to existing landclaims

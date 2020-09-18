@@ -1,4 +1,18 @@
+function IsInLocation(position, radius, locations)
+    for _, location in pairs(locations) do
+        local r = location.radius and location.radius or radius
+        if Distance2D(position, location.position) < r then
+            return true
+        end
+    end
+end
+
 DefaultLocations = {}
+DefaultLocations.Custom = {
+	{name = "Hantu Island", position = Vector3(-13574, 322.14614868164, -13647), radius = 4000},
+	{name = "Pie Island", position = Vector3(8068.52, 204.97, -15463.15), radius = 500},
+	{name = "Three Kings Hotel", position = Vector3(-12638, 212.21321105957, 15134), radius = 700},
+}
 DefaultLocations.Airport = {
 	{name = "Paya Luas", position = Vector3(12064, 206.14614868164, -10644)},
 	{name = "Lembah Delima", position = Vector3(9573, 204.4068145752, 3882)},
@@ -235,6 +249,7 @@ DefaultLocations.Commercial = {
 	{name = "Panau City - Park District", position = Vector3(-12632, 217.5498046875, -4819)},
 	{name = "Panau City - Residential District", position = Vector3(-12650, 202.9501953125, -848)},
 	{name = "Panau City - Docks District", position = Vector3(-15280, 203.08027648926, -2783)},
+	{name = "Panau Falls Casino", position = Vector3(2218, 638.48944091797, 1407)},
 }
 DefaultLocations.Civilian = {
 	{name = "Bandar Serigala Kelabu", position = Vector3(14012, 198.07916259766, 2324)},
@@ -313,7 +328,6 @@ DefaultLocations.Civilian = {
 	{name = "Kampung Tanjung Luas", position = Vector3(2450, 204.35948181152, 4514)},
 	{name = "Pekan Putra Gunung", position = Vector3(2222, 214.9460144043, 9903)},
 	{name = "Kampung Kepulauan Selatan", position = Vector3(2220, 208.36976623535, 7039)},
-	{name = "Panau Falls Casino", position = Vector3(2218, 638.48944091797, 1407)},
 	{name = "Paya Keras", position = Vector3(2185, 497.97515869141, -9301)},
 	{name = "Loji Kuasa Pantai Tokong", position = Vector3(2170, 210.64189147949, 3838)},
 	{name = "Pekan Pinggir Jalan", position = Vector3(2110, 220.49327087402, 2726)},

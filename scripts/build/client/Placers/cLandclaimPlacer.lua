@@ -86,18 +86,24 @@ function cLandclaimPlacer:Render(args)
     local can_place_here = true
 
     for _, data in pairs(BlacklistedAreas) do
-        if data.pos:Distance(self.position) < data.size + self.size then
+        if Distance2D(data.pos, self.position) < data.size + self.size then
             can_place_here = false
             break
         end
     end
 
+    can_place_here = can_place_here and not IsInLocation(self.position, self.size + 1500, DefaultLocations.Airport)
+    can_place_here = can_place_here and not IsInLocation(self.position, self.size + 1000, DefaultLocations.MilitaryBase)
+    can_place_here = can_place_here and not IsInLocation(self.position, self.size + 1200, DefaultLocations.Seaport)
+    can_place_here = can_place_here and not IsInLocation(self.position, self.size + 1200, DefaultLocations.Commercial)
+    can_place_here = can_place_here and not IsInLocation(self.position, self.size + 1000, DefaultLocations.Custom)
+
     if not self.sz_config then
         self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
     end
 
-    -- If they are within sz radius * 2, we don't let them place that close
-    if self.position:Distance(self.sz_config.neutralzone.position) < self.sz_config.neutralzone.radius * 2 then
+    -- If they are within nz radius * 4, we don't let them place that close
+    if Distance2D(self.position, self.sz_config.neutralzone.position) < self.sz_config.neutralzone.radius * 4 then
         can_place_here = false
     end
 
