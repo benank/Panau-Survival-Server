@@ -26,12 +26,16 @@ function cLandclaimManager:__init()
     -- Wait until player position has been set to load landclaims
     if LocalPlayer:GetValue("Loading") then
         local sub
+        print("here")
         sub = Events:Subscribe(var("loader/BaseLoadscreenDone"):get(), function()
+            print("here 2")
             Thread(function()
+                print("here 3")
                 local spawn_pos = LocalPlayer:GetValue("SpawnPosition")
                 while spawn_pos:Distance(LocalPlayer:GetPosition()) > 3 do
                     Timer.Sleep(250)
                 end
+                print("here 4")
                 Network:Send("build/ReadyForInitialSync")
                 Events:Unsubscribe(sub)
             end)
@@ -186,9 +190,7 @@ end
 function cLandclaimManager:SyncTotalLandclaims(args)
 
     -- Regsiter each landclaim as a loading resource so the load screen waits for them to fully load
-    if args.total > 0 then
-        Events:Fire("loader/RegisterResource", {count = args.total, name = "Landclaims"})
-    end
+    Events:Fire("loader/RegisterResource", {count = args.total, name = "Landclaims"})
     Events:Fire("loader/CompleteResource", {count = 1, name = "Landclaim Preload"})
 
 end
