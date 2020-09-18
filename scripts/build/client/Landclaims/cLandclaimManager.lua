@@ -93,6 +93,12 @@ function cLandclaimManager:SyncSmallLandclaimUpdate(args)
 
         object.custom_data.enabled = args.enabled
         object.extension:StateUpdated(args.enabled)
+    elseif args.type == "door_state" then
+        local object = landclaim.objects[args.id]
+        if not object then return end
+
+        object.custom_data.open = args.open
+        object.extension:StateUpdated()
     end
 
     Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))

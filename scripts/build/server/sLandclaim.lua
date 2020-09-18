@@ -111,7 +111,7 @@ function sLandclaim:PressBuildObjectMenuButton(args, player)
             player_spawns = object.custom_data.player_spawns
         })
 
-    elseif args.name == "Remove" and self:CanPlayerPlaceObject(player) then
+    elseif args.name == "Remove" and self:CanPlayerAccess(player, self.access_mode) then
         self:RemoveObject(args, player)
     end
 
@@ -145,18 +145,20 @@ function sLandclaim:UnsetOldSpawn(player_id, old_spawn_data)
 
 end
 
-function sLandclaim:CanPlayerPlaceObject(player)
+function sLandclaim:CanPlayerAccess(player, access_mode)
 
     if not self:IsActive() then return end
 
-    if self.access_mode == LandclaimAccessModeEnum.OnlyMe then
-        return self.owner_id == tostring(player:GetSteamId())
-    elseif self.access_mode == LandclaimAccessModeEnum.Friends then
-        return AreFriends(player, self.owner_id)
-    elseif self.access_mode == LandclaimAccessModeEnum.Clan then
+    local is_owner = self.owner_id == tostring(player:GetSteamId())
+
+    if access_mode == LandclaimAccessModeEnum.OnlyMe then
+        return is_owner
+    elseif access_mode == LandclaimAccessModeEnum.Friends then
+        return AreFriends(player, self.owner_id) or is_owner
+    elseif access_mode == LandclaimAccessModeEnum.Clan then
         -- TODO: add clan check logic here
-        return self.owner_id == tostring(player:GetSteamId())
-    elseif self.access_mode == LandclaimAccessModeEnum.Everyone then
+        return is_owner
+    elseif access_mode == LandclaimAccessModeEnum.Everyone then
         return true
     end
 end
@@ -169,7 +171,7 @@ end
 
 -- Called when a player tries to place an object in the landclaim
 function sLandclaim:PlaceObject(args)
-    if not self:CanPlayerPlaceObject(args.player) then return end
+    if not self:CanPlayerAccess(args.player, self.access_mode) then return end
 
     if args.player:GetPosition():Distance(args.position) > 20 then return end
 
@@ -216,9 +218,26 @@ function sLandclaim:ActivateLight(args, player)
     })
 end
 
+function sLandclaim:ActivateDoor(args, player)
+    local object = self.objects[args.id]
+    if not object then return end
+
+    if object.name ~= "Door" then return end
+    if not self:CanPlayerAccess(player, object.custom_data.access_mode) then return end
+
+    object.custom_data.open = not object.custom_data.open
+    
+    self:UpdateToDB()
+    self:SyncSmallUpdate({
+        type = "door_state",
+        id = object.id,
+        open = object.custom_data.open
+    })
+end
+
 -- Called when a player tries to remove an object in the landclaim
 function sLandclaim:RemoveObject(args, player)
-    if not self:CanPlayerPlaceObject(player) then return end
+    if not self:CanPlayerAccess(player, self.access_mode) then return end
 
     local object = self.objects[args.id]
     if not object then return end
