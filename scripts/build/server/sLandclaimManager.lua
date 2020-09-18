@@ -5,12 +5,14 @@ function sLandclaimManager:__init()
     SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, name VARCHAR(20), size INTEGER, expiry_date VARCHAR, access_mode INTEGER, state INTEGER, objects BLOB)")
     
     self.landclaims = {} -- [steam_id] = {[landclaim_id] = landclaim, [landclaim_id] = landclaim}
+    self.player_spawns = {} -- [steam id] = {id = id, landclaim_id = landclaim id, landclaim_owner_id = landclaim_owner_id}
 
     Network:Subscribe("build/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Network:Subscribe("build/DeleteLandclaim", self, self.DeleteLandclaim)
     Network:Subscribe("build/RenameLandclaim", self, self.RenameLandclaim)
     Network:Subscribe("build/PressBuildObjectMenuButton", self, self.PressBuildObjectMenuButton)
     Network:Subscribe("build/ReadyForInitialSync", self, self.PlayerReadyForInitialSync)
+    Network:Subscribe("build/ActivateLight", self, self.ActivateLight)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
@@ -26,12 +28,16 @@ function sLandclaimManager:__init()
 
 end
 
+function sLandclaimManager:ActivateLight(args, player)
+    local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_owner_id, args.landclaim_id)
+    if not landclaim then return end
+
+    landclaim:ActivateLight(args, player)
+end
+
 -- Called when a player presses a button from the right click object menu
 function sLandclaimManager:PressBuildObjectMenuButton(args, player)
-    local landclaims = self.landclaims[args.landclaim_owner_id]
-    if not landclaims then return end
-
-    local landclaim = landclaims[args.landclaim_id]
+    local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_owner_id, args.landclaim_id)
     if not landclaim then return end
     if not landclaim:IsActive() then return end
 
@@ -41,13 +47,17 @@ end
 function sLandclaimManager:C4DetonateOnBuildObject(args)
     if not IsValid(args.player) then return end
 
-    local landclaims = self.landclaims[args.landclaim_data.landclaim_owner_id]
-    if not landclaims then return end
-
-    local landclaim = landclaims[args.landclaim_data.landclaim_id]
+    local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_data.landclaim_owner_id, args.landclaim_data.landclaim_id)
     if not landclaim then return end
 
     landclaim:DamageObject(args, args.player)
+end
+
+function sLandclaimManager:GetLandclaimFromData(landclaim_owner_id, landclaim_id)
+    local landclaims = self.landclaims[landclaim_owner_id]
+    if not landclaims then return end
+
+    return landclaims[landclaim_id]
 end
 
 function sLandclaimManager:ObjectTest(args)

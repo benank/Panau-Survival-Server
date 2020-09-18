@@ -10,7 +10,7 @@ function cLandclaimObject:__init(args)
     self.health = args.health
     self.max_health = args.health -- Store max health for displaying HP
     self.custom_data = args.custom_data
-    self.extensions = self:GetExtensions()
+    self.extension = self:GetExtension()
     self.spawned = false
     self.has_collision = false
     self.landclaim = args.landclaim
@@ -38,6 +38,14 @@ function cLandclaimObject:Create(no_collision)
         id = self.id,
         cso_id = self.object:GetId()
     })
+
+    if self.extension then
+        if self.has_collision then
+            self.extension:StreamIn()
+        else
+            self.extension:StreamOut()
+        end
+    end
 end
 
 -- Destroys the ClientStaticObject in the world
@@ -46,6 +54,10 @@ function cLandclaimObject:Remove()
     self.object:Remove()
     self.object = nil
     self.spawned = false
+    
+    if self.extension then
+        self.extension:Remove()
+    end
 end
 
 function cLandclaimObject:IsInCollisionRange(pos)
@@ -66,16 +78,12 @@ function cLandclaimObject:GetCollision()
     return BuildObjects[self.name].collision
 end
 
-function cLandclaimObject:GetExtensions()
-    local extensions = {}
+function cLandclaimObject:GetExtension()
 
     if self.name == "Door" then
-        table.insert(extensions, cDoorExtension(self))
+        return cDoorExtension(self)
     elseif self.name == "Light" then
-        table.insert(extensions, cLightExtension(self))
-    elseif self.name == "Bed" then
-        table.insert(extensions, cBedExtension(self))
+        return cLightExtension(self)
     end
 
-    return extensions
 end

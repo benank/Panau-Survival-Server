@@ -192,7 +192,7 @@ function cLandclaimObjectMenu:PostRender(args)
     for name, button in pairs(self.buttons) do
         local height = button:GetSize().y
         Render:DrawLine(Vector2(0, height * i), Vector2(0, height * i) + Vector2(size.x, 0), Color.White)
-        i = i + 1
+        i = math.min(i + 1, num_buttons - 1)
     end
 
     if self.has_access_mode then

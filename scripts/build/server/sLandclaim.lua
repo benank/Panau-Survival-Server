@@ -41,6 +41,13 @@ function sLandclaim:ParseObjects(objects)
         local id = self:GetNewUniqueObjectId()
         object.id = id
         self.objects[id] = sLandclaimObject(object)
+        
+        if object.name == "Bed" then
+            for steam_id, _ in pairs(object.custom_data.player_spawns) do
+                sLandclaimManager.player_spawns[steam_id] = {id = object.id, landclaim_id = self.id, landclaim_owner_id = self.owner_id}
+            end
+        end
+
     end
 
 end
@@ -72,7 +79,11 @@ function sLandclaim:PressBuildObjectMenuButton(args, player)
 
     elseif args.name == "Set Spawn" and object.name == "Bed" then
         -- Setting spawn to a bed
+
+        self:UnsetOldSpawn(player_id, sLandclaimManager.player_spawns[player_id])
+        
         object.custom_data.player_spawns[player_id] = true
+        sLandclaimManager.player_spawns[player_id] = {id = args.id, landclaim_id = self.id, landclaim_owner_id = self.owner_id}
 
         Events:Fire("SetHomePosition", {
             player = player,
@@ -88,6 +99,7 @@ function sLandclaim:PressBuildObjectMenuButton(args, player)
     elseif args.name == "Unset Spawn" and object.name == "Bed" then
         -- Unsetting spawn from a bed
         object.custom_data.player_spawns[player_id] = nil
+        sLandclaimManager.player_spawns[player_id] = nil
 
         Events:Fire("ResetHomePosition", {
             player = player
@@ -104,6 +116,32 @@ function sLandclaim:PressBuildObjectMenuButton(args, player)
     end
 
     self:UpdateToDB()
+
+end
+
+-- Unsets a player's previous bed spawn point if it exists
+function sLandclaim:UnsetOldSpawn(player_id, old_spawn_data)
+
+    if not old_spawn_data then return end
+
+    local old_spawn = sLandclaimManager.player_spawns[player_id]
+    local landclaims = sLandclaimManager.landclaims[old_spawn.landclaim_owner_id]
+    if not landclaims then return end
+
+    local landclaim = landclaims[old_spawn.landclaim_id]
+    if not landclaim then return end
+
+    local object = landclaim.objects[old_spawn.id]
+    if not object then return end
+
+    object.custom_data.player_spawns[player_id] = nil
+    landclaim:UpdateToDB()
+    
+    landclaim:SyncSmallUpdate({
+        type = "bed_update",
+        id = object.id,
+        player_spawns = object.custom_data.player_spawns
+    })
 
 end
 
@@ -163,6 +201,21 @@ function sLandclaim:PlaceObject(args)
 
 end
 
+function sLandclaim:ActivateLight(args, player)
+    local object = self.objects[args.id]
+    if not object then return end
+
+    if object.name ~= "Light" then return end
+    object.custom_data.enabled = not object.custom_data.enabled
+    
+    self:UpdateToDB()
+    self:SyncSmallUpdate({
+        type = "light_state",
+        id = object.id,
+        enabled = object.custom_data.enabled
+    })
+end
+
 -- Called when a player tries to remove an object in the landclaim
 function sLandclaim:RemoveObject(args, player)
     if not self:CanPlayerPlaceObject(player) then return end
@@ -191,7 +244,7 @@ function sLandclaim:RemoveObject(args, player)
         angle = Angle(math.random() * math.pi * 2, 0, 0)
     })
 
-    -- also remove spawns if there are any attached
+    -- TODO: also remove spawns if there are any attached
 end
 
 -- Called when an object on the landclaim is damaged
@@ -203,8 +256,8 @@ function sLandclaim:DamageObject(args, player)
     object:Damage(C4Damage)
 
     if object.health <= 0 then
-        args.id = id
-        self:RemoveObject(args, player)
+        self.objects[args.id] = nil
+        -- TODO: also remove spawns if there are any attached
     end
 
     self:UpdateToDB()

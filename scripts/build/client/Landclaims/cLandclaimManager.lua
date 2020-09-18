@@ -87,6 +87,12 @@ function cLandclaimManager:SyncSmallLandclaimUpdate(args)
         object.custom_data.access_mode = args.access_mode
     elseif args.type == "object_remove" then
         landclaim:RemoveObject(args)
+    elseif args.type == "light_state" then
+        local object = landclaim.objects[args.id]
+        if not object then return end
+
+        object.custom_data.enabled = args.enabled
+        object.extension:StateUpdated(args.enabled)
     end
 
     Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))
