@@ -31,7 +31,7 @@ end
 -- Individual distance checks for each object to determine whether it should have collision
 function cLandclaim:StartObjectStreamingThread()
     Thread(function()
-        while self.loaded or self.loading do
+        while self.loaded do
 
             local player_pos = Camera:GetPosition()
             local sleep_count = 0
@@ -143,6 +143,8 @@ function cLandclaim:Load()
         end
     end
 
+    self.loaded = true
+
     self.one_stream_iteration_done = false
     self:StartObjectStreamingThread()
 
@@ -150,7 +152,6 @@ function cLandclaim:Load()
         Timer.Sleep(100)
     end
 
-    self.loaded = true
     self.loading = false
 
     -- Finished loading objects

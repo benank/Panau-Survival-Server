@@ -20,7 +20,8 @@ end
 
 -- Creates the ClientStaticObject in the world
 function cLandclaimObject:Create(no_collision)
-    if IsValid(self.object) then return end
+    if self.object then return end -- IsValid will fail if it is too far away
+
     self.object = ClientStaticObject.Create({
         position = self.position,
         angle = self.angle,
@@ -50,9 +51,9 @@ end
 
 -- Destroys the ClientStaticObject in the world
 function cLandclaimObject:Remove()
-    if not IsValid(self.object) then return end
-    self.object:Remove()
-    self.object = nil
+    if not self.object then return end -- IsValid will fail if it is too far away
+    
+    self.object = self.object:Remove()
     self.spawned = false
     
     if self.extension then
@@ -66,6 +67,7 @@ end
 
 -- Destroys the current ClientStaticObject and replaces it with one that has/does not have collision
 function cLandclaimObject:ToggleCollision(enabled)
+    if self.has_collision == enabled then return end
     self:Remove()
     self:Create(not enabled)
 end
