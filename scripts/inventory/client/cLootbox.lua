@@ -86,12 +86,8 @@ function cLootbox:CreateModel()
 
     -- Enable outlines
     for _, obj in pairs(self.static_objects) do
-        --obj:SetOutlineColor(Color(255,255,255,100))
-        --obj:SetOutlineEnabled(true)
-
         -- Register static object ids in uid lookup table
         obj:SetValue("LootboxId", self.uid)
-        LootManager.SO_id_to_uid[obj:GetId()] = self.uid
         LootManager.objects[obj:GetId()] = obj
     end
 
@@ -101,7 +97,7 @@ function cLootbox:CreateModel()
 
     Events:Fire("Inventory/LootboxCreate", {
         id = self.uid,
-        cso_id = self.static_objects[1]:GetId(),
+        cso_id = self.cso_id,
         tier = self.tier,
         position = self.position,
         angle = self.angle

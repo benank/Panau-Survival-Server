@@ -45,6 +45,68 @@ function sLandclaim:ParseObjects(objects)
 
 end
 
+function sLandclaim:PressBuildObjectMenuButton(args, player)
+
+    local object = self.objects[args.id]
+    if not object then return end
+
+    if player:GetPosition():Distance(object.position) > 15 then return end
+
+    local player_id = tostring(player:GetSteamId())
+
+    if args.name:find("Access") and object.name == "Door" and self.owner_id == player_id then
+        -- Changing door access mode
+        if args.name == "Access: Only Me" then
+            object.custom_data.access_mode = LandclaimAccessModeEnum.OnlyMe
+        elseif args.name == "Access: Friends" then
+            object.custom_data.access_mode = LandclaimAccessModeEnum.Friends
+        elseif args.name == "Access: Everyone" then
+            object.custom_data.access_mode = LandclaimAccessModeEnum.Everyone
+        end
+
+        self:SyncSmallUpdate({
+            type = "door_access_update",
+            id = object.id,
+            access_mode = object.custom_data.access_mode
+        })
+
+    elseif args.name == "Set Spawn" and object.name == "Bed" then
+        -- Setting spawn to a bed
+        object.custom_data.player_spawns[player_id] = true
+
+        Events:Fire("SetHomePosition", {
+            player = player,
+            pos = object.position
+        })
+
+        self:SyncSmallUpdate({
+            type = "bed_update",
+            id = object.id,
+            player_spawns = object.custom_data.player_spawns
+        })
+
+    elseif args.name == "Unset Spawn" and object.name == "Bed" then
+        -- Unsetting spawn from a bed
+        object.custom_data.player_spawns[player_id] = nil
+
+        Events:Fire("ResetHomePosition", {
+            player = player
+        })
+
+        self:SyncSmallUpdate({
+            type = "bed_update",
+            id = object.id,
+            player_spawns = object.custom_data.player_spawns
+        })
+
+    elseif args.name == "Remove" and self:CanPlayerPlaceObject(player) then
+        self:RemoveObject(args, player)
+    end
+
+    self:UpdateToDB()
+
+end
+
 function sLandclaim:CanPlayerPlaceObject(player)
 
     if not self:IsActive() then return end
@@ -70,6 +132,8 @@ end
 -- Called when a player tries to place an object in the landclaim
 function sLandclaim:PlaceObject(args)
     if not self:CanPlayerPlaceObject(args.player) then return end
+
+    if args.player:GetPosition():Distance(args.position) > 20 then return end
 
     local object = 
     {
@@ -101,8 +165,33 @@ end
 
 -- Called when a player tries to remove an object in the landclaim
 function sLandclaim:RemoveObject(args, player)
-    if not self:CanPlayerPlaceObject(args.player) then return end
+    if not self:CanPlayerPlaceObject(player) then return end
 
+    local object = self.objects[args.id]
+    if not object then return end
+
+    self.objects[args.id] = nil
+
+    self:UpdateToDB()
+
+    self:SyncSmallUpdate({
+        type = "object_remove",
+        id = args.id
+    })
+
+    local item = CreateItem({name = object.name, amount = 1, durability = object.health})
+    local stack = shStack({contents = {item}})
+
+    Events:Fire("Inventory/CreateDropboxExternal", {
+        contents = 
+        {
+            stack:GetSyncObject()
+        },
+        position = object.position + Vector3(0, 0.15, 0),
+        angle = Angle(math.random() * math.pi * 2, 0, 0)
+    })
+
+    -- also remove spawns if there are any attached
 end
 
 -- Called when an object on the landclaim is damaged
@@ -114,7 +203,8 @@ function sLandclaim:DamageObject(args, player)
     object:Damage(C4Damage)
 
     if object.health <= 0 then
-        self.objects[id] = nil
+        args.id = id
+        self:RemoveObject(args, player)
     end
 
     self:UpdateToDB()

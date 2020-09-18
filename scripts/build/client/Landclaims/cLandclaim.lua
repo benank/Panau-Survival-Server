@@ -226,6 +226,7 @@ end
 
 -- Called when an object was removed from the landclaim (or destroyed)
 function cLandclaim:RemoveObject(args)
+    if not self.objects[args.id] then return end
     self.objects[args.id]:Remove()
     self.objects[args.id] = nil
     self.objects_data[args.id] = nil
@@ -250,9 +251,20 @@ function cLandclaim:DamageObject(args, player)
     end
 end
 
--- Called when we try to rename the landclaim
-function cLandclaim:Rename(name, player)
+function cLandclaim:CanPlayerPlaceObject(player)
 
+    if not self:IsActive() then return end
+
+    if self.access_mode == LandclaimAccessModeEnum.OnlyMe then
+        return self.owner_id == tostring(player:GetSteamId())
+    elseif self.access_mode == LandclaimAccessModeEnum.Friends then
+        return AreFriends(player, self.owner_id)
+    elseif self.access_mode == LandclaimAccessModeEnum.Clan then
+        -- TODO: add clan check logic here
+        return self.owner_id == tostring(player:GetSteamId())
+    elseif self.access_mode == LandclaimAccessModeEnum.Everyone then
+        return true
+    end
 end
 
 function cLandclaim:GetSyncObject()

@@ -75,6 +75,18 @@ function cLandclaimManager:SyncSmallLandclaimUpdate(args)
         Events:Fire("build/UpdateLandclaimOnMap", landclaim:GetSyncObject())
     elseif args.type == "object_damaged" then
         landclaim:DamageObject(args, args.player)
+    elseif args.type == "bed_update" then
+        local object = landclaim.objects[args.id]
+        if not object then return end
+
+        object.custom_data.player_spawns = args.player_spawns
+    elseif args.type == "door_access_update" then
+        local object = landclaim.objects[args.id]
+        if not object then return end
+
+        object.custom_data.access_mode = args.access_mode
+    elseif args.type == "object_remove" then
+        landclaim:RemoveObject(args)
     end
 
     Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))

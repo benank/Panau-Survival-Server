@@ -9,6 +9,7 @@ function sLandclaimManager:__init()
     Network:Subscribe("build/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Network:Subscribe("build/DeleteLandclaim", self, self.DeleteLandclaim)
     Network:Subscribe("build/RenameLandclaim", self, self.RenameLandclaim)
+    Network:Subscribe("build/PressBuildObjectMenuButton", self, self.PressBuildObjectMenuButton)
     Network:Subscribe("build/ReadyForInitialSync", self, self.PlayerReadyForInitialSync)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
@@ -23,6 +24,18 @@ function sLandclaimManager:__init()
         end)
     end
 
+end
+
+-- Called when a player presses a button from the right click object menu
+function sLandclaimManager:PressBuildObjectMenuButton(args, player)
+    local landclaims = self.landclaims[args.landclaim_owner_id]
+    if not landclaims then return end
+
+    local landclaim = landclaims[args.landclaim_id]
+    if not landclaim then return end
+    if not landclaim:IsActive() then return end
+
+    landclaim:PressBuildObjectMenuButton(args, player)
 end
 
 function sLandclaimManager:C4DetonateOnBuildObject(args)

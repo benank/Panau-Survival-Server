@@ -15,7 +15,23 @@ function sLootManager:__init()
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(Lootbox.Cell_Size), self, self.PlayerCellUpdate)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("Inventory/CreateDropboxExternal", self, self.CreateDropboxExternal)
 
+end
+
+function sLootManager:CreateDropboxExternal(args)
+    args.tier = Lootbox.Types.Dropbox
+    args.active = true
+    
+    for stack_index, stack in pairs(args.contents) do
+        for item_index, item in pairs(stack.contents) do
+            stack.contents[item_index] = shItem(item)
+        end
+        args.contents[stack_index] = shStack(stack)
+    end
+
+    local dropbox = CreateLootbox(args)
+    dropbox:Sync()
 end
 
 function sLootManager:ClientModuleLoad(args)

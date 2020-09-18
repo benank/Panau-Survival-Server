@@ -17,7 +17,8 @@ function CreateItem(args)
         data.max_durability = data.max_durability and data.max_durability or Items.Config.default_durability
         data.durability = args.max_dura and data.max_durability or randy(
             math.ceil(Items.Config.min_durability_percent * data.max_durability),
-            math.ceil(Items.Config.max_durability_percent * data.max_durability)
+            math.ceil(Items.Config.max_durability_percent * data.max_durability),
+            math.random() * os.time()
         )
 
     end

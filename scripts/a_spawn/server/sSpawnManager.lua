@@ -11,7 +11,7 @@ function sSpawnManager:__init()
 	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("SetHomePosition", self, self.SetHomePosition)
-    Events:Subscribe("PlayerChat", self, self.PlayerChat)
+    Events:Subscribe("ResetHomePosition", self, self.ResetHomePosition)
 
 	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
 
@@ -41,16 +41,11 @@ function sSpawnManager:__init()
 
 end
 
-function sSpawnManager:PlayerChat(args)
-
-    if args.text == "/unsethome" then
-        self:SetHomePosition({
-            player = args.player,
-            pos = self:GetPositionInSafezone()
-        })
-        Chat:Send(args.player, "Set spawn point to the safezone.", Color.Yellow)
-    end
-
+function sSpawnManager:ResetHomePosition(args)
+    self:SetHomePosition({
+        player = args.player,
+        pos = self:GetPositionInSafezone()
+    })
 end
 
 function sSpawnManager:SetHomePosition(args)
