@@ -186,7 +186,9 @@ end
 function cLandclaimManager:SyncTotalLandclaims(args)
 
     -- Regsiter each landclaim as a loading resource so the load screen waits for them to fully load
-    Events:Fire("loader/RegisterResource", {count = args.total, name = "Landclaims"})
+    if args.total > 0 then
+        Events:Fire("loader/RegisterResource", {count = args.total, name = "Landclaims"})
+    end
     Events:Fire("loader/CompleteResource", {count = 1, name = "Landclaim Preload"})
 
 end
