@@ -359,25 +359,6 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
         return
     end
 
-    if not self.sz_config then
-        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
-    end
-
-    local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues().blacklist
-
-    for _, area in pairs(BlacklistedAreas) do
-        if Distance2D(position, area.pos) < size + 50 then
-            self:SendPlayerErrorMessage(player)
-            return
-        end
-    end
-
-    -- If they are within nz radius * 3, we don't let them place that close
-    if Distance2D(position, self.sz_config.neutralzone.position) < self.sz_config.neutralzone.radius * 3 + size then
-        self:SendPlayerErrorMessage(player)
-        return
-    end
-
     -- Not within map bounds
     if not IsInSquare(Vector3(), 32768, position) then
         self:SendPlayerErrorMessage(player)
@@ -387,17 +368,13 @@ function sLandclaimManager:TryPlaceLandclaim(args, player)
     local ModelChangeAreas = SharedObject.GetByName("ModelLocations"):GetValues()
 
     for _, area in pairs(ModelChangeAreas) do
-        if Distance2D(position, area.pos) < 200 + size then
+        if Distance2D(position, area.pos) < 300 + size then
             self:SendPlayerErrorMessage(player)
             return
         end
     end
 
-    if IsInLocation(position, size + 1500, DefaultLocations.Airport)
-    or IsInLocation(position, size + 1000, DefaultLocations.MilitaryBase) 
-    or IsInLocation(position, size + 1200, DefaultLocations.Seaport) 
-    or IsInLocation(position, size + 1200, DefaultLocations.Commercial)
-    or IsInLocation(position, size + 1000, DefaultLocations.Custom) then
+    if IsInLocation(position, size, BlacklistedLandclaimAreas) then
         self:SendPlayerErrorMessage(player)
         return
     end
