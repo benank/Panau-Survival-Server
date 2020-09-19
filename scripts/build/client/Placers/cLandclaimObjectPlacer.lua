@@ -54,6 +54,16 @@ function cLandclaimObjectPlacer:__init()
         [Action.ExitVehicle] = true
     }
 
+    -- Objects with certain collisions that we cannot place on
+    self.blacklistedCollisions = 
+    {
+        ["km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx"] = true, -- Dropbox
+        ["38x11.nlz/go231_lod1-a_col.pfx"] = true, -- Barrel stash
+        ["f1t16.garbage_can.eez/go225_lod1-a_col.pfx"] = true, -- Garbage stash
+        ["areaset03.blz/go161_lod1-a1_dst_col.pfx"] = true, -- Locked stash
+        ["samsite.animated.eez/key036sam-d2.lod"] = true, -- Prox alarm
+    }
+
     Events:Subscribe("build/StartLandclaimObjectPlacement", self, self.StartObjectPlacement)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 end
@@ -210,6 +220,10 @@ function cLandclaimObjectPlacer:Render(args)
         can_place_here = can_place_here and (ray.entity.__type == "ClientStaticObject" or self.place_entity)
 
         if self.forward_ray.entity.__type == "ClientStaticObject" then
+            if self.blacklistedCollisions[ray.entity:GetCollision()] then
+                can_place_here = false
+            end
+
             self.forward_ray.entity = nil
         end
     end
