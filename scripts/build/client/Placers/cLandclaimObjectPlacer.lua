@@ -273,7 +273,8 @@ function cLandclaimObjectPlacer:Render(args)
         can_place_here = false
     end
 
-    can_place_here = self:CheckBoundingBox() and self:IsInOwnedLandclaim() and can_place_here
+    -- Move CanBuildInLandclaim to OnPlace check if it gets too laggy
+    can_place_here = self:CheckBoundingBox() and self:CanBuildInLandclaim() and can_place_here
     self.can_place_here = can_place_here
     self:RenderText(can_place_here)
 
@@ -313,14 +314,16 @@ function cLandclaimObjectPlacer:Snap(ang)
 
 end
 
--- Returns true if the object is within one of the LocalPlayer's owned landclaims
-function cLandclaimObjectPlacer:IsInOwnedLandclaim()
-    local landclaims = LandclaimManager:GetLocalPlayerOwnedLandclaims()
+-- Returns true if the object is within a landclaim that they can build on
+function cLandclaimObjectPlacer:CanBuildInLandclaim()
+    local all_landclaims = LandclaimManager.landclaims
     local pos = self.object:GetPosition()
 
-    for id, landclaim in pairs(landclaims) do
-        if IsInSquare(landclaim.position, landclaim.size, pos) then
-            return true
+    for steam_id, landclaims in pairs(all_landclaims) do
+        for id, landclaim in pairs(landclaims) do
+            if IsInSquare(landclaim.position, landclaim.size, pos) and landclaim:CanPlayerPlaceObject(LocalPlayer) then
+                return true
+            end
         end
     end
 
