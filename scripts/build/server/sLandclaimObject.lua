@@ -16,6 +16,19 @@ function sLandclaimObject:Damage(amount)
     self.health = math.max(0, self.health - math.abs(amount))
 end
 
+-- Removes all existing spawns from this bed object if they exist
+function sLandclaimObject:RemoveAllBedSpawns()
+    if self.name ~= "Bed" then return end
+
+    for steam_id, _ in pairs(self.custom_data.player_spawns) do
+        Events:Fire("ResetHomePosition", {
+            player_id = tostring(SteamId(steam_id).id),
+            player = sLandclaimManager.players[steam_id]
+        })
+    end
+
+end
+
 -- Get default custom data for an object when it is first placed, like a door access mode
 function sLandclaimObject:GetDefaultCustomData()
     

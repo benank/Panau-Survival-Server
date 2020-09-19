@@ -58,7 +58,12 @@ function cLandclaim:StartObjectStreamingThread()
                 end
             end
 
-            self.one_stream_iteration_done = true
+            if not self.one_stream_iteration_done then
+                Thread(function()
+                    Timer.Sleep(3000)
+                    self.one_stream_iteration_done = true
+                end)
+            end
             Timer.Sleep(50)
         end
     end)

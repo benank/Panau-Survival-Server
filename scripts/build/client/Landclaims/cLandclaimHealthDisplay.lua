@@ -37,6 +37,7 @@ end
 
 function cLandclaimObjectHealthDisplay:RenderDisplay(landclaim_object)
 
+    local C4Damage = ExplosiveDamage.C4
     local health = landclaim_object.health
     local max_health = landclaim_object.max_health
     local num_bars = math.ceil(max_health / C4Damage)

@@ -8,7 +8,27 @@ function sClaymore:__init(args)
     self.owner_id = args.owner_id
     self.exploded = false
     self.cell = GetCell(self.position, ItemsConfig.usables.Claymore.cell_size)
+    self.landclaim_data = args.landclaim_data
+    self.lootbox_uid = args.lootbox_uid
 
+end
+
+function sClaymore:OnExplode()
+    if self.landclaim_data then
+        Events:Fire("items/DetonateOnBuildObject", {
+            landclaim_data = self.landclaim_data,
+            owner_id = self.owner_id,
+            player = sProxAlarms.players[self.owner_id],
+            type = "Claymore"
+        })
+    elseif self.lootbox_uid then
+        Events:Fire("items/DetonateOnStash", {
+            lootbox_uid = self.lootbox_uid,
+            owner_id = self.owner_id,
+            player = sProxAlarms.players[self.owner_id],
+            type = "Claymore"
+        })
+    end
 end
 
 function sClaymore:Trigger(player)
@@ -19,10 +39,11 @@ function sClaymore:Trigger(player)
 
     -- No need to sort players by cells for this, so just send nearby to remove
     -- Don't send to player who triggered in case they are lagging so it will trigger instantly for them
-    --Network:Send(player, "items/MineTrigger", {position = self.position, id = self.id})
     Network:SendNearby(player, "items/ClaymoreExplode", {position = self.position, id = self.id})
 
     self.exploded = true
+
+    self:OnExplode()
 
     return true
 

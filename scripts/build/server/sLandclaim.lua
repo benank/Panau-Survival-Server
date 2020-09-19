@@ -17,6 +17,19 @@ function sLandclaim:__init(args)
 
 end
 
+-- Called when the landclaim is deleted or expires
+function sLandclaim:OnDeleteOrExpire()
+    
+    -- Remove all bed spawns
+    Thread(function()
+        for id, object in pairs(self.objects) do
+            object:RemoveAllBedSpawns()
+            Timer.Sleep(1)
+        end
+    end)
+
+end
+
 -- Returns if the landclaim is valid, aka it hasn't been deleted and hasn't expired yet
 -- We do this to sort old landclaims from current, active ones but keep the old ones
 -- to persist the objects that were on them
@@ -263,7 +276,7 @@ function sLandclaim:RemoveObject(args, player)
         angle = Angle(math.random() * math.pi * 2, 0, 0)
     })
 
-    -- TODO: also remove spawns if there are any attached
+    object:RemoveAllBedSpawns()
 end
 
 -- Called when an object on the landclaim is damaged
@@ -272,11 +285,18 @@ function sLandclaim:DamageObject(args, player)
     local object = self.objects[id]
     if not object then return end
 
-    object:Damage(C4Damage)
+    if not args.type then return end
+    local damage = ExplosiveDamage[args.type]
+
+    if not damage then return end
+
+    -- args.owner_id is valid if player is not
+
+    object:Damage(damage)
 
     if object.health <= 0 then
         self.objects[id] = nil
-        -- TODO: also remove spawns if there are any attached
+        object:RemoveAllBedSpawns()
     end
 
     self:UpdateToDB()

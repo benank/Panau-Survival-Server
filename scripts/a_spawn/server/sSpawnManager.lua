@@ -44,13 +44,14 @@ end
 function sSpawnManager:ResetHomePosition(args)
     self:SetHomePosition({
         player = args.player,
+        player_id = args.player_id,
         pos = self:GetPositionInSafezone()
     })
 end
 
 function sSpawnManager:SetHomePosition(args)
 
-    local steamid = tostring(args.player:GetSteamId().id)
+    local steamid = args.player_id or tostring(args.player:GetSteamId().id)
 
 	local command = SQL:Command("UPDATE positions SET homeX = ?, homeY = ?, homeZ = ? WHERE steamID = (?)")
 	command:Bind(1, args.pos.x)
@@ -59,7 +60,9 @@ function sSpawnManager:SetHomePosition(args)
 	command:Bind(4, steamid)
     command:Execute()
     
-    args.player:SetNetworkValue("HomePosition", args.pos)
+    if IsValid(args.player) then
+        args.player:SetNetworkValue("HomePosition", args.pos)
+    end
 
 end
 

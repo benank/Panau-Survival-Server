@@ -6,6 +6,7 @@ function sLandclaimManager:__init()
     
     self.landclaims = {} -- [steam_id] = {[landclaim_id] = landclaim, [landclaim_id] = landclaim}
     self.player_spawns = {} -- [steam id] = {id = id, landclaim_id = landclaim id, landclaim_owner_id = landclaim_owner_id}
+    self.players = {}
 
     Network:Subscribe("build/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Network:Subscribe("build/DeleteLandclaim", self, self.DeleteLandclaim)
@@ -17,17 +18,22 @@ function sLandclaimManager:__init()
 
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
+    Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
-    Events:Subscribe("items/C4DetonateOnBuildObject", self, self.C4DetonateOnBuildObject)
+    Events:Subscribe("items/DetonateOnBuildObject", self, self.DetonateOnBuildObject)
 
     if IsTest then
         Events:Subscribe("PlayerChat", function(args)
-            if args.text == "/objtest" then
+            if args.text == "/objtest" and IsAdmin(args.player) then
                 self:ObjectTest(args)
             end
         end)
     end
 
+end
+
+function sLandclaimManager:PlayerQuit(args)
+    self.players[tostring(args.player:GetSteamId())] = nil
 end
 
 function sLandclaimManager:ActivateDoor(args, player)
@@ -53,7 +59,7 @@ function sLandclaimManager:PressBuildObjectMenuButton(args, player)
     landclaim:PressBuildObjectMenuButton(args, player)
 end
 
-function sLandclaimManager:C4DetonateOnBuildObject(args)
+function sLandclaimManager:DetonateOnBuildObject(args)
     if not IsValid(args.player) then return end
 
     local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_data.landclaim_owner_id, args.landclaim_data.landclaim_id)
@@ -219,6 +225,7 @@ end
 
 function sLandclaimManager:PlayerReadyForInitialSync(args, player)
     -- Send player data of all landclaims. They will manage streaming on the clientside.
+    self.players[tostring(player:GetSteamId())] = player
     Thread(function()
         
         local total_landclaims = 0
