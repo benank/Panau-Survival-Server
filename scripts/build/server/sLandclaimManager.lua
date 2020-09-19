@@ -11,6 +11,7 @@ function sLandclaimManager:__init()
     Network:Subscribe("build/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Network:Subscribe("build/DeleteLandclaim", self, self.DeleteLandclaim)
     Network:Subscribe("build/RenameLandclaim", self, self.RenameLandclaim)
+    Network:Subscribe("build/ChangeLandclaimAccessMode", self, self.ChangeLandclaimAccessMode)
     Network:Subscribe("build/PressBuildObjectMenuButton", self, self.PressBuildObjectMenuButton)
     Network:Subscribe("build/ReadyForInitialSync", self, self.PlayerReadyForInitialSync)
     Network:Subscribe("build/ActivateLight", self, self.ActivateLight)
@@ -107,6 +108,19 @@ function sLandclaimManager:ObjectTest(args)
         end
         _debug("FINISHED")
     end)
+end
+
+function sLandclaimManager:ChangeLandclaimAccessMode(args, player)
+    if not args.id or not args.access_mode then return end
+
+    local player_landclaims = self:GetPlayerActiveLandclaims(player)
+
+    local landclaim = player_landclaims[args.id]
+    if not landclaim then return end
+
+    if not LandclaimAccessModeEnum:IsValidAccessMode(args.access_mode) then return end
+
+    landclaim:ChangeAccessMode(args.access_mode, player)
 end
 
 function sLandclaimManager:RenameLandclaim(args, player)

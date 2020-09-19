@@ -20,6 +20,7 @@ function cLandclaimManager:__init()
     Events:Subscribe("build/ToggleLandclaimVisibility", self, self.ToggleLandclaimVisibility)
     Events:Subscribe("build/DeleteLandclaim", self, self.DeleteLandclaim)
     Events:Subscribe("build/RenameLandclaim", self, self.RenameLandclaim)
+    Events:Subscribe("build/ChangeLandclaimAccessMode", self, self.ChangeLandclaimAccessMode)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("GameRender", self, self.GameRender)
 
@@ -36,6 +37,14 @@ function cLandclaimManager:__init()
         Network:Send("build/ReadyForInitialSync")
     end
 
+end
+
+function cLandclaimManager:ChangeLandclaimAccessMode(args)
+    local my_claims = self:GetLocalPlayerOwnedLandclaims()
+    if not my_claims[args.id] then return end
+    local access_mode = LandclaimAccessModeEnum:GetEnumFromDescription(args.access_mode_string)
+    if not access_mode then return end
+    Network:Send("build/ChangeLandclaimAccessMode", {id = args.id, access_mode = access_mode})
 end
 
 function cLandclaimManager:RenameLandclaim(args)
@@ -95,8 +104,10 @@ function cLandclaimManager:SyncSmallLandclaimUpdate(args)
 
         object.custom_data.open = args.open
         object.extension:StateUpdated()
+    elseif args.type == "access_mode" then
+        landclaim.access_mode = args.access_mode
     end
-
+    
     Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))
 end
 

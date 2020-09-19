@@ -15,6 +15,22 @@ function LandclaimAccessModeEnum:__init()
         [self.Clan] = "Clan"
     }
 
+    self.descriptions_to_enum = {}
+
+    for enum, description in pairs(self.descriptions) do
+        self.descriptions_to_enum[description] = enum
+    end
+
+end
+
+function LandclaimAccessModeEnum:IsValidAccessMode(access_mode)
+    for enum, description in pairs(self.descriptions) do
+        if enum == access_mode then return true end
+    end
+end
+
+function LandclaimAccessModeEnum:GetEnumFromDescription(description)
+    return self.descriptions_to_enum[description]
 end
 
 function LandclaimAccessModeEnum:GetDescription(enum)

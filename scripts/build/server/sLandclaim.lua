@@ -19,7 +19,7 @@ end
 
 -- Called when the landclaim is deleted or expires
 function sLandclaim:OnDeleteOrExpire()
-    
+
     -- Remove all bed spawns
     Thread(function()
         for id, object in pairs(self.objects) do
@@ -214,6 +214,17 @@ function sLandclaim:PlaceObject(args)
         player = args.player
     })
 
+end
+
+function sLandclaim:ChangeAccessMode(access_mode, player)
+    if self.owner_id ~= tostring(player:GetSteamId()) then return end
+    self.access_mode = access_mode
+    self:UpdateToDB()
+    self:SyncSmallUpdate({
+        type = "access_mode",
+        access_mode = self.access_mode
+    })
+    Chat:Send(player, string.format("Access mode changed to %s for %s.", LandclaimAccessModeEnum:GetDescription(self.access_mode), self.name), Color.Green)
 end
 
 function sLandclaim:ActivateLight(args, player)

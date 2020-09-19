@@ -151,7 +151,7 @@ end
 function AssetManagerMenu:UpdateLandclaimsSecondTick()
     for id, landclaim_data in pairs(self.categories["Landclaims"].landclaims) do
         local pos = landclaim_data.data.position
-        landclaim_data.item:SetCellText(5, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(pos)))
+        landclaim_data.item:SetCellText(4, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(pos)))
     end
 end
 
@@ -260,8 +260,9 @@ function AssetManagerMenu:UpdateLandclaim(data)
     item:SetCellText(1, string.format("%.0f m", data.size))
     item:SetCellText(2, tostring(data.days_till_expiry))
     item:SetCellText(3, tostring(data.object_count))
-    item:SetCellText(4, data.access_mode_string)
-    item:SetCellText(5, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(data.position)))
+    item:SetCellText(4, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(data.position)))
+    
+    self.categories["Landclaims"].landclaims[data.id].combo_box:SelectItemByName(data.access_mode_string)
 end
 
 function AssetManagerMenu:GetFormattedDistanceString(dist)
@@ -427,6 +428,34 @@ function AssetManagerMenu:CreateVehiclesMenu()
     )
 end
 
+function AssetManagerMenu:AddComboBox(pos, size, parent, items)
+    -- Code originally from Castillo's Faction Menu: https://github.com/Castillos15/factions
+    local menuItems = {}
+    local comboBox = ComboBox.Create()
+    if (parent) then
+        comboBox:SetParent(parent)
+    end
+    comboBox:SetPositionRel(pos)
+    comboBox:SetSizeRel(size)
+    if (type(items) == "table" and #items > 0) then
+        for index, item in ipairs(items) do
+            menuItems[index] = comboBox:AddItem(item)
+        end
+    end
+
+    return comboBox, menuItems
+end
+
+-- Called when the user selects a different access mode type for a landclaim
+function AssetManagerMenu:SelectLandclaimAccessType(combo_box)
+    local landclaim_id = tonumber(combo_box:GetDataString("landclaim_id"))
+    local selection = combo_box:GetSelectedItem():GetText()
+    Events:Fire("build/ChangeLandclaimAccessMode", {
+        id = landclaim_id,
+        access_mode_string = selection
+    })
+end
+
 function AssetManagerMenu:AddLandclaim(data)
     local list = self.categories["Landclaims"].list
 
@@ -435,8 +464,7 @@ function AssetManagerMenu:AddLandclaim(data)
     item:SetCellText(1, string.format("%.0f m", data.size))
     item:SetCellText(2, tostring(data.days_till_expiry))
     item:SetCellText(3, tostring(data.object_count))
-    item:SetCellText(4, data.access_mode_string)
-    item:SetCellText(5, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(data.position)))
+    item:SetCellText(4, self:GetFormattedDistanceString(LocalPlayer:GetPosition():Distance(data.position)))
 
     for i = 0, 5 do
         item:GetCellContents(i):SetTextSize(20)
@@ -446,6 +474,16 @@ function AssetManagerMenu:AddLandclaim(data)
             item:GetCellContents(i):SetAlignment(GwenPosition.Center)
         end
     end
+
+    local combo_box = self:AddComboBox(Vector2(0, 0), Vector2(1, 1), item, {"Only Me", "Friends", "Everyone"})
+    combo_box:SetTextSize(16)
+    combo_box:SetAlignment(GwenPosition.Left + GwenPosition.CenterV)
+    combo_box:SetDock(GwenPosition.Fill)
+    combo_box:SetSize(Vector2(80, 24))
+    combo_box:SelectItemByName(data.access_mode_string)
+    combo_box:Subscribe("Selection", self, self.SelectLandclaimAccessType)
+    combo_box:SetDataString("landclaim_id", tostring(data.id))
+    item:SetCellContents(5, combo_box)
 
     local button_names = {
         [6] = "Rename",
@@ -466,7 +504,7 @@ function AssetManagerMenu:AddLandclaim(data)
         btn:Subscribe("Press", self, self.PressLandclaimButton)
     end
 
-    self.categories["Landclaims"].landclaims[tonumber(data.id)] = {item = item, data = data}
+    self.categories["Landclaims"].landclaims[tonumber(data.id)] = {item = item, data = data, combo_box = combo_box}
     self:UpdateCategoryNames()
 end
 
@@ -574,8 +612,8 @@ function AssetManagerMenu:CreateLandclaimsMenu()
     list:AddColumn("Size", 100)
     list:AddColumn("Days Left", 80)
     list:AddColumn("Objects", 160)
-    list:AddColumn("Access Mode", 100)
     list:AddColumn("Distance", 100)
+    list:AddColumn("Access Mode", 100)
     list:AddColumn("Rename", 80)
     list:AddColumn("Visibility", 80)
     list:AddColumn("Waypoint", 80)
