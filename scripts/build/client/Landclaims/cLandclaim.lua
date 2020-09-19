@@ -261,13 +261,15 @@ function cLandclaim:CanPlayerPlaceObject(player)
 
     if not self:IsActive() then return end
 
+    local is_owner = self.owner_id == tostring(player:GetSteamId())
+
     if self.access_mode == LandclaimAccessModeEnum.OnlyMe then
         return self.owner_id == tostring(player:GetSteamId())
     elseif self.access_mode == LandclaimAccessModeEnum.Friends then
-        return AreFriends(player, self.owner_id)
+        return AreFriends(player, self.owner_id) or is_owner
     elseif self.access_mode == LandclaimAccessModeEnum.Clan then
         -- TODO: add clan check logic here
-        return self.owner_id == tostring(player:GetSteamId())
+        return is_owner
     elseif self.access_mode == LandclaimAccessModeEnum.Everyone then
         return true
     end
