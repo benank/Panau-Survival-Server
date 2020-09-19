@@ -15,7 +15,7 @@ function cJumpPadExtension:GameRenderOpaque(args)
     local t = Transform3():Translate(self.object.position + Vector3.Up):Rotate(Angle(0, math.pi / 2, 0))
     Render:SetTransform(t)
     for i = 1, 7 do
-        Render:DrawCircle(Vector3(0, 0, -(i * 0.3 + self.delta) % 2), 0.25, self.color)
+        Render:DrawCircle(Vector3(0, 0, -(i * 0.3 + self.delta) % 2 - 7 / 2 * 0.3), 0.2, self.color)
     end
 
     local bone_pos = LocalPlayer:GetBonePosition("ragdoll_Reference")
