@@ -9,5 +9,7 @@ LandclaimObjectCollisionRanges =
     ["Chair"] = 100,
     ["Stop Sign"] = 100,
     ["Glass"] = 120,
-    ["Hedgehog"] = 100
+    ["Hedgehog"] = 100,
+    ["Cone"] = 100,
+    ["Jump Pad"] = 100
 }

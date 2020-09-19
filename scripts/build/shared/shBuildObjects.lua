@@ -66,5 +66,17 @@ BuildObjects =
         model = "31x14.nlz/go041-d.lod", 
         collision = "31x14.nlz/go041_lod1-d_col.pfx",
         unclaimed_decay = true
+    },
+    ["Cone"] = 
+    {
+        model = "35x12.nlz/go040-b.lod", 
+        collision = "35x12.nlz/go040_lod1-b_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Jump Pad"] = 
+    {
+        model = "05x41.nlz/go224-h.lod", 
+        collision = "05x41.nlz/go224_lod1-h_col.pfx",
+        unclaimed_decay = true
     }
 }

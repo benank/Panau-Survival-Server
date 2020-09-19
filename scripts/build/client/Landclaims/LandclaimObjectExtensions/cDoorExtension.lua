@@ -67,7 +67,7 @@ function cDoorExtension:Remove()
 end
 
 function cDoorExtension:UpdateDoorAngle()
-    if not IsValid(self.door_object) then return end
+    if not self.door_object then return end
     self.door_object:SetAngle(self.angle * self:GetAngle())
 end
 

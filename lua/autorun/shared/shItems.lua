@@ -770,6 +770,22 @@ Items =
         max_durability = 200,
         can_use = true,
         durable = true
+    },
+    {
+        name = "Cone",
+        category = "Survival",
+        stacklimit = 10,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Jump Pad",
+        category = "Survival",
+        stacklimit = 3,
+        max_durability = 100,
+        can_use = true,
+        durable = true
     }
 }
 

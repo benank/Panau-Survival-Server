@@ -28,12 +28,14 @@ ItemsConfig =
         ["Table"] = {model = "37x10.nlz/go061-c.lod", disable_walls = true},
         ["Light"] = {model = "general.blz/go063-f.lod"},
         ["Helipad"] = {model = "31x08.flz/gb030-d.lod", disable_walls = true},
-        ["Door"] = {model = "f2m01.village.nlz/gb206-b.lod", disable_walls = true},
+        ["Door"] = {model = "f2m01.village.nlz/gb206-b.lod", disable_ceil = true},
         ["Bed"] = {model = "areaset01.blz/go080-d.lod", disable_walls = true},
         ["Chair"] = {model = "areaset01.blz/go080-c.lod", disable_walls = true},
         ["Stop Sign"] = {model = "general.blz/go200-f1.lod", disable_walls = true},
         ["Glass"] = {model = "km02.towercomplex.nlz/key013_01-g2.lod", offset = Vector3(0, -0.8, -4.1)},
-        ["Hedgehog"] = {model = "31x14.nlz/go041-d.lod", disable_walls = true}
+        ["Hedgehog"] = {model = "31x14.nlz/go041-d.lod", disable_walls = true},
+        ["Cone"] = {model = "35x12.nlz/go040-b.lod", disable_walls = true},
+        ["Jump Pad"] = {model = "05x41.nlz/go224-h.lod", disable_walls = true}
     },
     airstrikes = 
     {
