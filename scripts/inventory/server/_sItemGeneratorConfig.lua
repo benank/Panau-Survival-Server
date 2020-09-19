@@ -336,11 +336,11 @@ LootItems =
             rarity = 0.078,
             items = 
             {
-                ["Bed"] = {rarity = 0.116, min = 1, max = 1},
-                ["Door"] = {rarity = 0.154, min = 1, max = 1},
-                ["Wall"] = {rarity = 0.154, min = 1, max = 1},
-                ["Proximity Alarm"] = {rarity = 0.323, min = 1, max = 1},
-                ["Locked Stash"] = {rarity = 0.215, min = 1, max = 1},
+                ["Bed"] = {rarity = 0.064, min = 1, max = 1},
+                ["Door"] = {rarity = 0.103, min = 1, max = 1},
+                ["Wall"] = {rarity = 0.324, min = 1, max = 1},
+                ["Proximity Alarm"] = {rarity = 0.381, min = 1, max = 1},
+                ["Locked Stash"] = {rarity = 0.09, min = 1, max = 1},
                 ["LandClaim"] = {rarity = 0.038, min = 1, max = 1},
             }
         },
