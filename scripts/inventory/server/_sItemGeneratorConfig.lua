@@ -206,7 +206,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.43,
+            rarity = 0.4,
             items = 
             {
                 ["Sawn-Off Ammo"] = {rarity = 0.1, min = 4, max = 8},
@@ -229,11 +229,14 @@ LootItems =
         },
         ["BUILD"] = 
         {
-            rarity = 0.02,
+            rarity = 0.05,
             items = 
             {
-                ["Barrel Stash"] = {rarity = 0.5, min = 1, max = 1},
-                ["Garbage Stash"] = {rarity = 0.5, min = 1, max = 1},
+                ["Barrel Stash"] = {rarity = 0.214, min = 1, max = 1},
+                ["Garbage Stash"] = {rarity = 0.214, min = 1, max = 1},
+                ["Light"] = {rarity = 0.286, min = 1, max = 1},
+                ["Door"] = {rarity = 0.143, min = 1, max = 1},
+                ["Wall"] = {rarity = 0.143, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -308,7 +311,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.551,
+            rarity = 0.515,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 3, max = 6},
@@ -330,11 +333,15 @@ LootItems =
         },
         ["BUILD"] = 
         {
-            rarity = 0.042,
+            rarity = 0.078,
             items = 
             {
-                ["Proximity Alarm"] = {rarity = 0.6, min = 1, max = 1},
-                ["Locked Stash"] = {rarity = 0.4, min = 1, max = 1},
+                ["Bed"] = {rarity = 0.116, min = 1, max = 1},
+                ["Door"] = {rarity = 0.154, min = 1, max = 1},
+                ["Wall"] = {rarity = 0.154, min = 1, max = 1},
+                ["Proximity Alarm"] = {rarity = 0.323, min = 1, max = 1},
+                ["Locked Stash"] = {rarity = 0.215, min = 1, max = 1},
+                ["LandClaim"] = {rarity = 0.038, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
