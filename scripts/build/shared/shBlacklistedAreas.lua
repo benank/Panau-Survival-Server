@@ -40,7 +40,7 @@ BlacklistedLandclaimAreas =
 
 	{name = "Hantu Island", pos = Vector3(-13574, 322.14614868164, -13647), size = 2500},
 	{name = "Pie Island", pos = Vector3(8068.52, 204.97, -15463.15), size = 100},
-    {name = "Three Kings Hotel", pos = Vector3(-12638, 212.21321105957, 15134), size = 400},
+    {name = "Three Kings Hotel", pos = Vector3(-12638, 212.21321105957, 15134), size = 600},
     
 	{name = "Paya Luas", pos = Vector3(12064, 206.14614868164, -10644), size = 1000},
 	{name = "Lembah Delima", pos = Vector3(9573, 204.4068145752, 3882), size = 700},

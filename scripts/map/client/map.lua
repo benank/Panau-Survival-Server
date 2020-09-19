@@ -710,7 +710,6 @@ function Map:ToggleWaypoint(position)
     if waypoint and Map.Waypoint:IsActive(Map:WorldToScreen(wPosition), Map.IconScale * Map.WaypointScale * (PDA:IsUsingGamepad() and 2 or 1)) then
         Waypoint:Remove()
     else
-        print(string.format("{name = \"Road\", pos = Vector3(%.2f, %.2f, %.2f), size = 400}", position.x, position.y, position.z))
         Waypoint:SetPosition(position)
     end
 end
