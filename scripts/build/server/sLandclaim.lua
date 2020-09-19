@@ -275,7 +275,7 @@ function sLandclaim:DamageObject(args, player)
     object:Damage(C4Damage)
 
     if object.health <= 0 then
-        self.objects[args.id] = nil
+        self.objects[id] = nil
         -- TODO: also remove spawns if there are any attached
     end
 
