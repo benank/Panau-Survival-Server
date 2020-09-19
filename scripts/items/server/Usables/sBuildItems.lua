@@ -47,7 +47,7 @@ function sBuildItems:FinishObjectPlacement(args, player)
         return
     end
 
-    if args.position:Distance(player:GetPosition()) > 7 then
+    if args.position:Distance(player:GetPosition()) > 20 then
         Chat:Send(player, "Placing object failed!", Color.Red)
         return
     end
