@@ -15,7 +15,7 @@ function cBuildItems:StartObjectPlacement(args)
         disable_walls = ItemsConfig.build[args.name].disable_walls == true,
         angle = ItemsConfig.build[args.name].angle,
         offset = ItemsConfig.build[args.name].offset,
-        display_bb = true
+        name = args.name
     })
 
     self.place_subs = 

@@ -24,7 +24,7 @@ ItemsConfig =
     },
     build = 
     {
-        ["Wall"] = {model = "obj.jumpgarbage.eez/gb206-g.lod", angle = Angle(0, 0, 0.157), offset = Vector3(0, -0.3, 0)},
+        ["Wall"] = {model = "obj.jumpgarbage.eez/gb206-g.lod", angle = Angle(0, 0, 0.157 + math.pi / 2), offset = Vector3(1, -0.5, 0)},
         ["Table"] = {model = "37x10.nlz/go061-c.lod", disable_walls = true},
         ["Light"] = {model = "general.blz/go063-f.lod"},
         ["Helipad"] = {model = "31x08.flz/gb030-d.lod", disable_walls = true},

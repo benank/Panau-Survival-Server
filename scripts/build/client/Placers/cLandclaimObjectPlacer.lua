@@ -24,7 +24,7 @@ function cLandclaimObjectPlacer:__init()
         "Right Click: Abort",
         "Mouse Wheel: Rotate",
         "Shift + Mouse Wheel: Rotation speed (%.0f deg)",
-        "Q: Rotation Axis (Current: %d)",
+        "Q: Rotation Axis (%s)",
         "X: Toggle Snap (%s)"
     }
 
@@ -89,6 +89,7 @@ function cLandclaimObjectPlacer:StartObjectPlacement(args)
         Events:Subscribe("KeyUp", self, self.KeyUp)
     }
 
+    self.name = args.name
     self.display_bb = args.display_bb == true
     self.angle_offset = args.angle ~= nil and args.angle or Angle()
     self.offset = args.offset or Vector3()
@@ -122,23 +123,23 @@ function cLandclaimObjectPlacer:GetBoundingBoxData(object)
 
     local size = bb2 - bb1
 
-    local offset = bb1 - self.object:GetPosition() - self.angle_offset * self.offset
+    local offset = bb1 - self.object:GetPosition()
 
     -- Custom bounding boxes because some are bad
-    if CustomBoundingBoxes[self.object:GetModel()] then
-        local custom_bb = CustomBoundingBoxes[self.object:GetModel()]
-        size = custom_bb.size
-        bb1 = -size / 2
-        bb2 = size / 2
-        offset = bb1 - self.object:GetPosition() - self.angle_offset * (self.offset + custom_bb.offset)
-    end
+    --if CustomBoundingBoxes[self.object:GetModel()] then
+        --local custom_bb = CustomBoundingBoxes[self.object:GetModel()]
+        --size = custom_bb.size
+        --bb1 = -size / 2
+        --bb2 = size / 2
+        --offset = bb1 - self.object:GetPosition() - custom_bb.angle * self.angle_offset * (self.offset + custom_bb.offset)
+    --end
 
     return bb1, bb2, size, offset
 end
 
 function cLandclaimObjectPlacer:CreateModel()
     
-    local color = Color(255, 0, 0, 150)
+    local color = Color(255, 0, 0, 255)
     local bb1, bb2, size, offset = self:GetBoundingBoxData(self.object)
 
     local vertices = {}
@@ -239,7 +240,7 @@ function cLandclaimObjectPlacer:Render(args)
     end
 
     if in_range then
-        if self.snap and IsValid(self.entity) then
+        if self.snap and IsValid(self.entity) and self.name == "Wall" then -- Snapping only for walls
             self:Snap(ang)
         else
             self.object:SetPosition(ray.position + ang * self.offset)
@@ -278,16 +279,23 @@ function cLandclaimObjectPlacer:Snap(ang)
     local ent_bb1, ent_bb2, ent_size, ent_offset = self:GetBoundingBoxData(self.entity)
     local obj_bb1, obj_bb2, obj_size, obj_offset = self:GetBoundingBoxData(self.object)
 
+    if CustomBoundingBoxes[self.object:GetModel()] then
+        ent_size = CustomBoundingBoxes[self.object:GetModel()].size
+    end
+
+    ent_size = Vector3(3, 0.3, 3)
     local rounded_relative_pos = Vector3()
 
     if math.abs(relative_look_pos.x) > math.abs(relative_look_pos.y) and math.abs(relative_look_pos.x) > math.abs(relative_look_pos.z) then
-        rounded_relative_pos.x = ent_size.x * GetSign(relative_look_pos.x)
+        rounded_relative_pos.y = ent_size.x * GetSign(relative_look_pos.x)
     elseif math.abs(relative_look_pos.z) > math.abs(relative_look_pos.x) and math.abs(relative_look_pos.z) > math.abs(relative_look_pos.y) then
         rounded_relative_pos.z = ent_size.z * GetSign(relative_look_pos.z)
     end
 
+    local angle = self.entity:GetAngle()
+    local offset = (angle * -self.angle_offset) * rounded_relative_pos
     self.object:SetAngle(self.entity:GetAngle())
-    self.object:SetPosition(self.entity:GetPosition() + (self.entity:GetAngle() * -self.angle_offset) * rounded_relative_pos)
+    self.object:SetPosition(self.entity:GetPosition() + offset)
 
 end
 
@@ -343,9 +351,11 @@ function cLandclaimObjectPlacer:RenderText(can_place_here)
         elseif index == 4 then
             self:DrawShadowedText(render_position, string.format(text, self.rotation_speed), self.text_color, text_size)
         elseif index == 5 then
-            self:DrawShadowedText(render_position, string.format(text, self.rotation_axis), self.text_color, text_size)
+            self:DrawShadowedText(render_position, string.format(text, self.rotation_axis == 1 and "Horizontal" or "Vertical"), self.text_color, text_size)
         elseif index == 6 then
-            self:DrawShadowedText(render_position, string.format(text, self.snap and "Enabled" or "Disabled"), self.text_color, text_size)
+            if self.name == "Wall" then
+                self:DrawShadowedText(render_position, string.format(text, self.snap and "Enabled" or "Disabled"), self.text_color, text_size)
+            end
         else
             self:DrawShadowedText(render_position, string.format(text, self.rotation_speed), self.text_color, text_size)
         end
@@ -420,20 +430,8 @@ end
 
 function cLandclaimObjectPlacer:KeyUp(args)
 
-    if args.key == string.byte("Z") then
-
-        self.rotation_axis = self.rotation_axis + 1
-
-        if self.rotation_axis > 3 then
-            self.rotation_axis = 1
-        end
-
-    elseif args.key == string.byte("Q") then
-        self.rotation_axis = self.rotation_axis + 1
-
-        if self.rotation_axis > 3 then
-            self.rotation_axis = 1
-        end
+    if args.key == string.byte("Q") then
+        self.rotation_axis = self.rotation_axis == 1 and 3 or 1
     elseif args.key == string.byte("X") then
         self.snap = not self.snap
     end

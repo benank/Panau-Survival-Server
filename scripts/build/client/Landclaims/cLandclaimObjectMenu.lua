@@ -52,7 +52,7 @@ end
 
 function cLandclaimObjectMenu:TryToOpenMenu()
     if LocalPlayer:GetValue("Loading") then return end
-    if cObjectPlacer.placing then return end
+    if cLandclaimObjectPlacer.placing then return end
     if LocalPlayer:GetValue("InventoryOpen") then return end
     if LocalPlayer:InVehicle() then return end
 
