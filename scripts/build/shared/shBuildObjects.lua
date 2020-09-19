@@ -26,8 +26,15 @@ BuildObjects =
     },
     ["Door"] = 
     {
-        model = "areaset05.blz/gb165-n.lod", 
-        collision = "areaset05.blz/gb165_lod1-n_col.pfx", 
+        model = "f2m01.village.nlz/gb206-b.lod",
+        collision = "f2m01.village.nlz/gb206_lod1-b_col.pfx",
+        door = 
+        {
+            model = "f3t04.container.eez/go005-c.lod", 
+            collision = "f3t04.container.eez/go005_lod1-c_col.pfx",
+            offset = Vector3(0.65, -0.3, 0.1),
+            angle = Angle(-math.pi / 2, 0, 0)
+        },
         unclaimed_decay = true
     },
     ["Bed"] = 

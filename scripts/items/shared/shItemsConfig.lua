@@ -28,7 +28,7 @@ ItemsConfig =
         ["Table"] = {model = "37x10.nlz/go061-c.lod", disable_walls = true},
         ["Light"] = {model = "general.blz/go063-f.lod"},
         ["Helipad"] = {model = "31x08.flz/gb030-d.lod", disable_walls = true},
-        ["Door"] = {model = "areaset05.blz/gb165-n.lod", disable_walls = true},
+        ["Door"] = {model = "f2m01.village.nlz/gb206-b.lod", disable_walls = true},
         ["Bed"] = {model = "areaset01.blz/go080-d.lod", disable_walls = true},
         ["Chair"] = {model = "areaset01.blz/go080-c.lod", disable_walls = true},
         ["Stop Sign"] = {model = "general.blz/go200-f1.lod", disable_walls = true},

@@ -27,18 +27,48 @@ end
 
 -- Adjust door angle upon streaming in
 function cDoorExtension:StreamIn()
+    self:Create(true)
     self:UpdateDoorAngle()
+    self:UpdateToExternalModules()
 end
 
 function cDoorExtension:StreamOut()
+    self:Create(false)
+    self:UpdateToExternalModules()
+end
+
+function cDoorExtension:UpdateToExternalModules()
+    local event = self.object.has_collision and "build/SpawnObject" or "build/DespawnObject"
+    Events:Fire(event, {
+        landclaim_id = self.object.landclaim.id,
+        landclaim_owner_id = self.object.landclaim.owner_id,
+        id = self.object.id,
+        cso_id = self.door_object:GetId()
+    })
+end
+
+function cDoorExtension:Create(streamed_in)
+    self:Remove()
+    self.angle = self.object.angle * BuildObjects["Door"].door.angle
+    self.door_object = ClientStaticObject.Create({
+        position = self.object.position + self.angle * BuildObjects["Door"].door.offset,
+        angle = self.object.angle * BuildObjects["Door"].door.angle,
+        model = BuildObjects["Door"].door.model,
+        collision = streamed_in and BuildObjects["Door"].door.collision or ""
+    })
+    self.door_object:SetValue("LandclaimObject", self.object)
+    self:UpdateDoorAngle()
 end
 
 function cDoorExtension:Remove()
+    if self.door_object then
+        self.door_object = self.door_object:Remove()
+    end
 end
 
 function cDoorExtension:UpdateDoorAngle()
-    if not IsValid(self.object.object) then return end
-    self.object.object:SetAngle(self.object.angle * self:GetAngle())
+    if not IsValid(self.door_object) then return end
+    self.door_object:SetAngle(self.angle * self:GetAngle())
 end
 
 function cDoorExtension:StateUpdated()
