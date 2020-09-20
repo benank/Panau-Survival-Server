@@ -11,6 +11,8 @@ function sDroneManager:__init()
         Events:Subscribe("PlayerChat", self, self.PlayerChat)
     end
 
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+
 end
 
 function sDroneManager:PlayerChat(args)
@@ -18,9 +20,23 @@ function sDroneManager:PlayerChat(args)
     if not IsAdmin(args.player) then return end
 
     if args.text == "/drone" then
-        
+        sDrone({
+            region = DroneRegionEnum.FinancialDistrict,
+            position = args.player:GetPosition() + Vector3.Up * 2
+        })
+        _debug("Drone created")
     end
 
+end
+
+function sDroneManager:ModuleUnload()
+    for cell_x, _ in pairs(self.drones) do
+        for cell_y, _ in pairs(self.drones[cell_x]) do
+            for id, drone in pairs(self.drones[cell_x][cell_y]) do
+                drone:Remove()
+            end
+        end
+    end
 end
 
 

@@ -1,6 +1,6 @@
 class 'cDroneBody'
 
-local DEBUG_ON = false
+local DEBUG_ON = true
 
 function cDroneBody:__init(parent)
 
@@ -11,7 +11,7 @@ function cDroneBody:__init(parent)
     self:CreateBody()
 
     if DEBUG_ON then
-        Events:Subscribe("GameRender", self, self.GameRender)
+        Events:Subscribe("Render", self, self.GameRender)
     end
 end
 
@@ -28,14 +28,16 @@ function cDroneBody:PostTick(args)
 end
 
 function cDroneBody:GameRender(args)
-    --Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.LeftGun)), 5, Color.Red)
-    --Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.RightGun)), 5, Color.Yellow)
-    --Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.TopGun)), 5, Color.Green)
+    Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.LeftGun)), 5, Color.Red)
+    Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.RightGun)), 5, Color.Yellow)
+    Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.TopGun)), 5, Color.Green)
 
-    local left_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.LeftGun), self.parent.angle * Angle(-0.005, 0, 0) * Vector3.Forward, 0, 100, false)
+    local range = self.parent.config.sight_range
+
+    local left_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.LeftGun), self.parent.angle * Angle(-0.005, 0, 0) * Vector3.Forward, 0, range, false)
     Render:DrawLine(self:GetGunPosition(DroneBodyPiece.LeftGun), left_ray.position, Color.Red)
 
-    local right_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.RightGun), self.parent.angle * Angle(0.005, 0, 0) * Vector3.Forward, 0, 100, false)
+    local right_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.RightGun), self.parent.angle * Angle(0.005, 0, 0) * Vector3.Forward, 0, range, false)
     Render:DrawLine(self:GetGunPosition(DroneBodyPiece.RightGun), right_ray.position, Color.Red)
 end
 
@@ -61,6 +63,8 @@ function cDroneBody:CreateShootingEffect(gun_enum)
             multiplier = 8
         })
     end
+
+    -- TODO: add bullet hit effect on surface if it hits something
 
     if not self.sounds["fire"] then
         self.sounds["fire"] = ClientSound.Create(AssetLocation.Game, {
@@ -104,8 +108,7 @@ function cDroneBody:CreateBody()
             position = self.parent.position + self.parent.angle * DroneBodyOffsets[piece_enum].position,
             angle = self.parent.angle * DroneBodyOffsets[piece_enum].angle,
             model = object_data.model,
-            collision = object_data.collision,
-            --fixed = false
+            collision = object_data.collision
         })
 
     end
@@ -132,6 +135,8 @@ function cDroneBody:SetAngle()
     for piece_enum, object in pairs(self.objects) do
         object:SetAngle(self.parent.angle * DroneBodyOffsets[piece_enum].angle)
     end
+
+    self.effect:SetAngle(self.parent.angle * DroneEffectOffset.angle)
 
     self:SetPosition(self.parent.position)
 

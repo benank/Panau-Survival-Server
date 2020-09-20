@@ -1,7 +1,5 @@
 class 'cDroneManager'
 
-DRONE_SPEED = 10
-
 function cDroneManager:__init()
 
     self.drones = {}
@@ -14,6 +12,11 @@ function cDroneManager:__init()
     Network:Subscribe("Drones/SingleSync", self, self.SingleDroneSync)
     Network:Subscribe("Drones/DroneCellsSync", self, self.CellsDroneSync)
 
+    self:DroneLoop()
+
+end
+
+function cDroneManager:DroneLoop()
     Thread(function()
         while true do
             for id, drone in pairs(self.drones) do
@@ -25,12 +28,13 @@ function cDroneManager:__init()
             Timer.Sleep(1500)
         end
     end)
-
 end
 
 function cDroneManager:CellsDroneSync(args)
 
+    print("cDroneManager:CellsDroneSync")
     for _, drone_data in pairs(args.drone_data) do
+        output_table(args)
         if not self.drones[drone_data.id] then
             self.drones[drone_data.id] = cDrone(args)
         else
@@ -42,6 +46,8 @@ end
 
 function cDroneManager:SingleDroneSync(args)
 
+    print("cDroneManager:SingleDroneSync")
+    output_table(args)
     if not self.drones[args.id] then
         self.drones[args.id] = cDrone(args)
     else

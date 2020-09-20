@@ -1,5 +1,8 @@
 Cell_Size = 512
 
+DRONE_PATH_RADIUS = 500
+DRONE_TARGET_DIST_STOP = 100
+
 Drone_Follow_Offsets = 
 {
     x = {min = 7, max = 15},
@@ -30,15 +33,15 @@ Drone_Configuration =
     rocket_fire_rate = {base = 0.1, per_level = 0.025},
     attack_on_sight = {base = false, base_chance = 0.05, chance_per_level = 0.05},
     accuracy_modifier = {base = 1, per_level = -0.01},
-    health = {base = 50, per_level = 20}
+    health = {base = 50, per_level = 20},
+    sight_range = {base = 15, per_level = 3}
 }
 
 DroneState = 
 {
     Wandering = 1, -- Peacefully wandering
     Pursuing = 2, -- Actively pursuing a target
-    Hunting = 3, -- Hunting for prey territorially
-    Destroyed = 4 -- Drone has been destroyed
+    Destroyed = 3 -- Drone has been destroyed
 }
 
 DronePersonality = 

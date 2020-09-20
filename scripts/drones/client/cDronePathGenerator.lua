@@ -2,7 +2,8 @@ class 'cDronePathGenerator'
 
 function cDronePathGenerator:__init()
 
-    self.height = 30 -- Drone height above the path
+    self.height = 2 -- Drone height above the path
+    self.height_range = 10
 
 end
 
@@ -10,16 +11,16 @@ function cDronePathGenerator:GetRandomRoadOffset(road)
     local radius = road.radius / 2
     return Vector3(
         radius - math.random() * radius * 2, 
-        self.height + math.random() * 100,
+        self.height + math.random() * self.height_range,
         radius - math.random() * radius * 2)
 end
 
-function cDronePathGenerator:GeneratePathNearPoint(origin, radius, callback)
+function cDronePathGenerator:GeneratePathNearPoint(origin, tether_position, radius, callback)
 
     _debug("GENERATING PATH...")
 
-    local start_pos = origin--self:GetRandomPointWithinRadius(origin, radius)
-    local end_pos = self:GetRandomPointWithinRadius(origin, radius)
+    local start_pos = origin
+    local end_pos = self:GetRandomPointWithinRadius(tether_position, radius)
 
     Roads:FindRoadPath(
         start_pos,
