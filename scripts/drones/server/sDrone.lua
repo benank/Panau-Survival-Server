@@ -175,7 +175,6 @@ end
 function sDrone:Damage(args)
     if self:IsDestroyed() then return end
 
-    print(string.format("Drone damaged for %.2f damage by %s", args.damage, tostring(args.player)))
     self.health = math.max(0, self.health - args.damage)
     self.target = args.player
     self.state = DroneState.Pursuing
