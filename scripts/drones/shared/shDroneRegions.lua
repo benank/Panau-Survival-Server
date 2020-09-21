@@ -24,7 +24,7 @@ DroneRegions =
     {
         radius = 900,
         center = Vector3(-15321, 203, -2815),
-        level_range = {min = 5, max = 10}
+        level_range = {min = 10, max = 20}
     },
     [DroneRegionEnum.ResidentialDistrict] = 
     {

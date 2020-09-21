@@ -4,6 +4,7 @@ function cDroneContainer:__init()
 
     self.cso_id_to_drone_id = {}
 
+    Events:Subscribe("drones/UpdateDroneCSO", self, self.CreateDroneCSO)
     Events:Subscribe("drones/CreateDroneCSO", self, self.CreateDroneCSO)
     Events:Subscribe("drones/RemoveDroneCSO", self, self.DestroyDroneCSO)
 

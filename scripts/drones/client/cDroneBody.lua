@@ -12,13 +12,18 @@ function cDroneBody:__init(parent)
     self:HealthUpdated()
 
     if DEBUG_ON then
-        self.debug_render = Events:Subscribe("Render", self, self.GameRender)
+        self.debug_render = Events:Subscribe("GameRender", self, self.GameRender)
     end
 end
 
 function cDroneBody:HealthUpdated()
+
+    for enum, object in pairs(self.objects) do
+        Events:Fire("drones/UpdateDroneCSO", {id = self.parent.id, cso_id = object:GetId(), health = self.parent.health, max_health = self.parent.max_health, level = self.parent.level})
+    end
+
     -- No logic for healing because drones will never heal
-    if self.parent.health <= self.parent.max_health * 0.15 and not IsValid(self.smoke_fx) and not self.parent:IsDestroyed() then
+    if self.parent.health <= self.parent.max_health * 0.20 and not IsValid(self.smoke_fx) and not self.parent:IsDestroyed() then
         self.smoke_fx = ClientEffect.Create(AssetLocation.Game, {
             position = self.parent.position,
             angle = Angle(),
@@ -126,7 +131,7 @@ function cDroneBody:CreateBody()
             model = object_data.model,
             collision = object_data.collision
         })
-        Events:Fire("drones/CreateDroneCSO", {id = self.parent.id, cso_id = self.objects[piece_enum]:GetId()})
+        Events:Fire("drones/CreateDroneCSO", {id = self.parent.id, cso_id = self.objects[piece_enum]:GetId(), health = self.parent.health, max_health = self.parent.max_health, level = self.parent.level})
 
     end
 

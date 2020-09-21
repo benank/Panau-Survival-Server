@@ -76,12 +76,11 @@ end
 function sDrone:ReconsiderTarget()
     if self.state ~= DroneState.Pursuing then return end
 
-    if not IsValid(target) or 
-    self.position:Distance(target:GetPosition()) > 500 or
+    if not IsValid(self.target) or 
+    self.position:Distance(self.target:GetPosition()) > 500 or
     self.position:Distance(self.tether_position) > self.tether_range then
         self.target = nil
         self.state = DroneState.Wandering
-        _debug("Reset target")
         return true
     end
 
@@ -165,7 +164,7 @@ function sDrone:Destroyed(args)
     
     self:Sync()
 
-    Timer.SetTimeout(5000, function()
+    Timer.SetTimeout(1000, function()
         self:Remove()
     end)
 end
@@ -174,7 +173,8 @@ function sDrone:Damage(args)
     if self:IsDestroyed() then return end
 
     self.health = math.max(0, self.health - args.damage)
-    print(self.health)
+    self.target = args.player
+    self.state = DroneState.Pursuing
 
     if self.health == 0 then
         self:Destroyed(args)

@@ -10,15 +10,16 @@ Drone_Follow_Offsets =
     z = {min = 7, max = 15}
 }
 
-function GetRandomFollowOffset()
+function GetRandomFollowOffset(sight_range)
     local dir = Vector3(0.5 - math.random(), 0, 0.5 - math.random()):Normalized()
 
-    dir.x = dir.x * (Drone_Follow_Offsets.x.max - Drone_Follow_Offsets.x.min) * math.random()
+    local max = sight_range
+    dir.x = dir.x * (max - Drone_Follow_Offsets.x.min) * math.random()
     dir.x = dir.x < 0 and dir.x - Drone_Follow_Offsets.x.min or dir.x + Drone_Follow_Offsets.x.min
 
     dir.y = (Drone_Follow_Offsets.y.max - Drone_Follow_Offsets.y.min) * math.random() + Drone_Follow_Offsets.y.min
 
-    dir.z = dir.z * (Drone_Follow_Offsets.z.max - Drone_Follow_Offsets.z.min) * math.random()
+    dir.z = dir.z * (max - Drone_Follow_Offsets.z.min) * math.random()
     dir.z = dir.z < 0 and dir.z - Drone_Follow_Offsets.z.min or dir.z + Drone_Follow_Offsets.z.min
 
     return dir
@@ -27,12 +28,14 @@ end
 Drone_Configuration = 
 {
     speed = {base = 7, per_level = 0.5},
-    damage_modifier = {base = 1, per_level = 0.1},
+    damage_modifier = {base = 1, per_level = 0.05},
     has_rockets = {base = false, base_chance = 0.02, chance_per_level = 0.02},
-    fire_rate = {base = 10, per_level = 1},
+    fire_time_min = {base = 0.5, per_level = 0.1},
+    fire_time_max = {base = 3, per_level = 0.1},
+    fire_rate_interval = {base = 3, per_level = -0.05},
     rocket_fire_rate = {base = 0.1, per_level = 0.025},
     attack_on_sight = {base = false, base_chance = 0.05, chance_per_level = 0.05},
-    accuracy_modifier = {base = 1, per_level = -0.01},
+    accuracy_modifier = {base = 0.1, per_level = 0.03},
     health = {base = 50, per_level = 20},
     sight_range = {base = 15, per_level = 3}
 }

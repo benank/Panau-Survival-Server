@@ -376,8 +376,9 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
 
     elseif args.entity_type == "ClientStaticObject" then
 
-        local drone_id = cDroneContainer:CSOIdToDroneId(args.entity:GetId())
-        if drone_id then
+        local drone = cDroneContainer:CSOIdToDrone(args.entity:GetId())
+        if drone then
+            local drone_id = drone.id
             -- Bullet hit a drone
 
             local damage = WeaponDamage:CalculateDroneDamage(args.weapon_enum, args.distance_travelled, LocalPlayer) * 100

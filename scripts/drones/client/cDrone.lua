@@ -60,6 +60,9 @@ function cDrone:__init(args)
     self.offset_timer = Timer()
     self.tether_timer = Timer()
 
+    self.fire_timer = Timer() -- Fire rate timer
+    self.next_fire_time = 0
+
     self.body = cDroneBody(self)
 
 end
@@ -84,9 +87,9 @@ function cDrone:PerformHostActions()
 
             end)
         end
-        
+
         if self.offset_timer:GetSeconds() > 5 then
-            self.offset = GetRandomFollowOffset()
+            self.offset = GetRandomFollowOffset(self.config.sight_range)
             self:SyncOffsetToServer()
             self.offset_timer:Restart()
         end
@@ -177,6 +180,19 @@ function cDrone:PostTick(args)
 
 end
 
+function cDrone:IsTargetVisible()
+    
+    if not IsValid(self.target) then return false end
+
+    local ray = Physics:Raycast(
+        self.position,
+        self.target:GetBonePosition("ragdoll_Hips") - self.position,
+        0, self.range * 2, false)
+
+    if ray.entity and (ray.entity.__type == "Player" or ray.entity.__type == "LocalPlayer") and ray.entity == self.target then return true end
+
+end
+
 -- Returns whether or not the drone can see its current target
 function cDrone:IsTargetInSight()
 
@@ -185,9 +201,8 @@ function cDrone:IsTargetInSight()
     local ray = Physics:Raycast(
         self.body:GetGunPosition(DroneBodyPiece.TopGun),
         self.target:GetBonePosition("ragdoll_Hips") - self.body:GetGunPosition(DroneBodyPiece.TopGun),
-        0, self.range)
+        0, self.range, false)
 
-    
     if ray.entity and ray.entity.__type == "Player" and ray.entity == self.target then return true end
 
 end
@@ -266,8 +281,8 @@ function cDrone:TrackTarget(args)
     target_pos = nearby_wall and nearby_wall_pos or target_pos
 
     -- Change offset if the drone cannot see the player
-    if self:IsHost() and not self:IsTargetInSight() and self.offset_timer:GetSeconds() > 3 then
-        self.offset = GetRandomFollowOffset()
+    if self:IsHost() and not self:IsTargetVisible() and self.offset_timer:GetSeconds() > 3 then
+        self.offset = GetRandomFollowOffset(self.config.sight_range)
         self.offset_timer:Restart()
         self:SyncOffsetToServer()
     end
@@ -280,7 +295,7 @@ function cDrone:TrackTarget(args)
             self:SetLinearVelocity(-self.velocity * 0.5)
 
             if self:IsHost() then
-                self.offset = GetRandomFollowOffset()
+                self.offset = GetRandomFollowOffset(self.config.sight_range)
                 self:SyncOffsetToServer()
             end
         end
@@ -298,7 +313,38 @@ function cDrone:TrackTarget(args)
     local angle = Angle.FromVectors(Vector3.Forward, self.target:GetPosition() + Vector3.Up - self.position)
     angle.roll = 0
 
-    self:SetAngle(Angle.Slerp(self.angle, angle, 0.05))
+    self:SetAngle(Angle.Slerp(self.angle, angle, math.min(1, self.config.accuracy_modifier)))
+
+    if self:IsTargetVisible() and self.fire_timer:GetSeconds() >= self.next_fire_time and not self.firing then
+        self:Shoot()
+    end
+
+end
+
+-- Try to shoot at the target
+function cDrone:Shoot()
+    self.firing = true
+    self.next_fire_time = math.random() * self.config.fire_rate_interval + 1
+    self.fire_timer:Restart()
+
+    -- Time that the drone will shoot for
+    local fire_time = (math.random() * (self.config.fire_time_max - self.config.fire_time_min) + self.config.fire_time_min) * 1000
+    local fire_interval = 100 -- Fire every X ms
+
+    Thread(function()
+        while fire_time > 0 do
+            local gun_to_fire = math.random() > 0.5 and DroneBodyPiece.LeftGun or DroneBodyPiece.RightGun
+            self.body:CreateShootingEffect(gun_to_fire)
+            fire_time = fire_time - fire_interval
+            Events:Fire("HitDetection/DroneShoot", {
+                position = self.body:GetGunPosition(gun_to_fire),
+                max_range = self.config.sight_range,
+                damage_modifier = self.config.damage_modifier
+            })
+            Timer.Sleep(fire_interval)
+        end
+        self.firing = false
+    end)
 
 end
 
