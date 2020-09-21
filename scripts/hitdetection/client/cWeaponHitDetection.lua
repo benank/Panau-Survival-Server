@@ -374,6 +374,34 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
 
         cHitDetectionMarker:Activate()
 
+    elseif args.entity_type == "ClientStaticObject" then
+
+        local drone_id = cDroneContainer:CSOIdToDroneId(args.entity:GetId())
+        if drone_id then
+            -- Bullet hit a drone
+
+            local damage = WeaponDamage:CalculateDroneDamage(args.weapon_enum, args.distance_travelled, LocalPlayer) * 100
+
+            if damage == 0 then return end
+
+            Network:Send(var("HitDetection/DetectDroneHit"):get(), {
+                drone_id = drone_id,
+                weapon_enum = args.weapon_enum,
+                distance_travelled = args.distance_travelled,
+                hit_position = args.hit_position,
+                token = TOKEN:get()
+            })
+
+            -- Preemptively add damage text and indicator so it feels responsive
+            cDamageText:Add({
+                position = args.hit_position,
+                amount = damage
+            })
+
+            cHitDetectionMarker:Activate()
+
+        end
+
     end
 
 end

@@ -35,7 +35,6 @@ function cDrone:__init(args)
 
     self.target_position = args.path_data.position -- Target position that the drone is currently travelling to
     self.target = args.path_data.target -- Current active target that the drone is pursuing
-    self.target_offset = args.path_data.target_offset -- Offset from the target the drone flies at
 
     self.path = args.path_data.current_path -- Table of points that the drone is currently pathing through
     self.path_index = args.path_data.current_path_index -- Current index of the path the drone is on
@@ -45,14 +44,14 @@ function cDrone:__init(args)
     self.max_health = self.config.health
     self.health = self.max_health
 
-    self.state = DroneState.Wandering
+    self.state = args.state
     self.personality = self.config.attack_on_sight and DronePersonality.Hostile or DronePersonality.Defensive
 
     self.host = args.host -- Player who currently "controls" the drone and dictates its pathfinding
 
     self.angle = Angle()
 
-    self.offset = args.path_data.target_offset
+    self.offset = args.path_data.target_offset -- Offset from the target the drone flies at
 
     self.velocity = Vector3()
 
@@ -96,21 +95,31 @@ function cDrone:PerformHostActions()
 
 end
 
+function cDrone:IsDestroyed()
+    return self.state == DroneState.Destroyed
+end
+
 -- Updates from server with all sync info (see __init for full list of args)
 function cDrone:UpdateFromServer(args)
+    output_table(args)
     self.state = args.state or self.state
 
-    self.health = args.health or self.health
+    if self:IsDestroyed() then
+        self:Destroyed()
+    end
+
+    self.health = args.health ~= nil and args.health or self.health
+    self.body:HealthUpdated()
     self.host = args.host or self.host
 
     if args.path_data then
         self.target = args.path_data.target -- Current active target that the drone is pursuing
-        self.target_offset = args.path_data.target_offset -- Offset from the target the drone flies at
 
-        self.path = args.path_data.current_path -- Table of points that the drone is currently pathing through
-        self.path_index = args.path_data.current_path_index -- Current index of the path the drone is on
-
-        self.offset = args.path_data.target_offset
+        if not self:IsHost() then
+            self.path = args.path_data.current_path -- Table of points that the drone is currently pathing through
+            self.path_index = args.path_data.current_path_index -- Current index of the path the drone is on
+            self.offset = args.path_data.target_offset -- Offset from the target the drone flies at
+        end
 
         -- If drone is far from the path index, then update its position
         if self.path and not self:IsHost() and count_table(self.path) > 0 and self.path_index then
@@ -120,7 +129,6 @@ function cDrone:UpdateFromServer(args)
         end
     end
 
-    -- TODO: update all the stuff
 end
 
 function cDrone:SetLinearVelocity(velo)
@@ -129,6 +137,7 @@ end
 
 -- Sync stuff
 function cDrone:SyncToServer(args)
+    if self:IsDestroyed() then return end
     if args.type == "full" then
         Network:Send("drones/sync/full" .. tostring(self.id), self:GetFullSyncObject())
     else
@@ -232,6 +241,7 @@ function cDrone:Wander(args)
 
             -- Path completed
             if self.path_index >= count_table(self.path) then
+                _debug("FINISHED PATH, SETTING PATH TO NOTHING")
                 self.path = {} -- Find new path
             end
         end
@@ -292,6 +302,15 @@ function cDrone:TrackTarget(args)
 
 end
 
+function cDrone:Destroyed()
+    ClientEffect.Play(AssetLocation.Game, {
+        position = self.position,
+        effect_id = 46,
+        angle = self.angle
+    })
+    self:Remove()
+end
+
 -- Checks for naerby walls or obstructions and stops the drone if it gets close
 function cDrone:CheckForNearbyWalls(args)
 
@@ -313,4 +332,5 @@ end
 
 function cDrone:Remove()
     self.body:Remove()
+    cDroneManager.drones[self.id] = nil
 end

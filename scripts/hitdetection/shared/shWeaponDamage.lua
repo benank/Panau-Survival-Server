@@ -291,6 +291,32 @@ function WeaponDamage:CalculateVehicleDamage(vehicle, weapon_enum, distance, att
 
 end
 
+function WeaponDamage:CalculateDroneDamage(weapon_enum, distance, attacker)
+
+    local base_damage = self.weapon_damages[weapon_enum].base
+    local falloff_modifier = self.weapon_damages[weapon_enum].falloff(distance, self.weapon_damages[weapon_enum].distance_falloff)
+
+    local perks = attacker:GetValue("Perks")
+    local possible_perks = self.WeaponDamagePerks[weapon_enum]
+
+    local perk_mod = 1
+
+    if perks and possible_perks then
+
+        for perk_id, weapon_damage_mod in pairs(possible_perks) do
+            if perks.unlocked_perks[perk_id] then
+                perk_mod = math.max(perk_mod, weapon_damage_mod)
+            end
+        end
+
+    end
+
+    local damage = base_damage * falloff_modifier * perk_mod
+
+    return damage
+
+end
+
 function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, distance, attacker)
 
     if victim:GetValue("InSafezone") then return 0 end

@@ -15,6 +15,7 @@ function sExp:__init()
 
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
+    Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
@@ -45,6 +46,27 @@ function sExp:ModuleUnload()
             self:UpdateDB(steam_id, exp_data)
         end
     end
+
+end
+
+function sExp:DroneDestroyed(args)
+    if not IsValid(args.player) then return end
+
+    local exp_earned = Exp.DestroyDroneExpPerLevel * args.drone_level
+
+    if not exp_earned then return end
+
+    local exp_data = args.player:GetValue("Exp")
+
+    if not exp_data then return end
+
+    self:GivePlayerExp(exp_earned, ExpType.Combat, tostring(args.player:GetSteamId()), exp_data, args.player)
+
+    Events:Fire("Discord", {
+        channel = "Experience",
+        content = string.format("%s [%s] destroyed a level %d drone and gained %d exp.", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), args.drone_level, exp_earned)
+    })
 
 end
 

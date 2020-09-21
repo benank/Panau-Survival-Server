@@ -11,8 +11,19 @@ function sDroneManager:__init()
         Events:Subscribe("PlayerChat", self, self.PlayerChat)
     end
 
+    Events:Subscribe("HitDetection/DroneDamaged", self, self.DroneDamaged)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
+end
+
+function sDroneManager:DroneDamaged(args)
+    local cell = GetCell(args.hit_position, Cell_Size)
+    if not self.drones[cell.x] or not self.drones[cell.x][cell.y] then return end
+
+    local drone = self.drones[cell.x][cell.y][args.drone_id]
+    if not drone then return end
+
+    drone:Damage(args)
 end
 
 function sDroneManager:PlayerChat(args)
@@ -40,7 +51,7 @@ function sDroneManager:ModuleUnload()
 end
 
 
--- Updates LootCells.Player
+-- Updates player_cells
 function sDroneManager:UpdatePlayerInCell(args)
     local cell = args.cell
 
@@ -86,6 +97,19 @@ function sDroneManager:PlayerCellUpdate(args)
     
     local drone_data = {}
 
+    for _, old_cell in pairs(args.old_adjacent) do
+
+        -- If these cells don't exist, create them
+        VerifyCellExists(self.drones, old_cell)
+
+        -- Remove player as drone host from old cells
+        for id, drone in pairs(self.drones[old_cell.x][old_cell.y]) do
+            if drone.host == args.player then
+                drone.host = nil
+            end
+        end
+    end
+    
     for _, update_cell in pairs(args.updated) do
 
         -- If these cells don't exist, create them
@@ -96,7 +120,7 @@ function sDroneManager:PlayerCellUpdate(args)
         end
     end
     
-	-- send the existing lootboxes in the newly streamed cells
+	-- send the existing drones in the newly streamed cells
     Network:Send(args.player, "Drones/DroneCellsSync", {drone_data = drone_data})
 end
 

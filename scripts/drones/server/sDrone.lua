@@ -13,7 +13,6 @@ function sDrone:__init(args)
     self.region = args.region
     self.level = GetLevelFromRegion(self.region)
     self.position = args.position -- Approximate position of the drone in the world
-    self.cell = GetCell(self.position, Cell_Size)
 
     self.tether_position = DroneRegions[self.region].center -- Position used for tether checks
     self.tether_range = DroneRegions[self.region].radius -- Max distance travelled from initial spawn position
@@ -69,6 +68,7 @@ function sDrone:UpdateCell()
         self.cell = cell
         VerifyCellExists(sDroneManager.drones, self.cell)
         sDroneManager.drones[self.cell.x][self.cell.y][self.id] = self
+        print("enter to table")
     end
 end
 
@@ -89,6 +89,7 @@ end
 
 -- Take a look at the current host and see if there is a better player
 function sDrone:ReconsiderHost()
+    if self:IsDestroyed() then return end
 
     local should_reconsider_host = false
 
@@ -110,6 +111,7 @@ function sDrone:ReconsiderHost()
 end
 
 function sDrone:FindNewHost()
+    if self:IsDestroyed() then return end
     local nearby_players = sDroneManager:GetNearbyPlayersInCell(GetCell(self.position, Cell_Size))
 
     if count_table(nearby_players) == 0 then return end
@@ -128,6 +130,8 @@ function sDrone:FindNewHost()
         end
     end
 
+    if closest.player == self.host then return end
+
     _debug("New host: " .. tostring(closest.player))
     return closest.player
 
@@ -141,16 +145,24 @@ function sDrone:Remove()
     end
 
     self.network_subs = {}
+    
+    -- Remove from drone list
+    if sDroneManager.drones[self.cell.x] and sDroneManager.drones[self.cell.x][self.cell.y] then
+        sDroneManager.drones[self.cell.x][self.cell.y][self.id] = nil
+    end
 end
 
 -- Called when a player destroys a drone
 function sDrone:Destroyed(args)
-    if self.state == DroneState.Destroyed then return end
-
-    -- Give args.player exp, set it to destroyed, sync to players
+    if self:IsDestroyed() then return end
 
     self.state = DroneState.Destroyed
 
+    Events:Fire("drones/DroneDestroyed", {
+        player = args.player,
+        drone_level = self.level
+    })
+    
     self:Sync()
 
     Timer.SetTimeout(5000, function()
@@ -159,15 +171,21 @@ function sDrone:Destroyed(args)
 end
 
 function sDrone:Damage(args)
+    if self:IsDestroyed() then return end
 
     self.health = math.max(0, self.health - args.damage)
-
-    self:Sync()
+    print(self.health)
 
     if self.health == 0 then
         self:Destroyed(args)
+    else
+        self:Sync()
     end
 
+end
+
+function sDrone:IsDestroyed()
+    return self.state == DroneState.Destroyed
 end
 
 function sDrone:FullHostSync(args, player)
@@ -175,9 +193,8 @@ function sDrone:FullHostSync(args, player)
 end
 
 function sDrone:OneHostSync(args, player)
+    if self:IsDestroyed() then return end
     -- Update some aspects from player
-    _debug("sDrone:OneHostSync")
-    output_table(args)
     if args.type == "offset" then
         self.offset = args.offset
         self.position = args.position
@@ -217,8 +234,7 @@ function sDrone:GetPathSyncData()
         tether_range = self.tether_range,
         tether_position = self.tether_position,
         current_path = self.current_path,
-        current_path_index = self.current_path_index,
-        state = self.state
+        current_path_index = self.current_path_index
     }
 
 end
@@ -234,7 +250,8 @@ function sDrone:GetSyncData()
         health = self.health,
         personality = self.personality,
         path_data = self:GetPathSyncData(),
-        host = self.host
+        host = self.host,
+        state = self.state
     }
 
 end

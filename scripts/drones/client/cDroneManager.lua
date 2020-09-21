@@ -12,11 +12,31 @@ function cDroneManager:__init()
     Network:Subscribe("Drones/SingleSync", self, self.SingleDroneSync)
     Network:Subscribe("Drones/DroneCellsSync", self, self.CellsDroneSync)
 
-    self:DroneLoop()
+    Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(Cell_Size), self, self.LocalPlayerCellUpdate)
+
+    self:DroneHostLoop()
 
 end
 
-function cDroneManager:DroneLoop()
+function cDroneManager:LocalPlayerCellUpdate(args)
+    
+    -- Remove drones from old cells
+    Thread(function()
+        for _, cell in pairs(args.old_adjacent) do
+            for id, drone in pairs(self.drones) do
+                local drone_cell = GetCell(drone.position, Cell_Size)
+                if cell.x == drone_cell.x and cell.y == drone_cell.y then
+                    _debug("stream out drone")
+                    drone:Remove()
+                    self.drones[id] = nil
+                end
+            end
+        end
+    end)
+
+end
+
+function cDroneManager:DroneHostLoop()
     Thread(function()
         while true do
             for id, drone in pairs(self.drones) do

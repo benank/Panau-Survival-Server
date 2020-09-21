@@ -9,9 +9,21 @@ function cDroneBody:__init(parent)
     self.sounds = {}
 
     self:CreateBody()
+    self:HealthUpdated()
 
     if DEBUG_ON then
-        Events:Subscribe("Render", self, self.GameRender)
+        self.debug_render = Events:Subscribe("Render", self, self.GameRender)
+    end
+end
+
+function cDroneBody:HealthUpdated()
+    -- No logic for healing because drones will never heal
+    if self.parent.health <= self.parent.max_health * 0.15 and not IsValid(self.smoke_fx) and not self.parent:IsDestroyed() then
+        self.smoke_fx = ClientEffect.Create(AssetLocation.Game, {
+            position = self.parent.position,
+            angle = Angle(),
+            effect_id = 167
+        })
     end
 end
 
@@ -23,6 +35,10 @@ function cDroneBody:PostTick(args)
 
     if IsValid(self.light) then
         self.light:SetPosition(self:GetGunPosition(DroneBodyPiece.TopGun) + self.parent.angle * Vector3.Forward * 0.5)
+    end
+
+    if IsValid(self.smoke_fx) then
+        self.smoke_fx:SetPosition(self.parent.position)
     end
 
 end
@@ -110,6 +126,7 @@ function cDroneBody:CreateBody()
             model = object_data.model,
             collision = object_data.collision
         })
+        Events:Fire("drones/CreateDroneCSO", {id = self.parent.id, cso_id = self.objects[piece_enum]:GetId()})
 
     end
 
@@ -145,6 +162,7 @@ end
 function cDroneBody:Remove()
     -- Remove all Static objects
     for piece_enum, object in pairs(self.objects) do
+        Events:Fire("drones/RemoveDroneCSO", {id = self.parent.id, cso_id = object:GetId()})
         object:Remove()
     end
 
@@ -156,5 +174,13 @@ function cDroneBody:Remove()
 
     if IsValid(self.light) then
         self.light:Remove()
+    end
+
+    if IsValid(self.smoke_fx) then
+        self.smoke_fx:Remove()
+    end
+
+    if self.debug_render then
+        Events:Unsubscribe(self.debug_render)
     end
 end
