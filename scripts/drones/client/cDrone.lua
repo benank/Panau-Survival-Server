@@ -114,8 +114,8 @@ function cDrone:UpdateFromServer(args)
 
         -- If drone is far from the path index, then update its position
         if self.path and not self:IsHost() and count_table(self.path) > 0 and self.path_index then
-            if self.position:Distance(self.path[self.path_index]) > 10 then
-                self.position = self.path[self.path_index]
+            if self.position:Distance(self.path[self.path_index]) > 20 then
+                self.position = args.path_data.position
             end
         end
     end

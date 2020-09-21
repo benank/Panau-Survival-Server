@@ -137,7 +137,7 @@ function sDrone:Remove()
     Timer.Clear(self.host_interval)
 
     for _, sub in pairs(self.network_subs) do
-        Events:Unsubscribe(sub)
+        Network:Unsubscribe(sub)
     end
 
     self.network_subs = {}
@@ -183,10 +183,10 @@ function sDrone:OneHostSync(args, player)
         self.position = args.position
         self:UpdateCell()
     elseif args.type == "path" then
-        self.current_path = args.path
-        self.current_path_index = args.path_index
+        self.current_path = args.path or self.path
+        self.current_path_index = args.path_index or self.current_path_index
     elseif args.type == "path_index" then
-        self.current_path_index = args.path_index
+        self.current_path_index = args.path_index or self.current_path_index
     end
 
     -- TODO: only sync changed data
