@@ -29,7 +29,8 @@ function WeaponDamage:__init()
         [WeaponEnum.V_Rockets] =        {base = 0.30, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 12},
         [WeaponEnum.V_Cannon] =         {base = 0.15, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 6},
         [WeaponEnum.V_Cannon_Slow] =    {base = 0.13, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
-        [WeaponEnum.V_MachineGun] =     {base = 0.10, v_mod = 0.5,   distance_falloff = 300, falloff = falloff_func}
+        [WeaponEnum.V_MachineGun] =     {base = 0.10, v_mod = 0.5,   distance_falloff = 300, falloff = falloff_func},
+        [WeaponEnum.Drone_MachineGun] = {base = 0.06, v_mod = 1.5,   distance_falloff = 150, falloff = falloff_func}
     }
 
     self.bone_damage_modifiers = {
@@ -317,7 +318,7 @@ function WeaponDamage:CalculateDroneDamage(weapon_enum, distance, attacker)
 
 end
 
-function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, distance, attacker)
+function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, distance, attacker, damage_mod)
 
     if victim:GetValue("InSafezone") then return 0 end
     if victim:GetHealth() <= 0 then return 0 end
@@ -332,19 +333,20 @@ function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, dist
         return base_damage
     end
 
-    local perks = attacker:GetValue("Perks")
-    local possible_perks = self.WeaponDamagePerks[weapon_enum]
+    local perk_mod = damage_mod or 1
+    if attacker then
+        local perks = attacker:GetValue("Perks")
+        local possible_perks = self.WeaponDamagePerks[weapon_enum]
 
-    local perk_mod = 1
+        if perks and possible_perks then
 
-    if perks and possible_perks then
-
-        for perk_id, weapon_damage_mod in pairs(possible_perks) do
-            if perks.unlocked_perks[perk_id] then
-                perk_mod = math.max(perk_mod, weapon_damage_mod)
+            for perk_id, weapon_damage_mod in pairs(possible_perks) do
+                if perks.unlocked_perks[perk_id] then
+                    perk_mod = math.max(perk_mod, weapon_damage_mod)
+                end
             end
-        end
 
+        end
     end
 
     local damage = base_damage * bone_damage_modifier * armor_mod * falloff_modifier * perk_mod

@@ -1,6 +1,6 @@
 class 'cDroneBody'
 
-local DEBUG_ON = true
+local DEBUG_ON = false
 
 function cDroneBody:__init(parent)
 
@@ -27,7 +27,7 @@ function cDroneBody:HealthUpdated()
         self.smoke_fx = ClientEffect.Create(AssetLocation.Game, {
             position = self.parent.position,
             angle = Angle(),
-            effect_id = 167
+            effect_id = 167 -- 166 for not as huge FX
         })
     end
 end
@@ -55,11 +55,15 @@ function cDroneBody:GameRender(args)
 
     local range = self.parent.config.sight_range
 
-    local left_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.LeftGun), self.parent.angle * Angle(-0.005, 0, 0) * Vector3.Forward, 0, range, false)
+    local left_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.LeftGun), self:GetGunAngle(DroneBodyPiece.LeftGun) * Vector3.Forward, 0, range, false)
     Render:DrawLine(self:GetGunPosition(DroneBodyPiece.LeftGun), left_ray.position, Color.Red)
 
-    local right_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.RightGun), self.parent.angle * Angle(0.005, 0, 0) * Vector3.Forward, 0, range, false)
+    local right_ray = Physics:Raycast(self:GetGunPosition(DroneBodyPiece.RightGun), self:GetGunAngle(DroneBodyPiece.RightGun) * Vector3.Forward, 0, range, false)
     Render:DrawLine(self:GetGunPosition(DroneBodyPiece.RightGun), right_ray.position, Color.Red)
+end
+
+function cDroneBody:GetGunAngle(gun_enum)
+    return self.parent.angle * (gun_enum == DroneBodyPiece.LeftGun and Angle(-0.005, 0, 0) or Angle(0.005, 0, 0))
 end
 
 function cDroneBody:GetGunPosition(gun_enum)

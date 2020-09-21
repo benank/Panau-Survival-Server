@@ -68,7 +68,6 @@ function sDrone:UpdateCell()
         self.cell = cell
         VerifyCellExists(sDroneManager.drones, self.cell)
         sDroneManager.drones[self.cell.x][self.cell.y][self.id] = self
-        print("enter to table")
     end
 end
 
@@ -77,6 +76,8 @@ function sDrone:ReconsiderTarget()
     if self.state ~= DroneState.Pursuing then return end
 
     if not IsValid(self.target) or 
+    self.target:GetHealth() <= 0 or
+    self.target:GetValue("InSafezone") or
     self.position:Distance(self.target:GetPosition()) > 500 or
     self.position:Distance(self.tether_position) > self.tether_range then
         self.target = nil

@@ -52,9 +52,7 @@ end
 
 function cDroneManager:CellsDroneSync(args)
 
-    print("cDroneManager:CellsDroneSync")
     for _, drone_data in pairs(args.drone_data) do
-        output_table(args)
         if not self.drones[drone_data.id] then
             self.drones[drone_data.id] = cDrone(args)
         else
@@ -66,8 +64,6 @@ end
 
 function cDroneManager:SingleDroneSync(args)
 
-    print("cDroneManager:SingleDroneSync")
-    output_table(args)
     if not self.drones[args.id] then
         self.drones[args.id] = cDrone(args)
     else

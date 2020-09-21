@@ -28,6 +28,7 @@ function sHitDetection:__init()
     Network:Subscribe("HitDetection/DetectVehicleSplashHit", self, self.DetectVehicleSplashHit)
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
     Network:Subscribe("HitDetection/VehicleExplosionHit", self, self.VehicleExplosionHit)
+    Network:Subscribe("HitDetection/DetectDroneHitLocalPlayer", self, self.DetectDroneHitLocalPlayer)
 
     Events:Subscribe("HitDetection/PlayerInToxicArea", self, self.PlayerInsideToxicArea)
     Events:Subscribe("HitDetection/PlayerSurvivalDamage", self, self.PlayerSurvivalDamage)
@@ -74,8 +75,6 @@ end
 function sHitDetection:PlayerQuit(args)
     self.players[tostring(args.player:GetSteamId())] = nil
 end
-
--- TODO: add damage for vehicles and attribute vehicle explosions to proper killers
 
 function sHitDetection:ApplyDamage(args)
 
@@ -658,6 +657,43 @@ function sHitDetection:ExplosionHit(args, player)
         damage = damage
     })]]
 
+end
+
+-- Called by Player when Player is hit by a drone with a bullet
+--[[
+    args (in table):
+
+        weapon_enum (integer): weapon enum of the weapon that the drone used
+        bone_enum (integer): bone enum of the bone that was hit on the victim (the Player)
+        distance_travelled (number): distance that the bullet travelled 
+        damage_mod (number): damage mod that the drone has
+
+]]
+function sHitDetection:DetectDroneHitLocalPlayer(args, player)
+    assert(IsValid(player), "player is invalid")
+    assert(args.weapon_enum, "weapon_enum is invalid")
+    assert(args.bone_enum, "bone_enum is invalid")
+    assert(args.distance_travelled and args.distance_travelled > 0, "distance_travelled is invalid")
+
+    if not self:PlayerCanApplyDamage(player, tostring(args.token)) then return end
+    args.damage_mod = math.max(1, args.damage_mod)
+
+    if player:GetValue("InSafezone") then return end
+
+    local damage = WeaponDamage:CalculatePlayerDamage(player, args.weapon_enum, args.bone_enum, args.distance_travelled, nil, args.damage_mod)
+
+    self:ApplyDamage({
+        player = player,
+        damage = damage,
+        source = DamageEntity.Bullet,
+        weapon_enum = args.weapon_enum
+    })
+
+    Events:Fire("HitDetection/PlayerBulletHit", {
+        player = player,
+        damage = damage
+    })
+    
 end
 
 -- Called by Player when Player hits another player with a bullet

@@ -104,7 +104,6 @@ end
 
 -- Updates from server with all sync info (see __init for full list of args)
 function cDrone:UpdateFromServer(args)
-    output_table(args)
     self.state = args.state or self.state
 
     if self:IsDestroyed() then
@@ -256,7 +255,6 @@ function cDrone:Wander(args)
 
             -- Path completed
             if self.path_index >= count_table(self.path) then
-                _debug("FINISHED PATH, SETTING PATH TO NOTHING")
                 self.path = {} -- Find new path
             end
         end
@@ -332,15 +330,17 @@ function cDrone:Shoot()
     local fire_interval = 100 -- Fire every X ms
 
     Thread(function()
-        while fire_time > 0 do
+        while fire_time > 0 and self.body do
             local gun_to_fire = math.random() > 0.5 and DroneBodyPiece.LeftGun or DroneBodyPiece.RightGun
             self.body:CreateShootingEffect(gun_to_fire)
             fire_time = fire_time - fire_interval
-            Events:Fire("HitDetection/DroneShoot", {
+            Events:Fire("HitDetection/DroneShootMachineGun", {
                 position = self.body:GetGunPosition(gun_to_fire),
-                max_range = self.config.sight_range,
+                angle = self.body:GetGunAngle(gun_to_fire),
                 damage_modifier = self.config.damage_modifier
             })
+            -- 38 for blood fx on person
+            -- 36 for impact fx on ground
             Timer.Sleep(fire_interval)
         end
         self.firing = false
@@ -351,7 +351,7 @@ end
 function cDrone:Destroyed()
     ClientEffect.Play(AssetLocation.Game, {
         position = self.position,
-        effect_id = 46,
+        effect_id = 84,
         angle = self.angle
     })
     self:Remove()
@@ -377,6 +377,6 @@ function cDrone:CheckForNearbyWalls(args)
 end
 
 function cDrone:Remove()
-    self.body:Remove()
+    self.body = self.body:Remove()
     cDroneManager.drones[self.id] = nil
 end
