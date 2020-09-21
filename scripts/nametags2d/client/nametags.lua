@@ -504,22 +504,21 @@ function Nametags:Render()
     -- TODO: sort by distance to determine render order like player tags
     for cso_id, data in pairs(self.recent_drones) do
         -- Render nametags for drones while looking at the base piece only
-        local drone = cDroneContainer:CSOIdToDrone(cso_id)
-        local args = 
-        {
-            position = data.entity:GetPosition(),
-            drone = drone
-        }
-
-        if drone then
-            self:DrawDrone(args)
-        end
-
-        if time - data.time > 2 then
+        if time - data.time > 2 or not IsValid(data.entity) then
             self.recent_drones[cso_id] = nil
+        else
+            local drone = cDroneContainer:CSOIdToDrone(cso_id)
+            local args = 
+            {
+                position = data.entity:GetPosition(),
+                drone = drone
+            }
+
+            if drone then
+                self:DrawDrone(args)
+            end
         end
     end
-
 end
 
 function Nametags:LocalPlayerChat( args )
