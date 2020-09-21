@@ -135,7 +135,7 @@ function sWeaponManager:FireWeapon(args, player)
     else
         self.pending_fire[steam_id][weapon.id].ammo = args.ammo
         self.pending_fire[steam_id][weapon.id].adjusted_ammo = self.pending_fire[steam_id][weapon.id].adjusted_ammo - 1
-        if equipped_weapons and weapon_name then
+        if equipped_weapons and weapon_name and equipped_weapons[weapon_name] then
             equipped_weapons[weapon_name].ammo = self.pending_fire[steam_id][weapon.id].adjusted_ammo - 1
         end
     end

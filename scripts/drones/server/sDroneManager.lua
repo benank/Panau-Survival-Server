@@ -28,7 +28,7 @@ end
 
 function sDroneManager:PlayerChat(args)
 
-    if not IsAdmin(args.player) then return end
+    --if not IsAdmin(args.player) then return end
 
     if args.text == "/drone" then
         sDrone({
