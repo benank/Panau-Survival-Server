@@ -106,10 +106,6 @@ end
 function cDrone:UpdateFromServer(args)
     self.state = args.state or self.state
 
-    if self:IsDestroyed() then
-        self:Destroyed()
-    end
-
     self.health = args.health ~= nil and args.health or self.health
     self.body:HealthUpdated()
     self.host = args.host or self.host
@@ -129,6 +125,10 @@ function cDrone:UpdateFromServer(args)
                 self.position = args.path_data.position
             end
         end
+    end
+
+    if self:IsDestroyed() then
+        self:Destroyed()
     end
 
 end
