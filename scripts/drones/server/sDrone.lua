@@ -130,7 +130,9 @@ function sDrone:FindNewHost()
         end
     end
 
-    if closest.player == self.host then return end
+    if not IsValid(closest.player) then return end
+
+    if IsValid(self.host) and closest.player == self.host then return end
 
     _debug("New host: " .. tostring(closest.player))
     return closest.player
