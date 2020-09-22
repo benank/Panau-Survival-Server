@@ -26,6 +26,7 @@ class 'cDrone'
 ]]
 function cDrone:__init(args)
 
+    output_table(args)
     self.id = args.id -- TODO: replace with server id
     self.level = args.level
     self.position = args.path_data.position -- Approximate position of the drone in the world
@@ -109,18 +110,18 @@ function cDrone:UpdateFromServer(args)
 
     self.health = args.health ~= nil and args.health or self.health
     self.body:HealthUpdated()
-    self.host = args.host or self.host
+    self.host = args.host
+    self.target = args.target -- Current active target that the drone is pursuing
 
     if args.path_data then
-        self.target = args.path_data.target -- Current active target that the drone is pursuing
 
         if not self:IsHost() then
-            self.path = args.path_data.current_path -- Table of points that the drone is currently pathing through
-            self.path_index = args.path_data.current_path_index -- Current index of the path the drone is on
-            self.offset = args.path_data.target_offset -- Offset from the target the drone flies at
+            self.path = args.path_data.current_path or self.path -- Table of points that the drone is currently pathing through
+            self.path_index = args.path_data.current_path_index or self.path_index -- Current index of the path the drone is on
+            self.offset = args.path_data.target_offset or self.offset -- Offset from the target the drone flies at
+            self.corrective_position = args.path_data.position or self.corrective_position
         end
 
-        self.corrective_position = args.path_data.position
     end
 
     if self:IsDestroyed() then
@@ -224,7 +225,7 @@ function cDrone:Wander(args)
         target_pos = target_pos + self.offset
 
         -- Wandering speed is base speed / 2
-        local wandering_speed = self.config.speed / 2
+        local wandering_speed = self.personality == DronePersonality.Hostile and self.config.speed or self.config.speed / 2
 
         local dir = target_pos - self.position
         local velo = dir:Length() > 1 and (dir:Normalized() * wandering_speed) or Vector3.Zero
@@ -267,6 +268,11 @@ end
 -- Makes a drone track a target and face towards them 
 function cDrone:TrackTarget(args)
     self.target_position = self.target:GetPosition() + self.offset
+    
+    if self:IsHost() then
+        self.corrective_position = self.target_position
+    end
+
     self.target_position = math.lerp(self.target_position, self.corrective_position, 0.75)
 
     local target_pos = self.target_position
@@ -277,7 +283,7 @@ function cDrone:TrackTarget(args)
     target_pos = nearby_wall and nearby_wall_pos or target_pos
 
     -- Change offset if the drone cannot see the player
-    if self:IsHost() and not self:IsTargetVisible() and self.offset_timer:GetSeconds() > 3 then
+    if self:IsHost() and not self:IsTargetVisible() and self.offset_timer:GetSeconds() > 2 then
         self.offset = GetRandomFollowOffset(self.config.sight_range)
         self.offset_timer:Restart()
         self:SyncOffsetToServer()
@@ -301,7 +307,7 @@ function cDrone:TrackTarget(args)
         local dir = target_pos - self.position
         local velo = dir:Length() > 1 and (dir:Normalized() * self.config.speed) or Vector3.Zero
 
-        self:SetLinearVelocity(math.lerp(self.velocity, velo, math.min(1, args.delta * 0.1)))
+        self:SetLinearVelocity(math.lerp(self.velocity, velo, math.min(1, args.delta * 0.5)))
 
     end
 

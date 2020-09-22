@@ -24,7 +24,6 @@ function cDroneManager:LocalPlayerCellUpdate(args)
             for id, drone in pairs(self.drones) do
                 local drone_cell = GetCell(drone.position, Cell_Size)
                 if cell.x == drone_cell.x and cell.y == drone_cell.y then
-                    _debug("stream out drone")
                     drone:Remove()
                     self.drones[id] = nil
                 end
