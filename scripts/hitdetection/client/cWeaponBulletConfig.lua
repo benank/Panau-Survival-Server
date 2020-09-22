@@ -206,7 +206,7 @@ function cWeaponBulletConfig:__init()
             type = ProjectileBullet,
             speed = 500,
             bloom = 0,
-            bullet_size = 0.25,
+            bullet_size = 0.1,
             angle = function(angle)
                 return angle
             end

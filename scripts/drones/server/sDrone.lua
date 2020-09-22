@@ -17,7 +17,6 @@ function sDrone:__init(args)
     self.tether_position = DroneRegions[self.region].center -- Position used for tether checks
     self.tether_range = DroneRegions[self.region].radius -- Max distance travelled from initial spawn position
 
-    self.target_position = self.position -- Target position that the drone is currently travelling to
     self.target = nil -- Current active target that the drone is pursuing
     self.target_offset = Vector3() -- Offset from the target the drone flies at
 
@@ -199,7 +198,7 @@ function sDrone:OneHostSync(args, player)
     if self:IsDestroyed() then return end
     -- Update some aspects from player
     if args.type == "offset" then
-        self.offset = args.offset
+        self.target_offset = args.offset
         self.position = args.position
         self:UpdateCell()
     elseif args.type == "path" then
@@ -231,7 +230,6 @@ function sDrone:GetPathSyncData()
     return {
         id = self.id,
         position = self.position,
-        target_position = self.target_position,
         target = self.target,
         target_offset = self.target_offset,
         tether_range = self.tether_range,

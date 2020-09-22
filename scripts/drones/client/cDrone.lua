@@ -29,6 +29,7 @@ function cDrone:__init(args)
     self.id = args.id -- TODO: replace with server id
     self.level = args.level
     self.position = args.path_data.position -- Approximate position of the drone in the world
+    self.corrective_position = self.position
 
     self.tether_position = args.path_data.tether_position -- Initial spawn position
     self.tether_range = args.path_data.tether_range -- Max distance travelled from initial spawn position
@@ -117,16 +118,10 @@ function cDrone:UpdateFromServer(args)
             self.path = args.path_data.current_path -- Table of points that the drone is currently pathing through
             self.path_index = args.path_data.current_path_index -- Current index of the path the drone is on
             self.offset = args.path_data.target_offset -- Offset from the target the drone flies at
+            print("offset: %s", tostring(self.offset))
         end
 
-        -- If drone is far from the path index, then update its position
-        if self.path and not self:IsHost() and count_table(self.path) > 0 and self.path_index and self.state == DroneState.Wandering then
-            if self.position:Distance(self.path[self.path_index]) > 20 then
-                self.position = args.path_data.position
-            end
-        elseif self.state == DroneState.Pursuing and not self:IsHost() and self.position:Distance(args.path_data.position) > 10 then
-            self.position = args.path_data.position
-        end
+        self.corrective_position = args.path_data.position
     end
 
     if self:IsDestroyed() then
@@ -164,12 +159,12 @@ end
 
 function cDrone:SetPosition(pos)
     self.position = pos
-    self.body:SetPosition()
+    if self.body then self.body:SetPosition() end
 end
 
 function cDrone:SetAngle(ang)
     self.angle = ang
-    self.body:SetAngle()
+    if self.body then self.body:SetAngle() end
 end
 
 function cDrone:PostTick(args)
@@ -177,7 +172,7 @@ function cDrone:PostTick(args)
     self:Move(args)
     self.position = self.position + self.velocity * args.delta
 
-    self.body:PostTick(args)
+    if self.body then self.body:PostTick(args) end
 
 end
 
@@ -198,6 +193,7 @@ end
 function cDrone:IsTargetInSight()
 
     if not IsValid(self.target) then return false end
+    if not self.body then return false end
 
     local ray = Physics:Raycast(
         self.body:GetGunPosition(DroneBodyPiece.TopGun),
@@ -272,6 +268,7 @@ end
 -- Makes a drone track a target and face towards them 
 function cDrone:TrackTarget(args)
     self.target_position = self.target:GetPosition() + self.offset
+    self.target_position = math.lerp(self.target_position, self.corrective_position, 0.75)
 
     local target_pos = self.target_position
 
@@ -305,7 +302,7 @@ function cDrone:TrackTarget(args)
         local dir = target_pos - self.position
         local velo = dir:Length() > 1 and (dir:Normalized() * self.config.speed) or Vector3.Zero
 
-        self:SetLinearVelocity(math.lerp(self.velocity, velo, 0.01))
+        self:SetLinearVelocity(math.lerp(self.velocity, velo, math.min(1, args.delta * 0.1)))
 
     end
 
@@ -379,6 +376,7 @@ function cDrone:CheckForNearbyWalls(args)
 end
 
 function cDrone:Remove()
+    if not self.body then return end
     self.body = self.body:Remove()
     cDroneManager.drones[self.id] = nil
 end

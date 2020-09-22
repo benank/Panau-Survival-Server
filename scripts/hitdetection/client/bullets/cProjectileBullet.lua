@@ -107,6 +107,7 @@ end
 
 function ProjectileBullet:BulletRaycast(raycast_position, raycast_distance_modifier)
     local raycast_distance = self.raycast_distance * raycast_distance_modifier
+    if IsNaN(raycast_position) or IsNaN(self.angle) or IsNaN(raycast_distance) then return end
     local raycast = Physics:Raycast(raycast_position, self.angle * Vector3.Forward, 0, raycast_distance, self.ignore_localplayer)
     if raycast.distance < raycast_distance or raycast.position.y < 199 then
         self:HitSomething(raycast)
