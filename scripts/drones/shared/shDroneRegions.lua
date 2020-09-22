@@ -6,7 +6,7 @@ DroneRegionEnum =
     ResidentialDistrict = 4
 }
 
-DRONE_SPAWN_INTERVAL = 1
+DRONE_SPAWN_INTERVAL = 15
 
 DroneRegions = 
 {
