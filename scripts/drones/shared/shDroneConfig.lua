@@ -37,7 +37,7 @@ Drone_Configuration =
     attack_on_sight = {base = false, base_chance = 0.01, chance_per_level = 0.05},
     accuracy_modifier = {base = 0.01, per_level = 0.03},
     health = {base = 30, per_level = 20},
-    sight_range = {base = 10, per_level = 3}
+    sight_range = {base = 25, per_level = 2}
 }
 
 DroneState = 

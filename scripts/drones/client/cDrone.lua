@@ -276,7 +276,7 @@ function cDrone:Wander(args)
             end
         end
 
-        if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 2 and not LocalPlayer:GetValue("Invisible") then
+        if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 0.5 and not LocalPlayer:GetValue("Invisible") then
             self.attack_on_sight_timer:Restart()
             local is_visible, ray = self:IsTargetVisible(LocalPlayer)
             self.attack_on_sight_count = is_visible and self.attack_on_sight_count + 1 or math.max(0, self.attack_on_sight_count - 1)
