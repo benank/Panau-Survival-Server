@@ -46,6 +46,22 @@ function cDroneBody:PostTick(args)
         self.smoke_fx:SetPosition(self.parent.position)
     end
 
+    if self.red_blip_timer and self.red_blip_timer:GetSeconds() >= 1 and not self.red_blip_effect then
+        self.red_blip_timer:Restart()
+        self.red_blip_effect = ClientEffect.Create(AssetLocation.Game, {
+            position = self.parent.position + self.parent.angle * DroneRedBlipOffset.position,
+            angle = self.parent.angle,
+            effect_id = 280
+        })
+        Timer.SetTimeout(700, function()
+            if IsValid(self.red_blip_effect) then
+                self.red_blip_effect = self.red_blip_effect:Remove()
+            end
+        end)
+    elseif IsValid(self.red_blip_effect) then
+        self.red_blip_effect:SetPosition(self.parent.position + self.parent.angle * DroneRedBlipOffset.position)
+    end
+
 end
 
 function cDroneBody:GameRender(args)
@@ -145,6 +161,10 @@ function cDroneBody:CreateBody()
         path = "fx_ballonengine_01.psmb"
     })
 
+    if self.parent.config.attack_on_sight then
+        self.red_blip_timer = Timer()
+    end
+
 end
 
 function cDroneBody:SetPosition()
@@ -187,6 +207,10 @@ function cDroneBody:Remove()
 
     if IsValid(self.smoke_fx) then
         self.smoke_fx:Remove()
+    end
+
+    if IsValid(self.red_blip_effect) then
+        self.red_blip_effect:Remove()
     end
 
     if self.debug_render then

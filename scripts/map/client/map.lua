@@ -270,7 +270,7 @@ Map = {
         Location("Kampung Tokong Tua", Vector3(-5916.205, 317.8293, -10349.15), Location.Type.CivVil),
         Location("Kampung Ketam Laut", Vector3(-7874.091, 207.2763, -2346.648), Location.Type.CivVil, Location.Color.Green),
         Location("Sungai Geneng", Vector3(-2237.429, 285.9816, 11397.98), Location.Type.MilLocation),
-        Location("Panau City - Docks District", Vector3(-15315.65, 202.9297, -2818.928), Location.Type.CivCity, Location.Color.Green),
+        Location("Panau City - Docks District", Vector3(-15315.65, 202.9297, -2818.928), Location.Type.Skull, Location.Color.Red),
         Location("Kampung Nelayan-Nelayan", Vector3(958.4824, 204.2445, -12187.5), Location.Type.CivVil),
         Location("Sungai Madu Leleh", Vector3(-9840.547, 208.627, 4986.521), Location.Type.CivVil),
         Location("Pulau Naga", Vector3(-589.0225, 200.9491, 11536.25), Location.Type.CivVil, Location.Color.Green),

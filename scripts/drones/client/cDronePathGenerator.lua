@@ -4,6 +4,7 @@ function cDronePathGenerator:__init()
 
     self.height = 2 -- Drone height above the path
     self.height_range = 10
+    self.MAX_RETRIES = 5
 
 end
 
@@ -17,7 +18,7 @@ end
 
 function cDronePathGenerator:GeneratePathNearPoint(origin, tether_position, radius, callback, retries)
 
-    _debug("GENERATING PATH...")
+    --_debug("GENERATING PATH...")
 
     local retries = retries or 0
     local start_pos = origin
@@ -29,16 +30,20 @@ function cDronePathGenerator:GeneratePathNearPoint(origin, tether_position, radi
         function(args)
 
             if not args.success or count_table(args.edges) == 0 then
-                _debug(string.format("Failed to find road path, retrying (%d)", retries))
+                --_debug(string.format("Failed to find road path, retrying (%d)", retries))
                 Thread(function()
                     Timer.Sleep(1000)
                     retries = retries + 1
-                    self:GeneratePathNearPoint(origin, radius, callback, retries)
+                    if retries >= self.MAX_RETRIES then -- Failed to find path within max tries
+                        callback()
+                        return
+                    end
+                    self:GeneratePathNearPoint(origin, tether_position, radius, callback, retries)
                 end)
                 return
             end
 
-            _debug("GOT RESPONSE, GOING THROUGH EDGES")
+            --_debug("GOT RESPONSE, GOING THROUGH EDGES")
 
             local path = {}
 
@@ -64,7 +69,7 @@ function cDronePathGenerator:GeneratePathNearPoint(origin, tether_position, radi
 
                 end
 
-                _debug("PATH FINISHED GENERATING")
+                --_debug("PATH FINISHED GENERATING " .. tostring(retries))
 
                 --output_table(path)
 

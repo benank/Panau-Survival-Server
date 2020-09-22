@@ -49,24 +49,25 @@ end
 
 function cDroneManager:CellsDroneSync(args)
 
-    for _, drone_data in pairs(args.drone_data) do
-        if not self.drones[drone_data.id] then
-            self.drones[drone_data.id] = cDrone(args)
-        else
-            self.drones[drone_data.id]:UpdateFromServer(args)
+    Thread(function()
+        for _, drone_data in pairs(args.drone_data) do
+            if not self.drones[drone_data.id] then
+                self.drones[drone_data.id] = cDrone(drone_data)
+            else
+                self.drones[drone_data.id]:UpdateFromServer(drone_data)
+            end
+            Timer.Sleep(1)
         end
-    end
+    end)
 
 end
 
 function cDroneManager:SingleDroneSync(args)
-
-    if not self.drones[args.id] then
+    if not self.drones[args.id] and args.level then
         self.drones[args.id] = cDrone(args)
-    else
+    elseif self.drones[args.id] then
         self.drones[args.id]:UpdateFromServer(args)
     end
-
 end
 
 function cDroneManager:PostTick(args)

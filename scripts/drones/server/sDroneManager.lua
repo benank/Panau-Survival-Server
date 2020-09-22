@@ -3,6 +3,8 @@ class 'sDroneManager'
 function sDroneManager:__init()
 
     self.drones = {} -- Drones in cells [x][y][id] = drone
+    self.drones_by_id = {} -- Drones by id
+    self.drone_counts_by_region = {} -- Counts of drones per region for spawning
     self.player_cells = {} -- Players in cells [x][y][steam_id] = player
 
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(Cell_Size), self, self.PlayerCellUpdate)
@@ -13,14 +15,60 @@ function sDroneManager:__init()
 
     Events:Subscribe("HitDetection/DroneDamaged", self, self.DroneDamaged)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+    Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
 
 end
 
-function sDroneManager:DroneDamaged(args)
-    local cell = GetCell(args.hit_position, Cell_Size)
-    if not self.drones[cell.x] or not self.drones[cell.x][cell.y] then return end
+function sDroneManager:ModuleLoad()
+    self:DroneSpawnLoop()
+    self:SpawnInitialDrones()
+end
 
-    local drone = self.drones[cell.x][cell.y][args.drone_id]
+function sDroneManager:DroneSpawnLoop()
+    -- Spawn drone 
+    Timer.SetInterval(DRONE_SPAWN_INTERVAL * 1000 * 60, function()
+        for region_enum, region in pairs(DroneRegions) do
+            if self.drone_counts_by_region[region_enum] < region.spawn.max and math.random() <= region.spawn.chance then
+                sDrone({
+                    region = region_enum,
+                    position = self:GetRandomPositionInRegion(region_enum)
+                })
+            end
+        end
+    end)
+end
+
+-- Initially spanw half of max drones in each area on reload
+function sDroneManager:SpawnInitialDrones()
+    local count = 0
+    for region_enum, region in pairs(DroneRegions) do
+        self.drone_counts_by_region[region_enum] = 0
+
+        for i = 1, math.floor(region.spawn.max / 2) do
+            sDrone({
+                region = region_enum,
+                position = self:GetRandomPositionInRegion(region_enum)
+            })
+            count = count + 1
+        end
+    end
+    print(string.format("Spawned %d drones.", count))
+end
+
+function sDroneManager:GetRandomPositionInRegion(region_enum)
+    local region = DroneRegions[region_enum]
+    assert(region, "Region should exist")
+
+    -- Get normalized vector direction
+    local dir = Vector3(0.5 - math.random(), 0, 0.5 - math.random()):Normalized()
+    -- Scale the direction so it's not always on the outer edge
+    dir = dir * math.random()
+
+    return region.center + Vector3(dir.x * region.radius, 30, dir.z * region.radius)
+end
+
+function sDroneManager:DroneDamaged(args)
+    local drone = self.drones_by_id[args.drone_id]
     if not drone then return end
 
     drone:Damage(args)
@@ -41,12 +89,8 @@ function sDroneManager:PlayerChat(args)
 end
 
 function sDroneManager:ModuleUnload()
-    for cell_x, _ in pairs(self.drones) do
-        for cell_y, _ in pairs(self.drones[cell_x]) do
-            for id, drone in pairs(self.drones[cell_x][cell_y]) do
-                drone:Remove()
-            end
-        end
+    for id, drone in pairs(self.drones_by_id) do
+        drone:Remove()
     end
 end
 
@@ -97,19 +141,6 @@ function sDroneManager:PlayerCellUpdate(args)
     
     local drone_data = {}
 
-    for _, old_cell in pairs(args.old_adjacent) do
-
-        -- If these cells don't exist, create them
-        VerifyCellExists(self.drones, old_cell)
-
-        -- Remove player as drone host from old cells
-        for id, drone in pairs(self.drones[old_cell.x][old_cell.y]) do
-            if drone.host == args.player then
-                drone.host = nil
-            end
-        end
-    end
-    
     for _, update_cell in pairs(args.updated) do
 
         -- If these cells don't exist, create them

@@ -8,7 +8,7 @@ end
 
 function sDrone:__init(args)
 
-    output_table(args)
+    --output_table(args)
     self.id = GetDroneId()
     self.region = args.region
     self.level = GetLevelFromRegion(self.region)
@@ -24,23 +24,25 @@ function sDrone:__init(args)
     self.current_path_index = 1 -- Current index of the path the drone is on
 
     self.config = GetDroneConfiguration(self.level)
-    print("Drone config")
-    output_table(self.config)
+    --print("Drone config")
+    --output_table(self.config)
 
     self.max_health = self.config.health
     self.health = self.max_health
 
     self.state = DroneState.Wandering
-    self.personality = self.config.attack_on_sight and DronePersonality.Hostile or DronePersonality.Defensive
 
     self.host = nil -- Player who currently "controls" the drone and dictates its pathfinding
 
     self.network_subs = 
     {
-        Network:Subscribe("drones/sync/full" .. tostring(self.id), self, self.FullHostSync),
+        Network:Subscribe("drones/DespawnDrone" .. tostring(self.id), self, self.DespawnDrone),
+        Network:Subscribe("drones/AttackOnSightTarget" .. tostring(self.id), self, self.AttackOnSightTarget),
         Network:Subscribe("drones/sync/one" .. tostring(self.id), self, self.OneHostSync)
     }
 
+    sDroneManager.drone_counts_by_region[self.region] = sDroneManager.drone_counts_by_region[self.region] + 1
+    sDroneManager.drones_by_id[self.id] = self
     self:UpdateCell()
 
     -- Find host upon creation
@@ -57,6 +59,18 @@ function sDrone:__init(args)
     end)
 
     self:Sync()
+
+end
+
+function sDrone:AttackOnSightTarget(args, player)
+    if self.target then return end
+    self.target = player
+    self.state = DroneState.Pursuing
+
+    self:Sync(nil, {
+        state = self.state,
+        target = self.target
+    })
 
 end
 
@@ -98,7 +112,7 @@ function sDrone:ReconsiderHost()
 
     if IsValid(self.host) then
         -- Host is far away
-        if self.host:GetPosition():Distance(self.position) > 500 then
+        if self.host:GetPosition():Distance(self.position) > 1000 then
             should_reconsider_host = true
         end
     else
@@ -127,7 +141,7 @@ function sDrone:FindNewHost()
 
     for _, player in pairs(nearby_players) do
         local dist = player:GetPosition():Distance(self.position)
-        if dist < closest.dist then
+        if dist < closest.dist and dist < 1000 then
             closest.player = player
             closest.dist = dist
         end
@@ -137,9 +151,13 @@ function sDrone:FindNewHost()
 
     if IsValid(self.host) and closest.player == self.host then return end
 
-    _debug("New host: " .. tostring(closest.player))
     return closest.player
 
+end
+
+-- Called by clients when finding a path fails
+function sDrone:DespawnDrone(args, player)
+    self:Remove()
 end
 
 function sDrone:Remove()
@@ -155,6 +173,9 @@ function sDrone:Remove()
     if sDroneManager.drones[self.cell.x] and sDroneManager.drones[self.cell.x][self.cell.y] then
         sDroneManager.drones[self.cell.x][self.cell.y][self.id] = nil
     end
+    
+    sDroneManager.drones_by_id[self.id] = nil
+    sDroneManager.drone_counts_by_region[self.region] = sDroneManager.drone_counts_by_region[self.region] - 1
 end
 
 -- Called when a player destroys a drone
@@ -196,12 +217,9 @@ function sDrone:IsDestroyed()
     return self.state == DroneState.Destroyed
 end
 
-function sDrone:FullHostSync(args, player)
-    -- Update everything from player
-end
-
 function sDrone:OneHostSync(args, player)
     if self:IsDestroyed() then return end
+    if not IsValid(self.host) or player ~= self.host then return end
     -- Update some aspects from player
     if args.type == "offset" then
         self.target_offset = args.offset
@@ -278,7 +296,6 @@ function sDrone:GetSyncData()
         config = self.config,
         max_health = self.max_health,
         health = self.health,
-        personality = self.personality,
         path_data = self:GetPathSyncData(),
         host = self.host,
         state = self.state

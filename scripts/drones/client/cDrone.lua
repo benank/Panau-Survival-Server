@@ -9,7 +9,6 @@ class 'cDrone'
         config = self.config,
         max_health = self.max_health,
         health = self.health,
-        personality = self.personality,
         path_data = self:GetPathSyncData()
 
         self:GetPathSyncData()
@@ -47,7 +46,6 @@ function cDrone:__init(args)
     self.health = self.max_health
 
     self.state = args.state
-    self.personality = self.config.attack_on_sight and DronePersonality.Hostile or DronePersonality.Defensive
 
     self.host = args.host -- Player who currently "controls" the drone and dictates its pathfinding
 
@@ -61,6 +59,9 @@ function cDrone:__init(args)
 
     self.offset_timer = Timer()
     self.tether_timer = Timer()
+
+    self.attack_on_sight_timer = Timer()
+    self.attack_on_sight_count = 0
 
     self.fire_timer = Timer() -- Fire rate timer
     self.next_fire_time = 0
@@ -78,6 +79,12 @@ function cDrone:PerformHostActions()
             self.generating_path = true
             cDronePathGenerator:GeneratePathNearPoint(self.position, self.tether_position, DRONE_PATH_RADIUS, function(edges)
                 
+                if not edges then
+                    Network:Send("drones/DespawnDrone" .. tostring(self.id))
+                    self:Remove()
+                    return
+                end
+
                 self.path = edges
                 self.path_index = 1
                 self.generating_path = false
@@ -106,6 +113,10 @@ end
 
 -- Updates from server with all sync info (see __init for full list of args)
 function cDrone:UpdateFromServer(args)
+    if args.health then
+        print("UPDATE FROM SERVER")
+        output_table(args)
+    end
     self.state = args.state or self.state
 
     self.health = args.health ~= nil and args.health or self.health
@@ -176,16 +187,18 @@ function cDrone:PostTick(args)
 
 end
 
-function cDrone:IsTargetVisible()
+function cDrone:IsTargetVisible(_target)
+
+    local target = _target or self.target
     
-    if not IsValid(self.target) then return false end
+    if not IsValid(target) then return false end
 
     local ray = Physics:Raycast(
         self.position,
-        self.target:GetBonePosition("ragdoll_Hips") - self.position,
-        0, self.range * 2, false)
+        target:GetBonePosition("ragdoll_Hips") - self.position,
+        0, self.range, false)
 
-    if ray.entity and (ray.entity.__type == "Player" or ray.entity.__type == "LocalPlayer") and ray.entity == self.target then return true end
+    if ray.entity and (ray.entity.__type == "Player" or ray.entity.__type == "LocalPlayer") and ray.entity == target then return true, ray end
 
 end
 
@@ -225,7 +238,7 @@ function cDrone:Wander(args)
         target_pos = target_pos + self.offset
 
         -- Wandering speed is base speed / 2
-        local wandering_speed = self.personality == DronePersonality.Hostile and self.config.speed or self.config.speed / 2
+        local wandering_speed = self.config.attack_on_sight and self.config.speed or self.config.speed / 2
 
         local dir = target_pos - self.position
         local velo = dir:Length() > 1 and (dir:Normalized() * wandering_speed) or Vector3.Zero
@@ -257,6 +270,18 @@ function cDrone:Wander(args)
             end
         end
 
+        if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 2 then
+            self.attack_on_sight_timer:Restart()
+            local is_visible, ray = self:IsTargetVisible(LocalPlayer)
+            self.attack_on_sight_count = is_visible and self.attack_on_sight_count + 1 or math.max(0, self.attack_on_sight_count - 1)
+
+            if is_visible and (ray.distance < self.config.sight_range * 0.1 or self.attack_on_sight_count >= 5) then
+                Network:Send("drones/AttackOnSightTarget" .. tostring(self.id))
+                self.attack_on_sight_count = 0
+                self.body:PlayAlertSound()
+            end
+        end
+
     end
 
 end
@@ -267,6 +292,7 @@ end
 
 -- Makes a drone track a target and face towards them 
 function cDrone:TrackTarget(args)
+    self.attack_on_sight_count = 0
     self.target_position = self.target:GetPosition() + self.offset
     
     if self:IsHost() then
@@ -343,8 +369,6 @@ function cDrone:Shoot()
                 angle = self.body:GetGunAngle(gun_to_fire),
                 damage_modifier = self.config.damage_modifier
             })
-            -- 38 for blood fx on person
-            -- 36 for impact fx on ground
             Timer.Sleep(fire_interval)
         end
         self.firing = false

@@ -18,6 +18,8 @@ DroneEffectOffset = {position = Vector3(0, 0, 0.05), angle = Angle(0, math.pi, 0
 
 DroneMuzzleFlashOffset = {position = Vector3(), angle = Angle(-math.pi / 2, 0, 0)}
 
+DroneRedBlipOffset = {position = Vector3(0, 0.5, 0)}
+
 DroneBodyObjects = 
 {
     [DroneBodyPiece.Base] = 

@@ -30,14 +30,14 @@ Drone_Configuration =
     speed = {base = 7, per_level = 0.25},
     damage_modifier = {base = 1, per_level = 0.05},
     has_rockets = {base = false, base_chance = 0.02, chance_per_level = 0.02},
-    fire_time_min = {base = 0.2, per_level = 0.1},
-    fire_time_max = {base = 1, per_level = 0.1},
-    fire_rate_interval = {base = 3, per_level = -0.05},
+    fire_time_min = {base = 0.2, per_level = 0.025},
+    fire_time_max = {base = 1, per_level = 0.05},
+    fire_rate_interval = {base = 3, per_level = -0.025},
     rocket_fire_rate = {base = 0.1, per_level = 0.025},
-    attack_on_sight = {base = false, base_chance = 0.05, chance_per_level = 0.05},
+    attack_on_sight = {base = false, base_chance = 0.01, chance_per_level = 0.05},
     accuracy_modifier = {base = 0.05, per_level = 0.05},
-    health = {base = 50, per_level = 30},
-    sight_range = {base = 15, per_level = 5}
+    health = {base = 30, per_level = 20},
+    sight_range = {base = 10, per_level = 2}
 }
 
 DroneState = 
@@ -45,12 +45,6 @@ DroneState =
     Wandering = 1, -- Peacefully wandering
     Pursuing = 2, -- Actively pursuing a target
     Destroyed = 3 -- Drone has been destroyed
-}
-
-DronePersonality = 
-{
-    Defensive = 1, -- Drone only attacks if attacked
-    Hostile = 2 -- Drone attacks on sight
 }
 
 --[[

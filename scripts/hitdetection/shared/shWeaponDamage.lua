@@ -30,7 +30,7 @@ function WeaponDamage:__init()
         [WeaponEnum.V_Cannon] =         {base = 0.15, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 6},
         [WeaponEnum.V_Cannon_Slow] =    {base = 0.13, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
         [WeaponEnum.V_MachineGun] =     {base = 0.10, v_mod = 0.5,   distance_falloff = 300, falloff = falloff_func},
-        [WeaponEnum.Drone_MachineGun] = {base = 0.06, v_mod = 1.5,   distance_falloff = 150, falloff = falloff_func}
+        [WeaponEnum.Drone_MachineGun] = {base = 0.05, v_mod = 1.5,   distance_falloff = 150, falloff = falloff_func}
     }
 
     self.bone_damage_modifiers = {

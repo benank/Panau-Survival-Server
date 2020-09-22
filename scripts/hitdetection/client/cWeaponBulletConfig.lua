@@ -204,9 +204,9 @@ function cWeaponBulletConfig:__init()
         [WeaponEnum.Drone_MachineGun] = -- Drone bullets, not to be used by LocalPlayer
         {
             type = ProjectileBullet,
-            speed = 500,
+            speed = 400,
             bloom = 0,
-            bullet_size = 0.1,
+            bullet_size = 0.05,
             angle = function(angle)
                 return angle
             end
