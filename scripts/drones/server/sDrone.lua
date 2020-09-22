@@ -62,16 +62,26 @@ function sDrone:__init(args)
 
 end
 
-function sDrone:AttackOnSightTarget(args, player)
-    if self.target then return end
-    self.target = player
-    self.state = DroneState.Pursuing
+function sDrone:PursueTarget(target)
+    self.target = target
+    self.state = IsValid(target) and DroneState.Pursuing or DroneState.Wandering
+    self.current_path = {}
+    self.current_path_index = 1
 
     self:Sync(nil, {
         state = self.state,
-        target = self.target
+        target = self.target,
+        path_data = 
+        {
+            current_path = self.current_path,
+            current_path_index = self.current_path_index
+        }
     })
+end
 
+function sDrone:AttackOnSightTarget(args, player)
+    if self.target then return end
+    self:PursueTarget(player)
 end
 
 -- Updates the drone's cell in DroneManager cells
@@ -93,12 +103,12 @@ function sDrone:ReconsiderTarget()
     if self.state ~= DroneState.Pursuing then return end
 
     if not IsValid(self.target) or 
+    self.target:GetValue("Invisible") or 
     self.target:GetHealth() <= 0 or
     self.target:GetValue("InSafezone") or
     self.position:Distance(self.target:GetPosition()) > 500 or
     self.position:Distance(self.tether_position) > self.tether_range then
-        self.target = nil
-        self.state = DroneState.Wandering
+        self:PursueTarget(nil)
         return true
     end
 
@@ -198,8 +208,7 @@ function sDrone:Damage(args)
     if self:IsDestroyed() then return end
 
     self.health = math.max(0, self.health - args.damage)
-    self.target = args.player
-    self.state = DroneState.Pursuing
+    self:PursueTarget(args.player)
 
     if self.health == 0 then
         self:Destroyed(args)

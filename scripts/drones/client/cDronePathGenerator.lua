@@ -35,6 +35,7 @@ function cDronePathGenerator:GeneratePathNearPoint(origin, tether_position, radi
                     Timer.Sleep(1000)
                     retries = retries + 1
                     if retries >= self.MAX_RETRIES then -- Failed to find path within max tries
+                        _debug("Failed to find path")
                         callback()
                         return
                     end

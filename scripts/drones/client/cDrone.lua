@@ -118,6 +118,9 @@ function cDrone:UpdateFromServer(args)
 
     if self.state == DroneState.Wandering and args.state == DroneState.Pursuing and not self.config.attack_on_sight then
         self.body:PlaySound("intruder_alert")
+    elseif self.state == DroneState.Pursuing and args.state == DroneState.Wandering then
+        self.path = {}
+        self.path_index = 1
     end
 
     self.state = args.state or self.state
@@ -273,7 +276,7 @@ function cDrone:Wander(args)
             end
         end
 
-        if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 2 then
+        if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 2 and not LocalPlayer:GetValue("Invisible") then
             self.attack_on_sight_timer:Restart()
             local is_visible, ray = self:IsTargetVisible(LocalPlayer)
             self.attack_on_sight_count = is_visible and self.attack_on_sight_count + 1 or math.max(0, self.attack_on_sight_count - 1)
