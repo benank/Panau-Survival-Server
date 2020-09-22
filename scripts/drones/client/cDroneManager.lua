@@ -56,7 +56,7 @@ function cDroneManager:CellsDroneSync(args)
             else
                 self.drones[drone_data.id]:UpdateFromServer(drone_data)
             end
-            Timer.Sleep(1)
+            Timer.Sleep(10)
         end
     end)
 

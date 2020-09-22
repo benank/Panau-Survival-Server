@@ -253,10 +253,12 @@ function sDrone:OneHostSync(args, player)
         })
     elseif args.type == "path_index" then
         self.current_path_index = args.path_index or self.current_path_index
+        self.position = args.position
         self:Sync(nil, {
             path_data = 
             {
-                current_path_index = self.current_path_index
+                current_path_index = self.current_path_index,
+                position = self.position
             }
         })
     end

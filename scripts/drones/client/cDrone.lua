@@ -62,7 +62,8 @@ function cDrone:__init(args)
     self.offset_timer = Timer()
     self.tether_timer = Timer()
     self.sound_timer = Timer()
-    self.sound_timer_interval = math.random() * 1000 + 300
+    self.wander_sync_timer = Timer()
+    self.sound_timer_interval = math.random() * 2000 + 300
 
     self.attack_on_sight_timer = Timer()
     self.attack_on_sight_count = 0
@@ -261,14 +262,22 @@ function cDrone:Wander(args)
 
         local diff = self.position - target_pos
 
+        if self.wander_sync_timer:GetSeconds() >= 1 and self:IsHost() then
+            self.wander_sync_timer:Restart()
+            self:SyncOffsetToServer()
+        end
+
         -- If the node was reached, go to the next one
         if math.abs(diff.x) < 2 and math.abs(diff.z) < 2 then
             self.path_index = self.path_index + 1
 
-            self:SyncToServer({
-                type = "path_index",
-                path_index = self.path_index
-            })
+            if self:IsHost() then
+                self:SyncToServer({
+                    type = "path_index",
+                    path_index = self.path_index,
+                    position = self.position
+                })
+            end
 
             _debug(string.format("Path node %d/%d", self.path_index, count_table(self.path)))
 
@@ -294,7 +303,7 @@ function cDrone:Wander(args)
 
     if self.sound_timer:GetSeconds() >= self.sound_timer_interval then
         self.body:PlaySound("be_on_the_lookout")
-        self.sound_timer_interval = math.random() * 200 + 60
+        self.sound_timer_interval = math.random() * 2000 + 300
         self.sound_timer:Restart()
     end
 
@@ -309,11 +318,9 @@ function cDrone:TrackTarget(args)
     self.attack_on_sight_count = 0
     self.target_position = self.target:GetPosition() + self.offset
     
-    if self:IsHost() then
-        self.corrective_position = self.target_position
+    if not self:IsHost() then
+        self.target_position = math.lerp(self.target_position, self.corrective_position, 0.25)
     end
-
-    self.target_position = math.lerp(self.target_position, self.corrective_position, 0.75)
 
     local target_pos = self.target_position
 
