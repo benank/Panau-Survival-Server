@@ -28,8 +28,10 @@ function cDrone:__init(args)
     output_table(args)
     self.id = args.id -- TODO: replace with server id
     self.level = args.level
+    self.region = args.region
     self.position = args.path_data.position -- Approximate position of the drone in the world
     self.corrective_position = self.position
+    self.height_max = args.path_data.height_max or 0
 
     self.tether_position = args.path_data.tether_position -- Initial spawn position
     self.tether_range = args.path_data.tether_range -- Max distance travelled from initial spawn position
@@ -79,7 +81,7 @@ function cDrone:PerformHostActions()
         
         if count_table(self.path) == 0 and not self.generating_path then
             self.generating_path = true
-            cDronePathGenerator:GeneratePathNearPoint(self.position, self.tether_position, DRONE_PATH_RADIUS, function(edges)
+            cDronePathGenerator:GeneratePathNearPoint(self.position, self.tether_position, DRONE_PATH_RADIUS, self.region, function(edges)
                 
                 if not edges then
                     Network:Send("drones/DespawnDrone" .. tostring(self.id))
@@ -276,7 +278,7 @@ function cDrone:Wander(args)
             end
         end
 
-        if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 0.5 and not LocalPlayer:GetValue("Invisible") then
+        if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 1 and not LocalPlayer:GetValue("Invisible") then
             self.attack_on_sight_timer:Restart()
             local is_visible, ray = self:IsTargetVisible(LocalPlayer)
             self.attack_on_sight_count = is_visible and self.attack_on_sight_count + 1 or math.max(0, self.attack_on_sight_count - 1)

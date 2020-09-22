@@ -64,7 +64,8 @@ function sDroneManager:GetRandomPositionInRegion(region_enum)
     -- Scale the direction so it's not always on the outer edge
     dir = dir * math.random()
 
-    return region.center + Vector3(dir.x * region.radius, 30, dir.z * region.radius)
+    local height = GetExtraHeightOfDroneFromRegion(region_enum)
+    return region.center + Vector3(dir.x * region.radius, 30 + height, dir.z * region.radius)
 end
 
 function sDroneManager:DroneDamaged(args)

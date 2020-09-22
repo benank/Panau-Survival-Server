@@ -291,7 +291,8 @@ function sDrone:GetPathSyncData()
         tether_range = self.tether_range,
         tether_position = self.tether_position,
         current_path = self.current_path,
-        current_path_index = self.current_path_index
+        current_path_index = self.current_path_index,
+        height = self.height
     }
 
 end
@@ -305,6 +306,7 @@ function sDrone:GetSyncData()
         config = self.config,
         max_health = self.max_health,
         health = self.health,
+        region = self.region,
         path_data = self:GetPathSyncData(),
         host = self.host,
         state = self.state
