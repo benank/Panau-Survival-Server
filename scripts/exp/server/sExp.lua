@@ -52,7 +52,7 @@ end
 function sExp:DroneDestroyed(args)
     if not IsValid(args.player) then return end
 
-    local exp_earned = Exp.DestroyDroneExpPerLevel * args.drone_level
+    local exp_earned = Exp.DestroyDrone.Base + Exp.DestroyDrone.Per_Level * args.drone_level
 
     if not exp_earned then return end
 

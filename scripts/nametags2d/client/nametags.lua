@@ -496,7 +496,7 @@ function Nametags:Render()
     end
 
     local time = Client:GetElapsedSeconds()
-    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 50)
+    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 300)
     if ray.entity and ray.entity.__type == "ClientStaticObject" and ray.entity:GetModel() == "lave.v023_customcar.eez/v023-base.lod" then
         self.recent_drones[ray.entity:GetId()] = {time = time, entity = ray.entity}
     end

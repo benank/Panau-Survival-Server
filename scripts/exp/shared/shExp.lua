@@ -51,7 +51,11 @@ Exp =
         [13] = 100, -- Locked Stash
         [14] = 6 -- Proximity alarm
     },
-    DestroyDroneExpPerLevel = 5,
+    DestroyDrone = 
+    {
+        Base = 50,
+        Per_Level = 20
+    },
     DestroyExplosive = 
     {
         [DamageEntity.Mine] = 5,
