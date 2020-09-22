@@ -9,7 +9,7 @@ DroneRegionEnum =
     Desert = 6
 }
 
-DRONE_SPAWN_INTERVAL = 15
+DRONE_SPAWN_INTERVAL = 10
 
 DroneRegions = 
 {
@@ -20,7 +20,7 @@ DroneRegions =
         level_range = {min = 1, max = 5},
         spawn = 
         {
-            max = 150, -- Max drones alive at one time
+            max = 250, -- Max drones alive at one time
             chance = 0.9 -- Chance of a drone spawning every interval
         },
         drone_spawn_rate = {}
@@ -32,7 +32,7 @@ DroneRegions =
         level_range = {min = 3, max = 10},
         spawn = 
         {
-            max = 120, -- Max drones alive at one time
+            max = 250, -- Max drones alive at one time
             chance = 0.9, -- Chance of a drone spawning every interval
             height = 
             {
@@ -48,7 +48,7 @@ DroneRegions =
         level_range = {min = 10, max = 30},
         spawn = 
         {
-            max = 100, -- Max drones alive at one time
+            max = 250, -- Max drones alive at one time
             chance = 0.8, -- Chance of a drone spawning every interval
             height = 
             {
@@ -64,7 +64,7 @@ DroneRegions =
         level_range = {min = 3, max = 10},
         spawn = 
         {
-            max = 120, -- Max drones alive at one time
+            max = 250, -- Max drones alive at one time
             chance = 0.9, -- Chance of a drone spawning every interval
             height = 
             {
@@ -80,7 +80,7 @@ DroneRegions =
         level_range = {min = 20, max = 40},
         spawn = 
         {
-            max = 100, -- Max drones alive at one time
+            max = 200, -- Max drones alive at one time
             chance = 0.5, -- Chance of a drone spawning every interval
             height = 
             {
@@ -112,7 +112,7 @@ DroneRegions =
         level_range = {min = 5, max = 15},
         spawn = 
         {
-            max = 250, -- Max drones alive at one time
+            max = 500, -- Max drones alive at one time
             chance = 0.5 -- Chance of a drone spawning every interval
         },
     }
