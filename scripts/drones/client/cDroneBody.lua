@@ -62,6 +62,10 @@ function cDroneBody:PostTick(args)
         self.red_blip_effect:SetPosition(self.parent.position + self.parent.angle * DroneRedBlipOffset.position)
     end
 
+    for name, sound in pairs(self.sounds) do
+        sound:SetPosition(self.parent.position)
+    end
+
 end
 
 function cDroneBody:GameRender(args)
@@ -84,6 +88,52 @@ end
 
 function cDroneBody:GetGunPosition(gun_enum)
     return self.parent.position + self.parent.angle * DroneGunOffsets[gun_enum].angle * DroneGunOffsets[gun_enum].position
+end
+
+function cDroneBody:PlaySound(sound_name)
+    if self.sounds[sound_name] then return end
+
+    local sound
+    if sound_name == "hostile_spotted" then
+        sound = ClientSound.Create(AssetLocation.Game, {
+            bank_id = 40,
+            sound_id = 69,
+            position = self.parent.position,
+            angle = self.parent.angle
+        })
+        sound:SetParameter(0,1)
+        sound:SetParameter(1,0)
+    elseif sound_name == "be_on_the_lookout" then
+        sound = ClientSound.Create(AssetLocation.Game, {
+            bank_id = 40,
+            sound_id = 86,
+            position = self.parent.position,
+            angle = self.parent.angle
+        })
+        
+        sound:SetParameter(0,1)
+        sound:SetParameter(1,0)
+    elseif sound_name == "intruder_alert" then
+        sound = ClientSound.Create(AssetLocation.Game, {
+            bank_id = 40,
+            sound_id = 81,
+            position = self.parent.position,
+            angle = self.parent.angle
+        })
+        
+        sound:SetParameter(0,1)
+        sound:SetParameter(1,0)
+    end
+
+    self.sounds[sound_name] = sound
+
+    Timer.SetTimeout(10000, function()
+        if IsValid(self.sounds[sound_name]) then
+            self.sounds[sound_name] = self.sounds[sound_name]:Remove()
+        end
+    end)
+
+
 end
 
 function cDroneBody:CreateShootingEffect(gun_enum)

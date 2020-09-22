@@ -59,6 +59,8 @@ function cDrone:__init(args)
 
     self.offset_timer = Timer()
     self.tether_timer = Timer()
+    self.sound_timer = Timer()
+    self.sound_timer_interval = math.random() * 1000 + 300
 
     self.attack_on_sight_timer = Timer()
     self.attack_on_sight_count = 0
@@ -113,10 +115,11 @@ end
 
 -- Updates from server with all sync info (see __init for full list of args)
 function cDrone:UpdateFromServer(args)
-    if args.health then
-        print("UPDATE FROM SERVER")
-        output_table(args)
+
+    if self.state == DroneState.Wandering and args.state == DroneState.Pursuing and not self.config.attack_on_sight then
+        self.body:PlaySound("intruder_alert")
     end
+
     self.state = args.state or self.state
 
     self.health = args.health ~= nil and args.health or self.health
@@ -278,10 +281,16 @@ function cDrone:Wander(args)
             if is_visible and (ray.distance < self.config.sight_range * 0.1 or self.attack_on_sight_count >= 5) then
                 Network:Send("drones/AttackOnSightTarget" .. tostring(self.id))
                 self.attack_on_sight_count = 0
-                self.body:PlayAlertSound()
+                self.body:PlaySound("hostile_spotted")
             end
         end
 
+    end
+
+    if self.sound_timer:GetSeconds() >= self.sound_timer_interval then
+        self.body:PlaySound("be_on_the_lookout")
+        self.sound_timer_interval = math.random() * 200 + 60
+        self.sound_timer:Restart()
     end
 
 end
@@ -316,7 +325,7 @@ function cDrone:TrackTarget(args)
     end
 
     -- Wall and collision detection
-    if nearby_wall or (self.wall_timer and self.wall_timer:GetSeconds() < 0.5) then
+    if nearby_wall or (self.wall_timer and self.wall_timer:GetSeconds() > 0.5) then
 
         if nearby_wall then
             self.wall_timer = Timer()
