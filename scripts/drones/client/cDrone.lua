@@ -118,7 +118,6 @@ function cDrone:UpdateFromServer(args)
             self.path = args.path_data.current_path -- Table of points that the drone is currently pathing through
             self.path_index = args.path_data.current_path_index -- Current index of the path the drone is on
             self.offset = args.path_data.target_offset -- Offset from the target the drone flies at
-            print("offset: %s", tostring(self.offset))
         end
 
         self.corrective_position = args.path_data.position

@@ -15,10 +15,11 @@ function cDronePathGenerator:GetRandomRoadOffset(road)
         radius - math.random() * radius * 2)
 end
 
-function cDronePathGenerator:GeneratePathNearPoint(origin, tether_position, radius, callback)
+function cDronePathGenerator:GeneratePathNearPoint(origin, tether_position, radius, callback, retries)
 
     _debug("GENERATING PATH...")
 
+    local retries = retries or 0
     local start_pos = origin
     local end_pos = self:GetRandomPointWithinRadius(tether_position, radius)
 
@@ -28,10 +29,11 @@ function cDronePathGenerator:GeneratePathNearPoint(origin, tether_position, radi
         function(args)
 
             if not args.success or count_table(args.edges) == 0 then
-                _debug("Failed to find road path, retrying")
+                _debug(string.format("Failed to find road path, retrying (%d)", retries))
                 Thread(function()
                     Timer.Sleep(1000)
-                    self:GeneratePathNearPoint(origin, radius, callback)
+                    retries = retries + 1
+                    self:GeneratePathNearPoint(origin, radius, callback, retries)
                 end)
                 return
             end

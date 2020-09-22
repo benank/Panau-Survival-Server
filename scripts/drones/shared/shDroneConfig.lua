@@ -28,7 +28,7 @@ end
 Drone_Configuration = 
 {
     speed = {base = 7, per_level = 0.25},
-    damage_modifier = {base = 1, per_level = 0.025},
+    damage_modifier = {base = 1, per_level = 0.05},
     has_rockets = {base = false, base_chance = 0.02, chance_per_level = 0.02},
     fire_time_min = {base = 0.2, per_level = 0.1},
     fire_time_max = {base = 1, per_level = 0.1},

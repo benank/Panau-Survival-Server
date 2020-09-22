@@ -16,7 +16,7 @@ DroneRegions =
         spawn = 
         {
             max = 20, -- Max drones alive at one time
-            interval = 10, -- How often drones can spawn (every X minutes)
+            interval = 15, -- How often drones can spawn (every X minutes)
             change = 0.9 -- Chance of a drone spawning every interval
         },
         drone_spawn_rate = {}
@@ -37,7 +37,7 @@ DroneRegions =
     {
         radius = 900,
         center = Vector3(-15321, 203, -2815),
-        level_range = {min = 10, max = 25},
+        level_range = {min = 10, max = 30},
         spawn = 
         {
             max = 30, -- Max drones alive at one time
