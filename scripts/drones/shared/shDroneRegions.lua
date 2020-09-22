@@ -9,7 +9,7 @@ DroneRegionEnum =
     Desert = 6
 }
 
-DRONE_SPAWN_INTERVAL = 5
+DRONE_SPAWN_INTERVAL = 1
 
 DroneRegions = 
 {
@@ -20,24 +20,29 @@ DroneRegions =
         level_range = {min = 1, max = 5},
         spawn = 
         {
-            max = 250, -- Max drones alive at one time
-            chance = 0.9 -- Chance of a drone spawning every interval
+            max = 150, -- Max drones alive at one time
+            chance = 0.9, -- Chance of a drone spawning every interval
+            height = 
+            {
+                min = 0,
+                max = 100
+            }
         },
         drone_spawn_rate = {}
     },
     [DroneRegionEnum.ParkDistrict] = 
     {
-        radius = 1000,
+        radius = 1100,
         center = Vector3(-12708, 234, -4778),
         level_range = {min = 3, max = 10},
         spawn = 
         {
-            max = 250, -- Max drones alive at one time
+            max = 200, -- Max drones alive at one time
             chance = 0.9, -- Chance of a drone spawning every interval
             height = 
             {
                 min = 0,
-                max = 30
+                max = 100
             }
         },
     },
@@ -48,28 +53,28 @@ DroneRegions =
         level_range = {min = 10, max = 30},
         spawn = 
         {
-            max = 250, -- Max drones alive at one time
+            max = 200, -- Max drones alive at one time
             chance = 0.8, -- Chance of a drone spawning every interval
             height = 
             {
                 min = 0,
-                max = 30
+                max = 50
             }
         },
     },
     [DroneRegionEnum.ResidentialDistrict] = 
     {
-        radius = 1100,
+        radius = 1000,
         center = Vector3(-12507, 203, -1119),
         level_range = {min = 3, max = 10},
         spawn = 
         {
-            max = 250, -- Max drones alive at one time
+            max = 200, -- Max drones alive at one time
             chance = 0.9, -- Chance of a drone spawning every interval
             height = 
             {
                 min = 0,
-                max = 30
+                max = 100
             }
         },
     },
@@ -80,7 +85,7 @@ DroneRegions =
         level_range = {min = 20, max = 40},
         spawn = 
         {
-            max = 300, -- Max drones alive at one time
+            max = 400, -- Max drones alive at one time
             chance = 0.7, -- Chance of a drone spawning every interval
             height = 
             {
@@ -91,8 +96,8 @@ DroneRegions =
     },
     [DroneRegionEnum.LostIslandInner] = 
     {
-        radius = 500,
-        center = Vector3(-14062, 350, -14122),
+        radius = 200,
+        center = Vector3(-14088, 500, -14142),
         level_range = {min = 40, max = 50},
         spawn = 
         {
@@ -100,8 +105,8 @@ DroneRegions =
             chance = 0.7, -- Chance of a drone spawning every interval
             height = 
             {
-                min = 250,
-                max = 350
+                min = 100,
+                max = 300
             }
         },
     },

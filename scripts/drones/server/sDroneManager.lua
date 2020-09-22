@@ -8,11 +8,6 @@ function sDroneManager:__init()
     self.player_cells = {} -- Players in cells [x][y][steam_id] = player
 
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(Cell_Size), self, self.PlayerCellUpdate)
-
-    if IsTest then
-        Events:Subscribe("PlayerChat", self, self.PlayerChat)
-    end
-
     Events:Subscribe("HitDetection/DroneDamaged", self, self.DroneDamaged)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
@@ -22,6 +17,19 @@ end
 function sDroneManager:ModuleLoad()
     self:DroneSpawnLoop()
     self:SpawnInitialDrones()
+    self:DroneReconsiderLoops()
+end
+
+function sDroneManager:DroneReconsiderLoops()
+    Thread(function()
+        while true do
+            for id, drone in pairs(self.drones_by_id) do
+                drone:ReconsiderLoop()
+                Timer.Sleep(1)
+            end
+            Timer.Sleep(500)
+        end
+    end)
 end
 
 function sDroneManager:DroneSpawnLoop()
@@ -64,7 +72,7 @@ function sDroneManager:GetRandomPositionInRegion(region_enum)
     -- Scale the direction so it's not always on the outer edge
     dir = dir * math.random()
 
-    return region.center + Vector3(dir.x * region.radius, 30, dir.z * region.radius)
+    return region.center + Vector3(dir.x * region.radius, 30 + GetExtraHeightOfDroneFromRegion(region_enum), dir.z * region.radius)
 end
 
 function sDroneManager:DroneDamaged(args)
@@ -74,26 +82,11 @@ function sDroneManager:DroneDamaged(args)
     drone:Damage(args)
 end
 
-function sDroneManager:PlayerChat(args)
-
-    --if not IsAdmin(args.player) then return end
-
-    if args.text == "/drone" then
-        sDrone({
-            region = DroneRegionEnum.FinancialDistrict,
-            position = args.player:GetPosition() + Vector3.Up * 2
-        })
-        _debug("Drone created")
-    end
-
-end
-
 function sDroneManager:ModuleUnload()
     for id, drone in pairs(self.drones_by_id) do
         drone:Remove()
     end
 end
-
 
 -- Updates player_cells
 function sDroneManager:UpdatePlayerInCell(args)
@@ -101,34 +94,28 @@ function sDroneManager:UpdatePlayerInCell(args)
 
     if args.old_cell.x ~= nil and args.old_cell.y ~= nil then
         VerifyCellExists(self.player_cells, args.old_cell)
-        self.player_cells[args.old_cell.x][args.old_cell.y][tostring(args.player:GetSteamId().id)] = nil
+        self.player_cells[args.old_cell.x][args.old_cell.y][tostring(args.player:GetSteamId())] = nil
     end
 
     VerifyCellExists(self.player_cells, cell)
-    self.player_cells[cell.x][cell.y][tostring(args.player:GetSteamId().id)] = args.player
+    self.player_cells[cell.x][cell.y][tostring(args.player:GetSteamId())] = args.player
+    print(string.format("add player to cell %d %d", cell.x, cell.y))
 
 end
 
 function sDroneManager:GetNearbyPlayersInCell(cell)
 
     local nearby_players = {}
+    local adjacent_cells = GetAdjacentCells(cell)
 
     -- Sync to all players in adjacent cells
-    for x = cell.x - 1, cell.x + 1 do
-
-        for y = cell.y - 1, cell.y + 1 do
-
-            VerifyCellExists(self.player_cells, {x = x, y = y})
-            for _, player in pairs(self.player_cells[x][y]) do
-
-                if IsValid(player) then
-                    table.insert(nearby_players, player)
-                end
-
+    for _, adj_cell in pairs(adjacent_cells) do
+        VerifyCellExists(self.player_cells, adj_cell)
+        for _, player in pairs(self.player_cells[adj_cell.x][adj_cell.y]) do
+            if IsValid(player) then
+                table.insert(nearby_players, player)
             end
-
         end
-
     end
 
     return nearby_players

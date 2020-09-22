@@ -45,21 +45,18 @@ function sDrone:__init(args)
     sDroneManager.drones_by_id[self.id] = self
     self:UpdateCell()
 
-    -- Find host upon creation
-    self:ReconsiderHost()
-
-    self.host_interval = Timer.SetInterval(1500, function()
-        local updated = self:ReconsiderHost()
-        updated = self:ReconsiderTarget() or updated
-        if updated then
-            self:Sync(nil, {
-                state = self.state
-            })
-        end
-    end)
-
     self:Sync()
 
+end
+
+function sDrone:ReconsiderLoop()
+    local updated = self:ReconsiderHost()
+    updated = self:ReconsiderTarget() or updated
+    if updated then
+        self:Sync(nil, {
+            state = self.state
+        })
+    end
 end
 
 function sDrone:PursueTarget(target)
@@ -151,7 +148,7 @@ function sDrone:FindNewHost()
 
     for _, player in pairs(nearby_players) do
         local dist = player:GetPosition():Distance(self.position)
-        if dist < closest.dist and dist < 2000 then
+        if dist < closest.dist then
             closest.player = player
             closest.dist = dist
         end
@@ -171,7 +168,7 @@ function sDrone:DespawnDrone(args, player)
 end
 
 function sDrone:Remove()
-    Timer.Clear(self.host_interval)
+    self.removed = true
 
     for _, sub in pairs(self.network_subs) do
         Network:Unsubscribe(sub)

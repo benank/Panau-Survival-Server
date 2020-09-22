@@ -1,5 +1,7 @@
 class 'cDroneManager'
 
+local DEBUG_ON = false
+
 function cDroneManager:__init()
 
     self.drones = {}
@@ -10,10 +12,60 @@ function cDroneManager:__init()
     Network:Subscribe("Drones/SingleSync", self, self.SingleDroneSync)
     Network:Subscribe("Drones/DroneCellsSync", self, self.CellsDroneSync)
 
+    Events:Subscribe("HitDetection/Explosion", self, self.HitDetectionExplosion)
+
     Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(Cell_Size), self, self.LocalPlayerCellUpdate)
+
+    if DEBUG_ON then
+        Events:Subscribe("Render", self, self.GameRender)
+    end
+
+    Thread(function()
+        while true do
+            local path_count = 0
+            local host_count = 0
+            local count = 0
+            for id, drone in pairs(self.drones) do
+                count = count + 1
+                if count_table(drone.path) > 0 then
+                    path_count = path_count + 1
+                end
+                if drone.host then
+                    host_count = host_count + 1
+                end
+            end
+            print(string.format("%d/%d path counts", path_count, count))
+            print(string.format("%d/%d host counts", host_count, count))
+            Timer.Sleep(1000)
+        end
+    end)
+
 
     self:DroneHostLoop()
 
+end
+
+function cDroneManager:GameRender(args)
+    for id, drone in pairs(self.drones) do
+        drone:GameRender(args)
+    end
+end
+
+function cDroneManager:HitDetectionExplosion(args)
+    Thread(function()
+        local sleep_count = 0
+        for id, drone in pairs(self.drones) do
+            local distance = drone.position:Distance(args.position)
+            sleep_count = sleep_count + 1
+            if distance < 300 then -- Temp radius because HitDetection stores these
+                args.drone_position = drone.position
+                args.drone_distance = distance
+                args.drone_id = id
+                Events:Fire("HitDetection/ExplosionHitDrone", args)
+            end
+            Timer.Sleep(1)
+        end
+    end)
 end
 
 function cDroneManager:LocalPlayerCellUpdate(args)
@@ -56,7 +108,7 @@ function cDroneManager:CellsDroneSync(args)
             else
                 self.drones[drone_data.id]:UpdateFromServer(drone_data)
             end
-            Timer.Sleep(10)
+            Timer.Sleep(1)
         end
     end)
 

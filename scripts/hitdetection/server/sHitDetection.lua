@@ -29,6 +29,7 @@ function sHitDetection:__init()
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
     Network:Subscribe("HitDetection/VehicleExplosionHit", self, self.VehicleExplosionHit)
     Network:Subscribe("HitDetection/DetectDroneHitLocalPlayer", self, self.DetectDroneHitLocalPlayer)
+    Network:Subscribe("HitDetectionSyncExplosionDrone", self, self.HitDetectionSyncExplosionDrone)
 
     Events:Subscribe("HitDetection/PlayerInToxicArea", self, self.PlayerInsideToxicArea)
     Events:Subscribe("HitDetection/PlayerSurvivalDamage", self, self.PlayerSurvivalDamage)
@@ -550,6 +551,65 @@ function sHitDetection:VehicleExplosionHit(args, player)
         Events:Fire("GetPlayerPerksById", {steam_id = args.attacker_id})
 
     end
+    
+end
+
+-- Player hits a drone with an explosive
+function sHitDetection:HitDetectionSyncExplosionDrone(args, player)
+    
+    if not IsValid(player) then return end
+
+    local explosive_data = WeaponDamage.ExplosiveBaseDamage[args.type]
+
+    if not explosive_data then return end
+
+    local sub
+    sub = Events:Subscribe("GetPlayerPerksById" .. tostring(args.attacker_id), function(perks)
+
+        local perk_mods = {[1] = 1, [2] = 1}
+        local damage_perks = WeaponDamage.ExplosiveDamagePerks[args.type]
+
+        if damage_perks and perks then
+
+            for perk_id, perk_mod_data in pairs(damage_perks) do
+                local choice = perks.unlocked_perks[perk_id]
+                if perk_mod_data[choice] then
+                    perk_mods[choice] = math.max(perk_mods[choice], perk_mod_data[choice])
+                end
+            end
+
+        end
+
+        local radius = explosive_data.radius
+        radius = radius * perk_mods[2]
+
+        local dist = args.position:Distance(args.drone_position)
+        local percent_modifier = math.max(0, 1 - dist / radius)
+
+        if percent_modifier == 0 then return end
+
+        local hit_type = WeaponHitType.Explosive
+        local original_damage = explosive_data.damage * percent_modifier
+        local damage = original_damage
+
+        if not args.in_fov then
+            damage = damage * WeaponDamage.FOVDamageModifier
+        end
+
+        damage = damage * perk_mods[1]
+
+        Events:Fire("HitDetection/DroneDamaged", {
+            player = self.players[args.attacker_id],
+            drone_id = args.drone_id,
+            damage = damage,
+            type = args.type
+        })
+
+        sub = Events:Unsubscribe(sub)
+
+    end)
+
+    Events:Fire("GetPlayerPerksById", {steam_id = args.attacker_id})
     
 end
 

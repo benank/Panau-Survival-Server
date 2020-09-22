@@ -25,7 +25,7 @@ class 'cDrone'
 ]]
 function cDrone:__init(args)
 
-    output_table(args)
+    --output_table(args)
     self.id = args.id -- TODO: replace with server id
     self.level = args.level
     self.region = args.region
@@ -73,6 +73,10 @@ function cDrone:__init(args)
 
     self.body = cDroneBody(self)
 
+end
+
+function cDrone:GameRender(args)
+    self.body:GameRender(args)
 end
 
 -- We are the host, so let's perform actions to make sure the drone has a path and other stuff
@@ -279,7 +283,7 @@ function cDrone:Wander(args)
                 })
             end
 
-            _debug(string.format("Path node %d/%d", self.path_index, count_table(self.path)))
+            --_debug(string.format("Path node %d/%d", self.path_index, count_table(self.path)))
 
             -- Path completed
             if self.path_index >= count_table(self.path) then

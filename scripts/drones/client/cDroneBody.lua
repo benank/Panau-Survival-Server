@@ -1,7 +1,5 @@
 class 'cDroneBody'
 
-local DEBUG_ON = false
-
 function cDroneBody:__init(parent)
 
     self.parent = parent
@@ -10,10 +8,6 @@ function cDroneBody:__init(parent)
 
     self:CreateBody()
     self:HealthUpdated()
-
-    if DEBUG_ON then
-        self.debug_render = Events:Subscribe("GameRender", self, self.GameRender)
-    end
 end
 
 function cDroneBody:HealthUpdated()
@@ -69,9 +63,10 @@ function cDroneBody:PostTick(args)
 end
 
 function cDroneBody:GameRender(args)
-    Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.LeftGun)), 5, Color.Red)
-    Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.RightGun)), 5, Color.Yellow)
-    Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.TopGun)), 5, Color.Green)
+    Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.LeftGun)), 10, Color.Red)
+    if true then return end
+    Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.RightGun)), 10, Color.Yellow)
+    Render:FillCircle(Render:WorldToScreen(self:GetGunPosition(DroneBodyPiece.TopGun)), 10, Color.Green)
 
     local range = self.parent.config.sight_range
 
