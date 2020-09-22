@@ -54,7 +54,7 @@ Exp =
     DestroyDrone = 
     {
         Base = 30,
-        Per_Level = 20
+        Per_Level = 15
     },
     DestroyExplosive = 
     {
