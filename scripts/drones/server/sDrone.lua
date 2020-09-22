@@ -106,8 +106,8 @@ function sDrone:ReconsiderTarget()
     self.target:GetValue("Invisible") or 
     self.target:GetHealth() <= 0 or
     self.target:GetValue("InSafezone") or
-    self.position:Distance(self.target:GetPosition()) > 500 or
-    self.position:Distance(self.tether_position) > self.tether_range then
+    Distance2D(self.position, self.target:GetPosition()) > 500 or
+    Distance2D(self.position, self.tether_position) > self.tether_range then
         self:PursueTarget(nil)
         return true
     end
@@ -122,7 +122,7 @@ function sDrone:ReconsiderHost()
 
     if IsValid(self.host) then
         -- Host is far away
-        if self.host:GetPosition():Distance(self.position) > 1000 then
+        if Distance2D(self.host:GetPosition(), self.position) > 1000 then
             should_reconsider_host = true
         end
     else
@@ -151,7 +151,7 @@ function sDrone:FindNewHost()
 
     for _, player in pairs(nearby_players) do
         local dist = player:GetPosition():Distance(self.position)
-        if dist < closest.dist and dist < 1000 then
+        if dist < closest.dist and dist < 2000 then
             closest.player = player
             closest.dist = dist
         end
