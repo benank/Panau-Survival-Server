@@ -99,7 +99,6 @@ function sDroneManager:UpdatePlayerInCell(args)
 
     VerifyCellExists(self.player_cells, cell)
     self.player_cells[cell.x][cell.y][tostring(args.player:GetSteamId())] = args.player
-    print(string.format("add player to cell %d %d", cell.x, cell.y))
 
 end
 
