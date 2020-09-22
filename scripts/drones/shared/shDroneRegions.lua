@@ -9,7 +9,7 @@ DroneRegionEnum =
     Desert = 6
 }
 
-DRONE_SPAWN_INTERVAL = 10
+DRONE_SPAWN_INTERVAL = 5
 
 DroneRegions = 
 {
@@ -91,8 +91,8 @@ DroneRegions =
     },
     [DroneRegionEnum.LostIslandInner] = 
     {
-        radius = 300,
-        center = Vector3(-14062, 343, -14122),
+        radius = 500,
+        center = Vector3(-14062, 350, -14122),
         level_range = {min = 40, max = 50},
         spawn = 
         {
