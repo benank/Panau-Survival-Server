@@ -343,6 +343,13 @@ function cDrone:TrackTarget(args)
     else
 
         local dir = target_pos - self.position
+        local speed = self.config.speed
+
+        -- Speed up to get in range
+        if self.position:Distance(self.target:GetPosition()) > self.config.sight_range then
+            speed = speed * 2
+        end
+
         local velo = dir:Length() > 1 and (dir:Normalized() * self.config.speed) or Vector3.Zero
 
         self:SetLinearVelocity(math.lerp(self.velocity, velo, math.min(1, args.delta * 0.5)))
