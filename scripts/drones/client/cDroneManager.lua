@@ -105,7 +105,7 @@ function cDroneManager:DroneHostLoop()
     Thread(function()
         while true do
             for id, drone in pairs(self.drones) do
-                if drone.host == LocalPlayer then
+                if IsValid(drone.host) and drone.host == LocalPlayer then
                     drone:PerformHostActions()
                     Timer.Sleep(100)
                 end
