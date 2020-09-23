@@ -26,6 +26,12 @@ function cDroneBody:HealthUpdated()
     end
 end
 
+function cDroneBody:ContainsStaticObject(cso)
+    for _, object in pairs(self.objects) do
+        if object == cso then return true end
+    end
+end
+
 function cDroneBody:PostTick(args)
 
     if IsValid(self.effect) then

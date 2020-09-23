@@ -30,6 +30,7 @@ function sHitDetection:__init()
     Network:Subscribe("HitDetection/VehicleExplosionHit", self, self.VehicleExplosionHit)
     Network:Subscribe("HitDetection/DetectDroneHitLocalPlayer", self, self.DetectDroneHitLocalPlayer)
     Network:Subscribe("HitDetectionSyncExplosionDrone", self, self.HitDetectionSyncExplosionDrone)
+    Network:Subscribe("HitDetection/DetectDroneSplashHit", self, self.DetectDroneSplashHit)
     
     Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
 
@@ -864,6 +865,28 @@ function sHitDetection:DetectVehicleHit(args, player)
     {
         name = player:GetName(),
         weapon_name = WeaponEnum:GetDescription(args.weapon_enum)
+    })
+
+end
+
+function sHitDetection:DetectDroneSplashHit(args, player)
+
+    assert(IsValid(player), "player is invalid")
+    assert(args.drone_id, "drone_id is invalid")
+    assert(args.weapon_enum, "weapon_enum is invalid")
+    assert(args.damage_falloff and args.damage_falloff >= 0 and args.damage_falloff <= 1, "damage_falloff is invalid")
+
+    if not self:PlayerCanApplyDamage(player, tostring(args.token)) then return end
+    
+    if player:GetValue("InSafezone") then return end
+
+    local damage = WeaponDamage:CalculateDroneDamage(args.weapon_enum, args.distance_travelled, player) * args.damage_falloff
+
+    Events:Fire("HitDetection/DroneDamaged", {
+        player = player,
+        drone_id = args.drone_id,
+        damage = damage * 100,
+        type = args.type
     })
 
 end

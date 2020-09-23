@@ -20,8 +20,8 @@ function WeaponDamage:__init()
             function(distance, distance_falloff) -- Sniper gains full power at 200+ meters away
                 return math.clamp(distance / distance_falloff, 0, 1)
             end},
-        [WeaponEnum.SawnOffShotgun] =   {base = 0.15, v_mod = 0.05,   distance_falloff = 16,  falloff = falloff_func},
-        [WeaponEnum.Shotgun] =          {base = 0.18, v_mod = 0.05,   distance_falloff = 22, falloff = falloff_func},
+        [WeaponEnum.SawnOffShotgun] =   {base = 0.15, v_mod = 0.05,  distance_falloff = 16,  falloff = falloff_func},
+        [WeaponEnum.Shotgun] =          {base = 0.18, v_mod = 0.05,  distance_falloff = 22,  falloff = falloff_func},
         
         -- Vehicle Weapons
         [WeaponEnum.V_Minigun] =        {base = 0.08, v_mod = 1,     distance_falloff = 500, falloff = falloff_func},
@@ -73,6 +73,30 @@ function WeaponDamage:__init()
         [49] = 0.5, -- 	Niseco Tusker D18
         [56] = 0.1, -- 	GV-104 Razorback
         [76] = 0.1 -- 	SAAS PP30 Ox
+    }
+
+    self.drone_damage_modifiers = 
+    {
+        [WeaponEnum.MachineGun] =       1,
+        [WeaponEnum.Handgun] =          1,
+        [WeaponEnum.Assault] =          1,
+        [WeaponEnum.BubbleGun] =        1,
+        [WeaponEnum.GrenadeLauncher] =  15,
+        [WeaponEnum.Revolver] =         1,
+        [WeaponEnum.RocketLauncher] =   20,
+        [WeaponEnum.SMG] =              1,
+        [WeaponEnum.Sniper] =           0.75,
+        [WeaponEnum.SawnOffShotgun] =   1,
+        [WeaponEnum.Shotgun] =          1,
+        
+        -- Vehicle Weapons
+        [WeaponEnum.V_Minigun] =        1,
+        [WeaponEnum.V_Minigun_Warmup] = 1,
+        [WeaponEnum.V_Rockets] =        7,
+        [WeaponEnum.V_Cannon] =         5,
+        [WeaponEnum.V_Cannon_Slow] =    5,
+        [WeaponEnum.V_MachineGun] =     1,
+        [WeaponEnum.Drone_MachineGun] = 1
     }
 
     self.FOVDamageModifier = 0.30 -- If hiding behind a wall, how much damage do you absorb 
@@ -296,7 +320,7 @@ function WeaponDamage:CalculateDroneDamage(weapon_enum, distance, attacker)
 
     local base_damage = self.weapon_damages[weapon_enum].base
     local falloff_modifier = self.weapon_damages[weapon_enum].falloff(distance, self.weapon_damages[weapon_enum].distance_falloff)
-
+    local drone_modifier = self.drone_damage_modifiers[weapon_enum]
     local perks = attacker:GetValue("Perks")
     local possible_perks = self.WeaponDamagePerks[weapon_enum]
 
@@ -312,7 +336,7 @@ function WeaponDamage:CalculateDroneDamage(weapon_enum, distance, attacker)
 
     end
 
-    local damage = base_damage * falloff_modifier * perk_mod
+    local damage = base_damage * falloff_modifier * perk_mod * drone_modifier
 
     return damage
 

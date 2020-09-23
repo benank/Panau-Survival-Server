@@ -21,6 +21,7 @@ function WeaponHitDetection:__init()
     Events:Subscribe(var("FireVehicleWeapon"):get(), self, self.FireVehicleWeapon)
     Events:Subscribe(var("LocalPlayerBulletHit"):get(), self, self.LocalPlayerBulletHit)
     Events:Subscribe(var("LocalPlayerExplosionHit"):get(), self, self.LocalPlayerExplosionHit)
+    Events:Subscribe(var("HitDetection/SplashHitDrone"):get(), self, self.SplashHitDrone)
     
     Events:Subscribe(var("HitDetection/DroneShootMachineGun"):get(), self, self.DroneShootMachineGun)
 
@@ -87,6 +88,39 @@ function WeaponHitDetection:CheckPlayerSplash(args)
 
 end
 
+-- Splash weapon hit drone from Localplayer
+function WeaponHitDetection:SplashHitDrone(args)
+
+    if args.weapon_enum == WeaponEnum.Drone_Rockets then return end
+    
+    local damage = WeaponDamage:CalculateDroneDamage(args.weapon_enum, args.distance_travelled, LocalPlayer)
+    local falloff = 1 - args.drone_distance / args.radius
+    damage = damage * falloff
+
+    if damage > 0 then
+
+        -- Hit the player with the splash damage
+        Network:Send(var("HitDetection/DetectDroneSplashHit"):get(), {
+            drone_id = args.drone_id,
+            weapon_enum = args.weapon_enum,
+            damage_falloff = falloff,
+            distance_travelled = args.distance_travelled,
+            hit_position = args.hit_position,
+            token = TOKEN:get()
+        })
+
+        -- Preemptively add damage text and indicator so it feels responsive
+        cDamageText:Add({
+            position = args.hit_position,
+            amount = damage * 100
+        })
+
+        cHitDetectionMarker:Activate()
+
+    end
+
+end
+
 function WeaponHitDetection:LocalPlayerBulletSplash(args)
 
     --Thread(function()
@@ -105,9 +139,10 @@ function WeaponHitDetection:LocalPlayerBulletSplash(args)
     end
 
     local args_copy = deepcopy(args)
+    args_copy.radius = radius
+    Events:Fire("HitDetection/BulletSplash", args_copy)
     args_copy.player = LocalPlayer
     self:CheckPlayerSplash(args_copy)
-
 
     for vehicle in Client:GetVehicles() do
 
@@ -150,8 +185,6 @@ function WeaponHitDetection:LocalPlayerBulletSplash(args)
         end
 
     end
-
-
 
     --end)
 end
@@ -412,7 +445,7 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
         cHitDetectionMarker:Activate()
 
     elseif args.entity_type == "ClientStaticObject" then
-
+        -- Local player hit drone
         local drone = cDroneContainer:CSOIdToDrone(args.entity:GetId())
         if drone and args.weapon_enum ~= WeaponEnum.Drone_MachineGun then
             local drone_id = drone.id
@@ -441,7 +474,7 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
         end
 
     elseif args.weapon_enum == WeaponEnum.Drone_MachineGun then
-
+        -- Drone hit local player
         if args.entity_type == "LocalPlayer" then
 
             local bone = LocalPlayer:GetClosestBone(args.hit_position)

@@ -13,6 +13,7 @@ function cDroneManager:__init()
     Network:Subscribe("Drones/DroneCellsSync", self, self.CellsDroneSync)
 
     Events:Subscribe("HitDetection/Explosion", self, self.HitDetectionExplosion)
+    Events:Subscribe("HitDetection/BulletSplash", self, self.HitDetectionBulletSplash)
 
     Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(Cell_Size), self, self.LocalPlayerCellUpdate)
 
@@ -52,12 +53,26 @@ function cDroneManager:GameRender(args)
     end
 end
 
+function cDroneManager:HitDetectionBulletSplash(args)
+    Thread(function()
+        for id, drone in pairs(self.drones) do
+            local distance = drone.position:Distance(args.hit_position)
+            if distance < args.radius then
+                args.drone_position = drone.position
+                args.hit_position = drone.position
+                args.drone_distance = distance
+                args.drone_id = id
+                Events:Fire("HitDetection/SplashHitDrone", args)
+            end
+            Timer.Sleep(1)
+        end
+    end)
+end
+
 function cDroneManager:HitDetectionExplosion(args)
     Thread(function()
-        local sleep_count = 0
         for id, drone in pairs(self.drones) do
             local distance = drone.position:Distance(args.position)
-            sleep_count = sleep_count + 1
             if distance < 300 then -- Temp radius because HitDetection stores these
                 args.drone_position = drone.position
                 args.drone_distance = distance
