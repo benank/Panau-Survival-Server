@@ -52,7 +52,7 @@ function sDroneManager:SpawnInitialDrones()
     for region_enum, region in pairs(DroneRegions) do
         self.drone_counts_by_region[region_enum] = 0
 
-        for i = 1, math.floor(region.spawn.max / 2) do
+        for i = 1, region.spawn.max do
             sDrone({
                 region = region_enum,
                 position = self:GetRandomPositionInRegion(region_enum)
