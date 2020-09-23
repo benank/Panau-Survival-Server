@@ -343,6 +343,7 @@ end
 
 -- Makes a drone track a target and face towards them 
 function cDrone:TrackTarget(args)
+    if not IsValid(self.target) then return end
     self.attack_on_sight_count = 0
     self.target_position = self.target:GetPosition() + self.offset
     
