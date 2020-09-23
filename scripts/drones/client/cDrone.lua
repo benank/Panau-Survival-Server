@@ -63,6 +63,7 @@ function cDrone:__init(args)
     self.tether_timer = Timer()
     self.sound_timer = Timer()
     self.wander_sync_timer = Timer()
+    self.wall_timer = Timer()
     self.sound_timer_interval = math.random() * 2000 + 300
 
     self.attack_on_sight_timer = Timer()
@@ -107,7 +108,7 @@ function cDrone:PerformHostActions()
         end
 
         if self.offset_timer:GetSeconds() > 5 then
-            self.offset = GetRandomFollowOffset(self.config.sight_range)
+            self.offset = GetRandomFollowOffset(self.config.attack_range)
             self:SyncOffsetToServer()
             self.offset_timer:Restart()
         end
@@ -215,7 +216,7 @@ function cDrone:IsTargetVisible(_target)
 
 end
 
-function cDrone:IsTargetVisibleFromAfar(_target)
+function cDrone:IsTargetInAttackRange(_target)
 
     local target = _target or self.target
     
@@ -224,7 +225,7 @@ function cDrone:IsTargetVisibleFromAfar(_target)
     local ray = Physics:Raycast(
         self.position,
         target:GetBonePosition("ragdoll_Hips") - self.position,
-        0, 1000, false)
+        0, self.config.attack_range * 1.25, false)
 
     if ray.entity and (ray.entity.__type == "Player" or ray.entity.__type == "LocalPlayer") and ray.entity == target then return true, ray end
 
@@ -321,8 +322,12 @@ function cDrone:Wander(args)
     end
 
     if self.sound_timer:GetSeconds() >= self.sound_timer_interval then
-        self.body:PlaySound("be_on_the_lookout")
-        self.sound_timer_interval = math.random() * 2000 + 300
+        if self.position:Distance(LocalPlayer:GetPosition()) < 50 then
+            self.body:PlaySound(math.random() > 0.5 and "enemy_presence_in_the_area" or "trespasser_in_the_area")
+        else
+            self.body:PlaySound("be_on_the_lookout")
+        end
+        self.sound_timer_interval = math.random() * 3000 + 400
         self.sound_timer:Restart()
     end
 
@@ -350,20 +355,20 @@ function cDrone:TrackTarget(args)
 
     -- Change offset if the drone cannot see the player
     if self:IsHost() and not self:IsTargetVisible() and self.offset_timer:GetSeconds() > 2 then
-        self.offset = GetRandomFollowOffset(self.config.sight_range)
+        self.offset = GetRandomFollowOffset(self.config.attack_range)
         self.offset_timer:Restart()
         self:SyncOffsetToServer()
     end
 
     -- Wall and collision detection
-    if nearby_wall or (self.wall_timer and self.wall_timer:GetSeconds() > 0.5) then
+    if nearby_wall and self.wall_timer:GetSeconds() > 0.25 then
 
         if nearby_wall then
             self.wall_timer = Timer()
             self:SetLinearVelocity(-self.velocity * 0.5)
 
             if self:IsHost() then
-                self.offset = GetRandomFollowOffset(self.config.sight_range)
+                self.offset = GetRandomFollowOffset(self.config.attack_range)
                 self:SyncOffsetToServer()
             end
         end
@@ -374,13 +379,14 @@ function cDrone:TrackTarget(args)
         local speed = self.config.speed
 
         -- Speed up to get in range
-        if self.position:Distance(self.target:GetPosition()) > self.config.sight_range then
-            speed = speed * 2
+        local distance = self.position:Distance(self.target:GetPosition())
+        if distance > self.config.attack_range then
+            speed = speed * math.min(distance / self.config.attack_range, 5)
         end
 
-        local velo = dir:Length() > 1 and (dir:Normalized() * self.config.speed) or Vector3.Zero
+        local velo = dir:Length() > 1 and (dir:Normalized() * speed) or Vector3.Zero
 
-        self:SetLinearVelocity(math.lerp(self.velocity, velo, math.min(1, args.delta * 0.5)))
+        self:SetLinearVelocity(math.lerp(self.velocity, velo, math.min(1, 0.01)))
 
     end
 
@@ -390,7 +396,7 @@ function cDrone:TrackTarget(args)
 
     self:SetAngle(Angle.Slerp(self.angle, angle, math.min(1, self.config.accuracy_modifier)))
 
-    if self:IsTargetVisibleFromAfar() and self.fire_timer:GetSeconds() >= self.next_fire_time and not self.firing then
+    if self:IsTargetInAttackRange() and self.fire_timer:GetSeconds() >= self.next_fire_time and not self.firing then
         self:Shoot()
     end
 

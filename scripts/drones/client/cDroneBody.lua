@@ -118,6 +118,26 @@ function cDroneBody:PlaySound(sound_name)
         
         sound:SetParameter(0,1)
         sound:SetParameter(1,0)
+    elseif sound_name == "enemy_presence_in_the_area" then
+        sound = ClientSound.Create(AssetLocation.Game, {
+            bank_id = 40,
+            sound_id = 80,
+            position = self.parent.position,
+            angle = self.parent.angle
+        })
+        
+        sound:SetParameter(0,1)
+        sound:SetParameter(1,0)
+    elseif sound_name == "trespasser_in_the_area" then
+        sound = ClientSound.Create(AssetLocation.Game, {
+			bank_id = 40,
+			sound_id = 72,
+            position = self.parent.position,
+            angle = self.parent.angle
+        })
+
+        sound:SetParameter(0,1)
+        sound:SetParameter(1,0)
     end
 
     self.sounds[sound_name] = sound

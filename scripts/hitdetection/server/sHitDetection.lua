@@ -30,6 +30,8 @@ function sHitDetection:__init()
     Network:Subscribe("HitDetection/VehicleExplosionHit", self, self.VehicleExplosionHit)
     Network:Subscribe("HitDetection/DetectDroneHitLocalPlayer", self, self.DetectDroneHitLocalPlayer)
     Network:Subscribe("HitDetectionSyncExplosionDrone", self, self.HitDetectionSyncExplosionDrone)
+    
+    Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
 
     Events:Subscribe("HitDetection/PlayerInToxicArea", self, self.PlayerInsideToxicArea)
     Events:Subscribe("HitDetection/PlayerSurvivalDamage", self, self.PlayerSurvivalDamage)
@@ -156,6 +158,11 @@ function sHitDetection:ApplyDamage(args)
         content = msg
     })
 
+end
+
+function sHitDetection:DroneDestroyed(args)
+    if not IsValid(args.player) then return end
+    Network:Send(args.player, "HitDetection/DealDamage", {red = true})
 end
 
 function sHitDetection:MeleeGrappleHit(args, player)

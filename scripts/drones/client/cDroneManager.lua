@@ -33,6 +33,7 @@ function cDroneManager:__init()
                 if drone.host then
                     host_count = host_count + 1
                 end
+                Timer.Sleep(1)
             end
             print(string.format("%d/%d path counts", path_count, count))
             print(string.format("%d/%d host counts", host_count, count))

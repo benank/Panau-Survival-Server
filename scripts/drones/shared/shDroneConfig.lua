@@ -2,6 +2,7 @@ Cell_Size = 512
 
 DRONE_PATH_RADIUS = 500
 DRONE_TARGET_DIST_STOP = 100
+DRONE_CATCH_UP_SPEED = 50
 
 Drone_Follow_Offsets = 
 {
@@ -13,7 +14,7 @@ Drone_Follow_Offsets =
 function GetRandomFollowOffset(sight_range)
     local dir = Vector3(0.5 - math.random(), 0, 0.5 - math.random()):Normalized()
 
-    local max = sight_range
+    local max = math.max(5, math.random() * sight_range)
     dir.x = dir.x * (max - Drone_Follow_Offsets.x.min) * math.random()
     dir.x = dir.x < 0 and dir.x - Drone_Follow_Offsets.x.min or dir.x + Drone_Follow_Offsets.x.min
 
@@ -27,8 +28,8 @@ end
 
 Drone_Configuration = 
 {
-    speed = {base = 8, per_level = 0.2},
-    damage_modifier = {base = 1, per_level = 0.001},
+    speed = {base = 7, per_level = 0.25},
+    damage_modifier = {base = 1, per_level = 0.0015},
     has_rockets = {base = false, base_chance = 0.02, chance_per_level = 0.02},
     fire_time_min = {base = 0.2, per_level = 0.02},
     fire_time_max = {base = 1, per_level = 0.025},
@@ -37,7 +38,8 @@ Drone_Configuration =
     attack_on_sight = {base = false, base_chance = 0, chance_per_level = 0.015},
     accuracy_modifier = {base = 0.01, per_level = 0.03},
     health = {base = 30, per_level = 20},
-    sight_range = {base = 25, per_level = 2}
+    sight_range = {base = 25, per_level = 2},
+    attack_range = {base = 6, per_level = 0.5}
 }
 
 DroneState = 
