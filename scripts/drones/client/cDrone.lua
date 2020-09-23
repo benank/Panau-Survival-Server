@@ -258,6 +258,10 @@ function cDrone:Move(args)
         self:Wander(args)
     end
 
+    if self:IsHost() then
+        self.corrective_position = self.position
+    end
+
 end
 
 -- Makes a drone wander through the sky
@@ -348,7 +352,7 @@ function cDrone:TrackTarget(args)
     self.target_position = self.target:GetPosition() + self.offset
     
     if not self:IsHost() then
-        self.target_position = math.lerp(self.target_position, self.corrective_position, 0.25)
+        self.target_position = math.lerp(self.target_position, self.corrective_position, 0.5)
     end
 
     local target_pos = self.target_position
@@ -366,16 +370,14 @@ function cDrone:TrackTarget(args)
     end
 
     -- Wall and collision detection
-    if nearby_wall and self.wall_timer:GetSeconds() > 0.25 then
+    if nearby_wall and self.wall_timer:GetSeconds() > 0.2 then
 
-        if nearby_wall then
-            self.wall_timer = Timer()
-            self:SetLinearVelocity(-self.velocity * 0.5)
+        self.wall_timer:Restart()
+        self:SetLinearVelocity(-self.velocity * 0.75)
 
-            if self:IsHost() then
-                self.offset = GetRandomFollowOffset(self.config.attack_range)
-                self:SyncOffsetToServer()
-            end
+        if self:IsHost() then
+            self.offset = GetRandomFollowOffset(self.config.attack_range)
+            self:SyncOffsetToServer()
         end
 
     else
@@ -413,7 +415,7 @@ end
 function cDrone:Shoot()
     self.firing = true
     self.next_fire_time = math.random() * self.config.fire_rate_interval + 1
-    self.next_fire_time_far = (math.random() * self.config.fire_rate_interval + 2) * 3
+    self.next_fire_time_far = (math.random() * self.config.fire_rate_interval + 2) * 2
     self.fire_timer:Restart()
 
     -- Time that the drone will shoot for
