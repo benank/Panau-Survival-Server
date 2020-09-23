@@ -1,4 +1,4 @@
-ITEM_UNLOCKS_ENABLED = false
+ITEM_UNLOCKS_ENABLED = true
 
 Item_Unlocks = 
 {
