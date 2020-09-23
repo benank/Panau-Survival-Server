@@ -215,6 +215,21 @@ function cDrone:IsTargetVisible(_target)
 
 end
 
+function cDrone:IsTargetVisibleFromAfar(_target)
+
+    local target = _target or self.target
+    
+    if not IsValid(target) then return false end
+
+    local ray = Physics:Raycast(
+        self.position,
+        target:GetBonePosition("ragdoll_Hips") - self.position,
+        0, 1000, false)
+
+    if ray.entity and (ray.entity.__type == "Player" or ray.entity.__type == "LocalPlayer") and ray.entity == target then return true, ray end
+
+end
+
 -- Returns whether or not the drone can see its current target
 function cDrone:IsTargetInSight()
 
@@ -375,7 +390,7 @@ function cDrone:TrackTarget(args)
 
     self:SetAngle(Angle.Slerp(self.angle, angle, math.min(1, self.config.accuracy_modifier)))
 
-    if self:IsTargetVisible() and self.fire_timer:GetSeconds() >= self.next_fire_time and not self.firing then
+    if self:IsTargetVisibleFromAfar() and self.fire_timer:GetSeconds() >= self.next_fire_time and not self.firing then
         self:Shoot()
     end
 
