@@ -23,6 +23,7 @@ function sHitDetection:__init()
 
     Network:Subscribe("HitDetection/DetectPlayerHit", self, self.DetectPlayerHit)
     Network:Subscribe("HitDetection/DetectVehicleHit", self, self.DetectVehicleHit)
+    Network:Subscribe("HitDetection/DetectVehicleDroneHit", self, self.DetectVehicleDroneHit)
     Network:Subscribe("HitDetection/DetectDroneHit", self, self.DetectDroneHit)
     Network:Subscribe("HitDetection/DetectPlayerSplashHit", self, self.DetectPlayerSplashHit)
     Network:Subscribe("HitDetection/DetectVehicleSplashHit", self, self.DetectVehicleSplashHit)
@@ -832,6 +833,29 @@ function sHitDetection:DetectDroneHit(args, player)
         hit_position = args.hit_position
     })
     
+end
+
+function sHitDetection:DetectVehicleDroneHit(args, player)
+
+    assert(IsValid(player), "player is invalid")
+    assert(args.vehicle_id, "vehicle_id is invalid")
+    assert(args.weapon_enum, "weapon_enum is invalid")
+    assert(args.distance_travelled and args.distance_travelled > 0, "distance_travelled is invalid")
+
+    if not self:PlayerCanApplyDamage(player, args.token) then return end
+
+    local vehicle = Vehicle.GetById(args.vehicle_id)
+
+    if not IsValid(vehicle) then return end
+
+    if vehicle:GetDriver() and vehicle:GetDriver():GetValue("InSafezone") then return end
+
+    local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, args.distance_travelled)
+
+    if damage <= 0 then return end
+    if vehicle:GetHealth() <= 0 then return end
+
+    vehicle:SetHealth(math.max(0, vehicle:GetHealth() - damage))
 end
 
 function sHitDetection:DetectVehicleHit(args, player)

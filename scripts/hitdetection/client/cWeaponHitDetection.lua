@@ -492,7 +492,24 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
             })
 
         elseif args.entity_type == "Vehicle" then
-            -- TODO: handle drone damage to vehicles
+            -- Drone hits a vehicle
+
+            local damage = WeaponDamage:CalculateVehicleDamage(args.entity, args.weapon_enum, args.distance_travelled) * 100
+
+            if damage == 0 then return end
+
+            local my_dist = LocalPlayer:GetPosition():Distance(args.hit_position)
+
+            for p in Client:GetStreamedPlayers() do
+                if p:GetPosition():Distance(args.hit_position) < my_dist then return end
+            end
+        
+            Network:Send(var("HitDetection/DetectVehicleDroneHit"):get(), {
+                vehicle_id = args.entity:GetId(),
+                weapon_enum = args.weapon_enum,
+                distance_travelled = args.distance_travelled,
+                token = TOKEN:get()
+            })
         end
 
     end

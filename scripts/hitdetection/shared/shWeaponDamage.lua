@@ -30,7 +30,7 @@ function WeaponDamage:__init()
         [WeaponEnum.V_Cannon] =         {base = 0.15, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 6},
         [WeaponEnum.V_Cannon_Slow] =    {base = 0.13, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
         [WeaponEnum.V_MachineGun] =     {base = 0.10, v_mod = 0.5,   distance_falloff = 300, falloff = falloff_func},
-        [WeaponEnum.Drone_MachineGun] = {base = 0.05, v_mod = 1.5,   distance_falloff = 150, falloff = falloff_func}
+        [WeaponEnum.Drone_MachineGun] = {base = 0.05, v_mod = 0.1,   distance_falloff = 300, falloff = falloff_func}
     }
 
     self.bone_damage_modifiers = {
@@ -295,19 +295,21 @@ function WeaponDamage:CalculateVehicleDamage(vehicle, weapon_enum, distance, att
     local falloff_modifier = self.weapon_damages[weapon_enum].falloff(distance, self.weapon_damages[weapon_enum].distance_falloff)
     local vehicle_armor = self.vehicle_armors[vehicle:GetModelId()] or self.default_vehicle_armor
 
-    local perks = attacker:GetValue("Perks")
-    local possible_perks = self.WeaponDamagePerks[weapon_enum]
-
     local perk_mod = 1
 
-    if perks and possible_perks then
+    if IsValid(attacker) then
+        local perks = attacker:GetValue("Perks")
+        local possible_perks = self.WeaponDamagePerks[weapon_enum]
 
-        for perk_id, weapon_damage_mod in pairs(possible_perks) do
-            if perks.unlocked_perks[perk_id] then
-                perk_mod = math.max(perk_mod, weapon_damage_mod)
+        if perks and possible_perks then
+
+            for perk_id, weapon_damage_mod in pairs(possible_perks) do
+                if perks.unlocked_perks[perk_id] then
+                    perk_mod = math.max(perk_mod, weapon_damage_mod)
+                end
             end
-        end
 
+        end
     end
 
     local damage = base_damage * falloff_modifier * v_mod * vehicle_armor * perk_mod

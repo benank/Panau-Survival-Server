@@ -73,7 +73,7 @@ function cHitDetection:ExplosionHitDrone(args)
     local my_dist = LocalPlayer:GetPosition():Distance(args.drone_position)
 
     for p in Client:GetStreamedPlayers() do
-        if p:GetPosition():Distance(args.position) < my_dist then return end
+        if p:GetPosition():Distance(args.drone_position) < my_dist then return end
     end
 
     local explosive_data = WeaponDamage.ExplosiveBaseDamage[args.type]

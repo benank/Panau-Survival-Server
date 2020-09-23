@@ -231,6 +231,7 @@ function cDrone:IsTargetInAttackRange(_target)
         0, self.config.attack_range * 1.25, false)
 
     if ray.entity and (ray.entity.__type == "Player" or ray.entity.__type == "LocalPlayer") and ray.entity == target then return true, ray end
+    if ray.entity and (ray.entity.__type == "Vehicle") then return true, ray end
 
 end
 
