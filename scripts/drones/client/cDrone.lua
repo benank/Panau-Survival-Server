@@ -337,7 +337,7 @@ function cDrone:Wander(args)
 end
 
 function cDrone:IsHost()
-    return self.host and self.host == LocalPlayer
+    return IsValid(self.host) and self.host == LocalPlayer
 end
 
 -- Makes a drone track a target and face towards them 
