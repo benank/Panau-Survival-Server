@@ -25,7 +25,7 @@ DroneRegions =
             height = 
             {
                 min = 0,
-                max = 100
+                max = 400
             }
         },
         drone_spawn_rate = {}
@@ -42,7 +42,7 @@ DroneRegions =
             height = 
             {
                 min = 0,
-                max = 100
+                max = 300
             }
         },
     },
@@ -58,7 +58,7 @@ DroneRegions =
             height = 
             {
                 min = 0,
-                max = 50
+                max = 100
             }
         },
     },
@@ -74,7 +74,7 @@ DroneRegions =
             height = 
             {
                 min = 0,
-                max = 100
+                max = 300
             }
         },
     },
