@@ -23,9 +23,13 @@ end
 function sDroneManager:DroneReconsiderLoops()
     Thread(function()
         while true do
+            local sleep_count = 0
             for id, drone in pairs(self.drones_by_id) do
                 drone:ReconsiderLoop()
-                Timer.Sleep(1)
+                sleep_count = sleep_count + 1
+                if sleep_count % 20 == 0 then
+                    Timer.Sleep(1)
+                end
             end
             Timer.Sleep(500)
         end
