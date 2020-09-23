@@ -64,13 +64,15 @@ function cDrone:__init(args)
     self.sound_timer = Timer()
     self.wander_sync_timer = Timer()
     self.wall_timer = Timer()
+    self.far_shoot_timer = Timer()
     self.sound_timer_interval = math.random() * 2000 + 300
 
     self.attack_on_sight_timer = Timer()
     self.attack_on_sight_count = 0
 
     self.fire_timer = Timer() -- Fire rate timer
-    self.next_fire_time = 0
+    self.next_fire_time = 3
+    self.next_fire_time_far = 3
 
     self.body = cDroneBody(self)
 
@@ -125,6 +127,7 @@ end
 function cDrone:UpdateFromServer(args)
 
     if self.state == DroneState.Wandering and args.state == DroneState.Pursuing and not self.config.attack_on_sight then
+        self.fire_timer:Restart()
         self.body:PlaySound("intruder_alert")
     elseif self.state == DroneState.Pursuing and args.state == DroneState.Wandering then
         self.path = {}
@@ -381,7 +384,7 @@ function cDrone:TrackTarget(args)
         -- Speed up to get in range
         local distance = self.position:Distance(self.target:GetPosition())
         if distance > self.config.attack_range then
-            speed = speed * math.min(distance / self.config.attack_range, 5)
+            speed = speed * math.min(distance / self.config.attack_range, 3)
         end
 
         local velo = dir:Length() > 1 and (dir:Normalized() * speed) or Vector3.Zero
@@ -396,7 +399,9 @@ function cDrone:TrackTarget(args)
 
     self:SetAngle(Angle.Slerp(self.angle, angle, math.min(1, self.config.accuracy_modifier)))
 
-    if self:IsTargetInAttackRange() and self.fire_timer:GetSeconds() >= self.next_fire_time and not self.firing then
+    local can_shoot_close = self:IsTargetInAttackRange() and self.fire_timer:GetSeconds() >= self.next_fire_time
+    local can_shoot_far = self.fire_timer:GetSeconds() >= self.next_fire_time_far
+    if (can_shoot_close or can_shoot_far) and not self.firing then
         self:Shoot()
     end
 
@@ -406,6 +411,7 @@ end
 function cDrone:Shoot()
     self.firing = true
     self.next_fire_time = math.random() * self.config.fire_rate_interval + 1
+    self.next_fire_time_far = (math.random() * self.config.fire_rate_interval + 2) * 3
     self.fire_timer:Restart()
 
     -- Time that the drone will shoot for
