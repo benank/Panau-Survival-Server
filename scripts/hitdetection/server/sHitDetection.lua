@@ -406,13 +406,27 @@ function sHitDetection:PlayerDeath(args)
     else
         -- Player died on their own without anyone else, like drowning or falling from too high
 
-        local msg = string.format("%s [%s] died [%s]", 
-            args.player:GetName(),
-            tostring(args.player:GetSteamId()),
-            DamageEntityNames[args.reason])
+        local msg = ""
+        if args.reason == DamageEntity.DroneMachineGun then
 
-        Chat:Send(args.player, string.format("You died [Reason: %s]", DamageEntityNames[args.reason]), Color.Red)
-        
+            local msg = string.format("%s [%s] was killed by Drone. [%s]", 
+                args.player:GetName(),
+                tostring(args.player:GetSteamId()),
+                DamageEntityNames[args.reason])
+
+            Chat:Send(args.player, string.format("You were killed by a drone. [%s]", DamageEntityNames[args.reason]), Color.Red)
+
+        else
+
+            local msg = string.format("%s [%s] died [%s]", 
+                args.player:GetName(),
+                tostring(args.player:GetSteamId()),
+                DamageEntityNames[args.reason])
+
+            Chat:Send(args.player, string.format("You died [Reason: %s]", DamageEntityNames[args.reason]), Color.Red)
+
+        end
+            
         print(msg)
         Events:Fire("Discord", {
             channel = "Hitdetection",
@@ -754,7 +768,7 @@ function sHitDetection:DetectDroneHitLocalPlayer(args, player)
     self:ApplyDamage({
         player = player,
         damage = damage,
-        source = DamageEntity.Bullet,
+        source = DamageEntity.DroneMachineGun,
         weapon_enum = args.weapon_enum
     })
 

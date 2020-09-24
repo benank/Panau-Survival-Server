@@ -41,9 +41,6 @@ function sDroneManager:DroneBatchSyncLoop()
             for id, drone in pairs(self.drones_by_id) do
                 if drone.has_update then
                     drone_data[id] = drone.updates
-                    if drone.updates.health then
-                        print("UPDATING HEALTH " .. tostring(drone.health))
-                    end
                     at_least_one_sync = true
                     drone:UpdateApplied()
                 end

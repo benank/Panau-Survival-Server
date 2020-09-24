@@ -395,7 +395,7 @@ function cDrone:TrackTarget(args)
         -- Speed up to get in range
         local distance = self.position:Distance(self.target:GetPosition())
         if distance > self.config.attack_range then
-            speed = speed * math.min(distance / self.config.attack_range, 3)
+            speed = speed * math.min(distance / self.config.attack_range, 2)
         end
 
         local velo = dir:Length() > 1 and (dir:Normalized() * speed) or Vector3.Zero
