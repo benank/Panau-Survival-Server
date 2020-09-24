@@ -21,12 +21,12 @@ DroneRegions =
         level_range = {min = 1, max = 5},
         spawn = 
         {
-            max = 100, -- Max drones alive at one time
+            max = 80, -- Max drones alive at one time
             chance = 0.9, -- Chance of a drone spawning every interval
             height = 
             {
                 min = 0,
-                max = 50
+                max = 30
             }
         },
         drone_spawn_rate = {}
@@ -38,12 +38,12 @@ DroneRegions =
         level_range = {min = 5, max = 15},
         spawn = 
         {
-            max = 150, -- Max drones alive at one time
+            max = 100, -- Max drones alive at one time
             chance = 0.9, -- Chance of a drone spawning every interval
             height = 
             {
                 min = 0,
-                max = 100
+                max = 50
             }
         },
     },
@@ -54,7 +54,7 @@ DroneRegions =
         level_range = {min = 15, max = 30},
         spawn = 
         {
-            max = 150, -- Max drones alive at one time
+            max = 100, -- Max drones alive at one time
             chance = 0.8, -- Chance of a drone spawning every interval
             height = 
             {
@@ -70,12 +70,12 @@ DroneRegions =
         level_range = {min = 5, max = 15},
         spawn = 
         {
-            max = 150, -- Max drones alive at one time
+            max = 100, -- Max drones alive at one time
             chance = 0.9, -- Chance of a drone spawning every interval
             height = 
             {
                 min = 0,
-                max = 100
+                max = 50
             }
         },
     },
