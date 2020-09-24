@@ -353,12 +353,12 @@ function cDrone:Wander(args)
     end
 
     if self.sound_timer:GetSeconds() >= self.sound_timer_interval then
-        if self.position:Distance(LocalPlayer:GetPosition()) < 50 then
+        if self.position:Distance(LocalPlayer:GetPosition()) < 60 then
             self.body:PlaySound(math.random() > 0.5 and "enemy_presence_in_the_area" or "trespasser_in_the_area")
         else
             self.body:PlaySound("be_on_the_lookout")
         end
-        self.sound_timer_interval = math.random() * 3000 + 400
+        self.sound_timer_interval = math.random() * 5000 + 800
         self.sound_timer:Restart()
     end
 
