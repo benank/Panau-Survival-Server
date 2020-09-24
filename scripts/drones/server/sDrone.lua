@@ -82,14 +82,15 @@ end
 -- Updates the drone's cell in DroneManager cells
 function sDrone:UpdateCell()
     local cell = GetCell(self.position, Cell_Size)
-    if not self.cell or self.cell.x ~= cell.x or self.cell.y ~= cell.y then
-        if self.cell then
-            sDroneManager.drones[self.cell.x][self.cell.y] = nil
-        end
+    if self.cell then
+        sDroneManager.drones[self.cell.x][self.cell.y] = nil
+    end
+    
+    self.cell = cell
+    VerifyCellExists(sDroneManager.drones, self.cell)
+    sDroneManager.drones[self.cell.x][self.cell.y][self.id] = self
 
-        self.cell = cell
-        VerifyCellExists(sDroneManager.drones, self.cell)
-        sDroneManager.drones[self.cell.x][self.cell.y][self.id] = self
+    if not self.cell or self.cell.x ~= cell.x or self.cell.y ~= cell.y then
         self.updated = true
         self.updates.position = self.position
     end
