@@ -33,6 +33,7 @@ function sDrone:__init(args)
     self.state = DroneState.Wandering
 
     self.host = nil -- Player who currently "controls" the drone and dictates its pathfinding
+    self.players_who_damaged = {} -- List of players who have damaged this drone
 
     self.has_update = true
     self.updates = {}
@@ -199,8 +200,14 @@ function sDrone:Destroyed(args)
 
     self.state = DroneState.Destroyed
 
+    local exp_split = {}
+    for steam_id, damage_dealt in pairs(self.players_who_damaged) do
+        exp_split[steam_id] = math.clamp(damage_dealt / self.max_health, 0, 1)
+    end
+
     Events:Fire("drones/DroneDestroyed", {
         player = args.player,
+        exp_split = exp_split,
         drone_level = self.level
     })
     
@@ -212,6 +219,12 @@ end
 function sDrone:Damage(args)
     if self:IsDestroyed() then return end
 
+    local steam_id = tostring(args.player:GetSteamId())
+    if not self.players_who_damaged[steam_id] then
+        self.players_who_damaged[steam_id] = 0
+    end
+
+    self.players_who_damaged[steam_id] = self.players_who_damaged[steam_id] + args.damage
     self.health = math.max(0, self.health - args.damage)
     self:PursueTarget(args.player)
 
