@@ -271,17 +271,19 @@ function cDrone:CanShoot()
 end
 
 -- Returns whether or not the drone can see its current target
-function cDrone:IsTargetInSight()
+function cDrone:IsTargetInSight(_target)
 
-    if not IsValid(self.target) then return false end
+    local target = _target or self.target
+    
+    if not IsValid(target) then return false end
     if not self.body then return false end
 
     local ray = Physics:Raycast(
         self.body:GetGunPosition(DroneBodyPiece.TopGun),
-        self.target:GetBonePosition("ragdoll_Hips") - self.body:GetGunPosition(DroneBodyPiece.TopGun),
+        target:GetBonePosition("ragdoll_Hips") - self.body:GetGunPosition(DroneBodyPiece.TopGun),
         0, self.range, false)
 
-    if ray.entity and (ray.entity.__type == "Player" or ray.entity.__type == "LocalPlayer") and ray.entity == self.target then return true, ray end
+    if ray.entity and (ray.entity.__type == "Player" or ray.entity.__type == "LocalPlayer") and ray.entity == target then return true, ray end
     if ray.entity and (ray.entity.__type == "Vehicle") then return true, ray end
 
 end
@@ -351,7 +353,7 @@ function cDrone:Wander(args)
             end
         end
 
-        if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 1 and not LocalPlayer:GetValue("Invisible") then
+        if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 0.5 and not LocalPlayer:GetValue("Invisible") then
             self.attack_on_sight_timer:Restart()
             local is_visible, ray = self:IsTargetInSight(LocalPlayer)
             self.attack_on_sight_count = is_visible and self.attack_on_sight_count + 1 or math.max(0, self.attack_on_sight_count - 1)
