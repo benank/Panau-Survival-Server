@@ -220,7 +220,7 @@ function cDrone:IsTargetVisible(_target)
     local ray = Physics:Raycast(
         self.position,
         target:GetBonePosition("ragdoll_Hips") - self.position,
-        0, self.range, false)
+        0, 500, false)
 
     if ray.entity and (ray.entity.__type == "Player" or ray.entity.__type == "LocalPlayer") and ray.entity == target then return true, ray end
 
@@ -242,6 +242,21 @@ function cDrone:IsTargetInAttackRange(_target)
 
 end
 
+-- Returns if the drone can shoot (aka it is not looking at a wall). Prevents drone from shooting through walls
+function cDrone:CanShoot()
+
+    if not IsValid(self.target) then return false end
+    if not self.body then return false end
+
+    local ray = Physics:Raycast(
+        self.body:GetGunPosition(DroneBodyPiece.TopGun),
+        self.angle * Vector3.Forward,
+        0, 1, false)
+
+    if ray.distance == 1 then return true end
+
+end
+
 -- Returns whether or not the drone can see its current target
 function cDrone:IsTargetInSight()
 
@@ -253,7 +268,8 @@ function cDrone:IsTargetInSight()
         self.target:GetBonePosition("ragdoll_Hips") - self.body:GetGunPosition(DroneBodyPiece.TopGun),
         0, self.range, false)
 
-    if ray.entity and ray.entity.__type == "Player" and ray.entity == self.target then return true end
+    if ray.entity and (ray.entity.__type == "Player" or ray.entity.__type == "LocalPlayer") and ray.entity == self.target then return true, ray end
+    if ray.entity and (ray.entity.__type == "Vehicle") then return true, ray end
 
 end
 
@@ -324,7 +340,7 @@ function cDrone:Wander(args)
 
         if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 1 and not LocalPlayer:GetValue("Invisible") then
             self.attack_on_sight_timer:Restart()
-            local is_visible, ray = self:IsTargetVisible(LocalPlayer)
+            local is_visible, ray = self:IsTargetInSight(LocalPlayer)
             self.attack_on_sight_count = is_visible and self.attack_on_sight_count + 1 or math.max(0, self.attack_on_sight_count - 1)
 
             if is_visible and (ray.distance < self.config.sight_range * 0.1 or self.attack_on_sight_count >= 5) then
@@ -377,10 +393,10 @@ function cDrone:TrackTarget(args)
     end
 
     -- Wall and collision detection
-    if nearby_wall and self.wall_timer:GetSeconds() > 0.2 then
+    if nearby_wall and self.wall_timer:GetSeconds() > 0.1 then
 
         self.wall_timer:Restart()
-        self:SetLinearVelocity(-self.velocity * 0.75)
+        self:SetLinearVelocity(-self.velocity * 1)
 
         if self:IsHost() then
             self.offset = GetRandomFollowOffset(self.config.attack_range)
@@ -411,8 +427,8 @@ function cDrone:TrackTarget(args)
     self:SetAngle(Angle.Slerp(self.angle, angle, math.min(1, self.config.accuracy_modifier)))
 
     local can_shoot_close = self:IsTargetInAttackRange() and self.fire_timer:GetSeconds() >= self.next_fire_time
-    local can_shoot_far = self.fire_timer:GetSeconds() >= self.next_fire_time_far
-    if (can_shoot_close or can_shoot_far) and not self.firing then
+    local can_shoot_far = self:IsTargetVisible() and self.fire_timer:GetSeconds() >= self.next_fire_time_far
+    if (can_shoot_close or can_shoot_far) and not self.firing and self:CanShoot() then
         self:Shoot()
     end
 
@@ -430,7 +446,7 @@ function cDrone:Shoot()
     local fire_interval = 100 -- Fire every X ms
 
     Thread(function()
-        while fire_time > 0 and self.body do
+        while fire_time > 0 and self.body and self:CanShoot() do
             local gun_to_fire = math.random() > 0.5 and DroneBodyPiece.LeftGun or DroneBodyPiece.RightGun
             self.body:CreateShootingEffect(gun_to_fire)
             fire_time = fire_time - fire_interval

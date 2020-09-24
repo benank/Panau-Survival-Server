@@ -119,7 +119,7 @@ function sDrone:ReconsiderHost()
 
     if IsValid(self.host) then
         -- Host is far away
-        if Distance2D(self.host:GetPosition(), self.position) > 1000 then
+        if Distance2D(self.host:GetPosition(), self.position) > 1500 then
             should_reconsider_host = true
         end
     else
@@ -128,7 +128,7 @@ function sDrone:ReconsiderHost()
     end
 
     if should_reconsider_host then
-        self.host = self:FindNewHost()
+        self:SetHost(self:FindNewHost() or self.host)
         return true
     end
 

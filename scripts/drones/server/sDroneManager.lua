@@ -162,25 +162,15 @@ function sDroneManager:PlayerCellUpdate(args)
     
     local drone_data = {}
 
-    local adjacent_cells = GetAdjacentCells(args.cell)
-
-    for _, adj_cell in pairs(adjacent_cells) do
-        -- If these cells don't exist, create them
-        VerifyCellExists(self.drones, adj_cell)
-
-        for id, drone in pairs(self.drones[adj_cell.x][adj_cell.y]) do
-            if not IsValid(drone.host) then
-                drone:SetHost(args.player)
-            end
-        end
-    end
-
-    for _, update_cell in pairs(args.updated) do
+    for _, update_cell in pairs(args.adjacent) do
 
         -- If these cells don't exist, create them
         VerifyCellExists(self.drones, update_cell)
 
         for id, drone in pairs(self.drones[update_cell.x][update_cell.y]) do
+            if not IsValid(drone.host) then
+                drone:SetHost(args.player)
+            end
             table.insert(drone_data, drone:GetSyncData())
         end
     end
