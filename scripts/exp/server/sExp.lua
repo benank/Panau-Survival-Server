@@ -56,6 +56,11 @@ function sExp:DroneDestroyed(args)
     local exp_earned = Exp.DestroyDrone.Base + Exp.DestroyDrone.Per_Level * args.drone_level
     if not exp_earned then return end
 
+    -- +10% extra total exp for each extra player that helps to kill a drone
+    if count_table(args.exp_split) > 1 then
+        exp_earned = exp_earned * (1 + Exp.DestroyDrone.AdditionalPercentPerPlayer * (count_table(args.exp_split) - 1))
+    end
+
     for steam_id, split_percent in pairs(args.exp_split) do
 
         local player = self.players[steam_id]
