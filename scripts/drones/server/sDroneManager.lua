@@ -162,19 +162,20 @@ function sDroneManager:PlayerCellUpdate(args)
     
     local drone_data = {}
 
-    for _, update_cell in pairs(args.adjacent) do
+    local adj_cells = {}
+    for _, cell in pairs(args.adjacent) do
+        adj_cells[string.format("%d %d", cell.x, cell.y)] = true
+    end
 
-        -- If these cells don't exist, create them
-        VerifyCellExists(self.drones, update_cell)
-
-        for id, drone in pairs(self.drones[update_cell.x][update_cell.y]) do
+    for id, drone in pairs(self.drones_by_id) do
+        if adj_cells[string.format("%d %d", drone.cell.x, drone.cell.y)] then
             if not IsValid(drone.host) then
                 drone:SetHost(args.player)
             end
             table.insert(drone_data, drone:GetSyncData())
         end
     end
-    
+
 	-- send the existing drones in the newly streamed cells
     Network:Send(args.player, "Drones/DroneCellsSync", {drone_data = drone_data})
 end

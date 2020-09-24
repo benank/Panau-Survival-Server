@@ -83,6 +83,7 @@ end
 function sDrone:UpdateCell()
     local cell = GetCell(self.position, Cell_Size)
     if self.cell then
+        VerifyCellExists(sDroneManager.drones, self.cell)
         sDroneManager.drones[self.cell.x][self.cell.y] = nil
     end
     
@@ -236,7 +237,9 @@ function sDrone:OneHostSync(args, player)
     -- Update some aspects from player
     self.target_offset = args.offset or self.target_offset
     self.position = args.position or self.position
-    self:UpdateCell()
+    if args.position then
+        self:UpdateCell()
+    end
     self:Sync({
         target_offset = self.target_offset,
         position = self.position
