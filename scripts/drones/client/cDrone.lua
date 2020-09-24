@@ -65,7 +65,7 @@ function cDrone:__init(args)
     self.wander_sync_timer = Timer()
     self.wall_timer = Timer()
     self.far_shoot_timer = Timer()
-    self.sound_timer_interval = math.random() * 2000 + 300
+    self.sound_timer_interval = math.random() * 5000 + 800
 
     self.attack_on_sight_timer = Timer()
     self.attack_on_sight_count = 0
@@ -143,7 +143,7 @@ function cDrone:UpdateFromServer(args)
         self.health = args.health
         self.body:HealthUpdated()
     end
-    
+
     self.host = args.host
     self.target = args.target -- Current active target that the drone is pursuing
 
@@ -212,6 +212,16 @@ function cDrone:PostTick(args)
 
     if self.body then self.body:PostTick(args) end
 
+end
+
+function cDrone:IsPlayerAValidTarget(player, distance)
+    return IsValid(player) and
+        not player:GetValue("Invisible") and 
+        player:GetHealth() > 0 and
+        not player:GetValue("Loading") and
+        not player:GetValue("dead") and
+        not player:GetValue("InSafezone") and
+        Distance2D(self.position, player:GetPosition()) < (distance or 500)
 end
 
 function cDrone:IsTargetVisible(_target)
@@ -376,8 +386,10 @@ function cDrone:TrackTarget(args)
     if not IsValid(self.target) or self.target:GetHealth() <= 0 then return end
     self.attack_on_sight_count = 0
     self.target_position = self.target:GetPosition() + self.offset
+    local distance = self.position:Distance(self.target:GetPosition())
     
-    if not self:IsHost() then
+    -- Only use corrective position if not host and if the drone is close to the target
+    if not self:IsHost() and distance < self.config.attack_range * 2 then
         self.target_position = math.lerp(self.target_position, self.corrective_position, 0.5)
     end
 
@@ -388,8 +400,8 @@ function cDrone:TrackTarget(args)
     local nearby_wall_pos, nearby_wall = self:CheckForNearbyWalls(args)
     target_pos = nearby_wall and nearby_wall_pos or target_pos
 
-    -- Change offset if the drone cannot see the player
-    if self:IsHost() and not self:IsTargetVisible() and self.offset_timer:GetSeconds() > 2 then
+    -- Change offset if the drone cannot see the player or every 5 seconds
+    if (self:IsHost() and not self:IsTargetVisible() and self.offset_timer:GetSeconds() > 2) or self.offset_timer:GetSeconds() > 5 then
         self.offset = GetRandomFollowOffset(self.config.attack_range)
         self.offset_timer:Restart()
         self:SyncOffsetToServer()
@@ -412,7 +424,6 @@ function cDrone:TrackTarget(args)
         local speed = self.config.speed
 
         -- Speed up to get in range
-        local distance = self.position:Distance(self.target:GetPosition())
         if distance > self.config.attack_range then
             speed = speed * math.min(distance / self.config.attack_range, 2)
         end
@@ -431,7 +442,7 @@ function cDrone:TrackTarget(args)
 
     local can_shoot_close = self:IsTargetInAttackRange() and self.fire_timer:GetSeconds() >= self.next_fire_time
     local can_shoot_far = self:IsTargetVisible() and self.fire_timer:GetSeconds() >= self.next_fire_time_far
-    if (can_shoot_close or can_shoot_far) and not self.firing and self:CanShoot() then
+    if (can_shoot_close or can_shoot_far) and not self.firing and self:CanShoot() and self:IsPlayerAValidTarget(self.target) then
         self:Shoot()
     end
 

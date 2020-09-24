@@ -62,7 +62,7 @@ function sDrone:ReconsiderLoop()
 end
 
 function sDrone:PursueTarget(target)
-    self.target = target
+    self.target = self:IsPlayerAValidTarget(target) and target or nil
     self.state = IsValid(target) and DroneState.Pursuing or DroneState.Wandering
     self.current_path = {}
     self.current_path_index = 1
@@ -102,16 +102,42 @@ end
 function sDrone:ReconsiderTarget()
     if self.state ~= DroneState.Pursuing then return end
 
-    if not IsValid(self.target) or 
-    self.target:GetValue("Invisible") or 
-    self.target:GetHealth() <= 0 or
-    self.target:GetValue("InSafezone") or
-    Distance2D(self.position, self.target:GetPosition()) > 500 or
+    if not self:IsPlayerAValidTarget(self.target) or
     Distance2D(self.position, self.tether_position) > self.tether_range then
-        self:PursueTarget(nil)
+        self:PursueTarget(self:FindNewTarget())
         return true
     end
 
+end
+
+function sDrone:IsPlayerAValidTarget(player, distance)
+    return IsValid(player) and
+        not player:GetValue("Invisible") and 
+        player:GetHealth() > 0 and
+        not player:GetValue("Loading") and
+        not player:GetValue("dead") and
+        not player:GetValue("InSafezone") and
+        Distance2D(self.position, player:GetPosition()) < (distance or 500)
+end
+
+-- Finds a new target from recently damaged or nearby players
+function sDrone:FindNewTarget()
+    for steam_id, _ in pairs(self.players_who_damaged) do
+        local player = sDroneManager.players[steam_id]
+        if self:IsPlayerAValidTarget(player, 200) then
+            return player
+        end
+    end
+
+    -- No recently damaged players found, so let's look for nearby players because we're mad
+    VerifyCellExists(sDroneManager.player_cells, self.cell)
+    local players_in_cell = sDroneManager.player_cells[self.cell.x][self.cell.y]
+
+    for _, player in pairs(players_in_cell) do
+        if self:IsPlayerAValidTarget(player, 75) then
+            return player
+        end
+    end
 end
 
 -- Take a look at the current host and see if there is a better player

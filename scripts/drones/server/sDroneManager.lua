@@ -6,14 +6,25 @@ function sDroneManager:__init()
     self.drones_by_id = {} -- Drones by id
     self.drone_counts_by_region = {} -- Counts of drones per region for spawning
     self.player_cells = {} -- Players in cells [x][y][steam_id] = player
+    self.players = {}
 
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(Cell_Size), self, self.PlayerCellUpdate)
     Events:Subscribe("HitDetection/DroneDamaged", self, self.DroneDamaged)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
+    Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
     Network:Subscribe("drones/sync/batch", self, self.DroneBatchSync)
 
+end
+
+function sDroneManager:ClientModuleLoad(args)
+    self.players[tostring(args.player:GetSteamId())] = args.player
+end
+
+function sDroneManager:PlayerQuit(args)
+    self.players[tostring(args.player:GetSteamId())] = nil
 end
 
 function sDroneManager:ModuleLoad()
@@ -58,11 +69,15 @@ end
 function sDroneManager:DroneReconsiderLoops()
     Thread(function()
         while true do
+            local sleep_count = 0
             for id, drone in pairs(self.drones_by_id) do
                 drone:ReconsiderLoop()
-                Timer.Sleep(1)
+                sleep_count = sleep_count + 1
+                if sleep_count % 50 == 0 then
+                    Timer.Sleep(1)
+                end
             end
-            Timer.Sleep(250)
+            Timer.Sleep(200)
         end
     end)
 end
