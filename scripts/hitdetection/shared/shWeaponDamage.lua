@@ -85,7 +85,7 @@ function WeaponDamage:__init()
         [WeaponEnum.Revolver] =         1,
         [WeaponEnum.RocketLauncher] =   20,
         [WeaponEnum.SMG] =              1,
-        [WeaponEnum.Sniper] =           0.75,
+        [WeaponEnum.Sniper] =           0.9,
         [WeaponEnum.SawnOffShotgun] =   1,
         [WeaponEnum.Shotgun] =          1,
         
