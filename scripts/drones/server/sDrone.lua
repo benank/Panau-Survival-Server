@@ -34,6 +34,9 @@ function sDrone:__init(args)
 
     self.host = nil -- Player who currently "controls" the drone and dictates its pathfinding
 
+    self.has_update = true
+    self.updates = {}
+
     self.network_subs = 
     {
         Network:Subscribe("drones/DespawnDrone" .. tostring(self.id), self, self.DespawnDrone),
@@ -45,15 +48,13 @@ function sDrone:__init(args)
     sDroneManager.drones_by_id[self.id] = self
     self:UpdateCell()
 
-    self:Sync()
-
 end
 
 function sDrone:ReconsiderLoop()
     local updated = self:ReconsiderHost()
     updated = self:ReconsiderTarget() or updated
     if updated then
-        self:Sync(nil, {
+        self:Sync({
             state = self.state
         })
     end
@@ -65,14 +66,11 @@ function sDrone:PursueTarget(target)
     self.current_path = {}
     self.current_path_index = 1
 
-    self:Sync(nil, {
+    self:Sync({
         state = self.state,
         target = self.target,
-        path_data = 
-        {
-            current_path = self.current_path,
-            current_path_index = self.current_path_index
-        }
+        current_path = self.current_path,
+        current_path_index = self.current_path_index
     })
 end
 
@@ -92,6 +90,8 @@ function sDrone:UpdateCell()
         self.cell = cell
         VerifyCellExists(sDroneManager.drones, self.cell)
         sDroneManager.drones[self.cell.x][self.cell.y][self.id] = self
+        self.updated = true
+        self.updates.position = self.position
     end
 end
 
@@ -134,9 +134,15 @@ function sDrone:ReconsiderHost()
 
 end
 
+function sDrone:SetHost(player)
+    self.host = player
+    self:Sync()
+end
+
 function sDrone:FindNewHost()
     if self:IsDestroyed() then return end
     local nearby_players = sDroneManager:GetNearbyPlayersInCell(GetCell(self.position, Cell_Size))
+    --print(string.format("reconsider host %d: count: %d", self.id, count_table(nearby_players)))
 
     if count_table(nearby_players) == 0 then return end
 
@@ -211,7 +217,7 @@ function sDrone:Damage(args)
         self:Destroyed(args)
     end
 
-    self:Sync(nil, {
+    self:Sync({
         state = self.state,
         health = self.health,
         target = self.target
@@ -227,54 +233,48 @@ function sDrone:OneHostSync(args, player)
     if self:IsDestroyed() then return end
     if not IsValid(self.host) or player ~= self.host then return end
     -- Update some aspects from player
-    if args.type == "offset" then
-        self.target_offset = args.offset
-        self.position = args.position
-        self:UpdateCell()
-        self:Sync(nil, {
-            path_data = 
-            {
-                target_offset = self.target_offset,
-                position = self.position
-            }
+    self.target_offset = args.offset or self.target_offset
+    self.position = args.position or self.position
+    self:UpdateCell()
+    self:Sync({
+        target_offset = self.target_offset,
+        position = self.position
+    })
+
+    self.current_path = args.path or self.current_path
+    self.current_path_index = args.path_index or self.current_path_index
+    if args.path then
+        self:Sync({
+            current_path = self.current_path,
+            current_path_index = self.current_path_index
         })
-    elseif args.type == "path" then
-        self.current_path = args.path or self.path
-        self.current_path_index = args.path_index or self.current_path_index
-        self:Sync(nil, {
-            path_data = 
-            {
-                current_path = self.current_path,
-                current_path_index = self.current_path_index
-            }
-        })
-    elseif args.type == "path_index" then
-        self.current_path_index = args.path_index or self.current_path_index
-        self.position = args.position
-        self:Sync(nil, {
-            path_data = 
-            {
-                current_path_index = self.current_path_index,
-                position = self.position
-            }
+    end
+
+    if args.path_index then
+        self:Sync({
+            current_path_index = self.current_path_index,
+            position = self.position
         })
     end
 
 end
 
+function sDrone:UpdateApplied()
+    self.has_update = false
+    self.updates = {}
+end
+
 -- Syncs the drone to a specified player, or if none specified, all players in nearby cells
-function sDrone:Sync(player, data)
-    data = data or self:GetSyncData()
+function sDrone:Sync(_data)
+    data = _data or {}
     data.host = self.host
     data.target = self.target
     data.state = self.state
     data.id = self.id
 
-    if IsValid(player) then
-        Network:Send(player, "Drones/SingleSync", data)
-    else
-        local nearby_players = sDroneManager:GetNearbyPlayersInCell(self.cell)
-        Network:SendToPlayers(nearby_players, "Drones/SingleSync", data)
+    self.has_update = true
+    for key, value in pairs(_data or {}) do
+        self.updates[key] = value
     end
 
 end

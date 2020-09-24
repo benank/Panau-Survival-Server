@@ -12,26 +12,60 @@ function sDroneManager:__init()
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
 
+    Network:Subscribe("drones/sync/batch", self, self.DroneBatchSync)
+
 end
 
 function sDroneManager:ModuleLoad()
     self:DroneSpawnLoop()
     self:SpawnInitialDrones()
     self:DroneReconsiderLoops()
+    self:DroneBatchSyncLoop()
+end
+
+function sDroneManager:DroneBatchSync(args, player)
+    for drone_id, data in pairs(args) do
+        if self.drones_by_id[drone_id] then
+            self.drones_by_id[drone_id]:OneHostSync(data, player)
+        end
+    end
+end
+
+-- Sync drone updates using a batched method for cells. One sync per cell to nearby players
+function sDroneManager:DroneBatchSyncLoop()
+    Thread(function()
+        while true do
+
+            local drone_data = {}
+            local at_least_one_sync = false
+            for id, drone in pairs(self.drones_by_id) do
+                if drone.has_update then
+                    drone_data[id] = drone.updates
+                    if drone.updates.health then
+                        print("UPDATING HEALTH " .. tostring(drone.health))
+                    end
+                    at_least_one_sync = true
+                    drone:UpdateApplied()
+                end
+            end
+
+            if at_least_one_sync then
+                Network:Broadcast("Drones/BatchSync", drone_data)
+            end
+
+            Timer.Sleep(250)
+        end
+    end)
 end
 
 function sDroneManager:DroneReconsiderLoops()
     Thread(function()
         while true do
-            local sleep_count = 0
             for id, drone in pairs(self.drones_by_id) do
                 drone:ReconsiderLoop()
-                sleep_count = sleep_count + 1
-                if sleep_count % 20 == 0 then
-                    Timer.Sleep(1)
-                end
+                Timer.Sleep(1)
             end
-            Timer.Sleep(500)
+            Timer.Sleep(250)
         end
     end)
 end
@@ -130,6 +164,19 @@ function sDroneManager:PlayerCellUpdate(args)
     self:UpdatePlayerInCell(args)
     
     local drone_data = {}
+
+    local adjacent_cells = GetAdjacentCells(args.cell)
+
+    for _, adj_cell in pairs(adjacent_cells) do
+        -- If these cells don't exist, create them
+        VerifyCellExists(self.drones, adj_cell)
+
+        for id, drone in pairs(self.drones[adj_cell.x][adj_cell.y]) do
+            if not IsValid(drone.host) then
+                drone:SetHost(args.player)
+            end
+        end
+    end
 
     for _, update_cell in pairs(args.updated) do
 

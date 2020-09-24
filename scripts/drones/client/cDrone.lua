@@ -74,6 +74,9 @@ function cDrone:__init(args)
     self.next_fire_time = 3
     self.next_fire_time_far = 3
 
+    self.server_updates = {}
+    self.cell = GetCell(self.position, Cell_Size)
+
     self.body = cDroneBody(self)
 
 end
@@ -141,16 +144,14 @@ function cDrone:UpdateFromServer(args)
     self.host = args.host
     self.target = args.target -- Current active target that the drone is pursuing
 
-    if args.path_data then
-
-        if not self:IsHost() then
-            self.path = args.path_data.current_path or self.path -- Table of points that the drone is currently pathing through
-            self.path_index = args.path_data.current_path_index or self.path_index -- Current index of the path the drone is on
-            self.offset = args.path_data.target_offset or self.offset -- Offset from the target the drone flies at
-            self.corrective_position = args.path_data.position or self.corrective_position
-        end
-
+    if not self:IsHost() then
+        self.path = args.current_path or self.path -- Table of points that the drone is currently pathing through
+        self.path_index = args.current_path_index or self.path_index -- Current index of the path the drone is on
+        self.offset = args.target_offset or self.offset -- Offset from the target the drone flies at
+        self.corrective_position = args.position or self.corrective_position
     end
+
+    self.cell = GetCell(self.position, Cell_Size)
 
     if self:IsDestroyed() then
         self:Destroyed()
@@ -162,13 +163,19 @@ function cDrone:SetLinearVelocity(velo)
     self.velocity = velo
 end
 
+function cDrone:SyncedToServer()
+    self.server_update = false
+    self.server_updates = {}
+end
+
 -- Sync stuff
 function cDrone:SyncToServer(args)
+    if not self:IsHost() then return end
     if self:IsDestroyed() then return end
-    if args.type == "full" then
-        Network:Send("drones/sync/full" .. tostring(self.id), self:GetFullSyncObject())
-    else
-        Network:Send("drones/sync/one" .. tostring(self.id), args)
+    self.server_update = true
+
+    for key, value in pairs(args) do
+        self.server_updates[key] = value
     end
 end
 

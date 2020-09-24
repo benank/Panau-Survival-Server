@@ -11,6 +11,7 @@ function cDroneManager:__init()
 
     Network:Subscribe("Drones/SingleSync", self, self.SingleDroneSync)
     Network:Subscribe("Drones/DroneCellsSync", self, self.CellsDroneSync)
+    Network:Subscribe("Drones/BatchSync", self, self.BatchSync)
 
     Events:Subscribe("HitDetection/Explosion", self, self.HitDetectionExplosion)
     Events:Subscribe("HitDetection/BulletSplash", self, self.HitDetectionBulletSplash)
@@ -44,7 +45,30 @@ function cDroneManager:__init()
 
 
     self:DroneHostLoop()
+    self:DroneSyncToServerLoop()
+    self:DroneCellUpdateLoop()
 
+end
+
+function cDroneManager:DroneSyncToServerLoop()
+    Thread(function()
+        while true do
+            local sync_data = {}
+            local at_least_one_sync = false
+            for id, drone in pairs(self.drones) do
+                if drone.server_update then
+                    sync_data[id] = drone.server_updates
+                    at_least_one_sync = true
+                    drone:SyncedToServer()
+                end
+            end
+
+            if at_least_one_sync then
+                Network:Send("drones/sync/batch", sync_data)
+            end
+            Timer.Sleep(250)
+        end
+    end)
 end
 
 function cDroneManager:GameRender(args)
@@ -84,6 +108,31 @@ function cDroneManager:HitDetectionExplosion(args)
     end)
 end
 
+function cDroneManager:DroneCellUpdateLoop()
+    Thread(function()
+        while true do
+            local adjacent_cells = GetAdjacentCells(GetCell(Camera:GetPosition(), Cell_Size))
+            for id, drone in pairs(self.drones) do
+
+                local exists_in_cell = false
+                for _, cell in pairs(adjacent_cells) do
+                    if cell.x == drone.cell.x and cell.y == drone.cell.y then
+                        exists_in_cell = true
+                    end
+                end
+
+                if not exists_in_cell then
+                    drone:Remove()
+                    self.drones[id] = nil
+                end
+
+                Timer.Sleep(1)
+            end
+            Timer.Sleep(1000)
+        end
+    end)
+end
+
 function cDroneManager:LocalPlayerCellUpdate(args)
     
     -- Remove drones from old cells
@@ -113,6 +162,14 @@ function cDroneManager:DroneHostLoop()
             Timer.Sleep(1500)
         end
     end)
+end
+
+function cDroneManager:BatchSync(args)
+    for _, drone_data in pairs(args) do
+        if self.drones[drone_data.id] then
+            self.drones[drone_data.id]:UpdateFromServer(drone_data)
+        end
+    end
 end
 
 function cDroneManager:CellsDroneSync(args)

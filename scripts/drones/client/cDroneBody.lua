@@ -214,7 +214,12 @@ function cDroneBody:CreateBody()
 
     self.objects = {}
 
-    for piece_enum, object_data in pairs(DroneBodyObjects) do
+    local body_objects = Copy(DroneBodyObjects)
+    if not self.parent.config.has_rockets then
+        body_objects[DroneBodyPiece.TopGun] = nil
+    end
+
+    for piece_enum, object_data in pairs(body_objects) do
 
         self.objects[piece_enum] = ClientStaticObject.Create({
             position = self.parent.position + self.parent.angle * DroneBodyOffsets[piece_enum].position,
