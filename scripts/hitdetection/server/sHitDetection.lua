@@ -409,7 +409,7 @@ function sHitDetection:PlayerDeath(args)
         local msg = ""
         if args.reason == DamageEntity.DroneMachineGun then
 
-            local msg = string.format("%s [%s] was killed by Drone. [%s]", 
+            msg = string.format("%s [%s] was killed by a drone. [%s]", 
                 args.player:GetName(),
                 tostring(args.player:GetSteamId()),
                 DamageEntityNames[args.reason])
@@ -418,7 +418,7 @@ function sHitDetection:PlayerDeath(args)
 
         else
 
-            local msg = string.format("%s [%s] died [%s]", 
+            msg = string.format("%s [%s] died [%s]", 
                 args.player:GetName(),
                 tostring(args.player:GetSteamId()),
                 DamageEntityNames[args.reason])
