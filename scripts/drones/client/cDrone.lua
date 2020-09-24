@@ -139,8 +139,11 @@ function cDrone:UpdateFromServer(args)
 
     self.state = args.state or self.state
 
-    self.health = args.health ~= nil and args.health or self.health
-    self.body:HealthUpdated()
+    if args.health ~= nil and args.health < self.health then
+        self.health = args.health
+        self.body:HealthUpdated()
+    end
+    
     self.host = args.host
     self.target = args.target -- Current active target that the drone is pursuing
 
