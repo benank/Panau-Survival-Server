@@ -12,6 +12,7 @@ function cHitDetection:__init()
     Events:Subscribe(var("PostRender"):get(), self, self.PostRender)
 
     Events:Subscribe(var("HitDetection/Explosion"):get(), self, self.Explosion)
+    Events:Subscribe(var("HitDetection/ExplosionHitDrone"):get(), self, self.ExplosionHitDrone)
     Network:Subscribe(var("HitDetection/KnockdownEffect"):get(), self, self.KnockdownEffect)
 
 end
@@ -62,6 +63,52 @@ function cHitDetection:CheckHealth()
         local alpha = self.max_damage_screen_alpha - 
             self.max_damage_screen_alpha * (self.damage_screen_timer:GetSeconds() / self.damage_screen_time)
         Render:FillArea(Vector2(0,0), Render.Size, Color(255, 0, 0, alpha))
+    end
+
+end
+
+-- Explosions from items, like mines, that hit drones
+function cHitDetection:ExplosionHitDrone(args)
+
+    local my_dist = LocalPlayer:GetPosition():Distance(args.drone_position)
+
+    for p in Client:GetStreamedPlayers() do
+        if p:GetPosition():Distance(args.drone_position) < my_dist then return end
+    end
+
+    local explosive_data = WeaponDamage.ExplosiveBaseDamage[args.type]
+
+    if explosive_data then
+
+        local radius = explosive_data.radius * 1.5 -- Make it larger to account for possible perks
+        args.radius = radius
+
+        if args.drone_distance > radius then return end
+
+        local from_pos = args.position + Vector3.Up
+        local to_pos = args.drone_position
+        local diff = (to_pos - from_pos):Normalized()
+        local ray = Physics:Raycast(from_pos, diff, 0, args.drone_distance)
+
+        local in_fov = math.abs(ray.distance - args.drone_distance) < 2
+    
+        local dist = args.drone_distance
+        local percent_modifier = math.max(0, 1 - dist / radius)
+    
+        if percent_modifier == 0 then return end
+
+        local knockback_effect = explosive_data.knockback * percent_modifier
+
+        Network:Send(var("HitDetectionSyncExplosionDrone"):get(), {
+            position = args.position,
+            drone_position = args.drone_position,
+            drone_id = args.drone_id,
+            type = args.type,
+            in_fov = in_fov,
+            attacker_id = args.attacker_id,
+            knockback_effect = in_fov and knockback_effect
+        })
+
     end
 
 end

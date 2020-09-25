@@ -23,10 +23,17 @@ function sHitDetection:__init()
 
     Network:Subscribe("HitDetection/DetectPlayerHit", self, self.DetectPlayerHit)
     Network:Subscribe("HitDetection/DetectVehicleHit", self, self.DetectVehicleHit)
+    Network:Subscribe("HitDetection/DetectVehicleDroneHit", self, self.DetectVehicleDroneHit)
+    Network:Subscribe("HitDetection/DetectDroneHit", self, self.DetectDroneHit)
     Network:Subscribe("HitDetection/DetectPlayerSplashHit", self, self.DetectPlayerSplashHit)
     Network:Subscribe("HitDetection/DetectVehicleSplashHit", self, self.DetectVehicleSplashHit)
     Network:Subscribe("HitDetectionSyncExplosion", self, self.HitDetectionSyncExplosion)
     Network:Subscribe("HitDetection/VehicleExplosionHit", self, self.VehicleExplosionHit)
+    Network:Subscribe("HitDetection/DetectDroneHitLocalPlayer", self, self.DetectDroneHitLocalPlayer)
+    Network:Subscribe("HitDetectionSyncExplosionDrone", self, self.HitDetectionSyncExplosionDrone)
+    Network:Subscribe("HitDetection/DetectDroneSplashHit", self, self.DetectDroneSplashHit)
+    
+    Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
 
     Events:Subscribe("HitDetection/PlayerInToxicArea", self, self.PlayerInsideToxicArea)
     Events:Subscribe("HitDetection/PlayerSurvivalDamage", self, self.PlayerSurvivalDamage)
@@ -73,8 +80,6 @@ end
 function sHitDetection:PlayerQuit(args)
     self.players[tostring(args.player:GetSteamId())] = nil
 end
-
--- TODO: add damage for vehicles and attribute vehicle explosions to proper killers
 
 function sHitDetection:ApplyDamage(args)
 
@@ -155,6 +160,11 @@ function sHitDetection:ApplyDamage(args)
         content = msg
     })
 
+end
+
+function sHitDetection:DroneDestroyed(args)
+    if not IsValid(args.player) then return end
+    Network:Send(args.player, "HitDetection/DealDamage", {red = true})
 end
 
 function sHitDetection:MeleeGrappleHit(args, player)
@@ -396,13 +406,27 @@ function sHitDetection:PlayerDeath(args)
     else
         -- Player died on their own without anyone else, like drowning or falling from too high
 
-        local msg = string.format("%s [%s] died [%s]", 
-            args.player:GetName(),
-            tostring(args.player:GetSteamId()),
-            DamageEntityNames[args.reason])
+        local msg = ""
+        if args.reason == DamageEntity.DroneMachineGun then
 
-        Chat:Send(args.player, string.format("You died [Reason: %s]", DamageEntityNames[args.reason]), Color.Red)
-        
+            msg = string.format("%s [%s] was killed by a drone. [%s]", 
+                args.player:GetName(),
+                tostring(args.player:GetSteamId()),
+                DamageEntityNames[args.reason])
+
+            Chat:Send(args.player, string.format("You were killed by a drone. [%s]", DamageEntityNames[args.reason]), Color.Red)
+
+        else
+
+            msg = string.format("%s [%s] died [%s]", 
+                args.player:GetName(),
+                tostring(args.player:GetSteamId()),
+                DamageEntityNames[args.reason])
+
+            Chat:Send(args.player, string.format("You died [Reason: %s]", DamageEntityNames[args.reason]), Color.Red)
+
+        end
+            
         print(msg)
         Events:Fire("Discord", {
             channel = "Hitdetection",
@@ -553,6 +577,65 @@ function sHitDetection:VehicleExplosionHit(args, player)
     
 end
 
+-- Player hits a drone with an explosive
+function sHitDetection:HitDetectionSyncExplosionDrone(args, player)
+    
+    if not IsValid(player) then return end
+
+    local explosive_data = WeaponDamage.ExplosiveBaseDamage[args.type]
+
+    if not explosive_data then return end
+
+    local sub
+    sub = Events:Subscribe("GetPlayerPerksById" .. tostring(args.attacker_id), function(perks)
+
+        local perk_mods = {[1] = 1, [2] = 1}
+        local damage_perks = WeaponDamage.ExplosiveDamagePerks[args.type]
+
+        if damage_perks and perks then
+
+            for perk_id, perk_mod_data in pairs(damage_perks) do
+                local choice = perks.unlocked_perks[perk_id]
+                if perk_mod_data[choice] then
+                    perk_mods[choice] = math.max(perk_mods[choice], perk_mod_data[choice])
+                end
+            end
+
+        end
+
+        local radius = explosive_data.radius
+        radius = radius * perk_mods[2]
+
+        local dist = args.position:Distance(args.drone_position)
+        local percent_modifier = math.max(0, 1 - dist / radius)
+
+        if percent_modifier == 0 then return end
+
+        local hit_type = WeaponHitType.Explosive
+        local original_damage = explosive_data.damage * percent_modifier
+        local damage = original_damage
+
+        if not args.in_fov then
+            damage = damage * WeaponDamage.FOVDamageModifier
+        end
+
+        damage = damage * perk_mods[1]
+
+        Events:Fire("HitDetection/DroneDamaged", {
+            player = self.players[args.attacker_id],
+            drone_id = args.drone_id,
+            damage = damage,
+            type = args.type
+        })
+
+        sub = Events:Unsubscribe(sub)
+
+    end)
+
+    Events:Fire("GetPlayerPerksById", {steam_id = args.attacker_id})
+    
+end
+
 function sHitDetection:HitDetectionSyncExplosion(args, player)
     
     if not IsValid(player) then return end
@@ -659,6 +742,43 @@ function sHitDetection:ExplosionHit(args, player)
 
 end
 
+-- Called by Player when Player is hit by a drone with a bullet
+--[[
+    args (in table):
+
+        weapon_enum (integer): weapon enum of the weapon that the drone used
+        bone_enum (integer): bone enum of the bone that was hit on the victim (the Player)
+        distance_travelled (number): distance that the bullet travelled 
+        damage_mod (number): damage mod that the drone has
+
+]]
+function sHitDetection:DetectDroneHitLocalPlayer(args, player)
+    assert(IsValid(player), "player is invalid")
+    assert(args.weapon_enum, "weapon_enum is invalid")
+    assert(args.bone_enum, "bone_enum is invalid")
+    assert(args.distance_travelled and args.distance_travelled > 0, "distance_travelled is invalid")
+
+    if not self:PlayerCanApplyDamage(player, tostring(args.token)) then return end
+    args.damage_mod = math.max(1, args.damage_mod)
+
+    if player:GetValue("InSafezone") then return end
+
+    local damage = WeaponDamage:CalculatePlayerDamage(player, args.weapon_enum, args.bone_enum, args.distance_travelled, nil, args.damage_mod)
+
+    self:ApplyDamage({
+        player = player,
+        damage = damage,
+        source = DamageEntity.DroneMachineGun,
+        weapon_enum = args.weapon_enum
+    })
+
+    Events:Fire("HitDetection/PlayerBulletHit", {
+        player = player,
+        damage = damage
+    })
+    
+end
+
 -- Called by Player when Player hits another player with a bullet
 --[[
     args (in table):
@@ -705,6 +825,53 @@ function sHitDetection:DetectPlayerHit(args, player)
 
 end
 
+function sHitDetection:DetectDroneHit(args, player)
+
+    assert(IsValid(player), "player is invalid")
+    assert(args.drone_id, "drone_id is invalid")
+    assert(args.weapon_enum, "weapon_enum is invalid")
+    assert(args.distance_travelled and args.distance_travelled > 0, "distance_travelled is invalid")
+
+    if not self:PlayerCanApplyDamage(player, args.token) then return end
+    
+    if player:GetValue("InSafezone") then return end
+
+    local damage = WeaponDamage:CalculateDroneDamage(args.weapon_enum, args.distance_travelled, player)
+
+    if damage <= 0 then return end
+
+    Events:Fire("HitDetection/DroneDamaged", {
+        player = player,
+        drone_id = args.drone_id,
+        damage = damage * 100,
+        hit_position = args.hit_position
+    })
+    
+end
+
+function sHitDetection:DetectVehicleDroneHit(args, player)
+
+    assert(IsValid(player), "player is invalid")
+    assert(args.vehicle_id, "vehicle_id is invalid")
+    assert(args.weapon_enum, "weapon_enum is invalid")
+    assert(args.distance_travelled and args.distance_travelled > 0, "distance_travelled is invalid")
+
+    if not self:PlayerCanApplyDamage(player, args.token) then return end
+
+    local vehicle = Vehicle.GetById(args.vehicle_id)
+
+    if not IsValid(vehicle) then return end
+
+    if vehicle:GetDriver() and vehicle:GetDriver():GetValue("InSafezone") then return end
+
+    local damage = WeaponDamage:CalculateVehicleDamage(vehicle, args.weapon_enum, args.distance_travelled)
+
+    if damage <= 0 then return end
+    if vehicle:GetHealth() <= 0 then return end
+
+    vehicle:SetHealth(math.max(0, vehicle:GetHealth() - damage))
+end
+
 function sHitDetection:DetectVehicleHit(args, player)
 
     assert(IsValid(player), "player is invalid")
@@ -736,6 +903,28 @@ function sHitDetection:DetectVehicleHit(args, player)
     {
         name = player:GetName(),
         weapon_name = WeaponEnum:GetDescription(args.weapon_enum)
+    })
+
+end
+
+function sHitDetection:DetectDroneSplashHit(args, player)
+
+    assert(IsValid(player), "player is invalid")
+    assert(args.drone_id, "drone_id is invalid")
+    assert(args.weapon_enum, "weapon_enum is invalid")
+    assert(args.damage_falloff and args.damage_falloff >= 0 and args.damage_falloff <= 1, "damage_falloff is invalid")
+
+    if not self:PlayerCanApplyDamage(player, tostring(args.token)) then return end
+    
+    if player:GetValue("InSafezone") then return end
+
+    local damage = WeaponDamage:CalculateDroneDamage(args.weapon_enum, args.distance_travelled, player) * args.damage_falloff
+
+    Events:Fire("HitDetection/DroneDamaged", {
+        player = player,
+        drone_id = args.drone_id,
+        damage = damage * 100,
+        type = args.type
     })
 
 end

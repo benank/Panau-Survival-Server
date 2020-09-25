@@ -51,6 +51,12 @@ Exp =
         [13] = 100, -- Locked Stash
         [14] = 6 -- Proximity alarm
     },
+    DestroyDrone = 
+    {
+        Base = 15,
+        Per_Level = 10,
+        AdditionalPercentPerPlayer = 0.1 -- X% more total exp for each player who damages a drone
+    },
     DestroyExplosive = 
     {
         [DamageEntity.Mine] = 5,

@@ -188,7 +188,8 @@ end
 
 function WeaponManager:ForceWeaponZoomout()
 
-    if LocalPlayer:GetUpperBodyState() ~= AnimationState.UbSAiming then return end
+    -- Thanks to Alpha for showing me LocalPlayer:GetAimMode()
+    if LocalPlayer:GetAimMode() == AimMode.Normal then return end
 
     local inputPollEvent
 
