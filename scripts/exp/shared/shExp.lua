@@ -53,7 +53,7 @@ Exp =
     },
     DestroyDrone = 
     {
-        Base = 20,
+        Base = 15,
         Per_Level = 10,
         AdditionalPercentPerPlayer = 0.1 -- X% more total exp for each player who damages a drone
     },
