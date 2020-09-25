@@ -1,10 +1,11 @@
 local events = {}
+local queued_for_removal = {}
 local Restart = Timer.Restart
 local GetTime = Timer.GetMilliseconds
 local resume, yield, running = coroutine.resume, coroutine.yield, coroutine.running
 
 local function Clear(timer)
-    events[timer] = nil
+    queued_for_removal[timer] = true
 end
 
 local function SetImmediate(callback)
@@ -22,6 +23,12 @@ end
 local function SetInterval(delay, callback)
     local timer = Timer()
     events[timer] = {3, callback, delay}
+    return timer
+end
+
+local function SetInstanceInterval(delay, instance, callback)
+    local timer = Timer()
+    events[timer] = {3, callback, delay, instance}
     return timer
 end
 
@@ -48,22 +55,39 @@ end
 
 local function Tick(args)
     for timer, event in pairs(events) do
-        local delta = GetTime(timer)
-		local type = event[1]
-        if type == 1 then
-            event[2]({delta = delta})
-            Clear(timer)
-        elseif type == 2 then
-            if delta >= event[3] then
+        if not queued_for_removal[timer] then
+            local delta = GetTime(timer)
+            local type = event[1]
+            if type == 1 then
                 event[2]({delta = delta})
                 Clear(timer)
-            end
-        elseif type == 3 then
-            if delta >= event[3] then
-                event[2]({delta = delta})
-                Restart(timer)
+            elseif type == 2 then
+                if delta >= event[3] then
+                    event[2]({delta = delta})
+                    Clear(timer)
+                end
+            elseif type == 3 then
+                if delta >= event[3] then
+                    if event[4] then
+                        local instance = event[4]
+                        event[2](instance)
+                        Restart(timer)
+                    else
+                        event[2]({delta = delta})
+                        Restart(timer)
+                    end
+                end
             end
         end
+    end
+
+    local removed_something = false
+    for timer, _ in pairs(queued_for_removal) do
+        removed_something = true
+        events[timer] = nil
+    end
+    if removed_something then
+        queued_for_removal = {}
     end
 end
 
@@ -73,5 +97,6 @@ Timer.Clear = Clear
 Timer.SetImmediate = SetImmediate
 Timer.SetTimeout = SetTimeout
 Timer.SetInterval = SetInterval
+Timer.SetInstanceInterval = SetInstanceInterval
 Timer.Sleep = Sleep
 Timer.Tick = Tick

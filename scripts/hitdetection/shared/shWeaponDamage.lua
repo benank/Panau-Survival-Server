@@ -20,8 +20,8 @@ function WeaponDamage:__init()
             function(distance, distance_falloff) -- Sniper gains full power at 200+ meters away
                 return math.clamp(distance / distance_falloff, 0, 1)
             end},
-        [WeaponEnum.SawnOffShotgun] =   {base = 0.15, v_mod = 0.05,   distance_falloff = 16,  falloff = falloff_func},
-        [WeaponEnum.Shotgun] =          {base = 0.18, v_mod = 0.05,   distance_falloff = 22, falloff = falloff_func},
+        [WeaponEnum.SawnOffShotgun] =   {base = 0.15, v_mod = 0.05,  distance_falloff = 16,  falloff = falloff_func},
+        [WeaponEnum.Shotgun] =          {base = 0.18, v_mod = 0.05,  distance_falloff = 22,  falloff = falloff_func},
         
         -- Vehicle Weapons
         [WeaponEnum.V_Minigun] =        {base = 0.08, v_mod = 1,     distance_falloff = 500, falloff = falloff_func},
@@ -29,7 +29,8 @@ function WeaponDamage:__init()
         [WeaponEnum.V_Rockets] =        {base = 0.30, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 12},
         [WeaponEnum.V_Cannon] =         {base = 0.15, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 6},
         [WeaponEnum.V_Cannon_Slow] =    {base = 0.13, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
-        [WeaponEnum.V_MachineGun] =     {base = 0.10, v_mod = 0.5,   distance_falloff = 300, falloff = falloff_func}
+        [WeaponEnum.V_MachineGun] =     {base = 0.10, v_mod = 0.5,   distance_falloff = 300, falloff = falloff_func},
+        [WeaponEnum.Drone_MachineGun] = {base = 0.05, v_mod = 0.1,   distance_falloff = 300, falloff = falloff_func}
     }
 
     self.bone_damage_modifiers = {
@@ -72,6 +73,30 @@ function WeaponDamage:__init()
         [49] = 0.5, -- 	Niseco Tusker D18
         [56] = 0.1, -- 	GV-104 Razorback
         [76] = 0.1 -- 	SAAS PP30 Ox
+    }
+
+    self.drone_damage_modifiers = 
+    {
+        [WeaponEnum.MachineGun] =       1,
+        [WeaponEnum.Handgun] =          1,
+        [WeaponEnum.Assault] =          1,
+        [WeaponEnum.BubbleGun] =        1,
+        [WeaponEnum.GrenadeLauncher] =  15,
+        [WeaponEnum.Revolver] =         1,
+        [WeaponEnum.RocketLauncher] =   20,
+        [WeaponEnum.SMG] =              1,
+        [WeaponEnum.Sniper] =           0.9,
+        [WeaponEnum.SawnOffShotgun] =   1,
+        [WeaponEnum.Shotgun] =          1,
+        
+        -- Vehicle Weapons
+        [WeaponEnum.V_Minigun] =        1,
+        [WeaponEnum.V_Minigun_Warmup] = 1,
+        [WeaponEnum.V_Rockets] =        7,
+        [WeaponEnum.V_Cannon] =         5,
+        [WeaponEnum.V_Cannon_Slow] =    5,
+        [WeaponEnum.V_MachineGun] =     1,
+        [WeaponEnum.Drone_MachineGun] = 1
     }
 
     self.FOVDamageModifier = 0.30 -- If hiding behind a wall, how much damage do you absorb 
@@ -270,6 +295,34 @@ function WeaponDamage:CalculateVehicleDamage(vehicle, weapon_enum, distance, att
     local falloff_modifier = self.weapon_damages[weapon_enum].falloff(distance, self.weapon_damages[weapon_enum].distance_falloff)
     local vehicle_armor = self.vehicle_armors[vehicle:GetModelId()] or self.default_vehicle_armor
 
+    local perk_mod = 1
+
+    if IsValid(attacker) then
+        local perks = attacker:GetValue("Perks")
+        local possible_perks = self.WeaponDamagePerks[weapon_enum]
+
+        if perks and possible_perks then
+
+            for perk_id, weapon_damage_mod in pairs(possible_perks) do
+                if perks.unlocked_perks[perk_id] then
+                    perk_mod = math.max(perk_mod, weapon_damage_mod)
+                end
+            end
+
+        end
+    end
+
+    local damage = base_damage * falloff_modifier * v_mod * vehicle_armor * perk_mod
+
+    return damage
+
+end
+
+function WeaponDamage:CalculateDroneDamage(weapon_enum, distance, attacker)
+
+    local base_damage = self.weapon_damages[weapon_enum].base
+    local falloff_modifier = self.weapon_damages[weapon_enum].falloff(distance, self.weapon_damages[weapon_enum].distance_falloff)
+    local drone_modifier = self.drone_damage_modifiers[weapon_enum]
     local perks = attacker:GetValue("Perks")
     local possible_perks = self.WeaponDamagePerks[weapon_enum]
 
@@ -285,13 +338,13 @@ function WeaponDamage:CalculateVehicleDamage(vehicle, weapon_enum, distance, att
 
     end
 
-    local damage = base_damage * falloff_modifier * v_mod * vehicle_armor * perk_mod
+    local damage = base_damage * falloff_modifier * perk_mod * drone_modifier
 
     return damage
 
 end
 
-function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, distance, attacker)
+function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, distance, attacker, damage_mod)
 
     if victim:GetValue("InSafezone") then return 0 end
     if victim:GetHealth() <= 0 then return 0 end
@@ -306,19 +359,20 @@ function WeaponDamage:CalculatePlayerDamage(victim, weapon_enum, bone_enum, dist
         return base_damage
     end
 
-    local perks = attacker:GetValue("Perks")
-    local possible_perks = self.WeaponDamagePerks[weapon_enum]
+    local perk_mod = damage_mod or 1
+    if attacker then
+        local perks = attacker:GetValue("Perks")
+        local possible_perks = self.WeaponDamagePerks[weapon_enum]
 
-    local perk_mod = 1
+        if perks and possible_perks then
 
-    if perks and possible_perks then
-
-        for perk_id, weapon_damage_mod in pairs(possible_perks) do
-            if perks.unlocked_perks[perk_id] then
-                perk_mod = math.max(perk_mod, weapon_damage_mod)
+            for perk_id, weapon_damage_mod in pairs(possible_perks) do
+                if perks.unlocked_perks[perk_id] then
+                    perk_mod = math.max(perk_mod, weapon_damage_mod)
+                end
             end
-        end
 
+        end
     end
 
     local damage = base_damage * bone_damage_modifier * armor_mod * falloff_modifier * perk_mod

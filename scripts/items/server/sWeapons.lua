@@ -3,8 +3,10 @@ class 'sWeaponManager'
 function sWeaponManager:__init()
 
     self.pending_fire = {}
+    self.pending_refreshes = {} -- Pending equipped weapon refreshes to batch them
 
     self:CheckPendingShots()
+    self:CheckPendingRefreshes()
 
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
     Events:Subscribe("InventoryUpdated", self, self.InventoryUpdated)
@@ -31,7 +33,7 @@ function sWeaponManager:ToggleEquipped(args)
     if not ItemsConfig.equippables.weapons[args.item.name] then return end
 
     UpdateEquippedItem(args.player, args.item.name, args.item)
-    self:RefreshEquippedWeapons(args.player)
+    self.pending_refreshes[tostring(args.player:GetSteamId())] = args.player
 
     Network:Send(args.player, "items/ToggleWeaponEquipped", {equipped = args.item.equipped == true})
 
@@ -51,11 +53,22 @@ function sWeaponManager:InventoryUpdated(args)
             -- Dropped or gained ammo, so refresh their gun
 
             -- TODO: fix it always going back to right hand weapon instead of back to old equipped slot
-            self:RefreshEquippedWeapons(args.player)
+            self.pending_refreshes[tostring(args.player:GetSteamId())] = args.player
             break
         end
         
     end
+end
+
+function sWeaponManager:CheckPendingRefreshes()
+    Timer.SetInterval(100, function()
+        if count_table(self.pending_refreshes) > 0 then
+            for steamid, player in pairs(self.pending_refreshes) do
+                self:RefreshEquippedWeapons(player)
+            end
+            self.pending_refreshes = {}
+        end
+    end)
 end
 
 function sWeaponManager:CheckPendingShots()
@@ -135,7 +148,7 @@ function sWeaponManager:FireWeapon(args, player)
     else
         self.pending_fire[steam_id][weapon.id].ammo = args.ammo
         self.pending_fire[steam_id][weapon.id].adjusted_ammo = self.pending_fire[steam_id][weapon.id].adjusted_ammo - 1
-        if equipped_weapons and weapon_name then
+        if equipped_weapons and weapon_name and equipped_weapons[weapon_name] then
             equipped_weapons[weapon_name].ammo = self.pending_fire[steam_id][weapon.id].adjusted_ammo - 1
         end
     end
@@ -209,7 +222,7 @@ function sWeaponManager:RefreshEquippedWeapons(player)
 
     Thread(function()
         Network:Send(player, "items/ForceWeaponZoomout")
-        Timer.Sleep(500)
+        Timer.Sleep(player:GetPing() * 2 + 100)
 
         if not IsValid(player) then return end
         player:ClearInventory()

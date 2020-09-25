@@ -329,16 +329,6 @@ function sC4s:FinishC4Placement(args, player)
         return
     end
 
-    if not self.sz_config then
-        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
-    end
-
-    -- If they are within sz radius * 2, we don't let them place that close
-    if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
-        Chat:Send(player, "Cannot place C4 while near the safezone!", Color.Red)
-        return
-    end
-
     local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues().blacklist
 
     for _, area in pairs(BlacklistedAreas) do

@@ -4,6 +4,7 @@ function sExp:__init()
 
     SQL:Execute("CREATE TABLE IF NOT EXISTS exp (steamID VARCHAR(20), level INTEGER, combat_exp INTEGER, explore_exp INTEGER)")
 
+    self.players = {}
     self.recent_killers = {} -- Players who have been killed recently by another player
     self.global_multiplier = 1
 
@@ -15,6 +16,7 @@ function sExp:__init()
 
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
+    Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
@@ -27,6 +29,7 @@ end
 function sExp:PlayerQuit(args)
     
     local steam_id = tostring(args.player:GetSteamId())
+    self.players[steam_id] = nil
     local exp_data = args.player:GetValue("Exp")
 
     if not exp_data then return end
@@ -48,20 +51,46 @@ function sExp:ModuleUnload()
 
 end
 
+function sExp:DroneDestroyed(args)
+
+    local exp_earned = Exp.DestroyDrone.Base + Exp.DestroyDrone.Per_Level * args.drone_level
+    if not exp_earned then return end
+
+    -- +10% extra total exp for each extra player that helps to kill a drone
+    if count_table(args.exp_split) > 1 then
+        exp_earned = exp_earned * (1 + Exp.DestroyDrone.AdditionalPercentPerPlayer * (count_table(args.exp_split) - 1))
+    end
+
+    for steam_id, split_percent in pairs(args.exp_split) do
+
+        local player = self.players[steam_id]
+
+        if IsValid(player) then
+
+            local exp_data = player:GetValue("Exp")
+            if not exp_data then return end
+
+            local player_exp_earned = math.ceil(exp_earned * split_percent)
+            self:GivePlayerExp(player_exp_earned, ExpType.Combat, steam_id, exp_data, player)
+
+            Events:Fire("Discord", {
+                channel = "Experience",
+                content = string.format("%s [%s] destroyed a level %d drone and gained %d exp.", 
+                    player:GetName(), steam_id, args.drone_level, player_exp_earned)
+            })
+        end
+
+    end
+
+end
+
 function sExp:ItemExplode(args)
 
     if args.no_detonation_source then return end
 
     if args.detonation_source_id then
         -- Use ID to give exp
-
-        for p in Server:GetPlayers() do
-            if tostring(p:GetSteamId()) == args.detonation_source_id then
-                args.player = p
-                break
-            end
-        end
-
+        args.player = self.players[args.detonation_source_id]
     end
 
     -- Check owner id for friend or self
@@ -222,14 +251,7 @@ function sExp:AwardExpToKillerOnKill(args)
 
     if exp_earned == 0 then return end
 
-    local killer = nil
-
-    for p in Server:GetPlayers() do
-        if killer_id == tostring(p:GetSteamId()) then
-            killer = p
-            break
-        end
-    end
+    local killer = self.players[killer_id]
 
     if IsValid(killer) then
 
@@ -287,21 +309,21 @@ function sExp:PlayerChat(args)
     
     if words[1] ~= "/expe" and words[1] ~= "/expc" and words[1] ~= "/expmod" then return end
 
-    local target_id = tonumber(words[2])
-    local target_amount = math.max(0, tonumber(words[3]))
-
-    if not words[2] or not words[3] then
+    if not words[2] or (not words[3] and words[1] ~= "/expmod") then
         Chat:Send(args.player, "Invalid arguments specified!", Color.Red)
         return
     end
 
-    local target_player = Player.GetById(target_id)
-    if not IsValid(target_player) then
-        Chat:Send(args.player, "Player not found!", Color.Red)
-        return
-    end
-
     if words[1] == "/expe" then
+        local target_id = tonumber(words[2])
+        local target_amount = math.max(0, tonumber(words[3] or "0"))
+
+        local target_player = Player.GetById(target_id)
+        if not IsValid(target_player) then
+            Chat:Send(args.player, "Player not found!", Color.Red)
+            return
+        end
+
         self:GivePlayerExp(target_amount, ExpType.Exploration, tostring(target_player:GetSteamId()), target_player:GetValue("Exp"), target_player)
         Chat:Send(args.player, string.format("Gave %s %d exploration exp.", target_player:GetName(), target_amount), Color.Yellow)
         Chat:Send(target_player, string.format("Received %d exploration exp!", target_amount), Color.Yellow)
@@ -313,6 +335,15 @@ function sExp:PlayerChat(args)
         })
     
     elseif words[1] == "/expc" then
+        local target_id = tonumber(words[2])
+        local target_amount = math.max(0, tonumber(words[3] or "0"))
+
+        local target_player = Player.GetById(target_id)
+        if not IsValid(target_player) then
+            Chat:Send(args.player, "Player not found!", Color.Red)
+            return
+        end
+
         self:GivePlayerExp(target_amount, ExpType.Combat, tostring(target_player:GetSteamId()), target_player:GetValue("Exp"), target_player)
         Chat:Send(args.player, string.format("Gave %s %d combat exp.", target_player:GetName(), target_amount), Color.Yellow)
         Chat:Send(target_player, string.format("Received %d combat exp!", target_amount), Color.Yellow)
@@ -448,6 +479,7 @@ end
 function sExp:ClientModuleLoad(args)
 
     local steamID = tostring(args.player:GetSteamId())
+    self.players[steamID] = args.player
     
 	local query = SQL:Query("SELECT * FROM exp WHERE steamID = (?) LIMIT 1")
     query:Bind(1, steamID)

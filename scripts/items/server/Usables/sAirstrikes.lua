@@ -32,13 +32,7 @@ function sAirStrikes:PlaceAirstrike(args, player)
 
     if args.position:Distance(player:GetPosition()) > 1000 then return end
 
-    local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
-
-    -- If they are within sz radius * 2, we don't let them place that close
-    if args.position:Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius * 1.5 then
-        Chat:Send(player, "Cannot use this while near the neutralzone!", Color.Red)
-        return
-    end
+    local airstrike_item_data = ItemsConfig.airstrikes[using_item.item.name]
 
     player:SetValue("LastAirstrikeTime", Server:GetElapsedSeconds())
 
@@ -47,8 +41,6 @@ function sAirStrikes:PlaceAirstrike(args, player)
         index = using_item.index,
         player = player
     })
-
-    local airstrike_item_data = ItemsConfig.airstrikes[using_item.item.name]
 
     local airstrike_data = {
         name = using_item.item.name,

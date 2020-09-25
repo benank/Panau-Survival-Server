@@ -66,6 +66,7 @@ end
 
 function cEquippableVisualsManager:SecondTick()
 
+    if LocalPlayer:GetValue("Loading") then return end
     self:CheckPlayer(LocalPlayer)
 
     for p in Client:GetStreamedPlayers() do

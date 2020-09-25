@@ -18,6 +18,7 @@ function Nametags:__init()
     self.FriendColor        = Color( 0, 200, 0 )
 
     self.size               = TextSize.Default -- Font size
+    self.recent_drones      = {}
 
     self:CreateSettings()
 
@@ -310,6 +311,12 @@ function Nametags:CanDraw(p)
 
 end
 
+function Nametags:DrawDrone(args)
+    local drone = args.drone
+    local pos = args.position + Vector3.Up * 0.5
+    self:DrawFullTag( pos, "Drone", 5, Color.Red, drone.health / drone.max_health, nil, drone.level )
+end
+
 function Nametags:DrawPlayer( player_data )
     local p         = player_data[1]
 
@@ -485,6 +492,31 @@ function Nametags:Render()
 
         for _, player_data in ipairs( sorted_players ) do
             self:DrawPlayer( player_data )
+        end
+    end
+
+    local time = Client:GetElapsedSeconds()
+    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 1000)
+    if ray.entity and ray.entity.__type == "ClientStaticObject" and ray.entity:GetModel() == "lave.v023_customcar.eez/v023-base.lod" then
+        self.recent_drones[ray.entity:GetId()] = {time = time, entity = ray.entity}
+    end
+
+    -- TODO: sort by distance to determine render order like player tags
+    for cso_id, data in pairs(self.recent_drones) do
+        -- Render nametags for drones while looking at the base piece only
+        if time - data.time > 2 or not IsValid(data.entity) then
+            self.recent_drones[cso_id] = nil
+        else
+            local drone = cDroneContainer:CSOIdToDrone(cso_id)
+            local args = 
+            {
+                position = data.entity:GetPosition(),
+                drone = drone
+            }
+
+            if drone then
+                self:DrawDrone(args)
+            end
         end
     end
 end
