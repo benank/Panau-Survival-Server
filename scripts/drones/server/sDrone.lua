@@ -63,7 +63,7 @@ end
 
 function sDrone:PursueTarget(target)
     self.target = self:IsPlayerAValidTarget(target) and target or nil
-    self.state = IsValid(target) and DroneState.Pursuing or DroneState.Wandering
+    self.state = IsValid(self.target) and DroneState.Pursuing or DroneState.Wandering
     self.current_path = {}
     self.current_path_index = 1
 
@@ -102,8 +102,7 @@ end
 function sDrone:ReconsiderTarget()
     if self.state ~= DroneState.Pursuing then return end
 
-    if not self:IsPlayerAValidTarget(self.target) or
-    Distance2D(self.position, self.tether_position) > self.tether_range then
+    if not self:IsPlayerAValidTarget(self.target) then
         self:PursueTarget(self:FindNewTarget())
         return true
     end
@@ -111,6 +110,8 @@ function sDrone:ReconsiderTarget()
 end
 
 function sDrone:IsPlayerAValidTarget(player, distance)
+    local out_of_range = Distance2D(self.position, self.tether_position) > self.tether_range
+
     return IsValid(player) and
         not player:GetValue("Invisible") and 
         player:GetHealth() > 0 and
@@ -118,10 +119,14 @@ function sDrone:IsPlayerAValidTarget(player, distance)
         not player:GetValue("dead") and
         not player:GetValue("InSafezone") and
         Distance2D(self.position, player:GetPosition()) < (distance or 500)
+        and not out_of_range
 end
 
 -- Finds a new target from recently damaged or nearby players
 function sDrone:FindNewTarget()
+    local out_of_range = Distance2D(self.position, self.tether_position) > self.tether_range
+    if out_of_range then return end
+
     for steam_id, _ in pairs(self.players_who_damaged) do
         local player = sDroneManager.players[steam_id]
         if self:IsPlayerAValidTarget(player, 200) then
