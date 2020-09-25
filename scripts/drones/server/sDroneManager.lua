@@ -26,7 +26,7 @@ function sDroneManager:ClientModuleLoad(args)
     self.players[steam_id] = args.player
 
     -- Fetch drone kills on join
-	local query = SQL:Query("SELECT * FROM drone_kills WHERE steamID = (?) LIMIT 1")
+	local query = SQL:Query("SELECT * FROM drone_kills WHERE steam_id = (?) LIMIT 1")
 	query:Bind(1, steam_id)
 	local result = query:Execute()
 
@@ -34,12 +34,31 @@ function sDroneManager:ClientModuleLoad(args)
         args.player:SetNetworkValue("DroneKills", result[1].kills)
 	else
         args.player:SetNetworkValue("DroneKills", 0)
+        
+		local command = SQL:Command("INSERT INTO drone_kills (steam_id, kills) VALUES (?, ?)")
+		command:Bind(1, steam_id)
+		command:Bind(2, 0)
+        command:Execute()
+
     end
 
 end
 
 function sDroneManager:PlayerQuit(args)
     self.players[tostring(args.player:GetSteamId())] = nil
+
+end
+
+function sDroneManager:AddDroneKillToPlayer(player)
+    if not IsValid(player) then return end
+    local drone_kills = player:GetValue("DroneKills") + 1
+    player:SetNetworkValue("DroneKills", drone_kills)
+
+    -- Update to DB
+    local command = SQL:Command("UPDATE drone_kills SET kills = ? WHERE steam_id = (?)")
+    command:Bind(1, drone_kills)
+    command:Bind(2, tostring(player:GetSteamId()))
+    command:Execute()
 end
 
 function sDroneManager:ModuleLoad()

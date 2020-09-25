@@ -230,6 +230,7 @@ function sDrone:Destroyed(args)
     local exp_split = {}
     for steam_id, damage_dealt in pairs(self.players_who_damaged) do
         exp_split[steam_id] = math.clamp(damage_dealt / self.max_health, 0, 1)
+        sDroneManager:AddDroneKillToPlayer(sDroneManager.players[steam_id])
     end
 
     Events:Fire("drones/DroneDestroyed", {
