@@ -20,9 +20,10 @@ function cDroneManager:__init()
 
     if DEBUG_ON then
         Events:Subscribe("Render", self, self.GameRender)
+
     end
 
-    Thread(function()
+    --[[Thread(function()
         while true do
             local path_count = 0
             local host_count = 0
@@ -41,8 +42,7 @@ function cDroneManager:__init()
             print(string.format("%d/%d host counts", host_count, count))
             Timer.Sleep(1000)
         end
-    end)
-
+    end)]]
 
     self:DroneHostLoop()
     self:DroneSyncToServerLoop()

@@ -33,10 +33,10 @@ function cDronePathGenerator:GeneratePathNearPoint(origin, tether_position, radi
             if not args.success or count_table(args.edges) == 0 then
                 --_debug(string.format("Failed to find road path, retrying (%d)", retries))
                 Thread(function()
-                    Timer.Sleep(100)
+                    Timer.Sleep(150)
                     retries = retries + 1
                     if retries >= self.MAX_RETRIES then -- Failed to find path within max tries
-                        _debug("Failed to find path")
+                        --_debug("Failed to find path")
                         callback()
                         return
                     end

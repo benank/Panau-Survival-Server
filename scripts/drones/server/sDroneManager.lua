@@ -2,6 +2,8 @@ class 'sDroneManager'
 
 function sDroneManager:__init()
 
+    SQL:Execute("CREATE TABLE IF NOT EXISTS drone_kills (steam_id VARCHAR(20), kills INTEGER)")
+
     self.drones = {} -- Drones in cells [x][y][id] = drone
     self.drones_by_id = {} -- Drones by id
     self.drone_counts_by_region = {} -- Counts of drones per region for spawning
@@ -20,7 +22,20 @@ function sDroneManager:__init()
 end
 
 function sDroneManager:ClientModuleLoad(args)
-    self.players[tostring(args.player:GetSteamId())] = args.player
+    local steam_id = tostring(args.player:GetSteamId())
+    self.players[steam_id] = args.player
+
+    -- Fetch drone kills on join
+	local query = SQL:Query("SELECT * FROM drone_kills WHERE steamID = (?) LIMIT 1")
+	query:Bind(1, steam_id)
+	local result = query:Execute()
+
+    if count_table(result) > 0 then
+        args.player:SetNetworkValue("DroneKills", result[1].kills)
+	else
+        args.player:SetNetworkValue("DroneKills", 0)
+    end
+
 end
 
 function sDroneManager:PlayerQuit(args)

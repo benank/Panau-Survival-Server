@@ -8,14 +8,13 @@ end
 
 function sDrone:__init(args)
 
-    --output_table(args)
     self.id = GetDroneId()
     self.region = args.region
     self.level = GetLevelFromRegion(self.region)
     self.position = args.position -- Approximate position of the drone in the world
 
     self.tether_position = DroneRegions[self.region].center -- Position used for tether checks
-    self.tether_range = DroneRegions[self.region].radius -- Max distance travelled from initial spawn position
+    self.tether_range = DroneRegions[self.region].radius + 1000 -- Max distance travelled from initial spawn position
 
     self.target = nil -- Current active target that the drone is pursuing
     self.target_offset = Vector3() -- Offset from the target the drone flies at
@@ -24,8 +23,6 @@ function sDrone:__init(args)
     self.current_path_index = 1 -- Current index of the path the drone is on
 
     self.config = GetDroneConfiguration(self.level)
-    --print("Drone config")
-    --output_table(self.config)
 
     self.max_health = self.config.health
     self.health = self.max_health
@@ -176,7 +173,6 @@ end
 function sDrone:FindNewHost()
     if self:IsDestroyed() then return end
     local nearby_players = sDroneManager:GetNearbyPlayersInCell(GetCell(self.position, Cell_Size))
-    --print(string.format("reconsider host %d: count: %d", self.id, count_table(nearby_players)))
 
     if count_table(nearby_players) == 0 then return end
 
