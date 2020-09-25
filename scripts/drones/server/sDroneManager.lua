@@ -1,7 +1,6 @@
-class 'sDroneManager'
+class "sDroneManager"
 
 function sDroneManager:__init()
-
     SQL:Execute("CREATE TABLE IF NOT EXISTS drone_kills (steam_id VARCHAR(20), kills INTEGER)")
 
     self.drones = {} -- Drones in cells [x][y][id] = drone
@@ -18,7 +17,6 @@ function sDroneManager:__init()
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
     Network:Subscribe("drones/sync/batch", self, self.DroneBatchSync)
-
 end
 
 function sDroneManager:ClientModuleLoad(args)
@@ -26,31 +24,30 @@ function sDroneManager:ClientModuleLoad(args)
     self.players[steam_id] = args.player
 
     -- Fetch drone kills on join
-	local query = SQL:Query("SELECT * FROM drone_kills WHERE steam_id = (?) LIMIT 1")
-	query:Bind(1, steam_id)
-	local result = query:Execute()
+    local query = SQL:Query("SELECT * FROM drone_kills WHERE steam_id = (?) LIMIT 1")
+    query:Bind(1, steam_id)
+    local result = query:Execute()
 
     if count_table(result) > 0 then
         args.player:SetNetworkValue("DroneKills", result[1].kills)
-	else
+    else
         args.player:SetNetworkValue("DroneKills", 0)
-        
-		local command = SQL:Command("INSERT INTO drone_kills (steam_id, kills) VALUES (?, ?)")
-		command:Bind(1, steam_id)
-		command:Bind(2, 0)
+
+        local command = SQL:Command("INSERT INTO drone_kills (steam_id, kills) VALUES (?, ?)")
+        command:Bind(1, steam_id)
+        command:Bind(2, 0)
         command:Execute()
-
     end
-
 end
 
 function sDroneManager:PlayerQuit(args)
     self.players[tostring(args.player:GetSteamId())] = nil
-
 end
 
 function sDroneManager:AddDroneKillToPlayer(player)
-    if not IsValid(player) then return end
+    if not IsValid(player) then
+        return
+    end
     local drone_kills = player:GetValue("DroneKills") + 1
     player:SetNetworkValue("DroneKills", drone_kills)
 
@@ -78,56 +75,64 @@ end
 
 -- Sync drone updates using a batched method for cells. One sync per cell to nearby players
 function sDroneManager:DroneBatchSyncLoop()
-    Thread(function()
-        while true do
-
-            local drone_data = {}
-            local at_least_one_sync = false
-            for id, drone in pairs(self.drones_by_id) do
-                if drone.has_update then
-                    drone_data[id] = drone.updates
-                    at_least_one_sync = true
-                    drone:UpdateApplied()
+    Thread(
+        function()
+            while true do
+                local drone_data = {}
+                local at_least_one_sync = false
+                for id, drone in pairs(self.drones_by_id) do
+                    if drone.has_update then
+                        drone_data[id] = drone.updates
+                        at_least_one_sync = true
+                        drone:UpdateApplied()
+                    end
                 end
-            end
 
-            if at_least_one_sync then
-                Network:Broadcast("Drones/BatchSync", drone_data)
-            end
+                if at_least_one_sync then
+                    Network:Broadcast("Drones/BatchSync", drone_data)
+                end
 
-            Timer.Sleep(250)
+                Timer.Sleep(250)
+            end
         end
-    end)
+    )
 end
 
 function sDroneManager:DroneReconsiderLoops()
-    Thread(function()
-        while true do
-            local sleep_count = 0
-            for id, drone in pairs(self.drones_by_id) do
-                drone:ReconsiderLoop()
-                sleep_count = sleep_count + 1
-                if sleep_count % 50 == 0 then
-                    Timer.Sleep(1)
+    Thread(
+        function()
+            while true do
+                local sleep_count = 0
+                for id, drone in pairs(self.drones_by_id) do
+                    drone:ReconsiderLoop()
+                    sleep_count = sleep_count + 1
+                    if sleep_count % 50 == 0 then
+                        Timer.Sleep(1)
+                    end
                 end
+                Timer.Sleep(200)
             end
-            Timer.Sleep(200)
         end
-    end)
+    )
 end
 
 function sDroneManager:DroneSpawnLoop()
-    -- Spawn drone 
-    Timer.SetInterval(DRONE_SPAWN_INTERVAL * 1000 * 60, function()
-        for region_enum, region in pairs(DroneRegions) do
-            if self.drone_counts_by_region[region_enum] < region.spawn.max and math.random() <= region.spawn.chance then
-                sDrone({
-                    region = region_enum,
-                    position = self:GetRandomPositionInRegion(region_enum)
-                })
+    -- Spawn drone
+    Timer.SetInterval(
+        DRONE_SPAWN_INTERVAL * 1000 * 60,
+        function()
+            for region_enum, region in pairs(DroneRegions) do
+                if self.drone_counts_by_region[region_enum] < region.spawn.max and math.random() <= region.spawn.chance then
+                    sDrone(
+                        {
+                            region = region_enum,
+                            position = self:GetRandomPositionInRegion(region_enum)
+                        }
+                    )
+                end
             end
         end
-    end)
+    )
 end
 
 -- Initially spanw half of max drones in each area on reload
@@ -137,10 +142,12 @@ function sDroneManager:SpawnInitialDrones()
         self.drone_counts_by_region[region_enum] = 0
 
         for i = 1, region.spawn.max do
-            sDrone({
-                region = region_enum,
-                position = self:GetRandomPositionInRegion(region_enum)
-            })
+            sDrone(
+                {
+                    region = region_enum,
+                    position = self:GetRandomPositionInRegion(region_enum)
+                }
+            )
             count = count + 1
         end
     end
@@ -156,12 +163,15 @@ function sDroneManager:GetRandomPositionInRegion(region_enum)
     -- Scale the direction so it's not always on the outer edge
     dir = dir * math.random()
 
-    return region.center + Vector3(dir.x * region.radius, 30 + GetExtraHeightOfDroneFromRegion(region_enum), dir.z * region.radius)
+    return region.center +
+        Vector3(dir.x * region.radius, 30 + GetExtraHeightOfDroneFromRegion(region_enum), dir.z * region.radius)
 end
 
 function sDroneManager:DroneDamaged(args)
     local drone = self.drones_by_id[args.drone_id]
-    if not drone then return end
+    if not drone then
+        return
+    end
 
     drone:Damage(args)
 end
@@ -183,11 +193,9 @@ function sDroneManager:UpdatePlayerInCell(args)
 
     VerifyCellExists(self.player_cells, cell)
     self.player_cells[cell.x][cell.y][tostring(args.player:GetSteamId())] = args.player
-
 end
 
 function sDroneManager:GetNearbyPlayersInCell(cell)
-
     local nearby_players = {}
     local adjacent_cells = GetAdjacentCells(cell)
 
@@ -202,13 +210,11 @@ function sDroneManager:GetNearbyPlayersInCell(cell)
     end
 
     return nearby_players
-
 end
 
 function sDroneManager:PlayerCellUpdate(args)
-
     self:UpdatePlayerInCell(args)
-    
+
     local drone_data = {}
 
     local adj_cells = {}
@@ -225,7 +231,7 @@ function sDroneManager:PlayerCellUpdate(args)
         end
     end
 
-	-- send the existing drones in the newly streamed cells
+    -- send the existing drones in the newly streamed cells
     Network:Send(args.player, "Drones/DroneCellsSync", {drone_data = drone_data})
 end
 
