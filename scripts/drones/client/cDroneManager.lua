@@ -17,10 +17,10 @@ function cDroneManager:__init()
     Events:Subscribe("HitDetection/BulletSplash", self, self.HitDetectionBulletSplash)
 
     Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(Cell_Size), self, self.LocalPlayerCellUpdate)
+    Events:Subscribe("items/PingUsed", self, self.PingUsed)
 
     if DEBUG_ON then
         Events:Subscribe("Render", self, self.GameRender)
-
     end
 
     --[[Thread(function()
@@ -48,6 +48,17 @@ function cDroneManager:__init()
     self:DroneSyncToServerLoop()
     self:DroneCellUpdateLoop()
 
+end
+
+function cDroneManager:PingUsed(args)
+    args.is_drone = true
+    for id, drone in pairs(self.drones) do
+        if Distance2D(drone.position, args.position) < args.range then
+            args.nearby_players["drone_" .. tostring(id)] = {position = drone.position, name = "Drone"}
+        end
+    end
+
+    Events:Fire("drones/PingUsedResponse", args)
 end
 
 function cDroneManager:DroneSyncToServerLoop()
