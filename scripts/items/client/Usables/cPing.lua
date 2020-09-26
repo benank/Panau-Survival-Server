@@ -7,10 +7,18 @@ function cPing:__init()
 
     Network:Subscribe("Items/PingSound", self, self.PingSound)
     Network:Subscribe("Items/Ping", self, self.Ping)
+    Events:Subscribe("drones/PingUsedResponse", self, self.Ping)
 
 end
 
 function cPing:Ping(args)
+
+    -- Get nearby drones
+    if not args.is_drone then
+        args.position = LocalPlayer:GetPosition()
+        Events:Fire("items/PingUsed", args)
+        return
+    end
 
     self.timer = Timer()
     self.range = args.range
