@@ -32,6 +32,8 @@ function sVehicleManager:__init()
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
+    Events:Subscribe("LoadStatus", self, self.LoadStatus)
+
     Events:Subscribe("Items/PlayerUseVehicleGuard", self, self.PlayerUseVehicleGuard)
 
     Network:Subscribe("Vehicles/SpawnVehicle", self, self.PlayerSpawnVehicle)
@@ -75,6 +77,24 @@ function sVehicleManager:__init()
     Timer.SetInterval(1000 * 60, function()
         self:SaveVehicles()
     end)
+
+end
+
+function sVehicleManager:LoadStatus(args)
+    if not IsValid(args.player) then return end
+
+    local steam_id = tostring(args.player:GetSteamId())
+    for _, vehicle in pairs(self.owned_vehicles) do
+        local last_driver_id = vehicle:GetValue("LastDriver")
+
+        if last_driver_id == steam_id and not IsValid(vehicle:GetDriver()) then
+            vehicle:SetValue("LastDriver", nil)
+            vehicle:SetLinearVelocity(vehicle:GetValue("LastVelo"))
+            vehicle:SetValue("LastVelo", nil)
+            args.player:EnterVehicle(vehicle, VehicleSeat.Driver)
+            return
+        end
+    end
 
 end
 
@@ -407,6 +427,16 @@ end
 
 function sVehicleManager:PlayerQuit(args)
 
+    if args.player:InVehicle() then
+        local vehicle = args.player:GetVehicle()
+        local driver = vehicle:GetDriver()
+
+        if IsValid(driver) and driver == args.player then
+            vehicle:SetValue("LastDriver", tostring(args.player:GetSteamId()))
+            vehicle:SetValue("LastVelo", vehicle:GetLinearVelocity())
+        end
+    end
+
     self.players[tostring(args.player:GetSteamId())] = nil
 
     local vehicles = args.player:GetValue("OwnedVehicles")
@@ -624,6 +654,7 @@ function sVehicleManager:TryBuyVehicle(args)
         Chat:Send(args.player, "You do not have enough lockpicks to purchase this vehicle!", Color.Red)
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
+        args.vehicle:SetLinearVelocity(Vector3.Zero)
         return
     end
 
@@ -631,6 +662,7 @@ function sVehicleManager:TryBuyVehicle(args)
         Chat:Send(args.player, "You already own the maximum amount of vehicles!", Color.Red)
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
+        args.vehicle:SetLinearVelocity(Vector3.Zero)
         return
     end
 
@@ -638,6 +670,7 @@ function sVehicleManager:TryBuyVehicle(args)
     if IsValid(args.old_driver) then
         self:RemovePlayerFromVehicle(args)
         self:RestoreOldDriverIfExists(args)
+        args.vehicle:SetLinearVelocity(Vector3.Zero)
         return
     end
 
