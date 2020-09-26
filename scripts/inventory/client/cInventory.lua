@@ -2,12 +2,12 @@ class 'cInventory'
 
 function cInventory:__init()
 
-    Events:Fire("loader/RegisterResource", {count = 2})
+    Events:Fire("loader/RegisterResource", {count = 2, name = "Inventory"})
 
     Network:Subscribe(var("InventoryUpdated"):get(), self, self.InventoryUpdated)
     Network:Subscribe(var("Inventory/GetGroundData"):get(), self, self.GetGroundData)
 
-    Events:Fire("loader/CompleteResource", {count = 1})
+    Events:Fire("loader/CompleteResource", {count = 1, name = "Inventory"})
 
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
@@ -56,7 +56,7 @@ function cInventory:InventoryUpdated(args)
     if not self.ui then
         self.ui = cInventoryUI()
         self.lootbox_ui = cLootboxUI(self)
-        Events:Fire("loader/CompleteResource", {count = 1})
+        Events:Fire("loader/CompleteResource", {count = 1, name = "Inventory"})
     end
 
     self.ui:Update(args)

@@ -11,7 +11,7 @@ function sSpawnManager:__init()
 	Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("SetHomePosition", self, self.SetHomePosition)
-    Events:Subscribe("PlayerChat", self, self.PlayerChat)
+    Events:Subscribe("ResetHomePosition", self, self.ResetHomePosition)
 
 	Network:Subscribe("EnterExitSafezone", self, self.EnterExitSafezone)
 
@@ -41,21 +41,17 @@ function sSpawnManager:__init()
 
 end
 
-function sSpawnManager:PlayerChat(args)
-
-    if args.text == "/unsethome" then
-        self:SetHomePosition({
-            player = args.player,
-            pos = self:GetPositionInSafezone()
-        })
-        Chat:Send(args.player, "Set spawn point to the safezone.", Color.Yellow)
-    end
-
+function sSpawnManager:ResetHomePosition(args)
+    self:SetHomePosition({
+        player = args.player,
+        player_id = args.player_id,
+        pos = self:GetPositionInSafezone()
+    })
 end
 
 function sSpawnManager:SetHomePosition(args)
 
-    local steamid = tostring(args.player:GetSteamId().id)
+    local steamid = args.player_id or tostring(args.player:GetSteamId().id)
 
 	local command = SQL:Command("UPDATE positions SET homeX = ?, homeY = ?, homeZ = ? WHERE steamID = (?)")
 	command:Bind(1, args.pos.x)
@@ -64,7 +60,9 @@ function sSpawnManager:SetHomePosition(args)
 	command:Bind(4, steamid)
     command:Execute()
     
-    args.player:SetNetworkValue("HomePosition", args.pos)
+    if IsValid(args.player) then
+        args.player:SetNetworkValue("HomePosition", args.pos)
+    end
 
 end
 
@@ -167,7 +165,7 @@ function sSpawnManager:ClientModuleLoad(args)
 		args.player:SetValue("IsOkToSavePosition", 1)
 
 		self:DelayedSpawn({position = plypos, player = args.player, timeout = 5})
-		args.player:SetValue("SpawnPosition", plypos)
+		args.player:SetNetworkValue("SpawnPosition", plypos)
 		args.player:SetValue("RespawnPosition", self:GetRespawnPosition(args.player))
 
 	else -- if first join
@@ -248,7 +246,7 @@ function sSpawnManager:DelayedSpawn(args)
 			})
 
 			Network:Send(args.player, "spawn/PlayerSetPosition")
-			args.player:SetValue("FirstSpawn", true)
+            args.player:SetValue("FirstSpawn", true)
 			
 		end
 	end)
@@ -261,10 +259,6 @@ function sSpawnManager:PlayerSpawn(args)
 
     args.player:SetValue("Spawn/KilledRecently", false)
 	
-	if args.player:GetValue("FirstSpawn") then
-		Network:Send(args.player, "spawn/PlayerSetPosition")
-	end
-
 	if args.player:GetValue("SecondLifeActive") then return end
 	
 	local target_pos
@@ -280,6 +274,10 @@ function sSpawnManager:PlayerSpawn(args)
 	if not target_pos then return end
 	
 	args.player:SetPosition(target_pos)
+
+	if args.player:GetValue("FirstSpawn") then
+		Network:Send(args.player, "spawn/PlayerSetPosition")
+	end
 
 	local pos = args.player:GetPosition()
 	local s_pos = args.player:GetValue("SpawnPosition")

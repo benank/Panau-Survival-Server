@@ -340,6 +340,7 @@ function cObjectPlacer:StopObjectPlacement()
         Events:Unsubscribe(v)
     end
 
+    self.placing = false
     self.subs = {}
     self.model = nil
     self.vertices = nil

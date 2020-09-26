@@ -85,7 +85,7 @@ function sStashPlacement:PlaceStash(args, player)
 
     -- Trying to place on a wall or something
     if pitch > math.pi / 6 or roll > math.pi / 6 then
-        Chat:Send(player, "Cannot place stash here!", Color.Red)
+        Chat:Send(player, "Placing stash failed!", Color.Red)
         return
     end
 
@@ -94,6 +94,25 @@ function sStashPlacement:PlaceStash(args, player)
         return
     end
 
+    -- Can only place stashes in landclaims we can build on OR outside of a landclaim
+    local landclaim = FindFirstActiveLandclaimContainingPosition(args.position)
+    if landclaim then
+
+        local steam_id = tostring(player:GetSteamId())
+        local success = true
+        if landclaim.access_mode == 1 and landclaim.owner_id ~= steam_id then -- Owner only
+            success = false
+        elseif landclaim.access_mode == 2 and landclaim.owner_id ~= steam_id and not AreFriends(player, landclaim.owner_id) then -- Friends
+            success = false
+        end
+        --TODO: clan support
+
+        if not success then
+            Chat:Send(player, "Placing stash failed!", Color.Red)
+            return
+        end
+
+    end
 
     local sub = nil
     sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(player:GetSteamId()), function(args)
@@ -115,6 +134,21 @@ function sStashPlacement:PlaceStash(args, player)
     args.player = player
     Events:Fire("CheckIsTooCloseToLoot", args)
 
+end
+
+function FindFirstActiveLandclaimContainingPosition(pos)
+    local sharedobject = SharedObject.GetByName("Landclaims")
+    if not sharedobject then return end
+    local landclaims = sharedobject:GetValue("Landclaims")
+    if not landclaims then return end
+
+    for steam_id, player_landclaims in pairs(landclaims) do
+        for id, landclaim in pairs(player_landclaims) do
+            if landclaim.state == 1 and IsInSquare(landclaim.position, landclaim.size, pos) then
+                return landclaim
+            end
+        end
+    end
 end
 
 function sStashPlacement:CancelStashPlacement(args, player)

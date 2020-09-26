@@ -18,6 +18,7 @@ function sExp:__init()
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
     Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+    Events:Subscribe("build/ObjectDestroyed", self, self.ObjectDestroyed)
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
@@ -81,6 +82,29 @@ function sExp:DroneDestroyed(args)
         end
 
     end
+end
+
+-- Called when a build object is destroyed
+function sExp:ObjectDestroyed(args)
+
+    if not IsValid(args.player) then return end -- Player not valid
+    if tostring(args.player:GetSteamId()) == args.owner_id then return end -- This is the owner
+    if AreFriends(args.player, args.owner_id) then return end -- Friends with owner
+
+    local exp_earned = Exp.DestroyBuildObject[args.object_name]
+    if not exp_earned then return end
+
+    local exp_data = args.player:GetValue("Exp")
+
+    if not exp_data then return end
+
+    self:GivePlayerExp(exp_earned, ExpType.Combat, tostring(args.player:GetSteamId()), exp_data, args.player)
+
+    Events:Fire("Discord", {
+        channel = "Experience",
+        content = string.format("%s [%s] destroyed a %s [Owner: %s] and gained %d exp.", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), args.object_name, args.owner_id, exp_earned)
+    })
 
 end
 
@@ -513,6 +537,10 @@ function sExp:ClientModuleLoad(args)
     exp_data.explore_max_exp = GetMaximumExp(exp_data.level)
 
     args.player:SetNetworkValue("Exp", exp_data)
+    
+    -- Call sPerks after loading exp
+    sPerks:ClientModuleLoad(args)
+
     Events:Fire("PlayerExpLoaded", {player = args.player})
 
     args.source = "exp"
@@ -523,9 +551,6 @@ function sExp:ClientModuleLoad(args)
     end
 
     args.player:SetValue("ExpLastUpdate", Server:GetElapsedSeconds())
-
-    -- Call sPerks after loading exp
-    sPerks:ClientModuleLoad(args)
 
 end
 

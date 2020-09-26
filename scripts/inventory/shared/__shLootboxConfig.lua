@@ -32,7 +32,11 @@ StashAccessModeStrings =
     [StashAccessMode.OnlyMe] = "Only Me"
 }
 
-C4StashDamage = 100 -- 100 damage per C4
+ExplosiveDamage = 
+{
+    ["C4"] = 100,
+    ["Claymore"] = 20
+}
 
 Lootbox.Stashes = 
 {

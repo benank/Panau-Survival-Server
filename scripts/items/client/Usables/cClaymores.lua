@@ -56,14 +56,29 @@ end
 function cClaymores:PlaceObject(args)
     if not self.placing_claymore then return end
 
+    local lootbox_uid, landclaim_data
+
     if args.entity and args.entity.__type == "ClientStaticObject" then
+        
         args.model = args.entity:GetModel()
+
+        local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 7)
+    
+        -- Placing it on a stash or build object
+        if cC4s.near_stashes[ray.entity:GetId()] then
+            lootbox_uid = cC4s.near_stashes[ray.entity:GetId()]
+        elseif cC4s.near_build_objects[ray.entity:GetId()] then
+            landclaim_data = cC4s.near_build_objects[ray.entity:GetId()]
+        end
+
     end
 
     Network:Send("items/PlaceClaymore", {
         position = args.position,
         angle = args.angle,
-        model = args.model
+        model = args.model,
+        lootbox_uid = lootbox_uid,
+        landclaim_data = landclaim_data
     })
     self:StopPlacement()
 end

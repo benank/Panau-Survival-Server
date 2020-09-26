@@ -7,8 +7,6 @@ function cLootManager:__init()
     self.current_box = nil -- Current opened box
     self.close_to_box = false -- If they are close enough to a box that we should raycast
 
-    self.SO_id_to_uid = {} -- Static object ids to lootbox unique ids
-
     self.look_at_circle_size = Render.Size.x * 0.0075
     self.look_at_circle_size_inner = self.look_at_circle_size * 0.85
     self.up = Vector3(0, 0.1, 0)
@@ -114,7 +112,7 @@ function cLootManager:Render(args)
 
     if ray.entity and ray.entity.__type == "ClientStaticObject" then
 
-        local uid = self:StaticObjectIdToUID(ray.entity:GetId())
+        local uid = ray.entity:GetValue("LootboxId")
         local entity_pos = ray.entity:GetPosition()
         local cell = GetCell(entity_pos, Lootbox.Cell_Size)
 
@@ -186,10 +184,6 @@ function cLootManager:RecreateContents(_contents)
     self.current_box.contents = contents
 
 
-end
-
-function cLootManager:StaticObjectIdToUID(id)
-    return self.SO_id_to_uid[id]
 end
 
 function cLootManager:CheckIfCloseToBox()

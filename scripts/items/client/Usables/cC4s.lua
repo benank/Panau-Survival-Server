@@ -3,6 +3,7 @@ class 'cC4s'
 function cC4s:__init(args)
 
     self.near_stashes = {} -- [cso id] = lootbox uid
+    self.near_build_objects = {} -- [cso id] = build object uid
     self.c4s = {} -- [wno id] = cC4() 
 
     self.placing_c4 = false
@@ -19,26 +20,31 @@ function cC4s:__init(args)
 
     Events:Subscribe(var("Inventory/LootboxCreate"):get(), self, self.LootboxCreate)
     Events:Subscribe(var("Inventory/LootboxRemove"):get(), self, self.LootboxRemove)
+
+    Events:Subscribe(var("build/SpawnObject"):get(), self, self.BuildObjectSpawned)
+    Events:Subscribe(var("build/DespawnObject"):get(), self, self.BuildObjectDespawned)
 end
 
 function cC4s:PlayC4TriggerAnimation()
     LocalPlayer:SetLeftArmState(AnimationState.LaSTriggerBoom)
 end
 
+function cC4s:BuildObjectSpawned(args)
+    self.near_build_objects[args.cso_id] = args
+end
+
+function cC4s:BuildObjectDespawned(args)
+    self.near_build_objects[args.cso_id] = nil
+end
+
 function cC4s:LootboxCreate(args)
-
     if args.tier ~= 11 and args.tier ~= 12 and args.tier ~= 13 then return end
-
     self.near_stashes[args.cso_id] = args.id
-
 end
 
 function cC4s:LootboxRemove(args)
-
     if args.tier ~= 11 and args.tier ~= 12 and args.tier ~= 13 then return end
-
     self.near_stashes[args.cso_id] = nil
-
 end
 
 function cC4s:WorldNetworkObjectCreate(args)
@@ -122,6 +128,8 @@ function cC4s:PlaceObject(args)
 
         if self.near_stashes[ray.entity:GetId()] then
             send_data.lootbox_uid = self.near_stashes[ray.entity:GetId()]
+        elseif self.near_build_objects[ray.entity:GetId()] then
+            send_data.landclaim_data = self.near_build_objects[ray.entity:GetId()]
         end
 
     end
