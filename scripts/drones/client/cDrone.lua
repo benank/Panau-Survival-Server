@@ -65,7 +65,6 @@ function cDrone:__init(args)
     self.wander_sync_timer = Timer()
     self.wall_timer = Timer()
     self.far_shoot_timer = Timer()
-    self.position_update_timer = Timer()
     self.sound_timer_interval = math.random() * 5000 + 800
 
     self.attack_on_sight_timer = Timer()
@@ -212,7 +211,6 @@ function cDrone:PostTick(args)
     self.position = self.position + self.velocity * args.delta
 
     if self.body then self.body:PostTick(args) end
-    self.position_update_timer:Restart()
 
 end
 
