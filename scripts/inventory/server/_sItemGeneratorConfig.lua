@@ -5,7 +5,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.355,
+            rarity = 0.36,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 5, max = 10},
@@ -26,7 +26,7 @@ LootItems =
         },
         ["FOOD & DRINK"] = 
         {
-            rarity = 0.2,
+            rarity = 0.195,
             items = 
             {
                 ["Chocolate"] = {rarity = 0.08, min = 1, max = 2},
@@ -91,7 +91,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.442,
+            rarity = 0.45,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.05, min = 10, max = 20},
@@ -116,8 +116,8 @@ LootItems =
             rarity = 0.01,
             items = 
             {
-                ["Barrel Stash"] = {rarity = 0.5, min = 1, max = 1},
-                ["Garbage Stash"] = {rarity = 0.5, min = 1, max = 1},
+                ["Barrel Stash"] = {rarity = 0.8, min = 1, max = 1},
+                ["Garbage Stash"] = {rarity = 0.2, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -168,7 +168,7 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.15,
+            rarity = 0.145,
             items = 
             {
                 ["Woet"] = {rarity = 0.08, min = 1, max = 1},
@@ -182,7 +182,7 @@ LootItems =
         },
         ["WEAPON"] = 
         {
-            rarity = 0.05,
+            rarity = 0.047,
             items = 
             {
                 ["Bubble Gun"] = {rarity = 0.05, min = 1, max = 1},
@@ -232,11 +232,11 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Barrel Stash"] = {rarity = 0.214, min = 1, max = 1},
-                ["Garbage Stash"] = {rarity = 0.214, min = 1, max = 1},
-                ["Light"] = {rarity = 0.286, min = 1, max = 1},
-                ["Door"] = {rarity = 0.143, min = 1, max = 1},
-                ["Wall"] = {rarity = 0.143, min = 1, max = 1},
+                ["Barrel Stash"] = {rarity = 0.3, min = 1, max = 1},
+                ["Garbage Stash"] = {rarity = 0.11, min = 1, max = 1},
+                ["Light"] = {rarity = 0.29, min = 1, max = 1},
+                ["Door"] = {rarity = 0.05, min = 1, max = 1},
+                ["Wall"] = {rarity = 0.25, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -275,12 +275,11 @@ LootItems =
             rarity = 0.17,
             items = 
             {
-                ["Vehicle Repair"] = {rarity = 0.175, min = 1, max = 2},
-                ["Car Paint"] = {rarity = 0.18, min = 1, max = 1},
-                ["Nitro"] = {rarity = 0.225, min = 1, max = 2},
-                ["Battery"] = {rarity = 0.225, min = 1, max = 2},
-                ["Combat Ping"] = {rarity = 0.14, min = 1, max = 1},
-                ["Respawner"] = {rarity = 0.055, min = 1, max = 1},
+                ["Vehicle Repair"] = {rarity = 0.19, min = 1, max = 2},
+                ["Car Paint"] = {rarity = 0.2, min = 1, max = 1},
+                ["Nitro"] = {rarity = 0.23, min = 1, max = 2},
+                ["Battery"] = {rarity = 0.23, min = 1, max = 2},
+                ["Combat Ping"] = {rarity = 0.15, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
@@ -304,9 +303,9 @@ LootItems =
             rarity = 0.037,
             items = 
             {
-                ["Cruise Missile"] = {rarity = 0.379, min = 1, max = 1},
-                ["Area Bombing"] = {rarity = 0.351, min = 1, max = 1},
-                ["Tactical Nuke"] = {rarity = 0.27, min = 1, max = 1},
+                ["Cruise Missile"] = {rarity = 0.45, min = 1, max = 1},
+                ["Area Bombing"] = {rarity = 0.4, min = 1, max = 1},
+                ["Tactical Nuke"] = {rarity = 0.15, min = 1, max = 1},
             }
         },
         ["AMMO"] = 
@@ -336,11 +335,11 @@ LootItems =
             rarity = 0.078,
             items = 
             {
-                ["Bed"] = {rarity = 0.064, min = 1, max = 1},
-                ["Door"] = {rarity = 0.103, min = 1, max = 1},
+                ["Bed"] = {rarity = 0.07, min = 1, max = 1},
+                ["Door"] = {rarity = 0.137, min = 1, max = 1},
                 ["Wall"] = {rarity = 0.324, min = 1, max = 1},
                 ["Proximity Alarm"] = {rarity = 0.381, min = 1, max = 1},
-                ["Locked Stash"] = {rarity = 0.09, min = 1, max = 1},
+                ["Locked Stash"] = {rarity = 0.05, min = 1, max = 1},
                 ["LandClaim"] = {rarity = 0.038, min = 1, max = 1},
             }
         },
@@ -372,10 +371,9 @@ LootItems =
             rarity = 0.067,
             items = 
             {
-                ["Combat Ping"] = {rarity = 0.57, min = 1, max = 1},
-                ["Respawner"] = {rarity = 0.198, min = 1, max = 1},
-                ["EVAC"] = {rarity = 0.149, min = 1, max = 1},
-                ["Hacker"] = {rarity = 0.083, min = 1, max = 1},
+                ["Combat Ping"] = {rarity = 0.7, min = 1, max = 1},
+                ["EVAC"] = {rarity = 0.18, min = 1, max = 1},
+                ["Hacker"] = {rarity = 0.12, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
