@@ -7,7 +7,10 @@ DroneRegionEnum =
     LostIsland = 5,
     LostIslandInner = 6,
     Desert = 6,
-    CapeCarnival = 7
+    CapeCarnival = 7,
+    Casino = 8,
+    TopRight = 9,
+    BottomIslands = 10
 }
 
 DRONE_SPAWN_INTERVAL = 1
@@ -131,6 +134,39 @@ DroneRegions =
                 min = 0,
                 max = 15
             }
+        },
+    },
+    [DroneRegionEnum.Casino] = 
+    {
+        radius = 2000,
+        center = Vector3(1414, 210, 1812),
+        level_range = {min = 15, max = 30},
+        spawn = 
+        {
+            max = 15, -- Max drones alive at one time
+            chance = 0.1 -- Chance of a drone spawning every interval
+        },
+    },
+    [DroneRegionEnum.TopRight] = 
+    {
+        radius = 3000,
+        center = Vector3(11468, 267, -8950),
+        level_range = {min = 10, max = 25},
+        spawn = 
+        {
+            max = 15, -- Max drones alive at one time
+            chance = 0.1 -- Chance of a drone spawning every interval
+        },
+    },
+    [DroneRegionEnum.BottomIslands] = 
+    {
+        radius = 3500,
+        center = Vector3(11468, 267, -8950),
+        level_range = {min = 10, max = 30},
+        spawn = 
+        {
+            max = 20, -- Max drones alive at one time
+            chance = 0.5 -- Chance of a drone spawning every interval
         },
     }
 }
