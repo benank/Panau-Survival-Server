@@ -65,6 +65,7 @@ function cDrone:__init(args)
     self.wander_sync_timer = Timer()
     self.wall_timer = Timer()
     self.far_shoot_timer = Timer()
+    self.position_update_timer = Timer()
     self.sound_timer_interval = math.random() * 5000 + 800
 
     self.attack_on_sight_timer = Timer()
@@ -211,6 +212,7 @@ function cDrone:PostTick(args)
     self.position = self.position + self.velocity * args.delta
 
     if self.body then self.body:PostTick(args) end
+    self.position_update_timer:Restart()
 
 end
 
@@ -368,7 +370,7 @@ function cDrone:Wander(args)
     end
 
     if self.sound_timer:GetSeconds() >= self.sound_timer_interval then
-        if self.position:Distance(LocalPlayer:GetPosition()) < 60 then
+        if self.position:Distance(LocalPlayer:GetPosition()) < 80 then
             self.body:PlaySound(math.random() > 0.5 and "enemy_presence_in_the_area" or "trespasser_in_the_area")
         else
             self.body:PlaySound("be_on_the_lookout")

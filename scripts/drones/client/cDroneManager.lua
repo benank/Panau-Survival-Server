@@ -197,8 +197,6 @@ end
 
 function cDroneManager:PostTick(args)
 
-    local local_pos = LocalPlayer:GetBonePosition("ragdoll_Hips")
-
     for _, drone in pairs(self.drones) do
         drone:PostTick(args)
     end
