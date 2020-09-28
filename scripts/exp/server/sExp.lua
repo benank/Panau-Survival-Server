@@ -55,16 +55,17 @@ function sExp:DroneDestroyed(args)
 
     if not args.damage_entity then return end
 
-    local exp_earned_data = Exp.DestroyDrone[args.damage_entity]
-    if not exp_earned_data then return end
-
-    local exp_earned = exp_earned_data.base + exp_earned_data.per_level * args.drone_level
+    local exp_earned = Exp.DestroyDrone[args.damage_entity]
     if not exp_earned then return end
+
+    local exp_split_mod = 1
 
     -- +10% extra total exp for each extra player that helps to kill a drone
     if count_table(args.exp_split) > 1 then
-        exp_earned = exp_earned * (1 + Exp.DestroyDrone.AdditionalPercentPerPlayer * (count_table(args.exp_split) - 1))
+        exp_split_mod = exp_split_mod * (1 + Exp.DestroyDrone.AdditionalPercentPerPlayer * (count_table(args.exp_split) - 1))
     end
+
+    exp_earned = exp_earned * exp_split_mod
 
     for steam_id, split_percent in pairs(args.exp_split) do
 
@@ -75,7 +76,9 @@ function sExp:DroneDestroyed(args)
             local exp_data = player:GetValue("Exp")
             if not exp_data then return end
 
-            local player_exp_earned = math.ceil(exp_earned * split_percent)
+            local exp_mod = GetKillLevelModifier(exp_data.level, args.drone_level)
+
+            local player_exp_earned = math.ceil(exp_earned * exp_mod * split_percent)
             self:GivePlayerExp(player_exp_earned, ExpType.Combat, steam_id, exp_data, player)
 
             Events:Fire("Discord", {

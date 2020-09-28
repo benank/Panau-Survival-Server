@@ -53,16 +53,16 @@ Exp =
     },
     DestroyDrone = 
     {
-        [DamageEntity.Bullet] =         {base = 15, per_level = 8},
-        [DamageEntity.Explosion] =      {base = 10, per_level = 5},
-        [DamageEntity.Mine] =           {base = 10, per_level = 5},
-        [DamageEntity.Claymore] =       {base = 10, per_level = 5},
-        [DamageEntity.HEGrenade] =      {base = 10, per_level = 5},
-        [DamageEntity.LaserGrenade] =   {base = 10, per_level = 5},
-        [DamageEntity.C4] =             {base = 10, per_level = 3},
-        [DamageEntity.CruiseMissile] =  {base = 3, per_level = 2},
-        [DamageEntity.AreaBombing] =    {base = 3, per_level = 2},
-        [DamageEntity.TacticalNuke] =   {base = 3, per_level = 2},
+        [DamageEntity.Bullet] =         9,
+        [DamageEntity.Explosion] =      9,
+        [DamageEntity.Mine] =           6,
+        [DamageEntity.Claymore] =       6,
+        [DamageEntity.HEGrenade] =      8,
+        [DamageEntity.LaserGrenade] =   8,
+        [DamageEntity.C4] =             6,
+        [DamageEntity.CruiseMissile] =  2,
+        [DamageEntity.AreaBombing] =    2,
+        [DamageEntity.TacticalNuke] =   2,
         AdditionalPercentPerPlayer = 0.1 -- X% more total exp for each player who damages a drone
     },
     DestroyExplosive = 
@@ -76,7 +76,7 @@ Exp =
     LevelCutoffs = -- Level cutoffs for no exp for these players
     {
         [0] = -1,
-        [3] = 0,
+        [5] = 0,
         [10] = 1,
         [15] = 2,
         [20] = 3,
