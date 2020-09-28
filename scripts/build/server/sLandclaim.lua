@@ -66,7 +66,7 @@ function sLandclaim:ParseObjects(objects)
 end
 
 function sLandclaim:ToLogString()
-    return string.format("LC: %d Owner: %d", self.id, self.owner_id)
+    return string.format("LC: %d Owner: %s", self.id, self.owner_id)
 end
 
 function sLandclaim:PressBuildObjectMenuButton(args, player)
