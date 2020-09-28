@@ -303,9 +303,9 @@ LootItems =
             rarity = 0.037,
             items = 
             {
-                ["Cruise Missile"] = {rarity = 0.45, min = 1, max = 1},
-                ["Area Bombing"] = {rarity = 0.4, min = 1, max = 1},
-                ["Tactical Nuke"] = {rarity = 0.15, min = 1, max = 1},
+                ["Cruise Missile"] = {rarity = 0.5, min = 1, max = 1},
+                ["Area Bombing"] = {rarity = 0.3, min = 1, max = 1},
+                ["Tactical Nuke"] = {rarity = 0.2, min = 1, max = 1},
             }
         },
         ["AMMO"] = 
