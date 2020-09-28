@@ -65,6 +65,10 @@ function sLandclaim:ParseObjects(objects)
 
 end
 
+function sLandclaim:ToLogString()
+    return string.format("LC: %d Owner: %d", self.id, self.owner_id)
+end
+
 function sLandclaim:PressBuildObjectMenuButton(args, player)
 
     local object = self.objects[args.id]
@@ -89,6 +93,10 @@ function sLandclaim:PressBuildObjectMenuButton(args, player)
             id = object.id,
             access_mode = object.custom_data.access_mode
         })
+        Events:Fire("Discord", {
+            channel = "Build",
+            content = string.format("%s [%s] changed door access mod to %s (%s)", player:GetName(), player_id, args.name, self:ToLogString())
+        })
 
     elseif args.name == "Set Spawn" and object.name == "Bed" then
         -- Setting spawn to a bed
@@ -111,6 +119,11 @@ function sLandclaim:PressBuildObjectMenuButton(args, player)
 
         Chat:Send(player, "Successfully set spawn point.", Color.Green)
 
+        Events:Fire("Discord", {
+            channel = "Build",
+            content = string.format("%s [%s] set their spawn to a bed (%s)", player:GetName(), player_id, self:ToLogString())
+        })
+
     elseif args.name == "Unset Spawn" and object.name == "Bed" then
         -- Unsetting spawn from a bed
         object.custom_data.player_spawns[player_id] = nil
@@ -127,6 +140,12 @@ function sLandclaim:PressBuildObjectMenuButton(args, player)
         })
 
         Chat:Send(player, "Successfully removed spawn point.", Color.Green)
+
+        Events:Fire("Discord", {
+            channel = "Build",
+            content = string.format("%s [%s] unset their spawn from a bed (%s)", player:GetName(), player_id, self:ToLogString())
+        })
+
 
     elseif args.name == "Pick Up" and self:CanPlayerAccess(player, self.access_mode) then
         self:RemoveObject(args, player)
@@ -218,6 +237,11 @@ function sLandclaim:PlaceObject(args)
         player = args.player
     })
 
+    Events:Fire("Discord", {
+        channel = "Build",
+        content = string.format("%s [%s] placed object %s at pos %s (%s)", 
+            player:GetName(), tostring(player:GetSteamId()), object.name, object.position, self:ToLogString())
+    })
 end
 
 function sLandclaim:ChangeAccessMode(access_mode, player)
@@ -229,6 +253,12 @@ function sLandclaim:ChangeAccessMode(access_mode, player)
         access_mode = self.access_mode
     })
     Chat:Send(player, string.format("Access mode changed to %s for %s.", LandclaimAccessModeEnum:GetDescription(self.access_mode), self.name), Color.Green)
+    
+    Events:Fire("Discord", {
+        channel = "Build",
+        content = string.format("%s [%s] changed landclaim access mode to %s (%s)", 
+            player:GetName(), tostring(player:GetSteamId()), LandclaimAccessModeEnum:GetDescription(self.access_mode), self:ToLogString())
+    })
 end
 
 function sLandclaim:ActivateLight(args, player)
@@ -291,6 +321,12 @@ function sLandclaim:RemoveObject(args, player)
     })
 
     object:RemoveAllBedSpawns()
+
+    Events:Fire("Discord", {
+        channel = "Build",
+        content = string.format("%s [%s] removed object %s (%s)", player:GetName(), tostring(player:GetSteamId()), object.name, self:ToLogString())
+    })
+
 end
 
 -- Called when an object on the landclaim is damaged
@@ -308,6 +344,12 @@ function sLandclaim:DamageObject(args, player)
 
     object:Damage(damage)
 
+    Events:Fire("Discord", {
+        channel = "Build",
+        content = string.format("%s [%s] damaged object %s %d, for %.2f damage using %s (%s)", 
+            player:GetName(), tostring(player:GetSteamId()), object.name, object.id, damage, args.type, self:ToLogString())
+    })
+
     if object.health <= 0 then
         self.objects[id] = nil
         object:RemoveAllBedSpawns()
@@ -315,6 +357,12 @@ function sLandclaim:DamageObject(args, player)
             player = player,
             owner_id = self.owner_id,
             object_name = object.name
+        })
+
+        Events:Fire("Discord", {
+            channel = "Build",
+            content = string.format("%s [%s] destroyed object %s %d (%s)", 
+                player:GetName(), tostring(player:GetSteamId()), object.name, object.id, self:ToLogString())
         })
     end
 
@@ -326,6 +374,7 @@ function sLandclaim:DamageObject(args, player)
         health = object.health,
         player = player
     })
+
 end
 
 -- Called when the owner tries to rename the landclaim
@@ -337,6 +386,12 @@ function sLandclaim:Rename(name, player)
         type = "name_change",
         name = self.name
     })
+
+    Events:Fire("Discord", {
+        channel = "Build",
+        content = string.format("%s [%s] renamed landclaim to %s (%s)", player:GetName(), tostring(player:GetSteamId()), name, self:ToLogString())
+    })
+
 end
 
 function sLandclaim:UpdateExpiryDate(new_expiry_date)
@@ -357,6 +412,11 @@ function sLandclaim:Delete(player)
     self:SyncSmallUpdate({
         type = "state_change",
         state = self.state
+    })
+    
+    Events:Fire("Discord", {
+        channel = "Build",
+        content = string.format("%s [%s] deleted landclaim (%s)", player:GetName(), tostring(player:GetSteamId()), self:ToLogString())
     })
 end
 

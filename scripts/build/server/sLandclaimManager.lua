@@ -296,6 +296,7 @@ function sLandclaimManager:UpdateLandclaimExpiry(size, landclaim, player)
     if landclaim.owner_id ~= tostring(player:GetSteamId()) then return end
     if not IsInSquare(landclaim.position, landclaim.size, player:GetPosition()) then return end
 
+    local old_expiry_date = landclaim.expiry_date
     local new_expiry_date, days_to_add = GetLandclaimExpireDate({
         size = landclaim.size,
         new_size = size,
@@ -304,6 +305,12 @@ function sLandclaimManager:UpdateLandclaimExpiry(size, landclaim, player)
     
     landclaim:UpdateExpiryDate(new_expiry_date)
     Chat:Send(player, string.format("Extended %s duration to %d days.", landclaim.name, days_to_add), Color.Green)
+    
+    Events:Fire("Discord", {
+        channel = "Build",
+        content = string.format("%s [%s] added %d days to landclaim expiry. Old: %s New: %s (%s)", 
+            player:GetName(), tostring(player:GetSteamId()), days_to_add, old_expiry_date, landclaim.expiry_date, landclaim:ToLogString())
+    })
 end
 
 function sLandclaimManager:PlaceLandclaim(size, player)
@@ -342,6 +349,11 @@ function sLandclaimManager:PlaceLandclaim(size, player)
     landclaim:Sync()
     Chat:Send(player, "LandClaim placed successfully!", Color.Green)
 
+    Events:Fire("Discord", {
+        channel = "Build",
+        content = string.format("%s [%s] placed a landclaim of size %d at pos %s (%s)", 
+            player:GetName(), tostring(player:GetSteamId()), landclaim_data.size, landclaim_data.position, landclaim:ToLogString())
+    })
 end
 
 function sLandclaimManager:SendPlayerErrorMessage(player)
