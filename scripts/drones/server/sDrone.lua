@@ -236,7 +236,8 @@ function sDrone:Destroyed(args)
     Events:Fire("drones/DroneDestroyed", {
         player = args.player,
         exp_split = exp_split,
-        drone_level = self.level
+        drone_level = self.level,
+        damage_entity = args.type
     })
     
     Timer.SetTimeout(1000, function()

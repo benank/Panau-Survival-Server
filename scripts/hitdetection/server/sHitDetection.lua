@@ -843,6 +843,7 @@ function sHitDetection:DetectDroneHit(args, player)
     Events:Fire("HitDetection/DroneDamaged", {
         player = player,
         drone_id = args.drone_id,
+        type = DamageEntity.Bullet,
         damage = damage * 100,
         hit_position = args.hit_position
     })
