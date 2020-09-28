@@ -53,7 +53,12 @@ end
 
 function sExp:DroneDestroyed(args)
 
-    local exp_earned = Exp.DestroyDrone.Base + Exp.DestroyDrone.Per_Level * args.drone_level
+    if not args.damage_entity then return end
+
+    local exp_earned_data = Exp.DestroyDrone[args.damage_entity]
+    if not exp_earned_data then return end
+
+    local exp_earned = exp_earned_data.base + exp_earned_data.per_level * args.drone_level
     if not exp_earned then return end
 
     -- +10% extra total exp for each extra player that helps to kill a drone

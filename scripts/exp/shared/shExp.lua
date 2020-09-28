@@ -53,8 +53,16 @@ Exp =
     },
     DestroyDrone = 
     {
-        Base = 15,
-        Per_Level = 10,
+        [DamageEntity.Bullet] =         {base = 15, per_level = 8},
+        [DamageEntity.Explosion] =      {base = 10, per_level = 5},
+        [DamageEntity.Mine] =           {base = 10, per_level = 5},
+        [DamageEntity.Claymore] =       {base = 10, per_level = 5},
+        [DamageEntity.HEGrenade] =      {base = 10, per_level = 5},
+        [DamageEntity.LaserGrenade] =   {base = 10, per_level = 5},
+        [DamageEntity.C4] =             {base = 10, per_level = 3},
+        [DamageEntity.CruiseMissile] =  {base = 3, per_level = 2},
+        [DamageEntity.AreaBombing] =    {base = 3, per_level = 2},
+        [DamageEntity.TacticalNuke] =   {base = 3, per_level = 2},
         AdditionalPercentPerPlayer = 0.1 -- X% more total exp for each player who damages a drone
     },
     DestroyExplosive = 
@@ -95,5 +103,5 @@ function GetKillLevelModifier(killer_level, killed_level)
 end
 
 function GetExpLostOnDeath(level)
-    return 5 * level
+    return 10 * level
 end
