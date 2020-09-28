@@ -24,7 +24,5 @@ Config =
         [220] = 1,
         [226] = 1,
         [230] = 1
-    },
-    player_base_max_objects = 500,
-    player_base_max_height = 500,
+    }
 }

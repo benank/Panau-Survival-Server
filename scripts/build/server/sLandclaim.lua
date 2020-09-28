@@ -210,6 +210,7 @@ function sLandclaim:PlaceObject(args)
     if not self:CanPlayerAccess(args.player, self.access_mode) then return end
 
     if args.player:GetPosition():Distance(args.position) > 20 then return end
+    if args.position.y < LandclaimObjectConfig.min_height or args.position.y > LandclaimObjectConfig.max_height then return end
 
     local object = 
     {

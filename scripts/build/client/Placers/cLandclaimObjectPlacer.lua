@@ -277,7 +277,7 @@ function cLandclaimObjectPlacer:Render(args)
 
     -- Move CanBuildInLandclaim to OnPlace check if it gets too laggy
     can_place_here = self:CheckBoundingBox() and self:CanBuildInLandclaim() and can_place_here
-    can_place_here = can_place_here and self.object:GetPosition().y > 200
+    can_place_here = can_place_here and self.object:GetPosition().y > LandclaimObjectConfig.min_height and self.object:GetPosition().y < LandclaimObjectConfig.max_height 
     self.can_place_here = can_place_here
     self:RenderText(can_place_here)
 
