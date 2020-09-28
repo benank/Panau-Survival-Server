@@ -314,7 +314,32 @@ end
 function Nametags:DrawDrone(args)
     local drone = args.drone
     local pos = args.position + Vector3.Up * 0.5
-    self:DrawFullTag( pos, "Drone", 5, Color.Red, drone.health / drone.max_health, nil, drone.level )
+    self:DrawFullTag( pos, "Drone", 5, self:GetDroneNameColor(args.drone.level), drone.health / drone.max_health, nil, drone.level )
+end
+
+function Nametags:GetDroneNameColor(drone_level)
+
+    local LevelCutoffs =
+    {
+        [0] = -1,
+        [5] = 0,
+        [10] = 1,
+        [15] = 2,
+        [20] = 3,
+        [25] = 4,
+        [30] = 5
+    }
+
+    if not LocalPlayer:GetValue("Exp") then return end
+    local player_level = LocalPlayer:GetValue("Exp").level
+    local cutoff_level = GetMaxFromLevel(player_level, LevelCutoffs)
+    local level_difference = drone_level - player_level
+
+    if cutoff_level ~= nil and drone_level <= cutoff_level then
+        return Color.Gray
+    else
+        return Color.FromHSV(60 - 60 * math.clamp(level_difference / (player_level / 2 + 1), -1, 1), 1, 1)
+    end
 end
 
 function Nametags:DrawPlayer( player_data )
