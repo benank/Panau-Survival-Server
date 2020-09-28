@@ -346,8 +346,8 @@ function sLandclaim:DamageObject(args, player)
 
     Events:Fire("Discord", {
         channel = "Build",
-        content = string.format("%s [%s] damaged object %s %d for %.2f damage using %s (%s)", 
-            player:GetName(), tostring(player:GetSteamId()), object.name, object.id, damage, args.type, self:ToLogString())
+        content = string.format("%s [%s] damaged object %s %d for %.0f damage using %s (Remaining HP: %.0f) (%s)", 
+            player:GetName(), tostring(player:GetSteamId()), object.name, object.id, damage, args.type, object.health, self:ToLogString())
     })
 
     if object.health <= 0 then
