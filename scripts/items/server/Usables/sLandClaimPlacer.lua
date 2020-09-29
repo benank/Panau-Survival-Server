@@ -86,6 +86,7 @@ function sLandClaimPlacer:CancelLandclaimPlacement(args, player)
     if not player:GetValue("LandclaimUsingItem") then return end
 
     player:SetValue("LandclaimUsingItem", nil)
+    Inventory.OperationBlock({player = player, change = -1})
 
 end
 
