@@ -432,6 +432,12 @@ function sLandclaim:Expire()
         channel = "Build",
         content = string.format("Landclaim expired (%s)", self:ToLogString())
     })
+
+    Events:Fire("SendPlayerPersistentMessage", {
+        steam_id = self.owner_id,
+        message = string.format("Your landclaim %s expired!", self.name),
+        color = Color(200, 0, 0)
+    })
 end
 
 -- "Deletes" a landclaim by setting it to be inactive
