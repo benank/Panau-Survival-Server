@@ -271,7 +271,7 @@ function sHitDetection:Respawn(args, player)
 
     if not survival then return end
 
-    if survival.hunger <= 10 or survival.thirst <= 20 then
+    if survival.hunger <= 20 or survival.thirst <= 20 then
         Chat:Send(player, "You cannot use this command right now.", Color.Red)
         return
     end
