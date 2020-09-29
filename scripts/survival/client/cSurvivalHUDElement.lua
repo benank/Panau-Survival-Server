@@ -88,8 +88,8 @@ function cSurvivalHUDElement:RenderLarge()
         percent_text = string.format("%.0f%%", math.floor((self.percent + self.percent2) * 100 / 2))
     end
 
-    local text_width = Render:GetTextWidth(percent_text, 18)
-    Render:DrawText(Vector2(margin + self.large_size.x - percent_size.x / 2 - text_width / 2, 0), percent_text, Color.White, 18 * conversion)
+    local text_width = Render:GetTextWidth(percent_text, 16 * conversion)
+    Render:DrawText(Vector2(margin + self.large_size.x - percent_size.x / 2 - text_width / 2, 0), percent_text, Color.White, 16 * conversion)
 
 end
 
