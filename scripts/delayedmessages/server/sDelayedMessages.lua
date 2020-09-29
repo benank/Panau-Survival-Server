@@ -10,13 +10,13 @@ function sDelayedMessages:__init()
 
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
-    Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
+    Events:Subscribe("LoadStatus", self, self.LoadStatus)
 
     -- Send a player with a steam_id a message even if they are not online
     Events:Subscribe("SendPlayerPersistentMessage", self, self.TryToSendToPlayer)
 end
 
-function sDelayedMessages:PlayerJoin(args)
+function sDelayedMessages:LoadStatus(args)
     self.players[tostring(args.player:GetSteamId())] = args.player
     self:EnsurePlayerExistsInDB(args.player)
     self:SendPlayerStoredMessages(args.player)
