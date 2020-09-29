@@ -71,6 +71,8 @@ end
 
 function sLandclaim:PressBuildObjectMenuButton(args, player)
 
+    if not self:IsActive() then return end
+
     local object = self.objects[args.id]
     if not object then return end
 
@@ -414,6 +416,24 @@ function sLandclaim:UpdateExpiryDate(new_expiry_date)
     })
 end
 
+-- Called when the landclaim expires
+function sLandclaim:Expire()
+    self.state = LandclaimStateEnum.Inactive
+    self:UpdateToDB()
+    
+    self:SyncSmallUpdate({
+        type = "state_change",
+        state = self.state
+    })
+
+    self:OnDeleteOrExpire()
+    
+    Events:Fire("Discord", {
+        channel = "Build",
+        content = string.format("Landclaim expired (%s)", self:ToLogString())
+    })
+end
+
 -- "Deletes" a landclaim by setting it to be inactive
 function sLandclaim:Delete(player)
     self.state = LandclaimStateEnum.Inactive
@@ -423,6 +443,8 @@ function sLandclaim:Delete(player)
         type = "state_change",
         state = self.state
     })
+
+    self:OnDeleteOrExpire()
     
     Events:Fire("Discord", {
         channel = "Build",

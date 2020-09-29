@@ -65,9 +65,9 @@ Exp =
     },
     DestroyBuildObject = 
     {
-        ["Wall"] = 50,
-        ["Door"] = 100,
-        ["Bed"] = 75
+        ["Wall"] = 10,
+        ["Door"] = 10,
+        ["Bed"] = 5
     },
     KillExpireTime = 60 * 60 * 4, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
     UnfriendTime = 60 * 60 * 24 * 7, -- Timer for killing a recently unfriended person

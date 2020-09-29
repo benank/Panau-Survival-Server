@@ -26,6 +26,11 @@ function sLandclaimManager:__init()
     Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
     Events:Subscribe("items/DetonateOnBuildObject", self, self.DetonateOnBuildObject)
 
+    -- Check for expired landclaims every 3 hours
+    Timer.SetInterval(1000 * 60 * 60 * 3, function()
+        self:CheckForExpiredLandclaims()
+    end)
+
     if IsTest then
         Events:Subscribe("PlayerChat", function(args)
             if args.text == "/objtest" and IsAdmin(args.player) then
@@ -34,6 +39,17 @@ function sLandclaimManager:__init()
         end)
     end
 
+end
+
+function sLandclaimManager:CheckForExpiredLandclaims()
+    for steam_id, player_landclaims in pairs(self.landclaims) do
+        for id, landclaim in pairs(player_landclaims) do
+            if landclaim.state == LandclaimStateEnum.Active and GetLandclaimDaysTillExpiry(landclaim.expiry_date) <= 0 then
+                landclaim:Expire()
+            end
+        end
+    end
+    self:UpdateLandclaimsSharedObject()
 end
 
 function sLandclaimManager:PlayerQuit(args)
