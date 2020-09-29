@@ -706,7 +706,7 @@ Items =
         name = "Door",
         category = "Survival",
         stacklimit = 3,
-        max_durability = 200,
+        max_durability = 400,
         can_use = true,
         durable = true
     },
