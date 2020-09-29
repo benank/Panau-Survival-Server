@@ -11,7 +11,6 @@ function sLandclaimManager:__init()
     self.landclaims_sharedobject = SharedObject.Create("Landclaims")
     self:UpdateLandclaimsSharedObject()
 
-    Network:Subscribe("build/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Network:Subscribe("build/DeleteLandclaim", self, self.DeleteLandclaim)
     Network:Subscribe("build/RenameLandclaim", self, self.RenameLandclaim)
     Network:Subscribe("build/ChangeLandclaimAccessMode", self, self.ChangeLandclaimAccessMode)
@@ -20,6 +19,7 @@ function sLandclaimManager:__init()
     Network:Subscribe("build/ActivateLight", self, self.ActivateLight)
     Network:Subscribe("build/ActivateDoor", self, self.ActivateDoor)
 
+    Events:Subscribe("items/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
@@ -393,11 +393,11 @@ function sLandclaimManager:GetPlayerActiveLandclaims(player)
     return active_landclaims
 end
 
-function sLandclaimManager:TryPlaceLandclaim(args, player)
+function sLandclaimManager:TryPlaceLandclaim(args)
 
-    local player_iu = player:GetValue("LandclaimUsingItem")
+    local player = args.player
+    local player_iu = args.player_iu
 
-    player:SetValue("LandclaimUsingItem", nil)
     Inventory.OperationBlock({player = player, change = -1})
 
     if not player_iu then return end
