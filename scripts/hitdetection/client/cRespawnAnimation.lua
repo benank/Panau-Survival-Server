@@ -47,7 +47,7 @@ end
 function cRespawnAnimation:Render(args)
 
     -- Render: RESPAWNING IN 30 SECONDS, MOVE TO CANCEL
-    local text = string.format("RESPAWNING IN %.0f SECONDS", self.time_to_respawn - self.respawn_timer:GetSeconds())
+    local text = string.format("RESPAWNING IN %.0f SECONDS", math.max(0, self.time_to_respawn - self.respawn_timer:GetSeconds()))
     local size = Render.Size.y * 0.05
 
     local text_size = Render:GetTextSize(text, size)
