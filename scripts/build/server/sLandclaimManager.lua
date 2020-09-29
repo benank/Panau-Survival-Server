@@ -376,7 +376,7 @@ function sLandclaimManager:PlaceLandclaim(size, player)
 end
 
 function sLandclaimManager:SendPlayerErrorMessage(player)
-    Chat:Send(player, "Placing landclaim failed!", Color.Red)
+    Chat:Send(player, "Placing LandClaim failed!", Color.Red)
 end
 
 function sLandclaimManager:GetPlayerActiveLandclaims(player)
@@ -397,8 +397,7 @@ function sLandclaimManager:TryPlaceLandclaim(args)
 
     local player = args.player
     local player_iu = args.player_iu
-
-    Inventory.OperationBlock({player = player, change = -1})
+    local steam_id = tostring(player:GetSteamId())
 
     if not player_iu then return end
     if not player_iu.item then return end
@@ -414,19 +413,10 @@ function sLandclaimManager:TryPlaceLandclaim(args)
         return
     end
 
-
     local position = player:GetPosition()
     
     if player:InVehicle() then
         Chat:Send(player, "Cannot place landclaims while in a vehicle!", Color.Red)
-        return
-    end
-
-    local steam_id = tostring(player:GetSteamId())
-
-    local player_landclaims = self:GetPlayerActiveLandclaims(player)
-    if count_table(player_landclaims) >= player:GetValue("MaxLandclaims") then
-        Chat:Send(player, "You already have the maximum amount of landclaims placed!", Color.Red)
         return
     end
 
@@ -468,11 +458,17 @@ function sLandclaimManager:TryPlaceLandclaim(args)
     })
 
     -- Check for proximity to existing owned landclaims
+    local player_landclaims = self:GetPlayerActiveLandclaims(player)
     for id, landclaim in pairs(player_landclaims) do
         if IsInSquare(landclaim.position, landclaim.size, position) then
             self:UpdateLandclaimExpiry(size, landclaim, player)
             return
         end
+    end
+
+    if count_table(player_landclaims) >= player:GetValue("MaxLandclaims") then
+        Chat:Send(player, "You already have the maximum amount of landclaims placed!", Color.Red)
+        return
     end
 
     self:PlaceLandclaim(size, player)
