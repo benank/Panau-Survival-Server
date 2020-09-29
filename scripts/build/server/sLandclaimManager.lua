@@ -361,15 +361,18 @@ function sLandclaimManager:PlaceLandclaim(size, player)
     local result = cmd:Execute()
     landclaim_data.id = tonumber(result[1].insert_id)
 
+    Chat:Send(player, "Placing landclaim...", Color.Yellow)
     local landclaim = self:AddClaim(landclaim_data)
-    landclaim:Sync()
-    Chat:Send(player, "LandClaim placed successfully!", Color.Green)
+    landclaim:ClaimNearbyUnclaimedObjects(player, function()
+        landclaim:Sync()
+        Chat:Send(player, "LandClaim placed successfully!", Color.Green)
 
-    Events:Fire("Discord", {
-        channel = "Build",
-        content = string.format("%s [%s] placed a landclaim of size %d at pos %s (%s)", 
-            player:GetName(), tostring(player:GetSteamId()), landclaim_data.size, landclaim_data.position, landclaim:ToLogString())
-    })
+        Events:Fire("Discord", {
+            channel = "Build",
+            content = string.format("%s [%s] placed a landclaim of size %d at pos %s (%s)", 
+                player:GetName(), tostring(player:GetSteamId()), landclaim_data.size, landclaim_data.position, landclaim:ToLogString())
+        })
+    end)
 end
 
 function sLandclaimManager:SendPlayerErrorMessage(player)

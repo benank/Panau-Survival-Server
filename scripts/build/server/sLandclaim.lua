@@ -18,14 +18,21 @@ function sLandclaim:__init(args)
 end
 
 -- Called when the landclaim is deleted or expires
-function sLandclaim:OnDeleteOrExpire()
+function sLandclaim:OnDeleteOrExpire(callback)
 
     -- Remove all bed spawns
     Thread(function()
         for id, object in pairs(self.objects) do
-            object:RemoveAllBedSpawns()
-            Timer.Sleep(1)
+            if object:RemoveAllBedSpawns() then
+                self:SyncSmallUpdate({
+                    type = "bed_update",
+                    id = object.id,
+                    player_spawns = object.custom_data.player_spawns
+                })
+                Timer.Sleep(1)
+            end
         end
+        callback()
     end)
 
 end
@@ -67,6 +74,47 @@ end
 
 function sLandclaim:ToLogString()
     return string.format("LC: %d Owner: %s", self.id, self.owner_id)
+end
+
+-- Called when the landclaim is placed. Looks for objects in expired landclaims within this claim and adds them to the list of objects.
+function sLandclaim:ClaimNearbyUnclaimedObjects(player, callback)
+
+    self.objects = {}
+
+    Thread(function()
+        for steam_id, player_landclaims in pairs(sLandclaimManager.landclaims) do
+            for id, landclaim in pairs(player_landclaims) do
+                -- Find inactivate and overlapping landclaims
+                local landclaim_updated = false
+                if not landclaim:IsActive() and IsInSquare(landclaim.position, landclaim.size * 2 + self.size, self.position) then
+
+                    for _, object in pairs(landclaim.objects) do
+                        -- Find objects within the bounds of this landclaim
+                        if IsInSquare(object.position, self.size, self.position) and IsValid(player) then
+                            local id = self:GetNewUniqueObjectId()
+                            object.id = id
+                            object.owner_id = self.owner_id
+                            object.owner_name = player:GetName()
+                            self.objects[id] = object
+                            landclaim.objects[_] = nil
+                            landclaim_updated = true
+                            Timer.Sleep(1)
+                        end
+                    end
+
+                end
+
+                if landclaim_updated then
+                    landclaim:UpdateToDB()
+                    landclaim:Sync()
+                    Timer.Sleep(1)
+                end
+            end
+        end
+
+        self:UpdateToDB()
+        callback()
+    end)
 end
 
 function sLandclaim:PressBuildObjectMenuButton(args, player)
@@ -419,15 +467,16 @@ end
 -- Called when the landclaim expires
 function sLandclaim:Expire()
     self.state = LandclaimStateEnum.Inactive
-    self:UpdateToDB()
+
+    self:OnDeleteOrExpire(function()
+        self:UpdateToDB()
+    end)
     
     self:SyncSmallUpdate({
         type = "state_change",
         state = self.state
     })
 
-    self:OnDeleteOrExpire()
-    
     Events:Fire("Discord", {
         channel = "Build",
         content = string.format("Landclaim expired (%s)", self:ToLogString())
@@ -443,15 +492,15 @@ end
 -- "Deletes" a landclaim by setting it to be inactive
 function sLandclaim:Delete(player)
     self.state = LandclaimStateEnum.Inactive
-    self:UpdateToDB()
+    self:OnDeleteOrExpire(function()
+        self:UpdateToDB()
+    end)
     
     self:SyncSmallUpdate({
         type = "state_change",
         state = self.state
     })
 
-    self:OnDeleteOrExpire()
-    
     Events:Fire("Discord", {
         channel = "Build",
         content = string.format("%s [%s] deleted landclaim (%s)", player:GetName(), tostring(player:GetSteamId()), self:ToLogString())

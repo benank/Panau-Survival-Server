@@ -124,6 +124,10 @@ function cLandclaim:Unload()
 end
 
 function cLandclaim:ModuleUnload()
+    self:Remove()
+end
+
+function cLandclaim:Remove()
     self.loaded = false
     self.loading = false
     for id, object in pairs(self.objects) do

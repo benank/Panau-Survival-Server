@@ -29,6 +29,10 @@ function sLandclaimObject:RemoveAllBedSpawns()
         })
     end
 
+    self.custom_data.player_spawns = {}
+
+    return true
+
 end
 
 -- Get default custom data for an object when it is first placed, like a door access mode

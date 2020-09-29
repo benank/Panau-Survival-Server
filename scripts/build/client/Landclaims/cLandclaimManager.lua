@@ -182,6 +182,12 @@ function cLandclaimManager:SyncLandclaim(args)
         self.landclaims[args.owner_id] = {}
     end
 
+    -- Remove existing landclaim if there is one
+    if self.landclaims[args.owner_id][args.id] then
+        self.landclaims[args.owner_id][args.id]:Remove()
+        self.landclaims[args.owner_id][args.id] = nil
+    end
+
     cLandclaim(args, function(landclaim)
         self.landclaims[args.owner_id][args.id] = landclaim
 
