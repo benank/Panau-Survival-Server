@@ -104,7 +104,7 @@ function cLandclaimObjectPlacer:StartObjectPlacement(args)
     LocalPlayer:SetValue("PlacingLandclaimObject", true)
 
     self.name = args.name
-    self.display_bb = true or args.display_bb == true
+    self.display_bb = args.display_bb == true
     self.angle_offset = args.angle ~= nil and args.angle or Angle()
     self.offset = args.offset or Vector3()
     self.place_entity = args.place_entity
