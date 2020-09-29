@@ -264,7 +264,7 @@ function cLandclaim:CanPlayerPlaceObject(player)
     local is_owner = self.owner_id == tostring(player:GetSteamId())
 
     if self.access_mode == LandclaimAccessModeEnum.OnlyMe then
-        return self.owner_id == tostring(player:GetSteamId())
+        return is_owner
     elseif self.access_mode == LandclaimAccessModeEnum.Friends then
         return AreFriends(player, self.owner_id) or is_owner
     elseif self.access_mode == LandclaimAccessModeEnum.Clan then

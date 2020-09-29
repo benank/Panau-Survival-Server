@@ -220,7 +220,9 @@ function sLandclaim:PlaceObject(args)
         collision = BuildObjects[args.player_iu.item.name].collision,
         position = args.position,
         angle = args.angle,
-        health = args.player_iu.item.durability
+        health = args.player_iu.item.durability,
+        owner_id = tostring(args.player:GetSteamId()),
+        owner_name = args.player:GetName()
     }
 
     self.objects[object.id] = sLandclaimObject(object)
@@ -294,12 +296,19 @@ function sLandclaim:ActivateDoor(args, player)
     })
 end
 
+function sLandclaim:CanPlayerRemoveObject(object, player)
+    local steam_id = tostring(player:GetSteamId())
+    return steam_id == self.owner_id or object.owner_id == steam_id
+end
+
 -- Called when a player tries to remove an object in the landclaim
 function sLandclaim:RemoveObject(args, player)
     if not self:CanPlayerAccess(player, self.access_mode) then return end
 
     local object = self.objects[args.id]
     if not object then return end
+
+    if not self:CanPlayerRemoveObject(object, player) then return end -- Player did not place object or is not owner
 
     local item = CreateItem({name = object.name, amount = 1, durability = object.health})
     local stack = shStack({contents = {item}})

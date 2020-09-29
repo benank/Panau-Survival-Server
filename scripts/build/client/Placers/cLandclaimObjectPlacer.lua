@@ -15,6 +15,7 @@ function cLandclaimObjectPlacer:__init()
     self.default_range = 12
     self.range = self.default_range
     self.snap = false
+    self.flat = false
     self.rotation_axis = 1
 
     self.text_color = Color(211, 167, 167)
@@ -25,7 +26,8 @@ function cLandclaimObjectPlacer:__init()
         "Mouse Wheel: Rotate",
         "Shift + Mouse Wheel: Rotation speed (%.0f deg)",
         "Q: Rotation Axis (%s)",
-        "X: Toggle Snap (%s)"
+        "X: Toggle Snap (%s)",
+        "R: Toggle Flat (%s)"
     }
 
     self.subs = {}
@@ -102,7 +104,7 @@ function cLandclaimObjectPlacer:StartObjectPlacement(args)
     LocalPlayer:SetValue("PlacingLandclaimObject", true)
 
     self.name = args.name
-    self.display_bb = args.display_bb == true
+    self.display_bb = true or args.display_bb == true
     self.angle_offset = args.angle ~= nil and args.angle or Angle()
     self.offset = args.offset or Vector3()
     self.place_entity = args.place_entity
@@ -237,6 +239,16 @@ function cLandclaimObjectPlacer:Render(args)
         self.rotation_offset[3] * conversion
     )
     local ang = Angle.FromVectors(Vector3.Up, ray.normal) * rotation_offset * self.angle_offset
+
+    if self.flat and self.name == "Wall" then
+        if self.rotation_axis == 1 then
+            ang.roll = 0.157 + math.pi / 2
+        else
+            ang.roll = 0.157
+            --ang.pitch = ang.pitch + math.pi
+        end
+    end
+
     self.object:SetAngle(ang)
 
     for _, data in pairs(BlacklistedAreas) do
@@ -338,10 +350,10 @@ function cLandclaimObjectPlacer:CheckBoundingBox()
     -- Don't check bounding box for build items because some of them are terrible
     if self.vertices then
         local angle = self.object:GetAngle()
-        local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.25, 0)
+        local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.1, 0)
         for i = 1, #self.vertices, 2 do
-            local p1 = angle * self.vertices[i].position * 0.7 * self.bb_mod + object_pos
-            local p2 = angle * self.vertices[i+1].position * 0.7 * self.bb_mod + object_pos
+            local p1 = angle * self.vertices[i].position * 0.5 * self.bb_mod + object_pos
+            local p2 = angle * self.vertices[i+1].position * 0.5 * self.bb_mod + object_pos
 
             local diff = p2 - p1
             local len = diff:Length()
@@ -375,6 +387,10 @@ function cLandclaimObjectPlacer:RenderText(can_place_here)
         elseif index == 6 then
             if self.name == "Wall" then
                 self:DrawShadowedText(render_position, string.format(text, self.snap and "Enabled" or "Disabled"), self.text_color, text_size)
+            end
+        elseif index == 7 then
+            if self.name == "Wall" then
+                self:DrawShadowedText(render_position, string.format(text, self.flat and "Enabled" or "Disabled"), self.text_color, text_size)
             end
         else
             self:DrawShadowedText(render_position, string.format(text, self.rotation_speed), self.text_color, text_size)
@@ -454,6 +470,8 @@ function cLandclaimObjectPlacer:KeyUp(args)
         self.rotation_axis = self.rotation_axis == 1 and 3 or 1
     elseif args.key == string.byte("X") then
         self.snap = not self.snap
+    elseif args.key == string.byte("R") then
+        self.flat = not self.flat
     end
 
 end

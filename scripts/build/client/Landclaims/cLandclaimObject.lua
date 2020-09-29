@@ -4,6 +4,8 @@ class 'cLandclaimObject'
 function cLandclaimObject:__init(args)
 
     self.id = args.id -- Unique object id per claim, changes every reload
+    self.owner_id = args.owner_id
+    self.owner_name = args.owner_name
     self.name = args.name
     self.position = args.position
     self.angle = args.angle
@@ -47,6 +49,11 @@ function cLandclaimObject:Create(no_collision)
             self.extension:StreamOut()
         end
     end
+end
+
+function cLandclaimObject:CanPlayerRemoveObject(player)
+    local steam_id = tostring(player:GetSteamId())
+    return self.landclaim.owner_id == steam_id or self.owner_id == steam_id
 end
 
 -- Destroys the ClientStaticObject in the world

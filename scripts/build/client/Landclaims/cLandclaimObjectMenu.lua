@@ -56,6 +56,11 @@ function cLandclaimObjectMenu:TryToOpenMenu()
     if LocalPlayer:GetValue("InventoryOpen") then return end
     if LocalPlayer:InVehicle() then return end
 
+    if self.open then
+        self:CloseMenu()
+        return
+    end
+
     -- Get current object that we are looking at
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, self.range)
     local landclaim_object = self:GetLandclaimObjectFromRaycastEntity(ray.entity)
@@ -72,6 +77,10 @@ function cLandclaimObjectMenu:TryToOpenMenu()
     local options = {}
 
     if landclaim_object.landclaim:CanPlayerPlaceObject(LocalPlayer) then
+        options.name = true
+    end
+
+    if landclaim_object.landclaim:CanPlayerPlaceObject(LocalPlayer) and landclaim_object:CanPlayerRemoveObject(LocalPlayer) then
         options.remove = true
     end
 
@@ -106,6 +115,7 @@ Recreates the menu with specified options
 
 function cLandclaimObjectMenu:CreateMenu(options)
 
+    self.open = true
     if self.menu then
         self.menu:Remove()
         Events:Unsubscribe(self.lpi)
@@ -117,6 +127,10 @@ function cLandclaimObjectMenu:CreateMenu(options)
     Mouse:SetPosition(Render.Size / 2)
     Mouse:SetVisible(true)
     self.button_names = {}
+
+    if options.name then
+        table.insert(self.button_names, string.format("Owner: %s", self.object.owner_name))
+    end
 
     if options.access then
         table.insert(self.button_names, "Access: Only Me")
@@ -141,7 +155,7 @@ function cLandclaimObjectMenu:CreateMenu(options)
 
     self.menu = Rectangle.Create()
     self.menu:SetColor(Color(0, 0, 0, 150))
-    self.menu:SetSize(Vector2(Render.Size.x * 0.1, button_height * count_table(self.button_names)))
+    self.menu:SetSize(Vector2(Render.Size.x * 0.125, button_height * count_table(self.button_names)))
     self.menu:SetPosition(Render.Size / 2 + Vector2(0, 50) - Vector2(self.menu:GetSize().x / 2, 0))
     self.render = self.menu:Subscribe("PostRender", self, self.PostRender)
 
@@ -153,7 +167,11 @@ function cLandclaimObjectMenu:CreateMenu(options)
         button:SetTextSize(button:GetHeight() / 2)
         button:SetDock(GwenPosition.Top)
         button:SetAlignment(GwenPosition.Fill + GwenPosition.CenterV)
-        button:SetTextPadding(Vector2(button:GetWidth() * 0.25, 0), Vector2.Zero)
+        if name:find("Access") then
+            button:SetTextPadding(Vector2(button:GetWidth() * 0.25, 0), Vector2.Zero)
+        else
+            button:SetAlignment(GwenPosition.Fill + GwenPosition.Center)
+        end
         button:SetBackgroundVisible(false)
         button:SetDataString("button_name", name)
         button:Subscribe("Press", self, self.PressButton)
@@ -174,6 +192,7 @@ function cLandclaimObjectMenu:CloseMenu()
     self.lpi = nil
     Mouse:SetVisible(false)
     self.object = nil
+    self.open = false
 end
 
 function cLandclaimObjectMenu:PostRender(args)
@@ -203,7 +222,7 @@ function cLandclaimObjectMenu:PostRender(args)
         local access_mode = self.object.custom_data.access_mode
         local circle_size =  size.y / 3 * 0.15
         Render:FillCircle(
-            Vector2(size.x * 0.125, button_height / 2 + button_height * (access_mode - 1)) - Vector2(circle_size, circle_size) / 2, 
+            Vector2(size.x * 0.125, button_height / 2 + button_height * (access_mode)) - Vector2(circle_size, circle_size) / 2, 
             circle_size, 
             Color.Red)
     end
@@ -216,8 +235,10 @@ function cLandclaimObjectMenu:PressButton(btn)
 
     if not self.object then return end
 
+    if btn:GetDataString("button_name"):find("Owner:") then return end
     if self.button_cooldown:GetSeconds() < 1 then return end
     self.button_cooldown:Restart()
+
 
     Network:Send("build/PressBuildObjectMenuButton", {
         name = btn:GetDataString("button_name"),

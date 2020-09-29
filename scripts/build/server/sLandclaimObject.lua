@@ -4,6 +4,8 @@ class 'sLandclaimObject'
 function sLandclaimObject:__init(args)
 
     self.id = args.id -- Unique object id per claim, changes every reload
+    self.owner_id = args.owner_id -- Steam id of player who placed it
+    self.owner_name = args.owner_name
     self.name = args.name
     self.position = type(args.position) == "string" and DeserializePosition(args.position) or args.position
     self.angle = type(args.angle) == "string" and DeserializeAngle(args.angle) or args.angle
@@ -62,6 +64,8 @@ function sLandclaimObject:GetSyncObject()
         angle = self.angle,
         position = self.position,
         health = self.health,
+        owner_id = self.owner_id,
+        owner_name = self.owner_name,
         custom_data = self.custom_data
     }
 
