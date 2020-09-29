@@ -378,7 +378,7 @@ end
 
 function sExp:PlayerOpenLootbox(args)
 
-    if args.has_been_opened then return end
+    if args.has_been_opened or args.in_sz then return end
 
     local exp_earned = Exp.Lootbox[args.tier]
     if not exp_earned then return end
