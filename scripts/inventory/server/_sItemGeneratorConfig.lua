@@ -96,9 +96,9 @@ LootItems =
             {
                 ["Bubbles"] = {rarity = 0.05, min = 10, max = 20},
                 ["Revolver Ammo"] = {rarity = 0.2, min = 3, max = 6},
-                ["Handgun Ammo"] = {rarity = 0.2, min = 3, max = 6},
-                ["Sawn-Off Ammo"] = {rarity = 0.15, min = 3, max = 6},
-                ["SMG Ammo"] = {rarity = 0.2, min = 5, max = 10},
+                ["Handgun Ammo"] = {rarity = 0.2, min = 4, max = 8},
+                ["Sawn-Off Ammo"] = {rarity = 0.15, min = 4, max = 8},
+                ["SMG Ammo"] = {rarity = 0.2, min = 6, max = 12},
                 ["Shotgun Ammo"] = {rarity = 0.15, min = 3, max = 6},
                 ["Assault Ammo"] = {rarity = 0.05, min = 2, max = 4},
             }
@@ -209,10 +209,10 @@ LootItems =
             rarity = 0.4,
             items = 
             {
-                ["Sawn-Off Ammo"] = {rarity = 0.1, min = 4, max = 8},
-                ["SMG Ammo"] = {rarity = 0.2, min = 6, max = 12},
-                ["Shotgun Ammo"] = {rarity = 0.2, min = 3, max = 6},
-                ["Assault Ammo"] = {rarity = 0.2, min = 4, max = 7},
+                ["Sawn-Off Ammo"] = {rarity = 0.1, min = 6, max = 12},
+                ["SMG Ammo"] = {rarity = 0.2, min = 9, max = 18},
+                ["Shotgun Ammo"] = {rarity = 0.2, min = 4, max = 8},
+                ["Assault Ammo"] = {rarity = 0.2, min = 5, max = 10},
                 ["Sniper Ammo"] = {rarity = 0.1, min = 1, max = 2},
                 ["GrLauncher Ammo"] = {rarity = 0.1, min = 1, max = 1},
                 ["Machine Gun Ammo"] = {rarity = 0.1, min = 4, max = 8},
@@ -313,11 +313,11 @@ LootItems =
             rarity = 0.515,
             items = 
             {
-                ["Shotgun Ammo"] = {rarity = 0.213, min = 3, max = 6},
-                ["Assault Ammo"] = {rarity = 0.21, min = 5, max = 10},
-                ["Sniper Ammo"] = {rarity = 0.206, min = 1, max = 2},
+                ["Shotgun Ammo"] = {rarity = 0.213, min = 5, max = 10},
+                ["Assault Ammo"] = {rarity = 0.21, min = 8, max = 15},
+                ["Sniper Ammo"] = {rarity = 0.206, min = 2, max = 3},
                 ["GrLauncher Ammo"] = {rarity = 0.12, min = 1, max = 1},
-                ["Machine Gun Ammo"] = {rarity = 0.206, min = 4, max = 8},
+                ["Machine Gun Ammo"] = {rarity = 0.206, min = 6, max = 12},
                 ["Rockets"] = {rarity = 0.045, min = 1, max = 1},
             }
         },
