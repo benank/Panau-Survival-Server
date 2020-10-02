@@ -375,8 +375,8 @@ function sLandclaimManager:PlaceLandclaim(size, player)
     end)
 end
 
-function sLandclaimManager:SendPlayerErrorMessage(player)
-    Chat:Send(player, "Placing LandClaim failed!", Color.Red)
+function sLandclaimManager:SendPlayerErrorMessage(player, reason)
+    Chat:Send(player, "Placing LandClaim failed! Reason: " .. tostring(reason), Color.Red)
 end
 
 function sLandclaimManager:GetPlayerActiveLandclaims(player)
@@ -409,7 +409,7 @@ function sLandclaimManager:TryPlaceLandclaim(args)
     local size = tonumber(item.custom_data.size)
 
     if not size then
-        self:SendPlayerErrorMessage(player)
+        self:SendPlayerErrorMessage(player, "Generic Error")
         return
     end
 
@@ -422,7 +422,7 @@ function sLandclaimManager:TryPlaceLandclaim(args)
 
     -- Not within map bounds
     if not IsInSquare(Vector3(), 32768, position) then
-        self:SendPlayerErrorMessage(player)
+        self:SendPlayerErrorMessage(player, "Out of Map")
         return
     end
 
@@ -430,13 +430,13 @@ function sLandclaimManager:TryPlaceLandclaim(args)
 
     for _, area in pairs(ModelChangeAreas) do
         if Distance2D(position, area.pos) < 300 + size then
-            self:SendPlayerErrorMessage(player)
+            self:SendPlayerErrorMessage(player, "Restricted Area")
             return
         end
     end
 
     if IsInLocation(position, size, BlacklistedLandclaimAreas) then
-        self:SendPlayerErrorMessage(player)
+        self:SendPlayerErrorMessage(player, "Restricted Area")
         return
     end
 
@@ -445,7 +445,7 @@ function sLandclaimManager:TryPlaceLandclaim(args)
         for id, landclaim in pairs(landclaims) do
             if landclaim:IsActive()
             and steamid ~= steam_id and Distance2D(position, landclaim.position) < size / 2 + landclaim.size / 2 + 100 then
-                self:SendPlayerErrorMessage(player)
+                self:SendPlayerErrorMessage(player, "Too close to another LandClaim")
                 return
             end
         end
