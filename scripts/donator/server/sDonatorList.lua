@@ -89,5 +89,10 @@ Donators =
         steam_id = "STEAM_0:0:136258188", 
         name = "Ole Beanie", 
         level = DonatorLevel.Colorful
+    },
+    ["STEAM_0:0:147894155"] = {
+        steam_id = "STEAM_0:0:147894155", 
+        name = "Rosa Syndulla", 
+        level = DonatorLevel.GhostRider
     }
 }
