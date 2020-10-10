@@ -13,7 +13,7 @@ function sDonator:__init()
         ["/togglestreak"] = {level = DonatorLevel.Colorful, msg = "Turns your color streak on/off."},
         ["/toggleghostrider"] = {level = DonatorLevel.GhostRider, msg = "Turns your Ghost Rider head and flame on/off."},
         ["Custom Nametag"] = {level = DonatorLevel.GhostRider, msg = "To get a custom tag instead of [Donator], please contact Lord Farquaad."},
-        ["/togglewings"] = {level = DonatorLevel.ShadowWings, msg = "Turns your Shadow Wings on/off."},
+        ["/togglewings"] = {level = DonatorLevel.ShadowWings, msg = "Turns your Shadow Wings on/off. Keep in mind that Shadow Wings may give away your position due to graphic glitches."},
     }
 
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
