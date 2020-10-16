@@ -15,7 +15,25 @@ function cSafezoneSigns:__init()
             color = Color.White,
             fontsize = 50,
             scale = 0.03
-        }
+        },
+        ["LootSpawns"] = {
+            text = "Spawned Loot: %s",
+            value = "0/0",
+            position = Vector3(-10252.943359, 258.488586, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color.White,
+            fontsize = 50,
+            scale = 0.03
+        },
+        ["Drones"] = {
+            text = "Spawned Drones: %s",
+            value = 0,
+            position = Vector3(-10252.943359, 255.488586, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color.White,
+            fontsize = 50,
+            scale = 0.03
+        },
     }
 
     self.lights = {}
@@ -24,7 +42,7 @@ function cSafezoneSigns:__init()
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
-    Network:Subscribe("ServerStats/UpdatePlayersOnline", self, self.UpdatePlayersOnline)
+    Network:Subscribe("ServerStats/Update", self, self.Update)
 
 end
 
@@ -111,8 +129,10 @@ function cSafezoneSigns:LoadImages()
 
 end
 
-function cSafezoneSigns:UpdatePlayersOnline(args)
-    self.stats["PlayersOnline"].value = args.online
+function cSafezoneSigns:Update(args)
+    self.stats["PlayersOnline"].value = args.stats["PlayersOnline"]
+    self.stats["LootSpawns"].value = args.stats["LootSpawns"]
+    self.stats["Drones"].value = args.stats["Drones"]
 end
 
 function cSafezoneSigns:ModuleUnload()
