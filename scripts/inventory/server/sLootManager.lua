@@ -238,7 +238,11 @@ function sLootManager:GetNumSpawnedBoxes()
     
     local lootbox_total = 0
     for tier, _ in pairs(self.active_lootboxes) do
-        lootbox_total = lootbox_total + count_table(self.active_lootboxes[tier])
+        for tieid, box in pairs(self.active_lootboxes[tier]) do
+            if box.active then
+                lootbox_total = lootbox_total + 1
+            end
+        end
     end
     return lootbox_total
 
