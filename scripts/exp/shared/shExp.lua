@@ -53,16 +53,16 @@ Exp =
     },
     DestroyDrone = 
     {
-        [DamageEntity.Bullet] =         9,
-        [DamageEntity.Explosion] =      9,
-        [DamageEntity.Mine] =           6,
-        [DamageEntity.Claymore] =       6,
-        [DamageEntity.HEGrenade] =      8,
-        [DamageEntity.LaserGrenade] =   8,
-        [DamageEntity.C4] =             6,
-        [DamageEntity.CruiseMissile] =  2,
-        [DamageEntity.AreaBombing] =    2,
-        [DamageEntity.TacticalNuke] =   2,
+        [DamageEntity.Bullet] =         40,
+        [DamageEntity.Explosion] =      40,
+        [DamageEntity.Mine] =           25,
+        [DamageEntity.Claymore] =       25,
+        [DamageEntity.HEGrenade] =      30,
+        [DamageEntity.LaserGrenade] =   30,
+        [DamageEntity.C4] =             30,
+        [DamageEntity.CruiseMissile] =  15,
+        [DamageEntity.AreaBombing] =    12,
+        [DamageEntity.TacticalNuke] =   12,
         AdditionalPercentPerPlayer = 0.1 -- X% more total exp for each player who damages a drone
     },
     DestroyExplosive = 

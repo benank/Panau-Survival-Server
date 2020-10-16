@@ -16,21 +16,21 @@ function WeaponDamage:__init()
         [WeaponEnum.Revolver] =         {base = 0.18, v_mod = 0.05,  distance_falloff = 300, falloff = falloff_func},
         [WeaponEnum.RocketLauncher] =   {base = 0.15, v_mod = 4,     distance_falloff = 0,   falloff = function() return 1 end, radius = 4},
         [WeaponEnum.SMG] =              {base = 0.08, v_mod = 0.02,  distance_falloff = 100, falloff = falloff_func},
-        [WeaponEnum.Sniper] =           {base = 0.90, v_mod = 0.04,  distance_falloff = 150, falloff = 
-            function(distance, distance_falloff) -- Sniper gains full power at 200+ meters away
+        [WeaponEnum.Sniper] =           {base = 0.90, v_mod = 0.04,  distance_falloff = 100, falloff = 
+            function(distance, distance_falloff) -- Sniper gains full power at 100+ meters away
                 return math.clamp(distance / distance_falloff, 0, 1)
             end},
         [WeaponEnum.SawnOffShotgun] =   {base = 0.15, v_mod = 0.05,  distance_falloff = 16,  falloff = falloff_func},
         [WeaponEnum.Shotgun] =          {base = 0.18, v_mod = 0.05,  distance_falloff = 22,  falloff = falloff_func},
         
         -- Vehicle Weapons
-        [WeaponEnum.V_Minigun] =        {base = 0.08, v_mod = 1,     distance_falloff = 500, falloff = falloff_func},
-        [WeaponEnum.V_Minigun_Warmup] = {base = 0.09, v_mod = 1,     distance_falloff = 600, falloff = falloff_func},
-        [WeaponEnum.V_Rockets] =        {base = 0.30, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 12},
-        [WeaponEnum.V_Cannon] =         {base = 0.15, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 6},
-        [WeaponEnum.V_Cannon_Slow] =    {base = 0.13, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
-        [WeaponEnum.V_MachineGun] =     {base = 0.10, v_mod = 0.5,   distance_falloff = 300, falloff = falloff_func},
-        [WeaponEnum.Drone_MachineGun] = {base = 0.05, v_mod = 0.1,   distance_falloff = 300, falloff = falloff_func}
+        [WeaponEnum.V_Minigun] =        {base = 0.08, v_mod = 0.5,     distance_falloff = 500, falloff = falloff_func},
+        [WeaponEnum.V_Minigun_Warmup] = {base = 0.09, v_mod = 0.5,     distance_falloff = 600, falloff = falloff_func},
+        [WeaponEnum.V_Rockets] =        {base = 0.30, v_mod = 2,       distance_falloff = 0,   falloff = function() return 1 end, radius = 12},
+        [WeaponEnum.V_Cannon] =         {base = 0.15, v_mod = 1.5,     distance_falloff = 0,   falloff = function() return 1 end, radius = 6},
+        [WeaponEnum.V_Cannon_Slow] =    {base = 0.13, v_mod = 1.5,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
+        [WeaponEnum.V_MachineGun] =     {base = 0.10, v_mod = 0.25,    distance_falloff = 300, falloff = falloff_func},
+        [WeaponEnum.Drone_MachineGun] = {base = 0.05, v_mod = 0.1,     distance_falloff = 300, falloff = falloff_func}
     }
 
     self.bone_damage_modifiers = {
