@@ -98,7 +98,8 @@ function GetKillLevelModifier(killer_level, killed_level)
     if cutoff_level ~= nil and killed_level <= cutoff_level then
         return 0
     else
-        return math.pow(10, (killed_level - killer_level) / Exp.Max_Level)
+        local mod = killed_level > killer_level and 0.8 or 0.15
+        return math.pow(10, (killed_level - killer_level) / (Exp.Max_Level * mod))
     end
 end
 
