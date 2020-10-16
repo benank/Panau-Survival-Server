@@ -117,6 +117,10 @@ function cTacticalNuke:Render(args)
         self:RenderCountdown()
     end
 
+    if IsValid(self.fx["alarm"]) then
+        self.fx["alarm"]:SetParameter(0, Camera:GetPosition():Distance(self.position) * 0.1)
+    end
+
 end
 
 function cTacticalNuke:RenderCountdown()
