@@ -8,10 +8,6 @@ function sBuildItems:__init()
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
 end
 
-function sBuildItems:PlaceObject(name, position, angle, player)
-    -- TODO: call event to have build handle the object placement, landclaim association, etc
-end
-
 function sBuildItems:UseItem(args)
 
     if not ItemsConfig.build[args.item.name] then return end
