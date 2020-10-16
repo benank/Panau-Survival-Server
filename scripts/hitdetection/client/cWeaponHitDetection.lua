@@ -255,7 +255,12 @@ function WeaponHitDetection:FireVehicleWeapon(args)
         local bloom_to_add = bullet_config.bloom
 
         if self.bloom < 4 then
-            bloom_to_add = bloom_to_add * 0.4
+            bloom_to_add = bloom_to_add * 0.75
+        end
+
+        -- Half as much bloom when zoomed in
+        if LocalPlayer:GetAimMode() ~= AimMode.Normal then
+            bloom_to_add = bloom_to_add * 0.5
         end
 
         self.bloom = math.min(self.bloom + bloom_to_add, self.max_bloom)

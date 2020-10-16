@@ -321,7 +321,7 @@ function sLootbox:Open(player)
 
     Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
-    Events:Fire("PlayerOpenLootbox", {player = player, has_been_opened = self.has_been_opened, tier = self.tier})
+    Events:Fire("PlayerOpenLootbox", {player = player, in_sz = self.in_sz, has_been_opened = self.has_been_opened, tier = self.tier})
 
     self:StartRespawnTimer()
 

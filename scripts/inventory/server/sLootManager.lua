@@ -12,11 +12,22 @@ function sLootManager:__init()
     self:LoadFromFile()
     self:GenerateAllLoot()
 
+    Timer.SetInterval(1000 * 60 * 5, function()
+        self:UpdateSpawnedLootCountsInSZ()
+    end)
+
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(Lootbox.Cell_Size), self, self.PlayerCellUpdate)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("Inventory/CreateDropboxExternal", self, self.CreateDropboxExternal)
 
+end
+
+function sLootManager:UpdateSpawnedLootCountsInSZ()
+    local spawned = self:GetNumSpawnedBoxes()
+    local total = #self.loot_data
+
+    Events:Fire("Inventory/UpdateTotalLootSpawns", {spawned = spawned, total = total})
 end
 
 function sLootManager:CreateDropboxExternal(args)
@@ -161,6 +172,7 @@ function sLootManager:LoadFromFile()
         
         print(string.format("Loaded: %d tier 1, %d tier 2, %d tier 3, %d tier 4", 
             tiers[Lootbox.Types.Level1], tiers[Lootbox.Types.Level2], tiers[Lootbox.Types.Level3], tiers[Lootbox.Types.Level4]))
+        self.total_spawns = tiers[Lootbox.Types.Level1] + tiers[Lootbox.Types.Level2] + tiers[Lootbox.Types.Level3] + tiers[Lootbox.Types.Level4]
 	else
 		print("Fatal Error: Could not load loot from file")
     end
@@ -218,13 +230,20 @@ function sLootManager:GenerateAllLoot()
         self.ready = true
     --end)
 
+    self:UpdateSpawnedLootCountsInSZ()
+
+
 end
 
 function sLootManager:GetNumSpawnedBoxes()
     
     local lootbox_total = 0
     for tier, _ in pairs(self.active_lootboxes) do
-        lootbox_total = lootbox_total + count_table(self.active_lootboxes[tier])
+        for tieid, box in pairs(self.active_lootboxes[tier]) do
+            if box.active then
+                lootbox_total = lootbox_total + 1
+            end
+        end
     end
     return lootbox_total
 

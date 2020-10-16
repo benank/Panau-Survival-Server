@@ -165,6 +165,7 @@ function cInventoryUIStyle:__init()
         ["Second Life"] = self.item_colors.purple,
         ["Master Hacker"] = self.item_colors.purple,
         ["Stick Disguise"] = self.item_colors.purple,
+        ["Lightning Gloves"] = self.item_colors.purple,
     }
 
 

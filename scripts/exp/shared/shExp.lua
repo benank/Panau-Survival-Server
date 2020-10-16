@@ -53,8 +53,16 @@ Exp =
     },
     DestroyDrone = 
     {
-        Base = 15,
-        Per_Level = 10,
+        [DamageEntity.Bullet] =         40,
+        [DamageEntity.Explosion] =      40,
+        [DamageEntity.Mine] =           25,
+        [DamageEntity.Claymore] =       25,
+        [DamageEntity.HEGrenade] =      30,
+        [DamageEntity.LaserGrenade] =   30,
+        [DamageEntity.C4] =             30,
+        [DamageEntity.CruiseMissile] =  15,
+        [DamageEntity.AreaBombing] =    12,
+        [DamageEntity.TacticalNuke] =   12,
         AdditionalPercentPerPlayer = 0.1 -- X% more total exp for each player who damages a drone
     },
     DestroyExplosive = 
@@ -74,7 +82,7 @@ Exp =
     LevelCutoffs = -- Level cutoffs for no exp for these players
     {
         [0] = -1,
-        [3] = 0,
+        [5] = 0,
         [10] = 1,
         [15] = 2,
         [20] = 3,
@@ -101,5 +109,5 @@ function GetKillLevelModifier(killer_level, killed_level)
 end
 
 function GetExpLostOnDeath(level)
-    return 5 * level
+    return 10 * level
 end

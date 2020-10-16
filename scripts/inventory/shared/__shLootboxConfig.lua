@@ -211,8 +211,8 @@ Lootbox.Models =
     },
     [Lootbox.Types.Workbench] = 
     {
-        model = "pickup.boost.vehicle.eez/pu02-a.lod",
-        col = "km05.hotelbuilding01.nlz/key030_01_lod1-n_col.pfx",
+        model = "obj.ammocrate.eez/pu04-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
         offset = Vector3(0, 0, 0),
         look_offset = Vector3(0, 0.4, 0)
     }

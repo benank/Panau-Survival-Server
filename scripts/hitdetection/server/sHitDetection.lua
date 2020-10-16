@@ -151,8 +151,14 @@ function sHitDetection:ApplyDamage(args)
 
     end
 
-    args.player:SetNetworkValue("InCombat", true)
-    self.players_in_combat[tostring(args.player:GetSteamId())] = {time = Server:GetElapsedSeconds(), attacker_id = args.attacker_id}
+    if not self.sz_config then
+        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+    end
+
+    if args.player:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+        args.player:SetNetworkValue("InCombat", true)
+        self.players_in_combat[tostring(args.player:GetSteamId())] = {time = Server:GetElapsedSeconds(), attacker_id = args.attacker_id}
+    end
 
     print(msg)
     Events:Fire("Discord", {
@@ -865,6 +871,7 @@ function sHitDetection:DetectDroneHit(args, player)
     Events:Fire("HitDetection/DroneDamaged", {
         player = player,
         drone_id = args.drone_id,
+        type = DamageEntity.Bullet,
         damage = damage * 100,
         hit_position = args.hit_position
     })

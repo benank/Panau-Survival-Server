@@ -4,19 +4,19 @@ class 'sDelayedMessages'
 function sDelayedMessages:__init()
 
     SQL:Execute("CREATE TABLE IF NOT EXISTS player_names (steam_id VARCHAR(20), name VARCHAR(100))")
-    SQL:Execute("CREATE TABLE IF NOT EXISTS delayed_messages (steam_id VARCHAR(20), message VARCHAR(100), color VARCHAR(20))")
+    SQL:Execute("CREATE TABLE IF NOT EXISTS delayed_messages (steam_id VARCHAR(20), message VARCHAR(1000), color VARCHAR(20))")
 
     self.players = {}
 
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
-    Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
+    Events:Subscribe("LoadStatus", self, self.LoadStatus)
 
     -- Send a player with a steam_id a message even if they are not online
     Events:Subscribe("SendPlayerPersistentMessage", self, self.TryToSendToPlayer)
 end
 
-function sDelayedMessages:PlayerJoin(args)
+function sDelayedMessages:LoadStatus(args)
     self.players[tostring(args.player:GetSteamId())] = args.player
     self:EnsurePlayerExistsInDB(args.player)
     self:SendPlayerStoredMessages(args.player)
@@ -57,7 +57,7 @@ function sDelayedMessages:TryToSendToPlayer(args)
 
     assert(args.steam_id ~= nil, "args.steam_id was invalid")
     assert(args.message ~= nil, "args.message was invalid")
-    assert(args.message:len() < 200, "args.message was too long")
+    assert(args.message:len() < 1000, "args.message was too long")
     
     args.color = args.color or Color.White
 

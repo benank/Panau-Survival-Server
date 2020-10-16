@@ -789,6 +789,15 @@ Items =
         max_durability = 100,
         can_use = true,
         durable = true
+    },
+    {
+        name = "Lightning Gloves",
+        category = "Weapons",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 1000,
+        equip_type = "weapon_2h"
     }
 }
 
