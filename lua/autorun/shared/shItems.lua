@@ -687,6 +687,15 @@ Items =
         name = "Money Bag",
         category = "Survival",
         stacklimit = 10
+    },
+    {
+        name = "Lightning Gloves",
+        category = "Weapons",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 1000,
+        equip_type = "weapon_2h"
     }
 }
 
