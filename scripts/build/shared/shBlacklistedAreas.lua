@@ -32,6 +32,7 @@ BlacklistedLandclaimAreas =
     {pos = Vector3(14134.099609, 332.878632, 14360.429688), size = 1000},
     {pos = Vector3(-14136.325195, 322.804749, -14170.808594), size = 1000},
     {pos = Vector3(-13737.822266, 200.717514, 6303.510254), size = 500},
+    {pos = Vector3(15233, 260, -13241), size = 800},
     -- Workbenches
     {pos = Vector3(4755.66, 572.124, 13219.67), size = 500},
     {pos = Vector3(11455.59, 444, -516.274), size = 500},
