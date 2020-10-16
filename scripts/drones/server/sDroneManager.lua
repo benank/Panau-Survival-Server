@@ -9,6 +9,10 @@ function sDroneManager:__init()
     self.player_cells = {} -- Players in cells [x][y][steam_id] = player
     self.players = {}
 
+    Timer.SetInterval(1000 * 60 * 5, function()
+        self:UpdateDronesCountsInSZ()
+    end)
+
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(Cell_Size), self, self.PlayerCellUpdate)
     Events:Subscribe("HitDetection/DroneDamaged", self, self.DroneDamaged)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
@@ -17,6 +21,10 @@ function sDroneManager:__init()
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
     Network:Subscribe("drones/sync/batch", self, self.DroneBatchSync)
+end
+
+function sDroneManager:UpdateDronesCountsInSZ()
+    Events:Fire("Drones/UpdateTotalDrones", {drones = count_table(self.drones_by_id)})
 end
 
 function sDroneManager:ClientModuleLoad(args)
@@ -63,6 +71,7 @@ function sDroneManager:ModuleLoad()
     self:SpawnInitialDrones()
     self:DroneReconsiderLoops()
     self:DroneBatchSyncLoop()
+    self:UpdateDronesCountsInSZ()
 end
 
 function sDroneManager:DroneBatchSync(args, player)
