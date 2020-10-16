@@ -156,7 +156,7 @@ end
 
 -- Gets formatted stack name for inventory/loot, like: Lockpick (50)
 function cInventoryUI:GetItemNameWithAmount(stack, index)
-    if stack:GetProperty("name") and stack.contents[1].custom_data.size then
+    if stack:GetProperty("name") == "LandClaim" and stack.contents[1].custom_data.size then
         return string.format("%s (%dm)", stack:GetProperty("name"), stack.contents[1].custom_data.size)
     else
         return stack:GetAmount() > 1 and 
