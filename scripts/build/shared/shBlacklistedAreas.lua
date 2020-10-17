@@ -18,7 +18,6 @@ local blacklist = SharedObject.Create("BlacklistedAreas", {blacklist = Blacklist
 function IsInLocation(position, radius, locations)
     for _, location in pairs(locations) do
         if Distance2D(position, location.pos) < location.size + radius then
-            output_table(location)
             return true
         end
     end
