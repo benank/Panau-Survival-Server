@@ -246,6 +246,21 @@ function sHitDetection:AdminKill(args)
 
 end
 
+function FindFirstActiveLandclaimContainingPosition(pos)
+    local sharedobject = SharedObject.GetByName("Landclaims")
+    if not sharedobject then return end
+    local landclaims = sharedobject:GetValue("Landclaims")
+    if not landclaims then return end
+
+    for steam_id, player_landclaims in pairs(landclaims) do
+        for id, landclaim in pairs(player_landclaims) do
+            if landclaim.state == 1 and IsInSquare(landclaim.position, landclaim.size, pos) then
+                return landclaim
+            end
+        end
+    end
+end
+
 function sHitDetection:Respawn(args, player)
 
     if player:GetHealth() <= 0 then return end
@@ -262,7 +277,14 @@ function sHitDetection:Respawn(args, player)
 
     if not survival then return end
 
-    if survival.hunger <= 10 or survival.thirst <= 20 then
+    if survival.hunger <= 20 or survival.thirst <= 20 then
+        Chat:Send(player, "You cannot use this command right now.", Color.Red)
+        return
+    end
+
+    -- Cannot respawn on a landclaim
+    local landclaim = FindFirstActiveLandclaimContainingPosition(player:GetPosition())
+    if landclaim then
         Chat:Send(player, "You cannot use this command right now.", Color.Red)
         return
     end

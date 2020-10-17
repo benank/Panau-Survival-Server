@@ -114,7 +114,10 @@ function sAirStrikes:PlaceAirstrike(args, player)
     -- Remove active airstrike once it has expired
     Timer.SetTimeout(1000 * airstrike_item_data.delay, function()
 
-        if IsValid(player) then
+        local landclaim = FindFirstActiveLandclaimContainingPosition(args.position, airstrike_item_data.radius)
+        
+        -- Trigger other explosives if not in a landclaim
+        if IsValid(player) and not landclaim then
             Events:Fire("items/ItemExplode", {
                 position = args.position,
                 radius = airstrike_item_data.radius,
@@ -133,6 +136,21 @@ function sAirStrikes:PlaceAirstrike(args, player)
 
     end)
 
+end
+
+function FindFirstActiveLandclaimContainingPosition(pos, size)
+    local sharedobject = SharedObject.GetByName("Landclaims")
+    if not sharedobject then return end
+    local landclaims = sharedobject:GetValue("Landclaims")
+    if not landclaims then return end
+
+    for steam_id, player_landclaims in pairs(landclaims) do
+        for id, landclaim in pairs(player_landclaims) do
+            if landclaim.state == 1 and IsInSquare(landclaim.position, landclaim.size + size, pos) then
+                return landclaim
+            end
+        end
+    end
 end
 
 function sAirStrikes:CancelAirstrikePlacement(args, player)

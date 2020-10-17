@@ -2,6 +2,31 @@
 -- Must contain: position, angle, tier, contents
 function CreateLootbox(args)
 
+    -- Only add to existing nearby box if within a landclaim
+    if args.tier == Lootbox.Types.Dropbox then
+
+        local cell = GetCell(args.position, Lootbox.Cell_Size)
+
+        for _, box in pairs(LootCells.Loot[cell.x][cell.y]) do
+
+            -- If there is another dropbox close enough, use that one
+            if box.tier == Lootbox.Types.Dropbox and box.position:Distance(args.position) < 1.5 then
+
+                local landclaim = FindFirstActiveLandclaimContainingPosition(args.position)
+
+                if landclaim then
+                    for k,v in pairs(args.contents) do
+                        box:AddStack(v)
+                    end
+                    return box
+                end
+                
+            end
+
+        end
+
+    end
+
     local box = sLootbox(args)
 
     VerifyCellExists(LootCells.Loot, box.cell)
@@ -9,6 +34,21 @@ function CreateLootbox(args)
 
     return box
 
+end
+
+function FindFirstActiveLandclaimContainingPosition(pos)
+    local sharedobject = SharedObject.GetByName("Landclaims")
+    if not sharedobject then return end
+    local landclaims = sharedobject:GetValue("Landclaims")
+    if not landclaims then return end
+
+    for steam_id, player_landclaims in pairs(landclaims) do
+        for id, landclaim in pairs(player_landclaims) do
+            if landclaim.state == 1 and IsInSquare(landclaim.position, landclaim.size, pos) then
+                return landclaim
+            end
+        end
+    end
 end
 
 function GetNearbyPlayersInCell(cell)
@@ -57,7 +97,8 @@ function CreateItem(args)
         data.max_durability = data.max_durability and data.max_durability or Items.Config.default_durability
         data.durability = args.max_dura and data.max_durability or randy(
             math.ceil(Items.Config.min_durability_percent * data.max_durability),
-            math.ceil(Items.Config.max_durability_percent * data.max_durability)
+            math.ceil(Items.Config.max_durability_percent * data.max_durability),
+            math.random() * os.time()
         )
 
     end

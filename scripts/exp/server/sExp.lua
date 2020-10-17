@@ -8,6 +8,12 @@ function sExp:__init()
     self.recent_killers = {} -- Players who have been killed recently by another player
     self.global_multiplier = 1
 
+    self.exp_earners = {} -- Players who earned exp in the last day
+
+    Timer.SetInterval(1000 * 60 * 60 * 24, function()
+        self:ReportExpEarned()
+    end)
+
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
 
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
@@ -18,12 +24,34 @@ function sExp:__init()
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
     Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+    Events:Subscribe("build/ObjectDestroyed", self, self.ObjectDestroyed)
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
 
+end
+
+function sExp:ReportExpEarned()
+
+    Events:Fire("Discord", {
+        channel = "Experience",
+        content = string.format("**DAILY EXP REPORT**\n\n")
+    })
+
+    for steamID, data in pairs(self.exp_earners) do
+        local levels = data.level - data.initial_level
+        Events:Fire("Discord", {
+            channel = "Experience",
+            content = string.format("[%s]: Gained %d levels and %d combat exp and %d exploration exp.",
+                steamID, levels, data.combat_exp, data.explore_exp)
+        })
+        print(string.format("[%s]: Gained %d levels and %d combat exp and %d exploration exp.",
+        steamID, levels, data.combat_exp, data.explore_exp))
+    end
+
+    self.exp_earners = {}
 end
 
 function sExp:PlayerQuit(args)
@@ -89,6 +117,29 @@ function sExp:DroneDestroyed(args)
         end
 
     end
+end
+
+-- Called when a build object is destroyed
+function sExp:ObjectDestroyed(args)
+
+    if not IsValid(args.player) then return end -- Player not valid
+    if tostring(args.player:GetSteamId()) == args.owner_id then return end -- This is the owner
+    if AreFriends(args.player, args.owner_id) then return end -- Friends with owner
+
+    local exp_earned = Exp.DestroyBuildObject[args.object_name]
+    if not exp_earned then return end
+
+    local exp_data = args.player:GetValue("Exp")
+
+    if not exp_data then return end
+
+    self:GivePlayerExp(exp_earned, ExpType.Combat, tostring(args.player:GetSteamId()), exp_data, args.player)
+
+    Events:Fire("Discord", {
+        channel = "Experience",
+        content = string.format("%s [%s] destroyed a %s [Owner: %s] and gained %d exp.", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), args.object_name, args.owner_id, exp_earned)
+    })
 
 end
 
@@ -313,6 +364,11 @@ function sExp:PlayerChat(args)
 
     if not IsAdmin(args.player) then return end
 
+    if args.text == "/expreport" then
+        self:ReportExpEarned()
+        return
+    end
+
     local words = args.text:split(" ")
     
     if words[1] ~= "/expe" and words[1] ~= "/expc" and words[1] ~= "/expmod" then return end
@@ -398,6 +454,7 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
     if not exp_data then return end
     if exp <= 0 then return end
 
+    local initial_exp_data = deepcopy(exp_data)
     exp = math.ceil(exp * self.global_multiplier)
 
     if type == ExpType.Combat then
@@ -457,6 +514,23 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
         end
     else
         self:UpdateDB(steamID, exp_data)
+    end
+
+    if not self.exp_earners[steamID] then
+        self.exp_earners[steamID] = 
+        {
+            initial_level = initial_exp_data.level, 
+            level = exp_data.level, 
+            combat_exp = (exp_data.combat_exp - initial_exp_data.combat_exp),
+            explore_exp = (exp_data.explore_exp - initial_exp_data.explore_exp),
+        }
+    else
+        if type == ExpType.Combat then
+            self.exp_earners[steamID].combat_exp = self.exp_earners[steamID].combat_exp + exp
+        elseif type == ExpType.Exploration then
+            self.exp_earners[steamID].explore_exp = self.exp_earners[steamID].explore_exp + exp
+        end
+        self.exp_earners[steamID].level = exp_data.level
     end
 
 end
@@ -521,6 +595,10 @@ function sExp:ClientModuleLoad(args)
     exp_data.explore_max_exp = GetMaximumExp(exp_data.level)
 
     args.player:SetNetworkValue("Exp", exp_data)
+    
+    -- Call sPerks after loading exp
+    sPerks:ClientModuleLoad(args)
+
     Events:Fire("PlayerExpLoaded", {player = args.player})
 
     args.source = "exp"
@@ -531,9 +609,6 @@ function sExp:ClientModuleLoad(args)
     end
 
     args.player:SetValue("ExpLastUpdate", Server:GetElapsedSeconds())
-
-    -- Call sPerks after loading exp
-    sPerks:ClientModuleLoad(args)
 
 end
 
