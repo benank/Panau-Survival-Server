@@ -350,8 +350,8 @@ LootItems =
             {
                 ["Mine"] = {rarity = 0.338, min = 1, max = 2},
                 ["Claymore"] = {rarity = 0.272, min = 1, max = 1},
-                ["Molotov"] = {rarity = 0.32, min = 1, max = 2},
-                ["C4"] = {rarity = 0.07, min = 1, max = 1},
+                ["Molotov"] = {rarity = 0.29, min = 1, max = 2},
+                ["C4"] = {rarity = 0.1, min = 1, max = 1},
             }
         },
         ["GEAR"] = 
