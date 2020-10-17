@@ -8,7 +8,7 @@ Items =
     {
         name = "GrLauncher Ammo",
         category = "Supplies",
-        stacklimit = 10,
+        stacklimit = 15,
     },
     {
         name = "Handgun Ammo",
@@ -28,17 +28,17 @@ Items =
     {
         name = "Shotgun Ammo",
         category = "Supplies",
-        stacklimit = 30,
+        stacklimit = 50,
     },
     {
         name = "SMG Ammo",
         category = "Supplies",
-        stacklimit = 90,
+        stacklimit = 120,
     },
     {
         name = "Sniper Ammo",
         category = "Supplies",
-        stacklimit = 25,
+        stacklimit = 50,
     },
     {
         name = "Machine Gun Ammo",
