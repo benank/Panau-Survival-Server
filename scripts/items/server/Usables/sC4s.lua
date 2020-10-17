@@ -170,9 +170,21 @@ function sC4s:DestroyC4(args, player)
 
     local lootbox_id = c4:GetValue("LootboxId")
     if lootbox_id then
-        Events:Fire("items/C4DetonateOnStash", {
+        Events:Fire("items/DetonateOnStash", {
             lootbox_uid = lootbox_id,
+            type = "C4",
+            owner_id = c4:GetValue("owner_id"),
             player = IsValid(c4:GetValue("Owner")) and c4:GetValue("Owner") or player
+        })
+    end
+
+    local landclaim_data = c4:GetValue("LandclaimData")
+    if landclaim_data then
+        Events:Fire("items/DetonateOnBuildObject", {
+            landclaim_data = landclaim_data,
+            player = IsValid(c4:GetValue("Owner")) and c4:GetValue("Owner") or player,
+            owner_id = c4:GetValue("owner_id"),
+            type = "C4"
         })
     end
 
@@ -239,6 +251,7 @@ function sC4s:PlaceC4(args, item)
     c4:SetValue("Owner", args.player)
     c4:SetValue("Item", item)
     c4:SetValue("LootboxId", args.lootbox_uid)
+    c4:SetValue("LandclaimData", args.landclaim_data)
 
     self.wnos[c4:GetId()] = c4
 

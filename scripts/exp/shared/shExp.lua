@@ -48,7 +48,7 @@ Exp =
     {
         [11] = 30, -- Barrel Stash
         [12] = 50, -- Garbage Stash
-        [13] = 100, -- Locked Stash
+        [13] = 150, -- Locked Stash
         [14] = 6 -- Proximity alarm
     },
     DestroyDrone = 
@@ -70,6 +70,12 @@ Exp =
         [DamageEntity.Mine] = 5,
         [DamageEntity.Claymore] = 5,
         [DamageEntity.C4] = 10
+    },
+    DestroyBuildObject = 
+    {
+        ["Wall"] = 10,
+        ["Door"] = 10,
+        ["Bed"] = 5
     },
     KillExpireTime = 60 * 60 * 4, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
     UnfriendTime = 60 * 60 * 24 * 7, -- Timer for killing a recently unfriended person

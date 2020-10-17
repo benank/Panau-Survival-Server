@@ -16,24 +16,28 @@ function sStashes:__init()
     Events:Subscribe("Items/PlaceProximityAlarm", self, self.PlaceProximityAlarm)
     Events:Subscribe("Inventory/ModifyStashStackRemote", self, self.ModifyStashStackRemote)
     Events:Subscribe("items/DestroyProximityAlarm", self, self.DestroyProximityAlarm)
-    Events:Subscribe("items/C4DetonateOnStash", self, self.C4DetonateOnStash)
+    Events:Subscribe("items/DetonateOnStash", self, self.DetonateOnStash)
 
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
 end
 
--- When a C4 attached to a stash detonates
-function sStashes:C4DetonateOnStash(args)
+-- When an explosive (Claymore or C4) attached to a stash detonates
+function sStashes:DetonateOnStash(args)
 
     local stash = self.stashes_by_uid[args.lootbox_uid]
 
     if not stash then return end
+    if not args.type then return end
 
-    stash.health = stash.health - C4StashDamage
+    local damage = ExplosiveDamage[args.type]
+    if not damage then return end
+
+    stash.health = stash.health - damage
 
     Events:Fire("Discord", {
         channel = "Stashes",
-        content = string.format("**RAID** %s [%s] used C4 on stash %d [%s]", 
-            args.player:GetName(), tostring(args.player:GetSteamId()), stash.id, stash.owner_id)
+        content = string.format("**RAID** %s [%s] used %s on stash %d [%s]", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), args.type, stash.id, stash.owner_id)
     })
 
     if stash.health <= 0 then

@@ -19,6 +19,7 @@ function sLootManager:__init()
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(Lootbox.Cell_Size), self, self.PlayerCellUpdate)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("Inventory/CreateDropboxExternal", self, self.CreateDropboxExternal)
 
 end
 

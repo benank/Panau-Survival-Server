@@ -210,6 +210,7 @@ function cMeleeDetection:CanPerformKick()
     and not LocalPlayer:GetValue("InSafezone")
     and self.allowed_states[LocalPlayer:GetBaseState()]
     and not LocalPlayer:GetValue("GrapplehookEnabled")
+    and not LocalPlayer:GetValue("PlacingLandclaimObject")
 
 end
 

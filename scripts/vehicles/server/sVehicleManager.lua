@@ -623,7 +623,7 @@ end
 
 function sVehicleManager:PlayerEnterVehicle(args)
 
-    args.vehicle:SetStreamDistance(1000)
+    args.vehicle:SetStreamDistance(2000)
 
     local data = args.vehicle:GetValue("VehicleData")
     args.data = data
@@ -779,7 +779,7 @@ function sVehicleManager:TryBuyVehicle(args)
     args.data.owner_steamid = tostring(args.player:GetSteamId())
 
     args.vehicle:SetNetworkValue("VehicleData", args.data)
-    args.vehicle:SetStreamDistance(1000)
+    args.vehicle:SetStreamDistance(2000)
 
     self:SaveVehicle(args.vehicle, args.player)
 

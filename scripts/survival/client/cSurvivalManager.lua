@@ -4,7 +4,7 @@ local event = var("gsy.exit.settlement")
 
 function cSurvivalManager:__init()
 
-    Events:Fire("loader/RegisterResource", {count = 2})
+    Events:Fire("loader/RegisterResource", {count = 1, name = "Survival"})
 
     self.hud = cSurvivalHUD()
     self.grapple_manager = cGrapplehookManager()
@@ -14,7 +14,7 @@ function cSurvivalManager:__init()
 
     self:UpdateClimateZone()
 
-    Events:Fire("loader/CompleteResource", {count = 2})
+    Events:Fire("loader/CompleteResource", {count = 1, name = "Survival"})
 
     Network:Subscribe("Survival/Update", self, self.Update)
     Events:Subscribe("Render", self, self.Render)

@@ -689,6 +689,108 @@ Items =
         stacklimit = 10
     },
     {
+        name = "LandClaim",
+        category = "Survival",
+        stacklimit = 1,
+        can_use = true
+    },
+    {
+        name = "Wall",
+        category = "Survival",
+        stacklimit = 10,
+        max_durability = 400,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Door",
+        category = "Survival",
+        stacklimit = 3,
+        max_durability = 400,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Light",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Helipad",
+        category = "Survival",
+        stacklimit = 1,
+        max_durability = 800,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Bed",
+        category = "Survival",
+        stacklimit = 1,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Chair",
+        category = "Survival",
+        stacklimit = 3,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Stop Sign",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Table",
+        category = "Survival",
+        stacklimit = 3,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Glass",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Hedgehog",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 200,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Cone",
+        category = "Survival",
+        stacklimit = 10,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Jump Pad",
+        category = "Survival",
+        stacklimit = 3,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
         name = "Lightning Gloves",
         category = "Weapons",
         stacklimit = 1,

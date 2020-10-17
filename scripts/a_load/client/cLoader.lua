@@ -2,8 +2,7 @@ class 'cLoader'
 
 function cLoader:__init()
 
-    self.resources_needed = 0
-    self.resources_loaded = 0
+    self.resources = {}
 
     self.first_load = true
     self.can_add_resources = true
@@ -19,10 +18,11 @@ function cLoader:__init()
     self.rectangle:SetSize(Render.Size)
 
     self.load_text = Label.Create(self.rectangle)
-    self.load_text:SetAlignment(GwenPosition.Center)
-    self.load_text:SetText("Loading")
+    self.load_text:SetAlignment(GwenPosition.CenterH)
+    self.load_text:SetPosition(Vector2(0, 50))
+    self.load_text:SetText("Joining Panau Survival")
     self.load_text:SetTextColor(Color.White)
-    self.load_text:SetTextSize(Render.Size.x * 0.05)
+    self.load_text:SetTextSize(Render.Size.x * 0.02)
     self.load_text:SetSizeRel(Vector2(1,1))
     self.load_text_dots = 0;
     self.max_load_text_dots = 3
@@ -81,8 +81,12 @@ function cLoader:SecondTick()
 
     if self.active and not self.base_loadscreen_done then
         if Game:GetState() == GUIState.Game then
+            Events:Fire(var("loader/BaseLoadscreenDone"):get())
             self.base_loadscreen_done = true
-            self.resources_loaded = self.resources_loaded + self.resources_for_loadscreen
+            self:CompleteResource({
+                count = self.resources_for_loadscreen,
+                name = "Loadscreen"
+            })
             self:UpdateResourceCount()
             self:Stop()
         end
@@ -93,9 +97,15 @@ end
 function cLoader:PlayerPositionSet(args)
     
     if self.active then
-        self.resources_loaded = self.resources_loaded + self.resources_for_gameload
-        self:UpdateResourceCount()
-        self:Stop()
+        Timer.SetTimeout(2000, function()
+            Events:Fire(var("loader/PlayerPositionSetSuccess"):get())
+            self:CompleteResource({
+                count = self.resources_for_gameload,
+                name = "Gameload"
+            })
+            self:UpdateResourceCount()
+            self:Stop()
+        end)
     end
 
 end
@@ -103,24 +113,33 @@ end
 function cLoader:InitialLoad()
 
     self.can_add_resources = true
-    self.resources_needed = self.resources_needed + self.resources_for_gameload + self.resources_for_loadscreen
+    self:RegisterResource({
+        count = self.resources_for_gameload,
+        name = "Gameload"
+    })
+    self:RegisterResource({
+        count = self.resources_for_loadscreen,
+        name = "Loadscreen"
+    })
     self.base_loadscreen_done = false
     
-    self:UpdateResourceCount()
-    self:Start()
-
 end
 
 function cLoader:LocalPlayerDeath()
 
-    self.resources_needed = 0
-    self.resources_loaded = 0
+    self.can_add_resources = true
+    self.resources = {}
 
     Thread(function()
         Timer.Sleep(5000)
-        self.resources_needed = self.resources_needed + self.resources_for_gameload + self.resources_for_loadscreen
-        self:UpdateResourceCount()
-        self:Start()
+        self:RegisterResource({
+            count = self.resources_for_gameload,
+            name = "Gameload"
+        })
+        self:RegisterResource({
+            count = self.resources_for_loadscreen,
+            name = "Loadscreen"
+        })
         Timer.Sleep(3000)
         self.base_loadscreen_done = false
     end)
@@ -129,7 +148,7 @@ end
 
 function cLoader:UpdateResourceCount()
 
-    self.target_value = self.resources_loaded / self.resources_needed
+    self.target_value = self:GetTotalResourcesCompleted() / self:GetTotalResourcesNeeded()
     self.window:BringToFront()
 
     if not self.lerp_render then
@@ -183,7 +202,7 @@ end
 
 function cLoader:Start()
 
-    if self.resources_needed == self.resources_loaded or self.resources_needed == 0 then return end
+    if self:GetTotalResourcesCompleted() == self:GetTotalResourcesNeeded() or self:GetTotalResourcesNeeded() == 0 then return end
 
     if not self.window:GetVisible() then
         self.window:Show()
@@ -210,18 +229,40 @@ function cLoader:Start()
             Events:Subscribe("CalcView", self, self.CalcView),
             Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput),
             Events:Subscribe("Render", self, self.Render2),
+            Events:Subscribe("PostRender", self, self.PostRender)
         }
     end
 
-    if not self.dot_interval then
+    --[[if not self.dot_interval then
         self.dot_interval = Timer.SetInterval(500, function()
             self.load_text:SetText(self:GetLoadText())  
         end)
-    end
+    end]]
     
     LocalPlayer:SetValue("Loading", true)
     Events:Fire(var("LoadingStarted"):get())
 
+end
+
+function cLoader:PostRender(args)
+    local i = 0
+    local pos = Vector2(0, 0)
+    local fontsize = 20
+    for name, resource in pairs(self.resources) do
+        local text = string.format("%s", name)
+        local text_height = Render:GetTextHeight(text, fontsize)
+        local color = resource.completed == resource.needed and Color.Gray or Color.White
+        Render:DrawText(pos, text, color, fontsize)
+        pos = pos + Vector2(0, text_height)
+    end
+
+    local circle_pos = Vector2(Render.Size.x / 2, Render.Size.y / 2)
+    local circle_size = 400
+    local num_circles = 3
+    local color = Color.FromHSV(self.delta * 0.5 * 360, 0.85, 0.85)
+    for i = 1, num_circles do
+        Render:FillCircle(circle_pos, math.sin(self.delta * 5 - i * 0.5) * circle_size, Color(color.r,color.g,color.b,25))
+    end
 end
 
 function cLoader:Render2(args)
@@ -238,7 +279,7 @@ end
 
 function cLoader:GetLoadText()
 
-    local text = "Loading"
+    local text = "Panau Survival is loading"
 
     for i = 1, self.load_text_dots do text = text .. "." end
 
@@ -259,12 +300,12 @@ end
 
 function cLoader:Stop()
 
-    if self.resources_needed ~= self.resources_loaded then return end
+    if self:GetTotalResourcesNeeded() ~= self:GetTotalResourcesCompleted() then return end
     if self.target_value - self.progressBar:GetValue() > 0.1 then return end
 
     Timer.SetTimeout(750, function()
         
-        if self.resources_needed ~= self.resources_loaded then return end
+        if self:GetTotalResourcesNeeded() ~= self:GetTotalResourcesCompleted() then return end
         if self.target_value - self.progressBar:GetValue() > 0.1 then return end
 
         self.window:Hide()
@@ -280,8 +321,7 @@ function cLoader:Stop()
     
         self.active = false
 
-        self.resources_needed = 0
-        self.resources_loaded = 0
+        self.resources = {}
 
         if self.image_interval then
             Timer.Clear(self.image_interval)
@@ -308,11 +348,13 @@ function cLoader:Stop()
             end
         end
 
+        self.subs = nil
+
         self.can_add_resources = false
         self.first_load = false
 
         self.window:Hide()
-        self.subs = {}
+        self.load_text:SetText("")
 
         
         LocalPlayer:SetValue("Loading", false)
@@ -326,18 +368,43 @@ function cLoader:RegisterResource(args)
 
     if not self.can_add_resources then return end
 
-    self.resources_needed = self.resources_needed + args.count
+    if not self.resources[args.name] then
+        self.resources[args.name] = {needed = 0, completed = 0}
+    end
+
+    self.resources[args.name].needed = self.resources[args.name].needed + args.count
+
     self:UpdateResourceCount()
     self:Start()
 
+end
+
+function cLoader:GetTotalResourcesNeeded()
+    local cnt = 0
+    for name, resource in pairs(self.resources) do
+        cnt = cnt + resource.needed
+    end
+    return cnt
+end
+
+function cLoader:GetTotalResourcesCompleted()
+    local cnt = 0
+    for name, resource in pairs(self.resources) do
+        cnt = cnt + resource.completed
+    end
+    return cnt
 end
 
 -- Only argument here is count
 function cLoader:CompleteResource(args)
 
     if not self.can_add_resources then return end
+    if not self.active then return end
     
-    self.resources_loaded = self.resources_loaded + args.count
+    if not self.resources[args.name] then return end
+
+    self.resources[args.name].completed = self.resources[args.name].completed + args.count
+
     self:UpdateResourceCount()
     self:Stop()
 

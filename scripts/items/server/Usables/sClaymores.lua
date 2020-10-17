@@ -129,6 +129,7 @@ function sClaymores:DestroyClaymore(args, player)
     local cell = claymore:GetCell()
     self.claymore_cells[cell.x][cell.y][args.id] = nil
     self.claymores[args.id] = nil
+    claymore:OnExplode()
     claymore:Remove(player)
 
     local exp_enabled = true
@@ -251,12 +252,7 @@ function sClaymores:AddClaymore(args)
 
     args.id = tonumber(args.id)
 
-    local claymore = sClaymore({
-        id = args.id,
-        owner_id = args.owner_id,
-        position = args.position,
-        angle = args.angle
-    })
+    local claymore = sClaymore(args)
     
     self.claymores[args.id] = claymore
     local cell = claymore:GetCell()
@@ -303,7 +299,7 @@ function sClaymores:DeserializeAngle(ang)
     return Angle(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]), tonumber(split[4]) or 0)
 end
 
-function sClaymores:PlaceClaymore(position, angle, player)
+function sClaymores:PlaceClaymore(position, angle, player, lootbox_uid, landclaim_data)
 
     local steamID = tostring(player:GetSteamId())
     local cmd = SQL:Command("INSERT INTO claymores (steamID, position, angle) VALUES (?, ?, ?)")
@@ -324,7 +320,9 @@ function sClaymores:PlaceClaymore(position, angle, player)
         id = result[1].id,
         owner_id = steamID,
         position = position,
-        angle = angle
+        angle = angle,
+        landclaim_data = landclaim_data,
+        lootbox_uid = lootbox_uid
     })
     claymore:SyncNearby(player)
     claymore.place_time = Server:GetElapsedSeconds()
@@ -372,7 +370,7 @@ function sClaymores:TryPlaceClaymore(args, player)
             })
 
             -- Now actually place the claymore
-            self:PlaceClaymore(args.position, args.angle, player)
+            self:PlaceClaymore(args.position, args.angle, player, args.lootbox_uid, args.landclaim_data)
 
         end
 
