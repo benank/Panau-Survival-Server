@@ -5,7 +5,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.36,
+            rarity = 0.4,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 5, max = 10},
@@ -26,7 +26,7 @@ LootItems =
         },
         ["FOOD & DRINK"] = 
         {
-            rarity = 0.195,
+            rarity = 0.155,
             items = 
             {
                 ["Chocolate"] = {rarity = 0.08, min = 1, max = 2},
@@ -91,7 +91,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.45,
+            rarity = 0.5,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.05, min = 10, max = 20},
@@ -151,7 +151,7 @@ LootItems =
         },
         ["HEALTH"] = 
         {
-            rarity = 0.05,
+            rarity = 0.03,
             items = 
             {
                 ["Bandages"] = {rarity = 0.75, min = 1, max = 2},
@@ -168,7 +168,7 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.145,
+            rarity = 0.115,
             items = 
             {
                 ["Woet"] = {rarity = 0.08, min = 1, max = 1},
@@ -206,7 +206,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.4,
+            rarity = 0.45,
             items = 
             {
                 ["Sawn-Off Ammo"] = {rarity = 0.1, min = 6, max = 12},
@@ -264,7 +264,7 @@ LootItems =
         },
         ["HEALTH"] = 
         {
-            rarity = 0.145,
+            rarity = 0.095,
             items = 
             {
                 ["Healthpack"] = {rarity = 1, min = 1, max = 1},

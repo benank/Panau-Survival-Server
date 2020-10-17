@@ -1,63 +1,13 @@
 ExpPerks = 
 {
     {
-        name = "Nitro",
-        description = "Unlocks item",
-        level_req = 1,
-        perk_req = 0,
-        cost = 1,
-        id = 1,
-        position = 1,
-        enabled = true
-    },
-    {
-        name = "Claymore",
-        description = "Unlocks item",
-        level_req = 2,
-        perk_req = 0,
-        cost = 1,
-        id = 2,
-        position = 2,
-        enabled = true
-    },
-    {
-        name = "Explosives Detector",
-        description = "Unlocks item",
-        level_req = 2,
-        perk_req = 0,
-        cost = 1,
-        id = 3,
-        position = 3,
-        enabled = true
-    },
-    {
         name = "Inventory",
         description = "Adds 1 extra slot to your weapons category",
         level_req = 3,
         perk_req = 0,
         cost = 0,
         id = 4,
-        position = 4,
-        enabled = true
-    },
-    {
-        name = "SMG",
-        description = "Unlocks item",
-        level_req = 3,
-        perk_req = 0,
-        cost = 1,
-        id = 5,
-        position = 5,
-        enabled = true
-    },
-    {
-        name = "EVAC",
-        description = "Unlocks item",
-        level_req = 3,
-        perk_req = 0,
-        cost = 1,
-        id = 6,
-        position = 6,
+        position = 1,
         enabled = true
     },
     {
@@ -67,7 +17,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 7,
-        position = 7,
+        position = 2,
         enabled = true
     },
     {
@@ -77,17 +27,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 8,
-        position = 8,
-        enabled = true
-    },
-    {
-        name = "Assault Rifle",
-        description = "Unlocks item",
-        level_req = 4,
-        perk_req = 0,
-        cost = 1,
-        id = 9,
-        position = 9,
+        position = 3,
         enabled = true
     },
     {
@@ -97,17 +37,17 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 10,
-        position = 10,
+        position = 4,
         enabled = true
     },
     {
         name = "SMG",
         description = "SMG now does 5% extra damage",
         level_req = 5,
-        perk_req = 5,
+        perk_req = 0,
         cost = 1,
         id = 11,
-        position = 11,
+        position = 5,
         enabled = true
     },
     {
@@ -115,39 +55,9 @@ ExpPerks =
         description = "You can now use workbenches to combine items",
         level_req = 5,
         perk_req = 0,
-        cost = 1,
+        cost = 0,
         id = 12,
-        position = 12,
-        enabled = true
-    },
-    {
-        name = "Shotgun",
-        description = "Unlocks item",
-        level_req = 5,
-        perk_req = 0,
-        cost = 1,
-        id = 13,
-        position = 13,
-        enabled = true
-    },
-    {
-        name = "Molotov",
-        description = "Unlocks item",
-        level_req = 5,
-        perk_req = 0,
-        cost = 1,
-        id = 14,
-        position = 14,
-        enabled = true
-    },
-    {
-        name = "Sniper Rifle",
-        description = "Unlocks item",
-        level_req = 5,
-        perk_req = 0,
-        cost = 1,
-        id = 15,
-        position = 15,
+        position = 6,
         enabled = true
     },
     {
@@ -157,17 +67,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 16,
-        position = 16,
-        enabled = true
-    },
-    {
-        name = "Police Helmet",
-        description = "Unlocks item",
-        level_req = 5,
-        perk_req = 0,
-        cost = 1,
-        id = 17,
-        position = 17,
+        position = 7,
         enabled = true
     },
     {
@@ -177,7 +77,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 19,
-        position = 18,
+        position = 8,
         enabled = true
     },
     {
@@ -187,7 +87,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 18,
-        position = 19,
+        position = 9,
         enabled = true
     },
     {
@@ -197,7 +97,7 @@ ExpPerks =
         perk_req = 4,
         cost = 0,
         id = 20,
-        position = 20,
+        position = 10,
         enabled = true
     },
     {
@@ -207,7 +107,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 21,
-        position = 21,
+        position = 11,
         enabled = true
     },
     {
@@ -217,27 +117,7 @@ ExpPerks =
         perk_req = 11,
         cost = 1,
         id = 23,
-        position = 22,
-        enabled = true
-    },
-    {
-        name = "Loot",
-        description = "Allows you to open Tier 5 lootboxes",
-        level_req = 7,
-        perk_req = 0,
-        cost = 2,
-        id = 22,
-        position = 23,
-        enabled = false
-    },
-    {
-        name = "Cruise Missile",
-        description = "Unlocks item",
-        level_req = 7,
-        perk_req = 0,
-        cost = 2,
-        id = 24,
-        position = 24,
+        position = 12,
         enabled = true
     },
     {
@@ -247,7 +127,7 @@ ExpPerks =
         perk_req = 7,
         cost = 0,
         id = 25,
-        position = 25,
+        position = 13,
         enabled = true
     },
     {
@@ -257,37 +137,37 @@ ExpPerks =
         perk_req = 8,
         cost = 0,
         id = 26,
-        position = 26,
+        position = 14,
         enabled = true
     },
     {
         name = "Nitro",
         description = "Choose: 20% extra duration or 20% extra power",
         level_req = 8,
-        perk_req = 1,
+        perk_req = 0,
         cost = 1,
         id = 27,
-        position = 27,
+        position = 15,
         enabled = true
     },
     {
         name = "Military Helmet",
         description = "Unlocks item",
         level_req = 8,
-        perk_req = 17,
+        perk_req = 0,
         cost = 2,
         id = 28,
-        position = 28,
+        position = 16,
         enabled = true
     },
     {
-        name = "RocketGrapple",
+        name = "Area Bombing",
         description = "Unlocks item",
         level_req = 8,
         perk_req = 0,
         cost = 2,
-        id = 29,
-        position = 29,
+        id = 54,
+        position = 17,
         enabled = true
     },
     {
@@ -297,7 +177,7 @@ ExpPerks =
         perk_req = 20,
         cost = 0,
         id = 31,
-        position = 30,
+        position = 18,
         enabled = true
     },
     {
@@ -307,7 +187,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 33,
-        position = 31,
+        position = 19,
         enabled = true
     },
     {
@@ -317,7 +197,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 30,
-        position = 32,
+        position = 20,
         enabled = true
     },
     {
@@ -327,7 +207,7 @@ ExpPerks =
         perk_req = 23,
         cost = 2,
         id = 32,
-        position = 33,
+        position = 21,
         enabled = true
     },
     {
@@ -337,7 +217,7 @@ ExpPerks =
         perk_req = 10,
         cost = 0,
         id = 37,
-        position = 34,
+        position = 22,
         enabled = true
     },
     {
@@ -347,7 +227,7 @@ ExpPerks =
         perk_req = 0,
         cost = 0,
         id = 38,
-        position = 35,
+        position = 23,
         enabled = false
     },
     {
@@ -357,27 +237,27 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 39,
-        position = 36,
+        position = 24,
         enabled = false
     },
     {
         name = "Assault Rifle",
         description = "Assault Rifle now does 5% extra damage",
         level_req = 10,
-        perk_req = 9,
+        perk_req = 0,
         cost = 1,
         id = 40,
-        position = 37,
+        position = 25,
         enabled = true
     },
     {
         name = "Shotgun",
         description = "Shotgun now does 5% extra damage",
         level_req = 10,
-        perk_req = 13,
+        perk_req = 0,
         cost = 1,
         id = 41,
-        position = 38,
+        position = 26,
         enabled = true
     },
     {
@@ -387,7 +267,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 234,
-        position = 39,
+        position = 27,
         enabled = true
     },
     {
@@ -397,7 +277,7 @@ ExpPerks =
         perk_req = 19,
         cost = 2,
         id = 36,
-        position = 40,
+        position = 28,
         enabled = true
     },
     {
@@ -405,20 +285,10 @@ ExpPerks =
         description = "Unlocks item",
         level_req = 10,
         perk_req = 0,
-        cost = 3,
+        cost = 0,
         id = 34,
-        position = 41,
+        position = 29,
         enabled = true
-    },
-    {
-        name = "Building",
-        description = "Choose: 500 extra build items per LandClaim or 500m extra build height",
-        level_req = 11,
-        perk_req = 34,
-        cost = 1,
-        id = 42,
-        position = 42,
-        enabled = false
     },
     {
         name = "Parachute",
@@ -427,7 +297,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 43,
-        position = 43,
+        position = 30,
         enabled = true
     },
     {
@@ -437,7 +307,17 @@ ExpPerks =
         perk_req = 32,
         cost = 2,
         id = 44,
-        position = 44,
+        position = 31,
+        enabled = true
+    },
+    {
+        name = "Grenade Launcher",
+        description = "Unlocks item",
+        level_req = 11,
+        perk_req = 0,
+        cost = 3,
+        id = 55,
+        position = 32,
         enabled = true
     },
     {
@@ -447,7 +327,7 @@ ExpPerks =
         perk_req = 31,
         cost = 0,
         id = 46,
-        position = 45,
+        position = 33,
         enabled = true
     },
     {
@@ -457,7 +337,7 @@ ExpPerks =
         perk_req = 25,
         cost = 0,
         id = 47,
-        position = 46,
+        position = 34,
         enabled = true
     },
     {
@@ -467,57 +347,37 @@ ExpPerks =
         perk_req = 26,
         cost = 0,
         id = 48,
-        position = 47,
+        position = 35,
         enabled = true
     },
     {
         name = "RocketGrapple",
         description = "Choose: 10% extra durability or 10% extra range",
         level_req = 12,
-        perk_req = 29,
+        perk_req = 0,
         cost = 1,
         id = 49,
-        position = 48,
+        position = 36,
         enabled = true
     },
     {
-        name = "Military Vest",
+        name = "Kevlar Vest",
         description = "Unlocks item",
         level_req = 12,
         perk_req = 0,
         cost = 2,
-        id = 45,
-        position = 49,
+        id = 61,
+        position = 37,
         enabled = true
     },
     {
         name = "Sniper Rifle",
         description = "Sniper Rifle now does 5% extra damage",
         level_req = 13,
-        perk_req = 15,
+        perk_req = 0,
         cost = 1,
         id = 52,
-        position = 50,
-        enabled = true
-    },
-    {
-        name = "Building: LandClaim",
-        description = "LandClaim extensions now last 25% longer",
-        level_req = 13,
-        perk_req = 34,
-        cost = 1,
-        id = 53,
-        position = 51,
-        enabled = false
-    },
-    {
-        name = "Area Bombing",
-        description = "Unlocks item",
-        level_req = 13,
-        perk_req = 0,
-        cost = 2,
-        id = 54,
-        position = 52,
+        position = 38,
         enabled = true
     },
     {
@@ -527,7 +387,7 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 50,
-        position = 53,
+        position = 39,
         enabled = true
     },
     {
@@ -537,27 +397,17 @@ ExpPerks =
         perk_req = 44,
         cost = 3,
         id = 51,
-        position = 54,
+        position = 40,
         enabled = true
     },
     {
         name = "Explosives Detector",
         description = "Choose: 25% extra durability or 25% extra range",
         level_req = 14,
-        perk_req = 3,
+        perk_req = 0,
         cost = 1,
         id = 57,
-        position = 55,
-        enabled = true
-    },
-    {
-        name = "Grenade Launcher",
-        description = "Unlocks item",
-        level_req = 14,
-        perk_req = 0,
-        cost = 3,
-        id = 55,
-        position = 56,
+        position = 41,
         enabled = true
     },
     {
@@ -567,7 +417,7 @@ ExpPerks =
         perk_req = 30,
         cost = 3,
         id = 56,
-        position = 57,
+        position = 42,
         enabled = true
     },
     {
@@ -577,7 +427,7 @@ ExpPerks =
         perk_req = 46,
         cost = 0,
         id = 62,
-        position = 58,
+        position = 43,
         enabled = true
     },
     {
@@ -587,28 +437,18 @@ ExpPerks =
         perk_req = 37,
         cost = 0,
         id = 64,
-        position = 59,
+        position = 44,
         enabled = true
     },
     {
         name = "Secret EVAC",
         description = "Unlocks item",
         level_req = 15,
-        perk_req = 6,
-        cost = 1,
-        id = 59,
-        position = 60,
-        enabled = true
-    },
-    {
-        name = "EMP",
-        description = "Unlocks item",
-        level_req = 15,
         perk_req = 0,
         cost = 1,
-        id = 233,
-        position = 61,
-        enabled = false
+        id = 59,
+        position = 45,
+        enabled = true
     },
     {
         name = "Shotgun",
@@ -617,7 +457,7 @@ ExpPerks =
         perk_req = 41,
         cost = 1,
         id = 63,
-        position = 62,
+        position = 46,
         enabled = true
     },
     {
@@ -627,7 +467,7 @@ ExpPerks =
         perk_req = 34,
         cost = 2,
         id = 58,
-        position = 63,
+        position = 47,
         enabled = true
     },
     {
@@ -637,17 +477,17 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 60,
-        position = 64,
+        position = 48,
         enabled = true
     },
     {
-        name = "Kevlar Vest",
+        name = "Tactical Nuke",
         description = "Unlocks item",
         level_req = 15,
-        perk_req = 45,
-        cost = 3,
-        id = 61,
-        position = 65,
+        perk_req = 0,
+        cost = 2,
+        id = 75,
+        position = 49,
         enabled = true
     },
     {
@@ -657,7 +497,7 @@ ExpPerks =
         perk_req = 47,
         cost = 0,
         id = 66,
-        position = 66,
+        position = 50,
         enabled = true
     },
     {
@@ -667,7 +507,7 @@ ExpPerks =
         perk_req = 48,
         cost = 0,
         id = 67,
-        position = 67,
+        position = 51,
         enabled = true
     },
     {
@@ -677,7 +517,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 68,
-        position = 68,
+        position = 52,
         enabled = false
     },
     {
@@ -687,7 +527,7 @@ ExpPerks =
         perk_req = 0,
         cost = 6,
         id = 65,
-        position = 69,
+        position = 53,
         enabled = true
     },
     {
@@ -697,7 +537,7 @@ ExpPerks =
         perk_req = 40,
         cost = 1,
         id = 69,
-        position = 70,
+        position = 54,
         enabled = true
     },
     {
@@ -707,7 +547,7 @@ ExpPerks =
         perk_req = 12,
         cost = 2,
         id = 70,
-        position = 71,
+        position = 55,
         enabled = true
     },
     {
@@ -717,7 +557,7 @@ ExpPerks =
         perk_req = 21,
         cost = 2,
         id = 71,
-        position = 72,
+        position = 56,
         enabled = true
     },
     {
@@ -727,7 +567,7 @@ ExpPerks =
         perk_req = 62,
         cost = 0,
         id = 72,
-        position = 73,
+        position = 57,
         enabled = true
     },
     {
@@ -737,27 +577,17 @@ ExpPerks =
         perk_req = 33,
         cost = 2,
         id = 73,
-        position = 74,
+        position = 58,
         enabled = true
     },
     {
         name = "Cruise Missile",
         description = "Choose: 5% extra damage or 10% extra range",
         level_req = 19,
-        perk_req = 24,
-        cost = 2,
-        id = 74,
-        position = 75,
-        enabled = true
-    },
-    {
-        name = "Tactical Nuke",
-        description = "Unlocks item",
-        level_req = 19,
         perk_req = 0,
         cost = 2,
-        id = 75,
-        position = 76,
+        id = 74,
+        position = 59,
         enabled = true
     },
     {
@@ -767,7 +597,7 @@ ExpPerks =
         perk_req = 34,
         cost = 0,
         id = 76,
-        position = 77,
+        position = 60,
         enabled = true
     },
     {
@@ -777,7 +607,7 @@ ExpPerks =
         perk_req = 66,
         cost = 0,
         id = 77,
-        position = 78,
+        position = 61,
         enabled = true
     },
     {
@@ -787,7 +617,7 @@ ExpPerks =
         perk_req = 67,
         cost = 0,
         id = 78,
-        position = 79,
+        position = 62,
         enabled = true
     },
     {
@@ -797,7 +627,7 @@ ExpPerks =
         perk_req = 64,
         cost = 0,
         id = 79,
-        position = 80,
+        position = 63,
         enabled = true
     },
     {
@@ -807,7 +637,7 @@ ExpPerks =
         perk_req = 234,
         cost = 1,
         id = 235,
-        position = 81,
+        position = 64,
         enabled = true
     },
     {
@@ -817,7 +647,7 @@ ExpPerks =
         perk_req = 63,
         cost = 2,
         id = 80,
-        position = 82,
+        position = 65,
         enabled = true
     },
     {
@@ -827,7 +657,7 @@ ExpPerks =
         perk_req = 27,
         cost = 2,
         id = 81,
-        position = 83,
+        position = 66,
         enabled = true
     },
     {
@@ -837,17 +667,7 @@ ExpPerks =
         perk_req = 53,
         cost = 2,
         id = 82,
-        position = 84,
-        enabled = false
-    },
-    {
-        name = "Building",
-        description = "Choose: 500 extra build items per LandClaim or 500m extra build height",
-        level_req = 20,
-        perk_req = 42,
-        cost = 2,
-        id = 83,
-        position = 85,
+        position = 67,
         enabled = false
     },
     {
@@ -857,7 +677,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 84,
-        position = 86,
+        position = 69,
         enabled = false
     },
     {
@@ -867,7 +687,7 @@ ExpPerks =
         perk_req = 60,
         cost = 4,
         id = 85,
-        position = 87,
+        position = 70,
         enabled = true
     },
     {
@@ -877,7 +697,7 @@ ExpPerks =
         perk_req = 72,
         cost = 0,
         id = 86,
-        position = 88,
+        position = 71,
         enabled = true
     },
     {
@@ -887,7 +707,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 87,
-        position = 89,
+        position = 72,
         enabled = false
     },
     {
@@ -897,7 +717,7 @@ ExpPerks =
         perk_req = 69,
         cost = 2,
         id = 88,
-        position = 90,
+        position = 73,
         enabled = true
     },
     {
@@ -907,7 +727,7 @@ ExpPerks =
         perk_req = 43,
         cost = 2,
         id = 89,
-        position = 91,
+        position = 74,
         enabled = true
     },
     {
@@ -917,7 +737,7 @@ ExpPerks =
         perk_req = 0,
         cost = 1,
         id = 90,
-        position = 92,
+        position = 75,
         enabled = true
     },
     {
@@ -927,7 +747,7 @@ ExpPerks =
         perk_req = 233,
         cost = 1,
         id = 234,
-        position = 93,
+        position = 76,
         enabled = false
     },
     {
@@ -937,7 +757,7 @@ ExpPerks =
         perk_req = 86,
         cost = 0,
         id = 91,
-        position = 94,
+        position = 77,
         enabled = true
     },
     {
@@ -947,7 +767,7 @@ ExpPerks =
         perk_req = 77,
         cost = 0,
         id = 92,
-        position = 95,
+        position = 78,
         enabled = true
     },
     {
@@ -957,17 +777,17 @@ ExpPerks =
         perk_req = 78,
         cost = 0,
         id = 93,
-        position = 96,
+        position = 79,
         enabled = true
     },
     {
         name = "Claymore",
         description = "Increases damage by 10%",
         level_req = 24,
-        perk_req = 2,
+        perk_req = 0,
         cost = 1,
         id = 95,
-        position = 97,
+        position = 80,
         enabled = true
     },
     {
@@ -977,7 +797,7 @@ ExpPerks =
         perk_req = 52,
         cost = 1,
         id = 96,
-        position = 98,
+        position = 81,
         enabled = true
     },
     {
@@ -987,7 +807,7 @@ ExpPerks =
         perk_req = 71,
         cost = 2,
         id = 94,
-        position = 99,
+        position = 82,
         enabled = true
     },
     {
@@ -997,7 +817,7 @@ ExpPerks =
         perk_req = 79,
         cost = 0,
         id = 100,
-        position = 100,
+        position = 83,
         enabled = true
     },
     {
@@ -1007,7 +827,7 @@ ExpPerks =
         perk_req = 58,
         cost = 2,
         id = 97,
-        position = 101,
+        position = 84,
         enabled = true
     },
     {
@@ -1017,7 +837,7 @@ ExpPerks =
         perk_req = 80,
         cost = 2,
         id = 98,
-        position = 102,
+        position = 85,
         enabled = true
     },
     {
@@ -1027,7 +847,7 @@ ExpPerks =
         perk_req = 16,
         cost = 2,
         id = 102,
-        position = 103,
+        position = 86,
         enabled = true
     },
     {
@@ -1037,7 +857,7 @@ ExpPerks =
         perk_req = 38,
         cost = 3,
         id = 101,
-        position = 104,
+        position = 87,
         enabled = false
     },
     {
@@ -1047,7 +867,7 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 103,
-        position = 105,
+        position = 88,
         enabled = false
     },
     {
@@ -1057,7 +877,7 @@ ExpPerks =
         perk_req = 0,
         cost = 5,
         id = 99,
-        position = 106,
+        position = 89,
         enabled = false
     },
     {
@@ -1067,7 +887,7 @@ ExpPerks =
         perk_req = 0,
         cost = 2,
         id = 104,
-        position = 107,
+        position = 90,
         enabled = true
     },
     {
@@ -1077,7 +897,7 @@ ExpPerks =
         perk_req = 49,
         cost = 2,
         id = 105,
-        position = 108,
+        position = 91,
         enabled = true
     },
     {
@@ -1087,7 +907,7 @@ ExpPerks =
         perk_req = 70,
         cost = 3,
         id = 106,
-        position = 109,
+        position = 92,
         enabled = true
     },
     {
@@ -1097,7 +917,7 @@ ExpPerks =
         perk_req = 91,
         cost = 0,
         id = 107,
-        position = 110,
+        position = 93,
         enabled = true
     },
     {
@@ -1107,7 +927,7 @@ ExpPerks =
         perk_req = 54,
         cost = 1,
         id = 108,
-        position = 111,
+        position = 94,
         enabled = true
     },
     {
@@ -1117,7 +937,7 @@ ExpPerks =
         perk_req = 55,
         cost = 1,
         id = 109,
-        position = 112,
+        position = 95,
         enabled = true
     },
     {
@@ -1127,7 +947,7 @@ ExpPerks =
         perk_req = 88,
         cost = 2,
         id = 111,
-        position = 113,
+        position = 96,
         enabled = true
     },
     {
@@ -1137,7 +957,7 @@ ExpPerks =
         perk_req = 73,
         cost = 3,
         id = 110,
-        position = 114,
+        position = 97,
         enabled = true
     },
     {
@@ -1147,7 +967,7 @@ ExpPerks =
         perk_req = 92,
         cost = 0,
         id = 112,
-        position = 115,
+        position = 98,
         enabled = true
     },
     {
@@ -1157,7 +977,7 @@ ExpPerks =
         perk_req = 93,
         cost = 0,
         id = 113,
-        position = 116,
+        position = 99,
         enabled = true
     },
     {
@@ -1167,7 +987,7 @@ ExpPerks =
         perk_req = 56,
         cost = 3,
         id = 114,
-        position = 117,
+        position = 100,
         enabled = true
     },
     {
@@ -1177,7 +997,7 @@ ExpPerks =
         perk_req = 50,
         cost = 1,
         id = 115,
-        position = 118,
+        position = 101,
         enabled = true
     },
     {
@@ -1187,7 +1007,7 @@ ExpPerks =
         perk_req = 57,
         cost = 2,
         id = 116,
-        position = 119,
+        position = 102,
         enabled = true
     },
     {
@@ -1197,7 +1017,7 @@ ExpPerks =
         perk_req = 76,
         cost = 0,
         id = 117,
-        position = 120,
+        position = 103,
         enabled = true
     },
     {
@@ -1207,7 +1027,7 @@ ExpPerks =
         perk_req = 107,
         cost = 0,
         id = 119,
-        position = 121,
+        position = 104,
         enabled = true
     },
     {
@@ -1217,7 +1037,7 @@ ExpPerks =
         perk_req = 100,
         cost = 0,
         id = 120,
-        position = 122,
+        position = 105,
         enabled = true
     },
     {
@@ -1227,7 +1047,7 @@ ExpPerks =
         perk_req = 65,
         cost = 1,
         id = 122,
-        position = 123,
+        position = 106,
         enabled = true
     },
     {
@@ -1237,7 +1057,7 @@ ExpPerks =
         perk_req = 235,
         cost = 2,
         id = 236,
-        position = 124,
+        position = 107,
         enabled = true
     },
     {
@@ -1247,7 +1067,7 @@ ExpPerks =
         perk_req = 98,
         cost = 3,
         id = 118,
-        position = 125,
+        position = 108,
         enabled = true
     },
     {
@@ -1257,17 +1077,17 @@ ExpPerks =
         perk_req = 81,
         cost = 3,
         id = 121,
-        position = 126,
+        position = 109,
         enabled = true
     },
     {
         name = "EVAC",
         description = "Adds 10% chance that your EVAC won't be consumed when called",
         level_req = 31,
-        perk_req = 6,
+        perk_req = 0,
         cost = 2,
         id = 123,
-        position = 127,
+        position = 110,
         enabled = true
     },
     {
@@ -1277,7 +1097,7 @@ ExpPerks =
         perk_req = 234,
         cost = 2,
         id = 235,
-        position = 128,
+        position = 111,
         enabled = false
     },
     {
@@ -1287,7 +1107,7 @@ ExpPerks =
         perk_req = 94,
         cost = 3,
         id = 124,
-        position = 129,
+        position = 112,
         enabled = true
     },
     {
@@ -1297,7 +1117,7 @@ ExpPerks =
         perk_req = 112,
         cost = 0,
         id = 126,
-        position = 130,
+        position = 113,
         enabled = true
     },
     {
@@ -1307,7 +1127,7 @@ ExpPerks =
         perk_req = 113,
         cost = 0,
         id = 127,
-        position = 131,
+        position = 114,
         enabled = true
     },
     {
@@ -1317,7 +1137,7 @@ ExpPerks =
         perk_req = 111,
         cost = 3,
         id = 125,
-        position = 132,
+        position = 115,
         enabled = true
     },
     {
@@ -1327,7 +1147,7 @@ ExpPerks =
         perk_req = 119,
         cost = 0,
         id = 128,
-        position = 133,
+        position = 116,
         enabled = true
     },
     {
@@ -1337,7 +1157,7 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 129,
-        position = 134,
+        position = 117,
         enabled = false
     },
     {
@@ -1347,7 +1167,7 @@ ExpPerks =
         perk_req = 89,
         cost = 2,
         id = 130,
-        position = 135,
+        position = 118,
         enabled = true
     },
     {
@@ -1357,7 +1177,7 @@ ExpPerks =
         perk_req = 74,
         cost = 3,
         id = 131,
-        position = 136,
+        position = 119,
         enabled = true
     },
     {
@@ -1367,7 +1187,7 @@ ExpPerks =
         perk_req = 97,
         cost = 2,
         id = 132,
-        position = 137,
+        position = 120,
         enabled = true
     },
     {
@@ -1377,7 +1197,7 @@ ExpPerks =
         perk_req = 96,
         cost = 2,
         id = 134,
-        position = 138,
+        position = 121,
         enabled = true
     },
     {
@@ -1387,7 +1207,7 @@ ExpPerks =
         perk_req = 103,
         cost = 4,
         id = 133,
-        position = 139,
+        position = 122,
         enabled = false
     },
     {
@@ -1397,7 +1217,7 @@ ExpPerks =
         perk_req = 128,
         cost = 0,
         id = 135,
-        position = 140,
+        position = 123,
         enabled = true
     },
     {
@@ -1407,7 +1227,7 @@ ExpPerks =
         perk_req = 126,
         cost = 0,
         id = 136,
-        position = 141,
+        position = 124,
         enabled = true
     },
     {
@@ -1417,7 +1237,7 @@ ExpPerks =
         perk_req = 127,
         cost = 0,
         id = 137,
-        position = 142,
+        position = 125,
         enabled = true
     },
     {
@@ -1427,7 +1247,7 @@ ExpPerks =
         perk_req = 110,
         cost = 3,
         id = 233,
-        position = 143,
+        position = 126,
         enabled = true
     },
     {
@@ -1437,7 +1257,7 @@ ExpPerks =
         perk_req = 105,
         cost = 2,
         id = 138,
-        position = 144,
+        position = 127,
         enabled = true
     },
     {
@@ -1447,7 +1267,7 @@ ExpPerks =
         perk_req = 39,
         cost = 2,
         id = 139,
-        position = 145,
+        position = 128,
         enabled = false
     },
     {
@@ -1457,7 +1277,7 @@ ExpPerks =
         perk_req = 75,
         cost = 3,
         id = 140,
-        position = 146,
+        position = 129,
         enabled = true
     },
     {
@@ -1467,7 +1287,7 @@ ExpPerks =
         perk_req = 135,
         cost = 0,
         id = 141,
-        position = 147,
+        position = 130,
         enabled = true
     },
     {
@@ -1477,7 +1297,7 @@ ExpPerks =
         perk_req = 235,
         cost = 3,
         id = 236,
-        position = 148,
+        position = 131,
         enabled = false
     },
     {
@@ -1487,7 +1307,7 @@ ExpPerks =
         perk_req = 117,
         cost = 0,
         id = 142,
-        position = 149,
+        position = 132,
         enabled = true
     },
     {
@@ -1497,7 +1317,7 @@ ExpPerks =
         perk_req = 136,
         cost = 0,
         id = 143,
-        position = 150,
+        position = 133,
         enabled = true
     },
     {
@@ -1507,7 +1327,7 @@ ExpPerks =
         perk_req = 137,
         cost = 0,
         id = 144,
-        position = 151,
+        position = 134,
         enabled = true
     },
     {
@@ -1517,7 +1337,7 @@ ExpPerks =
         perk_req = 109,
         cost = 1,
         id = 149,
-        position = 152,
+        position = 135,
         enabled = true
     },
     {
@@ -1527,7 +1347,7 @@ ExpPerks =
         perk_req = 83,
         cost = 2,
         id = 145,
-        position = 153,
+        position = 136,
         enabled = false
     },
     {
@@ -1537,7 +1357,7 @@ ExpPerks =
         perk_req = 236,
         cost = 2,
         id = 237,
-        position = 154,
+        position = 137,
         enabled = true
     },
     {
@@ -1547,7 +1367,7 @@ ExpPerks =
         perk_req = 68,
         cost = 3,
         id = 147,
-        position = 155,
+        position = 138,
         enabled = false
     },
     {
@@ -1557,7 +1377,7 @@ ExpPerks =
         perk_req = 0,
         cost = 3,
         id = 148,
-        position = 156,
+        position = 139,
         enabled = false
     },
     {
@@ -1567,7 +1387,7 @@ ExpPerks =
         perk_req = 124,
         cost = 4,
         id = 146,
-        position = 157,
+        position = 140,
         enabled = true
     },
     {
@@ -1577,7 +1397,7 @@ ExpPerks =
         perk_req = 82,
         cost = 3,
         id = 150,
-        position = 158,
+        position = 141,
         enabled = false
     },
     {
@@ -1587,7 +1407,7 @@ ExpPerks =
         perk_req = 141,
         cost = 0,
         id = 151,
-        position = 159,
+        position = 142,
         enabled = true
     },
     {
@@ -1597,7 +1417,7 @@ ExpPerks =
         perk_req = 87,
         cost = 3,
         id = 153,
-        position = 160,
+        position = 143,
         enabled = false
     },
     {
@@ -1607,7 +1427,7 @@ ExpPerks =
         perk_req = 114,
         cost = 4,
         id = 152,
-        position = 161,
+        position = 144,
         enabled = true
     },
     {
@@ -1617,7 +1437,7 @@ ExpPerks =
         perk_req = 143,
         cost = 0,
         id = 154,
-        position = 162,
+        position = 145,
         enabled = true
     },
     {
@@ -1627,7 +1447,7 @@ ExpPerks =
         perk_req = 144,
         cost = 0,
         id = 155,
-        position = 163,
+        position = 146,
         enabled = true
     },
     {
@@ -1637,7 +1457,7 @@ ExpPerks =
         perk_req = 130,
         cost = 3,
         id = 156,
-        position = 164,
+        position = 147,
         enabled = true
     },
     {
@@ -1647,7 +1467,7 @@ ExpPerks =
         perk_req = 151,
         cost = 0,
         id = 158,
-        position = 165,
+        position = 148,
         enabled = true
     },
     {
@@ -1657,7 +1477,7 @@ ExpPerks =
         perk_req = 122,
         cost = 1,
         id = 160,
-        position = 166,
+        position = 149,
         enabled = true
     },
     {
@@ -1667,7 +1487,7 @@ ExpPerks =
         perk_req = 132,
         cost = 3,
         id = 157,
-        position = 167,
+        position = 150,
         enabled = true
     },
     {
@@ -1677,7 +1497,7 @@ ExpPerks =
         perk_req = 116,
         cost = 3,
         id = 159,
-        position = 168,
+        position = 151,
         enabled = true
     },
     {
@@ -1687,7 +1507,7 @@ ExpPerks =
         perk_req = 115,
         cost = 1,
         id = 162,
-        position = 169,
+        position = 152,
         enabled = true
     },
     {
@@ -1697,7 +1517,7 @@ ExpPerks =
         perk_req = 134,
         cost = 2,
         id = 161,
-        position = 170,
+        position = 153,
         enabled = true
     },
     {
@@ -1707,7 +1527,7 @@ ExpPerks =
         perk_req = 90,
         cost = 2,
         id = 163,
-        position = 171,
+        position = 154,
         enabled = true
     },
     {
@@ -1717,7 +1537,7 @@ ExpPerks =
         perk_req = 158,
         cost = 0,
         id = 164,
-        position = 172,
+        position = 155,
         enabled = true
     },
     {
@@ -1727,7 +1547,7 @@ ExpPerks =
         perk_req = 154,
         cost = 0,
         id = 165,
-        position = 173,
+        position = 156,
         enabled = true
     },
     {
@@ -1737,7 +1557,7 @@ ExpPerks =
         perk_req = 155,
         cost = 0,
         id = 166,
-        position = 174,
+        position = 157,
         enabled = true
     },
     {
@@ -1747,7 +1567,7 @@ ExpPerks =
         perk_req = 95,
         cost = 2,
         id = 167,
-        position = 175,
+        position = 158,
         enabled = true
     },
     {
@@ -1757,7 +1577,7 @@ ExpPerks =
         perk_req = 142,
         cost = 0,
         id = 168,
-        position = 176,
+        position = 159,
         enabled = true
     },
     {
@@ -1767,7 +1587,7 @@ ExpPerks =
         perk_req = 102,
         cost = 3,
         id = 169,
-        position = 177,
+        position = 160,
         enabled = true
     },
     {
@@ -1777,7 +1597,7 @@ ExpPerks =
         perk_req = 237,
         cost = 3,
         id = 238,
-        position = 178,
+        position = 161,
         enabled = true
     },
     {
@@ -1787,7 +1607,7 @@ ExpPerks =
         perk_req = 165,
         cost = 0,
         id = 170,
-        position = 179,
+        position = 162,
         enabled = true
     },
     {
@@ -1797,7 +1617,7 @@ ExpPerks =
         perk_req = 166,
         cost = 0,
         id = 171,
-        position = 180,
+        position = 163,
         enabled = true
     },
     {
@@ -1807,7 +1627,7 @@ ExpPerks =
         perk_req = 138,
         cost = 3,
         id = 172,
-        position = 181,
+        position = 164,
         enabled = true
     },
     {
@@ -1817,7 +1637,7 @@ ExpPerks =
         perk_req = 108,
         cost = 2,
         id = 173,
-        position = 182,
+        position = 165,
         enabled = true
     },
     {
@@ -1827,7 +1647,7 @@ ExpPerks =
         perk_req = 157,
         cost = 3,
         id = 174,
-        position = 183,
+        position = 166,
         enabled = true
     },
     {
@@ -1837,7 +1657,7 @@ ExpPerks =
         perk_req = 156,
         cost = 4,
         id = 175,
-        position = 184,
+        position = 167,
         enabled = true
     },
     {
@@ -1847,7 +1667,7 @@ ExpPerks =
         perk_req = 170,
         cost = 0,
         id = 176,
-        position = 185,
+        position = 168,
         enabled = true
     },
     {
@@ -1857,7 +1677,7 @@ ExpPerks =
         perk_req = 171,
         cost = 0,
         id = 177,
-        position = 186,
+        position = 169,
         enabled = true
     },
     {
@@ -1867,7 +1687,7 @@ ExpPerks =
         perk_req = 149,
         cost = 2,
         id = 179,
-        position = 187,
+        position = 170,
         enabled = true
     },
     {
@@ -1877,7 +1697,7 @@ ExpPerks =
         perk_req = 161,
         cost = 3,
         id = 178,
-        position = 188,
+        position = 171,
         enabled = true
     },
     {
@@ -1887,7 +1707,7 @@ ExpPerks =
         perk_req = 145,
         cost = 3,
         id = 180,
-        position = 189,
+        position = 172,
         enabled = false
     },
     {
@@ -1897,7 +1717,7 @@ ExpPerks =
         perk_req = 150,
         cost = 4,
         id = 181,
-        position = 190,
+        position = 173,
         enabled = false
     },
     {
@@ -1907,7 +1727,7 @@ ExpPerks =
         perk_req = 168,
         cost = 0,
         id = 182,
-        position = 191,
+        position = 174,
         enabled = true
     },
     {
@@ -1917,7 +1737,7 @@ ExpPerks =
         perk_req = 176,
         cost = 0,
         id = 183,
-        position = 192,
+        position = 175,
         enabled = true
     },
     {
@@ -1927,7 +1747,7 @@ ExpPerks =
         perk_req = 177,
         cost = 0,
         id = 184,
-        position = 193,
+        position = 176,
         enabled = true
     },
     {
@@ -1937,7 +1757,7 @@ ExpPerks =
         perk_req = 160,
         cost = 2,
         id = 185,
-        position = 194,
+        position = 177,
         enabled = true
     },
     {
@@ -1947,7 +1767,7 @@ ExpPerks =
         perk_req = 123,
         cost = 3,
         id = 186,
-        position = 195,
+        position = 178,
         enabled = true
     },
     {
@@ -1957,7 +1777,7 @@ ExpPerks =
         perk_req = 162,
         cost = 2,
         id = 188,
-        position = 196,
+        position = 179,
         enabled = true
     },
     {
@@ -1967,7 +1787,7 @@ ExpPerks =
         perk_req = 153,
         cost = 4,
         id = 187,
-        position = 197,
+        position = 180,
         enabled = false
     },
     {
@@ -1977,7 +1797,7 @@ ExpPerks =
         perk_req = 183,
         cost = 0,
         id = 189,
-        position = 198,
+        position = 181,
         enabled = true
     },
     {
@@ -1987,7 +1807,7 @@ ExpPerks =
         perk_req = 184,
         cost = 0,
         id = 190,
-        position = 199,
+        position = 182,
         enabled = true
     },
     {
@@ -1997,7 +1817,7 @@ ExpPerks =
         perk_req = 174,
         cost = 3,
         id = 191,
-        position = 200,
+        position = 183,
         enabled = true
     },
     {
@@ -2007,7 +1827,7 @@ ExpPerks =
         perk_req = 147,
         cost = 4,
         id = 192,
-        position = 201,
+        position = 184,
         enabled = false
     },
     {
@@ -2017,7 +1837,7 @@ ExpPerks =
         perk_req = 139,
         cost = 3,
         id = 193,
-        position = 202,
+        position = 185,
         enabled = false
     },
     {
@@ -2027,7 +1847,7 @@ ExpPerks =
         perk_req = 172,
         cost = 4,
         id = 194,
-        position = 203,
+        position = 186,
         enabled = true
     },
     {
@@ -2037,7 +1857,7 @@ ExpPerks =
         perk_req = 189,
         cost = 0,
         id = 195,
-        position = 204,
+        position = 187,
         enabled = true
     },
     {
@@ -2047,7 +1867,7 @@ ExpPerks =
         perk_req = 190,
         cost = 0,
         id = 196,
-        position = 205,
+        position = 188,
         enabled = true
     },
     {
@@ -2057,7 +1877,7 @@ ExpPerks =
         perk_req = 167,
         cost = 2,
         id = 197,
-        position = 206,
+        position = 189,
         enabled = true
     },
     {
@@ -2067,7 +1887,7 @@ ExpPerks =
         perk_req = 140,
         cost = 4,
         id = 198,
-        position = 207,
+        position = 190,
         enabled = true
     },
     {
@@ -2077,7 +1897,7 @@ ExpPerks =
         perk_req = 182,
         cost = 0,
         id = 199,
-        position = 208,
+        position = 191,
         enabled = true
     },
     {
@@ -2087,7 +1907,7 @@ ExpPerks =
         perk_req = 163,
         cost = 3,
         id = 200,
-        position = 209,
+        position = 192,
         enabled = true
     },
     {
@@ -2097,7 +1917,7 @@ ExpPerks =
         perk_req = 195,
         cost = 0,
         id = 201,
-        position = 210,
+        position = 193,
         enabled = true
     },
     {
@@ -2107,7 +1927,7 @@ ExpPerks =
         perk_req = 196,
         cost = 0,
         id = 202,
-        position = 211,
+        position = 194,
         enabled = true
     },
     {
@@ -2117,7 +1937,7 @@ ExpPerks =
         perk_req = 179,
         cost = 2,
         id = 203,
-        position = 212,
+        position = 195,
         enabled = true
     },
     {
@@ -2127,7 +1947,7 @@ ExpPerks =
         perk_req = 191,
         cost = 4,
         id = 204,
-        position = 213,
+        position = 196,
         enabled = true
     },
     {
@@ -2137,7 +1957,7 @@ ExpPerks =
         perk_req = 169,
         cost = 4,
         id = 205,
-        position = 214,
+        position = 197,
         enabled = true
     },
     {
@@ -2147,7 +1967,7 @@ ExpPerks =
         perk_req = 201,
         cost = 0,
         id = 206,
-        position = 215,
+        position = 198,
         enabled = true
     },
     {
@@ -2157,7 +1977,7 @@ ExpPerks =
         perk_req = 202,
         cost = 0,
         id = 207,
-        position = 216,
+        position = 199,
         enabled = true
     },
     {
@@ -2167,7 +1987,7 @@ ExpPerks =
         perk_req = 185,
         cost = 2,
         id = 208,
-        position = 217,
+        position = 200,
         enabled = true
     },
     {
@@ -2177,7 +1997,7 @@ ExpPerks =
         perk_req = 199,
         cost = 0,
         id = 209,
-        position = 218,
+        position = 201,
         enabled = true
     },
     {
@@ -2187,7 +2007,7 @@ ExpPerks =
         perk_req = 206,
         cost = 0,
         id = 210,
-        position = 219,
+        position = 202,
         enabled = true
     },
     {
@@ -2197,7 +2017,7 @@ ExpPerks =
         perk_req = 207,
         cost = 0,
         id = 211,
-        position = 220,
+        position = 203,
         enabled = true
     },
     {
@@ -2207,7 +2027,7 @@ ExpPerks =
         perk_req = 188,
         cost = 2,
         id = 212,
-        position = 221,
+        position = 204,
         enabled = true
     },
     {
@@ -2217,7 +2037,7 @@ ExpPerks =
         perk_req = 180,
         cost = 4,
         id = 213,
-        position = 222,
+        position = 205,
         enabled = false
     },
     {
@@ -2227,7 +2047,7 @@ ExpPerks =
         perk_req = 0,
         cost = 4,
         id = 214,
-        position = 223,
+        position = 206,
         enabled = false
     },
     {
@@ -2237,7 +2057,7 @@ ExpPerks =
         perk_req = 210,
         cost = 0,
         id = 215,
-        position = 224,
+        position = 207,
         enabled = true
     },
     {
@@ -2247,7 +2067,7 @@ ExpPerks =
         perk_req = 211,
         cost = 0,
         id = 216,
-        position = 225,
+        position = 208,
         enabled = true
     },
     {
@@ -2257,7 +2077,7 @@ ExpPerks =
         perk_req = 204,
         cost = 4,
         id = 217,
-        position = 226,
+        position = 209,
         enabled = true
     },
     {
@@ -2267,7 +2087,7 @@ ExpPerks =
         perk_req = 215,
         cost = 0,
         id = 218,
-        position = 227,
+        position = 210,
         enabled = true
     },
     {
@@ -2277,7 +2097,7 @@ ExpPerks =
         perk_req = 216,
         cost = 0,
         id = 219,
-        position = 228,
+        position = 211,
         enabled = true
     },
     {
@@ -2287,7 +2107,7 @@ ExpPerks =
         perk_req = 209,
         cost = 0,
         id = 220,
-        position = 229,
+        position = 212,
         enabled = true
     },
     {
@@ -2297,7 +2117,7 @@ ExpPerks =
         perk_req = 203,
         cost = 3,
         id = 221,
-        position = 230,
+        position = 213,
         enabled = true
     },
     {
@@ -2307,7 +2127,7 @@ ExpPerks =
         perk_req = 218,
         cost = 0,
         id = 222,
-        position = 231,
+        position = 214,
         enabled = true
     },
     {
@@ -2317,7 +2137,7 @@ ExpPerks =
         perk_req = 219,
         cost = 0,
         id = 223,
-        position = 232,
+        position = 215,
         enabled = true
     },
     {
@@ -2327,7 +2147,7 @@ ExpPerks =
         perk_req = 208,
         cost = 3,
         id = 224,
-        position = 233,
+        position = 216,
         enabled = true
     },
     {
@@ -2337,7 +2157,7 @@ ExpPerks =
         perk_req = 200,
         cost = 4,
         id = 225,
-        position = 234,
+        position = 217,
         enabled = true
     },
     {
@@ -2347,7 +2167,7 @@ ExpPerks =
         perk_req = 217,
         cost = 4,
         id = 226,
-        position = 235,
+        position = 218,
         enabled = true
     },
     {
@@ -2357,7 +2177,7 @@ ExpPerks =
         perk_req = 222,
         cost = 0,
         id = 227,
-        position = 236,
+        position = 219,
         enabled = true
     },
     {
@@ -2367,7 +2187,7 @@ ExpPerks =
         perk_req = 223,
         cost = 0,
         id = 228,
-        position = 237,
+        position = 220,
         enabled = true
     },
     {
@@ -2377,7 +2197,7 @@ ExpPerks =
         perk_req = 212,
         cost = 3,
         id = 229,
-        position = 238,
+        position = 221,
         enabled = true
     },
     {
@@ -2387,7 +2207,7 @@ ExpPerks =
         perk_req = 220,
         cost = 0,
         id = 230,
-        position = 239,
+        position = 222,
         enabled = true
     },
     {
@@ -2397,7 +2217,7 @@ ExpPerks =
         perk_req = 227,
         cost = 0,
         id = 231,
-        position = 240,
+        position = 223,
         enabled = true
     },
     {
@@ -2407,7 +2227,7 @@ ExpPerks =
         perk_req = 228,
         cost = 0,
         id = 232,
-        position = 241,
+        position = 224,
         enabled = true
     },
 }
@@ -2421,30 +2241,30 @@ end
 local perks_object = SharedObject.Create("ExpPerksById")
 perks_object:SetValue("Perks", ExpPerksById)
 
-PerkPointsPerLevel = 2 -- 2 Perk points are gained every level
+PerkPointsPerLevel = 1 -- 1 Perk point are gained every level
 
 PerkPointBonusesPerLevel = 
 {
-    [5] = 1,
-    [10] = 1,
-    [15] = 1,
-    [20] = 1,
-    [25] = 1,
-    [30] = 1,
-    [35] = 1,
-    [40] = 1,
-    [45] = 1,
-    [50] = 1,
-    [55] = 1,
-    [60] = 1,
-    [65] = 1,
-    [70] = 1,
-    [75] = 1,
-    [80] = 1,
-    [85] = 1,
-    [90] = 1,
-    [95] = 1,
-    [100] = 1,
+    [5] = 2,
+    [10] = 2,
+    [15] = 2,
+    [20] = 2,
+    [25] = 2,
+    [30] = 2,
+    [35] = 2,
+    [40] = 2,
+    [45] = 2,
+    [50] = 2,
+    [55] = 2,
+    [60] = 2,
+    [65] = 2,
+    [70] = 2,
+    [75] = 2,
+    [80] = 2,
+    [85] = 2,
+    [90] = 2,
+    [95] = 2,
+    [100] = 2,
 }
 ExpPerkChoiceText = 
 {
