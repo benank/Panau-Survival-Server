@@ -235,6 +235,8 @@ function sExp:PlayerKilled(args)
 
     local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
 
+    if not args.player:GetValue("Exp") then return end
+
     if args.player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius
     and args.player:GetValue("Exp").level > 3 then return end
 
