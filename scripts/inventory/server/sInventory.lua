@@ -199,6 +199,7 @@ function sInventory:PlayerKilled(args)
         self:Sync({sync_full = true})
     end
     
+    self:CheckForOverflow()
 
 end
 
