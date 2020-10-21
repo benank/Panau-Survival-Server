@@ -400,7 +400,19 @@ function sLandclaim:DamageObject(args, player)
 
     if not damage then return end
 
-    -- args.owner_id is valid if player is not
+    local mod = 1
+
+    local perks = player:GetValue("Perks")
+    local possible_perks = Config.damage_perks[args.type]
+
+    for perk_id, perk_mod_data in pairs(possible_perks) do
+        local choice = perks.unlocked_perks[perk_id]
+        if perk_mod_data[choice] then
+            mod = math.max(mod, perk_mod_data[choice])
+        end
+    end
+
+    damage = damage * mod
 
     object:Damage(damage)
 
@@ -433,7 +445,7 @@ function sLandclaim:DamageObject(args, player)
         id = id,
         health = object.health,
         player = player
-    })
+    })    
 
 end
 
