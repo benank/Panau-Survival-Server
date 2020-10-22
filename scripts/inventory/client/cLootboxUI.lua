@@ -187,6 +187,7 @@ function cLootboxUI:UpdateLootboxTitle(locked)
 
         local is_owner = current_box.stash.owner_id == tostring(LocalPlayer:GetSteamId())
 
+        if not current_box.tier or not Lootbox.Stashes[current_box.tier] then return end
         local name = Lootbox.Stashes[current_box.tier].name
 
         if current_box.stash and current_box.stash.name and is_owner then
