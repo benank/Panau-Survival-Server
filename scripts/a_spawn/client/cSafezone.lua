@@ -26,7 +26,12 @@ function cSafezone:__init()
     Events:Subscribe(var("SecondTick"):get(), self, self.SecondTick)
     Events:Subscribe(var("GameRenderOpaque"):get(), self, self.Render)
     Events:Subscribe("Render", self, self.RenderText)
+    Events:Subscribe("LoadingFinished", self, self.LoadingFinished)
 
+end
+
+function cSafezone:LoadingFinished()
+    self.in_safezone = false
 end
 
 function cSafezone:RenderText(args)

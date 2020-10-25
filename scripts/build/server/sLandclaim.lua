@@ -292,8 +292,8 @@ function sLandclaim:PlaceObject(args)
 
     Events:Fire("Discord", {
         channel = "Build",
-        content = string.format("%s [%s] placed object %s at pos %s (%s)", 
-            args.player:GetName(), tostring(args.player:GetSteamId()), object.name, object.position, self:ToLogString())
+        content = string.format("%s [%s] placed object %s (HP: %d) at pos %s (%s)", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), object.name, object.health, object.position, self:ToLogString())
     })
 end
 
