@@ -81,6 +81,7 @@ function cInventoryUIStyle:__init()
         pink = Color(144, 61, 143, self.background_alpha), -- valuables: landclaims, hackers, EVACs, respawners/beds
         purple = Color(52, 29, 145, self.background_alpha), -- boss drop items
         white = Color(230, 230, 230, self.background_alpha), -- unused for now
+        darkorange = Color(99, 37, 3, self.background_alpha), -- halloween event items
         locked = Color(230, 10, 10, self.background_alpha), -- locked
     }
 
@@ -166,6 +167,25 @@ function cInventoryUIStyle:__init()
         ["Master Hacker"] = self.item_colors.purple,
         ["Stick Disguise"] = self.item_colors.purple,
         ["Lightning Gloves"] = self.item_colors.purple,
+
+        -- Halloween Event Items
+        ["Halloween Lootbag"] = self.item_colors.darkorange,
+        ["Palm Costume"] = self.item_colors.darkorange,
+        ["Heli Costume"] = self.item_colors.darkorange,
+        ["Car Costume"] = self.item_colors.darkorange,
+        ["Halo Costume"] = self.item_colors.darkorange,
+        ["Meathead Costume"] = self.item_colors.darkorange,
+        ["Sun Costume"] = self.item_colors.darkorange,
+        ["Wall Costume"] = self.item_colors.darkorange,
+        ["Stash Costume"] = self.item_colors.darkorange,
+        ["Plant Costume"] = self.item_colors.darkorange,
+        ["Cone Costume"] = self.item_colors.darkorange,
+        ["Boat Costume"] = self.item_colors.darkorange,
+        ["Candy Corn"] = self.item_colors.darkorange,
+        ["Marshmallow"] = self.item_colors.darkorange,
+        ["Kit Kat"] = self.item_colors.darkorange,
+        ["Starburst"] = self.item_colors.darkorange,
+        ["Skittles"] = self.item_colors.darkorange,
     }
 
 
