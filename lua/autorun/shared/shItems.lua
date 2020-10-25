@@ -812,7 +812,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 100,
-        equip_type = "costume"
+        equip_type = "costume_body"
     },
     {
         name = "Heli Costume",
@@ -821,7 +821,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 100,
-        equip_type = "costume"
+        equip_type = "costume_body"
     },
     {
         name = "Car Costume",
@@ -830,7 +830,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 100,
-        equip_type = "costume"
+        equip_type = "costume_body"
     },
     {
         name = "Boat Costume",
@@ -839,25 +839,25 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 100,
-        equip_type = "costume"
+        equip_type = "costume_body"
     },
     {
-        name = "Halo Costume",
+        name = "Halo Hat",
         category = "Survival",
         stacklimit = 1,
         can_equip = true,
         durable = true,
         max_durability = 100,
-        equip_type = "costume"
+        equip_type = "costume_hat"
     },
     {
-        name = "Meathead Costume",
+        name = "Meathead Hat",
         category = "Survival",
         stacklimit = 1,
         can_equip = true,
         durable = true,
         max_durability = 100,
-        equip_type = "costume"
+        equip_type = "costume_hat"
     },
     {
         name = "Sun Costume",
@@ -866,7 +866,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 100,
-        equip_type = "costume"
+        equip_type = "costume_body"
     },
     {
         name = "Wall Costume",
@@ -875,7 +875,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 100,
-        equip_type = "costume"
+        equip_type = "costume_body"
     },
     {
         name = "Stash Costume",
@@ -884,7 +884,7 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 100,
-        equip_type = "costume"
+        equip_type = "costume_body"
     },
     {
         name = "Plant Costume",
@@ -893,16 +893,16 @@ Items =
         can_equip = true,
         durable = true,
         max_durability = 100,
-        equip_type = "costume"
+        equip_type = "costume_body"
     },
     {
-        name = "Cone Costume",
+        name = "Cone Hat",
         category = "Survival",
         stacklimit = 1,
         can_equip = true,
         durable = true,
         max_durability = 100,
-        equip_type = "costume"
+        equip_type = "costume_hat"
     },
     {
         name = "Candy Corn",

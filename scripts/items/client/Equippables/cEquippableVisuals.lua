@@ -77,14 +77,14 @@ EquippableVisuals =
         offset = Vector3(0,-1,0),
         angle = Angle()
     },
-    ["Halo Costume"] = 
+    ["Halo Hat"] = 
     {
         model = "general.blz/halo_01-a.lod",
         bone = "ragdoll_Head",
         offset = Vector3(0,0,0),
         angle = Angle()
     },
-    ["Meathead Costume"] = 
+    ["Meathead Hat"] = 
     {
         model = "bwc.nlz/v320-mt02.lod",
         bone = "ragdoll_Head",
@@ -105,7 +105,7 @@ EquippableVisuals =
         offset = Vector3(0,0,0),
         angle = Angle(0, 1.57, 0)
     },
-    ["Cone Costume"] = 
+    ["Cone Hat"] = 
     {
         model = "35x12.nlz/go040-b.lod",
         bone = "ragdoll_Head",
