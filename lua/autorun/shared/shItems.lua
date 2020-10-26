@@ -798,7 +798,142 @@ Items =
         durable = true,
         max_durability = 1000,
         equip_type = "weapon_2h"
-    }
+    },
+    {
+        name = "Halloween Lootbag",
+        category = "Survival",
+        stacklimit = 1,
+        can_use = true
+    },
+    {
+        name = "Palm Costume",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_body"
+    },
+    {
+        name = "Heli Costume",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_body"
+    },
+    {
+        name = "Car Costume",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_body"
+    },
+    {
+        name = "Boat Costume",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_body"
+    },
+    {
+        name = "Halo Hat",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_hat"
+    },
+    {
+        name = "Meathead Hat",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_hat"
+    },
+    {
+        name = "Sun Costume",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_body"
+    },
+    {
+        name = "Wall Costume",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_body"
+    },
+    {
+        name = "Stash Costume",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_body"
+    },
+    {
+        name = "Plant Costume",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_body"
+    },
+    {
+        name = "Cone Hat",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_hat"
+    },
+    {
+        name = "Candy Corn",
+        category = "Survival",
+        stacklimit = 25,
+        can_use = true
+    },
+    {
+        name = "Marshmallow",
+        category = "Survival",
+        stacklimit = 10,
+        can_use = true
+    },
+    {
+        name = "Kit Kat",
+        category = "Survival",
+        stacklimit = 12,
+        can_use = true
+    },
+    {
+        name = "Starburst",
+        category = "Survival",
+        stacklimit = 10,
+        can_use = true
+    },
+    {
+        name = "Skittles",
+        category = "Survival",
+        stacklimit = 50,
+        can_use = true
+    },
 }
 
 Items_ammo_types = 

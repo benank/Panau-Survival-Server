@@ -45,6 +45,11 @@ config =
         ["Pretzel"] = {hunger = 10, thirst = -2},
         ["Water"] = {hunger = 0, thirst = 16},
         ["Macadamia Nuts"] = {hunger = 25, thirst = 0},
-        ["CamelBak"] = {hunger = 0, thirst = 12, dura_per_use = 10}
+        ["CamelBak"] = {hunger = 0, thirst = 12, dura_per_use = 10},
+        ["Candy Corn"] = {hunger = 2, thirst = 0},
+        ["Marshmallow"] = {hunger = 10, thirst = 10},
+        ["Kit Kat"] = {hunger = 15, thirst = 0},
+        ["Starburst"] = {hunger = 5, thirst = 0},
+        ["Skittles"] = {hunger = 1, thirst = 0},
     }
 }
