@@ -815,6 +815,15 @@ Items =
         equip_type = "costume_body"
     },
     {
+        name = "Umbrella Costume",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_body"
+    },
+    {
         name = "Heli Costume",
         category = "Survival",
         stacklimit = 1,

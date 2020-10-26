@@ -56,6 +56,13 @@ EquippableVisuals =
         offset = Vector3(0,0,0),
         angle = Angle()
     },
+    ["Umbrella Costume"] = 
+    {
+        model = "37x10.nlz/go220-b.lod",
+        bone = "ragdoll_Spine1",
+        offset = Vector3(0,-0.5,0),
+        angle = Angle()
+    },
     ["Heli Costume"] = 
     {
         model = "arve.v059_civilian_helicopter.eez/v059-body_m.lod",
