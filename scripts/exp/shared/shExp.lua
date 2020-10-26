@@ -41,15 +41,15 @@ Exp =
     },
     Hack = 
     {
-        [13] = 60, -- Locked Stash
-        [14] = 12 -- Proximity Alarm
+        [13] = 50, -- Locked Stash
+        [14] = 10 -- Proximity Alarm
     },
     DestroyStash = 
     {
-        [11] = 30, -- Barrel Stash
-        [12] = 50, -- Garbage Stash
-        [13] = 150, -- Locked Stash
-        [14] = 6 -- Proximity alarm
+        [11] = 15, -- Barrel Stash
+        [12] = 30, -- Garbage Stash
+        [13] = 70, -- Locked Stash
+        [14] = 5 -- Proximity alarm
     },
     DestroyDrone = 
     {
@@ -67,15 +67,15 @@ Exp =
     },
     DestroyExplosive = 
     {
-        [DamageEntity.Mine] = 5,
-        [DamageEntity.Claymore] = 5,
-        [DamageEntity.C4] = 10
+        [DamageEntity.Mine] = 2,
+        [DamageEntity.Claymore] = 2,
+        [DamageEntity.C4] = 6
     },
     DestroyBuildObject = 
     {
-        ["Wall"] = 10,
-        ["Door"] = 10,
-        ["Bed"] = 5
+        ["Wall"] = 4,
+        ["Door"] = 4,
+        ["Bed"] = 3
     },
     KillExpireTime = 60 * 60 * 4, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
     UnfriendTime = 60 * 60 * 24 * 7, -- Timer for killing a recently unfriended person
