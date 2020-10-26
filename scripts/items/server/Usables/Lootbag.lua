@@ -33,6 +33,8 @@ Network:Subscribe("items/CompleteItemUsage", function(args, player)
     if player_iu.item and ItemsConfig.usables[player_iu.item.name] and player_iu.using and player_iu.completed
         and ItemsConfig.usables[player_iu.item.name] then
             
+        if not lootbag_config[player_iu.item.name] then return end
+
         local item_name = GetRandomItem(player_iu.item.name)
         local item_amount = lootbag_config[player_iu.item.name][item_name].amount
 
