@@ -21,6 +21,10 @@ local lootbag_config =
     }
 }
 
+Events:Subscribe("PlayerJoin", function(args)
+    Chat:Send(args.player, "The Halloween Event is live! Find exclusive ", Color.Orange, "Halloween Lootbags", Color.Red, " in loot from now until Nov 2. Open lootbags to find candy and costumes!", Color.Orange)
+end)
+
 Network:Subscribe("items/CompleteItemUsage", function(args, player)
 
     local player_iu = player:GetValue("ItemUse")
