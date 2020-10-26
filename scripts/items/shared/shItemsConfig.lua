@@ -21,6 +21,7 @@ ItemsConfig =
         ["Combat Ping"] = {max_distance = 550, max_height = 200},
         ["EMP"] = {range = 400, disable_time = 30, use_time = 10},
         ["LandClaim"] = {use_time = 10, delay_use = true},
+        ["Halloween Lootbag"] = {use_time = 3},
     },
     build = 
     {
@@ -91,6 +92,20 @@ ItemsConfig =
             ["AntiGrav Grenade"] = DamageEntity.None,
             ["Warp Grenade"] = DamageEntity.None,
             ["Laser Grenade"] = DamageEntity.LaserGrenade,
+        },
+        costumes = 
+        {
+            ["Palm Costume"] = {dura_per_hit = 5},
+            ["Heli Costume"] = {dura_per_hit = 5},
+            ["Car Costume"] = {dura_per_hit = 5},
+            ["Boat Costume"] = {dura_per_hit = 5},
+            ["Cone Hat"] = {dura_per_hit = 5},
+            ["Halo Hat"] = {dura_per_hit = 5},
+            ["Meathead Hat"] = {dura_per_hit = 5},
+            ["Sun Costume"] = {dura_per_hit = 5},
+            ["Wall Costume"] = {dura_per_hit = 5},
+            ["Stash Costume"] = {dura_per_hit = 5},
+            ["Plant Costume"] = {dura_per_hit = 5}
         }
     },
     use_time_perks = 
