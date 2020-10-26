@@ -16,11 +16,13 @@ end
 
 function cEquippableVisualsManager:Render(args)
 
+    local time = Client:GetElapsedSeconds()
+
     for id, visual in pairs(self.nearby_players) do
 
         if IsValid(visual.player) then
             visual:Render()
-        else
+        elseif time - visual.time > 1 then 
             visual:Remove()
             self.nearby_players[id] = nil
         end

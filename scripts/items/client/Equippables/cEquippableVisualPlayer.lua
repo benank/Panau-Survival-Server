@@ -5,6 +5,7 @@ function cEquippableVisualPlayer:__init(args)
     self.equipped_visuals = args.equipped_visuals
     self.objs = {}
     self.player = args.player
+    self.time = Client:GetElapsedSeconds()
     self:Update()
 
 end

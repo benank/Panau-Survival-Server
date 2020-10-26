@@ -5,7 +5,6 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
     local equipped_visuals = args.player:GetValue("EquippedVisuals")
     equipped_visuals[args.item.name] = args.item.equipped
-    args.player:SetValue("EquippedCostume", args.item.equipped and args.item.name or nil)
     args.player:SetNetworkValue("EquippedVisuals", equipped_visuals)
 
     UpdateEquippedItem(args.player, args.item.name, args.item)
@@ -18,32 +17,32 @@ local costume_hits = {}
 local function ModifyCostumeDurability(args)
 
     local equipped_items = args.player:GetValue("EquippedItems")
-    local equipped_item_name = args.player:GetValue("EquippedCostume")
-    if not equipped_item_name then return end
 
-    local item = equipped_items[equipped_item_name]
-
-    if not item then return end
     local change = args.damage
     if change < 1 or not change then change = 1 end
 
-    if not ItemsConfig.equippables[equipped_item_name] then return end
+    for equipped_item_name, item in pairs(equipped_items) do
 
-    local steam_id = tostring(args.player:GetSteamId())
-    if not costume_hits[steam_id] then
-        costume_hits[steam_id] = {}
-    end
+        if ItemsConfig.equippables.costumes[equipped_item_name] then
 
-    if not costume_hits[steam_id][equipped_item_name] then
-        costume_hits[steam_id][equipped_item_name] = {
-            player = args.player,
-            dura = change * ItemsConfig.equippables[equipped_item_name].dura_per_hit,
-            item = item
-        }
-    else
-        costume_hits[steam_id][equipped_item_name].dura = costume_hits[steam_id][equipped_item_name].dura +
-            change * ItemsConfig.equippables[equipped_item_name].dura_per_hit
-            costume_hits[steam_id][equipped_item_name].item = item
+            local steam_id = tostring(args.player:GetSteamId())
+            if not costume_hits[steam_id] then
+                costume_hits[steam_id] = {}
+            end
+
+            if not costume_hits[steam_id][equipped_item_name] then
+                costume_hits[steam_id][equipped_item_name] = {
+                    player = args.player,
+                    dura = change * ItemsConfig.equippables.costumes[equipped_item_name].dura_per_hit,
+                    item = item
+                }
+            else
+                costume_hits[steam_id][equipped_item_name].dura = costume_hits[steam_id][equipped_item_name].dura +
+                    change * ItemsConfig.equippables.costumes[equipped_item_name].dura_per_hit
+                    costume_hits[steam_id][equipped_item_name].item = item
+            end
+
+        end
     end
 
 end
