@@ -171,6 +171,7 @@ function cInventoryUIStyle:__init()
         -- Halloween Event Items
         ["Halloween Lootbag"] = self.item_colors.darkorange,
         ["Palm Costume"] = self.item_colors.darkorange,
+        ["Umbrella Costume"] = self.item_colors.darkorange,
         ["Heli Costume"] = self.item_colors.darkorange,
         ["Car Costume"] = self.item_colors.darkorange,
         ["Halo Hat"] = self.item_colors.darkorange,

@@ -96,6 +96,7 @@ ItemsConfig =
         costumes = 
         {
             ["Palm Costume"] = {dura_per_hit = 5},
+            ["Umbrella Costume"] = {dura_per_hit = 5},
             ["Heli Costume"] = {dura_per_hit = 5},
             ["Car Costume"] = {dura_per_hit = 5},
             ["Boat Costume"] = {dura_per_hit = 5},
