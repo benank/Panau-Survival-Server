@@ -33,8 +33,23 @@ Events:Subscribe("Inventory/UseItem", function(args)
         end
     end
 
+    local occupants = args.player:InVehicle() and args.player:GetVehicle():GetOccupants() or {}
+
+    -- Don't show any passengers in the ping
+    for index, player in pairs(occupants) do
+        nearby_players[player:GetId()] = nil
+    end
+
+    -- Send ping to player who used it
     if IsValid(args.player) then
         Network:Send(args.player, "Items/Ping", {range = range, nearby_players = nearby_players})
+    end
+
+    -- Send ping to passengers in vehicle, if any
+    for index, player in pairs(occupants) do
+        if player ~= args.player then
+            Network:Send(player, "Items/Ping", {range = range, nearby_players = nearby_players})
+        end
     end
 
     Network:Broadcast("Items/PingSound", {position = pos, range = range})
