@@ -22,6 +22,7 @@ ItemsConfig =
         ["EMP"] = {range = 400, disable_time = 30, use_time = 10},
         ["LandClaim"] = {use_time = 10, delay_use = true},
         ["Halloween Lootbag"] = {use_time = 3},
+        ["Binoculars"] = {dura_per_sec = 1},
     },
     build = 
     {

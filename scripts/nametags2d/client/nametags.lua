@@ -267,7 +267,7 @@ end
 
 function Nametags:DrawFullTag( pos, name, dist, colour, health, nametag, level )
      -- Calculate the alpha for the player nametag
-    local scale         = Nametags:CalculateAlpha(  dist, 
+    local scale         = LocalPlayer:GetValue("UsingBinoculars") and 1 or Nametags:CalculateAlpha( dist, 
                                                     self.player_bias,
                                                     self.player_max,
                                                     self.player_limit )
@@ -306,6 +306,8 @@ function Nametags:CanDraw(p)
         if exp and exp.level == 0 then return true end
 
     elseif LocalPlayer:GetValue("InSafezone") and p:GetValue("InSafezone") then return true end
+
+    if LocalPlayer:GetValue("UsingBinoculars") and self:AimingAt(p:GetPosition()) < 0.0001 then return true end
 
     return false
 

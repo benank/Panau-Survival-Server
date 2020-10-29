@@ -943,6 +943,14 @@ Items =
         stacklimit = 50,
         can_use = true
     },
+    {
+        name = "Binoculars",
+        category = "Survival",
+        stacklimit = 1,
+        can_use = true,
+        durable = true,
+        max_durability = 1000,
+    },
 }
 
 Items_ammo_types = 
