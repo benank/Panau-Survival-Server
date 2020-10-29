@@ -18,9 +18,13 @@ function cSurvivalHUD:__init()
     self.HealthIndex = 2
     self.FoodIndex = 3
     self.WaterIndex = 4
-    self.SeparatorIndex = 5
-    self.HelmetIndex = 6
-    self.VestIndex = 7
+    self.SeparatorIndexSurvival = 5
+    self.OxygenIndex = 6
+    self.TemperatureIndex = 7
+    self.RadiationIndex = 8
+    self.SeparatorIndexArmor = 9
+    self.HelmetIndex = 10
+    self.VestIndex = 11
 
     self.hud_elements = 
     {
@@ -56,6 +60,37 @@ function cSurvivalHUD:__init()
             name = "Water",
             percent = 0.25,
             color = Color(0, 172, 175),
+            small_size = self.small_element_size,
+            large_size = self.large_element_size,
+            visible = true
+        }),
+        cSurvivalHUDElement({
+            type = "separator",
+            color = self.border_color,
+            small_size = Vector2(self.small_element_size.x + self.border_size.x, self.border_size.y),
+            large_size = Vector2(self.large_element_size.x, self.border_size.y),
+            visible = false
+        }),
+        cSurvivalHUDElement({
+            name = "Oxygen",
+            percent = 0.25,
+            color = Color(181, 211, 229),
+            small_size = self.small_element_size,
+            large_size = self.large_element_size,
+            visible = true
+        }),
+        cSurvivalHUDElement({
+            name = "Cold",
+            percent = 0.25,
+            color = Color(32, 84, 147),
+            small_size = self.small_element_size,
+            large_size = self.large_element_size,
+            visible = true
+        }),
+        cSurvivalHUDElement({
+            name = "Radiation",
+            percent = 0.25,
+            color = Color(166, 206, 55),
             small_size = self.small_element_size,
             large_size = self.large_element_size,
             visible = true
@@ -119,7 +154,7 @@ function cSurvivalHUD:NetworkObjectValueChange(args)
         end
     end
 
-    self.hud_elements[self.SeparatorIndex].visible = self.hud_elements[self.HelmetIndex].visible or self.hud_elements[self.VestIndex].visible
+    self.hud_elements[self.SeparatorIndexArmor].visible = self.hud_elements[self.HelmetIndex].visible or self.hud_elements[self.VestIndex].visible
 
 end
 
@@ -158,11 +193,11 @@ function cSurvivalHUD:Render(args)
     local window_size = inventory_open and
         Vector2(
             self.large_element_size.x + self.window_margin.x + self.border_size.x, 
-            self:GetNumVisibleElements() * (self.large_element_size.y + self.small_margin) + (self.hud_elements[self.SeparatorIndex].visible and (self.hud_elements[self.SeparatorIndex].large_size.y + self.small_margin) or 0)) - self.border_size
+            self:GetNumVisibleElements() * (self.large_element_size.y + self.small_margin) + (self.hud_elements[self.SeparatorIndexArmor].visible and (self.hud_elements[self.SeparatorIndexArmor].large_size.y + self.small_margin) or 0)) - self.border_size
         or
         Vector2(
             self.small_element_size.x + self.window_margin.x + self.border_size.x, 
-            self:GetNumVisibleElements() * (self.small_element_size.y + self.small_margin) + (self.hud_elements[self.SeparatorIndex].visible and (self.hud_elements[self.SeparatorIndex].small_size.y + self.small_margin) or 0)) - self.border_size
+            self:GetNumVisibleElements() * (self.small_element_size.y + self.small_margin) + (self.hud_elements[self.SeparatorIndexArmor].visible and (self.hud_elements[self.SeparatorIndexArmor].small_size.y + self.small_margin) or 0)) - self.border_size
 
     Render:FillArea(-self.window_margin, window_size + self.window_margin, self.window_color)
     self:DrawBorder(-self.window_margin, window_size, self.border_color)
