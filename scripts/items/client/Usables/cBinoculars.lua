@@ -3,6 +3,8 @@ class 'cBinoculars'
 function cBinoculars:__init()
 
     self.using = false
+    self.equipped = false
+    self.use_key = 'B'
 
     self.old_fov = Camera:GetFOV()
 
@@ -18,7 +20,23 @@ function cBinoculars:__init()
     }
 
     Network:Subscribe("items/ToggleUsingBinoculars", self, self.ToggleUsingBinoculars)
+    Network:Subscribe("items/ToggleBinocularsEquipped", self, self.ToggleBinocularsEquipped)
+    Events:Subscribe("KeyUp", self, self.KeyUp)
 
+end
+
+function cBinoculars:KeyUp(args)
+    if args.key == string.byte(self.use_key) and self.equipped then
+        self:ToggleUsingBinoculars({using = not self.using, local_update = true})
+    end
+end
+
+function cBinoculars:ToggleBinocularsEquipped(args)
+    self.equipped = args.equipped
+
+    if self.using and not self.equipped then
+        self:ToggleUsingBinoculars({using = false, local_update = true})
+    end
 end
 
 function cBinoculars:ToggleUsingBinoculars(args)
@@ -26,6 +44,10 @@ function cBinoculars:ToggleUsingBinoculars(args)
 
     self.using = args.using
     LocalPlayer:SetValue("UsingBinoculars", self.using)
+
+    if args.local_update then
+        Network:Send("items/ToggleUsingBinoculars", {using = self.using})
+    end
 
     if self.using then
         self:StartUsing()
@@ -43,10 +65,13 @@ function cBinoculars:Render(args)
     Render:FillArea(Vector2(size.x - size.x * 0.1, 0), size, Color.Black)
 
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 2000)
-    if ray.distance < 2000 then
+    if ray.distance < 1000 then
         local text = string.format("%.0f m", ray.distance)
-        local text_size = Render:GetTextSize(text, 20)
-        Render:DrawText(Vector2(size.x / 2 - text_size.x / 2, size.y * 0.9), text, Color(0, 255, 0), 20)
+        local text_size_f = size.y * 0.04
+        local text_size = Render:GetTextSize(text, text_size_f)
+        Render:SetFont(AssetLocation.SystemFont, "Courier New")
+        Render:DrawText(Vector2(size.x / 2 - text_size.x / 2, size.y * 0.9 - text_size.y / 2), text, Color(0, 255, 0), text_size_f)
+        Render:ResetFont()
     end
 end
 
@@ -66,7 +91,7 @@ end
 
 function cBinoculars:CalcView(args)
     Camera:SetPosition(LocalPlayer:GetBonePosition("ragdoll_Head"))
-    return false
+    --return false
 end
 
 function cBinoculars:InputPoll(args)
