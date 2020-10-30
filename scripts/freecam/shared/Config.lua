@@ -3,7 +3,7 @@ Config = {
 	["name"] = "[FreeCam]",
 	["color"] = Color(200, 200, 255), 
 	["colorError"] = Color(255, 150, 150),
-	["activateKey"] = "B",
+	["activateKey"] = "N",
 
 	-- SPEED --
 

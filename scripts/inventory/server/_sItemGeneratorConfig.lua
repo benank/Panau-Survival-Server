@@ -159,10 +159,11 @@ LootItems =
         },
         ["GEAR"] = 
         {
-            rarity = 0.028,
+            rarity = 0.038,
             items = 
             {
-                ["Grapplehook"] = {rarity = 1, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.7, min = 1, max = 1},
+                ["Binoculars"] = {rarity = 0.3, min = 1, max = 1},
             }
         },
         ["HEALTH"] = 
@@ -198,7 +199,7 @@ LootItems =
         },
         ["WEAPON"] = 
         {
-            rarity = 0.047,
+            rarity = 0.037,
             items = 
             {
                 ["Bubble Gun"] = {rarity = 0.05, min = 1, max = 1},
@@ -277,11 +278,12 @@ LootItems =
         },
         ["GEAR"] = 
         {
-            rarity = 0.02,
+            rarity = 0.03,
             items = 
             {
                 ["Grapplehook"] = {rarity = 0.1, min = 1, max = 1},
-                ["Explosives Detector"] = {rarity = 0.55, min = 1, max = 1},
+                ["Binoculars"] = {rarity = 0.2, min = 1, max = 1},
+                ["Explosives Detector"] = {rarity = 0.35, min = 1, max = 1},
                 ["Combat Backpack"] = {rarity = 0.175, min = 1, max = 1},
                 ["Explorer Backpack"] = {rarity = 0.175, min = 1, max = 1},
             }
@@ -308,7 +310,7 @@ LootItems =
         },
         ["WEAPON"] = 
         {
-            rarity = 0.09,
+            rarity = 0.08,
             items = 
             {
                 ["Sawn-Off Shotgun"] = {rarity = 0.2, min = 1, max = 1},
