@@ -394,10 +394,10 @@ LootItems =
             items = 
             {
                 ["Grapplehook"] = {rarity = 0.24, min = 1, max = 1},
-                ["Combat Backpack"] = {rarity = 0.26, min = 1, max = 1},
-                ["Explorer Backpack"] = {rarity = 0.26, min = 1, max = 1},
-                ["Parachute"] = {rarity = 0.12, min = 1, max = 1},
-                ["RocketGrapple"] = {rarity = 0.12, min = 1, max = 1},
+                ["Combat Backpack"] = {rarity = 0.22, min = 1, max = 1},
+                ["Explorer Backpack"] = {rarity = 0.22, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.16, min = 1, max = 1},
+                ["RocketGrapple"] = {rarity = 0.16, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
@@ -405,9 +405,9 @@ LootItems =
             rarity = 0.04,
             items = 
             {
-                ["Combat Ping"] = {rarity = 0.65, min = 1, max = 1},
-                ["EVAC"] = {rarity = 0.18, min = 1, max = 1},
-                ["Hacker"] = {rarity = 0.17, min = 1, max = 1},
+                ["Combat Ping"] = {rarity = 0.55, min = 1, max = 1},
+                ["EVAC"] = {rarity = 0.25, min = 1, max = 1},
+                ["Hacker"] = {rarity = 0.2, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 

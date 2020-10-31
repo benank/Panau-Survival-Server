@@ -86,7 +86,7 @@ function cWorkBenches:GameRender(args)
 		local t = Transform3():Translate(data.position + Vector3(6, -1000, 0)):Rotate(angle)
 		Render:SetTransform(t)
 		
-        Render:FillArea(Vector3(-0.7, 0, 0), Vector3(1.5, 4000, 0), self.signal_color)
+        Render:FillArea(Vector3(-0.7, 0, 0), Vector3(1.5, 8000, 0), self.signal_color)
 
         Render:ResetTransform()
 
@@ -94,7 +94,7 @@ function cWorkBenches:GameRender(args)
 		local t = Transform3():Translate(data.position + Vector3(-6, -1000, 0)):Rotate(angle)
 		Render:SetTransform(t)
 		
-        Render:FillArea(Vector3(-0.7, 0, 0), Vector3(1.5, 4000, 0), self.signal_color)
+        Render:FillArea(Vector3(-0.7, 0, 0), Vector3(1.5, 8000, 0), self.signal_color)
 
         Render:ResetTransform()
 
