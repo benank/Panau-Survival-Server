@@ -9,6 +9,8 @@ function sClaymores:__init()
 
     self.network_subs = {}
 
+    self.respawn_time = 15 * 60 * 1000 -- Respawn time for server owned ones
+
     Console:Subscribe("clearbadclaymores", self, self.ClearBadClaymores)
 
     Network:Subscribe("items/CancelClaymorePlacement", self, self.CancelClaymorePlacement)
@@ -97,7 +99,7 @@ function sClaymores:ItemExplode(args)
 
         VerifyCellExists(self.claymore_cells, cell)
         for _, claymore in pairs(self.claymore_cells[cell.x][cell.y]) do
-            if claymore.position:Distance(args.position) < args.radius then
+            if claymore.position:Distance(args.position) < args.radius and claymore.owner_id ~= "SERVER" then
                 self:DestroyClaymore({id = claymore.id}, args.player)
             end
         end
@@ -121,9 +123,16 @@ function sClaymores:DestroyClaymore(args, player)
         Network:SendNearby(player, "items/ClaymoreExplode", {position = claymore.position, id = claymore.id, owner_id = claymore.owner_id})
     end
 
-    local cmd = SQL:Command("DELETE FROM claymores where id = ?")
-    cmd:Bind(1, args.id)
-    cmd:Execute()
+    if claymore.owner_id ~= "SERVER" then
+        local cmd = SQL:Command("DELETE FROM claymores where id = ?")
+        cmd:Bind(1, args.id)
+        cmd:Execute()
+    else
+        -- Respawn claymore if it belongs to server
+        Timer.SetTimeout(self.respawn_time, function()
+            self:AddClaymore(claymore):Sync()
+        end)
+    end
 
     -- Remove claymore
     local cell = claymore:GetCell()
@@ -156,6 +165,8 @@ function sClaymores:PickupClaymore(args, player)
     if not args.id or not self.claymores[args.id] then return end
 
     local claymore = self.claymores[args.id]
+
+    if claymore.owner_id == "SERVER" then return end -- Cannot pick up server claymores
 
     --if claymore.owner_id ~= tostring(player:GetSteamId()) then return end -- They do not own this claymore
 
@@ -227,10 +238,17 @@ function sClaymores:StepOnClaymore(args, player)
 
         local cell = claymore:GetCell()
 
-        -- Successfully exploded, remove claymore
-        local cmd = SQL:Command("DELETE FROM claymores where id = ?")
-        cmd:Bind(1, id)
-        cmd:Execute()
+        if claymore.owner_id ~= "SERVER" then
+            -- Successfully exploded, remove claymore
+            local cmd = SQL:Command("DELETE FROM claymores where id = ?")
+            cmd:Bind(1, id)
+            cmd:Execute()
+        else
+            -- Respawn claymore if it belongs to server
+            Timer.SetTimeout(self.respawn_time, function()
+                self:AddClaymore(claymore):Sync()
+            end)
+        end
 
         -- Remove claymore
         self.claymore_cells[cell.x][cell.y][id] = nil

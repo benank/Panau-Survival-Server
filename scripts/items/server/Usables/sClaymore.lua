@@ -49,6 +49,10 @@ function sClaymore:Trigger(player)
 
 end
 
+function sClaymore:Sync()
+    Network:Broadcast("items/ClaymoreSyncOne", self:GetSyncObject())
+end
+
 -- Syncs a newly placed claymore to the player and nearby players
 function sClaymore:SyncNearby(player)
     Network:Send(player, "items/ClaymoreSyncOne", self:GetSyncObject())
