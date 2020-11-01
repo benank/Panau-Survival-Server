@@ -29,6 +29,10 @@ function sMine:Trigger(player)
 
 end
 
+function sMine:Sync()
+    Network:Broadcast("items/MineSyncOne", self:GetSyncObject())
+end
+
 -- Syncs a newly placed mine to the player and nearby players
 function sMine:SyncNearby(player)
     Network:Send(player, "items/MineSyncOne", self:GetSyncObject())
