@@ -2,8 +2,8 @@ ItemsConfig =
 {
     usables = -- No food items here because those have no delay when using them
     {
-        ["Mine"] = {use_time = 1, trigger_radius = 1.75, cell_size = 256, trigger_time = 1.5},
-        ["Claymore"] = {trigger_range = 3, cell_size = 256, use_time = 1, delay_use = true},
+        ["Mine"] = {use_time = 3, trigger_radius = 1.75, cell_size = 256, trigger_time = 1.5},
+        ["Claymore"] = {trigger_range = 3, cell_size = 256, use_time = 5, delay_use = true},
         ["C4"] = {use_time = 6, delay_use = true},
         ["Proximity Alarm"] = {use_time = 4, delay_use = true, range = 10, battery_dura_per_hour = 100}, -- 10% per hour
         ["Bandages"] = {restore_hp = 0.2, use_time = 3},
