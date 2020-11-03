@@ -103,6 +103,10 @@ function CreateItem(args)
 
     end
 
+    if args.name == "Wall" then
+        data.durability = data.max_durability
+    end
+
     data.equipped = false
 
     for k,v in pairs(args) do data[k] = v end
