@@ -59,7 +59,7 @@ function cDronePathGenerator:GeneratePathNearPoint(origin, tether_position, radi
                         local road_offset = self:GetRandomRoadOffset(road)
 
                         for _, spline_data in ipairs(road.spline) do
-                            table.insert(path, self:MaxYValuePositionOrTerrain(spline_data.position) + road_offset + height_add)
+                            table.insert(path, self:MaxYValuePositionOrTerrain(spline_data.position + road_offset) + height_add)
                         end
 
                     else
@@ -88,7 +88,8 @@ end
 
 function cDronePathGenerator:MaxYValuePositionOrTerrain(pos)
     local height = Physics:GetTerrainHeight(pos)
-    return Vector3(pos.x, math.max(pos.y, height), pos.z)
+    local height_ray = Physics:Raycast(pos + Vector3(0, 500, 0), Vector3.Down, 0, 1000)
+    return Vector3(pos.x, math.max(math.max(pos.y, height, height_ray.position.y)), pos.z)
 end
 
 function cDronePathGenerator:GetRandomPointWithinRadius(origin, radius)
