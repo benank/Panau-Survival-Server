@@ -530,7 +530,7 @@ Items =
     {
         name = "Bubble Gun",
         category = "Weapons",
-        stacklimit = 1,
+        stacklimit = 2,
         can_equip = true,
         durable = true,
         max_durability = 1000,
@@ -548,7 +548,7 @@ Items =
     {
         name = "Handgun",
         category = "Weapons",
-        stacklimit = 1,
+        stacklimit = 2,
         can_equip = true,
         durable = true,
         max_durability = 1000,
@@ -566,7 +566,7 @@ Items =
     {
         name = "Revolver",
         category = "Weapons",
-        stacklimit = 1,
+        stacklimit = 2,
         can_equip = true,
         durable = true,
         max_durability = 1000,
@@ -584,7 +584,7 @@ Items =
     {
         name = "Sawn-Off Shotgun",
         category = "Weapons",
-        stacklimit = 1,
+        stacklimit = 2,
         can_equip = true,
         durable = true,
         max_durability = 1000,
@@ -602,7 +602,7 @@ Items =
     {
         name = "SMG",
         category = "Weapons",
-        stacklimit = 1,
+        stacklimit = 2,
         can_equip = true,
         durable = true,
         max_durability = 1000,
