@@ -43,6 +43,11 @@ function cAirdropManager:GetSyncData(args)
                 position = self.airdrop.position
             })
 
+            Events:Fire("Flare", {
+                position = self.airdrop.position,
+                time = 60 * 5
+            })
+        
             self:CreateAirdrop()
         end
     end
@@ -53,19 +58,30 @@ function cAirdropManager:CreateAirdrop()
     Timer.SetTimeout(6000, function()
         self.airdrop.object = cAirdropObject({
             position = self.airdrop.position + Vector3(0, 500, 0),
-            angle = Angle(math.random() * math.pi, 0, 0),
+            angle = self.airdrop.angle,
             target_position = self.airdrop.position
         })
     end)
+end
+
+function cAirdropManager:AirdropHitGround()
+    _debug("airdrop hit ground")
+
 end
 
 function cAirdropManager:Render(args)
     if self.airdrop.active then
         self:RenderAirdropInfo()
 
-        if self.airdrop.object then
+        if self.airdrop.object and not self.airdrop.on_ground then
+            local progress = math.min(1, -self:GetTimeUntilDrop() / 0.75)
+            self.airdrop.on_ground = progress == 1
             self.airdrop.object:SetPosition(
                 math.lerp(self.airdrop.position + Vector3(0, 500, 0), self.airdrop.position, math.min(1, -self:GetTimeUntilDrop() / 0.75)))
+
+            if self.airdrop.on_ground then
+                self:AirdropHitGround()
+            end
         end
     end
 end

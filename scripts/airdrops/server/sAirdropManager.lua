@@ -77,6 +77,7 @@ function sAirdropManager:BeginSpawningAirdrop(type, override_timer, position)
     self.airdrop.timer = Timer()
     self.airdrop.interval = airdrop_data.interval
     self.airdrop.position = position or random_table_value(AirdropLocations[type])
+    self.airdrop.angle = Angle(math.pi * math.random(), 0, 0)
 
     -- Create a "general location" of where to place the circle before the airdrop comes
     local dir = Vector3(math.random() - 0.5, 0, math.random() - 0.5):Normalized()
@@ -132,10 +133,21 @@ function sAirdropManager:CreateAirdrop()
     print("sAirdropManager:CreateAirdrop")
     self:CreateAirdropPlane()
 
+    -- Clients handle the objects
+
+    -- Delay until the package reaches the ground
+    Timer.SetTimeout(6000 + 4500, function()
+        self:SpawnLootboxes()
+    end)
     
 
     -- Announce delivery
     self:SendActiveAirdropData()
+end
+
+-- Spawn the lootboxes in the airdrop
+function sAirdropManager:SpawnLootboxes()
+
 end
 
 function sAirdropManager:ClientModuleLoad(args)
@@ -151,6 +163,7 @@ function sAirdropManager:GetAirdropSyncData()
         time_elapsed = self.airdrop.timer:GetMinutes(),
         interval = self.airdrop.interval,
         position = self.airdrop.position,
+        angle = self.airdrop.angle,
         preview_time = AirdropConfig.Spawn[self.airdrop.type].map_preview.time,
         preview_size = AirdropConfig.Spawn[self.airdrop.type].map_preview.size,
         general_location = self.airdrop.general_location
