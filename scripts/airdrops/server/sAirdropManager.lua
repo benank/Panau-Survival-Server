@@ -136,7 +136,7 @@ function sAirdropManager:CreateAirdrop()
     -- Clients handle the objects
 
     -- Delay until the package reaches the ground
-    Timer.SetTimeout(6000 + 4500, function()
+    Timer.SetTimeout(45000, function()
         self:SpawnLootboxes()
     end)
     
@@ -147,7 +147,18 @@ end
 
 -- Spawn the lootboxes in the airdrop
 function sAirdropManager:SpawnLootboxes()
-
+    for key, object_data in pairs(AirdropObjectData) do
+        if key:find("lootbox") then
+            local pos = self.airdrop.position + self.airdrop.angle * object_data.offset
+            local angle = self.airdrop.angle * object_data.angle_offset
+            Events:Fire("inventory/CreateLootboxExternal", {
+                tier = self.airdrop.type + 15,
+                position = pos,
+                angle = angle,
+                airdrop_tier = self.airdrop.type
+            })
+        end
+    end
 end
 
 function sAirdropManager:ClientModuleLoad(args)

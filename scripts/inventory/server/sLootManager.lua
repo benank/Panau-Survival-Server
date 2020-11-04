@@ -20,6 +20,7 @@ function sLootManager:__init()
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("Inventory/CreateDropboxExternal", self, self.CreateDropboxExternal)
+    Events:Subscribe("inventory/CreateLootboxExternal", self, self.CreateLootboxExternal)
 
 end
 
@@ -28,6 +29,30 @@ function sLootManager:UpdateSpawnedLootCountsInSZ()
     local total = #self.loot_data
 
     Events:Fire("Inventory/UpdateTotalLootSpawns", {spawned = spawned, total = total})
+end
+
+function sLootManager:CreateLootboxExternal(args)
+    args.active = true
+    
+    if args.contents then
+        for stack_index, stack in pairs(args.contents) do
+            for item_index, item in pairs(stack.contents) do
+                stack.contents[item_index] = shItem(item)
+            end
+            args.contents[stack_index] = shStack(stack)
+        end
+    else
+        args.contents = ItemGenerator:GetLoot(args.tier)
+    end
+
+    local lootbox = CreateLootbox(args)
+    lootbox:Sync()
+
+    if args.remove_time then
+        Timer.SetTimeout(1000 * args.remove_time, function()
+            lootbox:Remove()
+        end)
+    end
 end
 
 function sLootManager:CreateDropboxExternal(args)

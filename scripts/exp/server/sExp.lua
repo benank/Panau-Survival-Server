@@ -441,7 +441,11 @@ function sExp:PlayerOpenLootbox(args)
     local exp_earned = Exp.Lootbox[args.tier]
     if not exp_earned then return end
 
-    self:GivePlayerExp(exp_earned, ExpType.Exploration, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
+    local exp_type = args.airdrop_tier ~= nil and ExpType.Combat or ExpType.Exploration
+    local exp_mod = args.airdrop_tier ~= nil and args.airdrop_tier * 2 or 1
+    exp_earned = exp_earned * args.airdrop_tier
+
+    self:GivePlayerExp(exp_earned, exp_type, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
 
     Events:Fire("Discord", {
         channel = "Experience",

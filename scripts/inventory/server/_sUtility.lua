@@ -101,6 +101,10 @@ function CreateItem(args)
             math.random() * os.time()
         )
 
+        if data.min_dura_amt and data.max_dura_amt then
+            data.durability = ((data.max_dura_amt - data.min_dura_amt) * math.random() + data.min_dura_amt) * data.max_durability
+        end
+
     end
 
     data.equipped = false

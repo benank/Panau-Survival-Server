@@ -96,6 +96,20 @@ function cLootManager:RemoveLootbox(args)
 
 end
 
+function cLootManager:IsObjectALootbox(ray)
+    
+    local uid = ray.entity:GetValue("LootboxId")
+    local entity_pos = ray.entity:GetPosition()
+    local cell = GetCell(entity_pos, Lootbox.Cell_Size)
+
+    VerifyCellExists(self.loot, cell)
+    if not LootManager.objects[ray.entity:GetId()] then return end
+    if not uid or not self.loot[cell.x][cell.y][uid] then return end
+    if Vector3.Distance(entity_pos, LocalPlayer:GetPosition()) > Lootbox.Distances.Can_Open then return end
+
+    return self.loot[cell.x][cell.y][uid]
+
+end
 
 function cLootManager:Render(args)
 
@@ -112,26 +126,21 @@ function cLootManager:Render(args)
 
     if ray.entity and ray.entity.__type == "ClientStaticObject" then
 
-        local uid = ray.entity:GetValue("LootboxId")
-        local entity_pos = ray.entity:GetPosition()
-        local cell = GetCell(entity_pos, Lootbox.Cell_Size)
+        local box = self:IsObjectALootbox(ray)
 
-        VerifyCellExists(self.loot, cell)
-        if not uid or not self.loot[cell.x][cell.y][uid] then return end
-        if Vector3.Distance(entity_pos, LocalPlayer:GetPosition()) > Lootbox.Distances.Can_Open then return end
+        if box then
 
-        local box = self.loot[cell.x][cell.y][uid]
+            self.current_looking_box = box
+            found_box = true
 
-        self.current_looking_box = box
-        found_box = true
-
-        if not ClientInventory.lootbox_ui.window:GetVisible() then
-            -- Draw circle to indicate that it can be opened
-            if box.look_position and self.up then
-                local pos = Render:WorldToScreen(box.look_position + self.up)
-                Render:FillCircle(pos, self.look_at_circle_size, Color.White)
-                Render:FillCircle(pos, self.look_at_circle_size_inner, Lootbox.LookAtColor)
-                LocalPlayer:SetValue("LookingAtLootbox", true)
+            if not ClientInventory.lootbox_ui.window:GetVisible() then
+                -- Draw circle to indicate that it can be opened
+                if box.look_position and self.up then
+                    local pos = Render:WorldToScreen(box.look_position + self.up)
+                    Render:FillCircle(pos, self.look_at_circle_size, Color.White)
+                    Render:FillCircle(pos, self.look_at_circle_size_inner, Lootbox.LookAtColor)
+                    LocalPlayer:SetValue("LookingAtLootbox", true)
+                end
             end
         end
 

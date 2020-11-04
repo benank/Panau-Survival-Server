@@ -53,42 +53,48 @@ AirdropObjectData =
     {
         offset = Vector3(1.4, 0.5, 0),
         angle_offset = Angle(-math.pi / 2, 0, 0),
-        model = "mod.heavydrop.assault.eez/wea00-a.lod",
-        collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
+        --model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        model = " "
+        --collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
     },
     ["lootbox1b"] = 
     {
-        offset = Vector3(1.4, 1.5, 0),
+        offset = Vector3(1.4, 1.25, 0),
         angle_offset = Angle(-math.pi / 2, 0, 0),
-        model = "mod.heavydrop.assault.eez/wea00-a.lod",
-        collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
+        --model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        model = " "
+        --collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
     },
     ["lootbox1c"] = 
     {
-        offset = Vector3(1.4, 2.5, 0),
+        offset = Vector3(1.4, 2, 0),
         angle_offset = Angle(-math.pi / 2, 0, 0),
-        model = "mod.heavydrop.assault.eez/wea00-a.lod",
-        collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
+        --model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        model = " "
+        --collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
     },
     ["lootbox2a"] = 
     {
         offset = Vector3(-1.4, 0.5, 0),
         angle_offset = Angle(math.pi / 2, 0, 0),
-        model = "mod.heavydrop.assault.eez/wea00-a.lod",
-        collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
+        --model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        model = " "
+        --collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
     },
     ["lootbox2b"] = 
     {
-        offset = Vector3(-1.4, 1.5, 0),
+        offset = Vector3(-1.4, 1.25, 0),
         angle_offset = Angle(math.pi / 2, 0, 0),
-        model = "mod.heavydrop.assault.eez/wea00-a.lod",
-        collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
+        --model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        model = " "
+        --collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
     },
     ["lootbox2c"] = 
     {
-        offset = Vector3(-1.4, 2.5, 0),
+        offset = Vector3(-1.4, 2, 0),
         angle_offset = Angle(math.pi / 2, 0, 0),
-        model = "mod.heavydrop.assault.eez/wea00-a.lod",
-        collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
+        --model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        model = " "
+        --collision = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx"
     },
 }

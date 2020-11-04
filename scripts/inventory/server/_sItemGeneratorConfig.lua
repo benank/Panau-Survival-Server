@@ -464,4 +464,110 @@ LootItems =
         },
 
     },
+    [Lootbox.Types.AirdropLevel1] = 
+    {
+        ["LOCKPICK"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Lockpick"] = {rarity = 1, min = 8, max = 15},
+            }
+        },
+        ["AMMO"] = 
+        {
+            rarity = 0.35,
+            items = 
+            {
+                ["Revolver Ammo"] = {rarity = 0.2, min = 30, max = 60},
+                ["Handgun Ammo"] = {rarity = 0.2, min = 30, max = 60},
+                ["Sawn-Off Ammo"] = {rarity = 0.2, min = 20, max = 30},
+                ["SMG Ammo"] = {rarity = 0.2, min = 60, max = 120},
+                ["Shotgun Ammo"] = {rarity = 0.05, min = 15, max = 25},
+                ["Assault Ammo"] = {rarity = 0.05, min = 40, max = 60},
+            }
+        },
+        ["WEAPON"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Revolver"] = {rarity = 0.2, min_dura = 1, max_dura = 5, min = 1, max = 1},
+                ["Handgun"] = {rarity = 0.2, min_dura = 1, max_dura = 5, min = 1, max = 1},
+                ["Sawn-Off Shotgun"] = {rarity = 0.2, min_dura = 1, max_dura = 3, min = 1, max = 1},
+                ["SMG"] = {rarity = 0.2, min_dura = 1, max_dura = 4, min = 1, max = 1},
+                ["Shotgun"] = {rarity = 0.05, min_dura = 0.75, max_dura = 1, min = 1, max = 1},
+                ["Assault Rifle"] = {rarity = 0.05, min_dura = 0.75, max_dura = 1, min = 1, max = 1},
+            }
+        },
+        ["ARMOUR"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Helmet"] = {rarity = 0.7, min_dura = 1, max_dura = 5, min = 1, max = 1},
+                ["Police Helmet"] = {rarity = 0.3, min_dura = 1, max_dura = 3, min = 1, max = 1},
+            }
+        },
+        ["BUILD"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Barrel Stash"] = {rarity = 0.7, min = 1, max = 2},
+                ["Garbage Stash"] = {rarity = 0.3, min = 1, max = 2},
+            }
+        },
+        ["EXPLOSIVE"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Flashbang"] = {rarity = 0.2, min = 5, max = 10},
+                ["HE Grenade"] = {rarity = 0.3, min = 3, max = 10},
+                ["Toxic Grenade"] = {rarity = 0.3, min = 4, max = 10},
+                ["Mine"] = {rarity = 0.2, min = 2, max = 5},
+            }
+        },
+        ["AIRSTRIKE"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Cruise Missile"] = {rarity = 1, min = 2, max = 3}
+            }
+        },
+        ["GEAR"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Grapplehook"] = {rarity = 1, min_dura = 2, max_dura = 5, min = 1, max = 1},
+            }
+        },
+    },
+    [Lootbox.Types.AirdropLevel2] = 
+    {
+        ["LOCKPICK"] = 
+        {
+            rarity = 1,
+            items = 
+            {
+                ["Lockpick"] = {rarity = 1, min = 15, max = 30},
+            }
+        },
+        -- TODO
+    },
+    [Lootbox.Types.AirdropLevel3] = 
+    {
+        ["LOCKPICK"] = 
+        {
+            rarity = 1,
+            items = 
+            {
+                ["Lockpick"] = {rarity = 1, min = 30, max = 50},
+            }
+        },
+        -- TODO
+    }
 }

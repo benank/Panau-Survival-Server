@@ -16,6 +16,9 @@ Lootbox.Types =
     LockedStash = 13,
     ProximityAlarm = 14,
     Workbench = 15,
+    AirdropLevel1 = 16,
+    AirdropLevel2 = 17,
+    AirdropLevel3 = 18
 }
 
 StashAccessMode = 
@@ -58,6 +61,9 @@ Lootbox.GeneratorConfig =
         [Lootbox.Types.Level5] = true,
         [Lootbox.Types.VendingMachineFood] = true,
         [Lootbox.Types.VendingMachineDrink] = true,
+        [Lootbox.Types.AirdropLevel1] = true,
+        [Lootbox.Types.AirdropLevel2] = true,
+        [Lootbox.Types.AirdropLevel3] = true,
     },
     box = 
     {
@@ -108,6 +114,21 @@ Lootbox.GeneratorConfig =
             max_items = 2,
             respawn = 15,
             max_spawned = 1.0
+        },
+        [Lootbox.Types.AirdropLevel1] = 
+        {
+            min_items = 2,
+            max_items = 4
+        },
+        [Lootbox.Types.AirdropLevel2] = 
+        {
+            min_items = 2,
+            max_items = 5
+        },
+        [Lootbox.Types.AirdropLevel3] = 
+        {
+            min_items = 3,
+            max_items = 6
         },
     }
 }
@@ -215,7 +236,37 @@ Lootbox.Models =
         col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
         offset = Vector3(0, 0, 0),
         look_offset = Vector3(0, 0.4, 0)
-    }
+    },
+    [Lootbox.Types.AirdropLevel1] = 
+    {
+        model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        col = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx",
+        top_model = "mod.heavydrop.assault.eez/wea00-a1.lod",
+        top_col = "mod.heavydrop.assault.eez/wea00_lod1-a1_col.pfx",
+        offset = Vector3(0, 0, 0),
+        offset2 = Vector3(0, -0.04, -0.03),
+        look_offset = Vector3(0, 0, 0.25)
+    },
+    [Lootbox.Types.AirdropLevel2] = 
+    {
+        model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        col = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx",
+        top_model = "mod.heavydrop.assault.eez/wea00-a1.lod",
+        top_col = "mod.heavydrop.assault.eez/wea00_lod1-a1_col.pfx",
+        offset = Vector3(0, 0, 0),
+        offset2 = Vector3(0, -0.04, -0.03),
+        look_offset = Vector3(0, 0, 0.25)
+    },
+    [Lootbox.Types.AirdropLevel3] = 
+    {
+        model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        col = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx",
+        top_model = "mod.heavydrop.assault.eez/wea00-a1.lod",
+        top_col = "mod.heavydrop.assault.eez/wea00_lod1-a1_col.pfx",
+        offset = Vector3(0, 0, 0),
+        offset2 = Vector3(0, -0.04, -0.03),
+        look_offset = Vector3(0, 0, 0.25)
+    },
 }
 
 Lootbox.LookAtColor = Color(56, 198, 43)
