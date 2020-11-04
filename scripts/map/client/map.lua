@@ -9,11 +9,12 @@ Location.Type = {
     MilHarb     = "MilHarb",
     MilStrong   = "MilStrong",
     OilRig      = "OilRig",
-        Waypoint    = "Waypoint",
+    Waypoint    = "Waypoint",
     Workbench   = "Workbench",
     Home 		= "Home",
     Skull 		= "Skull",
-    Landclaim   = "Landclaim"
+    Landclaim   = "Landclaim",
+    Airdrop     = "Airdrop"
     
 }
 
@@ -26,11 +27,12 @@ Location.TypeName = {
     MilHarb     = "Military Harbor",
     MilStrong   = "Military Stronghold",
     OilRig      = "Oil Rig",
-        Waypoint    = "Waypoint",
+    Waypoint    = "Waypoint",
     Workbench   = "Workbench",
     Home 		= "Home",
     Skull		= "Skull",
-    Landclaim   = "Landclaim"
+    Landclaim   = "Landclaim",
+    Airdrop     = "Airdrop"
 }
 
 IconSizeUV = 1 / 18
@@ -40,7 +42,7 @@ Location.Icon = {
     Size   = Vector2.One * 64,
     UVSize = Vector2(IconSizeUV, 1),
     UV     = {
-        AirDrop     = Vector2(IconSizeUV * 0, 0),
+        Airdrop     = Vector2(IconSizeUV * 0, 0),
         Question    = Vector2(IconSizeUV * 1, 0),
         Exclamation = Vector2(IconSizeUV * 2, 0),
         Home        = Vector2(IconSizeUV * 3, 0),
@@ -725,24 +727,6 @@ function Map:Draw()
 
     local scale = Map.IconScale
 
-    for k, location in pairs(Map.Locations) do
-        if location.position then
-            local position = Map:WorldToScreen(location.position)
-
-            if k == "Home" then
-                location.position = LocalPlayer:GetValue("HomePosition")
-            end
-
-            if position.x > 0 and position.y > 0 and position.x < Render.Width and position.y < Render.Height then
-                if location:IsActive(position, scale * (PDA:IsUsingGamepad() and 2 or 1)) then
-                    Map.ActiveLocation = location
-                end
-
-                location:Draw(position, scale)
-            end
-        end
-    end
-
     if not self.sz_config then
         self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
     end
@@ -766,6 +750,40 @@ function Map:Draw()
         Render:DrawCircle(sz_pos, sz_size, sz_color)
 
     end
+
+    -- There is an airdrop active
+    if Map.Locations["Airdrop"] and Map.AirdropSize then
+        -- Map.AirdropSize
+        
+        local alpha = 75
+
+        local pos = Map:WorldToScreen(Map.Locations["Airdrop"].position)
+        local size = Map.AirdropSize / 32768 * Render.Height * Map.Zoom
+        local color = Color(Map.Locations["Airdrop"].color.r, Map.Locations["Airdrop"].color.g, Map.Locations["Airdrop"].color.b, alpha)
+        Render:FillCircle(pos, size, color)
+        color.a = 255
+        Render:DrawCircle(pos, size, color)
+
+    end
+
+    for k, location in pairs(Map.Locations) do
+        if location.position then
+            local position = Map:WorldToScreen(location.position)
+
+            if k == "Home" then
+                location.position = LocalPlayer:GetValue("HomePosition")
+            end
+
+            if position.x > 0 and position.y > 0 and position.x < Render.Width and position.y < Render.Height then
+                if location:IsActive(position, scale * (PDA:IsUsingGamepad() and 2 or 1)) then
+                    Map.ActiveLocation = location
+                end
+
+                location:Draw(position, scale)
+            end
+        end
+    end
+
 
     --self:DrawRedAreas()
     
@@ -891,4 +909,20 @@ Events:Subscribe("build/RemoveLandclaimFromMap", function(args)
     if Map.Locations[id] then
         Map.Locations[id] = nil
     end
+end)
+
+Events:Subscribe("airdrops/RemoveAirdropFromMap", function(args)
+    Map.AirdropSize = nil
+    Map.Locations["Airdrop"] = nil
+end)
+
+Events:Subscribe("airdrops/AddGeneralLocationToMap", function(args)
+    print("ADD TO MAP")
+    Map.AirdropSize = args.radius
+    Map.Locations["Airdrop"] = Location(args.name, args.position, Location.Type.Airdrop, Location.Color.Orange, true)
+end)
+
+Events:Subscribe("airdrops/AddPreciseLocationToMap", function(args)
+    Map.AirdropSize = nil
+    Map.Locations["Airdrop"] = Location(args.name, args.position, Location.Type.Airdrop, Location.Color.Orange, true)
 end)

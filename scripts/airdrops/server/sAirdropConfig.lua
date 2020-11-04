@@ -7,7 +7,7 @@ AirdropConfig =
             min_players = 5,
             map_preview = -- Preview on discord and ingame map
             {
-                time = 10, -- How many minutes it appears on the map before it drops
+                time = 1, -- How many minutes it appears on the map before it drops
                 size = 1000 -- How big is the radius around it
             },
             interval = 60 -- 60 minutes between airdrops of this type
