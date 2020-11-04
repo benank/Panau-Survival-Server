@@ -27,6 +27,7 @@ function cLightExtension:Remove()
 end
 
 function cLightExtension:StateUpdated(enabled)
+    if not self.light then return end
     self.light:SetMultiplier(enabled and self.multiplier or 0)
 end
 
