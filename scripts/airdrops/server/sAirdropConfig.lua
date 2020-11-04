@@ -1,5 +1,18 @@
 AirdropConfig = 
 {
+    Messages = 
+    {
+        Incoming = 
+            "----------------------------------------\n\n" ..
+            "**LEVEL %d AIRDROP INCOMING IN %d MINUTES**\n\n" ..
+            "*Join the server to see approximate map location.*\n\n" ..
+            "----------------------------------------",
+        Delivered = 
+            "----------------------------------------\n\n" ..
+            "**LEVEL %d AIRDROP HAS BEEN DEELIVERED!**\n\n" ..
+            "*Join the server to see precise map location.*\n\n" ..
+            "----------------------------------------"
+    },
     Spawn = -- Spawn settings
     {
         [AirdropType.Low] = 

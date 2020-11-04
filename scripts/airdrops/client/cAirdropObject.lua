@@ -19,6 +19,15 @@ function cAirdropObject:SetPosition(pos)
     end
 end
 
+function cAirdropObject:RemoveKey(k)
+    for key, object in pairs(self.objects) do
+        if key:find(k) then
+            object:Remove()
+            self.objects[key] = nil
+        end
+    end
+end
+
 function cAirdropObject:Create()
 
     for key, object_data in pairs(AirdropObjectData) do

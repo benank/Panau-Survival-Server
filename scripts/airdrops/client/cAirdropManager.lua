@@ -65,8 +65,11 @@ function cAirdropManager:CreateAirdrop()
 end
 
 function cAirdropManager:AirdropHitGround()
-    _debug("airdrop hit ground")
-
+    -- Remove doors for Level 1 airdrops
+    if self.airdrop.type == AirdropType.Low then
+        self.airdrop.object:RemoveKey("door")
+        self.airdrop.object:RemoveKey("parachute")
+    end
 end
 
 function cAirdropManager:Render(args)

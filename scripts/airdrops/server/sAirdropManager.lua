@@ -19,9 +19,9 @@ function sAirdropManager:PlayerChat(args)
 
     local words = args.text:split(" ")
     if words[1] == "/airdrop" and words[2] and not self.airdrop.active then
-        self:BeginSpawningAirdrop(tonumber(words[2]), false, args.player:GetPosition())
-    elseif words[1] == "/airdropnow" and words[2] and not self.airdrop.active then
-        self:BeginSpawningAirdrop(tonumber(words[2]), true, args.player:GetPosition())
+        self:BeginSpawningAirdrop(tonumber(words[2]))
+    elseif words[1] == "/airdrophere" and words[2] and not self.airdrop.active then
+        self:BeginSpawningAirdrop(tonumber(words[2]), args.player:GetPosition())
     end
 end
 
@@ -65,8 +65,7 @@ end
 
 -- Called when an airdrop is beginning to spawn. First puts out announcement ingame and on discord, 
 -- adds the zone to the map, and then eventually drops it
--- If override_timer is true, then there is no delay between the announcement and the package dropping
-function sAirdropManager:BeginSpawningAirdrop(type, override_timer, position)
+function sAirdropManager:BeginSpawningAirdrop(type, position)
 
     print("sAirdropManager:BeginSpawningAirdrop " .. tostring(type))
 
@@ -86,7 +85,7 @@ function sAirdropManager:BeginSpawningAirdrop(type, override_timer, position)
     self:CreateMapPreview()
     self:SendActiveAirdropData()
 
-    Timer.SetTimeout(override_timer and 0 or 1000 * 60 * airdrop_data.map_preview.time, function()
+    Timer.SetTimeout(1000 * 60 * airdrop_data.map_preview.time, function()
         self:CreateAirdrop()
     end)
 
@@ -133,7 +132,10 @@ function sAirdropManager:CreateAirdrop()
     print("sAirdropManager:CreateAirdrop")
     self:CreateAirdropPlane()
 
-    -- Clients handle the objects
+    Events:Fire("Discord", {
+        channel = "Airdrops",
+        content = string.format(AirdropConfig.Messages.Delivered, self.airdrop.type)
+    })
 
     -- Delay until the package reaches the ground
     Timer.SetTimeout(45000, function()
@@ -192,6 +194,11 @@ end
 
 -- Create a map preview on the map and announcement for those ingame of an incoming airdrop
 function sAirdropManager:CreateMapPreview()
+
+    Events:Fire("Discord", {
+        channel = "Airdrops",
+        content = string.format(AirdropConfig.Messages.Incoming, self.airdrop.type, AirdropConfig.Spawn[self.airdrop.type].map_preview.time)
+    })
 
 end
 
