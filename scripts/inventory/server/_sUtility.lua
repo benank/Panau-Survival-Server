@@ -14,7 +14,7 @@ function CreateLootbox(args)
 
                 local landclaim = FindFirstActiveLandclaimContainingPosition(args.position)
 
-                if landclaim then
+                if landclaim and count_table(box.contents) + count_table(args.contents) < Inventory.config.max_slots_per_category then
                     for k,v in pairs(args.contents) do
                         box:AddStack(v)
                     end

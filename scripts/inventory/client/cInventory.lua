@@ -13,7 +13,7 @@ function cInventory:__init()
 
 end
 
-function cInventory:GetGroundData()
+function cInventory:GetGroundData(args)
     local start_pos = LocalPlayer:GetBonePosition("ragdoll_Spine")
 
     local ray = Physics:Raycast(start_pos, Vector3.Down, 0, 1000)
@@ -27,7 +27,7 @@ function cInventory:GetGroundData()
 
     local ang = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(math.random() * math.pi * 2, 0, 0)
 
-    Network:Send(var("Inventory/GroundData" .. tostring(LocalPlayer:GetSteamId().id)):get(), {
+    Network:Send(var("Inventory/GroundData" .. tostring(LocalPlayer:GetSteamId().id) .. tostring(args.ground_id)):get(), {
         position = ray.position,
         angle = ang
     })
