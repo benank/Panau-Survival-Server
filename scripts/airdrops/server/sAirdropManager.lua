@@ -117,7 +117,7 @@ function sAirdropManager:CreateAirdropPlane()
         end
     end)
 
-    Timer.SetTimeout(1000 * 30, function()
+    Timer.SetTimeout(1000 * 20, function()
         Timer.Clear(interval)
         if IsValid(vehicle) then 
             vehicle:Remove()
@@ -131,6 +131,8 @@ function sAirdropManager:CreateAirdrop()
 
     print("sAirdropManager:CreateAirdrop")
     self:CreateAirdropPlane()
+
+    
 
     -- Announce delivery
     self:SendActiveAirdropData()

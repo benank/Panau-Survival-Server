@@ -16,6 +16,10 @@ end
 
 function cAirdropManager:ModuleUnload()
     Events:Fire("airdrops/RemoveAirdropFromMap")
+
+    if self.airdrop.object then
+        self.airdrop.object:Remove()
+    end
 end
 
 function cAirdropManager:GetSyncData(args)
@@ -46,12 +50,23 @@ end
 
 -- Create airdrop from the sky
 function cAirdropManager:CreateAirdrop()
-    
+    Timer.SetTimeout(6000, function()
+        self.airdrop.object = cAirdropObject({
+            position = self.airdrop.position + Vector3(0, 500, 0),
+            angle = Angle(math.random() * math.pi, 0, 0),
+            target_position = self.airdrop.position
+        })
+    end)
 end
 
 function cAirdropManager:Render(args)
     if self.airdrop.active then
         self:RenderAirdropInfo()
+
+        if self.airdrop.object then
+            self.airdrop.object:SetPosition(
+                math.lerp(self.airdrop.position + Vector3(0, 500, 0), self.airdrop.position, math.min(1, -self:GetTimeUntilDrop() / 0.75)))
+        end
     end
 end
 
@@ -117,6 +132,10 @@ function cAirdropManager:LocalPlayerChat(args)
         end
         print("---------------------")
         Chat:Print("Printed all locations", Color.LawnGreen)
+    elseif args.text == "/ac" then
+        self.airdrop.object = cAirdropObject({
+            position = LocalPlayer:GetPosition(), 
+            angle = LocalPlayer:GetAngle()})
     end
 end
 
