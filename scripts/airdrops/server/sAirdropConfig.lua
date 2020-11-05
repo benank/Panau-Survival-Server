@@ -30,7 +30,7 @@ AirdropConfig =
             min_players = 6,
             map_preview = 
             {
-                time = 15,
+                time = 0.1,
                 size = 1500
             },
             interval = 240 -- 4 hours between airdrops
@@ -40,7 +40,7 @@ AirdropConfig =
             min_players = 7,
             map_preview = 
             {
-                time = 30,
+                time = 0.1,
                 size = 3000
             },
             interval = 480 -- 8 hours between airdrops

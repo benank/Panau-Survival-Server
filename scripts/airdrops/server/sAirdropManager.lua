@@ -11,7 +11,36 @@ function sAirdropManager:__init()
 
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 
+end
+
+function sAirdropManager:ItemExplode(args)
+    if not self.airdrop.active then return end
+    if not self.airdrop.landed then return end
+    if self.airdrop.doors_destroyed then return end
+
+    if self.airdrop.type == AirdropType.Low then
+        -- Any explosive can blow up Level 1 airdrops
+        if args.position:Distance(self.airdrop.position) < args.radius then
+            self:DoorsDestroyed(args)
+        end
+
+    elseif args.type == DamageEntity.C4 then
+        -- Only C4 and blow up Level 2 and 3 airdrops
+        if args.position:Distance(self.airdrop.position) < args.radius then
+            self:DoorsDestroyed(args)
+        end
+    end
+end
+
+-- Called when the doors of the airdrop are destroyed
+function sAirdropManager:DoorsDestroyed(args)
+    if IsValid(args.player) then
+        -- Give player who blew up the doors some exp
+    end
+    self.airdrop.doors_destroyed = true
+    self:SendActiveAirdropData()
 end
 
 function sAirdropManager:PlayerChat(args)
@@ -67,12 +96,11 @@ end
 -- adds the zone to the map, and then eventually drops it
 function sAirdropManager:BeginSpawningAirdrop(type, position)
 
-    print("sAirdropManager:BeginSpawningAirdrop " .. tostring(type))
-
     local airdrop_data = AirdropConfig.Spawn[type]
     
     self.airdrop.type = type
     self.airdrop.active = true
+    self.airdrop.landed = false
     self.airdrop.timer = Timer()
     self.airdrop.interval = airdrop_data.interval
     self.airdrop.position = position or random_table_value(AirdropLocations[type])
@@ -129,7 +157,6 @@ end
 -- Start dropping the package on the location
 function sAirdropManager:CreateAirdrop()
 
-    print("sAirdropManager:CreateAirdrop")
     self:CreateAirdropPlane()
 
     Events:Fire("Discord", {
@@ -139,12 +166,16 @@ function sAirdropManager:CreateAirdrop()
 
     -- Delay until the package reaches the ground
     Timer.SetTimeout(45000, function()
-        self:SpawnLootboxes()
+        self:OnAirdropLanded()
     end)
-    
 
     -- Announce delivery
     self:SendActiveAirdropData()
+end
+
+function sAirdropManager:OnAirdropLanded()
+    self.airdrop.landed = true
+    self:SpawnLootboxes()
 end
 
 -- Spawn the lootboxes in the airdrop
@@ -175,6 +206,7 @@ function sAirdropManager:GetAirdropSyncData()
         active = self.airdrop.active,
         time_elapsed = self.airdrop.timer:GetMinutes(),
         interval = self.airdrop.interval,
+        doors_destroyed = self.airdrop.doors_destroyed,
         position = self.airdrop.position,
         angle = self.airdrop.angle,
         preview_time = AirdropConfig.Spawn[self.airdrop.type].map_preview.time,

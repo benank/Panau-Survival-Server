@@ -917,7 +917,6 @@ Events:Subscribe("airdrops/RemoveAirdropFromMap", function(args)
 end)
 
 Events:Subscribe("airdrops/AddGeneralLocationToMap", function(args)
-    print("ADD TO MAP")
     Map.AirdropSize = args.radius
     Map.Locations["Airdrop"] = Location(args.name, args.position, Location.Type.Airdrop, Location.Color.Orange, true)
 end)

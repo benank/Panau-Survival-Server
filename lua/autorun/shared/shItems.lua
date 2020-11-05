@@ -236,7 +236,7 @@ Items =
     {
         name = "Hacker",
         category = "Supplies",
-        stacklimit = 3,
+        stacklimit = 5,
         can_use = true
     },
     {

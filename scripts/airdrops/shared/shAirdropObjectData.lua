@@ -23,15 +23,15 @@ AirdropObjectData =
     },
     ["container-door2a"] = 
     {
-        offset = Vector3(-0.05, 0, -4),
+        offset = Vector3(0.05, 0, -4),
         angle_offset = Angle(math.pi, 0, 0),
         model = "f3t04.container.eez/go005-b.lod",
         collision = "f3t04.container.eez/go005_lod1-b_col.pfx"
     },
     ["container-door2b"] = 
     {
-        offset = Vector3(0.05, 0, -4),
-        angle_offset = Angle(math.pi + math.pi / 2, 0, 0),
+        offset = Vector3(-0.05, 0, -4),
+        angle_offset = Angle(math.pi, 0, 0),
         model = "f3t04.container.eez/go005-c.lod",
         collision = "f3t04.container.eez/go005_lod1-c_col.pfx"
     },

@@ -23,7 +23,9 @@ function cAirdropManager:ModuleUnload()
 end
 
 function cAirdropManager:GetSyncData(args)
-    self.airdrop = args
+    for k,v in pairs(args) do
+        self.airdrop[k] = v
+    end
     self.airdrop.timer = Timer()
 
     if self.airdrop.active then
@@ -50,6 +52,10 @@ function cAirdropManager:GetSyncData(args)
         
             self:CreateAirdrop()
         end
+
+        if self.airdrop.doors_destroyed then
+            self.airdrop.object:RemoveKey("door")
+        end
     end
 end
 
@@ -65,11 +71,7 @@ function cAirdropManager:CreateAirdrop()
 end
 
 function cAirdropManager:AirdropHitGround()
-    -- Remove doors for Level 1 airdrops
-    if self.airdrop.type == AirdropType.Low then
-        self.airdrop.object:RemoveKey("door")
-        self.airdrop.object:RemoveKey("parachute")
-    end
+
 end
 
 function cAirdropManager:Render(args)
@@ -147,7 +149,7 @@ function cAirdropManager:LocalPlayerChat(args)
     elseif args.text == "/printloc" then
         print("---------------------")
         for _, pos in pairs(self.locations) do
-            print(string.format("{x = %.3f, y = %.3f, z = %.3f},", pos.x, pos.y, pos.z))
+            print(string.format("Vector3(%.3f, %.3f, %.3f),", pos.x, pos.y, pos.z))
         end
         print("---------------------")
         Chat:Print("Printed all locations", Color.LawnGreen)
