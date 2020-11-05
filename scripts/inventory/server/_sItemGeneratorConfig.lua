@@ -562,7 +562,7 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Lockpick"] = {rarity = 1, min = 10, max = 20},
+                ["Lockpick"] = {rarity = 1, min = 10, max = 15},
             }
         },
         ["AMMO"] = 
@@ -660,7 +660,7 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Lockpick"] = {rarity = 1, min = 20, max = 30},
+                ["Lockpick"] = {rarity = 1, min = 15, max = 20},
             }
         },
         ["AMMO"] = 
@@ -717,10 +717,9 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["HE Grenade"] = {rarity = 0.1, min = 7, max = 10},
-                ["Mine"] = {rarity = 0.25, min = 3, max = 5},
-                ["Claymore"] = {rarity = 0.25, min = 3, max = 5},
-                ["C4"] = {rarity = 0.4, min = 1, max = 2},
+                ["Mine"] = {rarity = 0.2, min = 3, max = 5},
+                ["Claymore"] = {rarity = 0.2, min = 3, max = 5},
+                ["C4"] = {rarity = 0.6, min = 1, max = 2},
             }
         },
         ["AIRSTRIKE"] = 

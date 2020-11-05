@@ -1,5 +1,6 @@
 AirdropConfig = 
 {
+    RemoveTime = 1000 * 60 * 30, -- After the first box has been opened, it will be removed in 30 minutes
     Messages = 
     {
         Incoming = 
@@ -18,31 +19,37 @@ AirdropConfig =
         [AirdropType.Low] = 
         {
             min_players = 5,
+            health = 5,
             map_preview = -- Preview on discord and ingame map
             {
                 time = 0.1, -- How many minutes it appears on the map before it drops
                 size = 1000 -- How big is the radius around it
             },
+            chance = 0.3, -- Chance of the airdrop spawning every interval if the conditions are met
             interval = 60 -- 60 minutes between airdrops of this type
         },
         [AirdropType.Mid] = 
         {
             min_players = 7,
+            health = 2,
             map_preview = 
             {
                 time = 0.1,
                 size = 1500
             },
+            chance = 0.5,
             interval = 240 -- 4 hours between airdrops
         },
         [AirdropType.High] = 
         {
             min_players = 10,
+            health = 4,
             map_preview = 
             {
                 time = 0.1,
                 size = 3000
             },
+            chance = 0.5,
             interval = 480 -- 8 hours between airdrops
         }
     },

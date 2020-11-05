@@ -12,6 +12,28 @@ function sAirdropManager:__init()
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+    Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
+
+end
+
+function sAirdropManager:RemoveAirdrop()
+    if not self.airdrop.active then return end
+    self.airdrop = {active = false}
+
+    Network:Broadcast("airdrops/RemoveAirdrop")
+    Events:Fire("airdrops/RemoveAirdrop")
+end
+
+function sAirdropManager:PlayerOpenLootbox(args)
+    
+    if args.has_been_opened or args.in_sz then return end
+    if not self.airdrop.active or self.airdrop.remove_timer then return end
+
+    if args.tier == 16 or args.tier == 17 or args.tier == 18 then
+        self.airdrop.remove_timer = Timer.SetTimeout(AirdropConfig.RemoveTime, function()
+            self:RemoveAirdrop()
+        end)
+    end
 
 end
 
@@ -21,21 +43,26 @@ function sAirdropManager:ItemExplode(args)
     if self.airdrop.doors_destroyed then return end
 
     if self.airdrop.type == AirdropType.Low then
-        -- Any explosive can blow up Level 1 airdrops
+        -- Any explosive can blow up Level 1 airdrops - takes 3 explosives of any kind
         if args.position:Distance(self.airdrop.position) < args.radius then
-            self:DoorsDestroyed(args)
+            self.airdrop.health = math.max(0, self.airdrop.health - 1)
         end
 
     elseif args.type == DamageEntity.C4 then
         -- Only C4 and blow up Level 2 and 3 airdrops
         if args.position:Distance(self.airdrop.position) < args.radius then
-            self:DoorsDestroyed(args)
+            self.airdrop.health = math.max(0, self.airdrop.health - 1)
         end
+    end
+
+    if self.airdrop.health == 0 then
+        self:DoorsDestroyed(args)
     end
 end
 
 -- Called when the doors of the airdrop are destroyed
 function sAirdropManager:DoorsDestroyed(args)
+    if self.airdrop.doors_destroyed then return end
     if IsValid(args.player) then
         -- Give player who blew up the doors some exp
     end
@@ -64,6 +91,10 @@ function sAirdropManager:CanCreateAirdropOfType(type)
     -- Not enough time has passed since the last time an airdrop of this type was dropped
     if self.airdrop.timer 
     and self.airdrop.timer:GetMinutes() < self.airdrop.interval then
+        return false
+    end
+
+    if math.random() > AirdropConfig.Spawn[type].chance then
         return false
     end
 
@@ -101,6 +132,7 @@ function sAirdropManager:BeginSpawningAirdrop(type, position)
     self.airdrop.type = type
     self.airdrop.active = true
     self.airdrop.landed = false
+    self.airdrop.health = airdrop_data.health
     self.airdrop.timer = Timer()
     self.airdrop.interval = airdrop_data.interval
     self.airdrop.position = position or random_table_value(AirdropLocations[type])

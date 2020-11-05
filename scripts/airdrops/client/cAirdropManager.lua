@@ -10,8 +10,20 @@ function cAirdropManager:__init()
     end
 
     Network:Subscribe("airdrops/SendSyncData", self, self.GetSyncData)
+    Network:Subscribe("airdrops/RemoveAirdrop", self, self.RemoveAirdrop)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
+end
+
+function cAirdropManager:RemoveAirdrop()
+
+    Events:Fire("airdrops/RemoveAirdropFromMap")
+
+    if self.airdrop.object then
+        self.airdrop.object:Remove()
+    end
+
+    self.airdrop = {}
 end
 
 function cAirdropManager:ModuleUnload()

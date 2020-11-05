@@ -9,6 +9,8 @@ function sLootManager:__init()
     self.active_lootboxes = {}
     self.inactive_lootboxes = {}
 
+    self.external_loot = {}
+
     self:LoadFromFile()
     self:GenerateAllLoot()
 
@@ -47,6 +49,7 @@ function sLootManager:CreateLootboxExternal(args)
 
     local lootbox = CreateLootbox(args)
     lootbox:Sync()
+    self.external_loot[lootbox.id] = lootbox
 
     if args.remove_time then
         Timer.SetTimeout(1000 * args.remove_time, function()

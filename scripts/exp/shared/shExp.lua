@@ -10,7 +10,10 @@ Exp =
         [4] = 20,
         [5] = 50,
         [9] = 6,
-        [10] = 6
+        [10] = 6,
+        [16] = 50, -- Level 1 airdrop
+        [17] = 75, -- Level 2 airdrop
+        [18] = 100
     },    
     Kill = 
     {
@@ -73,9 +76,9 @@ Exp =
     },
     DestroyBuildObject = 
     {
-        ["Wall"] = 4,
-        ["Door"] = 4,
-        ["Bed"] = 3
+        ["Wall"] = 2,
+        ["Door"] = 2,
+        ["Bed"] = 1
     },
     KillExpireTime = 60 * 60 * 4, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
     UnfriendTime = 60 * 60 * 24 * 7, -- Timer for killing a recently unfriended person
