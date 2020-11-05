@@ -27,7 +27,7 @@ AirdropConfig =
         },
         [AirdropType.Mid] = 
         {
-            min_players = 6,
+            min_players = 7,
             map_preview = 
             {
                 time = 0.1,
@@ -37,7 +37,7 @@ AirdropConfig =
         },
         [AirdropType.High] = 
         {
-            min_players = 7,
+            min_players = 10,
             map_preview = 
             {
                 time = 0.1,
