@@ -3,6 +3,7 @@ class 'sAirdropManager'
 function sAirdropManager:__init()
     
     -- Only one airdrop active at a time
+    self.airdrop_timer = Timer()
     self.airdrop = {active = false}
 
     Timer.SetInterval(1000 * 60 * 10, function()
@@ -23,7 +24,8 @@ end
 
 function sAirdropManager:RemoveAirdrop()
     if not self.airdrop.active then return end
-    self.airdrop = {active = false}
+    local interval = self.airdrop.interval
+    self.airdrop = {active = false, interval = interval}
 
     Network:Broadcast("airdrops/RemoveAirdrop")
     Events:Fire("airdrops/RemoveAirdrop")
@@ -108,12 +110,6 @@ function sAirdropManager:CanCreateAirdropOfType(type)
         return false
     end
 
-    -- Not enough time has passed since the last time an airdrop of this type was dropped
-    if self.airdrop.timer 
-    and self.airdrop.timer:GetMinutes() < self.airdrop.interval then
-        return false
-    end
-
     if math.random() > AirdropConfig.Spawn[type].chance then
         return false
     end
@@ -123,6 +119,12 @@ end
 
 -- Called every 10 minutes. Check player counts and in progress drops
 function sAirdropManager:CheckIfShouldCreateAirdrop()
+
+    -- Not enough time has passed since the last time an airdrop was dropped
+    if self.airdrop.timer 
+    and self.airdrop.timer:GetMinutes() < self.airdrop.interval then
+        return
+    end
 
     local spawn_type = 0 -- Airdrop type that we are going to spawn, 0 means that we are not going to spawn
     for type, data in pairs(AirdropConfig.Spawn) do
@@ -152,6 +154,7 @@ function sAirdropManager:BeginSpawningAirdrop(type, position)
     self.airdrop.landed = false
     self.airdrop.health = airdrop_data.health
     self.airdrop.timer = Timer()
+    self.airdrop_timer = Timer()
     self.airdrop.interval = airdrop_data.interval
     self.airdrop.position = position or random_table_value(AirdropLocations[type])
     self.airdrop.angle = Angle(math.pi * math.random(), 0, 0)
