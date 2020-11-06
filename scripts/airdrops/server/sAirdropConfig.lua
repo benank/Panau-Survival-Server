@@ -4,15 +4,15 @@ AirdropConfig =
     Messages = 
     {
         Incoming = 
-            "----------------------------------------\n\n" ..
+            "--------------------------------------------------------------\n\n" ..
             "**LEVEL %d AIRDROP INCOMING IN %d MINUTES**\n\n" ..
             "*Join the server to see approximate map location.*\n\n" ..
-            "----------------------------------------",
+            "--------------------------------------------------------------",
         Delivered = 
-            "----------------------------------------\n\n" ..
+            "--------------------------------------------------------------\n\n" ..
             "**LEVEL %d AIRDROP HAS BEEN DELIVERED!**\n\n" ..
             "*Join the server to see precise map location.*\n\n" ..
-            "----------------------------------------"
+            "--------------------------------------------------------------"
     },
     Spawn = -- Spawn settings
     {
@@ -22,7 +22,7 @@ AirdropConfig =
             health = 5,
             map_preview = -- Preview on discord and ingame map
             {
-                time = 1, -- How many minutes it appears on the map before it drops
+                time = 10, -- How many minutes it appears on the map before it drops
                 size = 1000 -- How big is the radius around it
             },
             chance = 0.3, -- Chance of the airdrop spawning every interval if the conditions are met
@@ -34,7 +34,7 @@ AirdropConfig =
             health = 2,
             map_preview = 
             {
-                time = 1,
+                time = 20,
                 size = 2000
             },
             chance = 0.4,
@@ -46,7 +46,7 @@ AirdropConfig =
             health = 4,
             map_preview = 
             {
-                time = 1,
+                time = 30,
                 size = 4000
             },
             chance = 0.2,

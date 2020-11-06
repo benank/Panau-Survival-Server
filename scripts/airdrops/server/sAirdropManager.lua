@@ -13,7 +13,12 @@ function sAirdropManager:__init()
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 
+end
+
+function sAirdropManager:ModuleUnload()
+    self:RemoveAirdrop()
 end
 
 function sAirdropManager:RemoveAirdrop()
@@ -68,6 +73,16 @@ function sAirdropManager:DoorsDestroyed(args)
     end
     self.airdrop.doors_destroyed = true
     self:SendActiveAirdropData()
+
+    Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
+    Chat:Broadcast(" ", Color.Red)
+    if IsValid(args.player) then
+        Chat:Broadcast(string.format("AIRDROP DOORS HAVE BEEN DESTROYED BY %s!", args.player:GetName()), Color.Red)
+    else
+        Chat:Broadcast("AIRDROP DOORS HAVE BEEN DESTROYED!", Color.Red)
+    end
+    Chat:Broadcast(" ", Color.Red)
+    Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
 end
 
 function sAirdropManager:PlayerChat(args)
@@ -194,23 +209,30 @@ function sAirdropManager:CreateAirdrop()
 
     self:CreateAirdropPlane()
 
-    Events:Fire("Discord", {
-        channel = "Airdrops",
-        content = string.format(AirdropConfig.Messages.Delivered, self.airdrop.type)
-    })
-
     -- Delay until the package reaches the ground
-    Timer.SetTimeout(45000, function()
+    Timer.SetTimeout(45000 + 6000, function()
         self:OnAirdropLanded()
+        -- Announce delivery
+        self:SendActiveAirdropData()
+
+        Events:Fire("Discord", {
+            channel = "Airdrops",
+            content = string.format(AirdropConfig.Messages.Delivered, self.airdrop.type)
+        })
+
     end)
 
-    -- Announce delivery
-    self:SendActiveAirdropData()
 end
 
 function sAirdropManager:OnAirdropLanded()
     self.airdrop.landed = true
     self:SpawnLootboxes()
+
+    Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
+    Chat:Broadcast(" ", Color.Red)
+    Chat:Broadcast("AIRDROP HAS LANDED. MAP COORDS UPDATED.", Color.Red)
+    Chat:Broadcast(" ", Color.Red)
+    Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
 end
 
 -- Spawn the lootboxes in the airdrop
@@ -239,7 +261,7 @@ function sAirdropManager:GetAirdropSyncData()
     return {
         type = self.airdrop.type,
         active = self.airdrop.active,
-        time_elapsed = self.airdrop.timer:GetMinutes(),
+        time_elapsed = self.airdrop.timer:GetMinutes() - 0.1,
         interval = self.airdrop.interval,
         doors_destroyed = self.airdrop.doors_destroyed,
         position = self.airdrop.position,

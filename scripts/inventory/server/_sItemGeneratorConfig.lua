@@ -542,7 +542,7 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Grapplehook"] = {rarity = 1, min_dura = 2, max_dura = 5, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 1, min_dura = 1, max_dura = 3, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
@@ -633,7 +633,7 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Grapplehook"] = {rarity = 0.45, min_dura = 3, max_dura = 5, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.45, min_dura = 2, max_dura = 5, min = 1, max = 1},
                 ["Parachute"] = {rarity = 0.05, min_dura = 1, max_dura = 2, min = 1, max = 1},
                 ["Explosives Detector"] = {rarity = 0.3, min_dura = 1, max_dura = 3, min = 1, max = 1},
                 ["Combat Backpack"] = {rarity = 0.1, min_dura = 1, max_dura = 2, min = 1, max = 1},

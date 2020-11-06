@@ -62,28 +62,30 @@ function cAirdropManager:GetSyncData(args)
                 time = 60 * 5
             })
 
-            if self.airdrop.doors_destroyed and self.airdrop.object then
-                self.airdrop.object:RemoveKey("door")
-            end
         end
+
+        if self.airdrop.doors_destroyed and self.airdrop.object then
+            self.airdrop.object:RemoveKey("door")
+        end
+    
     end
 end
 
 -- Create airdrop from the sky
 function cAirdropManager:CreateAirdrop()
     if self.airdrop.object then return end
-    Timer.SetTimeout(6000, function()
-        if self.airdrop.object then return end
-        self.airdrop.object = cAirdropObject({
-            position = self.airdrop.position + Vector3(0, 500, 0),
-            angle = self.airdrop.angle,
-            target_position = self.airdrop.position
-        })
+    if LocalPlayer:GetHealth() <= 0 then return end
+    if LocalPlayer:GetValue("Loading") then return end
 
-        if self.airdrop.doors_destroyed then
-            self.airdrop.object:RemoveKey("door")
-        end
-    end)
+    self.airdrop.object = cAirdropObject({
+        position = self.airdrop.position + Vector3(0, 500, 0),
+        angle = self.airdrop.angle,
+        target_position = self.airdrop.position
+    })
+
+    if self.airdrop.doors_destroyed then
+        self.airdrop.object:RemoveKey("door")
+    end
 end
 
 function cAirdropManager:AirdropHitGround()
@@ -94,11 +96,14 @@ function cAirdropManager:Render(args)
     if self.airdrop.active then
         self:RenderAirdropInfo()
 
-        local dist = Camera:GetPosition():Distance(self.airdrop.position)
-        if not self.airdrop.object and dist < 2000 then
-            self:CreateAirdrop()
-        elseif self.airdrop.object and dist > 2000 then
-            self.airdrop.object = self.airdrop.object:Remove()
+        if self:GetTimeUntilDrop() < 0 then
+            local dist = Camera:GetPosition():Distance(self.airdrop.position)
+            if not self.airdrop.object and dist < 2000 then
+                self:CreateAirdrop()
+            elseif self.airdrop.object and dist > 2000 then
+                self.airdrop.object = self.airdrop.object:Remove()
+                self.airdrop.on_ground = false
+            end
         end
 
         if self.airdrop.object and not self.airdrop.on_ground then

@@ -23,7 +23,19 @@ function sLootManager:__init()
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("Inventory/CreateDropboxExternal", self, self.CreateDropboxExternal)
     Events:Subscribe("inventory/CreateLootboxExternal", self, self.CreateLootboxExternal)
+    Events:Subscribe("airdrops/RemoveAirdrop", self, self.RemoveAirdrop)
 
+end
+
+function sLootManager:RemoveAirdrop()
+    for id, lootbox in pairs(self.external_loot) do
+        if lootbox.tier == Lootbox.Types.AirdropLevel1
+        or lootbox.tier == Lootbox.Types.AirdropLevel2
+        or lootbox.tier == Lootbox.Types.AirdropLevel3 then
+            lootbox:Remove()
+            self.external_loot[id] = nil
+        end
+    end
 end
 
 function sLootManager:UpdateSpawnedLootCountsInSZ()
@@ -52,7 +64,7 @@ function sLootManager:CreateLootboxExternal(args)
     self.external_loot[lootbox.uid] = lootbox
 
     if args.remove_time then
-        Timer.SetTimeout(1000 * args.remove_time, function()
+        Timer.SetTimeout(args.remove_time, function()
             lootbox:Remove()
         end)
     end
