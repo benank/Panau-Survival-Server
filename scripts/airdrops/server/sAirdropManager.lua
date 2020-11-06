@@ -37,6 +37,17 @@ function sAirdropManager:PlayerOpenLootbox(args)
     if not self.airdrop.active or self.airdrop.remove_timer then return end
 
     if args.tier == 16 or args.tier == 17 or args.tier == 18 then
+
+        if not self.airdrop.doors_destroyed then
+            args.player:SetHealth(0)
+            Events:Fire("Discord", {
+                channel = "Hitdetection",
+                content = string.format("%s [%s] opened an airdrop lootbox without blowing the doors first. Killed player.", 
+                    args.player:GetName(), tostring(args.player:GetSteamId()))
+            })
+            return
+        end
+
         self.airdrop.remove_timer = Timer.SetTimeout(AirdropConfig.RemoveTime, function()
             self:RemoveAirdrop()
         end)
