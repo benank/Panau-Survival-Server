@@ -121,8 +121,8 @@ end
 function sAirdropManager:CheckIfShouldCreateAirdrop()
 
     -- Not enough time has passed since the last time an airdrop was dropped
-    if self.airdrop.timer 
-    and self.airdrop.timer:GetMinutes() < self.airdrop.interval then
+    if self.airdrop.interval 
+    and self.airdrop_timer:GetMinutes() < self.airdrop.interval then
         return
     end
 
