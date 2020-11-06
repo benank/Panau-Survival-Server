@@ -87,7 +87,7 @@ function cAirdropManager:CreateAirdrop()
 end
 
 function cAirdropManager:AirdropHitGround()
-
+    self.airdrop.object:RemoveKey("parachute")
 end
 
 function cAirdropManager:Render(args)

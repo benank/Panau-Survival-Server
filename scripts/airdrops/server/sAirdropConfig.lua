@@ -10,7 +10,7 @@ AirdropConfig =
             "----------------------------------------",
         Delivered = 
             "----------------------------------------\n\n" ..
-            "**LEVEL %d AIRDROP HAS BEEN DEELIVERED!**\n\n" ..
+            "**LEVEL %d AIRDROP HAS BEEN DELIVERED!**\n\n" ..
             "*Join the server to see precise map location.*\n\n" ..
             "----------------------------------------"
     },
