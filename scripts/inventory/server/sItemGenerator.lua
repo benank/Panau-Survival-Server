@@ -55,12 +55,15 @@ function sItemGenerator:GetStack(tier, groups)
 
     local target = self.computed_rarity_sums[tier][group] * math.random()
 
-    local item_name = self:FindTargetItem(target, tier, group)
+    local item_name, item_data_loot = self:FindTargetItem(target, tier, group)
 
     if item_name then
 
         local item_data = Items_indexed[item_name]
         item_data.amount = 1
+        item_data.min_dura_amt = item_data_loot.min_dura
+        item_data.max_dura_amt = item_data_loot.max_dura
+
 
         local item = CreateItem(item_data)
         local stack = shStack({contents = {item}})
@@ -96,7 +99,7 @@ function sItemGenerator:FindTargetItem(target, tier, group)
         sum = sum + item_data.rarity
 
         if target <= sum then
-            return item_name
+            return item_name, item_data
         end
 
     end

@@ -12,6 +12,8 @@ function sLootbox:__init(args)
 
     self.uid = GetLootboxUID()
     self.in_sz = args.in_sz
+    self.airdrop_tier = args.airdrop_tier
+    self.is_airdrop = self.airdrop_tier ~= nil
     self.active = args.active == true
     self.tier = args.tier
     self.position = args.position
@@ -235,7 +237,7 @@ function sLootbox:TakeLootStack(args, player)
 
     if #self.contents == 0 then
 
-        if self.tier == Lootbox.Types.Dropbox then
+        if self.tier == Lootbox.Types.Dropbox or self.is_airdrop then
             self:Remove()
         elseif not self.is_stash then
             self:HideBox()
@@ -321,7 +323,7 @@ function sLootbox:Open(player)
 
     Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
-    Events:Fire("PlayerOpenLootbox", {player = player, in_sz = self.in_sz, has_been_opened = self.has_been_opened, tier = self.tier})
+    Events:Fire("PlayerOpenLootbox", {player = player, in_sz = self.in_sz, has_been_opened = self.has_been_opened, airdrop_tier = self.airdrop_tier, tier = self.tier})
 
     self:StartRespawnTimer()
 
@@ -335,6 +337,7 @@ function sLootbox:StartRespawnTimer()
     if self.is_stash then return end
     if self.is_dropbox then return end
     if self.in_sz then return end
+    if self.is_airdrop then return end
 
     if self.respawn_timer then return end
 

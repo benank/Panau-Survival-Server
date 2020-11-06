@@ -9,6 +9,8 @@ function sLootManager:__init()
     self.active_lootboxes = {}
     self.inactive_lootboxes = {}
 
+    self.external_loot = {}
+
     self:LoadFromFile()
     self:GenerateAllLoot()
 
@@ -20,7 +22,20 @@ function sLootManager:__init()
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("Inventory/CreateDropboxExternal", self, self.CreateDropboxExternal)
+    Events:Subscribe("inventory/CreateLootboxExternal", self, self.CreateLootboxExternal)
+    Events:Subscribe("airdrops/RemoveAirdrop", self, self.RemoveAirdrop)
 
+end
+
+function sLootManager:RemoveAirdrop()
+    for id, lootbox in pairs(self.external_loot) do
+        if lootbox.tier == Lootbox.Types.AirdropLevel1
+        or lootbox.tier == Lootbox.Types.AirdropLevel2
+        or lootbox.tier == Lootbox.Types.AirdropLevel3 then
+            lootbox:Remove()
+            self.external_loot[id] = nil
+        end
+    end
 end
 
 function sLootManager:UpdateSpawnedLootCountsInSZ()
@@ -28,6 +43,31 @@ function sLootManager:UpdateSpawnedLootCountsInSZ()
     local total = #self.loot_data
 
     Events:Fire("Inventory/UpdateTotalLootSpawns", {spawned = spawned, total = total})
+end
+
+function sLootManager:CreateLootboxExternal(args)
+    args.active = true
+    
+    if args.contents then
+        for stack_index, stack in pairs(args.contents) do
+            for item_index, item in pairs(stack.contents) do
+                stack.contents[item_index] = shItem(item)
+            end
+            args.contents[stack_index] = shStack(stack)
+        end
+    else
+        args.contents = ItemGenerator:GetLoot(args.tier)
+    end
+
+    local lootbox = CreateLootbox(args)
+    lootbox:Sync()
+    self.external_loot[lootbox.uid] = lootbox
+
+    if args.remove_time then
+        Timer.SetTimeout(args.remove_time, function()
+            lootbox:Remove()
+        end)
+    end
 end
 
 function sLootManager:CreateDropboxExternal(args)
