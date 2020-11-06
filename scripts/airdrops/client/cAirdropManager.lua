@@ -62,10 +62,9 @@ function cAirdropManager:GetSyncData(args)
                 time = 60 * 5
             })
 
-        end
-
-        if self.airdrop.doors_destroyed then
-            self.airdrop.object:RemoveKey("door")
+            if self.airdrop.doors_destroyed and self.airdrop.object then
+                self.airdrop.object:RemoveKey("door")
+            end
         end
     end
 end
@@ -80,6 +79,10 @@ function cAirdropManager:CreateAirdrop()
             angle = self.airdrop.angle,
             target_position = self.airdrop.position
         })
+
+        if self.airdrop.doors_destroyed then
+            self.airdrop.object:RemoveKey("door")
+        end
     end)
 end
 
