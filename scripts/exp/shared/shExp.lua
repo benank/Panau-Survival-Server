@@ -12,8 +12,8 @@ Exp =
         [9] = 6,
         [10] = 6,
         [16] = 30, -- Level 1 airdrop
-        [17] = 70, -- Level 2 airdrop
-        [18] = 100
+        [17] = 50, -- Level 2 airdrop
+        [18] = 70
     },    
     Kill = 
     {
