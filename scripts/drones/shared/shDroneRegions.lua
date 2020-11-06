@@ -6,11 +6,13 @@ DroneRegionEnum =
     ResidentialDistrict = 4,
     LostIsland = 5,
     LostIslandInner = 6,
-    Desert = 6,
-    CapeCarnival = 7,
-    Casino = 8,
-    TopRight = 9,
-    BottomIslands = 10
+    Desert = 7,
+    CapeCarnival = 8,
+    Casino = 9,
+    TopRight = 10,
+    BottomIslands = 11,
+    TopCities = 12,
+    TopCityTall = 13
 }
 
 DRONE_SPAWN_INTERVAL = 1
@@ -84,7 +86,7 @@ DroneRegions =
         level_range = {min = 30, max = 50},
         spawn = 
         {
-            max = 30, -- Max drones alive at one time
+            max = 50, -- Max drones alive at one time
             chance = 0.1, -- Chance of a drone spawning every interval
             height = 
             {
@@ -95,8 +97,8 @@ DroneRegions =
     },
     [DroneRegionEnum.LostIslandInner] = 
     {
-        radius = 200,
-        center = Vector3(-14088, 500, -14142),
+        radius = 300,
+        center = Vector3(-14088, 366, -14142),
         level_range = {min = 40, max = 70},
         spawn = 
         {
@@ -104,8 +106,8 @@ DroneRegions =
             chance = 0.2, -- Chance of a drone spawning every interval
             height = 
             {
-                min = 100,
-                max = 300
+                min = 250,
+                max = 400
             }
         },
     },
@@ -167,6 +169,33 @@ DroneRegions =
         {
             max = 20, -- Max drones alive at one time
             chance = 0.5 -- Chance of a drone spawning every interval
+        },
+    },
+    [DroneRegionEnum.TopCities] = 
+    {
+        radius = 1000,
+        center = Vector3(-285, 232, -12563),
+        level_range = {min = 10, max = 30},
+        spawn = 
+        {
+            max = 20, -- Max drones alive at one time
+            chance = 0.1 -- Chance of a drone spawning every interval
+        },
+    },
+    [DroneRegionEnum.TopCityTall] = 
+    {
+        radius = 150,
+        center = Vector3(-507, 750, -12054),
+        level_range = {min = 20, max = 40},
+        spawn = 
+        {
+            max = 5, -- Max drones alive at one time
+            chance = 0.1, -- Chance of a drone spawning every interval
+            height = 
+            {
+                min = 0,
+                max = 100
+            }
         },
     }
 }

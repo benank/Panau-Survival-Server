@@ -7,6 +7,8 @@ function sMines:__init()
     self.mines = {} -- Active mines, indexed by mine id
     self.mine_cells = {} -- Active mines, organized by cell x, y, then mine id
 
+    self.respawn_time = 10 * 60 * 1000 -- Respawn time for server owned ones
+
     Console:Subscribe("clearbadmines", self, self.ClearBadMines)
 
     Network:Subscribe("items/CompleteItemUsage", self, self.CompleteItemUsage)
@@ -77,7 +79,7 @@ function sMines:ItemExplode(args)
 
         VerifyCellExists(self.mine_cells, cell)
         for _, mine in pairs(self.mine_cells[cell.x][cell.y]) do
-            if mine.position:Distance(args.position) < args.radius + ItemsConfig.usables.Mine.trigger_radius then
+            if mine.position:Distance(args.position) < args.radius + ItemsConfig.usables.Mine.trigger_radius and mine.owner_id ~= "SERVER" then
                 self:DestroyMine({id = mine.id}, args.player)
             end
         end
@@ -100,9 +102,16 @@ function sMines:DestroyMine(args, player)
         Network:SendNearby(player, "items/MineDestroy", {position = mine.position, id = mine.id, owner_id = mine.owner_id})
     end
 
-    local cmd = SQL:Command("DELETE FROM mines where id = ?")
-    cmd:Bind(1, args.id)
-    cmd:Execute()
+    if mine.owner_id ~= "SERVER" then
+        local cmd = SQL:Command("DELETE FROM mines where id = ?")
+        cmd:Bind(1, args.id)
+        cmd:Execute()
+    else
+        -- Respawn mine if it belongs to server
+        Timer.SetTimeout(self.respawn_time, function()
+            self:AddMine(mine):Sync()
+        end)
+    end
 
     -- Remove mine
     local cell = mine:GetCell()
@@ -134,6 +143,8 @@ function sMines:PickupMine(args, player)
     if not args.id or not self.mines[args.id] then return end
 
     local mine = self.mines[args.id]
+
+    if mine.owner_id == "SERVER" then return end
 
     if mine.exploded then return end
 
@@ -208,10 +219,17 @@ function sMines:StepOnMine(args, player)
             -- IF mine has not been picked up yet
             if self.mine_cells[cell.x][cell.y][id] then
 
-                -- Successfully exploded, remove mine
-                local cmd = SQL:Command("DELETE FROM mines where id = ?")
-                cmd:Bind(1, id)
-                cmd:Execute()
+                if mine.owner_id ~= "SERVER" then
+                    -- Successfully exploded, remove mine
+                    local cmd = SQL:Command("DELETE FROM mines where id = ?")
+                    cmd:Bind(1, id)
+                    cmd:Execute()
+                else
+                    -- Respawn mine if it belongs to server
+                    Timer.SetTimeout(self.respawn_time, function()
+                        self:AddMine(mine):Sync()
+                    end)
+                end
 
                 -- Remove mine
                 self.mine_cells[cell.x][cell.y][id] = nil

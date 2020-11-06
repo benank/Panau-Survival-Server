@@ -154,6 +154,7 @@ function sExp:ItemExplode(args)
 
     -- Check owner id for friend or self
     if not args.owner_id then return end
+    if args.owner_id == "SERVER" then return end -- No exp for server explosives
 
     if args.exp_enabled ~= nil then
         if not args.exp_enabled then return end

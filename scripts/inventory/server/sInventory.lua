@@ -20,6 +20,8 @@ function sInventory:__init(player)
     self.invsee_source = nil
     self.invsee = {}
 
+    self.ground_id = 0
+
     -- Save inventory to DB interval
     self.update_timer = Timer.SetInterval(1000 * 60, function()
         self:UpdateDB()
@@ -157,7 +159,7 @@ function sInventory:PlayerKilled(args)
 
     while self:GetNumUsedSlots() > 0 and num_slots_to_drop > 0 do
 
-        local cat = categories[math.random(#categories)]
+        local cat = categories[math.random(#categories)] -- TODO: make every item have the same chance instead of categories
 
         while count_table(self.contents[cat]) == 0 do
             cat = categories[math.random(#categories)]
@@ -181,6 +183,13 @@ function sInventory:PlayerKilled(args)
         local chat_msg = "Death drop: "
         for index, stack in pairs(stacks_to_drop) do
             chat_msg = chat_msg .. string.format("%s (%s)", tostring(stack:GetProperty("name")), tostring(stack:GetAmount()))
+
+            if stack:GetProperty("durable") then
+                for _, item in pairs(stack.contents) do
+                    chat_msg = chat_msg .. string.format(" [%.0f%%]", item.durability / item.max_durability * 100)
+                end
+            end
+
             if index < #stacks_to_drop then
                 chat_msg = chat_msg .. ", "
             end
@@ -199,7 +208,7 @@ function sInventory:PlayerKilled(args)
         self:Sync({sync_full = true})
     end
     
-    self:CheckForOverflow()
+    self:CheckForOverflow(true)
 
 end
 
@@ -347,10 +356,39 @@ function sInventory:ToggleEquipped(args, player)
 
 end
 
+function sInventory:GetGroundId()
+    self.ground_id = self.ground_id + 1
+    return self.ground_id
+end
+
 function sInventory:SpawnDropbox(contents, is_death_drop)
 
+    -- Split into multiple boxes if there are more than Inventory.config.max_slots_per_category items
+    if count_table(contents) >= Inventory.config.max_slots_per_category then
+        local new_contents = {}
+        local new_contents_split = {}
+        for i = 1, count_table(contents) do
+            if i > 10 then
+                table.insert(new_contents_split, contents[i])
+            else
+                table.insert(new_contents, contents[i])
+            end
+        end
+
+        if count_table(new_contents) > 0 then
+            self:SpawnDropbox(new_contents, is_death_drop)
+        end
+        
+        if count_table(new_contents_split) > 0 then
+            self:SpawnDropbox(new_contents_split, is_death_drop)
+        end
+
+        return
+    end
+
     -- Request ground data
-    Network:Send(self.player, "Inventory/GetGroundData")
+    local ground_id = self:GetGroundId()
+    Network:Send(self.player, "Inventory/GetGroundData", {ground_id = ground_id})
 
     -- Remove non persistent custom data, if any
     for index, stack in pairs(contents) do
@@ -362,27 +400,21 @@ function sInventory:SpawnDropbox(contents, is_death_drop)
         end
     end
 
-    if not self.dropping_contents then
-        self.dropping_contents = contents
-    else
-        for _, stack in pairs(contents) do
-            table.insert(self.dropping_contents, stack)
-        end
-    end
-
-    if self.ground_data_sub then return end
+    local dropping_contents = contents
 
     -- Receive ground data
-    self.ground_data_sub = Network:Subscribe("Inventory/GroundData" .. self.steamID, function(args, player)
+    local ground_data_sub
+    ground_data_sub = Network:Subscribe("Inventory/GroundData" .. self.steamID .. tostring(ground_id), function(args, player)
         if player ~= self.player then return end
         if not args.position or not args.angle then return end
 
         if self.last_dropbox and IsValid(self.last_dropbox) 
         and self.last_dropbox.position
         and count_table(self.last_dropbox.contents) > 0 
+        and count_table(self.last_dropbox.contents) + count_table(dropping_contents) < Inventory.config.max_slots_per_category
         and self.last_dropbox.position:Distance(args.position) < 0.1 then
             -- Add to existing dropbox
-            for _, stack in pairs(self.dropping_contents) do
+            for _, stack in pairs(dropping_contents) do
                 self.last_dropbox:AddStack(stack)
             end
 
@@ -395,14 +427,14 @@ function sInventory:SpawnDropbox(contents, is_death_drop)
             tier = Lootbox.Types.Dropbox,
             active = true,
             is_deathdrop = is_death_drop,
-            contents = self.dropping_contents
+            contents = dropping_contents
         })
         self.last_dropbox:Sync()
 
-        Network:Unsubscribe(self.ground_data_sub)
-        self.ground_data_sub = nil
+        Network:Unsubscribe(ground_data_sub)
+        ground_data_sub = nil
 
-        self.dropping_contents = nil
+        dropping_contents = nil
 
         if is_death_drop then
             Events:Fire("Inventory/SetDeathDropPosition", {player = self.player, position = args.position})
@@ -413,7 +445,7 @@ function sInventory:SpawnDropbox(contents, is_death_drop)
 end
 
 -- Checks for item overflow when a backpack is unequipped
-function sInventory:CheckForOverflow()
+function sInventory:CheckForOverflow(is_death_drop)
 
     local stacks_to_drop = {}
 
@@ -443,6 +475,13 @@ function sInventory:CheckForOverflow()
         local items_dropped = ""
         for index, stack in pairs(stacks_to_drop) do
             items_dropped = items_dropped .. string.format("%s (%s)", tostring(stack:GetProperty("name")), tostring(stack:GetAmount()))
+            
+            if stack:GetProperty("durable") then
+                for _, item in pairs(stack.contents) do
+                    items_dropped = items_dropped .. string.format(" [%.0f%%]", item.durability / item.max_durability * 100)
+                end
+            end
+
             if index < #stacks_to_drop then
                 items_dropped = items_dropped .. ", "
             end
@@ -457,12 +496,12 @@ function sInventory:CheckForOverflow()
 
         Chat:Send(self.player, chat_msg, Color.Red)
 
-        self:SpawnDropbox(stacks_to_drop)
+        self:SpawnDropbox(stacks_to_drop, is_death_drop)
 
         -- Full sync in case they dropped from multiple categories
         self:Sync({sync_full = true})
 
-        self:CheckForOverflow()
+        self:CheckForOverflow(is_death_drop)
     end
     
 end

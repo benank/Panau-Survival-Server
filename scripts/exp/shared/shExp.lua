@@ -44,15 +44,15 @@ Exp =
     },
     Hack = 
     {
-        [13] = 50, -- Locked Stash
-        [14] = 10 -- Proximity Alarm
+        [13] = 30, -- Locked Stash
+        [14] = 5 -- Proximity Alarm
     },
     DestroyStash = 
     {
-        [11] = 15, -- Barrel Stash
-        [12] = 30, -- Garbage Stash
-        [13] = 70, -- Locked Stash
-        [14] = 5 -- Proximity alarm
+        [11] = 5, -- Barrel Stash
+        [12] = 10, -- Garbage Stash
+        [13] = 20, -- Locked Stash
+        [14] = 2 -- Proximity alarm
     },
     DestroyDrone = 
     {
@@ -70,9 +70,9 @@ Exp =
     },
     DestroyExplosive = 
     {
-        [DamageEntity.Mine] = 2,
-        [DamageEntity.Claymore] = 2,
-        [DamageEntity.C4] = 6
+        [DamageEntity.Mine] = 1,
+        [DamageEntity.Claymore] = 1,
+        [DamageEntity.C4] = 4
     },
     DestroyBuildObject = 
     {

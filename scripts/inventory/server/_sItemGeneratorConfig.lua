@@ -3,17 +3,9 @@ LootItems =
     -- {Item,Rarity,MinQuantity,MaxQuantity}
     [Lootbox.Types.Level1] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1}
-            }
-        },
         ["AMMO"] = 
         {
-            rarity = 0.35,
+            rarity = 0.4,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 5, max = 10},
@@ -97,17 +89,9 @@ LootItems =
     },
     [Lootbox.Types.Level2] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1}
-            }
-        },
         ["AMMO"] = 
         {
-            rarity = 0.45,
+            rarity = 0.5,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.05, min = 10, max = 20},
@@ -159,10 +143,11 @@ LootItems =
         },
         ["GEAR"] = 
         {
-            rarity = 0.028,
+            rarity = 0.038,
             items = 
             {
-                ["Grapplehook"] = {rarity = 1, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.7, min = 1, max = 1},
+                ["Binoculars"] = {rarity = 0.3, min = 1, max = 1},
             }
         },
         ["HEALTH"] = 
@@ -198,7 +183,7 @@ LootItems =
         },
         ["WEAPON"] = 
         {
-            rarity = 0.047,
+            rarity = 0.037,
             items = 
             {
                 ["Bubble Gun"] = {rarity = 0.05, min = 1, max = 1},
@@ -212,14 +197,6 @@ LootItems =
     },
     [Lootbox.Types.Level3] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1}
-            }
-        },
         ["AIRSTRIKE"] = 
         {
             rarity = 0.015,
@@ -230,7 +207,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.40,
+            rarity = 0.45,
             items = 
             {
                 ["Sawn-Off Ammo"] = {rarity = 0.1, min = 6, max = 12},
@@ -277,11 +254,12 @@ LootItems =
         },
         ["GEAR"] = 
         {
-            rarity = 0.02,
+            rarity = 0.03,
             items = 
             {
                 ["Grapplehook"] = {rarity = 0.1, min = 1, max = 1},
-                ["Explosives Detector"] = {rarity = 0.55, min = 1, max = 1},
+                ["Binoculars"] = {rarity = 0.2, min = 1, max = 1},
+                ["Explosives Detector"] = {rarity = 0.35, min = 1, max = 1},
                 ["Combat Backpack"] = {rarity = 0.175, min = 1, max = 1},
                 ["Explorer Backpack"] = {rarity = 0.175, min = 1, max = 1},
             }
@@ -308,7 +286,7 @@ LootItems =
         },
         ["WEAPON"] = 
         {
-            rarity = 0.09,
+            rarity = 0.08,
             items = 
             {
                 ["Sawn-Off Shotgun"] = {rarity = 0.2, min = 1, max = 1},
@@ -322,14 +300,6 @@ LootItems =
     },
     [Lootbox.Types.Level4] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1}
-            }
-        },
         ["AIRSTRIKE"] = 
         {
             rarity = 0.037,
@@ -342,7 +312,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.459,
+            rarity = 0.509,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 5, max = 10},
@@ -369,10 +339,10 @@ LootItems =
             {
                 ["Bed"] = {rarity = 0.04, min = 1, max = 1},
                 ["Door"] = {rarity = 0.08, min = 1, max = 1},
-                ["Wall"] = {rarity = 0.66, min = 1, max = 1},
+                ["Wall"] = {rarity = 0.68, min = 1, max = 1},
                 ["Proximity Alarm"] = {rarity = 0.08, min = 1, max = 1},
                 ["Locked Stash"] = {rarity = 0.01, min = 1, max = 1},
-                ["LandClaim"] = {rarity = 0.07, min = 1, max = 1},
+                ["LandClaim"] = {rarity = 0.05, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -392,10 +362,10 @@ LootItems =
             items = 
             {
                 ["Grapplehook"] = {rarity = 0.24, min = 1, max = 1},
-                ["Combat Backpack"] = {rarity = 0.26, min = 1, max = 1},
-                ["Explorer Backpack"] = {rarity = 0.26, min = 1, max = 1},
-                ["Parachute"] = {rarity = 0.12, min = 1, max = 1},
-                ["RocketGrapple"] = {rarity = 0.12, min = 1, max = 1},
+                ["Combat Backpack"] = {rarity = 0.22, min = 1, max = 1},
+                ["Explorer Backpack"] = {rarity = 0.22, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.16, min = 1, max = 1},
+                ["RocketGrapple"] = {rarity = 0.16, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
@@ -403,9 +373,9 @@ LootItems =
             rarity = 0.04,
             items = 
             {
-                ["Combat Ping"] = {rarity = 0.65, min = 1, max = 1},
-                ["EVAC"] = {rarity = 0.18, min = 1, max = 1},
-                ["Hacker"] = {rarity = 0.17, min = 1, max = 1},
+                ["Combat Ping"] = {rarity = 0.7, min = 1, max = 1},
+                ["EVAC"] = {rarity = 0.2, min = 1, max = 1},
+                ["Hacker"] = {rarity = 0.1, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 

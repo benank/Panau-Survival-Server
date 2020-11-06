@@ -77,6 +77,7 @@ function sLandclaimManager:PressBuildObjectMenuButton(args, player)
     if not landclaim:IsActive() then return end
 
     landclaim:PressBuildObjectMenuButton(args, player)
+    self:UpdateLandclaimsSharedObject()
 end
 
 function sLandclaimManager:DetonateOnBuildObject(args)
@@ -86,6 +87,7 @@ function sLandclaimManager:DetonateOnBuildObject(args)
     if not landclaim then return end
 
     landclaim:DamageObject(args, args.player)
+    self:UpdateLandclaimsSharedObject()
 end
 
 function sLandclaimManager:GetLandclaimFromData(landclaim_owner_id, landclaim_id)
@@ -140,6 +142,7 @@ function sLandclaimManager:ChangeLandclaimAccessMode(args, player)
     if not LandclaimAccessModeEnum:IsValidAccessMode(args.access_mode) then return end
 
     landclaim:ChangeAccessMode(args.access_mode, player)
+    self:UpdateLandclaimsSharedObject()
 end
 
 function sLandclaimManager:RenameLandclaim(args, player)
@@ -153,6 +156,7 @@ function sLandclaimManager:RenameLandclaim(args, player)
     if not landclaim then return end
 
     landclaim:Rename(args.name, player)
+    self:UpdateLandclaimsSharedObject()
 end
 
 function sLandclaimManager:DeleteLandclaim(args, player)
@@ -165,6 +169,7 @@ function sLandclaimManager:DeleteLandclaim(args, player)
 
     landclaim:Delete(player)
     Chat:Send(player, "Landclaim successfully deleted. Any objects that you didn't pick up will slowly decay over time.", Color.Yellow)
+    self:UpdateLandclaimsSharedObject()
 end
 
 function sLandclaimManager:PlaceObjectInLandclaim(args)
@@ -178,6 +183,7 @@ function sLandclaimManager:PlaceObjectInLandclaim(args)
     if not target_landclaim then return end
 
     target_landclaim:PlaceObject(args)
+    self:UpdateLandclaimsSharedObject()
 
 end
 
@@ -327,6 +333,8 @@ function sLandclaimManager:UpdateLandclaimExpiry(size, landclaim, player)
         content = string.format("%s [%s] added %d days to landclaim expiry. Old: %s New: %s (%s)", 
             player:GetName(), tostring(player:GetSteamId()), days_to_add, old_expiry_date, landclaim.expiry_date, landclaim:ToLogString())
     })
+
+    self:UpdateLandclaimsSharedObject()
 end
 
 function sLandclaimManager:PlaceLandclaim(size, player)

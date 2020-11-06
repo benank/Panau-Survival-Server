@@ -14,7 +14,7 @@ function CreateLootbox(args)
 
                 local landclaim = FindFirstActiveLandclaimContainingPosition(args.position)
 
-                if landclaim then
+                if landclaim and count_table(box.contents) + count_table(args.contents) < Inventory.config.max_slots_per_category then
                     for k,v in pairs(args.contents) do
                         box:AddStack(v)
                     end
@@ -105,6 +105,10 @@ function CreateItem(args)
             data.durability = ((data.max_dura_amt - data.min_dura_amt) * math.random() + data.min_dura_amt) * data.max_durability
         end
 
+    end
+
+    if args.name == "Wall" then
+        data.durability = data.max_durability
     end
 
     data.equipped = false
