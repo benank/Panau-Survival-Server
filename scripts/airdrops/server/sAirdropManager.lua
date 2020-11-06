@@ -88,6 +88,11 @@ function sAirdropManager:CanCreateAirdropOfType(type)
         return false
     end
 
+    -- Not enough players online
+    if Server:GetPlayerCount() < AirdropConfig.Spawn[type].min_players then
+        return false
+    end
+
     -- Not enough time has passed since the last time an airdrop of this type was dropped
     if self.airdrop.timer 
     and self.airdrop.timer:GetMinutes() < self.airdrop.interval then
@@ -103,8 +108,6 @@ end
 
 -- Called every 10 minutes. Check player counts and in progress drops
 function sAirdropManager:CheckIfShouldCreateAirdrop()
-
-    local num_players_online = Server:GetPlayerCount()
 
     local spawn_type = 0 -- Airdrop type that we are going to spawn, 0 means that we are not going to spawn
     for type, data in pairs(AirdropConfig.Spawn) do

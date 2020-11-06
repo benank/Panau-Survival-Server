@@ -471,7 +471,7 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Lockpick"] = {rarity = 1, min = 5, max = 10},
+                ["Lockpick"] = {rarity = 1, min = 3, max = 5},
             }
         },
         ["AMMO"] = 
@@ -562,7 +562,7 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Lockpick"] = {rarity = 1, min = 10, max = 15},
+                ["Lockpick"] = {rarity = 1, min = 5, max = 8},
             }
         },
         ["AMMO"] = 
@@ -660,7 +660,7 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Lockpick"] = {rarity = 1, min = 15, max = 20},
+                ["Lockpick"] = {rarity = 1, min = 8, max = 13},
             }
         },
         ["AMMO"] = 

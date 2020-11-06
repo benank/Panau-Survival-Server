@@ -49,7 +49,7 @@ function sLootManager:CreateLootboxExternal(args)
 
     local lootbox = CreateLootbox(args)
     lootbox:Sync()
-    self.external_loot[lootbox.id] = lootbox
+    self.external_loot[lootbox.uid] = lootbox
 
     if args.remove_time then
         Timer.SetTimeout(1000 * args.remove_time, function()

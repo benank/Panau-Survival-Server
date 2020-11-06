@@ -61,8 +61,7 @@ function cAirdropManager:GetSyncData(args)
                 position = self.airdrop.position,
                 time = 60 * 5
             })
-        
-            self:CreateAirdrop()
+
         end
 
         if self.airdrop.doors_destroyed then
@@ -73,7 +72,9 @@ end
 
 -- Create airdrop from the sky
 function cAirdropManager:CreateAirdrop()
+    if self.airdrop.object then return end
     Timer.SetTimeout(6000, function()
+        if self.airdrop.object then return end
         self.airdrop.object = cAirdropObject({
             position = self.airdrop.position + Vector3(0, 500, 0),
             angle = self.airdrop.angle,
@@ -90,6 +91,13 @@ function cAirdropManager:Render(args)
     if self.airdrop.active then
         self:RenderAirdropInfo()
 
+        local dist = Camera:GetPosition():Distance(self.airdrop.position)
+        if not self.airdrop.object and dist < 2000 then
+            self:CreateAirdrop()
+        elseif self.airdrop.object and dist > 2000 then
+            self.airdrop.object = self.airdrop.object:Remove()
+        end
+
         if self.airdrop.object and not self.airdrop.on_ground then
             local progress = math.min(1, -self:GetTimeUntilDrop() / 0.75)
             self.airdrop.on_ground = progress == 1
@@ -100,6 +108,7 @@ function cAirdropManager:Render(args)
                 self:AirdropHitGround()
             end
         end
+        
     end
 end
 

@@ -123,12 +123,12 @@ Lootbox.GeneratorConfig =
         [Lootbox.Types.AirdropLevel2] = 
         {
             min_items = 2,
-            max_items = 5
+            max_items = 4
         },
         [Lootbox.Types.AirdropLevel3] = 
         {
-            min_items = 3,
-            max_items = 6
+            min_items = 2,
+            max_items = 5
         },
     }
 }
