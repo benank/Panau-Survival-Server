@@ -373,9 +373,9 @@ LootItems =
             rarity = 0.04,
             items = 
             {
-                ["Combat Ping"] = {rarity = 0.55, min = 1, max = 1},
-                ["EVAC"] = {rarity = 0.25, min = 1, max = 1},
-                ["Hacker"] = {rarity = 0.2, min = 1, max = 1},
+                ["Combat Ping"] = {rarity = 0.7, min = 1, max = 1},
+                ["EVAC"] = {rarity = 0.2, min = 1, max = 1},
+                ["Hacker"] = {rarity = 0.1, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
