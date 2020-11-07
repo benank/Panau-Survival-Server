@@ -444,6 +444,11 @@ function sExp:PlayerOpenLootbox(args)
 
     self:GivePlayerExp(exp_earned, ExpType.Exploration, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
 
+    -- Also give combat exp for airdrop lootboxes
+    if args.airdrop_tier then
+        self:GivePlayerExp(exp_earned, ExpType.Combat, tostring(args.player:GetSteamId()), args.player:GetValue("Exp"), args.player)
+    end
+
     Events:Fire("Discord", {
         channel = "Experience",
         content = string.format("%s [%s] opened a tier %d lootbox and gained %d exp.", 

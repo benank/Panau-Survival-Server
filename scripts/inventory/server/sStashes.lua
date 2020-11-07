@@ -21,6 +21,22 @@ function sStashes:__init()
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
 end
 
+function sStashes:GetPlayerNameFromSteamId(steam_id)
+    
+    local query = SQL:Query("SELECT name FROM player_names WHERE steam_id = (?) LIMIT 1")
+    query:Bind(1, steam_id)
+    local stash_owner_name = query:Execute()
+
+    if stash_owner_name and stash_owner_name[1] and stash_owner_name[1].name then
+        stash_owner_name = stash_owner_name[1].name
+    else
+        stash_owner_name = "???"
+    end
+
+    return stash_owner_name
+
+end
+
 -- When an explosive (Claymore or C4) attached to a stash detonates
 function sStashes:DetonateOnStash(args)
 
@@ -46,6 +62,12 @@ function sStashes:DetonateOnStash(args)
         Events:Fire("SendPlayerPersistentMessage", {
             steam_id = stash.owner_id,
             message = string.format("%s destroyed your stash [%s] %s", args.player:GetName(), stash.name, WorldToMapString(stash.lootbox.position)),
+            color = Color(200, 0, 0)
+        })
+
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = tostring(args.player:GetSteamId()),
+            message = string.format("You destroyed %s's stash %s", self:GetPlayerNameFromSteamId(stash.owner_id), WorldToMapString(stash.lootbox.position)),
             color = Color(200, 0, 0)
         })
 
@@ -116,6 +138,12 @@ function sStashes:HackComplete(args)
             color = Color(200, 0, 0)
         })
 
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = tostring(args.player:GetSteamId()),
+            message = string.format("You hacked %s's proximity alarm %s", self:GetPlayerNameFromSteamId(old_owner_id), WorldToMapString(stash.lootbox.position)),
+            color = Color(200, 0, 0)
+        })
+
         -- Transfer ownership
         stash.owner_id = tostring(args.player:GetSteamId())
         stash.access_mode = StashAccessMode.Everyone
@@ -145,6 +173,12 @@ function sStashes:HackComplete(args)
         Events:Fire("SendPlayerPersistentMessage", {
             steam_id = stash.owner_id,
             message = string.format("%s hacked your stash [%s] %s", args.player:GetName(), stash.name, WorldToMapString(stash.lootbox.position)),
+            color = Color(200, 0, 0)
+        })
+
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = tostring(args.player:GetSteamId()),
+            message = string.format("You hacked %s's stash %s", self:GetPlayerNameFromSteamId(stash.owner_id), WorldToMapString(stash.lootbox.position)),
             color = Color(200, 0, 0)
         })
 
