@@ -22,10 +22,10 @@ AirdropConfig =
             health = 5,
             map_preview = -- Preview on discord and ingame map
             {
-                time = 10, -- How many minutes it appears on the map before it drops
+                time = 15, -- How many minutes it appears on the map before it drops
                 size = 1000 -- How big is the radius around it
             },
-            chance = 0.3, -- Chance of the airdrop spawning every interval if the conditions are met
+            chance = 0.2, -- Chance of the airdrop spawning every interval if the conditions are met
             interval = 60 -- 60 minutes between airdrops of this type
         },
         [AirdropType.Mid] = 
@@ -37,7 +37,7 @@ AirdropConfig =
                 time = 20,
                 size = 2000
             },
-            chance = 0.4,
+            chance = 0.3,
             interval = 240 -- 4 hours between airdrops
         },
         [AirdropType.High] = 
