@@ -369,6 +369,7 @@ function sClaymores:TryPlaceClaymore(args, player)
     local sub
     sub = Network:Subscribe("items/CompleteItemUsage", function(_, _player)
     
+        if not IsValid(player) or not IsValid(_player) then return end
         if player ~= _player then return end
 
         local player_iu = player:GetValue("ItemUse")
