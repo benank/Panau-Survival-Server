@@ -107,8 +107,13 @@ function CreateItem(args)
             data.durability = ((data.max_dura_amt - data.min_dura_amt) * math.random() + data.min_dura_amt) * data.max_durability
         end
 
-        if args.durability then
-            data.durability = data.max_durability * args.durability
+        -- Revert huge durability bug
+        if data.durability and data.durability > 5000 and data.durability / data.max_durability > 0 then
+            data.durability = data.durability / data.max_durability
+        end
+
+        if args.durability_percent then
+            data.durability = data.max_durability * args.durability_percent
         end
 
     end
@@ -143,7 +148,7 @@ function GenerateDefaultInventory()
                     name = v.name,
                     amount = 1,
                     max_dura = v.durability == nil,
-                    durability = v.durability
+                    durability_percent = v.durability
                 }))
             end
         end
