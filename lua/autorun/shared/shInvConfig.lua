@@ -15,27 +15,36 @@ Inventory.config =
     {
         {
             name = "Bandages",
-            amount = 3
+            amount = 5
         },
         {
             name = "Water",
-            amount = 3
+            amount = 5
         },
         {
             name = "Can of Beans",
-            amount = 3
+            amount = 5
         },
         {
             name = "Lockpick",
-            amount = 2
+            amount = 3
         },
         {
-            name = "Flashbang",
-            amount = 2
+            name = "Handgun",
+            amount = 1
+        },
+        {
+            name = "Handgun Ammo",
+            amount = 50
         },
         {
             name = "HE Grenade",
-            amount = 1
+            amount = 5
+        },
+        {
+            name = "Grapplehook",
+            amount = 1,
+            durability = 0.1
         }
     },
     max_grapple_upgrades = 4

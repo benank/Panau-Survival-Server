@@ -92,6 +92,8 @@ function CreateItem(args)
 
     local data = deepcopy(Items_indexed[args.name])
 
+    for k,v in pairs(args) do data[k] = v end
+
     if data.durable then
 
         data.max_durability = data.max_durability and data.max_durability or Items.Config.default_durability
@@ -105,6 +107,10 @@ function CreateItem(args)
             data.durability = ((data.max_dura_amt - data.min_dura_amt) * math.random() + data.min_dura_amt) * data.max_durability
         end
 
+        if args.durability then
+            data.durability = data.max_durability * args.durability
+        end
+
     end
 
     if args.name == "Wall" then
@@ -112,8 +118,6 @@ function CreateItem(args)
     end
 
     data.equipped = false
-
-    for k,v in pairs(args) do data[k] = v end
 
     return shItem(data)
 
@@ -138,7 +142,8 @@ function GenerateDefaultInventory()
                 table.insert(contents, CreateItem({
                     name = v.name,
                     amount = 1,
-                    max_dura = true
+                    max_dura = v.durability == nil,
+                    durability = v.durability
                 }))
             end
         end
