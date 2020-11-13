@@ -92,8 +92,6 @@ function CreateItem(args)
 
     local data = deepcopy(Items_indexed[args.name])
 
-    for k,v in pairs(args) do data[k] = v end
-
     if data.durable then
 
         data.max_durability = data.max_durability and data.max_durability or Items.Config.default_durability
@@ -107,11 +105,6 @@ function CreateItem(args)
             data.durability = ((data.max_dura_amt - data.min_dura_amt) * math.random() + data.min_dura_amt) * data.max_durability
         end
 
-        -- Revert huge durability bug
-        if data.durability and data.durability / data.max_durability > 5 then
-            data.durability = data.durability / data.max_durability
-        end
-
         if args.durability_percent then
             data.durability = data.max_durability * args.durability_percent
         end
@@ -123,6 +116,15 @@ function CreateItem(args)
     end
 
     data.equipped = false
+
+    for k,v in pairs(args) do data[k] = v end
+
+    if data.durable then
+        -- Revert huge durability bug
+        if data.durability and data.durability / data.max_durability > 5 then
+            data.durability = data.durability / data.max_durability
+        end
+    end
 
     return shItem(data)
 
