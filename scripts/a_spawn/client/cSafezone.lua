@@ -102,10 +102,11 @@ function cSafezone:ExitSafezone()
 end
 
 function cSafezone:LocalPlayerInput(args)
-    if self.sz_blacklisted[args.input] then return false end
+    if self.sz_blacklisted[args.input] and self.in_safezone then return false end
 end
 
 function cSafezone:InputPoll(args)
+    if not self.in_safezone then return end
     for action, _ in pairs(self.sz_blacklisted) do
         Input:SetValue(action, 0)
     end
