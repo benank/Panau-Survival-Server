@@ -108,7 +108,7 @@ function CreateItem(args)
         end
 
         -- Revert huge durability bug
-        if data.durability and data.durability > 5000 and data.durability / data.max_durability > 0 then
+        if data.durability and data.durability / data.max_durability > 5 then
             data.durability = data.durability / data.max_durability
         end
 
