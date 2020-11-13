@@ -31,7 +31,8 @@ Inventory.config =
         },
         {
             name = "Handgun",
-            amount = 1
+            amount = 1,
+            durability = 0.5
         },
         {
             name = "Handgun Ammo",
