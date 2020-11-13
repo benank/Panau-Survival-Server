@@ -60,6 +60,19 @@ function sAirdropManager:ItemExplode(args)
     if not self.airdrop.landed then return end
     if self.airdrop.doors_destroyed then return end
 
+    -- Announce airdrop coords when it is hit by an explosive
+    if not self.airdrop.precise_announce and args.position:Distance(self.airdrop.position) < args.radius then
+        self.airdrop.precise_announce = true
+        self:SendActiveAirdropData()
+        
+        Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
+        Chat:Broadcast(" ", Color.Red)
+        Chat:Broadcast("MAP UPDATED WITH PRECIDE AIRDROP COORDS.", Color.Red)
+        Chat:Broadcast(" ", Color.Red)
+        Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
+
+    end
+
     if self.airdrop.type == AirdropType.Low then
         -- Any explosive can blow up Level 1 airdrops - takes 3 explosives of any kind
         if args.position:Distance(self.airdrop.position) < args.radius then
@@ -244,7 +257,7 @@ function sAirdropManager:OnAirdropLanded()
 
     Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
     Chat:Broadcast(" ", Color.Red)
-    Chat:Broadcast("AIRDROP HAS LANDED. MAP COORDS UPDATED.", Color.Red)
+    Chat:Broadcast("AIRDROP HAS LANDED.", Color.Red)
     Chat:Broadcast(" ", Color.Red)
     Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
 end
@@ -282,7 +295,8 @@ function sAirdropManager:GetAirdropSyncData()
         angle = self.airdrop.angle,
         preview_time = AirdropConfig.Spawn[self.airdrop.type].map_preview.time,
         preview_size = AirdropConfig.Spawn[self.airdrop.type].map_preview.size,
-        general_location = self.airdrop.general_location
+        general_location = self.airdrop.general_location,
+        precise_announce = self.airdrop.precise_announce
     }
 end
 

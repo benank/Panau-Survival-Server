@@ -52,14 +52,28 @@ function cAirdropManager:GetSyncData(args)
                 radius = self.airdrop.preview_size
             })
         else
+
+            if not self.airdrop.precise_announce then
+                Events:Fire("airdrops/AddGeneralLocationToMap", {
+                    name = string.format("UNOPENED AIRDROP (LEVEL %d)", self.airdrop.type),
+                    position = self.airdrop.general_location,
+                    radius = self.airdrop.preview_size
+                })
+
+                Events:Fire("Flare", {
+                    position = self.airdrop.position,
+                    time = 60 * 10
+                })
+
+            end
+
+        end
+
+        if self.airdrop.precise_announce then
+            
             Events:Fire("airdrops/AddPreciseLocationToMap", {
                 name = string.format("AIRDROP (LEVEL %d)", self.airdrop.type),
                 position = self.airdrop.position
-            })
-
-            Events:Fire("Flare", {
-                position = self.airdrop.position,
-                time = 60 * 5
             })
 
         end

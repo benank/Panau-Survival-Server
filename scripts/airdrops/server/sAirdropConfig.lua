@@ -11,7 +11,7 @@ AirdropConfig =
         Delivered = 
             "--------------------------------------------------------------\n\n" ..
             "**LEVEL %d AIRDROP HAS BEEN DELIVERED!**\n\n" ..
-            "*Join the server to see precise map location.*\n\n" ..
+            "*Join the server to see approximate map location.*\n\n" ..
             "--------------------------------------------------------------"
     },
     Spawn = -- Spawn settings
@@ -22,8 +22,8 @@ AirdropConfig =
             health = 5,
             map_preview = -- Preview on discord and ingame map
             {
-                time = 15, -- How many minutes it appears on the map before it drops
-                size = 1000 -- How big is the radius around it
+                time = 1, -- How many minutes it appears on the map before it drops
+                size = 750 -- How big is the radius around it
             },
             chance = 0.05, -- Chance of the airdrop spawning every interval if the conditions are met
             interval = 240 -- 4 hours between airdrops of this type
@@ -35,9 +35,9 @@ AirdropConfig =
             map_preview = 
             {
                 time = 30,
-                size = 2000
+                size = 1500
             },
-            chance = 0.025,
+            chance = 0.05,
             interval = 480 -- 8 hours between airdrops
         },
         [AirdropType.High] = 
@@ -46,10 +46,10 @@ AirdropConfig =
             health = 4,
             map_preview = 
             {
-                time = 45,
-                size = 4000
+                time = 60,
+                size = 3000
             },
-            chance = 0.01,
+            chance = 0.02,
             interval = 1440 -- 24 hours between airdrops
         }
     },
