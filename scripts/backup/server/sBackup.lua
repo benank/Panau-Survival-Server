@@ -1,4 +1,4 @@
-Timer.SetInterval(1000 * 60 * 60 * 24 * 3, function()
+Timer.SetInterval(1000 * 60 * 60 * 24, function()
     print("Creating backup...")
     os.execute(string.format('sqlite3 server.db -cmd ".backup ./db_backups/%s.db" ".exit"', GetLogDate()))
     print("Backup created!")
