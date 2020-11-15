@@ -38,7 +38,7 @@ function shItem:__init(args)
             error(debug.traceback("shItem:__init failed: durability was given but item had more than one amount"))
         end
 
-        self.durability = args.durability
+        self.durability = math.floor(args.durability)
 
         if args.max_durability then
             self.max_durability = args.max_durability
