@@ -23,7 +23,12 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
     UpdateEquippedItem(args.player, args.item.name, args.item)
 
-    Network:Send(args.player, "items/ToggleEquippedNitro", {equipped = args.item.equipped == true, uid = args.item.uid})
+    Network:Send(args.player, "items/ToggleEquippedNitro", 
+    {
+        equipped = args.item.equipped == true, 
+        uid = args.item.uid, 
+        x = tonumber(args.item.custom_data.nitro_x) == 1
+    })
 
 end)
 
@@ -109,7 +114,12 @@ Network:Subscribe("items/ActivateNitro", function(args, player)
 
     local v = player:GetVehicle()
 
-    v:SetNetworkValue("NitroActive", true)
+    local nitro_val = true
+    if tonumber(GetEquippedItem("Nitro", player).custom_data.nitro_x) == 1 then
+        nitro_val = "X"
+    end
+
+    v:SetNetworkValue("NitroActive", nitro_val)
 
 end)
 

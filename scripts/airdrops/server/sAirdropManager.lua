@@ -67,7 +67,7 @@ function sAirdropManager:ItemExplode(args)
         
         Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
         Chat:Broadcast(" ", Color.Red)
-        Chat:Broadcast("MAP UPDATED WITH PRECIDE AIRDROP COORDS.", Color.Red)
+        Chat:Broadcast("MAP UPDATED WITH PRECISE AIRDROP COORDS.", Color.Red)
         Chat:Broadcast(" ", Color.Red)
         Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
 

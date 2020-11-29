@@ -7,6 +7,7 @@ function cNitro:__init()
     self.dura_change = 0
 
     self.boosting = false
+    self.x = false
 
     self.base_boose_amount = 0.1
     self.boost_amount = self.base_boose_amount
@@ -63,6 +64,7 @@ end
 function cNitro:ToggleEquipped(args)
     self.equipped = args.equipped
     self.uid = self.equipped and args.uid or 0
+    self.x = args.x
 
     self.boosting = false
     self.boosting_synced = false
@@ -98,9 +100,15 @@ function cNitro:LocalPlayerInput(args)
 
     if v:GetValue("DisabledByEMP") then return end
 
+    local boost_amount = self.boost_amount
+
+    if self.x then
+        boost_amount = boost_amount * 5
+    end
+
     local forward = v:GetAngle() * Vector3.Forward
     local speed = -(-v:GetAngle() * v:GetLinearVelocity()).z
-    v:SetLinearVelocity(v:GetLinearVelocity() + forward * self.boost_amount)
+    v:SetLinearVelocity(v:GetLinearVelocity() + forward * boost_amount)
 
     self.boosting = true
 
@@ -158,7 +166,7 @@ function cNitro:PostTick(args)
                 effects[i] = ClientEffect.Create(AssetLocation.Game, {
                     position = v:GetPosition(),
                     angle = v:GetAngle(),
-                    effect_id = 172
+                    effect_id = v:GetValue("NitroActive") == "X" and 101 or 172
                 })
             end
 

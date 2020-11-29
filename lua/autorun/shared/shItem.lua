@@ -38,7 +38,7 @@ function shItem:__init(args)
             error(debug.traceback("shItem:__init failed: durability was given but item had more than one amount"))
         end
 
-        self.durability = args.durability
+        self.durability = math.floor(args.durability)
 
         if args.max_durability then
             self.max_durability = args.max_durability
@@ -120,6 +120,10 @@ function shItem:GetCustomData()
             end
         end
 
+    elseif self.name == "Nitro" and self.custom_data.nitro_x == nil then
+
+        -- 10% of nitros are nitro Xs
+        self.custom_data.nitro_x = math.random() < 0.05 and 1 or 0
     end
 	
 	-- Additional custom data will be added here
