@@ -120,6 +120,10 @@ function shItem:GetCustomData()
             end
         end
 
+    elseif self.name == "Nitro" and self.custom_data.nitro_x == nil then
+
+        -- 10% of nitros are nitro Xs
+        self.custom_data.nitro_x = math.random() < 0.05 and 1 or 0
     end
 	
 	-- Additional custom data will be added here
