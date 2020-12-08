@@ -235,7 +235,9 @@ LootItems =
             {
                 ["Barrel Stash"] = {rarity = 0.15, min = 1, max = 1},
                 ["Garbage Stash"] = {rarity = 0.05, min = 1, max = 1},
-                ["Light"] = {rarity = 0.15, min = 1, max = 1},
+                ["Stop Sign"] = {rarity = 0.025, min = 1, max = 1},
+                ["Cone"] = {rarity = 0.025, min = 1, max = 1},
+                ["Light"] = {rarity = 0.1, min = 1, max = 1},
                 ["Chair"] = {rarity = 0.05, min = 1, max = 1},
                 ["Door"] = {rarity = 0.1, min = 1, max = 1},
                 ["Wall"] = {rarity = 0.5, min = 1, max = 1},
@@ -338,12 +340,15 @@ LootItems =
             rarity = 0.157,
             items = 
             {
-                ["Chair"] = {rarity = 0.06, min = 1, max = 1},
-                ["Helipad"] = {rarity = 0.03, min = 1, max = 1},
-                ["Bed"] = {rarity = 0.04, min = 1, max = 1},
-                ["Door"] = {rarity = 0.07, min = 1, max = 1},
-                ["Wall"] = {rarity = 0.71, min = 1, max = 1},
-                ["Proximity Alarm"] = {rarity = 0.07, min = 1, max = 1},
+                ["Table"] = {rarity = 0.02, min = 1, max = 1},
+                ["Glass"] = {rarity = 0.01, min = 1, max = 1},
+                ["Hedgehog"] = {rarity = 0.02, min = 1, max = 1},
+                ["Chair"] = {rarity = 0.03, min = 1, max = 1},
+                ["Helipad"] = {rarity = 0.015, min = 1, max = 1},
+                ["Bed"] = {rarity = 0.03, min = 1, max = 1},
+                ["Door"] = {rarity = 0.075, min = 1, max = 1},
+                ["Wall"] = {rarity = 0.7, min = 1, max = 1},
+                ["Proximity Alarm"] = {rarity = 0.08, min = 1, max = 1},
                 ["Locked Stash"] = {rarity = 0.01, min = 1, max = 1},
                 ["LandClaim"] = {rarity = 0.01, min = 1, max = 1},
             }
