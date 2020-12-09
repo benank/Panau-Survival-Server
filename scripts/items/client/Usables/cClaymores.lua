@@ -65,9 +65,9 @@ function cClaymores:PlaceObject(args)
         local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 7)
     
         -- Placing it on a stash or build object
-        if cC4s.near_stashes[ray.entity:GetId()] then
+        if IsValid(ray.entity) and cC4s.near_stashes[ray.entity:GetId()] then
             lootbox_uid = cC4s.near_stashes[ray.entity:GetId()]
-        elseif cC4s.near_build_objects[ray.entity:GetId()] then
+        elseif IsValid(ray.entity) and cC4s.near_build_objects[ray.entity:GetId()] then
             landclaim_data = cC4s.near_build_objects[ray.entity:GetId()]
         end
 
