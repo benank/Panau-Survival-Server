@@ -24,6 +24,7 @@ Exp =
         [DamageEntity.Vehicle] = 50,
         [DamageEntity.ToxicGrenade] = 80,
         [DamageEntity.Molotov] = 80,
+        [DamageEntity.Snowball] = 80,
         [DamageEntity.Mine] = 50,
         [DamageEntity.Claymore] = 50,
         [DamageEntity.HEGrenade] = 80,

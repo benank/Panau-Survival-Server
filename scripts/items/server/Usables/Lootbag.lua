@@ -19,6 +19,16 @@ local lootbag_config =
         ["Kit Kat"] =          {amount = 2, chance = 0.1},
         ["Starburst"] =        {amount = 4, chance = 0.1},
         ["Skittles"] =         {amount = 8, chance = 0.2}
+    },
+    ["Holiday Lootbag"] = 
+    {
+        ["Snowman Outfit"] =     {amount = 1, chance = 0.05},
+        ["Snowball"] =          {amount = 10, chance = 0.4},
+        ["Sugarcookie"] =    {amount = 5, chance = 0.1},
+        ["Milk"] =              {amount = 3, chance = 0.1},
+        ["Candy Cane"] =      {amount = 12, chance = 0.2},
+        ["Hot Chocolate"] =     {amount = 1, chance = 0.1},
+        ["Christmas Tree"] =     {amount = 1, chance = 0.05}
     }
 }
 
@@ -34,21 +44,23 @@ Network:Subscribe("items/CompleteItemUsage", function(args, player)
         local item_name = GetRandomItem(player_iu.item.name)
         local item_amount = lootbag_config[player_iu.item.name][item_name].amount
 
-        local item = CreateItem({
-            name = item_name,
-            amount = item_amount
-        })
-
         Inventory.RemoveItem({
             item = player_iu.item,
             index = player_iu.index,
             player = player
         })
 
-        Inventory.AddItem({
-            item = item:GetSyncObject(),
-            player = player
-        })
+        for i = 1, item_amount do
+            local item = CreateItem({
+                name = item_name,
+                amount = 1
+            })
+
+            Inventory.AddItem({
+                item = item:GetSyncObject(),
+                player = player
+            })
+        end
 
         Chat:Send(player, string.format("Opened %s and got: %s!", player_iu.item.name, item_name), Color.Orange)
 

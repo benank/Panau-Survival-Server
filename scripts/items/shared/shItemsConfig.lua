@@ -22,6 +22,7 @@ ItemsConfig =
         ["EMP"] = {range = 400, disable_time = 30, use_time = 10},
         ["LandClaim"] = {use_time = 10, delay_use = true},
         ["Halloween Lootbag"] = {use_time = 3},
+        ["Holiday Lootbag"] = {use_time = 3},
     },
     build = 
     {
@@ -36,7 +37,8 @@ ItemsConfig =
         ["Glass"] = {model = "km02.towercomplex.nlz/key013_01-g2.lod", offset = Vector3(0, -0.8, -4.1)},
         ["Hedgehog"] = {model = "31x14.nlz/go041-d.lod", disable_walls = true},
         ["Cone"] = {model = "35x12.nlz/go040-b.lod", disable_walls = true},
-        ["Jump Pad"] = {model = "05x41.nlz/go224-h.lod", disable_walls = true}
+        ["Jump Pad"] = {model = "05x41.nlz/go224-h.lod", disable_walls = true},
+        ["Christmas Tree"] = {model = "vegetation_0.blz/City_B10_roofbush-Whole.lod", disable_walls = true},
     },
     airstrikes = 
     {
@@ -93,6 +95,7 @@ ItemsConfig =
             ["AntiGrav Grenade"] = DamageEntity.None,
             ["Warp Grenade"] = DamageEntity.None,
             ["Laser Grenade"] = DamageEntity.LaserGrenade,
+            ["Snowball"] = DamageEntity.Snowball,
         },
         costumes = 
         {
@@ -107,7 +110,8 @@ ItemsConfig =
             ["Sun Costume"] = {dura_per_hit = 5},
             ["Wall Costume"] = {dura_per_hit = 5},
             ["Stash Costume"] = {dura_per_hit = 5},
-            ["Plant Costume"] = {dura_per_hit = 5}
+            ["Plant Costume"] = {dura_per_hit = 5},
+            ["Snowman Outfit"] = {dura_per_hit = 5},
         }
     },
     use_time_perks = 

@@ -15,6 +15,10 @@ function cLandclaim:__init(args, callback)
     self.visible = false -- If this landclaim's border is visible to the owner or not, toggle-able by the menu
     -- Setting it to visible also allows you to see the health of objects on the landclaim
     
+    for _, data in pairs(self.objects_data) do
+        output_table(data)
+    end
+
     self.cell = GetCell(self.position, LandclaimManager.cell_size)
     self.adjacent_cells = GetAdjacentCells(self.cell)
 
