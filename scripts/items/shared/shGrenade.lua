@@ -292,6 +292,21 @@ Grenade.Types = {
         ["angle"] = Angle(0, math.pi / 2, 0),
         ["extra_effect_id"] = 326, -- Effect that is attached to bottle as it is thrown
         ["effect_time"] = 30
+	},
+	["Snowball"] = {
+        ["effect_id"] = 178,
+        ["trail_effect_id"] = 374,
+		["weight"] = 0.4,
+        ["drag"] = 0.15,
+        ["trigger_explosives"] = true,
+		["restitution"] = 0,
+        ["radius"] = 0.07,
+		["explode_on_contact"] = true,
+        ["model"] = " ",
+        ["offset"] = Vector3(-0.32, -0.08, 0.03),
+        ["angle"] = Angle(0, math.pi / 2, 0),
+        ["extra_effect_id"] = 374, -- Effect that is attached to bottle as it is thrown
+        ["effect_time"] = 30
 	}
 }
 
@@ -314,7 +329,7 @@ function Grenade:__init(args)
 		["effect_id"] = Grenade.Types[args.type].trail_effect_id
     })
     
-    if args.type ~= "Molotov" and args.fusetime > 0 then
+    if (args.type ~= "Molotov" and args.type ~= "Snowball") and args.fusetime > 0 then
 
         Timer.SetTimeout(math.max(0, (args.fusetime - 3.5)) * 1000, function()
             
@@ -365,11 +380,11 @@ function Grenade:Update()
             local old_velocity = self.velocity
 			self.velocity = (self.velocity - (self.velocity * self.drag * delta)) + (Vector3.Down * self.weight * 9.81 * delta)
 
-			local ray = Physics:Raycast(self.object:GetPosition(), self.velocity * delta, 0, 1, true)
+            local ray = Physics:Raycast(self.object:GetPosition(), self.velocity * delta, 0, 1, true)
 
-			if ray.distance <= math.min(self.velocity:Length() * delta, 1) then
-				if self.type.explode_on_contact then
-					self:Detonate()
+			if ray.distance < math.min(self.velocity:Length() * delta, 1) then
+                if self.type.explode_on_contact then
+					self:Detonate(ray)
 				else
 					local dotTimesTwo = 2 * self.velocity:Dot(ray.normal)
 
@@ -426,7 +441,7 @@ function Grenade:GetDamageEntity()
     return ItemsConfig.equippables.grenades[self.grenade_type]
 end
 
-function Grenade:Detonate()
+function Grenade:Detonate(ray)
     if self.detonated then return end
 
     self.detonated = true
@@ -444,6 +459,12 @@ function Grenade:Detonate()
                 position = self.object:GetPosition(),
                 radius = self.type.radius,
                 type = self.grenade_type
+            })
+        end
+
+        if self.is_mine and ray and IsValid(ray.entity) and ray.entity.__type == "Player" then
+            Network:Send(var("items/SnowballHit"):get(), {
+                player = ray.entity
             })
         end
 

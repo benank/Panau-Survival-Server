@@ -78,5 +78,18 @@ BuildObjects =
         model = "05x41.nlz/go224-h.lod", 
         collision = "05x41.nlz/go224_lod1-h_col.pfx",
         unclaimed_decay = true
-    }
+    },
+    ["Christmas Tree"] = 
+    {
+        model = "vegetation_0.blz/City_B10_roofbush-Whole.lod",
+        collision = "vegetation_0.blz/City_B10_roofbush_lod1-Whole_col.pfx",
+        star = 
+        {
+            model = "f1m03.interiors.nlz/gb192-f.lod", 
+            collision = "f1m03.interiors.nlz/gb192_lod1-f_col.pfx",
+            offset = Vector3(0, 2, 0),
+            angle = Angle(0, 0, 0)
+        },
+        unclaimed_decay = true
+    },
 }

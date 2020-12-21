@@ -19,7 +19,8 @@ DamageEntity.CruiseMissile = 22
 DamageEntity.AreaBombing = 23
 DamageEntity.TacticalNuke = 24
 DamageEntity.CombatLog = 25
-DamageEntity.DroneMachineGun = 25
+DamageEntity.DroneMachineGun = 26
+DamageEntity.Snowball = 27
 
 DamageEntityNames = 
 {
@@ -50,4 +51,5 @@ DamageEntityNames =
     [DamageEntity.TacticalNuke] = "Tactical Nuke",
     [DamageEntity.CombatLog] = "Combat Log",
     [DamageEntity.DroneMachineGun] = "Drone Machine Gun",
+    [DamageEntity.Snowball] = "Snowball",
 }

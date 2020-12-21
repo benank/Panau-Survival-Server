@@ -105,6 +105,13 @@ EquippableVisuals =
         offset = Vector3(0,0,0),
         angle = Angle()
     },
+    ["Snowman Outfit"] = 
+    {
+        model = "f3m06.afterski.nlz/key020_01-t.lod",
+        bone = "ragdoll_Spine1",
+        offset = Vector3(0,-1,0),
+        angle = Angle(math.pi, -math.pi / 12, 0)
+    },
     ["Wall Costume"] = 
     {
         model = "obj.jumpgarbage.eez/gb206-g.lod",

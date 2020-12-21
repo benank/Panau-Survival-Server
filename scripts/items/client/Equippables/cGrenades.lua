@@ -224,7 +224,7 @@ function Grenades:PostTick(args)
             return
         end
 
-		self.thrownVelocity = ((Camera:GetAngle() * Angle(0, math.pi * 0.07, 0)) * Vector3.Forward * self.max_speed) * ((Camera:GetAngle().pitch + (math.pi / 2)) / (math.pi / 1.5))
+		self.thrownVelocity = ((Camera:GetAngle() * Angle(0, math.pi * 0.07, 0)) * Vector3.Forward * (self.grenade_name == "Snowball" and self.max_speed * 1.25 or self.max_speed)) * ((Camera:GetAngle().pitch + (math.pi / 2)) / (math.pi / 1.5))
 		self.thrownPosition = position
 
 		if self.thrownTimer and self.thrownTimer:GetSeconds() > (self.thrownUnder and Grenades.UnderThrowTime or Grenades.OverThrowTime) then
@@ -248,7 +248,7 @@ function Grenades:PostTick(args)
         local old_time_to_explode = self.time_to_explode
         self.time_to_explode = self.max_time - tonumber(string.format("%.0f", self.charge_timer:GetSeconds()))
 
-        if old_time_to_explode ~= self.time_to_explode and self.grenade_name ~= "Molotov" then
+        if old_time_to_explode ~= self.time_to_explode and (self.grenade_name ~= "Molotov" and self.grenade_name ~= "Snowball") then
             
             local sound = ClientSound.Create(AssetLocation.Game, {
                 bank_id = 11,
@@ -268,7 +268,7 @@ function Grenades:PostTick(args)
         end
 
 
-        if self.charge_timer:GetSeconds() >= 5 and self.grenade_name ~= "Molotov" then
+        if self.charge_timer:GetSeconds() >= 5 and (self.grenade_name ~= "Molotov" and self.grenade_name ~= "Snowball") then
             self.override_animation = true
             self:TossGrenade(self.type)
         end
@@ -282,7 +282,7 @@ end
 function Grenades:RenderPowerDisplay(args)
 
     local my_dummy = self.dummies[LocalPlayer:GetId()]
-    if not my_dummy or my_dummy.name == "Molotov" then return end
+    if not my_dummy or my_dummy.name == "Molotov" or my_dummy.name == "Snowball" then return end
 
     local size = Vector2(Render.Size.x * 0.1, 45)
     local pos = Vector2(Render.Size.x * 0.5, Render.Size.y - 10 - size.y / 2)
@@ -330,6 +330,13 @@ function Grenades:GameRender(args)
 
             Render:ResetTransform()
         end
+
+        if grenade.grenade_type == "Snowball" and IsValid(grenade.object) then
+            local transform = Transform3():Translate(grenade.object:GetPosition()):Rotate(Camera:GetAngle())
+            Render:SetTransform(transform)
+            Render:FillCircle(Vector3(), grenade.radius, Color.White)
+        end
+
     end
 
     collectgarbage()

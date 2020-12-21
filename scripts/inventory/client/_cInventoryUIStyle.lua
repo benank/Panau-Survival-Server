@@ -82,6 +82,7 @@ function cInventoryUIStyle:__init()
         purple = Color(52, 29, 145, self.background_alpha), -- boss drop items
         white = Color(230, 230, 230, self.background_alpha), -- unused for now
         darkorange = Color(99, 37, 3, self.background_alpha), -- halloween event items
+        snow = Color(163, 198, 209, self.background_alpha), -- holiday event items
         locked = Color(230, 10, 10, self.background_alpha), -- locked
     }
 
@@ -187,6 +188,16 @@ function cInventoryUIStyle:__init()
         ["Kit Kat"] = self.item_colors.darkorange,
         ["Starburst"] = self.item_colors.darkorange,
         ["Skittles"] = self.item_colors.darkorange,
+
+        -- Holiday Event Items
+        ["Holiday Lootbag"] = self.item_colors.snow,
+        ["Sugarcookie"] = self.item_colors.snow,
+        ["Milk"] = self.item_colors.snow,
+        ["Candy Cane"] = self.item_colors.snow,
+        ["Hot Chocolate"] = self.item_colors.snow,
+        ["Snowman Outfit"] = self.item_colors.snow,
+        ["Snowball"] = self.item_colors.snow,
+        ["Christmas Tree"] = self.item_colors.snow,
     }
 
 
