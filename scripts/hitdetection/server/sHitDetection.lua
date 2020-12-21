@@ -219,7 +219,7 @@ function sHitDetection:SnowballHit(args)
 
     self:ApplyDamage({
         player = args.player, 
-        damage = 5,
+        damage = 5 / 100,
         source = DamageEntity.Snowball, 
         attacker_id = tostring(args.attacker:GetSteamId())
     })
