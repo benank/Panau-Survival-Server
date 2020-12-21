@@ -5,13 +5,21 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.4,
+            rarity = 0.35,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 5, max = 10},
                 ["Revolver Ammo"] = {rarity = 0.32, min = 2, max = 4},
                 ["Handgun Ammo"] = {rarity = 0.32, min = 2, max = 4},
                 ["Sawn-Off Ammo"] = {rarity = 0.25, min = 2, max = 4},
+            }
+        },
+        ["EVENT"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Holiday Lootbag"] = {rarity = 1, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -91,7 +99,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.5,
+            rarity = 0.45,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.05, min = 10, max = 20},
@@ -101,6 +109,14 @@ LootItems =
                 ["SMG Ammo"] = {rarity = 0.2, min = 6, max = 12},
                 ["Shotgun Ammo"] = {rarity = 0.15, min = 3, max = 6},
                 ["Assault Ammo"] = {rarity = 0.05, min = 2, max = 4},
+            }
+        },
+        ["EVENT"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Holiday Lootbag"] = {rarity = 1, min = 1, max = 1},
             }
         },
         ["ARMOUR"] = 
@@ -207,7 +223,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.45,
+            rarity = 0.40,
             items = 
             {
                 ["Sawn-Off Ammo"] = {rarity = 0.1, min = 6, max = 12},
@@ -217,6 +233,14 @@ LootItems =
                 ["Sniper Ammo"] = {rarity = 0.1, min = 1, max = 2},
                 ["GrLauncher Ammo"] = {rarity = 0.1, min = 1, max = 1},
                 ["Machine Gun Ammo"] = {rarity = 0.1, min = 4, max = 8},
+            }
+        },
+        ["EVENT"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Holiday Lootbag"] = {rarity = 1, min = 1, max = 1},
             }
         },
         ["ARMOUR"] = 
@@ -315,7 +339,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.509,
+            rarity = 0.459,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 5, max = 10},
@@ -324,6 +348,14 @@ LootItems =
                 ["GrLauncher Ammo"] = {rarity = 0.12, min = 1, max = 1},
                 ["Machine Gun Ammo"] = {rarity = 0.206, min = 6, max = 12},
                 ["Rockets"] = {rarity = 0.045, min = 1, max = 1},
+            }
+        },
+        ["EVENT"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Holiday Lootbag"] = {rarity = 1, min = 1, max = 1},
             }
         },
         ["ARMOUR"] = 

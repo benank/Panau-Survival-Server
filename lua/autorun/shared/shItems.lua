@@ -952,6 +952,60 @@ Items =
         durable = true,
         max_durability = 1000,
     },
+    {
+        name = "Holiday Lootbag",
+        category = "Survival",
+        stacklimit = 1,
+        can_use = true
+    },
+    {
+        name = "Sugarcookie",
+        category = "Survival",
+        stacklimit = 10,
+        can_use = true
+    },
+    {
+        name = "Milk",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true
+    },
+    {
+        name = "Candy Cane",
+        category = "Survival",
+        stacklimit = 36,
+        can_use = true
+    },
+    {
+        name = "Hot Chocolate",
+        category = "Survival",
+        stacklimit = 10,
+        can_use = true
+    },
+    {
+        name = "Snowman Outfit",
+        category = "Survival",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 100,
+        equip_type = "costume_body"
+    },
+    {
+        name = "Snowball",
+        category = "Survival",
+        stacklimit = 50,
+        can_equip = true,
+        equip_type = "held"
+    },
+    {
+        name = "Christmas Tree",
+        category = "Survival",
+        stacklimit = 1,
+        max_durability = 200,
+        can_use = true,
+        durable = true
+    },
 }
 
 Items_ammo_types = 

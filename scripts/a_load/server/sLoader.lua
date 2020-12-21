@@ -19,6 +19,9 @@ function sLoader:PlayerJoin(args)
         "by pressing ", Color.White,
         "SHIFT + TAB ", Color.Yellow,
         "and going to the \"Guides\" section. If you need extra help, feel free to join our Discord. Link is in the guide!", Color.White)
+
+    Chat:Send(args.player, 
+        "Holiday event! Find Holiday Lootbags in loot to obtain exclusive items! Event lasts until December 31.", Color(163, 198, 209))
 end
 
 function sLoader:PlayerDeath(args)

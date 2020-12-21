@@ -12,6 +12,7 @@ function Grenades:__init()
     Network:Subscribe("items/GrenadeExploded", self, self.GrenadeExploded)
     Network:Subscribe("items/PlayerInsideToxicGrenadeArea", self, self.PlayerInsideToxicGrenadeArea)
     Network:Subscribe("items/PlayerInsideFireGrenadeArea", self, self.PlayerInsideFireGrenadeArea)
+    Network:Subscribe("items/SnowballHit", self, self.SnowballHit)
     
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
 end
@@ -31,6 +32,15 @@ function Grenades:PlayerInsideToxicGrenadeArea(args, player)
         player = player,
         attacker_id = args.attacker_id,
         type = "Toxic Grenade"
+    })
+end
+
+function Grenades:SnowballHit(args, player)
+    if not IsValid(args.player) then return end
+    Events:Fire("HitDetection/SnowballHit", 
+    {
+        attacker = player,
+        player = args.player
     })
 end
 

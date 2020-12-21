@@ -51,5 +51,10 @@ config =
         ["Kit Kat"] = {hunger = 15, thirst = 0},
         ["Starburst"] = {hunger = 5, thirst = 0},
         ["Skittles"] = {hunger = 1, thirst = 0},
+
+        ["Sugarcookie"] = {hunger = 10, thirst = -3},
+        ["Milk"] = {hunger = 3, thirst = 15},
+        ["Candy Cane"] = {hunger = 5, thirst = -1},
+        ["Hot Chocolate"] = {hunger = 20, thirst = 40}
     }
 }

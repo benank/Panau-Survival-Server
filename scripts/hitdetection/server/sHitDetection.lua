@@ -45,6 +45,8 @@ function sHitDetection:__init()
     Network:Subscribe("HitDetection/MeleeStandingKickHit", self, self.MeleeStandingKickHit)
     Network:Subscribe("HitDetection/MeleeSlidingKickHit", self, self.MeleeSlidingKickHit)
 
+    Events:Subscribe("HitDetection/SnowballHit", self, self.SnowballHit)
+
     Events:Subscribe("Hitdetection/AdminKill", self, self.AdminKill)
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
@@ -208,6 +210,22 @@ function sHitDetection:MeleeStandingKickHit(args, player)
         source = DamageEntity.MeleeKick, 
         attacker_id = tostring(player:GetSteamId())
     })
+
+end
+
+function sHitDetection:SnowballHit(args)
+
+    if args.player:GetPosition():Distance(args.attacker:GetPosition()) > 200 then return end
+
+    self:ApplyDamage({
+        player = args.player, 
+        damage = 5 / 100,
+        source = DamageEntity.Snowball, 
+        attacker_id = tostring(args.attacker:GetSteamId())
+    })
+
+    Network:Send(args.player, "HitDetection/KnockdownEffect", 
+        {source = args.attacker:GetPosition(), amount = 3})
 
 end
 

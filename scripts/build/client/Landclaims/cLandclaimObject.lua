@@ -95,6 +95,8 @@ function cLandclaimObject:GetExtension()
         return cLightExtension(self)
     elseif self.name == "Jump Pad" then
         return cJumpPadExtension(self)
+    elseif self.name == "Christmas Tree" then
+        return cChristmasTreeExtension(self)
     end
 
 end
