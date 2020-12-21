@@ -249,6 +249,8 @@ function sExp:PlayerKilled(args)
     -- No exp lost if using Second Life
     if args.player:GetValue("SecondLifeEquipped") then return end
 
+    if args.reason == DamageEntity.Physics then return end
+
     -- Subtract exp from player who died
     local exp_data = args.player:GetValue("Exp")
     if not exp_data then return end
