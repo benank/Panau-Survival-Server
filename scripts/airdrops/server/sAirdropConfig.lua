@@ -1,6 +1,6 @@
 AirdropConfig = 
 {
-    RemoveTime = 1000 * 60 * 60, -- After the first box has been opened, it will be removed in 30 minutes
+    RemoveTime = 1000 * 60 * 60, -- After the first box has been opened, it will be removed in 60 minutes
     Messages = 
     {
         Incoming = 
@@ -25,7 +25,7 @@ AirdropConfig =
                 time = 15, -- How many minutes it appears on the map before it drops
                 size = 750 -- How big is the radius around it
             },
-            chance = 0.04, -- Chance of the airdrop spawning every interval if the conditions are met
+            chance = 0.05, -- Chance of the airdrop spawning every interval if the conditions are met
             interval = 240 -- 4 hours between airdrops of this type
         },
         [AirdropType.Mid] = 
@@ -37,7 +37,7 @@ AirdropConfig =
                 time = 30,
                 size = 1500
             },
-            chance = 0.05,
+            chance = 0.08,
             interval = 480 -- 8 hours between airdrops
         },
         [AirdropType.High] = 
@@ -49,7 +49,7 @@ AirdropConfig =
                 time = 60,
                 size = 3000
             },
-            chance = 0.02,
+            chance = 0.09,
             interval = 1440 -- 24 hours between airdrops
         }
     },
