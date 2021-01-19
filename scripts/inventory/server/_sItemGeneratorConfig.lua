@@ -344,13 +344,13 @@ LootItems =
                 ["Glass"] = {rarity = 0.01, min = 1, max = 1},
                 ["Hedgehog"] = {rarity = 0.02, min = 1, max = 1},
                 ["Chair"] = {rarity = 0.03, min = 1, max = 1},
-                ["Helipad"] = {rarity = 0.015, min = 1, max = 1},
+                ["Helipad"] = {rarity = 0.01, min = 1, max = 1},
                 ["Bed"] = {rarity = 0.03, min = 1, max = 1},
                 ["Door"] = {rarity = 0.075, min = 1, max = 1, min_dura = 1, max_dura = 1},
                 ["Wall"] = {rarity = 0.7, min = 1, max = 1, min_dura = 1, max_dura = 1},
                 ["Proximity Alarm"] = {rarity = 0.08, min = 1, max = 1},
                 ["Locked Stash"] = {rarity = 0.01, min = 1, max = 1},
-                ["LandClaim"] = {rarity = 0.01, min = 1, max = 1},
+                ["LandClaim"] = {rarity = 0.015, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -520,7 +520,8 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Grapplehook"] = {rarity = 1, min_dura = 1, max_dura = 3, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.95, min_dura = 2, max_dura = 4, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.05, min_dura = 1, max_dura = 2, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
@@ -582,8 +583,9 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Garbage Stash"] = {rarity = 0.2, min = 1, max = 2},
+                ["Garbage Stash"] = {rarity = 0.1, min = 1, max = 2},
                 ["Wall"] = {rarity = 0.8, min_dura = 1, max_dura = 2, min = 2, max = 5},
+                ["LandClaim"] = {rarity = 0.1, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -603,7 +605,7 @@ LootItems =
             items = 
             {
                 ["Cruise Missile"] = {rarity = 0.8, min = 2, max = 3},
-                ["Area Bombing"] = {rarity = 0., min = 1, max = 1}
+                ["Area Bombing"] = {rarity = 0.2, min = 1, max = 1}
             }
         },
         ["GEAR"] = 
@@ -611,8 +613,8 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Grapplehook"] = {rarity = 0.45, min_dura = 2, max_dura = 5, min = 1, max = 1},
-                ["Parachute"] = {rarity = 0.05, min_dura = 1, max_dura = 2, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.4, min_dura = 2, max_dura = 5, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.1, min_dura = 1, max_dura = 2, min = 1, max = 1},
                 ["Explosives Detector"] = {rarity = 0.3, min_dura = 1, max_dura = 3, min = 1, max = 1},
                 ["Combat Backpack"] = {rarity = 0.1, min_dura = 1, max_dura = 2, min = 1, max = 1},
                 ["Explorer Backpack"] = {rarity = 0.1, min_dura = 1, max_dura = 2, min = 1, max = 1},
@@ -684,10 +686,10 @@ LootItems =
             {
                 ["Bed"] = {rarity = 0.1, min_dura = 3, max_dura = 5, min = 2, max = 3},
                 ["Door"] = {rarity = 0.1, min_dura = 3, max_dura = 5, min = 3, max = 3},
-                ["Wall"] = {rarity = 0.6, min_dura = 3, max_dura = 5, min = 5, max = 10},
+                ["Wall"] = {rarity = 0.5, min_dura = 3, max_dura = 5, min = 5, max = 10},
                 ["Proximity Alarm"] = {rarity = 0.1, min = 3, max = 5},
                 ["Locked Stash"] = {rarity = 0.025, min = 1, max = 2},
-                ["LandClaim"] = {rarity = 0.075, min = 1, max = 1},
+                ["LandClaim"] = {rarity = 0.175, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -705,9 +707,9 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Cruise Missile"] = {rarity = 0.5, min = 3, max = 5},
-                ["Area Bombing"] = {rarity = 0.3, min = 2, max = 3},
-                ["Tactical Nuke"] = {rarity = 0.2, min = 1, max = 2}
+                ["Cruise Missile"] = {rarity = 0.1, min = 3, max = 5},
+                ["Area Bombing"] = {rarity = 0.4, min = 2, max = 3},
+                ["Tactical Nuke"] = {rarity = 0.5, min = 1, max = 2}
             }
         },
         ["GEAR"] = 
@@ -716,11 +718,11 @@ LootItems =
             items = 
             {
                 ["Grapplehook"] = {rarity = 0.1, min_dura = 3, max_dura = 5, min = 1, max = 1},
-                ["Parachute"] = {rarity = 0.2, min_dura = 2, max_dura = 3, min = 1, max = 1},
-                ["RocketGrapple"] = {rarity = 0.2, min_dura = 2, max_dura = 3, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.3, min_dura = 2, max_dura = 3, min = 1, max = 1},
+                ["RocketGrapple"] = {rarity = 0.3, min_dura = 2, max_dura = 3, min = 1, max = 1},
                 ["Explosives Detector"] = {rarity = 0.1, min_dura = 2, max_dura = 5, min = 1, max = 1},
-                ["Combat Backpack"] = {rarity = 0.2, min_dura = 2, max_dura = 5, min = 1, max = 1},
-                ["Explorer Backpack"] = {rarity = 0.2, min_dura = 2, max_dura = 5, min = 1, max = 1},
+                ["Combat Backpack"] = {rarity = 0.1, min_dura = 2, max_dura = 5, min = 1, max = 1},
+                ["Explorer Backpack"] = {rarity = 0.1, min_dura = 2, max_dura = 5, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
