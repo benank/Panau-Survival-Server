@@ -991,7 +991,7 @@ function sInventory:AddStack(args)
 
         if not istack
         or istack:GetProperty("name") ~= args.stack:GetProperty("name")
-        or istack:GetAmount() == istack:GetProperty("name") then
+        or istack:GetAmount() == istack:GetProperty("stacklimit") then
             return args.stack
         end 
 
