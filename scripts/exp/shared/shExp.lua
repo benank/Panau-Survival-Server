@@ -4,44 +4,44 @@ Exp =
     Max_Level = 100,
     Lootbox = 
     {
-        [1] = 2,
-        [2] = 4,
-        [3] = 10,
-        [4] = 20,
-        [5] = 50,
-        [9] = 6,
-        [10] = 6,
-        [16] = 30, -- Level 1 airdrop
-        [17] = 50, -- Level 2 airdrop
-        [18] = 70
+        [1] = 4,
+        [2] = 8,
+        [3] = 20,
+        [4] = 40,
+        [5] = 70,
+        [9] = 12,
+        [10] = 12,
+        [16] = 100, -- Level 1 airdrop
+        [17] = 200, -- Level 2 airdrop
+        [18] = 300
     },    
     Kill = 
     {
-        [DamageEntity.None] = 20,
-        [DamageEntity.Physics] = 60,
-        [DamageEntity.Bullet] = 90,
-        [DamageEntity.Explosion] = 90,
-        [DamageEntity.Vehicle] = 50,
-        [DamageEntity.ToxicGrenade] = 80,
-        [DamageEntity.Molotov] = 80,
-        [DamageEntity.Snowball] = 80,
-        [DamageEntity.Mine] = 50,
-        [DamageEntity.Claymore] = 50,
-        [DamageEntity.HEGrenade] = 80,
-        [DamageEntity.LaserGrenade] = 70,
+        [DamageEntity.None] = 40,
+        [DamageEntity.Physics] = 120,
+        [DamageEntity.Bullet] = 180,
+        [DamageEntity.Explosion] = 180,
+        [DamageEntity.Vehicle] = 100,
+        [DamageEntity.ToxicGrenade] = 160,
+        [DamageEntity.Molotov] = 160,
+        [DamageEntity.Snowball] = 160,
+        [DamageEntity.Mine] = 100,
+        [DamageEntity.Claymore] = 100,
+        [DamageEntity.HEGrenade] = 160,
+        [DamageEntity.LaserGrenade] = 140,
         [DamageEntity.Hunger] = 0,
         [DamageEntity.Thirst] = 0,
-        [DamageEntity.VehicleGuard] = 40,
+        [DamageEntity.VehicleGuard] = 80,
         [DamageEntity.WarpGrenade] = 0,
-        [DamageEntity.Suicide] = 60,
+        [DamageEntity.Suicide] = 120,
         [DamageEntity.AdminKill] = 0,
-        [DamageEntity.C4] = 80,
-        [DamageEntity.MeleeGrapple] = 30,
-        [DamageEntity.MeleeKick] = 30,
-        [DamageEntity.MeleeSlidingKick] = 30,
-        [DamageEntity.CruiseMissile] = 90,
-        [DamageEntity.AreaBombing] = 80,
-        [DamageEntity.TacticalNuke] = 80,
+        [DamageEntity.C4] = 160,
+        [DamageEntity.MeleeGrapple] = 60,
+        [DamageEntity.MeleeKick] = 60,
+        [DamageEntity.MeleeSlidingKick] = 60,
+        [DamageEntity.CruiseMissile] = 180,
+        [DamageEntity.AreaBombing] = 160,
+        [DamageEntity.TacticalNuke] = 160,
     },
     Hack = 
     {
@@ -57,16 +57,16 @@ Exp =
     },
     DestroyDrone = 
     {
-        [DamageEntity.Bullet] =         40,
-        [DamageEntity.Explosion] =      40,
-        [DamageEntity.Mine] =           25,
-        [DamageEntity.Claymore] =       25,
-        [DamageEntity.HEGrenade] =      30,
-        [DamageEntity.LaserGrenade] =   30,
-        [DamageEntity.C4] =             30,
-        [DamageEntity.CruiseMissile] =  15,
-        [DamageEntity.AreaBombing] =    12,
-        [DamageEntity.TacticalNuke] =   12,
+        [DamageEntity.Bullet] =         80,
+        [DamageEntity.Explosion] =      80,
+        [DamageEntity.Mine] =           70,
+        [DamageEntity.Claymore] =       70,
+        [DamageEntity.HEGrenade] =      70,
+        [DamageEntity.LaserGrenade] =   70,
+        [DamageEntity.C4] =             60,
+        [DamageEntity.CruiseMissile] =  25,
+        [DamageEntity.AreaBombing] =    18,
+        [DamageEntity.TacticalNuke] =   18,
         AdditionalPercentPerPlayer = 0.1 -- X% more total exp for each player who damages a drone
     },
     DestroyExplosive = 
@@ -78,7 +78,7 @@ Exp =
     DestroyBuildObject = 
     {
         ["Wall"] = 2,
-        ["Door"] = 2,
+        ["Door"] = 10,
         ["Bed"] = 1
     },
     KillExpireTime = 60 * 60 * 4, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
@@ -114,5 +114,5 @@ function GetKillLevelModifier(killer_level, killed_level)
 end
 
 function GetExpLostOnDeath(level)
-    return 10 * level
+    return 5 * level
 end
