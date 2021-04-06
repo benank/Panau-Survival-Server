@@ -25,7 +25,7 @@ AirdropConfig =
                 time = 10, -- How many minutes it appears on the map before it drops
                 size = 750 -- How big is the radius around it
             },
-            chance = 0.1, -- Chance of the airdrop spawning every interval if the conditions are met
+            chance = 0.2, -- Chance of the airdrop spawning every interval if the conditions are met
             interval = 30 -- 0.5 hours between airdrops of this type
         },
         [AirdropType.Mid] = 
@@ -37,7 +37,7 @@ AirdropConfig =
                 time = 20,
                 size = 1500
             },
-            chance = 0.15,
+            chance = 0.3,
             interval = 60 -- 1 hour between airdrops
         },
         [AirdropType.High] = 
@@ -49,7 +49,7 @@ AirdropConfig =
                 time = 30,
                 size = 3000
             },
-            chance = 0.2,
+            chance = 0.4,
             interval = 120 -- 2 hours between airdrops
         }
     },
