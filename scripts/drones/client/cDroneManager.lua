@@ -19,6 +19,8 @@ function cDroneManager:__init()
     Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(Cell_Size), self, self.LocalPlayerCellUpdate)
     Events:Subscribe("items/PingUsed", self, self.PingUsed)
 
+    Events:Subscribe("drones/RefreshDroneCSOs", self, self.RefreshDroneCSOs)
+
     if DEBUG_ON then
         Events:Subscribe("Render", self, self.GameRender)
     end
@@ -48,6 +50,30 @@ function cDroneManager:__init()
     self:DroneSyncToServerLoop()
     self:DroneCellUpdateLoop()
 
+end
+
+-- Send drone information to all other modules when requested
+function cDroneManager:RefreshDroneCSOs()
+    Thread(function()
+        for _, drone in pairs(self.drones) do
+            if drone.body then
+                for _, cso in pairs(drone.body.objects) do
+                    if IsValid(cso) then
+                        Events:Fire("drones/CreateDroneCSO", 
+                        {
+                            id = drone.id, 
+                            cso_id = cso:GetId(), 
+                            health = drone.health, 
+                            max_health = drone.max_health, 
+                            level = drone.level,
+                            cso = cso
+                        })
+                        Timer.Sleep(1)
+                    end
+                end
+            end
+        end
+    end)
 end
 
 function cDroneManager:PingUsed(args)

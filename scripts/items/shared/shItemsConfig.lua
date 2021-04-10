@@ -55,7 +55,7 @@ ItemsConfig =
         ["Cloud Strider Boots"] = {dura_per_5_sec = 1},
         ["Stick Disguise"] = {dura_per_hit = 2},
         ["Nitro"] = {dura_per_sec = 20},
-        ["Binoculars"] = {dura_per_sec = 1},
+        ["Binoculars"] = {dura_per_sec = 1, dura_per_use = 20},
         weapons = 
         {
             ["Handgun"] = {dura_per_use = 1, weapon_id = Weapon.Handgun, equip_slot = WeaponSlot.Right},

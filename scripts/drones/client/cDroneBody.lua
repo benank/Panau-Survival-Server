@@ -13,7 +13,15 @@ end
 function cDroneBody:HealthUpdated()
 
     for enum, object in pairs(self.objects) do
-        Events:Fire("drones/UpdateDroneCSO", {id = self.parent.id, cso_id = object:GetId(), health = self.parent.health, max_health = self.parent.max_health, level = self.parent.level})
+        Events:Fire("drones/UpdateDroneCSO", 
+        {
+            id = self.parent.id, 
+            cso_id = object:GetId(), 
+            health = self.parent.health, 
+            max_health = self.parent.max_health, 
+            level = self.parent.level,
+            cso = object
+        })
     end
 
     -- No logic for healing because drones will never heal
@@ -227,7 +235,16 @@ function cDroneBody:CreateBody()
             model = object_data.model,
             collision = object_data.collision
         })
-        Events:Fire("drones/CreateDroneCSO", {id = self.parent.id, cso_id = self.objects[piece_enum]:GetId(), health = self.parent.health, max_health = self.parent.max_health, level = self.parent.level})
+
+        Events:Fire("drones/CreateDroneCSO", 
+        {
+            id = self.parent.id, 
+            cso_id = self.objects[piece_enum]:GetId(), 
+            health = self.parent.health, 
+            max_health = self.parent.max_health, 
+            level = self.parent.level, 
+            cso = self.objects[piece_enum]
+        })
 
     end
 
@@ -267,7 +284,7 @@ end
 function cDroneBody:Remove()
     -- Remove all Static objects
     for piece_enum, object in pairs(self.objects) do
-        Events:Fire("drones/RemoveDroneCSO", {id = self.parent.id, cso_id = object:GetId()})
+        Events:Fire("drones/RemoveDroneCSO", {id = self.parent.id, cso_id = object:GetId(), cso = object})
         object:Remove()
     end
 

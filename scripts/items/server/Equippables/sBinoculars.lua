@@ -19,6 +19,25 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
 
 end)
 
+Network:Subscribe("items/BinocularsScan", function(args, player)
+    
+    local steam_id = tostring(player:GetSteamId())
+
+    if players_using_binos[steam_id] then
+        local item = GetEquippedItem("Binoculars", player)
+        if not item then return end
+
+        item.durability = item.durability - ItemsConfig.equippables[item.name].dura_per_use
+        Inventory.ModifyDurability({
+            player = player,
+            item = item
+        })
+        UpdateEquippedItem(player, "Binoculars", item)
+        players_using_binos[steam_id].item = item
+    end
+
+end)
+
 Network:Subscribe("items/ToggleUsingBinoculars", function(args, player)
 
     local steam_id = tostring(player:GetSteamId())
