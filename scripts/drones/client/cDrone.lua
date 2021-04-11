@@ -61,6 +61,7 @@ function cDrone:__init(args)
     self.static = args.static
 
     self.offset_timer = Timer()
+    self.offset_random_time = math.random() * 10
     self.tether_timer = Timer()
     self.sound_timer = Timer()
     self.wander_sync_timer = Timer()
@@ -329,8 +330,9 @@ function cDrone:StaticHover(args)
         self:SetAngle(Angle.Slerp(self.angle, angle, 0.05))
     end
 
-    if (self.offset_timer:GetSeconds() >= 5 or target_dist < 0.2) and self:IsHost() then
+    if (self.offset_timer:GetSeconds() >= self.offset_random_time or target_dist < 0.2) and self:IsHost() then
         self.offset_timer:Restart()
+        self.offset_random_time = math.random() * 10
         self.offset = GetRandomFollowOffset(self.config.attack_range)
         self:SyncOffsetToServer()
     end

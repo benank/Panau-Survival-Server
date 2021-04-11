@@ -124,6 +124,9 @@ function shItem:GetCustomData()
 
         -- 10% of nitros are nitro Xs
         self.custom_data.nitro_x = math.random() < 0.05 and 1 or 0
+    
+    elseif self.name == "Airdrop" and self.custom_data.level == nil then
+        self.custom_data.level = 1
     end
 	
 	-- Additional custom data will be added here

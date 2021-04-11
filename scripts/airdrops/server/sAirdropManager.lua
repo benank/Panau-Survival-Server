@@ -14,7 +14,31 @@ function sAirdropManager:__init()
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
+    Events:Subscribe("items/UseAirdrop", self, self.UseAirdrop)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+
+end
+
+function sAirdropManager:UseAirdrop(args)
+
+    if self.airdrop.active then
+        Chat:Send(args.player, "Cannot call an airdrop while another airdrop is still active.", Color.Red)
+        return
+    end
+
+    local airdrop_type = tonumber(args.player_iu.item.custom_data.level)
+    if not AirdropConfig.Spawn[airdrop_type] then
+        Chat:Send(args.player, "Something went terribly wrong. Please contact a Staff member.", Color.Red)
+        return
+    end
+
+    self:BeginSpawningAirdrop(airdrop_type, args.position)
+
+    Inventory.RemoveItem({
+        item = args.player_iu.item,
+        index = args.player_iu.index,
+        player = args.player
+    })
 
 end
 

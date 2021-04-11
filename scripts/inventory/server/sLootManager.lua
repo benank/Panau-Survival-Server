@@ -57,6 +57,15 @@ function sLootManager:CreateLootboxExternal(args)
         end
     else
         args.contents = ItemGenerator:GetLoot(args.tier)
+
+        -- If there are airdrop items, set them to this airdrop's tier
+        if args.airdrop_tier then
+            for _, stack in pairs(args.contents) do
+                if stack:GetProperty("name") == "Airdrop" then
+                    stack.contents[1].custom_data.level = args.airdrop_tier
+                end
+            end
+        end
     end
 
     local lootbox = CreateLootbox(args)

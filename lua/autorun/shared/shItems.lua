@@ -1006,6 +1006,12 @@ Items =
         can_use = true,
         durable = true
     },
+    {
+        name = "Airdrop",
+        category = "Survival",
+        stacklimit = 1,
+        can_use = true
+    },
 }
 
 Items_ammo_types = 

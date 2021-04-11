@@ -247,7 +247,7 @@ function sDrone:Remove()
     self.removed = true
 
     if not self.destroyed then
-        Network:Broadcast("Drones/Rewmove", {id = self.id})
+        Network:Broadcast("Drones/Remove", {id = self.id})
     end
 
     for _, sub in pairs(self.network_subs) do
