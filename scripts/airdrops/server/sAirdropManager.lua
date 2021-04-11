@@ -339,6 +339,12 @@ end
 function sAirdropManager:ClientModuleLoad(args)
     if self.airdrop.active then
         self:SendActiveAirdropData(args.player)
+
+        Chat:Send(args.player, "--------------------------------------------------------------", Color.Orange)
+        Chat:Send(args.player, " ", Color.Red)
+        Chat:Send(args.player, "AIRDROP IN PROGRESS. SEE MAP FOR DETAILS.", Color.Red)
+        Chat:Send(args.player, " ", Color.Red)
+        Chat:Send(args.player, "--------------------------------------------------------------", Color.Orange)
     end
 end
 

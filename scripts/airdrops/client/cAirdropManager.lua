@@ -153,6 +153,8 @@ function cAirdropManager:RenderAirdropInfo()
         text = string.format("LEVEL %d AIRDROP (%d MINUTES SINCE DROP - SEE MAP)", self.airdrop.type, -airdrop_time)
     end
 
+    if self.airdrop.doors_destroyed then return end
+
     local render_size = Render.Size
     local size = Render.Size.y * 0.03
     local text_size = Render:GetTextSize(text, size)
