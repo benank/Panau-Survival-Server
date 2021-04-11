@@ -12,6 +12,9 @@ Network:Subscribe("items/CompleteItemUsage", function(args, player)
         end
 
         local position = args.down_ray.position
+        if position.y < 200 then
+            position.y = 200
+        end
 
         local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
         if position:Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius then
