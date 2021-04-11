@@ -134,6 +134,11 @@ function sAirdropManager:DoorsDestroyed(args)
     end
     Chat:Broadcast(" ", Color.Red)
     Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
+
+    -- Spawn more drones when doors are blown on Level 3 airdrop
+    if self.airdrop.type == AirdropType.High then
+        self:CreateAirdropDrones(true)
+    end
 end
 
 function sAirdropManager:PlayerChat(args)
@@ -277,13 +282,18 @@ function sAirdropManager:CreateAirdrop()
 
 end
 
-function sAirdropManager:CreateAirdropDrones()
+function sAirdropManager:CreateAirdropDrones(second_wave)
     local drone_data = AirdropConfig.Spawn[self.airdrop.type].drones
     local num_drones = math.random(drone_data.amount.min, drone_data.amount.max)
     
     for i = 1, num_drones do
         local drone_level = math.random(drone_data.level.min, drone_data.level.max)
-        local position = self.airdrop.position + Vector3(math.random() * 5 - 10, math.random() * 20 + 5, math.random() * 5 - 10)
+        local height = math.random() * 15 + 4
+        if second_wave then
+            height = math.random() * 6
+        end
+
+        local position = self.airdrop.position + Vector3(math.random() * 20 - 10, height, math.random() * 20 - 10)
 
         Events:Fire("Drones/SpawnDrone", {
             level = drone_level,

@@ -236,11 +236,12 @@ LootItems =
                 ["Barrel Stash"] = {rarity = 0.15, min = 1, max = 1},
                 ["Garbage Stash"] = {rarity = 0.05, min = 1, max = 1},
                 ["Stop Sign"] = {rarity = 0.025, min = 1, max = 1},
-                ["Cone"] = {rarity = 0.025, min = 1, max = 1},
+                ["Cone"] = {rarity = 0.02, min = 1, max = 1},
                 ["Light"] = {rarity = 0.1, min = 1, max = 1},
                 ["Chair"] = {rarity = 0.05, min = 1, max = 1},
                 ["Door"] = {rarity = 0.1, min = 1, max = 1, min_dura = 1, max_dura = 1},
                 ["Wall"] = {rarity = 0.5, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                ["LandClaim"] = {rarity = 0.05, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -695,12 +696,12 @@ LootItems =
         },
         ["ARMOUR"] = 
         {
-            rarity = 0.1,
+            rarity = 0.05,
             items = 
             {
-                ["Military Helmet"] = {rarity = 0.3, min_dura = 2, max_dura = 5, min = 1, max = 1},
-                ["Military Vest"] = {rarity = 0.5, min_dura = 2, max_dura = 5, min = 1, max = 1},
-                ["Kevlar Vest"] = {rarity = 0.2, min_dura = 2, max_dura = 3, min = 1, max = 1},
+                ["Military Helmet"] = {rarity = 0.2, min_dura = 2, max_dura = 5, min = 1, max = 1},
+                ["Military Vest"] = {rarity = 0.4, min_dura = 2, max_dura = 5, min = 1, max = 1},
+                ["Kevlar Vest"] = {rarity = 0.4, min_dura = 2, max_dura = 3, min = 1, max = 1},
             }
         },
         ["BUILD"] = 
@@ -711,9 +712,8 @@ LootItems =
                 ["Bed"] = {rarity = 0.1, min_dura = 3, max_dura = 5, min = 2, max = 3},
                 ["Door"] = {rarity = 0.1, min_dura = 3, max_dura = 5, min = 3, max = 3},
                 ["Wall"] = {rarity = 0.5, min_dura = 3, max_dura = 5, min = 5, max = 10},
-                ["Proximity Alarm"] = {rarity = 0.1, min = 3, max = 5},
-                ["Locked Stash"] = {rarity = 0.025, min = 1, max = 2},
-                ["LandClaim"] = {rarity = 0.175, min = 1, max = 1},
+                ["Locked Stash"] = {rarity = 0.1, min = 1, max = 2},
+                ["LandClaim"] = {rarity = 0.2, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -721,9 +721,9 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Mine"] = {rarity = 0.2, min = 3, max = 5},
-                ["Claymore"] = {rarity = 0.2, min = 3, max = 5},
-                ["C4"] = {rarity = 0.6, min = 1, max = 2},
+                ["Mine"] = {rarity = 0.1, min = 4, max = 5},
+                ["Claymore"] = {rarity = 0.1, min = 4, max = 5},
+                ["C4"] = {rarity = 0.8, min = 1, max = 2},
             }
         },
         ["AIRSTRIKE"] = 
@@ -738,15 +738,15 @@ LootItems =
         },
         ["GEAR"] = 
         {
-            rarity = 0.1,
+            rarity = 0.15,
             items = 
             {
-                ["Grapplehook"] = {rarity = 0.1, min_dura = 3, max_dura = 5, min = 1, max = 1},
-                ["Parachute"] = {rarity = 0.3, min_dura = 2, max_dura = 3, min = 1, max = 1},
-                ["RocketGrapple"] = {rarity = 0.3, min_dura = 2, max_dura = 3, min = 1, max = 1},
-                ["Explosives Detector"] = {rarity = 0.1, min_dura = 2, max_dura = 5, min = 1, max = 1},
-                ["Combat Backpack"] = {rarity = 0.1, min_dura = 2, max_dura = 5, min = 1, max = 1},
-                ["Explorer Backpack"] = {rarity = 0.1, min_dura = 2, max_dura = 5, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.05, min_dura = 3, max_dura = 5, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.4, min_dura = 2, max_dura = 3, min = 1, max = 1},
+                ["RocketGrapple"] = {rarity = 0.4, min_dura = 2, max_dura = 3, min = 1, max = 1},
+                ["Explosives Detector"] = {rarity = 0.05, min_dura = 2, max_dura = 5, min = 1, max = 1},
+                ["Combat Backpack"] = {rarity = 0.05, min_dura = 2, max_dura = 5, min = 1, max = 1},
+                ["Explorer Backpack"] = {rarity = 0.05, min_dura = 2, max_dura = 5, min = 1, max = 1},
             }
         },
         ["TOOL"] = 

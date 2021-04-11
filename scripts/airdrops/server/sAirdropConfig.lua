@@ -40,7 +40,7 @@ AirdropConfig =
             drones = 
             {
                 amount = {min = 3, max = 7},
-                level = {min = 10, max = 20}
+                level = {min = 10, max = 25}
             },
             map_preview = 
             {
@@ -56,8 +56,8 @@ AirdropConfig =
             health = 4,
             drones = 
             {
-                amount = {min = 4, max = 9},
-                level = {min = 15, max = 30}
+                amount = {min = 3, max = 6},
+                level = {min = 20, max = 50}
             },
             map_preview = 
             {

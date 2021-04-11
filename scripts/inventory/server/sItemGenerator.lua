@@ -66,6 +66,12 @@ function sItemGenerator:GetStack(tier, groups)
 
 
         local item = CreateItem(item_data)
+        local extra_custom_data = self:GetTierSpecificCustomData(tier, item)
+
+        for key, value in pairs(extra_custom_data) do
+            item.custom_data[key] = value
+        end
+
         local stack = shStack({contents = {item}})
         local amount = self:GetItemAmount(LootItems[tier][group].items[item_name], tier)
 
@@ -84,10 +90,62 @@ function sItemGenerator:GetStack(tier, groups)
 
 end
 
+function sItemGenerator:GetTierSpecificCustomData(tier, item)
+
+    local custom_data = {}
+
+    if item.name == "LandClaim" then
+        
+        -- Landclaim size chances based on loot tier
+        local sizes = 
+        {
+            {chance = 0.8, min = 20, max = 50},
+            {chance = 0.95, min = 50, max = 100},
+            {chance = 1.0, min = 100, max = 200}
+        }
+
+        if tier == Lootbox.Types.Level3 then
+            sizes = 
+            {
+                {chance = 0.95, min = 20, max = 50},
+                {chance = 0.05, min = 50, max = 100}
+            }
+        elseif tier == Lootbox.Types.AirdropLevel1 then
+            sizes = 
+            {
+                {chance = 0.4, min = 30, max = 60},
+                {chance = 0.9, min = 60, max = 100},
+                {chance = 1.0, min = 100, max = 200}
+            }
+        elseif tier == Lootbox.Types.AirdropLevel2 then
+            sizes = 
+            {
+                {chance = 0.7, min = 50, max = 100},
+                {chance = 1.0, min = 100, max = 200}
+            }
+        elseif tier == Lootbox.Types.AirdropLevel3 then
+            sizes = 
+            {
+                {chance = 1.0, min = 100, max = 200}
+            }
+        end
+
+        local random = math.random()
+
+        for _, size_data in ipairs(sizes) do
+            if random <= size_data.chance then
+                custom_data.size = size_data.min + math.random(size_data.max - size_data.min)
+                break
+            end
+        end
+
+    end
+
+    return custom_data
+end
+
 function sItemGenerator:GetItemAmount(item, tier)
-
     return math.random(item.min, item.max)
-
 end
 
 function sItemGenerator:FindTargetItem(target, tier, group)
