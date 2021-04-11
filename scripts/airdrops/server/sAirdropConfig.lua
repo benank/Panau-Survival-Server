@@ -20,6 +20,11 @@ AirdropConfig =
         {
             min_players = 2,
             health = 5,
+            drones = 
+            {
+                amount = {min = 1, max = 3},
+                level = {min = 3, max = 10}
+            },
             map_preview = -- Preview on discord and ingame map
             {
                 time = 10, -- How many minutes it appears on the map before it drops
@@ -32,6 +37,11 @@ AirdropConfig =
         {
             min_players = 4,
             health = 2,
+            drones = 
+            {
+                amount = {min = 3, max = 7},
+                level = {min = 10, max = 20}
+            },
             map_preview = 
             {
                 time = 20,
@@ -44,12 +54,17 @@ AirdropConfig =
         {
             min_players = 7,
             health = 4,
+            drones = 
+            {
+                amount = {min = 4, max = 9},
+                level = {min = 15, max = 30}
+            },
             map_preview = 
             {
                 time = 30,
                 size = 3000
             },
-            chance = 0.4,
+            chance = 0.5,
             interval = 120 -- 2 hours between airdrops
         }
     },

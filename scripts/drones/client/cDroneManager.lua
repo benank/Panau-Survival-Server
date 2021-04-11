@@ -10,6 +10,7 @@ function cDroneManager:__init()
     Events:Subscribe("PostTick", self, self.PostTick)
 
     Network:Subscribe("Drones/SingleSync", self, self.SingleDroneSync)
+    Network:Subscribe("Drones/Remove", self, self.RemoveDrone)
     Network:Subscribe("Drones/DroneCellsSync", self, self.CellsDroneSync)
     Network:Subscribe("Drones/BatchSync", self, self.BatchSync)
 
@@ -229,6 +230,13 @@ function cDroneManager:SingleDroneSync(args)
         self.drones[args.id] = cDrone(args)
     elseif self.drones[args.id] then
         self.drones[args.id]:UpdateFromServer(args)
+    end
+end
+
+function cDroneManager:RemoveDrone(args)
+    if self.drones[args.id] then
+        self.drones[args.id]:Remove()
+        self.drones[args.id] = nil
     end
 end
 

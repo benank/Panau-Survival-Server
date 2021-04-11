@@ -29,6 +29,7 @@ function sAirdropManager:RemoveAirdrop()
 
     Network:Broadcast("airdrops/RemoveAirdrop")
     Events:Fire("airdrops/RemoveAirdrop")
+    Events:Fire("Drones/RemoveDronesInGroup", {group = "airdrop"})
 end
 
 function sAirdropManager:PlayerOpenLootbox(args)
@@ -235,6 +236,7 @@ end
 function sAirdropManager:CreateAirdrop()
 
     self:CreateAirdropPlane()
+    self:CreateAirdropDrones()
 
     -- Delay until the package reaches the ground
     Timer.SetTimeout(45000 + 6000, function()
@@ -249,6 +251,28 @@ function sAirdropManager:CreateAirdrop()
 
     end)
 
+end
+
+function sAirdropManager:CreateAirdropDrones()
+    local drone_data = AirdropConfig.Spawn[self.airdrop.type].drones
+    local num_drones = math.random(drone_data.amount.min, drone_data.amount.max)
+    
+    for i = 1, num_drones do
+        local drone_level = math.random(drone_data.level.min, drone_data.level.max)
+        local position = self.airdrop.position + Vector3(math.random() * 5 - 10, math.random() * 20 + 5, math.random() * 5 - 10)
+
+        Events:Fire("Drones/SpawnDrone", {
+            level = drone_level,
+            static = true,
+            position = position,
+            tether_position = position,
+            tether_range = 300,
+            config = {
+                attack_on_sight = true
+            },
+            group = "airdrop"
+        })
+    end
 end
 
 function sAirdropManager:OnAirdropLanded()

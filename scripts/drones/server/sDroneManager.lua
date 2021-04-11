@@ -38,7 +38,7 @@ end
 
 function sDroneManager:RemoveDronesInGroup(args)
     Thread(function()
-        for _, drone in pairs(self.drones) do
+        for _, drone in pairs(self.drones_by_id) do
             if drone.group == args.group then
                 drone:Remove()
                 Timer.Sleep(1)
@@ -54,7 +54,7 @@ function sDroneManager:PlayerChat(args)
         sDrone(
             {
                 position = args.player:GetPosition() + Vector3.Up * 2,
-                state = DroneState.Static,
+                static = true,
                 tether_position = args.player:GetPosition(),
                 tether_range = 500
             }

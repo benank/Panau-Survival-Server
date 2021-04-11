@@ -21,6 +21,12 @@ function sDrone:__init(args)
 
     self.config = GetDroneConfiguration(self.level)
 
+    if args.config then
+        for key, value in pairs(args.config) do
+            self.config[key] = value
+        end
+    end
+
     self.target = nil -- Current active target that the drone is pursuing
     self.target_offset = GetRandomFollowOffset(self.config.sight_range) -- Offset from the target the drone flies at
 
@@ -34,7 +40,11 @@ function sDrone:__init(args)
 
     self.has_update = true
     self.updates = {}
-    self.static = self.state == DroneState.Static
+    self.static = args.static
+
+    if self.static then
+        self.state = DroneState.Static
+    end
     
     self.group = args.group
 
@@ -235,6 +245,10 @@ end
 
 function sDrone:Remove()
     self.removed = true
+
+    if not self.destroyed then
+        Network:Broadcast("Drones/Rewmove", {id = self.id})
+    end
 
     for _, sub in pairs(self.network_subs) do
         Network:Unsubscribe(sub)
