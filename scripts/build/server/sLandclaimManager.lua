@@ -26,9 +26,14 @@ function sLandclaimManager:__init()
     Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
     Events:Subscribe("items/DetonateOnBuildObject", self, self.DetonateOnBuildObject)
 
-    -- Check for expired landclaims every 3 hours
+    -- Check for expired landclaims every 3 hours and on load
     Timer.SetInterval(1000 * 60 * 60 * 3, function()
         self:CheckForExpiredLandclaims()
+    end)
+
+    -- Update health of decaying objects in expired claims every 10 minutes
+    Timer.SetInterval(1000 * 60 * 10, function()
+        self:DecayExpiredLandclaims()
     end)
 
     if IsTest then
@@ -39,6 +44,19 @@ function sLandclaimManager:__init()
         end)
     end
 
+end
+
+function sLandclaimManager:DecayExpiredLandclaims()
+    Thread(function()
+        for steam_id, player_landclaims in pairs(self.landclaims) do
+            for id, landclaim in pairs(player_landclaims) do
+                if landclaim.state == LandclaimStateEnum.Inactive then
+                    landclaim:Decay()
+                    Timer.Sleep(10)
+                end
+            end
+        end
+    end)
 end
 
 function sLandclaimManager:CheckForExpiredLandclaims()
@@ -168,7 +186,7 @@ function sLandclaimManager:DeleteLandclaim(args, player)
     if not landclaim then return end
 
     landclaim:Delete(player)
-    Chat:Send(player, "Landclaim successfully deleted. Any objects that you didn't pick up will slowly decay over time.", Color.Yellow)
+    Chat:Send(player, "Landclaim successfully deleted. Any objects that you didn't pick up will slowly decay over time unless claimed again.", Color.Yellow)
     self:UpdateLandclaimsSharedObject()
 end
 
@@ -210,6 +228,8 @@ function sLandclaimManager:LoadAllLandclaims()
         end
     end
     print(string.format("Loaded %d landclaims!", count_table(result)))
+
+    self:CheckForExpiredLandclaims()
 
 end
 
