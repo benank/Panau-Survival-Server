@@ -127,6 +127,7 @@ function cInventoryUIStyle:__init()
         ["Respawner"] = self.item_colors.pink,
         ["Hacker"] = self.item_colors.pink,
         ["LandClaim"] = self.item_colors.pink,
+        ["Airdrop"] = self.item_colors.pink,
         ["Bed"] = self.item_colors.pink,
         ["Helipad"] = self.item_colors.pink,
         -- ["Lockpick"] = self.item_colors.pink,

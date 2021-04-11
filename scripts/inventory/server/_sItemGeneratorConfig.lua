@@ -452,9 +452,17 @@ LootItems =
                 ["Lockpick"] = {rarity = 1, min = 3, max = 5},
             }
         },
+        ["AIRDROP"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Airdrop"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
         ["AMMO"] = 
         {
-            rarity = 0.4,
+            rarity = 0.35,
             items = 
             {
                 ["Revolver Ammo"] = {rarity = 0.2, min = 30, max = 60},
@@ -520,8 +528,8 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Grapplehook"] = {rarity = 0.95, min_dura = 2, max_dura = 4, min = 1, max = 1},
-                ["Parachute"] = {rarity = 0.05, min_dura = 1, max_dura = 2, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.9, min_dura = 2, max_dura = 4, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.1, min_dura = 1, max_dura = 2, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
@@ -544,9 +552,17 @@ LootItems =
                 ["Lockpick"] = {rarity = 1, min = 5, max = 8},
             }
         },
+        ["AIRDROP"] = 
+        {
+            rarity = 0.025,
+            items = 
+            {
+                ["Airdrop"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
         ["AMMO"] = 
         {
-            rarity = 0.35,
+            rarity = 0.325,
             items = 
             {
                 ["Sawn-Off Ammo"] = {rarity = 0.2, min = 30, max = 60},
@@ -613,8 +629,8 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Grapplehook"] = {rarity = 0.4, min_dura = 2, max_dura = 5, min = 1, max = 1},
-                ["Parachute"] = {rarity = 0.1, min_dura = 1, max_dura = 2, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.3, min_dura = 2, max_dura = 5, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.2, min_dura = 1, max_dura = 2, min = 1, max = 1},
                 ["Explosives Detector"] = {rarity = 0.3, min_dura = 1, max_dura = 3, min = 1, max = 1},
                 ["Combat Backpack"] = {rarity = 0.1, min_dura = 1, max_dura = 2, min = 1, max = 1},
                 ["Explorer Backpack"] = {rarity = 0.1, min_dura = 1, max_dura = 2, min = 1, max = 1},
@@ -643,9 +659,17 @@ LootItems =
                 ["Lockpick"] = {rarity = 1, min = 8, max = 13},
             }
         },
+        ["AIRDROP"] = 
+        {
+            rarity = 0.01,
+            items = 
+            {
+                ["Airdrop"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
         ["AMMO"] = 
         {
-            rarity = 0.25,
+            rarity = 0.24,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.2, min = 50, max = 50},

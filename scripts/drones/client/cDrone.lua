@@ -58,8 +58,10 @@ function cDrone:__init(args)
     self.velocity = Vector3()
 
     self.range = self.config.sight_range
+    self.static = args.static
 
     self.offset_timer = Timer()
+    self.offset_random_time = math.random() * 10
     self.tether_timer = Timer()
     self.sound_timer = Timer()
     self.wander_sync_timer = Timer()
@@ -277,6 +279,8 @@ function cDrone:IsTargetInSight(_target)
     
     if not IsValid(target) then return false end
     if not self.body then return false end
+    if IsNaN(self.body:GetGunPosition(DroneBodyPiece.TopGun)) then return false end
+    if IsNaN(target:GetBonePosition("ragdoll_Hips")) then return false end
 
     local ray = Physics:Raycast(
         self.body:GetGunPosition(DroneBodyPiece.TopGun),
@@ -290,15 +294,65 @@ end
 
 function cDrone:Move(args)
 
-    if IsValid(self.target) then
+    if self.state == DroneState.Pursuing and IsValid(self.target) then
         self:TrackTarget(args)
-    else
+    elseif self.state == DroneState.Wandering then
         self:Wander(args)
+    elseif self.state == DroneState.Static then
+        self:StaticHover(args)
     end
 
     if self:IsHost() then
         self.corrective_position = self.position
     end
+
+end
+
+-- Makes a drone hover around in place
+function cDrone:StaticHover(args)
+
+    local target_pos = self.tether_position + self.offset
+
+    -- Static hover speed is base speed / 10
+    local static_speed = self.config.speed / 10
+
+    local dir = target_pos - self.position
+    local velo = dir:Length() > 1 and (dir:Normalized() * static_speed) or Vector3.Zero
+
+    self:SetLinearVelocity(math.lerp(self.velocity, velo, 0.01))
+
+    -- Face towards target position
+    local target_dist = target_pos:Distance(self.position)
+    if target_dist > 0.1 then
+        local angle = Angle.FromVectors(Vector3.Forward, target_pos - self.position)
+        angle.roll = 0
+
+        self:SetAngle(Angle.Slerp(self.angle, angle, 0.05))
+    end
+
+    if (self.offset_timer:GetSeconds() >= self.offset_random_time or target_dist < 0.2) and self:IsHost() then
+        self.offset_timer:Restart()
+        self.offset_random_time = math.random() * 10
+        self.offset = GetRandomFollowOffset(self.config.attack_range)
+        self:SyncOffsetToServer()
+    end
+
+    -- Wall and collision detection
+    local nearby_wall_pos, nearby_wall = self:CheckForNearbyWalls(args)
+    if nearby_wall and self.wall_timer:GetSeconds() > 0.1 then
+
+        self.wall_timer:Restart()
+        self:SetLinearVelocity(-self.velocity * 1)
+
+        if self:IsHost() then
+            self.offset = GetRandomFollowOffset(self.config.attack_range)
+            self:SyncOffsetToServer()
+        end
+
+    end
+
+    self:LookForTargets()
+    self:WanderingSounds()
 
 end
 
@@ -353,20 +407,29 @@ function cDrone:Wander(args)
             end
         end
 
-        if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 0.5 and not LocalPlayer:GetValue("Invisible") then
-            self.attack_on_sight_timer:Restart()
-            local is_visible, ray = self:IsTargetInSight(LocalPlayer)
-            self.attack_on_sight_count = is_visible and self.attack_on_sight_count + 1 or math.max(0, self.attack_on_sight_count - 1)
-
-            if is_visible and (ray.distance < self.config.sight_range * 0.1 or self.attack_on_sight_count >= 5) then
-                Network:Send("drones/AttackOnSightTarget" .. tostring(self.id))
-                self.attack_on_sight_count = 0
-                self.body:PlaySound("hostile_spotted")
-            end
-        end
+        self:LookForTargets()
 
     end
 
+    self:WanderingSounds()
+
+end
+
+function cDrone:LookForTargets()
+    if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 0.5 and not LocalPlayer:GetValue("Invisible") then
+        self.attack_on_sight_timer:Restart()
+        local is_visible, ray = self:IsTargetInSight(LocalPlayer)
+        self.attack_on_sight_count = is_visible and self.attack_on_sight_count + 1 or math.max(0, self.attack_on_sight_count - 1)
+
+        if is_visible and (ray.distance < self.config.sight_range * 0.1 or self.attack_on_sight_count >= 5) then
+            Network:Send("drones/AttackOnSightTarget" .. tostring(self.id))
+            self.attack_on_sight_count = 0
+            self.body:PlaySound("hostile_spotted")
+        end
+    end
+end
+
+function cDrone:WanderingSounds()
     if self.sound_timer:GetSeconds() >= self.sound_timer_interval then
         if self.position:Distance(LocalPlayer:GetPosition()) < 80 then
             self.body:PlaySound(math.random() > 0.5 and "enemy_presence_in_the_area" or "trespasser_in_the_area")
@@ -376,7 +439,6 @@ function cDrone:Wander(args)
         self.sound_timer_interval = math.random() * 5000 + 800
         self.sound_timer:Restart()
     end
-
 end
 
 function cDrone:IsHost()

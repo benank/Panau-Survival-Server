@@ -98,8 +98,16 @@ function cItemUse:CompleteUsage()
         forward_ray.hit_type = "ClientStaticObject"
     end
 
+    local down_ray = Physics:Raycast(LocalPlayer:GetPosition() + Vector3.Up * 500, Vector3.Down, 0, 600)
+    if down_ray.entity and down_ray.entity.__type == "ClientStaticObject" then
+        down_ray.model = down_ray.entity:GetModel()
+        down_ray.collision = down_ray.entity:GetCollision()
+        down_ray.entity = nil
+        down_ray.hit_type = "ClientStaticObject"
+    end
+
     local waypoint_pos, waypoint_set = Waypoint:GetPosition()
-    Network:Send(var("items/CompleteItemUsage"):get(), {ray = ray, forward_ray = forward_ray, waypoint = waypoint_pos, waypoint_set = waypoint_set})
+    Network:Send(var("items/CompleteItemUsage"):get(), {ray = ray, forward_ray = forward_ray, waypoint = waypoint_pos, waypoint_set = waypoint_set, down_ray = down_ray})
     self:UnsubscribeEvents()
 
     if self.item_name == "C4" or self.item_name == "Claymore" then

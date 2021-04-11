@@ -23,6 +23,7 @@ ItemsConfig =
         ["LandClaim"] = {use_time = 10, delay_use = true},
         ["Halloween Lootbag"] = {use_time = 3},
         ["Holiday Lootbag"] = {use_time = 3},
+        ["Airdrop"] = {use_time = 30},
     },
     build = 
     {
