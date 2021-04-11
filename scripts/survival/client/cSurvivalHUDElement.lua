@@ -55,7 +55,7 @@ function cSurvivalHUDElement:RenderLarge()
 
     Render:DrawText(Vector2.Zero, text, Color.White, 18 * conversion)
 
-    local text_size = Vector2(self.level == 100 and 90 or 80, 0) * conversion
+    local text_size = Vector2(self.level == 100 and 100 or 90, 0) * conversion
     local percent_size = Vector2(50, 0)
     local margin = 4
 
