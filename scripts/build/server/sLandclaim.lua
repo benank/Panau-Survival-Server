@@ -76,6 +76,36 @@ function sLandclaim:ToLogString()
     return string.format("LC: %d Owner: %s", self.id, self.owner_id)
 end
 
+function sLandclaim:Decay()
+    local landclaim_updated = false
+    for id, object in pairs(self.objects) do
+        local object_data = BuildObjects[object.name]
+
+        if object_data and object_data.unclaimed_decay then
+            object:Damage(LandclaimObjectConfig.decay_per_interval)
+            landclaim_updated = true
+
+            if object.health <= 0 then
+                self.objects[id] = nil
+                object:RemoveAllBedSpawns()
+
+                Events:Fire("Discord", {
+                    channel = "Build",
+                    content = string.format("Object %s %d decayed and was removed (%s)", 
+                        object.name, object.id, self:ToLogString())
+                })
+            end
+
+            Timer.Sleep(1)
+        end
+    end
+    
+    if landclaim_updated then
+        self:UpdateToDB()
+        self:Sync()
+    end
+end
+
 -- Called when the landclaim is placed. Looks for objects in expired landclaims within this claim and adds them to the list of objects.
 function sLandclaim:ClaimNearbyUnclaimedObjects(player, callback)
 
@@ -489,6 +519,8 @@ function sLandclaim:Expire()
         state = self.state
     })
 
+    local formatted_date = os.date("%A, %B %d, %Y")
+    
     Events:Fire("Discord", {
         channel = "Build",
         content = string.format("Landclaim expired (%s)", self:ToLogString())
@@ -496,7 +528,7 @@ function sLandclaim:Expire()
 
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = self.owner_id,
-        message = string.format("Your landclaim %s expired!", self.name),
+        message = string.format("Your landclaim %s expired on %s.", self.name, formatted_date),
         color = Color(200, 0, 0)
     })
 end

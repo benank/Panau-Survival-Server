@@ -182,11 +182,8 @@ function cLandclaimManager:SyncLandclaim(args)
         self.landclaims[args.owner_id] = {}
     end
 
-    -- Remove existing landclaim if there is one
-    if self.landclaims[args.owner_id][args.id] then
-        self.landclaims[args.owner_id][args.id]:Remove()
-        self.landclaims[args.owner_id][args.id] = nil
-    end
+    -- Remove existing landclaim if there is one, but after creating the new one
+    local existing_claim = self.landclaims[args.owner_id][args.id]
 
     cLandclaim(args, function(landclaim)
         self.landclaims[args.owner_id][args.id] = landclaim
@@ -197,6 +194,10 @@ function cLandclaimManager:SyncLandclaim(args)
             if landclaim:IsActive() then
                 Events:Fire("build/AddLandclaimToMap", landclaim:GetSyncObject())
             end
+        end
+
+        if existing_claim then
+            existing_claim:Remove()
         end
     end)
 
