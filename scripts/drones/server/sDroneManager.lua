@@ -19,8 +19,48 @@ function sDroneManager:__init()
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
+    Events:Subscribe("PlayerChat", self, self.PlayerChat)
+    Events:Subscribe("Drones/SpawnDrone", self, self.SpawnDrone)
+    Events:Subscribe("Drones/RemoveDronesInGroup", self, self.RemoveDronesInGroup)
 
     Network:Subscribe("drones/sync/batch", self, self.DroneBatchSync)
+end
+
+--[[
+    Spawns a static drone.
+
+    Specify timeout (in ms) to remove drone after certain amount of time.
+    Specify group to add drone to a group so you can remove it using Drones/RemoveDronesInGroup
+]]
+function sDroneManager:SpawnDrone(args)
+    sDrone(args)
+end
+
+function sDroneManager:RemoveDronesInGroup(args)
+    Thread(function()
+        for _, drone in pairs(self.drones) do
+            if drone.group == args.group then
+                drone:Remove()
+                Timer.Sleep(1)
+            end
+        end
+    end)
+end
+
+function sDroneManager:PlayerChat(args)
+    if not IsAdmin(args.player) then return end
+
+    if args.text == "/drone" then
+        sDrone(
+            {
+                position = args.player:GetPosition() + Vector3.Up * 2,
+                state = DroneState.Static,
+                tether_position = args.player:GetPosition(),
+                tether_range = 500
+            }
+        )
+        return false
+    end
 end
 
 function sDroneManager:UpdateDronesCountsInSZ()
@@ -97,6 +137,8 @@ function sDroneManager:DroneBatchSyncLoop()
                     end
                 end
 
+                -- TODO: actually optimize this using cells
+                -- sDroneManager:GetNearbyPlayersInCell(cell)
                 if at_least_one_sync then
                     Network:Broadcast("Drones/BatchSync", drone_data)
                 end

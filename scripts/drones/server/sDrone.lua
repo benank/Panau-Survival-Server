@@ -9,31 +9,44 @@ end
 function sDrone:__init(args)
 
     self.id = GetDroneId()
-    self.region = args.region
-    self.level = GetLevelFromRegion(self.region)
     self.position = args.position -- Approximate position of the drone in the world
+    self.region = args.region or GetClosestRegion(self.position)
+    self.level = args.level or GetLevelFromRegion(self.region)
 
-    self.tether_position = DroneRegions[self.region].center -- Position used for tether checks
-    self.tether_range = DroneRegions[self.region].radius + 1000 -- Max distance travelled from initial spawn position
-
-    self.target = nil -- Current active target that the drone is pursuing
-    self.target_offset = Vector3() -- Offset from the target the drone flies at
+    self.tether_position = args.tether_position or DroneRegions[self.region].center -- Position used for tether checks
+    self.tether_range = args.tether_range or DroneRegions[self.region].radius + 1000 -- Max distance travelled from initial spawn position
 
     self.current_path = {} -- Table of points that the drone is currently pathing through
     self.current_path_index = 1 -- Current index of the path the drone is on
 
     self.config = GetDroneConfiguration(self.level)
 
+    self.target = nil -- Current active target that the drone is pursuing
+    self.target_offset = GetRandomFollowOffset(self.config.sight_range) -- Offset from the target the drone flies at
+
     self.max_health = self.config.health
     self.health = self.max_health
 
-    self.state = DroneState.Wandering
+    self.state = args.state or DroneState.Wandering
 
     self.host = nil -- Player who currently "controls" the drone and dictates its pathfinding
     self.players_who_damaged = {} -- List of players who have damaged this drone
 
     self.has_update = true
     self.updates = {}
+    self.static = self.state == DroneState.Static
+    
+    self.group = args.group
+
+    -- Remove drone after time period
+    if self.timeout then
+        Thread(function()
+            Timer.Sleep(self.timeout)
+            if not self.removed then
+                self:Remove()
+            end
+        end)
+    end
 
     self.network_subs = 
     {
@@ -42,9 +55,13 @@ function sDrone:__init(args)
         Network:Subscribe("drones/sync/one" .. tostring(self.id), self, self.OneHostSync)
     }
 
-    sDroneManager.drone_counts_by_region[self.region] = sDroneManager.drone_counts_by_region[self.region] + 1
+    if self.region then
+        sDroneManager.drone_counts_by_region[self.region] = sDroneManager.drone_counts_by_region[self.region] + 1
+    end
     sDroneManager.drones_by_id[self.id] = self
     self:UpdateCell()
+
+    Network:Broadcast("Drones/SingleSync", self:GetSyncData())
 
 end
 
@@ -60,13 +77,25 @@ end
 
 function sDrone:PursueTarget(target)
     self.target = self:IsPlayerAValidTarget(target) and target or nil
-    self.state = IsValid(self.target) and DroneState.Pursuing or DroneState.Wandering
+
+    if not IsValid(self.target) then
+        if self.static then
+            self.state = DroneState.Static
+            self.position = self.tether_position
+        else
+            self.state = DroneState.Wandering
+        end
+    else
+        self.state = DroneState.Pursuing
+    end
+
     self.current_path = {}
     self.current_path_index = 1
 
     self:Sync({
         state = self.state,
         target = self.target,
+        position = self.position,
         current_path = self.current_path,
         current_path_index = self.current_path_index
     })
@@ -200,6 +229,7 @@ end
 
 -- Called by clients when finding a path fails
 function sDrone:DespawnDrone(args, player)
+    if self.static then return end
     self:Remove()
 end
 
@@ -218,7 +248,9 @@ function sDrone:Remove()
     end
     
     sDroneManager.drones_by_id[self.id] = nil
-    sDroneManager.drone_counts_by_region[self.region] = sDroneManager.drone_counts_by_region[self.region] - 1
+    if self.region then
+        sDroneManager.drone_counts_by_region[self.region] = sDroneManager.drone_counts_by_region[self.region] - 1
+    end
 end
 
 -- Called when a player destroys a drone
@@ -354,7 +386,8 @@ function sDrone:GetSyncData()
         region = self.region,
         path_data = self:GetPathSyncData(),
         host = self.host,
-        state = self.state
+        state = self.state,
+        static = self.static
     }
 
 end

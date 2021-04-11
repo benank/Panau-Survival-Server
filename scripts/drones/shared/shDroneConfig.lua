@@ -46,7 +46,8 @@ DroneState =
 {
     Wandering = 1, -- Peacefully wandering
     Pursuing = 2, -- Actively pursuing a target
-    Destroyed = 3 -- Drone has been destroyed
+    Destroyed = 3, -- Drone has been destroyed
+    Static = 4 -- Drone is not moving and hovers in one place
 }
 
 --[[

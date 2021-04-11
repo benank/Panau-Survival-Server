@@ -41,7 +41,11 @@ function cDroneBody:ContainsStaticObject(cso)
 end
 
 function cDroneBody:PostTick(args)
+    -- self:SetFXPosition()
+end
 
+function cDroneBody:SetFXPosition()
+    
     if IsValid(self.effect) then
         self.effect:SetPosition(self.parent.position + self.parent.angle * DroneEffectOffset.angle * DroneEffectOffset.position)
     end
@@ -266,6 +270,8 @@ function cDroneBody:SetPosition()
     for piece_enum, object in pairs(self.objects) do
         object:SetPosition(self.parent.position + self.parent.angle * DroneBodyOffsets[piece_enum].angle * DroneBodyOffsets[piece_enum].position)
     end
+
+    self:SetFXPosition()
 
 end
 

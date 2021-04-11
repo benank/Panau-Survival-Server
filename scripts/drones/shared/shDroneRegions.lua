@@ -17,6 +17,21 @@ DroneRegionEnum =
 
 DRONE_SPAWN_INTERVAL = 1
 
+function GetClosestRegion(pos)
+    local closest = DroneRegionEnum.FinancialDistrict
+    local closest_dist = 99999
+
+    for region_enum, region in pairs(DroneRegions) do
+        local dist = region.center:Distance(pos)
+        if dist < closest_dist then
+            closest_dist = dist
+            closest = region_enum
+        end
+    end
+
+    return closest
+end
+
 DroneRegions = 
 {
     [DroneRegionEnum.FinancialDistrict] = 
