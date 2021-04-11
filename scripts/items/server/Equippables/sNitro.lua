@@ -113,9 +113,12 @@ Network:Subscribe("items/ActivateNitro", function(args, player)
     if not player:InVehicle() then return end
 
     local v = player:GetVehicle()
+    local item = GetEquippedItem("Nitro", player)
+
+    if not item then return end
 
     local nitro_val = true
-    if tonumber(GetEquippedItem("Nitro", player).custom_data.nitro_x) == 1 then
+    if tonumber(item.custom_data.nitro_x) == 1 then
         nitro_val = "X"
     end
 
