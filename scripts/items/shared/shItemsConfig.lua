@@ -24,6 +24,7 @@ ItemsConfig =
         ["Halloween Lootbag"] = {use_time = 3},
         ["Holiday Lootbag"] = {use_time = 3},
         ["Airdrop"] = {use_time = 30},
+        ["Burst Ping"] = {range = 12, knockback = 25},
     },
     build = 
     {

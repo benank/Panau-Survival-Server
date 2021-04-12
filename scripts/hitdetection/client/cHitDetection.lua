@@ -14,6 +14,7 @@ function cHitDetection:__init()
     Events:Subscribe(var("HitDetection/Explosion"):get(), self, self.Explosion)
     Events:Subscribe(var("HitDetection/ExplosionHitDrone"):get(), self, self.ExplosionHitDrone)
     Network:Subscribe(var("HitDetection/KnockdownEffect"):get(), self, self.KnockdownEffect)
+    Events:Subscribe(var("HitDetection/KnockdownEffect"):get(), self, self.KnockdownEffect)
 
 end
 

@@ -101,7 +101,7 @@ function shItem:GetCustomData()
     elseif self.name == "Woet" and self.custom_data.woet_x == nil then
         
         -- 10% of woets are woet Xs
-        self.custom_data.woet_x = math.random() < 0.05 and 1 or 0
+        self.custom_data.woet_x = math.random() < 0.1 and 1 or 0
     elseif self.name == "LandClaim" and not self.custom_data.size then
        
         local sizes = 
@@ -123,7 +123,12 @@ function shItem:GetCustomData()
     elseif self.name == "Nitro" and self.custom_data.nitro_x == nil then
 
         -- 10% of nitros are nitro Xs
-        self.custom_data.nitro_x = math.random() < 0.05 and 1 or 0
+        self.custom_data.nitro_x = math.random() < 0.1 and 1 or 0
+    
+    elseif self.name == "Burst Ping" and self.custom_data.bp_x == nil then
+
+        -- 5% of BPs are BP Xs
+        self.custom_data.bp_x = math.random() < 0.05 and 1 or 0
     
     elseif self.name == "Airdrop" and self.custom_data.level == nil then
         self.custom_data.level = 1
