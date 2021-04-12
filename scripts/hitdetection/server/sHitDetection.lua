@@ -45,7 +45,7 @@ function sHitDetection:__init()
     Network:Subscribe("HitDetection/MeleeStandingKickHit", self, self.MeleeStandingKickHit)
     Network:Subscribe("HitDetection/MeleeSlidingKickHit", self, self.MeleeSlidingKickHit)
 
-    Events:Subscribe("HitDetection/SnowballHit", self, self.SnowballHit)
+    Events:Subscribe("HitDetection/BurstPingHit", self, self.BurstPingHit)
 
     Events:Subscribe("Hitdetection/AdminKill", self, self.AdminKill)
 
@@ -56,6 +56,11 @@ function sHitDetection:__init()
 
     Network:Subscribe("Hitdetection/Respawn", self, self.Respawn)
 
+end
+
+function sHitDetection:BurstPingHit(args)
+    args.player:Damage(0.001, DamageEntity.BurstPing, args.attacker)
+    self:SetPlayerLastDamaged(args.player, DamageEntityNames[DamageEntity.BurstPing], tostring(args.attacker:GetSteamId()))
 end
 
 function sHitDetection:LoadStatus(args)

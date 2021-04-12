@@ -241,7 +241,8 @@ function cInventoryUIStyle:RenderItemWindow(itemWindow, stack, parent_window)
             Render:DrawLine(start_pos + size, start_pos + size - Vector2(0, size.y), color_data.border_color)
 
         elseif (item.name == "Woet" and tonumber(item.custom_data.woet_x) == 1)
-        or (item.name == "Nitro" and tonumber(item.custom_data.nitro_x) == 1) then
+        or (item.name == "Nitro" and tonumber(item.custom_data.nitro_x) == 1)
+        or (item.name == "Burst Ping" and tonumber(item.custom_data.bp_x) == 1) then
 
             local text_size = ClientInventory.ui.inv_dimensions.text_size * 1.75
             local render_text_size = Render:GetTextSize("X", text_size)

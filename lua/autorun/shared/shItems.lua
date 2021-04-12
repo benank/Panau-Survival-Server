@@ -166,6 +166,7 @@ Items =
         name = "Burst Ping",
         category = "Survival",
         stacklimit = 5,
+        can_stack = true,
         can_use = true
     },
     {
@@ -223,6 +224,12 @@ Items =
     },
     {
         name = "Combat Ping",
+        category = "Supplies",
+        stacklimit = 20,
+        can_use = true
+    },
+    {
+        name = "Loot Ping",
         category = "Supplies",
         stacklimit = 10,
         can_use = true

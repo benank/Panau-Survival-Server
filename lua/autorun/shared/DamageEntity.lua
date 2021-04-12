@@ -22,6 +22,7 @@ DamageEntity.CombatLog = 25
 DamageEntity.DroneMachineGun = 26
 DamageEntity.Snowball = 27
 DamageEntity.Revenge = 28
+DamageEntity.BurstPing = 29
 
 DamageEntityNames = 
 {
@@ -54,4 +55,5 @@ DamageEntityNames =
     [DamageEntity.DroneMachineGun] = "Drone Machine Gun",
     [DamageEntity.Snowball] = "Snowball",
     [DamageEntity.Revenge] = "Revenge",
+    [DamageEntity.BurstPing] = "Burst Ping",
 }
