@@ -379,18 +379,19 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.04,
+            rarity = 0.05,
             items = 
             {
-                ["Combat Ping"] = {rarity = 0.30, min = 1, max = 2},
-                ["Burst Ping"] = {rarity = 0.25, min = 1, max = 1},
+                ["Combat Ping"] = {rarity = 0.25, min = 1, max = 2},
+                ["Burst Ping"] = {rarity = 0.2, min = 1, max = 1},
+                ["Ping"] = {rarity = 0.1, min = 1, max = 1},
                 ["EVAC"] = {rarity = 0.25, min = 1, max = 1},
                 ["Hacker"] = {rarity = 0.2, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
         {
-            rarity = 0.07,
+            rarity = 0.06,
             items = 
             {
                 ["Shotgun"] = {rarity = 0.15, min = 1, max = 1},
@@ -540,8 +541,9 @@ LootItems =
             items = 
             {
                 ["Nitro"] = {rarity = 0.3, min_dura = 1, max_dura = 2, min = 3, max = 5},
-                ["Battery"] = {rarity = 0.5, min_dura = 1, max_dura = 3, min = 3, max = 5},
+                ["Battery"] = {rarity = 0.4, min_dura = 1, max_dura = 3, min = 3, max = 5},
                 ["Burst Ping"] = {rarity = 0.2, min = 1, max = 2},
+                ["Ping"] = {rarity = 0.1, min = 1, max = 2},
             }
         },
     },
@@ -644,12 +646,13 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Nitro"] = {rarity = 0.25, min_dura = 2, max_dura = 4, min = 3, max = 5},
+                ["Nitro"] = {rarity = 0.15, min_dura = 2, max_dura = 4, min = 3, max = 5},
                 ["Battery"] = {rarity = 0.2, min_dura = 2, max_dura = 4, min = 3, max = 5},
                 ["Combat Ping"] = {rarity = 0.2, min = 3, max = 5},
                 ["EVAC"] = {rarity = 0.15, min = 1, max = 2},
                 ["Hacker"] = {rarity = 0.1, min = 3, max = 5},
                 ["Burst Ping"] = {rarity = 0.1, min = 2, max = 3},
+                ["Ping"] = {rarity = 0.1, min = 3, max = 5},
             }
         },
     },

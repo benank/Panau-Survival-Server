@@ -702,13 +702,13 @@ ExpPerks =
     },
     {
         name = "Ping",
-        description = "Choose: 25% extra range or 20% extra chance to not appear in pings",
+        description = "Choose: 20% extra range or 20% extra chance to not appear in pings",
         level_req = 21,
         perk_req = 0,
         cost = 2,
         id = 87,
         position = 72,
-        enabled = false
+        enabled = true
     },
     {
         name = "Assault Rifle",
@@ -1412,13 +1412,13 @@ ExpPerks =
     },
     {
         name = "Ping",
-        description = "Choose: 50% extra range or 40% extra chance to not appear in pings",
+        description = "Choose: 20% extra range or 20% extra chance to not appear in pings",
         level_req = 42,
         perk_req = 87,
         cost = 3,
         id = 153,
         position = 143,
-        enabled = false
+        enabled = true
     },
     {
         name = "C4",
@@ -1782,13 +1782,13 @@ ExpPerks =
     },
     {
         name = "Ping",
-        description = "Choose: 75% extra range or 60% extra chance to not appear in pings",
+        description = "Choose: 20% extra range or 20% extra chance to not appear in pings",
         level_req = 63,
         perk_req = 153,
         cost = 4,
         id = 187,
         position = 180,
-        enabled = false
+        enabled = true
     },
     {
         name = "Vehicles",
@@ -2304,18 +2304,9 @@ ExpPerkChoiceText =
             "2 extra slots in Explorer Backpack"
         }
     },
-    [42] = 
-    {
-        text = "Confirm your choice for perk: Building",
-        choices = 
-        {
-            "500 extra build items per LandClaim",
-            "500m extra build height"
-        }
-    },
     [49] = 
     {
-        text = "Confirm your choice for perk: Rocket Grapple",
+        text = "Confirm your choice for perk: RocketGrapple",
         choices = 
         {
             "10% extra durability",
@@ -2385,22 +2376,22 @@ ExpPerkChoiceText =
             "20% extra power"
         }
     },
-    [83] = 
-    {
-        text = "Confirm your choice for perk: Building",
-        choices = 
-        {
-            "500 extra build items per LandClaim",
-            "500m extra build height"
-        }
-    },
     [87] = 
     {
         text = "Confirm your choice for perk: Ping",
         choices = 
         {
-            "25% extra range",
+            "20% extra range",
             "20% extra chance to not appear in pings"
+        }
+    },
+    [239] = 
+    {
+        text = "Confirm your choice for perk: EMP",
+        choices = 
+        {
+            "10% extra range",
+            "10% extra duration"
         }
     },
     [94] = 
@@ -2432,7 +2423,7 @@ ExpPerkChoiceText =
     },
     [105] = 
     {
-        text = "Confirm your choice for perk: Rocket Grapple",
+        text = "Confirm your choice for perk: RocketGrapple",
         choices = 
         {
             "20% extra durability",
@@ -2475,6 +2466,15 @@ ExpPerkChoiceText =
             "20% extra power"
         }
     },
+    [240] = 
+    {
+        text = "Confirm your choice for perk: EMP",
+        choices = 
+        {
+            "10% extra range",
+            "10% extra duration"
+        }
+    },
     [124] = 
     {
         text = "Confirm your choice for perk: Player Movement",
@@ -2495,7 +2495,7 @@ ExpPerkChoiceText =
     },
     [138] = 
     {
-        text = "Confirm your choice for perk: Rocket Grapple",
+        text = "Confirm your choice for perk: RocketGrapple",
         choices = 
         {
             "30% extra durability",
@@ -2511,6 +2511,15 @@ ExpPerkChoiceText =
             "10% extra range"
         }
     },
+    [241] = 
+    {
+        text = "Confirm your choice for perk: EMP",
+        choices = 
+        {
+            "10% extra range",
+            "10% extra duration"
+        }
+    },
     [145] = 
     {
         text = "Confirm your choice for perk: Building",
@@ -2518,15 +2527,6 @@ ExpPerkChoiceText =
         {
             "500 extra build items per LandClaim",
             "500m extra build height"
-        }
-    },
-    [146] = 
-    {
-        text = "Confirm your choice for perk: Player Movement",
-        choices = 
-        {
-            "20% extra swim speed",
-            "20% extra sprint speed"
         }
     },
     [147] = 
@@ -2538,13 +2538,22 @@ ExpPerkChoiceText =
             "50% extra radiation resistance"
         }
     },
+    [146] = 
+    {
+        text = "Confirm your choice for perk: Player Movement",
+        choices = 
+        {
+            "20% extra swim speed",
+            "20% extra sprint speed"
+        }
+    },
     [153] = 
     {
         text = "Confirm your choice for perk: Ping",
         choices = 
         {
-            "50% extra range",
-            "40% extra chance to not appear in pings"
+            "20% extra range",
+            "20% extra chance to not appear in pings"
         }
     },
     [159] = 
@@ -2567,7 +2576,7 @@ ExpPerkChoiceText =
     },
     [172] = 
     {
-        text = "Confirm your choice for perk: Rocket Grapple",
+        text = "Confirm your choice for perk: RocketGrapple",
         choices = 
         {
             "40% extra durability",
@@ -2597,8 +2606,8 @@ ExpPerkChoiceText =
         text = "Confirm your choice for perk: Ping",
         choices = 
         {
-            "75% extra range",
-            "60% extra chance to not appear in pings"
+            "20% extra range",
+            "20% extra chance to not appear in pings"
         }
     },
     [192] = 
@@ -2612,7 +2621,7 @@ ExpPerkChoiceText =
     },
     [194] = 
     {
-        text = "Confirm your choice for perk: Rocket Grapple",
+        text = "Confirm your choice for perk: RocketGrapple",
         choices = 
         {
             "50% extra durability",
