@@ -868,7 +868,7 @@ ExpPerks =
         cost = 3,
         id = 103,
         position = 88,
-        enabled = false
+        enabled = true
     },
     {
         name = "Smart Grapple Upgrade",
@@ -1208,7 +1208,7 @@ ExpPerks =
         cost = 4,
         id = 133,
         position = 122,
-        enabled = false
+        enabled = true
     },
     {
         name = "Inventory",
