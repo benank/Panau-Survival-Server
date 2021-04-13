@@ -1017,7 +1017,14 @@ Items =
         name = "Airdrop",
         category = "Survival",
         stacklimit = 1,
-        can_use = true
+        can_use = true,
+        can_stack = true
+    },
+    {
+        name = "SAM Key",
+        category = "Supplies",
+        stacklimit = 3,
+        can_stack = true
     },
 }
 
