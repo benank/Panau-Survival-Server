@@ -1024,7 +1024,9 @@ Items =
         name = "SAM Key",
         category = "Supplies",
         stacklimit = 3,
-        can_stack = true
+        can_stack = true,
+        can_equip = true,
+        equip_type = "sam_key"
     },
 }
 
