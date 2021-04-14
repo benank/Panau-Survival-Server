@@ -26,7 +26,7 @@ end
 function cQuesterNPC:RenderOpenIndicator()
     if QuestMenu:GetActive() then return end
     
-    local text = "Press E to interact"
+    local text = "Press E to view quests"
     local font_size = 24
     local text_size = Render:GetTextSize(text, font_size)
     local pos = Render.Size / 2

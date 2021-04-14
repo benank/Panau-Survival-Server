@@ -21,7 +21,8 @@ QuestStrings =
             "Let's go find some loot! Exit the safezone to get started.",
             "A nearby lootbox has been marked on your screen for you. Find it and loot it! Look at the lootbox until you see a green dot, then press E to open it.",
             "Nice work - you've found your first lootbox! Return to the Quester to complete this quest and receive your reward."
-        }
+        },
+        reward = "30 exploration exp\n30 combat exp\nLockpick (5)"
     },
     [QuestEnum.GettingStartedPart2] = 
     {
@@ -42,7 +43,8 @@ QuestStrings =
             "Destroying drones is a great way to get combat (red) experience and level up. Killing other players also gives combat experience.",
             "Destroy a drone. You can use your Handgun or HE Grenades to do this. To use grenades, equip them then press V to throw.",
             "Return to the Quester to complete this quest and receive your reward."
-        }
+        },
+        reward = "30 exploration exp\n30 combat exp\nHandgun Ammo (50)"
     },
     [QuestEnum.GettingStartedPart3] = 
     {
@@ -68,6 +70,7 @@ QuestStrings =
             "Open up the Player Menu with F6.",
             "In this menu, you can view all the players currently online. You can also add other players as friends to share vehicles and not be affected by each other's mines and claymores.",
             "Return to the Quester to complete this quest and receive your reward."
-        }
+        },
+        reward = "30 exploration exp\n30 combat exp\n"
     }
 }
