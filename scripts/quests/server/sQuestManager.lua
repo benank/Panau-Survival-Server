@@ -4,7 +4,12 @@ function sQuestManager:__init()
     
     SQL:Execute("CREATE TABLE IF NOT EXISTS quests (steamID VARCHAR(20), current_quest INTEGER, current_quest_stage INTEGER, completed_quests BLOB)")
 
+    Network:Subscribe("Quests/StartQuest", self, self.StartQuest)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+end
+
+function sQuestManager:StartQuest(args, player)
+    
 end
 
 function sQuestManager:ClientModuleLoad(args)
