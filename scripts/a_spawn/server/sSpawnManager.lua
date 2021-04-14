@@ -82,7 +82,7 @@ function sSpawnManager:EnterExitSafezone(args, player)
 	if in_sz then
 		player:DisableCollision(CollisionGroup.Player, CollisionGroup.Vehicle)
 		player:DisableCollision(CollisionGroup.Vehicle, CollisionGroup.Player)
-		player:DisableCollision(CollisionGroup.Player, CollisionGroup.Player)
+		-- player:DisableCollision(CollisionGroup.Player, CollisionGroup.Player)
         player:DisableCollision(CollisionGroup.Vehicle, CollisionGroup.Vehicle)
         
 	else

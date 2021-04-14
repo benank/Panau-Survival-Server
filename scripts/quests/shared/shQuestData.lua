@@ -2,8 +2,8 @@ QuestStrings =
 {
     [QuestEnum.GettingStartedPart1] = 
     {
-        level_req = 1,
         title = "Getting Started (Part 1)",
+        enabled = true,
         description = "Welcome to Panau Survival! This quest line will help you get started here and learn the basics of survival. Click \"Start Quest\" to get started.",
         stages = 
         {
@@ -25,8 +25,8 @@ QuestStrings =
     },
     [QuestEnum.GettingStartedPart2] = 
     {
-        level_req = 1,
         quest_req = QuestEnum.GettingStartedPart1,
+        enabled = true,
         title = "Getting Started (Part 2)",
         description = "Welcome to Panau Survival! This quest line will help you get started here and learn the basics of survival. Click \"Start Quest\" to get started.",
         stages = 
@@ -46,8 +46,8 @@ QuestStrings =
     },
     [QuestEnum.GettingStartedPart3] = 
     {
-        level_req = 1,
         quest_req = QuestEnum.GettingStartedPart2,
+        enabled = true,
         title = "Getting Started (Part 3)",
         description = "Welcome to Panau Survival! This quest line will help you get started here and learn the basics of survival. Click \"Start Quest\" to get started.",
         stages = 

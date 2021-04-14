@@ -209,13 +209,17 @@ function Nametags:DrawNametag( pos_3d, text, colour, scale, alpha, health, draw_
             self:DrawShadowedText( nametag_pos_2d - Vector2(0, tag_height), nametag.name, nametag.color, scale, alpha )
 
 
-            local level_pos_2d = pos_2d - Vector2( level_width / 2, level_height / 2 )
-            self:DrawShadowedText( level_pos_2d - Vector2(0, level_height * 2), level_str, Color.Yellow, scale, alpha )
+            if level then
+                local level_pos_2d = pos_2d - Vector2( level_width / 2, level_height / 2 )
+                self:DrawShadowedText( level_pos_2d - Vector2(0, level_height * 2), level_str, Color.Yellow, scale, alpha )
+            end
 
         else
 
-            local level_pos_2d = pos_2d - Vector2( level_width / 2, level_height / 2 )
-            self:DrawShadowedText( level_pos_2d - Vector2(0, level_height), level_str, Color.Yellow, scale, alpha )
+            if level then
+                local level_pos_2d = pos_2d - Vector2( level_width / 2, level_height / 2 )
+                self:DrawShadowedText( level_pos_2d - Vector2(0, level_height), level_str, Color.Yellow, scale, alpha )
+            end
 
         end
 
@@ -520,7 +524,7 @@ function Nametags:Render()
 
     if self.player_enabled then
         local sorted_players = {}
-        --table.insert( sorted_players, { LocalPlayer, 0})
+        -- table.insert( sorted_players, { LocalPlayer, 0})
 
         for p in Client:GetStreamedPlayers() do
             local pos = p:GetPosition()
@@ -550,7 +554,7 @@ function Nametags:Render()
             self:DrawSAM(sam)
         end
     end
-
+    
     -- TODO: sort by distance to determine render order like player tags
     for cso_id, data in pairs(self.recent_drones) do
         -- Render nametags for drones while looking at the base piece only
@@ -569,6 +573,23 @@ function Nametags:Render()
             end
         end
     end
+    
+    if LocalPlayer:GetValue("InSafezone") and LocalPlayer:GetValue("QuesterActorId") then
+        
+        local npc = ClientActor.GetById(LocalPlayer:GetValue("QuesterActorId"))
+        if IsValid(npc) then
+            local pos = npc:GetBonePosition( "ragdoll_Head" ) + (npc:GetAngle() * Vector3( 0, 0.25, 0 ))
+            
+            self:DrawFullTag(
+                pos, 
+                "Quester", 
+                0, 
+                Color.White, 
+                1, 
+                {name = "NPC", color = Color(0, 230, 0)})
+        end
+    end
+
 end
 
 function Nametags:LocalPlayerChat( args )
