@@ -132,6 +132,8 @@ function shItem:GetCustomData()
     
     elseif self.name == "Airdrop" and self.custom_data.level == nil then
         self.custom_data.level = 1
+    elseif self.name == "Secret" and self.custom_data.secret_type == nil then
+        self.custom_data.secret_type = "lockbox"
     end
 	
 	-- Additional custom data will be added here

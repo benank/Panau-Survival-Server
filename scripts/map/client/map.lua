@@ -14,7 +14,8 @@ Location.Type = {
     Home 		= "Home",
     Skull 		= "Skull",
     Landclaim   = "Landclaim",
-    Airdrop     = "Airdrop"
+    Airdrop     = "Airdrop",
+    Question    = "Question"
     
 }
 
@@ -32,7 +33,8 @@ Location.TypeName = {
     Home 		= "Home",
     Skull		= "Skull",
     Landclaim   = "Landclaim",
-    Airdrop     = "Airdrop"
+    Airdrop     = "Airdrop",
+    Question    = "Secret"
 }
 
 IconSizeUV = 1 / 18

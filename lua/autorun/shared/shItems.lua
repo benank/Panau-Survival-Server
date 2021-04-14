@@ -1019,6 +1019,13 @@ Items =
         stacklimit = 1,
         can_use = true
     },
+    {
+        name = "Secret",
+        category = "Survival",
+        stacklimit = 3,
+        can_use = true,
+        can_stack = true
+    },
 }
 
 Items_ammo_types = 
