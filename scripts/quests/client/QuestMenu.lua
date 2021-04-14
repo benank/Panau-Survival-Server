@@ -12,6 +12,7 @@ function QuestMenu:__init()
     self.window:SetMinimumSize(self.window:GetSize() * 0.85)
     self.window:SetTitle( "Quests" )
     self.window:Subscribe( "WindowClosed", self, self.Close )
+    self.window:DisableResizing() 
 
     self.column_index = 
     {
@@ -175,6 +176,25 @@ function QuestMenu:CreateQuestsMenu()
     self.selected_quest.forward_button:SetPositionRel(Vector2(1 - 0.01 - self.selected_quest.forward_button:GetWidthRel(), base_pos.y))
     self.selected_quest.forward_button:Hide()
     
+    self.selected_quest.reward_title = Label.Create(self.window)
+    self.selected_quest.reward_title:SetText("Reward")
+    self.selected_quest.reward_title:SetTextSize(20)
+    self.selected_quest.reward_title:SetTextColor(Color.Yellow)
+    self.selected_quest.reward_title:SizeToContents()
+    self.selected_quest.reward_title:SetWidthRel(0.3)
+    self.selected_quest.reward_title:SetAlignment(GwenPosition.Center)
+    self.selected_quest.reward_title:SetPositionRel(Vector2(0.75, 0.65) - self.selected_quest.reward_title:GetSizeRel() / 2)
+    self.selected_quest.reward_title:Hide()
+    
+    self.selected_quest.reward_contents = Label.Create(self.window)
+    self.selected_quest.reward_contents:SetText("5 things\n2 more thing\none last thing")
+    self.selected_quest.reward_contents:SetTextSize(16)
+    self.selected_quest.reward_contents:SizeToContents()
+    self.selected_quest.reward_contents:SetWidthRel(0.3)
+    self.selected_quest.reward_contents:SetAlignment(GwenPosition.Center)
+    self.selected_quest.reward_contents:SetPositionRel(Vector2(0.75 - self.selected_quest.reward_contents:GetWidthRel() / 2, 0.65 + self.selected_quest.reward_title:GetHeightRel()))
+    self.selected_quest.reward_contents:Hide()
+    
 end
 
 function QuestMenu:SelectQuestRow()
@@ -187,6 +207,12 @@ function QuestMenu:SelectQuestRow()
     self.selected_quest.description:SizeToContents()
     self.selected_quest.bottom_button:Show()
     self.selected_quest.exit_button:Show()
+    self.selected_quest.reward_title:Show()
+    self.selected_quest.reward_contents:Show()
+    
+    self.selected_quest.reward_contents:SetText(quest_data.reward)
+    self.selected_quest.reward_contents:SizeToContents()
+    self.selected_quest.reward_contents:SetPositionRel(Vector2(0.75 - self.selected_quest.reward_contents:GetWidthRel() / 2, 0.65 + self.selected_quest.reward_title:GetHeightRel()))
 end
 
 function QuestMenu:GetActive()

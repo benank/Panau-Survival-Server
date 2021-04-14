@@ -22,9 +22,9 @@ function sQuestManager:ClientModuleLoad(args)
         
         args.player:SetNetworkValue("CompletedQuests", self:DeserializeCompletedQuests(result[1].completed_quests))
         
-        if result[1].current_quest ~= 0 then
-            current_quest.id = result[1].current_quest
-            current_quest.stage = result[1].current_quest_stage
+        if tonumber(result[1].current_quest) > 0 then
+            current_quest.id = tonumber(result[1].current_quest)
+            current_quest.stage = tonumber(result[1].current_quest_stage)
         end
     else
 
@@ -42,7 +42,7 @@ function sQuestManager:ClientModuleLoad(args)
     args.player:SetNetworkValue("CurrentQuest", current_quest)
 
     Events:Fire("PlayerQuestsUpdated", {player = args.player})
-
+    
 end
 
 function sQuestManager:SavePlayer(player)
@@ -73,7 +73,9 @@ function sQuestManager:DeserializeCompletedQuests(quests)
     local split = quests:split("_")
     local parsed = {}
     for _, quest_id in pairs(split) do
-        parsed[tonumber(quest_id)] = true
+        if tonumber(quest_id) then
+            parsed[tonumber(quest_id)] = true
+        end
     end
     return parsed
 end
