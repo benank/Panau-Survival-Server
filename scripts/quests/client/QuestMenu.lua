@@ -222,6 +222,8 @@ end
 function QuestMenu:KeyUp( args )
     if args.key == self.open_key then
         self:SetActive( not self:GetActive() )
+    elseif args.key == string.byte('E') and cQuesterNPC.near_quester then
+        self:SetActive( not self:GetActive() )
     end
 end
 
