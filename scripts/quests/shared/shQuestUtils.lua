@@ -7,19 +7,27 @@ QuesterConfig =
 
 -- Returns if a player has the necessary prereqs to start a quest
 function CanPlayerStartQuest(player, quest_id)
+    
+    if not IsPlayerInRangeOfQuester(player) then return false end
+    
     -- Player completed already or has a quest active already
     if HasPlayerCompletedQuestAlready(player, quest_id)
-    or DoesPlayerHaveAnyActiveQuest(player) then return end
+    or DoesPlayerHaveAnyActiveQuest(player) then return false end
     
     -- Check quest prereq
-    local quest_data = QuestStrings[quest_id]
-    if quest_data.quest_req ~= nil and not HasPlayerCompletedQuestAlready(player, quest_data.quest_req) then return end
+    local quest_data = QuestData[quest_id]
+    if quest_data.quest_req ~= nil and not HasPlayerCompletedQuestAlready(player, quest_data.quest_req) then return false end
     
     -- Check level prereq
     local exp = player:GetValue("Exp")
-    if quest_data.level_req ~= nil and exp.level < quest_data.level_req then return end
+    if quest_data.level_req ~= nil and exp.level < quest_data.level_req then return false end
     
     return true
+end
+
+-- Returns the total number of stages in the quest
+function GetNumStagesInQuest(quest_id)
+    return count_table(QuestData[quest_id].stages) 
 end
 
 -- Returns the quest id the player is currently working on, if any

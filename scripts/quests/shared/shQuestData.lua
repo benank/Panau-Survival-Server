@@ -1,4 +1,4 @@
-QuestStrings = 
+QuestData = 
 {
     [QuestEnum.GettingStartedPart1] = 
     {

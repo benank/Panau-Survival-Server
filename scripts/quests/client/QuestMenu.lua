@@ -2,6 +2,7 @@ class 'QuestMenu'
 
 function QuestMenu:__init()
     self.active = false
+    self.current_stage = 1
     
     self.open_key = VirtualKey.F5
 
@@ -26,14 +27,29 @@ function QuestMenu:__init()
     self:CreateQuestsMenu()
     self:AddAllQuestsToMenu()
 
+    
     Events:Subscribe( "Render", self, self.Render )
     Events:Subscribe( "KeyUp", self, self.KeyUp )
+    Events:Subscribe("NetworkObjectValueChange", self, self.NetworkObjectValueChange)
+    Events:Subscribe("SecondTick", self, self.SecondTick)
     
 end
 
+function QuestMenu:SecondTick()
+    self:RefreshRightSideContents() 
+end
+
+function QuestMenu:NetworkObjectValueChange(args)
+    if args.object.__type ~= "LocalPlayer" then return end
+    if args.key == "CompletedQuests" or args.key == "CurrentQuest" then
+        self:RefreshRightSideContents()
+        -- TODO: refresh left side contents
+    end
+end
+
 function QuestMenu:AddAllQuestsToMenu()
-    -- Add all quests from QuestStrings to the menu
-    for quest_id, quest_data in pairs(QuestStrings) do
+    -- Add all quests from QuestData to the menu
+    for quest_id, quest_data in pairs(QuestData) do
         if quest_data.enabled then
             quest_data.id = quest_id
             self:AddQuest(quest_data)
@@ -49,7 +65,7 @@ function QuestMenu:AddQuest(data)
 	item:SetCellText( self.column_index.Id, "#" .. tostring(data.id) )
 	item:SetCellText( self.column_index.QuestName, data.title )
 	item:SetCellText( self.column_index.LevelReq, data.level_req and tostring(data.level_req) or "" )
-    item:SetCellText( self.column_index.QuestReq, (data.quest_req and data.quest_req > 0) and "#" .. tostring(QuestStrings[data.quest_req].id) or "" )
+    item:SetCellText( self.column_index.QuestReq, (data.quest_req and data.quest_req > 0) and "#" .. tostring(QuestData[data.quest_req].id) or "" )
     
     for i = 0, 4 do
         item:GetCellContents(i):SetAlignment(GwenPosition.Center)
@@ -148,6 +164,7 @@ function QuestMenu:CreateQuestsMenu()
     local bottom_button_size = self.selected_quest.bottom_button:GetSizeRel()
     self.selected_quest.bottom_button:SetPositionRel(Vector2(0.75, 0.95) - Vector2(bottom_button_size.x / 2, bottom_button_size.y))
     self.selected_quest.bottom_button:Hide()
+    self.selected_quest.bottom_button:Subscribe("Press", self, self.PressBottomButton)
 
     self.selected_quest.exit_button = Button.Create(self.window)
     self.selected_quest.exit_button:SetText("Exit Quest")
@@ -159,6 +176,7 @@ function QuestMenu:CreateQuestsMenu()
     self.selected_quest.exit_button:SetAlignment(GwenPosition.Center)
     self.selected_quest.exit_button:SetPositionRel(Vector2(0.505, self.selected_quest.bottom_button:GetHeightRel() / 2 + self.selected_quest.bottom_button:GetPositionRel().y - self.selected_quest.exit_button:GetHeightRel() / 2))
     self.selected_quest.exit_button:Hide()
+    self.selected_quest.exit_button:Subscribe("Press", self, self.PressExitButton)
 
     self.selected_quest.back_button = Button.Create(self.window)
     self.selected_quest.back_button:SetText("<")
@@ -167,6 +185,7 @@ function QuestMenu:CreateQuestsMenu()
     self.selected_quest.back_button:SetPositionRel(Vector2(0.505, base_pos.y))
     self.selected_quest.back_button:SetSizeRel(Vector2(0.04, 0.075))
     self.selected_quest.back_button:Hide()
+    self.selected_quest.back_button:Subscribe("Press", self, self.PressBackButton)
 
     self.selected_quest.forward_button = Button.Create(self.window)
     self.selected_quest.forward_button:SetText(">")
@@ -175,6 +194,7 @@ function QuestMenu:CreateQuestsMenu()
     self.selected_quest.forward_button:SetSizeRel(Vector2(0.04, 0.075))
     self.selected_quest.forward_button:SetPositionRel(Vector2(1 - 0.01 - self.selected_quest.forward_button:GetWidthRel(), base_pos.y))
     self.selected_quest.forward_button:Hide()
+    self.selected_quest.forward_button:Subscribe("Press", self, self.PressForwardButton)
     
     self.selected_quest.reward_title = Label.Create(self.window)
     self.selected_quest.reward_title:SetText("Reward")
@@ -197,22 +217,68 @@ function QuestMenu:CreateQuestsMenu()
     
 end
 
+function QuestMenu:PressBackButton()
+    
+end
+
+function QuestMenu:PressForwardButton()
+    
+end
+
+function QuestMenu:PressBottomButton()
+    if not DoesPlayerHaveAnyActiveQuest(LocalPlayer)
+    and CanPlayerStartQuest(LocalPlayer, self.selected_id) then
+        Network:Send("Quests/StartQuest", {id = self.selected_id}) 
+    end
+end
+
+function QuestMenu:PressExitButton()
+     
+end
+
 function QuestMenu:SelectQuestRow()
     self.selected_id = self.list:GetSelectedRow():GetCellText(self.column_index.Id):gsub("#", ""):trim()
     self.selected_id = tonumber(self.selected_id)
     
-    local quest_data = QuestStrings[self.selected_id]
+    self:RefreshRightSideContents()
+end
+
+function QuestMenu:RefreshRightSideContents()
+    
+    if not self.selected_id then return end
+     
+    local quest_data = QuestData[self.selected_id]
     self.selected_quest.title:SetText(quest_data.title)
     self.selected_quest.description:SetText(quest_data.description)
     self.selected_quest.description:SizeToContents()
     self.selected_quest.bottom_button:Show()
-    self.selected_quest.exit_button:Show()
     self.selected_quest.reward_title:Show()
     self.selected_quest.reward_contents:Show()
     
     self.selected_quest.reward_contents:SetText(quest_data.reward)
     self.selected_quest.reward_contents:SizeToContents()
     self.selected_quest.reward_contents:SetPositionRel(Vector2(0.75 - self.selected_quest.reward_contents:GetWidthRel() / 2, 0.65 + self.selected_quest.reward_title:GetHeightRel()))
+    
+    if GetPlayerActiveQuest(LocalPlayer) == self.selected_id then
+        -- They selected their current quest
+        
+        self.selected_quest.bottom_button:SetEnabled(true)
+        self.selected_quest.exit_button:Show()
+        
+    else
+        -- They selected another quest
+        
+        self.selected_quest.bottom_button:SetText("Start Quest")
+        
+        self.selected_quest.back_button:Hide()
+        self.selected_quest.forward_button:Hide()
+        self.selected_quest.exit_button:Hide()
+        
+        -- Player cannot start quest
+        self.selected_quest.bottom_button:SetEnabled(CanPlayerStartQuest(LocalPlayer, self.selected_id))
+        
+    end
+    
 end
 
 function QuestMenu:GetActive()
@@ -237,6 +303,7 @@ function QuestMenu:SetActive( active )
         Mouse:SetVisible( self.active )
 
         if self.active then
+            self:RefreshRightSideContents()
             self.lpi = Events:Subscribe( "LocalPlayerInput", self, self.LocalPlayerInput )
         else
             Events:Unsubscribe(self.lpi)
