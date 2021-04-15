@@ -105,17 +105,36 @@ end
 function SAM:Destroyed(player)
     -- Called when the SAM is destroyed by a player
     self.destroyed = true
-    self.hacked_owner = ""
-    self.drone_spawned = false
     
     Network:Broadcast("sams/SyncSAM", self:GetSyncData("destroyed")) 
     
     if IsValid(player) then
         Events:Fire("sams/SamDestroyed", {
             sam_level = self.level,
+            owner_id = self.hacked_owner,
             player = player
         })
     end
+    
+    if self.hacked_owner:len() > 1 then
+        -- Old owner, so notify them
+        if IsValid(player) then
+            Events:Fire("SendPlayerPersistentMessage", {
+                steam_id = self.hacked_owner,
+                message = string.format("%s destroyed your SAM %s", player:GetName(), WorldToMapString(self.position)),
+                color = Color(200, 0, 0)
+            })
+        else
+            Events:Fire("SendPlayerPersistentMessage", {
+                steam_id = self.hacked_owner,
+                message = string.format("Your SAM was destroyed %s", WorldToMapString(self.position)),
+                color = Color(200, 0, 0)
+            })
+        end
+    end
+    
+    self.hacked_owner = ""
+    self.drone_spawned = false
     
     if math.random() < SAMChanceOfLootbox then
         -- Spawn SAM lootbox

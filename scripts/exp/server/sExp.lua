@@ -91,6 +91,9 @@ function sExp:SamDestroyed(args)
     local exp_mod = GetKillLevelModifier(exp_data.level, args.sam_level)
 
     local steam_id = tostring(args.player:GetSteamId())
+    
+    if steam_id == args.owner_id or AreFriends(args.player, args.owner_id) then return end
+    
     local player_exp_earned = math.ceil(exp_earned * exp_mod)
     self:GivePlayerExp(player_exp_earned, ExpType.Combat, steam_id, exp_data, args.player)
 
