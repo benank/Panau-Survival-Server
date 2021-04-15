@@ -21,8 +21,10 @@ function sExp:__init()
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
+    Events:Subscribe("items/SAMHackComplete", self, self.HackComplete)
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
     Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
+    Events:Subscribe("sams/SamDestroyed", self, self.SamDestroyed)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
     Events:Subscribe("build/ObjectDestroyed", self, self.ObjectDestroyed)
 
@@ -76,6 +78,30 @@ function sExp:ModuleUnload()
             self:UpdateDB(steam_id, exp_data)
         end
     end
+
+end
+
+function sExp:SamDestroyed(args)
+
+    local exp_earned = Exp.DestroySAM
+
+    local exp_data = args.player:GetValue("Exp")
+    if not exp_data then return end
+
+    local exp_mod = GetKillLevelModifier(exp_data.level, args.sam_level)
+
+    local steam_id = tostring(args.player:GetSteamId())
+    
+    if steam_id == args.owner_id or AreFriends(args.player, args.owner_id) then return end
+    
+    local player_exp_earned = math.ceil(exp_earned * exp_mod)
+    self:GivePlayerExp(player_exp_earned, ExpType.Combat, steam_id, exp_data, args.player)
+
+    Events:Fire("Discord", {
+        channel = "Experience",
+        content = string.format("%s [%s] destroyed a level %d SAM and gained %d exp.", 
+            args.player:GetName(), steam_id, args.sam_level, player_exp_earned)
+    })
 
 end
 
@@ -218,8 +244,8 @@ function sExp:HackComplete(args)
 
     Events:Fire("Discord", {
         channel = "Experience",
-        content = string.format("%s [%s] hacked a stash [Tier: %d] and gained %d exp.", 
-            args.player:GetName(), tostring(args.player:GetSteamId()), args.tier, exp_earned)
+        content = string.format("%s [%s] hacked an object [Tier: %s] and gained %d exp.", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), tostring(args.tier), exp_earned)
     })
     
 end

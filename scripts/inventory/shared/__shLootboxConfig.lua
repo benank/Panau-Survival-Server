@@ -18,7 +18,8 @@ Lootbox.Types =
     Workbench = 15,
     AirdropLevel1 = 16,
     AirdropLevel2 = 17,
-    AirdropLevel3 = 18
+    AirdropLevel3 = 18,
+    SAM = 19
 }
 
 StashAccessMode = 
@@ -64,6 +65,7 @@ Lootbox.GeneratorConfig =
         [Lootbox.Types.AirdropLevel1] = true,
         [Lootbox.Types.AirdropLevel2] = true,
         [Lootbox.Types.AirdropLevel3] = true,
+        [Lootbox.Types.SAM] = true,
     },
     box = 
     {
@@ -129,6 +131,16 @@ Lootbox.GeneratorConfig =
         {
             min_items = 2,
             max_items = 5
+        },
+        [Lootbox.Types.AirdropLevel3] = 
+        {
+            min_items = 2,
+            max_items = 5
+        },
+        [Lootbox.Types.SAM] = 
+        {
+            min_items = 1,
+            max_items = 2
         },
     }
 }
@@ -266,6 +278,12 @@ Lootbox.Models =
         offset = Vector3(0, 0, 0),
         offset2 = Vector3(0, -0.04, -0.03),
         look_offset = Vector3(0, 0, 0.25)
+    },
+    [Lootbox.Types.SAM] = 
+    {
+        model = "geo.cbb.eez/go152-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        offset = Vector3(0, -0.025, 0)
     },
 }
 

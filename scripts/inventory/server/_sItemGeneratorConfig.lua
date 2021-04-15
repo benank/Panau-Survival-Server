@@ -769,5 +769,49 @@ LootItems =
                 ["Burst Ping"] = {rarity = 0.2, min = 5, max = 5},
             }
         },
-    }
+    },
+    [Lootbox.Types.SAM] = 
+    {
+        ["AMMO"] = 
+        {
+            rarity = 0.08,
+            items = 
+            {
+                ["Rockets"] = {rarity = 1, min = 1, max = 2}
+            }
+        },
+        ["EXPLOSIVES"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Cruise Missile"] = {rarity = 1, min = 1, max = 3}
+            }
+        },
+        ["BATTERY"] = 
+        {
+            rarity = 0.7,
+            items = 
+            {
+                ["Battery"] = {rarity = 1, min_dura = 1, max_dura = 2, min = 2, max = 3},
+            }
+        },
+        ["PING"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Ping"] = {rarity = 0.2, min = 1, max = 2},
+                ["Combat Ping"] = {rarity = 0.8, min = 2, max = 3}
+            }
+        },
+        ["KEY"] = 
+        {
+            rarity = 0.02,
+            items = 
+            {
+                ["SAM Key"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+    },
 }

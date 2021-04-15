@@ -81,6 +81,7 @@ end
 function cVehicleWeaponManager:StopFiringInput(only_missiles)
 
     local fire_actions = only_missiles and {[Action.VehicleFireRight] = true} or self.fire_actions
+    self.restrict_right_active = true
 
     local timer = Timer()
     local input_event
@@ -89,8 +90,9 @@ function cVehicleWeaponManager:StopFiringInput(only_missiles)
             Input:SetValue(input, 0)
         end
 
-        if timer:GetSeconds() >= 1 then
+        if timer:GetSeconds() >= 0.1 then
             input_event = Events:Unsubscribe(input_event)
+            self.restrict_right_active = false
         end
     end)
 
@@ -151,8 +153,10 @@ function cVehicleWeaponManager:LocalPlayerInput(args)
 
         if args.input == Action.VehicleFireRight then
 
-            if self.secondary_fire_timer:GetSeconds() < self.secondary_fire_cooldown then
+            if self.secondary_fire_timer:GetSeconds() < self.secondary_fire_cooldown and not self.restrict_right_active then
                 self:StopFiringInput(true)
+                return false
+            elseif self.restrict_right_active then
                 return false
             end
             self.secondary_fire_timer:Restart()

@@ -13,7 +13,8 @@ Exp =
         [10] = 12,
         [16] = 50, -- Level 1 airdrop
         [17] = 100, -- Level 2 airdrop
-        [18] = 200 -- Level 3 airdrop
+        [18] = 200, -- Level 3 airdrop
+        [19] = 30 -- SAM lootbox
     },    
     Kill = 
     {
@@ -46,7 +47,8 @@ Exp =
     Hack = 
     {
         [13] = 30, -- Locked Stash
-        [14] = 5 -- Proximity Alarm
+        [14] = 5, -- Proximity Alarm
+        ["SAM"] = 20
     },
     DestroyStash = 
     {
@@ -55,18 +57,19 @@ Exp =
         [13] = 20, -- Locked Stash
         [14] = 2 -- Proximity alarm
     },
+    DestroySAM = 40,
     DestroyDrone = 
     {
-        [DamageEntity.Bullet] =         80,
-        [DamageEntity.Explosion] =      80,
-        [DamageEntity.Mine] =           70,
-        [DamageEntity.Claymore] =       70,
-        [DamageEntity.HEGrenade] =      70,
-        [DamageEntity.LaserGrenade] =   70,
+        [DamageEntity.Bullet] =         70,
+        [DamageEntity.Explosion] =      70,
+        [DamageEntity.Mine] =           60,
+        [DamageEntity.Claymore] =       60,
+        [DamageEntity.HEGrenade] =      60,
+        [DamageEntity.LaserGrenade] =   60,
         [DamageEntity.C4] =             60,
-        [DamageEntity.CruiseMissile] =  25,
-        [DamageEntity.AreaBombing] =    18,
-        [DamageEntity.TacticalNuke] =   18,
+        [DamageEntity.CruiseMissile] =  20,
+        [DamageEntity.AreaBombing] =    20,
+        [DamageEntity.TacticalNuke] =   20,
         AdditionalPercentPerPlayer = 0.1 -- X% more total exp for each player who damages a drone
     },
     DestroyExplosive = 

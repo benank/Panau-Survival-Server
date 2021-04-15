@@ -237,7 +237,7 @@ function sLootbox:TakeLootStack(args, player)
 
     if #self.contents == 0 then
 
-        if self.tier == Lootbox.Types.Dropbox or self.is_airdrop then
+        if self.tier == Lootbox.Types.Dropbox or self.is_airdrop or self.tier == Lootbox.Types.SAM then
             self:Remove()
         elseif not self.is_stash then
             self:HideBox()
@@ -338,6 +338,7 @@ function sLootbox:StartRespawnTimer()
     if self.is_dropbox then return end
     if self.in_sz then return end
     if self.is_airdrop then return end
+    if self.tier == Lootbox.Types.SAM then return end
 
     if self.respawn_timer then return end
 

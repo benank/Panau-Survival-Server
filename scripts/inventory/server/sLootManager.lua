@@ -65,6 +65,12 @@ function sLootManager:CreateLootboxExternal(args)
                     stack.contents[1].custom_data.level = args.airdrop_tier
                 end
             end
+        elseif args.sam_level then
+            for _, stack in pairs(args.contents) do
+                if stack:GetProperty("name") == "SAM Key" then
+                    stack.contents[1].custom_data.level = args.sam_level
+                end
+            end
         end
     end
 
