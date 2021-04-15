@@ -1,7 +1,7 @@
 class 'EntityManager'
 
 function EntityManager:__init()
-	Events:Subscribe("Render", self, self.Render)
+	-- Events:Subscribe("Render", self, self.Render)
 	Events:Subscribe("PostTick", self, self.PostTick)
 	Events:Subscribe("ModuleUnload", self, self.Unload)
 	

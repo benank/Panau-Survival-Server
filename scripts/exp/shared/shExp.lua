@@ -13,7 +13,8 @@ Exp =
         [10] = 12,
         [16] = 50, -- Level 1 airdrop
         [17] = 100, -- Level 2 airdrop
-        [18] = 200 -- Level 3 airdrop
+        [18] = 200, -- Level 3 airdrop
+        [19] = 30 -- SAM lootbox
     },    
     Kill = 
     {

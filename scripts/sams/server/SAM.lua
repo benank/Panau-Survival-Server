@@ -51,6 +51,16 @@ function SAM:Destroyed(player)
         })
     end
     
+    if math.random() < SAMChanceOfLootbox then
+        -- Spawn SAM lootbox
+        Events:Fire("inventory/CreateLootboxExternal", {
+            tier = 19,
+            position = self.position,
+            angle = Angle(),
+            sam_level = self.level
+        }) 
+    end
+    
     -- TODO: respawn SAM later
     Thread(function()
         Timer.Sleep(1000 * 60 * 60)

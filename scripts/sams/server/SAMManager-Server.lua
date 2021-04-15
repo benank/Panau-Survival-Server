@@ -104,10 +104,12 @@ function SAMManager:StartSAMMonitoring()
 				if player:InVehicle() and player:GetPosition().y > 210 then
 					local player_vehicle = player:GetVehicle()
 					local speed = math.abs(math.floor(player_vehicle:GetLinearVelocity():Length()))
+					local model_id = player_vehicle:GetModelId()
+					local sam_key_level = player:GetValue("Sam Key")
 					
-					if player_vehicle:GetHealth() > 0 and speed > 15 then
+					if IsValidVehicle(model_id, SAMMissileVehicles) and player_vehicle:GetHealth() > 0 and speed > 15 then
 						for id, sam in pairs(self.sams) do
-							if sam:CanFire() and sam.position:Distance(player_pos) < 1024 then
+							if sam:CanFire() and sam.position:Distance(player_pos) < 1024 and sam_key_level < sam.level then
 								sam:Fire(player, player_vehicle)
 								Timer.Sleep(1)
 							end

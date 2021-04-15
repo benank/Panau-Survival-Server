@@ -4,7 +4,6 @@ function SAMManager:__init()
 	
 	self.sams = {}
 	
-	SAMTimer	=	Timer()
 	-- Events:Subscribe("Render", self, self.RenderSAMs)
 	-- Events:Subscribe("PreTick", self, self.CheckClientPlayers)
 	
@@ -94,14 +93,6 @@ function SAMManager:RenderSAMs()
 	end
 end
 
-function SAMManager:CheckClientPlayers()
-	if SAMTimer:GetSeconds() < SAMInteger / 10 then return end
-	self:CheckSAMs(LocalPlayer)
-	for players in Client:GetPlayers() do
-		self:CheckSAMs(players)
-	end
-end
-
 function SAMManager:FireSAM(missile, sender, target, targetVehicle, statsTable, sam_id)
 	statsTable.sam_id = sam_id
 	local NewMissile					=	{}
@@ -114,24 +105,6 @@ function SAMManager:FireSAM(missile, sender, target, targetVehicle, statsTable, 
 		NewMissile.print			=	infoPrint
 		NewMissile.statsTable		=	statsTable
 	EntityManager:CreateEntity(NewMissile)
-end
-
-function SAMManager:CheckSAMs(player)
-	local PlayerPosition		=	player:GetPosition()
-	local PlayerVehicle			=	player:GetVehicle()
-	
-	if PlayerVehicle then
-		if IsValidVehicle(PlayerVehicle:GetModelId(), SAMMissileVehicles) then
-			if SAMTimer:GetSeconds() < SAMInteger then return end
-			for k,v in pairs(SAMAnimationManager.ClientAnimationTable) do
-				if Vector3.Distance(PlayerPosition, v.Anchor) <= v.Radius then
-					SAMTimer:Restart()
-					self:FireSAM("SAMTableRocket", v.RightBarrel, player, PlayerVehicle, v.config)
-					self:FireSAM("SAMTableRocket", v.LeftBarrel, player, PlayerVehicle, v.config)
-				end
-			end
-		end
-	end
 end
 
 function SAMManager:FireSAMServer(args)
