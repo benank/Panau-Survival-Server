@@ -18,5 +18,5 @@ end
 
 -- Returns true if both players have added each other
 function AreFriends(player, steam_id)
-    return steam_id:len() > 1 and IsAFriend(player, steam_id) and IsFriend(player, steam_id)
+    return tostring(steam_id):len() > 3 and IsAFriend(player, steam_id) and IsFriend(player, steam_id)
 end
