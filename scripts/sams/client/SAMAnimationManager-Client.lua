@@ -121,7 +121,7 @@ function SAMAnimationManager:ArrangeTable()
 --	print("Arranging SAM Table...")
 	local TableCount		=	0
 	for id, sam in pairs(SAMManager.sams) do
-		if not sam.destroyed and Vector3.Distance(Camera:GetPosition(), sam.position) <= 1024 then
+		if not sam.destroyed and sam.position and Vector3.Distance(Camera:GetPosition(), sam.position) <= 1024 then
 			if self:NotBuilt(sam.id) then
 				self:Create(sam)
 				TableCount		=	TableCount + 1
