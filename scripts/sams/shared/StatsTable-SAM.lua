@@ -22,7 +22,8 @@ SAM_Configuration =
     MaxSpeed = {base = 85, per_level = 2.25},
     TurnRate = {base = 42, per_level = 0.5},
     FireInterval = {base = 12, per_level = -0.1},
-    Range = {base = 1000, per_level = 20}
+    Range = {base = 1000, per_level = 20},
+    LootChance = {base = 0.2, per_level = 0.01}
 }
 	
 --[[

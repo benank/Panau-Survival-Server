@@ -136,7 +136,7 @@ function SAM:Destroyed(player)
     self.hacked_owner = ""
     self.drone_spawned = false
     
-    if math.random() < SAMChanceOfLootbox then
+    if math.random() < self.config.LootChance then
         -- Spawn SAM lootbox
         Events:Fire("inventory/CreateLootboxExternal", {
             tier = 19,
