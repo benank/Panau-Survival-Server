@@ -25,8 +25,17 @@ function SAMManager:__init()
 	Network:Subscribe("sams/SplashHitSAM", self, self.SplashHitSAM)
 	Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
 	Events:Subscribe("sams/GetSAMInfo", self, self.GetSAMInfo)
+	Events:Subscribe("sams/GetAllSAMs", self, self.GetAllSAMs)
 	Events:Subscribe("items/SAMHackComplete", self, self.SAMHackComplete)
 	Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+end
+
+function SAMManager:GetAllSAMs()
+	local sams = {}
+	for id, sam in pairs(self.sams) do
+		sams[id] = sam:GetSyncData()
+	end
+	Events:Fire("sams/AllSAMs", sams)
 end
 
 function SAMManager:ModuleUnload()

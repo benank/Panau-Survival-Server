@@ -20,8 +20,8 @@ SAM_Configuration =
     Damage = {base = 0.2, per_level = 0.001},
     MaxHealth = {base = 300, per_level = 15},
     MaxSpeed = {base = 85, per_level = 2.25},
-    TurnRate = {base = 40, per_level = 0.5},
-    FireInterval = {base = 15, per_level = -0.1},
+    TurnRate = {base = 42, per_level = 0.5},
+    FireInterval = {base = 12, per_level = -0.1},
     Range = {base = 1000, per_level = 20}
 }
 	

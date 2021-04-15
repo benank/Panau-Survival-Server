@@ -625,6 +625,19 @@ function sHitDetection:VehicleExplosionHit(args, player)
                 v:SetLinearVelocity(v:GetLinearVelocity() + (data.hit_dir * radius * explosive_data.knockback * (armor * 0.1)))
 
                 sub = Events:Unsubscribe(sub)
+                
+                if v:GetDriver() then
+                    local driver = v:GetDriver()
+                    
+                    if not self.sz_config then
+                        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+                    end
+
+                    if driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+                        driver:SetNetworkValue("InCombat", true)
+                        self.players_in_combat[tostring(driver:GetSteamId())] = {time = Server:GetElapsedSeconds()}
+                    end
+                end
 
             end
 
@@ -930,6 +943,19 @@ function sHitDetection:DetectVehicleDroneHit(args, player)
     if vehicle:GetHealth() <= 0 then return end
 
     vehicle:SetHealth(math.max(0, vehicle:GetHealth() - damage))
+    
+    if vehicle:GetDriver() then
+        local driver = vehicle:GetDriver()
+        
+        if not self.sz_config then
+            self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+        end
+    
+        if driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+            driver:SetNetworkValue("InCombat", true)
+            self.players_in_combat[tostring(driver:GetSteamId())] = {time = Server:GetElapsedSeconds()}
+        end
+    end
 end
 
 function sHitDetection:SAMHitPlayerVehicle(args)
@@ -969,7 +995,19 @@ function sHitDetection:SAMHitPlayerVehicle(args)
                 name = "SAM",
                 weapon_name = "SAM Rocket"
             })
-
+            
+            if args.vehicle:GetDriver() then
+                local driver = args.vehicle:GetDriver()
+                
+                if not self.sz_config then
+                    self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+                end
+            
+                if driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+                    driver:SetNetworkValue("InCombat", true)
+                    self.players_in_combat[tostring(driver:GetSteamId())] = {time = Server:GetElapsedSeconds()}
+                end
+            end
         end
     end
     
@@ -999,7 +1037,18 @@ function sHitDetection:DetectVehicleHit(args, player)
     vehicle:SetHealth(math.max(0, vehicle:GetHealth() - damage))
     
     if vehicle:GetDriver() then
-        self:SetPlayerLastDamaged(vehicle:GetDriver(), DamageEntity.Bullet, tostring(player:GetSteamId()), args.weapon_enum)
+        local driver = vehicle:GetDriver()
+        self:SetPlayerLastDamaged(driver, DamageEntity.Bullet, tostring(player:GetSteamId()), args.weapon_enum)
+            
+        if not self.sz_config then
+            self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+        end
+
+        if driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+            driver:SetNetworkValue("InCombat", true)
+            self.players_in_combat[tostring(driver:GetSteamId())] = {time = Server:GetElapsedSeconds()}
+        end
+
     end
 
     vehicle:SetValue("LastDamaged", 
@@ -1094,6 +1143,16 @@ function sHitDetection:DetectVehicleSplashHit(args, player)
     
     if vehicle:GetDriver() then
         self:SetPlayerLastDamaged(vehicle:GetDriver(), DamageEntity.Explosion, tostring(player:GetSteamId()), args.weapon_enum)
+        
+        if not self.sz_config then
+            self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+        end
+
+        local driver = vehicle:GetDriver()
+        if driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+            driver:SetNetworkValue("InCombat", true)
+            self.players_in_combat[tostring(driver:GetSteamId())] = {time = Server:GetElapsedSeconds()}
+        end
     end
 
     vehicle:SetValue("LastDamaged", 
