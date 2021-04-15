@@ -123,10 +123,7 @@ end
 
 function SAMManager:ModuleLoad()
 	self:CreateAllSAMs()
-	
-	Timer.SetTimeout(5000, function()
-		self:StartSAMMonitoring()
-	end)
+	self:StartSAMMonitoring()
 end
 
 function SAMManager:StartSAMMonitoring()
