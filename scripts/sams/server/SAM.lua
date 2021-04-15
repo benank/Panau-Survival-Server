@@ -11,7 +11,7 @@ function SAM:__init(args)
     self.hacked_owner = ""
     self.destroyed = false
     self.drone_spawned = false
-    self.fire_timer = Server:GetElapsedSeconds()
+    self.fire_timer = Timer()
 end
 
 function SAM:IsSAMKeyEffective(level)
@@ -57,7 +57,7 @@ function SAM:Hacked(player)
 end
 
 function SAM:CanFire()
-     return Server:GetElapsedSeconds() - self.fire_timer > self.config.FireInterval
+    return self.fire_timer:GetSeconds() > self.config.FireInterval
 end
 
 function SAM:Fire(player, vehicle)
@@ -68,7 +68,7 @@ function SAM:Fire(player, vehicle)
     }
     Network:Send(player, "sams/SAMFire", data)
     Network:SendNearby(player, "sams/SAMFire", data)
-    self.fire_timer = Server:GetElapsedSeconds()
+    self.fire_timer:Restart()
 end
 
 function SAM:Damage(amount, player)
