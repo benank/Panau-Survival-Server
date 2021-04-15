@@ -33,7 +33,10 @@ function sHitDetection:__init()
     Network:Subscribe("HitDetectionSyncExplosionDrone", self, self.HitDetectionSyncExplosionDrone)
     Network:Subscribe("HitDetection/DetectDroneSplashHit", self, self.DetectDroneSplashHit)
     
+    Events:Subscribe("HitDetection/DealDamageIndicator", self, self.DealDamageIndicator)
+    
     Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
+    Events:Subscribe("HitDetection/SAMHitPlayerVehicle", self, self.SAMHitPlayerVehicle)
 
     Events:Subscribe("HitDetection/PlayerInToxicArea", self, self.PlayerInsideToxicArea)
     Events:Subscribe("HitDetection/PlayerSurvivalDamage", self, self.PlayerSurvivalDamage)
@@ -56,6 +59,10 @@ function sHitDetection:__init()
 
     Network:Subscribe("Hitdetection/Respawn", self, self.Respawn)
 
+end
+
+function sHitDetection:DealDamageIndicator(args)
+    Network:Send(args.player, "HitDetection/DealDamage", {red = args.red == true}) 
 end
 
 function sHitDetection:BurstPingHit(args)
@@ -923,6 +930,49 @@ function sHitDetection:DetectVehicleDroneHit(args, player)
     if vehicle:GetHealth() <= 0 then return end
 
     vehicle:SetHealth(math.max(0, vehicle:GetHealth() - damage))
+end
+
+function sHitDetection:SAMHitPlayerVehicle(args)
+     
+    assert(IsValid(args.player), "player is invalid")
+    
+    if not args.player:InVehicle() then
+        
+        if args.player:GetValue("InSafezone") then return end
+        
+        local armor_mod = WeaponDamage:GetArmorMod(args.player, WeaponHitType.Explosive, WeaponDamage.SAMRocketDamage)
+        local damage = WeaponDamage.SAMRocketDamage * armor_mod * 2
+        -- Players take 2x as much damage as vehicles do from rockets
+        
+        self:ApplyDamage({
+            player = args.player,
+            damage = damage,
+            source = DamageEntity.SAM
+        })
+
+    elseif IsValid(args.vehicle) then
+        
+        local vehicle_pos = args.vehicle:GetPosition()
+        local distance = args.hit_position:Distance(vehicle_pos)
+        local modifier = 1 - math.clamp(distance / args.radius, 0, 1)
+        
+        local damage = WeaponDamage.SAMRocketDamage * modifier
+        
+        if damage > 0 then
+            local vehicle_armor = WeaponDamage.vehicle_armors[args.vehicle:GetModelId()] or WeaponDamage.default_vehicle_armor
+            damage = damage * vehicle_armor
+            
+            args.vehicle:SetHealth(math.max(0, args.vehicle:GetHealth() - damage))
+
+            args.vehicle:SetValue("LastDamaged", 
+            {
+                name = "SAM",
+                weapon_name = "SAM Rocket"
+            })
+
+        end
+    end
+    
 end
 
 function sHitDetection:DetectVehicleHit(args, player)

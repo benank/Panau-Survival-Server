@@ -112,6 +112,7 @@ function WeaponDamage:__init()
     self.VehicleGuardDamage = 1.0 -- Instakill
     
     self.SuicideDamage = 999
+    self.SAMRocketDamage = 0.20
     
     self.ExplosiveBaseDamage = 
     {

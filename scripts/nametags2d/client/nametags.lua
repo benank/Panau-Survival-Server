@@ -319,6 +319,11 @@ function Nametags:DrawDrone(args)
     self:DrawFullTag( pos, "Drone", 5, self:GetDroneNameColor(args.drone.level), drone.health / drone.max_health, nil, drone.level )
 end
 
+function Nametags:DrawSAM(sam)
+    local pos = sam.position + Vector3.Up * 2
+    self:DrawFullTag( pos, "SAM", 5, self:GetDroneNameColor(sam.level), sam.health / sam.config.MaxHealth, nil, sam.level )
+end
+
 function Nametags:GetDroneNameColor(drone_level)
 
     local LevelCutoffs =
@@ -526,6 +531,11 @@ function Nametags:Render()
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 1000)
     if ray.entity and ray.entity.__type == "ClientStaticObject" and ray.entity:GetModel() == "lave.v023_customcar.eez/v023-base.lod" then
         self.recent_drones[ray.entity:GetId()] = {time = time, entity = ray.entity}
+    elseif ray.entity and ray.entity.__type == "ClientStaticObject" then
+        local sam = cSAMContainer:CSOIdToSAM(ray.entity:GetId())
+        if sam then
+            self:DrawSAM(sam)
+        end
     end
 
     -- TODO: sort by distance to determine render order like player tags

@@ -14,3 +14,35 @@ SAMStatsTable	=	{
 	ObjectCollision		=	"gp040_lod1-a_col.pfx",			--	The Missile's collision, change to "" to remove.					Default: "gp040_lod1-a_col.pfx"
 	Note				=	""		--	Ignore this, it is for debugging.
 				}
+			
+SAM_Configuration = 
+{
+    Damage = {base = 0.2, per_level = 0.001},
+    MaxHealth = {base = 300, per_level = 15},
+    MaxSpeed = {base = 75, per_level = 1},
+    TurnRate = {base = 40, per_level = 0.25},
+    FireInterval = {base = 15, per_level = -0.1},
+    Range = {base = 1000, per_level = 10}
+}
+	
+--[[
+    Gets a SAM configuration depending on the SAM level
+
+]]
+
+function GetSAMConfiguration(level)
+
+    local config = deepcopy(SAMStatsTable)
+
+    for config_name, data in pairs(SAM_Configuration) do
+        if data.per_level then
+            config[config_name] = data.base + data.per_level * level
+        elseif data.chance_per_level then
+            config[config_name] = math.random() < (data.base_chance + data.chance_per_level * level)
+                and (not data.base) or (data.base)
+        end
+    end
+
+    return config
+
+end

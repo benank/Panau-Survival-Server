@@ -23,6 +23,7 @@ function sExp:__init()
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
     Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
+    Events:Subscribe("sams/SamDestroyed", self, self.SamDestroyed)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
     Events:Subscribe("build/ObjectDestroyed", self, self.ObjectDestroyed)
 
@@ -76,6 +77,27 @@ function sExp:ModuleUnload()
             self:UpdateDB(steam_id, exp_data)
         end
     end
+
+end
+
+function sExp:SamDestroyed(args)
+
+    local exp_earned = Exp.DestroySAM
+
+    local exp_data = args.player:GetValue("Exp")
+    if not exp_data then return end
+
+    local exp_mod = GetKillLevelModifier(exp_data.level, args.sam_level)
+
+    local steam_id = tostring(args.player:GetSteamId())
+    local player_exp_earned = math.ceil(exp_earned * exp_mod)
+    self:GivePlayerExp(player_exp_earned, ExpType.Combat, steam_id, exp_data, args.player)
+
+    Events:Fire("Discord", {
+        channel = "Experience",
+        content = string.format("%s [%s] destroyed a level %d SAM and gained %d exp.", 
+            args.player:GetName(), steam_id, args.sam_level, player_exp_earned)
+    })
 
 end
 

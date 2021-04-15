@@ -5,7 +5,7 @@ function SAMAnimationManager:__init()
 	
 	--	Timer Integers	--d
 	self.AnimateInteger			=	10	--	Milliseconds
-	self.ArrangeInteger			=	2.5	--	Seconds
+	self.ArrangeInteger			=	1.5	--	Seconds
 	
 	--	Rotation Speeds	--
 	self.SAMChasisRotationSpeed	=	0.050--0.005
@@ -57,24 +57,25 @@ function SAMAnimationManager:AnimateObjects()
 	end
 end
 
+function SAMAnimationManager:RemoveById(id)
+	if self.ClientAnimationTable[id] then
+		self:Remove(self.ClientAnimationTable[id], true)
+	end
+end
+
 function SAMAnimationManager:Animate()
 	if not self.AnimationActive then return false end
-	for k,v in ipairs(self.ClientAnimationTable) do
+	for k,v in pairs(self.ClientAnimationTable) do
 		if Vector3.Distance(LocalPlayer:GetPosition(), v.Anchor) <= v.Radius then
 			self:Animation(v)
 		else
-			self:Remove(k, v, true)
+			self:Remove(v, true)
 		end
 	end
 end
 
-function SAMAnimationManager:NotBuilt(location)
-	for k,v in ipairs(self.ClientAnimationTable) do
-		if v.Anchor	== location then
-			return false
-		end
-	end
-	return true
+function SAMAnimationManager:NotBuilt(id)
+	return self.ClientAnimationTable[id] == nil
 end
 
 function SAMAnimationManager:Animation(objectTable)
@@ -116,12 +117,13 @@ end
 
 function SAMAnimationManager:ArrangeTable()
 	if not self.AnimationActive then return false end
+	if not SAMManager.sams then return end
 --	print("Arranging SAM Table...")
 	local TableCount		=	0
-	for k,v in pairs(SAMAnchorLocationsTable) do
-		if Vector3.Distance(LocalPlayer:GetPosition(), v.pos) <= 512 then
-			if self:NotBuilt(v.pos) then
-				self:Create(v.pos, 512)
+	for id, sam in pairs(SAMManager.sams) do
+		if not sam.destroyed and Vector3.Distance(LocalPlayer:GetPosition(), sam.position) <= 1024 then
+			if self:NotBuilt(sam.id) then
+				self:Create(sam)
 				TableCount		=	TableCount + 1
 			end
 		end
@@ -129,12 +131,12 @@ function SAMAnimationManager:ArrangeTable()
 --	print("Table Count: " .. TotalTableCount, #self.ClientAnimationTable)
 end
 
-function SAMAnimationManager:Create(anchor, radius)
+function SAMAnimationManager:Create(sam)
 --	print("Creating SAM...")
-	local SAMTable	=	{}
-	SAMTable.Anchor		=	anchor
-	SAMTable.Radius		=	radius
-	local BuildLocation	=	anchor
+	local SAMTable	=	sam
+	sam.Anchor = sam.position
+	sam.Radius = 1024
+	local BuildLocation	=	sam.position
 	
 	local args		=	{}
 	args.position	=	BuildLocation
@@ -145,6 +147,11 @@ function SAMAnimationManager:Create(anchor, radius)
 	args.enabled	=	true
 	args.fixed		=	true	--	Set to false to allow players to move with it and it move slower
 	SAMTable.Mount = ClientStaticObject.Create(args)
+	Events:Fire("sams/CreateSAM", {
+		id = sam.id, 
+		cso_id = SAMTable.Mount:GetId(),
+		cso = SAMTable.Mount
+	})
 	
 	local args		=	{}
 	args.position	=	BuildLocation
@@ -155,6 +162,11 @@ function SAMAnimationManager:Create(anchor, radius)
 	args.enabled	=	true
 	args.fixed		=	false	--	Set to false to allow players to move with it and it move slower
 	SAMTable.Chasis = ClientStaticObject.Create(args)
+	Events:Fire("sams/CreateSAM", {
+		id = sam.id, 
+		cso_id = SAMTable.Chasis:GetId(),
+		cso = SAMTable.Chasis
+	})
 	
 	local args		=	{}
 	args.position	=	BuildLocation
@@ -165,6 +177,11 @@ function SAMAnimationManager:Create(anchor, radius)
 	args.enabled	=	true
 	args.fixed		=	true	--	Set to false to allow players to move with it and it move slower
 	SAMTable.Radar = ClientStaticObject.Create(args)
+	Events:Fire("sams/CreateSAM", {
+		id = sam.id, 
+		cso_id = SAMTable.Radar:GetId(),
+		cso = SAMTable.Radar
+	})
 	
 	local args		=	{}
 	args.position	=	BuildLocation
@@ -175,6 +192,11 @@ function SAMAnimationManager:Create(anchor, radius)
 	args.enabled	=	true
 	args.fixed		=	true	--	Set to false to allow players to move with it and it move slower
 	SAMTable.RightBarrel = ClientStaticObject.Create(args)
+	Events:Fire("sams/CreateSAM", {
+		id = sam.id, 
+		cso_id = SAMTable.RightBarrel:GetId(),
+		cso = SAMTable.RightBarrel
+	})
 	
 	local args		=	{}
 	args.position	=	BuildLocation
@@ -185,18 +207,23 @@ function SAMAnimationManager:Create(anchor, radius)
 	args.enabled	=	true
 	args.fixed		=	true	--	Set to false to allow players to move with it and it move slower
 	SAMTable.LeftBarrel = ClientStaticObject.Create(args)
+	Events:Fire("sams/CreateSAM", {
+		id = sam.id, 
+		cso_id = SAMTable.LeftBarrel:GetId(),
+		cso = SAMTable.LeftBarrel
+	})
 	
-	table.insert(self.ClientAnimationTable, SAMTable)
+	self.ClientAnimationTable[sam.id] = SAMTable
 end
 
 function SAMAnimationManager:ModuleUnload()
 --	print("Module Unload")
-	for k,v in ipairs(self.ClientAnimationTable) do
-		self:Remove(k, v, false)
+	for k,v in pairs(self.ClientAnimationTable) do
+		self:Remove(v, false)
 	end
 end
 
-function SAMAnimationManager:Remove(key, samTable, clearTable)
+function SAMAnimationManager:Remove(samTable, clearTable)
 --	print("Removing...", key, samTable)
 	if IsValid(samTable.Mount) then
 		samTable.Mount:Remove()
@@ -214,7 +241,7 @@ function SAMAnimationManager:Remove(key, samTable, clearTable)
 		samTable.LeftBarrel:Remove()
 	end
 	if clearTable then
-		table.remove(self.ClientAnimationTable, key)
+		self.ClientAnimationTable[samTable.id] = nil
 	end
 end
 

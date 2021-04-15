@@ -286,8 +286,9 @@ function SAMTableRocket:MissileStrike()
 		DamageInformationTable				=	{}
 		DamageInformationTable.player		=	LocalPlayer
 		DamageInformationTable.epicenter	=	BlastEpicenter
+		DamageInformationTable.sam_id 		=	self.Stats.sam_id 
 		DamageInformationTable.Stats		=	self.Stats
-		Network:Send("MissileStrikeDamagePlayer", DamageInformationTable)
+		Network:Send("sams/MissileStrikeDamagePlayer", DamageInformationTable)
 	end
 end
 
