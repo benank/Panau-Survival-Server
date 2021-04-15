@@ -66,7 +66,7 @@ end
 function SAMAnimationManager:Animate()
 	if not self.AnimationActive then return false end
 	for k,v in pairs(self.ClientAnimationTable) do
-		if Vector3.Distance(LocalPlayer:GetPosition(), v.Anchor) <= v.Radius then
+		if Vector3.Distance(Camera:GetPosition(), v.Anchor) <= v.Radius then
 			self:Animation(v)
 		else
 			self:Remove(v, true)
@@ -121,7 +121,7 @@ function SAMAnimationManager:ArrangeTable()
 --	print("Arranging SAM Table...")
 	local TableCount		=	0
 	for id, sam in pairs(SAMManager.sams) do
-		if not sam.destroyed and Vector3.Distance(LocalPlayer:GetPosition(), sam.position) <= 1024 then
+		if not sam.destroyed and Vector3.Distance(Camera:GetPosition(), sam.position) <= 1024 then
 			if self:NotBuilt(sam.id) then
 				self:Create(sam)
 				TableCount		=	TableCount + 1

@@ -34,7 +34,7 @@ function SAMManager:SyncSAM(args)
 	
 	-- Too far to sync
 	if args.position then
-		if args.position:Distance(LocalPlayer:GetPosition()) > 3000 then
+		if args.position:Distance(Camera:GetPosition()) > 3000 then
 			return
 		end
 	end
@@ -69,7 +69,7 @@ function SAMManager:RenderSAMs()
 	local ScreenSize		=	Render.Size
 	local DisplaySAMCount	=	0
 	for k,v in pairs(SAMAnimationManager.ClientAnimationTable) do
-		if Vector3.Distance(LocalPlayer:GetPosition(), v.Anchor) <= v.Radius then
+		if Vector3.Distance(Camera:GetPosition(), v.Anchor) <= v.Radius then
 			DisplaySAMCount	=	DisplaySAMCount + 1
 			local SAMLocation	=	Render:WorldToMinimap(v.Anchor)
 			local SAMMapIndicatorRadius	=	3
