@@ -19,7 +19,7 @@ EffectTableExplosionMedium	=	{5, 15, 14, 168}	--	A list of Effects to randomly p
 SAMMissileVehicles			=	{3, 14, 24, 30, 34, 37, 39, 51, 57, 59, 62, 64, 65, 67, 81, 85}	--	List of vehicle IDs that the SAMs will attack.
 VehicleTablePlanes			=	{24, 30, 34, 39, 51, 59, 81, 85}	--	A list of planes, this is used to make identify planes because they operate differently than normal vehicles. Note: Plane IDs must be in both lists.
 
-SAMChanceOfLootbox 			=   0.3
+SAMChanceOfLootbox 			=   0.4
 
 -- if Server and IsTest then
 -- 	Events:Subscribe("PlayerChat", function(args)
