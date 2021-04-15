@@ -4,9 +4,9 @@ Events:Subscribe("Inventory/ToggleEquipped", function(args)
     if args.item.name ~= "SAM Key" then return end
     if not ItemsConfig.equippables[args.item.name] then return end
 
-    args.player:SetNetworkValue("Sam Key", args.item.equipped == true and tonumber(args.item.custom_data.level) or 0)
+    args.player:SetNetworkValue("SAM Key", args.item.equipped == true and tonumber(args.item.custom_data.level) or 0)
 end)
 
 Events:Subscribe("ClientModuleLoad", function(args)
-    args.player:SetNetworkValue("Sam Key", 0)
+    args.player:SetNetworkValue("SAM Key", 0)
 end)

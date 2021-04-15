@@ -10,8 +10,8 @@ DefaultSAMDistance			=	512	--	The default range at which SAMs will fire if no ot
 SAMDisplayCountFontSize		=	12		--	The font size of the Nearby SAMs count display. 			Default: 12
 SAMDisplayOffsetX			=	0.0675	--	The X Position of the Nearby SAMs count display.			Default: 0.0675
 SAMDisplayOffsetY			=	0.001	--	The Y Position of the Nearby SAMs count display.			Default: 0.001
-SAMDisplayColor				=	Color(250, 0, 0, 200)	--	The color of the Nearby SAMs count display.	Default: Color(250, 0, 0, 200)
-SAMDisplayMiniMapColor		=	Color(255, 0, 0, 150)	--	The color of SAM Sites on the Minimap.		Default: Color(255, 0, 0, 150)
+SAMDisplayColor				=	Color(0, 220, 0, 200)	--	The color of the Nearby SAMs count display.	Default: Color(250, 0, 0, 200)
+SAMDisplayMiniMapColor		=	Color(0, 180, 0, 150)	--	The color of SAM Sites on the Minimap.		Default: Color(255, 0, 0, 150)
 
 MissileSafetyCheckInteger	=	750	--	Milliseconds, a check to make sure the missiles don't explode at the SAM.	Default: 750
 

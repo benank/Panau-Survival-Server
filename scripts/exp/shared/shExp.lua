@@ -47,7 +47,8 @@ Exp =
     Hack = 
     {
         [13] = 30, -- Locked Stash
-        [14] = 5 -- Proximity Alarm
+        [14] = 5, -- Proximity Alarm
+        ["SAM"] = 20
     },
     DestroyStash = 
     {

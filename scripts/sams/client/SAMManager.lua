@@ -4,7 +4,7 @@ function SAMManager:__init()
 	
 	self.sams = {}
 	
-	-- Events:Subscribe("Render", self, self.RenderSAMs)
+	Events:Subscribe("Render", self, self.RenderSAMs)
 	-- Events:Subscribe("PreTick", self, self.CheckClientPlayers)
 	
 	Network:Subscribe("sams/SyncSAM", self, self.SyncSAM)
@@ -64,12 +64,16 @@ function SAMManager:SyncSAM(args)
 	Events:Fire("sams/SamUpdated", args)
 end
 
+function SAMManager:IsSAMFriendly(sam)
+	return AreFriends(player, sam.hacked_owner) or tostring(LocalPlayer:GetSteamId()) == sam.hacked_owner
+end
+
 function SAMManager:RenderSAMs()
 	if Game:GetState() ~= GUIState.Game then return end
 	local ScreenSize		=	Render.Size
 	local DisplaySAMCount	=	0
 	for k,v in pairs(SAMAnimationManager.ClientAnimationTable) do
-		if Vector3.Distance(Camera:GetPosition(), v.Anchor) <= v.Radius then
+		if self:IsSAMFriendly(v) and Vector3.Distance(Camera:GetPosition(), v.Anchor) <= v.Radius then
 			DisplaySAMCount	=	DisplaySAMCount + 1
 			local SAMLocation	=	Render:WorldToMinimap(v.Anchor)
 			local SAMMapIndicatorRadius	=	3
@@ -80,16 +84,6 @@ function SAMManager:RenderSAMs()
 			local SAMRayMapPoint	=	Render:WorldToMinimap(SAMRay.position)
 			Render:DrawLine(SAMChasisMapPoint, SAMRayMapPoint, SAMDisplayMiniMapColor)
 		end
-	end
-	if DisplaySAMCount > 0 then
-		local DisplayText			=	"Nearby SAMs: " .. DisplaySAMCount
-		local EffectiveFontSize		=	SAMDisplayCountFontSize * ScreenSize.y / 1000
-		local Textsize				=	Render:GetTextSize(DisplayText, EffectiveFontSize)
-		local EffectiveTextColor	=	SAMDisplayColor
-		local SAMDisplayPointX		=	ScreenSize.x * SAMDisplayOffsetX
-		local SAMDisplayPointY		=	ScreenSize.y * SAMDisplayOffsetY
-		Render:FillArea(Vector2(SAMDisplayPointX - Textsize.x / 2 -2, SAMDisplayPointY -2), Vector2(Textsize.x +4, Textsize.y +4), Color(0, 0, 0, 150))
-		Render:DrawText(Vector2(SAMDisplayPointX - Textsize.x / 2, SAMDisplayPointY), DisplayText, EffectiveTextColor, EffectiveFontSize)
 	end
 end
 

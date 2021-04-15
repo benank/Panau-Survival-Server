@@ -321,7 +321,20 @@ end
 
 function Nametags:DrawSAM(sam)
     local pos = sam.position + Vector3.Up * 2
-    self:DrawFullTag( pos, "SAM", 5, self:GetDroneNameColor(sam.level), sam.health / sam.config.MaxHealth, nil, sam.level )
+    local name = "SAM"
+    local name_color = self:GetDroneNameColor(sam.level)
+    local steam_id = tostring(LocalPlayer:GetSteamId())
+    local friendly = AreFriends(LocalPlayer, sam.hacked_owner) or steam_id == sam.hacked_owner
+    
+    if friendly then
+        name = "SAM [Friendly]"
+        name_color = Color(0, 220, 0)
+    elseif not friendly and sam.hacked_owner:len() > 1 then
+        name = "SAM [Hacked]"
+        name_color = Color.Red
+    end
+    
+    self:DrawFullTag( pos, name, 5, name_color, sam.health / sam.config.MaxHealth, nil, sam.level )
 end
 
 function Nametags:GetDroneNameColor(drone_level)

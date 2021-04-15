@@ -10,7 +10,50 @@ function SAM:__init(args)
     self.health = self.config.MaxHealth
     self.hacked_owner = ""
     self.destroyed = false
+    self.drone_spawned = false
     self.fire_timer = Server:GetElapsedSeconds()
+end
+
+function SAM:IsSAMKeyEffective(level)
+    if self.hacked_owner:len() > 1 then return false end
+    return self.level <= level
+end
+
+function SAM:IsFriendlyTowardsPlayer(player)
+    local steam_id = tostring(player:GetSteamId())
+    return AreFriends(player, self.hacked_owner) or steam_id == self.hacked_owner
+end
+
+function SAM:Hacked(player)
+    local steam_id = tostring(player:GetSteamId())
+    if self.hacked_owner == steam_id or AreFriends(player, self.hacked_owner) then return end
+    
+    if self.hacked_owner:len() > 1 then
+        -- Old owner, so notify them
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = self.hacked_owner,
+            message = string.format("%s hacked your SAM %s", player:GetName(), WorldToMapString(self.position)),
+            color = Color(200, 0, 0)
+        })
+    end
+    
+    self.hacked_owner = steam_id
+    local exp = player:GetValue("Exp")
+    if self.level < exp.level then
+        self.level = exp.level
+        
+        local health_percent = self.health / self.config.MaxHealth
+        
+        self.config = GetSAMConfiguration(self.level)
+        self.health = self.config.MaxHealth * health_percent
+        
+        self:SyncNearby(player)
+        self:Sync(player)
+    else
+        self:SyncNearby(player, "hacked_owner")
+        self:Sync(player, "hacked_owner")
+    end
+    
 end
 
 function SAM:CanFire()
@@ -35,12 +78,35 @@ function SAM:Damage(amount, player)
         self:Destroyed(player)
     else
         Network:Broadcast("sams/SyncSAM", self:GetSyncData("health"))
+        
+        if not self.drone_spawned then
+            self.drone_spawned = true
+            Timer.SetTimeout(1000 * 30 + 1 * math.random(), function()
+                if not self.destroyed then
+                    -- Spawn drone after taking damage
+                    local pos = self.position + Vector3.Up * 4 + Vector3.Up * 4 * math.random()
+                    Events:Fire("Drones/SpawnDrone", {
+                        level = self.level,
+                        static = true,
+                        position = pos,
+                        tether_position = pos,
+                        tether_range = 100,
+                        config = {
+                            attack_on_sight = true
+                        },
+                        group = "sam"
+                    })
+                end
+            end)
+        end
     end
 end
 
 function SAM:Destroyed(player)
     -- Called when the SAM is destroyed by a player
     self.destroyed = true
+    self.hacked_owner = ""
+    self.drone_spawned = false
     
     Network:Broadcast("sams/SyncSAM", self:GetSyncData("destroyed")) 
     

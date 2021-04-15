@@ -774,10 +774,18 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.18,
+            rarity = 0.08,
             items = 
             {
                 ["Rockets"] = {rarity = 1, min = 1, max = 2}
+            }
+        },
+        ["EXPLOSIVES"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Cruise Missile"] = {rarity = 1, min = 1, max = 3}
             }
         },
         ["BATTERY"] = 

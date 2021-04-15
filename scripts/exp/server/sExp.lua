@@ -21,6 +21,7 @@ function sExp:__init()
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
+    Events:Subscribe("items/SAMHackComplete", self, self.HackComplete)
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
     Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
     Events:Subscribe("sams/SamDestroyed", self, self.SamDestroyed)
@@ -240,8 +241,8 @@ function sExp:HackComplete(args)
 
     Events:Fire("Discord", {
         channel = "Experience",
-        content = string.format("%s [%s] hacked a stash [Tier: %d] and gained %d exp.", 
-            args.player:GetName(), tostring(args.player:GetSteamId()), args.tier, exp_earned)
+        content = string.format("%s [%s] hacked an object [Tier: %s] and gained %d exp.", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), tostring(args.tier), exp_earned)
     })
     
 end

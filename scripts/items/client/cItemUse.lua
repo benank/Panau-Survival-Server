@@ -92,6 +92,11 @@ function cItemUse:CompleteUsage()
 
     local forward_ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 500)
     if forward_ray.entity and forward_ray.entity.__type == "ClientStaticObject" then
+        local sam = cSAMContainer:CSOIdToSAM(forward_ray.entity:GetId())
+        if forward_ray.distance < 5 and sam then
+            forward_ray.sam_id = sam.id
+        end
+        
         forward_ray.model = forward_ray.entity:GetModel()
         forward_ray.collision = forward_ray.entity:GetCollision()
         forward_ray.entity = nil
