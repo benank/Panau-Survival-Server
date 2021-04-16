@@ -134,30 +134,32 @@ function SAMManager:StartSAMMonitoring()
 					local close_valid_players = {}
 					for player in Server:GetPlayers() do
 						
-						local player_pos = player:GetPosition()
-						
-						if player:InVehicle() and 
-						player:GetPosition().y > 220 and 
-						not player:GetValue("InSafezone") and
-						not player:GetValue("Invisible") then
-							local player_vehicle = player:GetVehicle()
-							local speed = math.abs(math.floor(player_vehicle:GetLinearVelocity():Length()))
-							local model_id = player_vehicle:GetModelId()
-							local sam_key_level = player:GetValue("SAM Key")
+						if IsValid(player) then
+							local player_pos = player:GetPosition()
 							
-							if 
-							IsValidVehicle(model_id, SAMMissileVehicles) and 
-							player_vehicle:GetHealth() > 0 and 
-							speed > 15 and
-							not sam:IsFriendlyTowardsPlayer(player) and
-							not sam:IsSAMKeyEffective(sam_key_level) and
-							sam.position:Distance(player_pos) < 1024 then
-								table.insert(close_valid_players, player)
+							if player:InVehicle() and 
+							player:GetPosition().y > 220 and 
+							not player:GetValue("InSafezone") and
+							not player:GetValue("Invisible") then
+								local player_vehicle = player:GetVehicle()
+								local speed = math.abs(math.floor(player_vehicle:GetLinearVelocity():Length()))
+								local model_id = player_vehicle:GetModelId()
+								local sam_key_level = player:GetValue("SAM Key")
+								
+								if 
+								IsValidVehicle(model_id, SAMMissileVehicles) and 
+								player_vehicle:GetHealth() > 0 and 
+								speed > 15 and
+								not sam:IsFriendlyTowardsPlayer(player) and
+								not sam:IsSAMKeyEffective(sam_key_level) and
+								sam.position:Distance(player_pos) < 1024 then
+									table.insert(close_valid_players, player)
+								end
+								
 							end
 							
+							Timer.Sleep(1)
 						end
-						
-						Timer.Sleep(1)
 					end
 					
 					if count_table(close_valid_players) > 0 then
