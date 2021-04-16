@@ -18,9 +18,12 @@ function SAMManager:__init()
 	self.cell_size = 512
 	self.players = {}
 	
+	self.scan_timer = Timer()
+	
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(self.cell_size), self, self.PlayerCellUpdate)
 	Network:Subscribe("sams/MissileStrikeDamagePlayer", self, self.MissileStrikeDamagePlayer)
 	Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
+	Events:Subscribe("PostTick", self, self.PostTick)
 	
 	Network:Subscribe("sams/SplashHitSAM", self, self.SplashHitSAM)
 	Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
@@ -123,59 +126,55 @@ end
 
 function SAMManager:ModuleLoad()
 	self:CreateAllSAMs()
-	self:StartSAMMonitoring()
 end
 
-function SAMManager:StartSAMMonitoring()
-	Thread(function()
-		while true do
-			for id, sam in pairs(self.sams) do
-				if sam:CanFire() then
-					local close_valid_players = {}
-					for player in Server:GetPlayers() do
+function SAMManager:PostTick()
+	if self.scan_timer:GetSeconds() > 1.5 then
+		for id, sam in pairs(self.sams) do
+			if sam:CanFire() then
+				local close_valid_players = {}
+				for player in Server:GetPlayers() do
+					
+					if IsValid(player) then
+						local player_pos = player:GetPosition()
 						
-						if IsValid(player) then
-							local player_pos = player:GetPosition()
+						if player:InVehicle() and 
+						player:GetPosition().y > 220 and 
+						not player:GetValue("InSafezone") and
+						not player:GetValue("Invisible") then
+							local player_vehicle = player:GetVehicle()
+							local speed = math.abs(math.floor(player_vehicle:GetLinearVelocity():Length()))
+							local model_id = player_vehicle:GetModelId()
+							local sam_key_level = player:GetValue("SAM Key")
 							
-							if player:InVehicle() and 
-							player:GetPosition().y > 220 and 
-							not player:GetValue("InSafezone") and
-							not player:GetValue("Invisible") then
-								local player_vehicle = player:GetVehicle()
-								local speed = math.abs(math.floor(player_vehicle:GetLinearVelocity():Length()))
-								local model_id = player_vehicle:GetModelId()
-								local sam_key_level = player:GetValue("SAM Key")
-								
-								if 
-								IsValidVehicle(model_id, SAMMissileVehicles) and 
-								player_vehicle:GetHealth() > 0 and 
-								speed > 15 and
-								not sam:IsFriendlyTowardsPlayer(player) and
-								not sam:IsSAMKeyEffective(sam_key_level) and
-								sam.position:Distance(player_pos) < 1024 then
-									table.insert(close_valid_players, player)
-								end
-								
+							if 
+							IsValidVehicle(model_id, SAMMissileVehicles) and 
+							player_vehicle:GetHealth() > 0 and 
+							speed > 15 and
+							not sam:IsFriendlyTowardsPlayer(player) and
+							not sam:IsSAMKeyEffective(sam_key_level) and
+							sam.position:Distance(player_pos) < 1024 then
+								table.insert(close_valid_players, player)
 							end
 							
-							Timer.Sleep(1)
 						end
+						
+						-- Timer.Sleep(1)
 					end
-					
-					if count_table(close_valid_players) > 0 then
-						local target = random_table_value(close_valid_players)
-						if IsValid(target) then
-							sam:Fire(target, target:GetVehicle())
-							Timer.Sleep(1)
-						end
+				end
+				
+				if count_table(close_valid_players) > 0 then
+					local target = random_table_value(close_valid_players)
+					if IsValid(target) then
+						sam:Fire(target, target:GetVehicle())
+						-- Timer.Sleep(1)
 					end
 				end
 			end
-			
-			
-			Timer.Sleep(1000)
+			-- Timer.Sleep(1000)
 		end
-	end)
+		self.scan_timer:Restart()
+	end
 end
 
 function SAMManager:CreateAllSAMs()
