@@ -160,6 +160,8 @@ function cInventoryUI:GetItemNameWithAmount(stack, index)
         return string.format("%s (%dm)", stack:GetProperty("name"), stack.contents[1].custom_data.size)
     elseif stack:GetProperty("name") == "Airdrop" and stack.contents[1].custom_data.level then
         return string.format("%s (Level %d)", stack:GetProperty("name"), stack.contents[1].custom_data.level)
+    elseif stack:GetProperty("name") == "SAM Key" and stack.contents[1].custom_data.level then
+        return string.format("%s (Level %d)", stack:GetProperty("name"), stack.contents[1].custom_data.level)
     else
         return stack:GetAmount() > 1 and 
             string.format("%s (%s)", stack:GetProperty("name"), tostring(self:GetItemButtonStackAmount(stack, index))) or

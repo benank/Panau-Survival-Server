@@ -104,7 +104,7 @@ function sFriends:AddFriend(args, player)
         Chat:Send(adding_player, "You are now friends with " .. player:GetName() .. ".", Color(0, 200, 0))
     else
         Chat:Send(player, "Sent " .. adding_player:GetName() .. " a friend request.", Color.Green)
-        Chat:Send(adding_player, player:GetName() .. " sent you a friend request.", Color.Green)
+        Chat:Send(adding_player, player:GetName() .. " sent you a friend request. Press F6 to accept.", Color.Green)
     end
 
     local msg = string.format("%s [%s] added %s [%s] as a friend", 

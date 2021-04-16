@@ -319,6 +319,24 @@ function Nametags:DrawDrone(args)
     self:DrawFullTag( pos, "Drone", 5, self:GetDroneNameColor(args.drone.level), drone.health / drone.max_health, nil, drone.level )
 end
 
+function Nametags:DrawSAM(sam)
+    local pos = sam.position + Vector3.Up * 2
+    local name = "SAM"
+    local name_color = self:GetDroneNameColor(sam.level)
+    local steam_id = tostring(LocalPlayer:GetSteamId())
+    local friendly = AreFriends(LocalPlayer, sam.hacked_owner) or steam_id == sam.hacked_owner
+    
+    if friendly then
+        name = "SAM [Friendly]"
+        name_color = Color(0, 220, 0)
+    elseif not friendly and sam.hacked_owner:len() > 1 then
+        name = "SAM [Hacked]"
+        name_color = Color.Red
+    end
+    
+    self:DrawFullTag( pos, name, 5, name_color, sam.health / sam.config.MaxHealth, nil, sam.level )
+end
+
 function Nametags:GetDroneNameColor(drone_level)
 
     local LevelCutoffs =
@@ -526,6 +544,11 @@ function Nametags:Render()
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 1000)
     if ray.entity and ray.entity.__type == "ClientStaticObject" and ray.entity:GetModel() == "lave.v023_customcar.eez/v023-base.lod" then
         self.recent_drones[ray.entity:GetId()] = {time = time, entity = ray.entity}
+    elseif ray.entity and ray.entity.__type == "ClientStaticObject" then
+        local sam = cSAMContainer:CSOIdToSAM(ray.entity:GetId())
+        if sam then
+            self:DrawSAM(sam)
+        end
     end
 
     -- TODO: sort by distance to determine render order like player tags

@@ -79,7 +79,7 @@ function cWeaponBulletConfig:__init()
         [WeaponEnum.GrenadeLauncher] = 
         {
             type = GrenadeBullet,
-            speed = 30,
+            speed = 20,
             bloom = 0,
             bullet_size = 0.1,
             splash = true

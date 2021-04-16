@@ -91,7 +91,7 @@ end
 function GrenadeBullet:BulletRaycast(raycast_position, raycast_distance_modifier)
     local raycast_distance = self.raycast_distance * raycast_distance_modifier
     local raycast = Physics:Raycast(raycast_position, self.angle * Vector3.Forward, 0, raycast_distance, true)
-    if raycast.distance < raycast_distance then
+    if raycast.distance < raycast_distance * 0.99 then
         self:HitSomething(raycast)
     end
 end
@@ -168,7 +168,7 @@ function GrenadeBullet:GetForward()
 end
 
 function GrenadeBullet:CalculatePosition(delta)
-    self.angle.pitch = self.angle.pitch - math.pi * 0.05 * delta
+    self.angle.pitch = self.angle.pitch - math.pi * 0.04 * delta
     _debug(self.angle.pitch)
     local new_position = self.initial_position + (self.angle * (Vector3.Forward * self:GetForward()))
     self.current_position = new_position
