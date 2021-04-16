@@ -57,7 +57,7 @@ Exp =
         [13] = 20, -- Locked Stash
         [14] = 2 -- Proximity alarm
     },
-    DestroySAM = 40,
+    DestroySAM = 100,
     DestroyDrone = 
     {
         [DamageEntity.Bullet] =         70,
