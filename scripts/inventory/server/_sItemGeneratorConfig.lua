@@ -11,7 +11,7 @@ LootItems =
                 ["Bubbles"] = {rarity = 0.11, min = 10, max = 20},
                 ["Revolver Ammo"] = {rarity = 0.32, min = 8, max = 16},
                 ["Handgun Ammo"] = {rarity = 0.32, min = 7, max = 18},
-                ["Sawn-Off Ammo"] = {rarity = 0.25, min = 4, max = 10},
+                ["Sawn-Off Ammo"] = {rarity = 0.25, min = 3, max = 6},
             }
         },
         ["EXPLOSIVE"] = 
@@ -97,7 +97,7 @@ LootItems =
                 ["Bubbles"] = {rarity = 0.05, min = 15, max = 30},
                 ["Revolver Ammo"] = {rarity = 0.2, min = 10, max = 20},
                 ["Handgun Ammo"] = {rarity = 0.2, min = 10, max = 20},
-                ["Sawn-Off Ammo"] = {rarity = 0.15, min = 6, max = 12},
+                ["Sawn-Off Ammo"] = {rarity = 0.15, min = 4, max = 8},
                 ["SMG Ammo"] = {rarity = 0.25, min = 10, max = 20},
                 ["Shotgun Ammo"] = {rarity = 0.10, min = 4, max = 8},
                 ["Assault Ammo"] = {rarity = 0.05, min = 10, max = 20},
@@ -210,7 +210,7 @@ LootItems =
             rarity = 0.45,
             items = 
             {
-                ["Sawn-Off Ammo"] = {rarity = 0.1, min = 8, max = 14},
+                ["Sawn-Off Ammo"] = {rarity = 0.1, min = 6, max = 10},
                 ["SMG Ammo"] = {rarity = 0.2, min = 15, max = 30},
                 ["Shotgun Ammo"] = {rarity = 0.2, min = 6, max = 10},
                 ["Assault Ammo"] = {rarity = 0.2, min = 15, max = 30},
