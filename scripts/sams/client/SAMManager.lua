@@ -44,16 +44,17 @@ function SAMManager:SyncSAM(args)
 		-- SAM destroyed
 		if not self.sams[args.id].destroyed and args.destroyed then
 			SAMAnimationManager:RemoveById(args.id)
-			-- 97, 252, 442
+
+			local pos = self.sams[args.id].position
+			self.sams[args.id] = nil
 			
-			if self.sams[args.id] and self.sams[args.id].position then
+			if pos then
 				ClientEffect.Play(AssetLocation.Game, {
 					effect_id = 252,
-					position = self.sams[args.id].position,
+					position = pos,
 					angle = Angle()
 				})
 			end
-			self.sams[args.id] = nil
 		else
 		
 			for key, value in pairs(args) do
