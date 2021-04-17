@@ -422,7 +422,7 @@ end
 
 function sLandclaimManager:TryPlaceLandclaim(args)
 
-    Chat:Send(player, "Placing landclaim...", Color.Yellow)
+    Chat:Send(args.player, "Placing landclaim...", Color.Yellow)
     
     local player = args.player
     local player_iu = args.player_iu
