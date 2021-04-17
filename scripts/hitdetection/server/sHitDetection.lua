@@ -71,9 +71,10 @@ function sHitDetection:BurstPingHit(args)
 end
 
 function sHitDetection:LoadStatus(args)
-    if self.players_in_combat[tostring(args.player:GetSteamId())] then
+    if self.players_in_combat[tostring(args.player:GetSteamId())] and not args.player:GetValue("FirstSpawn") then
 
         args.player:SetValue("FirstSpawn", true)
+        args.player:SetValue("InCombat", false)
         self:ApplyDamage({
             player = args.player,
             damage = 999,
@@ -169,7 +170,8 @@ function sHitDetection:ApplyDamage(args)
         self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
     end
 
-    if args.player:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+    if args.player:GetHealth() > 0 and 
+    args.player:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
         args.player:SetNetworkValue("InCombat", true)
         self.players_in_combat[tostring(args.player:GetSteamId())] = {time = Server:GetElapsedSeconds(), attacker_id = args.attacker_id}
     end
@@ -633,7 +635,8 @@ function sHitDetection:VehicleExplosionHit(args, player)
                         self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
                     end
 
-                    if driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+                    if driver:GetHealth() > 0 and 
+                    driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
                         driver:SetNetworkValue("InCombat", true)
                         self.players_in_combat[tostring(driver:GetSteamId())] = {time = Server:GetElapsedSeconds()}
                     end
@@ -951,7 +954,8 @@ function sHitDetection:DetectVehicleDroneHit(args, player)
             self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
         end
     
-        if driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+        if driver:GetHealth() > 0 and 
+        driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
             driver:SetNetworkValue("InCombat", true)
             self.players_in_combat[tostring(driver:GetSteamId())] = {time = Server:GetElapsedSeconds()}
         end
@@ -1003,7 +1007,8 @@ function sHitDetection:SAMHitPlayerVehicle(args)
                     self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
                 end
             
-                if driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+                if driver:GetHealth() > 0 and 
+                driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
                     driver:SetNetworkValue("InCombat", true)
                     self.players_in_combat[tostring(driver:GetSteamId())] = {time = Server:GetElapsedSeconds()}
                 end
@@ -1044,7 +1049,8 @@ function sHitDetection:DetectVehicleHit(args, player)
             self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
         end
 
-        if driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+        if driver:GetHealth() > 0 and 
+        driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
             driver:SetNetworkValue("InCombat", true)
             self.players_in_combat[tostring(driver:GetSteamId())] = {time = Server:GetElapsedSeconds()}
         end
@@ -1149,7 +1155,8 @@ function sHitDetection:DetectVehicleSplashHit(args, player)
         end
 
         local driver = vehicle:GetDriver()
-        if driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
+        if driver:GetHealth() > 0 and 
+        driver:GetPosition():Distance(self.sz_config.neutralzone.position) > self.sz_config.neutralzone.radius + 500 then
             driver:SetNetworkValue("InCombat", true)
             self.players_in_combat[tostring(driver:GetSteamId())] = {time = Server:GetElapsedSeconds()}
         end
