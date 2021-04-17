@@ -39,6 +39,8 @@ end
 
 -- When an explosive (Claymore or C4) attached to a stash detonates
 function sStashes:DetonateOnStash(args)
+    
+    if not IsValid(args.player) then return end
 
     local stash = self.stashes_by_uid[args.lootbox_uid]
 
