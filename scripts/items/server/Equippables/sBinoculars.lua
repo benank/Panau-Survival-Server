@@ -33,7 +33,10 @@ Network:Subscribe("items/BinocularsScan", function(args, player)
             item = item
         })
         UpdateEquippedItem(player, "Binoculars", item)
-        players_using_binos[steam_id].item = item
+        
+        if players_using_binos[steam_id] then
+            players_using_binos[steam_id].item = item
+        end
     end
 
 end)
