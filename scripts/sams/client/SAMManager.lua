@@ -21,7 +21,7 @@ function SAMManager:LocalPlayerBulletSplash(args)
 	
     Thread(function()
         for id, sam in pairs(self.sams) do
-            if not sam.destroyed and sam.position:Distance(args.hit_position) < args.radius then
+            if not sam.destroyed and sam.position and sam.position:Distance(args.hit_position) < args.radius then
                 args.sam_id = sam.id
                 Network:Send("sams/SplashHitSAM", args)
             end

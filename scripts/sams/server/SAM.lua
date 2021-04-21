@@ -16,6 +16,7 @@ end
 
 function SAM:IsSAMKeyEffective(level)
     if self.hacked_owner:len() > 1 then return false end
+    if not level then return false end
     return self.level <= level
 end
 
