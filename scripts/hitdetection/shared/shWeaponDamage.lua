@@ -34,7 +34,7 @@ function WeaponDamage:__init()
     }
 
     self.bone_damage_modifiers = {
-        [BoneEnum.Head] = {modifier = 3.0, type = WeaponHitType.Headshot},
+        [BoneEnum.Head] = {modifier = 2.0, type = WeaponHitType.Headshot},
         [BoneEnum.Neck] = {modifier = 1.5, type = WeaponHitType.Headshot},
         [BoneEnum.Spine1] = {modifier = 1.0, type = WeaponHitType.Bodyshot},
         [BoneEnum.Spine2] = {modifier = 1.0, type = WeaponHitType.Bodyshot},
