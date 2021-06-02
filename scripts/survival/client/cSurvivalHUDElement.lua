@@ -79,6 +79,28 @@ function cSurvivalHUDElement:RenderLarge()
             Vector2(fill_size_x * self.percent2, fill_size_y), 
             self.color2)
     end
+    
+    
+    local exp_data = LocalPlayer:GetValue("Exp")
+    if exp_data and self.dual then
+        local number_text = string.format("%s / %s", exp_data.combat_exp, exp_data.combat_max_exp)
+        local number_text_size = Render:GetTextSize(number_text, 8 * conversion)
+        Render:DrawText(
+            text_size + Vector2(fill_size_x * 0.5, 0) - Vector2(number_text_size.x / 2, 0),
+            number_text,
+            Color.White,
+            8 * conversion
+        )
+        
+        number_text = string.format("%s / %s", exp_data.explore_exp, exp_data.explore_max_exp)
+        number_text_size = Render:GetTextSize(number_text, 8 * conversion)
+        Render:DrawText(
+            text_size + Vector2(fill_size_x * 0.5, fill_size_y) - Vector2(number_text_size.x / 2, 0),
+            number_text,
+            Color.White,
+            8 * conversion
+        )
+    end
 
     SurvivalManager.hud:DrawBorder(text_size, self.large_size - percent_size)
 
