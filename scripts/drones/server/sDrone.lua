@@ -348,7 +348,7 @@ function sDrone:OneHostSync(args, player)
             position = self.position
         })
     end
-
+    
 end
 
 function sDrone:UpdateApplied()
