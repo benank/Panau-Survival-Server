@@ -152,7 +152,7 @@ Items =
     {
         name = "Bandages",
         category = "Survival",
-        stacklimit = 5,
+        stacklimit = 10,
         can_use = true
     },
     {

@@ -15,7 +15,7 @@ Inventory.config =
     {
         {
             name = "Bandages",
-            amount = 5
+            amount = 10
         },
         {
             name = "Water",
@@ -36,14 +36,19 @@ Inventory.config =
         },
         {
             name = "Handgun Ammo",
-            amount = 50
+            amount = 75
         },
         {
             name = "HE Grenade",
-            amount = 5
+            amount = 10
         },
         {
             name = "Grapplehook",
+            amount = 1,
+            durability = 0.25
+        },
+        {
+            name = "Parachute",
             amount = 1,
             durability = 0.1
         }
