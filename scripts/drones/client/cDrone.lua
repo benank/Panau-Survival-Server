@@ -382,7 +382,7 @@ function cDrone:Wander(args)
 
         local diff = self.position - target_pos
 
-        if self.wander_sync_timer:GetSeconds() >= 1 and self:IsHost() then
+        if self.wander_sync_timer:GetSeconds() >= 5 and self:IsHost() then
             self.wander_sync_timer:Restart()
             self:SyncOffsetToServer()
         end
