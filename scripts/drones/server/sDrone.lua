@@ -270,7 +270,7 @@ end
 -- Called when a player destroys a drone
 function sDrone:Destroyed(args)
     if self:IsDestroyed() then return end
-
+    
     self.state = DroneState.Destroyed
 
     local exp_split = {}

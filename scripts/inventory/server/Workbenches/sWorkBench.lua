@@ -40,7 +40,7 @@ function sWorkBench:BeginCombining(player)
     if not perks.unlocked_perks[WorkBenchConfig.use_perk_req] then
         local perks_by_id = SharedObject.GetByName("ExpPerksById"):GetValue("Perks")
         Chat:Send(player, 
-            string.format("You must unlock the Workbench perk (#%d) in order to use this. Hit F2 to open the perks menu.", 
+            string.format("You must unlock the Workbench perk (#%d) in order to use this. Hit F2 to open the perks menu. (Free perk)", 
             perks_by_id[WorkBenchConfig.use_perk_req].position), Color.Red)
         return
     end
@@ -121,7 +121,7 @@ function sWorkBench:GetCombineTime(total_durability_percent, player)
         end
     end
 
-    return math.min(120 * perk_mod, math.ceil(max_dura_percent * max_dura_percent * 4.8 / total_durability_percent * num_items * perk_mod))
+    return math.min(240 * perk_mod, math.ceil(max_dura_percent * max_dura_percent * 4.8 / total_durability_percent * num_items * perk_mod))
 
 end
 

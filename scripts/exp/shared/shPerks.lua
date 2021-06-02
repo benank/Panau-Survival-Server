@@ -53,7 +53,7 @@ ExpPerks =
     {
         name = "Workbench",
         description = "You can now use workbenches to combine items",
-        level_req = 5,
+        level_req = 0,
         perk_req = 0,
         cost = 0,
         id = 12,
@@ -68,7 +68,7 @@ ExpPerks =
         cost = 1,
         id = 16,
         position = 7,
-        enabled = true
+        enabled = false
     },
     {
         name = "Bandages",
@@ -88,7 +88,7 @@ ExpPerks =
         cost = 2,
         id = 18,
         position = 9,
-        enabled = true
+        enabled = false
     },
     {
         name = "Inventory",
@@ -158,7 +158,7 @@ ExpPerks =
         cost = 2,
         id = 28,
         position = 16,
-        enabled = true
+        enabled = false
     },
     {
         name = "Area Bombing",
@@ -168,7 +168,7 @@ ExpPerks =
         cost = 2,
         id = 54,
         position = 17,
-        enabled = true
+        enabled = false
     },
     {
         name = "Inventory",
@@ -198,7 +198,7 @@ ExpPerks =
         cost = 2,
         id = 30,
         position = 20,
-        enabled = true
+        enabled = false
     },
     {
         name = "SMG",
@@ -288,7 +288,7 @@ ExpPerks =
         cost = 0,
         id = 34,
         position = 29,
-        enabled = true
+        enabled = false
     },
     {
         name = "Parachute",
@@ -318,7 +318,7 @@ ExpPerks =
         cost = 3,
         id = 55,
         position = 32,
-        enabled = true
+        enabled = false
     },
     {
         name = "Inventory",
@@ -368,7 +368,7 @@ ExpPerks =
         cost = 2,
         id = 61,
         position = 37,
-        enabled = true
+        enabled = false
     },
     {
         name = "Sniper Rifle",
@@ -388,7 +388,7 @@ ExpPerks =
         cost = 3,
         id = 50,
         position = 39,
-        enabled = true
+        enabled = false
     },
     {
         name = "SMG",
@@ -448,7 +448,7 @@ ExpPerks =
         cost = 1,
         id = 59,
         position = 45,
-        enabled = true
+        enabled = false
     },
     {
         name = "Shotgun",
@@ -488,7 +488,7 @@ ExpPerks =
         cost = 2,
         id = 75,
         position = 49,
-        enabled = true
+        enabled = false
     },
     {
         name = "Vehicles",
@@ -528,7 +528,7 @@ ExpPerks =
         cost = 6,
         id = 65,
         position = 53,
-        enabled = true
+        enabled = false
     },
     {
         name = "Assault Rifle",
@@ -888,7 +888,7 @@ ExpPerks =
         cost = 2,
         id = 104,
         position = 90,
-        enabled = true
+        enabled = false
     },
     {
         name = "RocketGrapple",

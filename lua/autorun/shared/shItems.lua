@@ -18,7 +18,7 @@ Items =
     {
         name = "Rockets",
         category = "Supplies",
-        stacklimit = 3,
+        stacklimit = 5,
     },
     {
         name = "Revolver Ammo",
@@ -140,7 +140,7 @@ Items =
     {
         name = "Area Bombing",
         category = "Explosives",
-        stacklimit = 3,
+        stacklimit = 5,
         can_use = true
     },
     {
@@ -179,7 +179,7 @@ Items =
     {
         name = "Cruise Missile",
         category = "Explosives",
-        stacklimit = 5,
+        stacklimit = 10,
         can_use = true
     },
     {
@@ -198,7 +198,7 @@ Items =
     {
         name = "Healthpack",
         category = "Survival",
-        stacklimit = 2,
+        stacklimit = 3,
         can_use = true
     },
     {
@@ -219,7 +219,7 @@ Items =
     {
         name = "Ping",
         category = "Supplies",
-        stacklimit = 10,
+        stacklimit = 15,
         can_use = true
     },
     {
@@ -273,7 +273,7 @@ Items =
     {
         name = "Tactical Nuke",
         category = "Explosives",
-        stacklimit = 2,
+        stacklimit = 3,
         can_use = true
     },
     {
@@ -298,7 +298,7 @@ Items =
     {
         name = "C4",
         category = "Explosives",
-        stacklimit = 2,
+        stacklimit = 3,
         can_use = true,
         can_stack = true,
         non_persistent_custom_data = true
@@ -312,7 +312,7 @@ Items =
     {
         name = "HE Grenade",
         category = "Explosives",
-        stacklimit = 10,
+        stacklimit = 15,
         can_equip = true,
         equip_type = "held"
     },
@@ -326,7 +326,7 @@ Items =
     {
         name = "Mine",
         category = "Explosives",
-        stacklimit = 5,
+        stacklimit = 10,
         can_use = true
     },
     {
@@ -487,7 +487,7 @@ Items =
     {
         name = "Grapplehook",
         category = "Supplies",
-        stacklimit = 2,
+        stacklimit = 3,
         can_equip = true,
         durable = true,
         max_durability = 1000,
@@ -704,7 +704,7 @@ Items =
     {
         name = "Wall",
         category = "Survival",
-        stacklimit = 10,
+        stacklimit = 15,
         max_durability = 400,
         can_use = true,
         durable = true
@@ -1023,8 +1023,7 @@ Items =
     {
         name = "SAM Key",
         category = "Supplies",
-        stacklimit = 3,
-        can_stack = true,
+        stacklimit = 1,
         can_equip = true,
         equip_type = "sam_key"
     },

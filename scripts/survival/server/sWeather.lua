@@ -1,7 +1,7 @@
 class "Weather"
 
 function Weather:__init()
-    self.hourly_chance = 5 --% chance to change weather every hour
+    self.hourly_chance = 8 --% chance to change weather every hour
     
     Events:Subscribe("HourTick", self, self.HourTick)
     Events:Subscribe("ModuleUnload", self, self.Unload)

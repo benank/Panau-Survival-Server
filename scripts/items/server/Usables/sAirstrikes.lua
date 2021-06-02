@@ -2,7 +2,7 @@ class 'sAirStrikes'
 
 function sAirStrikes:__init()
 
-    self.cooldown = 8 -- Must wait x seconds before you can use another
+    self.cooldown = 0 -- Must wait x seconds before you can use another
 
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)

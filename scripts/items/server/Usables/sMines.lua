@@ -400,10 +400,10 @@ function sMines:CompleteItemUsage(args, player)
         end
     
         -- If they are within sz radius * 2, we don't let them place that close
-        if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
-            Chat:Send(player, "Cannot place mines while near the safezone!", Color.Red)
-            return
-        end
+        -- if player:GetPosition():Distance(self.sz_config.safezone.position) < self.sz_config.safezone.radius * 2 then
+        --     Chat:Send(player, "Cannot place mines while near the safezone!", Color.Red)
+        --     return
+        -- end
 
         local BlacklistedAreas = SharedObject.GetByName("BlacklistedAreas"):GetValues().blacklist
 
@@ -414,37 +414,11 @@ function sMines:CompleteItemUsage(args, player)
             end
         end
 
-        local ModelChangeAreas = SharedObject.GetByName("ModelLocations"):GetValues()
-
-        for _, area in pairs(ModelChangeAreas) do
-            if player:GetPosition():Distance(area.pos) < 10 then
-                Chat:Send(player, "You cannot place mines here!", Color.Red)
-                return
-            end
-        end
-
-        local sub = nil
-        sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(player:GetSteamId()), function(args)
-        
-            Events:Unsubscribe(sub)
-            sub = nil
-    
-            if args.too_close then
-    
-                Chat:Send(player, "Cannot place mines too close to loot!", Color.Red)
-                return
-    
-            end
-    
-            self:TryPlaceMine(args, args.player)
-
-        end)
-    
         args.position = args.ray.position
         args.player = player
         args.player_iu = deepcopy(player_iu)
-        Events:Fire("CheckIsTooCloseToLoot", args)
-    
+        self:TryPlaceMine(args, player)
+
     end
 
 end

@@ -46,11 +46,11 @@ config =
         },
         half_off_chance = 0.002,
         health = {max = 1, min = 0.7},
-        cost_modifier = 1 -- Global cost modifier for all vehicles (integer)
+        cost_modifier = 0.5 -- Global cost modifier for all vehicles (integer)
     },
-    cost_multiplier_on_purchase = 3, -- Cost multiplier after purchasing an unowned vehicle
+    cost_multiplier_on_purchase = 2, -- Cost multiplier after purchasing an unowned vehicle
     max_vehicle_guards = 5, -- Maximum vehicle guards per vehicle
-    player_max_vehicles_base = 3,
+    player_max_vehicles_base = 10,
     player_max_vehicles =  -- Vehicle bonuses per perk
     {
         [7] = 1,

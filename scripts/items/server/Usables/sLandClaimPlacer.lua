@@ -99,13 +99,13 @@ function sLandClaimPlacer:UseItem(args)
 
     local perks = args.player:GetValue("Perks")
 
-    if not perks.unlocked_perks[self.use_perk_req] then
-        local perks_by_id = SharedObject.GetByName("ExpPerksById"):GetValue("Perks")
-        Chat:Send(args.player, 
-            string.format("You must unlock the LandClaim perk (#%d) in order to use this. Hit F2 to open the perks menu.", 
-            perks_by_id[self.use_perk_req].position), Color.Red)
-        return
-    end
+    -- if not perks.unlocked_perks[self.use_perk_req] then
+    --     local perks_by_id = SharedObject.GetByName("ExpPerksById"):GetValue("Perks")
+    --     Chat:Send(args.player, 
+    --         string.format("You must unlock the LandClaim perk (#%d) in order to use this. Hit F2 to open the perks menu.", 
+    --         perks_by_id[self.use_perk_req].position), Color.Red)
+    --     return
+    -- end
 
     if args.player:GetValue("StuntingVehicle") then
         Chat:Send(args.player, "You cannot use this item while stunting on a vehicle!", Color.Red)

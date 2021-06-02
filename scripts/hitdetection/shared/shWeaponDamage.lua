@@ -8,33 +8,33 @@ function WeaponDamage:__init()
     end
 
     self.weapon_damages = {
-        [WeaponEnum.MachineGun] =       {base = 0.10, v_mod = 0.08,  distance_falloff = 500, falloff = falloff_func},
-        [WeaponEnum.Handgun] =          {base = 0.09, v_mod = 0.05,  distance_falloff = 150, falloff = falloff_func},
-        [WeaponEnum.Assault] =          {base = 0.09, v_mod = 0.08,  distance_falloff = 300, falloff = falloff_func},
-        [WeaponEnum.BubbleGun] =        {base =-0.02, v_mod = 0,     distance_falloff = 50,  falloff = falloff_func},
-        [WeaponEnum.GrenadeLauncher] =  {base = 0.20, v_mod = 2,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
-        [WeaponEnum.Revolver] =         {base = 0.18, v_mod = 0.05,  distance_falloff = 300, falloff = falloff_func},
-        [WeaponEnum.RocketLauncher] =   {base = 0.40, v_mod = 2.5,   distance_falloff = 0,   falloff = function() return 1 end, radius = 4},
-        [WeaponEnum.SMG] =              {base = 0.08, v_mod = 0.02,  distance_falloff = 100, falloff = falloff_func},
-        [WeaponEnum.Sniper] =           {base = 0.90, v_mod = 0.04,  distance_falloff = 100, falloff = 
+        [WeaponEnum.MachineGun] =       {base = 0.30, v_mod = 0.08,  distance_falloff = 500, falloff = falloff_func},
+        [WeaponEnum.Handgun] =          {base = 0.15, v_mod = 0.05,  distance_falloff = 150, falloff = falloff_func},
+        [WeaponEnum.Assault] =          {base = 0.25, v_mod = 0.08,  distance_falloff = 300, falloff = falloff_func},
+        [WeaponEnum.BubbleGun] =        {base =-0.05, v_mod = 0,     distance_falloff = 50,  falloff = falloff_func},
+        [WeaponEnum.GrenadeLauncher] =  {base = 0.50, v_mod = 3,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
+        [WeaponEnum.Revolver] =         {base = 0.20, v_mod = 0.05,  distance_falloff = 300, falloff = falloff_func},
+        [WeaponEnum.RocketLauncher] =   {base = 1.20, v_mod = 3.0,   distance_falloff = 0,   falloff = function() return 1 end, radius = 4},
+        [WeaponEnum.SMG] =              {base = 0.15, v_mod = 0.02,  distance_falloff = 100, falloff = falloff_func},
+        [WeaponEnum.Sniper] =           {base = 0.95, v_mod = 0.04,  distance_falloff = 100, falloff = 
             function(distance, distance_falloff) -- Sniper gains full power at 100+ meters away
                 return math.clamp(distance / distance_falloff, 0, 1)
             end},
-        [WeaponEnum.SawnOffShotgun] =   {base = 0.15, v_mod = 0.05,  distance_falloff = 16,  falloff = falloff_func},
-        [WeaponEnum.Shotgun] =          {base = 0.18, v_mod = 0.05,  distance_falloff = 22,  falloff = falloff_func},
+        [WeaponEnum.SawnOffShotgun] =   {base = 0.25, v_mod = 0.05,  distance_falloff = 16,  falloff = falloff_func},
+        [WeaponEnum.Shotgun] =          {base = 0.30, v_mod = 0.05,  distance_falloff = 22,  falloff = falloff_func},
         
         -- Vehicle Weapons
-        [WeaponEnum.V_Minigun] =        {base = 0.08, v_mod = 0.5,     distance_falloff = 500, falloff = falloff_func},
-        [WeaponEnum.V_Minigun_Warmup] = {base = 0.09, v_mod = 0.5,     distance_falloff = 600, falloff = falloff_func},
-        [WeaponEnum.V_Rockets] =        {base = 0.30, v_mod = 2,       distance_falloff = 0,   falloff = function() return 1 end, radius = 12},
-        [WeaponEnum.V_Cannon] =         {base = 0.15, v_mod = 1.5,     distance_falloff = 0,   falloff = function() return 1 end, radius = 6},
-        [WeaponEnum.V_Cannon_Slow] =    {base = 0.13, v_mod = 1.5,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
-        [WeaponEnum.V_MachineGun] =     {base = 0.10, v_mod = 0.25,    distance_falloff = 300, falloff = falloff_func},
+        [WeaponEnum.V_Minigun] =        {base = 0.15, v_mod = 0.5,     distance_falloff = 500, falloff = falloff_func},
+        [WeaponEnum.V_Minigun_Warmup] = {base = 0.15, v_mod = 0.5,     distance_falloff = 600, falloff = falloff_func},
+        [WeaponEnum.V_Rockets] =        {base = 0.80, v_mod = 2,       distance_falloff = 0,   falloff = function() return 1 end, radius = 12},
+        [WeaponEnum.V_Cannon] =         {base = 0.70, v_mod = 1.5,     distance_falloff = 0,   falloff = function() return 1 end, radius = 6},
+        [WeaponEnum.V_Cannon_Slow] =    {base = 0.30, v_mod = 1.5,     distance_falloff = 0,   falloff = function() return 1 end, radius = 5},
+        [WeaponEnum.V_MachineGun] =     {base = 0.45, v_mod = 0.25,    distance_falloff = 300, falloff = falloff_func},
         [WeaponEnum.Drone_MachineGun] = {base = 0.05, v_mod = 0.1,     distance_falloff = 300, falloff = falloff_func}
     }
 
     self.bone_damage_modifiers = {
-        [BoneEnum.Head] = {modifier = 2.0, type = WeaponHitType.Headshot},
+        [BoneEnum.Head] = {modifier = 3.0, type = WeaponHitType.Headshot},
         [BoneEnum.Neck] = {modifier = 1.5, type = WeaponHitType.Headshot},
         [BoneEnum.Spine1] = {modifier = 1.0, type = WeaponHitType.Bodyshot},
         [BoneEnum.Spine2] = {modifier = 1.0, type = WeaponHitType.Bodyshot},
@@ -58,11 +58,11 @@ function WeaponDamage:__init()
     self.vehicle_armors = -- Vehicle armors, indexed by vehicle model id. If not here, then it uses default armor
     {
         [30] = 0.25, -- Si-47 Leopard
-        [34] = 0.1, -- G9 Eclpise
+        [34] = 0.05, -- G9 Eclpise
         [37] = 0.5, -- Havoc
         [57] = 0.5, -- Havoc
         [62] = 0.3, -- Chippewa
-        [64] = 0.15, -- Topa
+        [64] = 0.1, -- Topa
         [85] = 0.05, -- Bering
         [69] = 0.5, -- Winstons amen 69
         [50] = 0.1, -- Zhejiang
@@ -105,25 +105,25 @@ function WeaponDamage:__init()
 
     self.FireEffectTime = 9 -- Time it takes for fire to go out 
     
-    self.FireDamagePerSecond = 0.09
-    self.ToxicDamagePerSecond = 0.08
+    self.FireDamagePerSecond = 0.1
+    self.ToxicDamagePerSecond = 0.1
     self.WarpGrenadeDamage = 0.25
     
     self.VehicleGuardDamage = 1.0 -- Instakill
     
     self.SuicideDamage = 999
-    self.SAMRocketDamage = 0.20
+    self.SAMRocketDamage = 0.25
     
     self.ExplosiveBaseDamage = 
     {
-        [DamageEntity.Mine] = {damage = 250, radius = 6, knockback = 10, v_mod = 0.02},
-        [DamageEntity.Claymore] = {damage = 500, radius = 10, knockback = 12, v_mod = 0.015},
-        [DamageEntity.C4] = {damage = 500, radius = 40, knockback = 20, v_mod = 0.25},
-        [DamageEntity.HEGrenade] = {damage = 200, radius = 7, knockback = 5, v_mod = 0.009},
+        [DamageEntity.Mine] = {damage = 350, radius = 6, knockback = 10, v_mod = 0.02},
+        [DamageEntity.Claymore] = {damage = 600, radius = 10, knockback = 12, v_mod = 0.015},
+        [DamageEntity.C4] = {damage = 600, radius = 40, knockback = 20, v_mod = 0.25},
+        [DamageEntity.HEGrenade] = {damage = 300, radius = 7, knockback = 5, v_mod = 0.009},
         [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 15, v_mod = 0.008},
-        [DamageEntity.CruiseMissile] = {damage = 200, radius = 80, knockback = 18, v_mod = 0.15},
-        [DamageEntity.AreaBombing] = {damage = 200, radius = 25, knockback = 12, v_mod = 0.1}, -- Individual bombs
-        [DamageEntity.TacticalNuke] = {damage = 900, radius = 150, knockback = 25, v_mod = 0.2},
+        [DamageEntity.CruiseMissile] = {damage = 300, radius = 80, knockback = 18, v_mod = 0.15},
+        [DamageEntity.AreaBombing] = {damage = 250, radius = 25, knockback = 12, v_mod = 0.1}, -- Individual bombs
+        [DamageEntity.TacticalNuke] = {damage = 1000, radius = 150, knockback = 25, v_mod = 0.2},
     }
 
     self.ExplosiveDamagePerks = 
@@ -236,9 +236,9 @@ function WeaponDamage:__init()
     
     self.MeleeDamage = 
     {
-        [DamageEntity.MeleeGrapple] = {damage = 25, knockback = 0},
-        [DamageEntity.MeleeKick] = {damage = 10, knockback = 0},
-        [DamageEntity.MeleeSlidingKick] = {damage = 20, knockback = 5},
+        [DamageEntity.MeleeGrapple] = {damage = 30, knockback = 0},
+        [DamageEntity.MeleeKick] = {damage = 15, knockback = 0},
+        [DamageEntity.MeleeSlidingKick] = {damage = 25, knockback = 5},
     }
 
     self.ArmorModifiers = -- Percentages subtracted, 0.2 = 20% less damage = 80% total damage

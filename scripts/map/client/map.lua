@@ -574,10 +574,10 @@ Map = {
         -- Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green)
         
         -- Workbenches
-        ["Southern Workbench"] = Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench, Location.Color.Pink, true),
-        ["Eastern Workbench"] = Location("Eastern Workbench", Vector3(11455.59, 444, -516.274), Location.Type.Workbench, Location.Color.Pink, true),
-        ["Northern Workbench"] = Location("Northern Workbench", Vector3(3018.479, 206.1557, -11952.077), Location.Type.Workbench, Location.Color.Pink, true),
-        ["Western Workbench"] = Location("Western Workbench", Vector3(-7116.8, 388.98, 2928.25), Location.Type.Workbench, Location.Color.Pink, true),
+        -- ["Southern Workbench"] = Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench, Location.Color.Pink, true),
+        -- ["Eastern Workbench"] = Location("Eastern Workbench", Vector3(11455.59, 444, -516.274), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Central Workbench"] = Location("Central Workbench", Vector3(2192.39, 649.05, 1365), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Western Workbench"] = Location("Western Workbench", Vector3(-15314, 501.761, -2408.28), Location.Type.Workbench, Location.Color.Pink, true),
 
         -- Home
         ["Home"] = Location("Home", Vector3(), Location.Type.Home, Location.Color.Blue)
