@@ -161,7 +161,6 @@ function sDroneManager:BatchSync(drone_data_by_cells)
             
             if count_table(nearby_players) > 0 then
                 Network:SendToPlayers(nearby_players, "Drones/BatchSync", drone_data)
-                print(string.format("Synced %d drones to %d %d", count_table(drone_data), x, y))
             end
             
             count = count + 1
