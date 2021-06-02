@@ -108,7 +108,7 @@ function shItem:GetCustomData()
         {
             {chance = 0.8, min = 20, max = 50},
             {chance = 0.95, min = 50, max = 100},
-            {chance = 1.0, min = 100, max = 200}
+            {chance = 1.0, min = 100, max = 300}
         }
 
         local random = math.random()
