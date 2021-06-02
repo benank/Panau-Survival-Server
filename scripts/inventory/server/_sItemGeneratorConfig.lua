@@ -5,7 +5,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.4,
+            rarity = 0.45,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 10, max = 20},
@@ -26,7 +26,7 @@ LootItems =
         },
         ["FOOD & DRINK"] = 
         {
-            rarity = 0.155,
+            rarity = 0.15,
             items = 
             {
                 ["Chocolate"] = {rarity = 0.08, min = 1, max = 2},

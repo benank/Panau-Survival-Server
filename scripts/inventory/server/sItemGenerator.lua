@@ -179,7 +179,7 @@ function sItemGenerator:FindGroupName(tier)
 
     end
 
-    error(debug.traceback("No group name found in sItemGenerator:FindGroupName! Did you make the rarities absolute?"))
+    error(debug.traceback("No group name found in sItemGenerator:FindGroupName! Did you make the rarities absolute? Tier: " .. tier))
 
 end
 
