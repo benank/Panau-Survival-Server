@@ -12,8 +12,8 @@ WorkBenchConfig =
         ["BlackList Item"] = true
     },
     max_items_at_once = 3, -- How many items can be put in the workbench at once
-    maximum_durability = 100, -- Max durability is 5x normal
-    durability_bonus = 0.2, -- x% durability bonus upon one finished combination
+    maximum_durability = 5, -- Max durability is 5x normal
+    durability_bonus = 0.1, -- x% durability bonus upon one finished combination
     use_perk_req = 12, -- Perk required to use workbenches
     perks = -- Perks that decrease combine time
     {
