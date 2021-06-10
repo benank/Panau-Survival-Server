@@ -240,8 +240,8 @@ LootItems =
                 ["Light"] = {rarity = 0.1, min = 1, max = 1},
                 ["Chair"] = {rarity = 0.05, min = 1, max = 1},
                 ["Door"] = {rarity = 0.1, min = 1, max = 1, min_dura = 1, max_dura = 1},
-                ["Wall"] = {rarity = 0.5, min = 1, max = 1, min_dura = 1, max_dura = 1},
-                ["LandClaim"] = {rarity = 0.06, min = 1, max = 1},
+                ["Wall"] = {rarity = 0.48, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                ["LandClaim"] = {rarity = 0.08, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -347,11 +347,11 @@ LootItems =
                 ["Chair"] = {rarity = 0.03, min = 1, max = 1},
                 ["Helipad"] = {rarity = 0.01, min = 1, max = 1},
                 ["Bed"] = {rarity = 0.03, min = 1, max = 1},
-                ["Door"] = {rarity = 0.07, min = 1, max = 1, min_dura = 1, max_dura = 1},
-                ["Wall"] = {rarity = 0.7, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                ["Door"] = {rarity = 0.06, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                ["Wall"] = {rarity = 0.68, min = 1, max = 1, min_dura = 1, max_dura = 1},
                 ["Proximity Alarm"] = {rarity = 0.08, min = 1, max = 1},
                 ["Locked Stash"] = {rarity = 0.01, min = 1, max = 1},
-                ["LandClaim"] = {rarity = 0.02, min = 1, max = 1},
+                ["LandClaim"] = {rarity = 0.05, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
