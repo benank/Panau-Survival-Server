@@ -15,7 +15,7 @@ function sLoader:PlayerJoin(args)
     self:TogglePlayerEnabled(args.player, false)
     Chat:Send(args.player, 
         "Welcome to Panau Survival - ", Color.White,
-        "HARDCORE", Color.Red,
+        "Hardcore", Color.Red,
         ". Get food and gear from lootboxes, fight drones and players to level up, and build a base and defend your loot from raiders! If you need help, please check out our " , Color.White, 
         "Panau Survival Guide ", Color.Orange,
         "by pressing ", Color.White,
