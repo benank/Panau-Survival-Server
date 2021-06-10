@@ -1,7 +1,7 @@
 Exp = 
 {
-    Starting_Level = 0,
-    Max_Level = 100,
+    Starting_Level = 1,
+    Max_Level = 1000,
     Lootbox = 
     {
         [1] = 8,
