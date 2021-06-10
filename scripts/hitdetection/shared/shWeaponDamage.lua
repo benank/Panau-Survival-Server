@@ -106,10 +106,10 @@ function WeaponDamage:__init()
     self.FireEffectTime = 9 -- Time it takes for fire to go out 
     
     self.FireDamagePerSecond = 0.1
-    self.ToxicDamagePerSecond = 0.1
+    self.ToxicDamagePerSecond = 0.2
     self.WarpGrenadeDamage = 0.25
     
-    self.VehicleGuardDamage = 1.0 -- Instakill
+    self.VehicleGuardDamage = 0.25 -- Instakill
     
     self.SuicideDamage = 999
     self.SAMRocketDamage = 0.25
