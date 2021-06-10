@@ -169,6 +169,7 @@ function cInventoryUIStyle:__init()
         ["Master Hacker"] = self.item_colors.purple,
         ["Stick Disguise"] = self.item_colors.purple,
         ["Lightning Gloves"] = self.item_colors.purple,
+        ["Player Radar"] = self.item_colors.purple,
 
         -- Halloween Event Items
         ["Halloween Lootbag"] = self.item_colors.darkorange,

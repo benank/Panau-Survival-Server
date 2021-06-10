@@ -1288,13 +1288,13 @@ function sInventory:Sync(args)
     -- Initial sync, so also equip all things that were equipped before
     if not self.initial_sync then
         for cat, _ in pairs(self.contents) do
-            for _, stack in pairs(self.contents[cat]) do
+            for stack_index, stack in pairs(self.contents[cat]) do
                 if stack:GetOneEquipped() then
                     for _, item in pairs(stack.contents) do
                         if item.equipped then
                             Events:Fire("Inventory/ToggleEquipped", {
                                 player = self.player, 
-                                index = _,
+                                index = stack_index,
                                 initial = true,
                                 item = item:Copy():GetSyncObject()})
                         end

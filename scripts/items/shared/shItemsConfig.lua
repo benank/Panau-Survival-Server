@@ -17,7 +17,7 @@ ItemsConfig =
         ["Car Paint"] = {use_time = 3, range = 5},
         ["Hacker"] = {use_time = 3},
         ["Master Hacker"] = {use_time = 5},
-        ["Ping"] = {max_distance = 5000, max_height = 4000},
+        ["Ping"] = {max_distance = 6000, max_height = 4000},
         ["Combat Ping"] = {max_distance = 550, max_height = 200},
         ["EMP"] = {range = 400, disable_time = 30, use_time = 10},
         ["LandClaim"] = {use_time = 10, delay_use = true},
@@ -58,6 +58,7 @@ ItemsConfig =
         ["Stick Disguise"] = {dura_per_hit = 2},
         ["Nitro"] = {dura_per_sec = 20},
         ["Binoculars"] = {dura_per_sec = 1, dura_per_use = 20},
+        ["Player Radar"] = {dura_per_sec = 1, dura_per_use = 20, battery_dura_per_sec = 25, range = 560},
         ["SAM Key"] = {},
         weapons = 
         {

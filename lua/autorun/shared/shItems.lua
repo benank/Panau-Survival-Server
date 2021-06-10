@@ -660,7 +660,8 @@ Items =
         stacklimit = 1,
         can_equip = true,
         equip_type = "radar",
-        durable = true
+        durable = true,
+        max_durability = 1000
     },
     {
         name = "Cloud Strider Boots",
