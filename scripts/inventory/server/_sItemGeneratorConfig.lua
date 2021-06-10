@@ -759,13 +759,12 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Nitro"] = {rarity = 0.1, min_dura = 2, max_dura = 4, min = 3, max = 5},
-                ["Battery"] = {rarity = 0.1, min_dura = 2, max_dura = 4, min = 3, max = 5},
                 ["Ping"] = {rarity = 0.15, min = 5, max = 10},
-                ["EVAC"] = {rarity = 0.24, min = 1, max = 2},
+                ["EVAC"] = {rarity = 0.25, min = 1, max = 2},
                 ["Hacker"] = {rarity = 0.15, min = 3, max = 5},
-                ["Master Hacker"] = {rarity = 0.01, min = 1, max = 1},
+                ["Master Hacker"] = {rarity = 0.1, min = 1, max = 1},
                 ["Burst Ping"] = {rarity = 0.25, min = 5, max = 5},
+                ["Player Radar"] = {rarity = 0.1, min = 1, max = 1, min_dura = 1, max_dura = 3},
             }
         },
     },
