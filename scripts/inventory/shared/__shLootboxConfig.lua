@@ -92,8 +92,8 @@ Lootbox.GeneratorConfig =
         },
         [Lootbox.Types.Level4] = 
         {
-            min_items = 1,
-            max_items = 2,
+            min_items = 2,
+            max_items = 3,
             respawn = 45,
             max_spawned = 1.0
         },
@@ -126,11 +126,6 @@ Lootbox.GeneratorConfig =
         {
             min_items = 2,
             max_items = 4
-        },
-        [Lootbox.Types.AirdropLevel3] = 
-        {
-            min_items = 2,
-            max_items = 5
         },
         [Lootbox.Types.AirdropLevel3] = 
         {
