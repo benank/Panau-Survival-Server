@@ -264,9 +264,6 @@ function sExp:PlayerKilled(args)
 
     if not args.player:GetValue("Exp") then return end
 
-    if args.player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius
-    and args.player:GetValue("Exp").level > 3 then return end
-
     -- Give killer exp
     if args.killer then
         self:AwardExpToKillerOnKill(args)
@@ -490,6 +487,12 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
     if not exp_data then return end
     if exp <= 0 then return end
 
+    -- Less exp while in NZ
+    local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+    if IsValid(player) and player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius then
+        exp = exp / 4
+    end
+    
     local initial_exp_data = deepcopy(exp_data)
     exp = math.ceil(exp * self.global_multiplier)
 
