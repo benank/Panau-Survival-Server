@@ -40,8 +40,8 @@ Drone_Configuration =
     health = {base = 25, per_level = 12},
     sight_range = {base = 20, per_level = 1.75},
     attack_range = {base = 6, per_level = 0.75},
-    airstrike = {base = 0.02, per_level = 0.001},
-    grenade = {base = 0.0015, per_level = 0.0002},
+    airstrike = {base = 0.01, per_level = 0.001},
+    grenade = {base = 0.00125, per_level = 0.0002},
     grenade_fire_rate = {base = 6, per_level = -0.03},
 }
 
