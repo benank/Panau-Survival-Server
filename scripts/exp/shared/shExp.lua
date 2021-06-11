@@ -100,7 +100,7 @@ Exp =
 
 
 function GetMaximumExp(level)
-    return math.round(500000 * math.exp(0.04354 * level) * (math.exp(0.04354) - 1) / (math.exp(4.354) - 1))
+    return (math.round(500000 * math.exp(0.04354 * level) * (math.exp(0.04354) - 1) / (math.exp(4.354) - 1))) * 2
 end
 
 -- Gets an exp modifier based on the difference in the killer and killed players' levels

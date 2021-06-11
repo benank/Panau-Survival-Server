@@ -504,9 +504,10 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
     end
 
     local gained_level = false
+    
+    local total_exp = exp_data.combat_exp + exp_data.explore_exp
 
-    if exp_data.combat_exp == exp_data.combat_max_exp
-    and exp_data.explore_exp == exp_data.explore_max_exp
+    if total_exp >= exp_data.combat_max_exp
     and exp_data.level < Exp.Max_Level then
         exp_data = self:PlayerGainLevel(exp_data)
 
