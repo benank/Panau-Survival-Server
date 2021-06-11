@@ -222,6 +222,16 @@ function cDroneBody:CreateShootingEffect(gun_enum)
 
 end
 
+function cDroneBody:RemakeParticles()
+    if IsValid(self.effect) then self.effect:Remove() end
+    
+    self.effect = ClientParticleSystem.Create(AssetLocation.Game, {
+        position = self.parent.position + DroneEffectOffset.angle * DroneEffectOffset.position,
+        angle = DroneEffectOffset.angle,
+        path = "fx_ballonengine_01.psmb"
+    })
+end
+
 function cDroneBody:CreateBody()
 
     self.objects = {}
