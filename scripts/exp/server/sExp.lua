@@ -264,6 +264,9 @@ function sExp:PlayerKilled(args)
 
     if not args.player:GetValue("Exp") then return end
 
+    -- In safezone
+    if args.player:GetPosition():Distance(sz_config.safezone.position) < sz_config.safezone.radius then return end
+    
     -- Give killer exp
     if args.killer then
         self:AwardExpToKillerOnKill(args)
