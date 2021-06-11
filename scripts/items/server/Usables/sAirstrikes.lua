@@ -6,8 +6,65 @@ function sAirStrikes:__init()
 
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("drones/CreateAirstrike", self, self.CreateAirstrikeDrone)
     Network:Subscribe("items/PlaceAirstrike", self, self.PlaceAirstrike)
     Network:Subscribe("items/CancelAirstrikePlacement", self, self.CancelAirstrikePlacement)
+
+end
+
+function sAirStrikes:CreateAirstrikeDrone(args)
+    
+    local airstrike_names = {"Cruise Missile", "Area Bombing", "Tactical Nuke"}
+    local airstrike_name = airstrike_names[math.floor(math.random(#airstrike_names))]
+    local airstrike_item_data = ItemsConfig.airstrikes[airstrike_name]
+     
+    local airstrike_data = {
+        name = airstrike_name,
+        timer = Timer(),
+        position = args.position,
+        attacker_id = "Drone",
+        seed = math.random(9999999999)
+    }
+    if airstrike_name == "Area Bombing" then
+        airstrike_data.num_bombs = ItemsConfig.airstrikes["Area Bombing"].num_bombs
+    end
+
+    local drop_position = args.position + Vector3.Up * 500
+    local direction = Vector3(math.random() - 0.5, 0, math.random() - 0.5):Normalized()
+    local start_position = drop_position - direction * 500
+    local end_position = drop_position + direction * 500
+
+    local vehicle = Vehicle.Create({
+        position = start_position,
+        angle = Angle.FromVectors(Vector3.Forward, direction),
+        model_id = airstrike_item_data.plane_id,
+        tone1 = Color.Black,
+        tone2 = Color.Black,
+        linear_velocity = direction * airstrike_item_data.plane_velo,
+        invulnerable = true
+    })
+    vehicle:SetStreamDistance(3000)
+    vehicle:SetStreamPosition(start_position)
+
+    Network:Broadcast("items/CreateAirstrike", self:GetAirstrikeData(airstrike_data))
+
+    local interval = Timer.SetInterval(1000, function()
+        if IsValid(vehicle) then
+            vehicle:SetLinearVelocity(direction * airstrike_item_data.plane_velo)
+        end
+    end)
+
+    -- Remove active airstrike once it has expired
+    Timer.SetTimeout(1000 * airstrike_item_data.delay, function()
+
+        Timer.SetTimeout(1000 * 5, function()
+            Timer.Clear(interval)
+            if IsValid(vehicle) then 
+                vehicle:Remove()
+            end
+        end)
+
+    end)
 
 end
 

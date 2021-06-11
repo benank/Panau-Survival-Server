@@ -67,6 +67,7 @@ function cDrone:__init(args)
     self.wander_sync_timer = Timer()
     self.wall_timer = Timer()
     self.far_shoot_timer = Timer()
+    self.grenade_timer = Timer()
     self.sound_timer_interval = math.random() * 5000 + 800
 
     self.attack_on_sight_timer = Timer()
@@ -508,6 +509,17 @@ function cDrone:TrackTarget(args)
     local can_shoot_far = self:IsTargetVisible() and self.fire_timer:GetSeconds() >= self.next_fire_time_far
     if (can_shoot_close or can_shoot_far) and not self.firing and self:CanShoot() and self:IsPlayerAValidTarget(self.target) then
         self:Shoot()
+    end
+    
+    if self:IsHost() and self:IsTargetInAttackRange() and self:IsPlayerAValidTarget(self.target) 
+    and self.grenade_timer:GetSeconds() > self.config.grenade_fire_rate then
+        if math.random() < self.config.grenade then
+            self:SyncToServer({
+                grenade = true,
+                grenade_position = self.position
+            })
+            self.grenade_timer:Restart()
+        end
     end
 
 end

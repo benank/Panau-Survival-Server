@@ -407,7 +407,7 @@ function sHitDetection:PlayerDeath(args)
 
     local last_damaged = args.player:GetValue("LastDamaged")
 
-    if last_damaged and Server:GetElapsedSeconds() - last_damaged.timer < self.last_damage_timeout then
+    if last_damaged and Server:GetElapsedSeconds() - last_damaged.timer < self.last_damage_timeout and last_damaged.steam_id ~= "Drone" then
         -- Kill attribution
         local query = SQL:Query("SELECT name FROM player_names WHERE steam_id = (?) LIMIT 1")
         query:Bind(1, last_damaged.steam_id)
@@ -418,8 +418,6 @@ function sHitDetection:PlayerDeath(args)
         else
             killer_name = "???"
         end
-
-        -- TODO: add weapon name and vehicle as well
 
         local msg = string.format("%s [%s] was killed by %s [%s] [%s]", 
             args.player:GetName(),
@@ -468,7 +466,7 @@ function sHitDetection:PlayerDeath(args)
         -- Player died on their own without anyone else, like drowning or falling from too high
 
         local msg = ""
-        if args.reason == DamageEntity.DroneMachineGun then
+        if args.reason == DamageEntity.DroneMachineGun or last_damaged.steam_id == "Drone" then
 
             msg = string.format("%s [%s] was killed by a drone. [%s]", 
                 args.player:GetName(),
@@ -656,6 +654,7 @@ end
 function sHitDetection:HitDetectionSyncExplosionDrone(args, player)
     
     if not IsValid(player) then return end
+    if args.attacker_id == "Drone" then return end
 
     local explosive_data = WeaponDamage.ExplosiveBaseDamage[args.type]
 

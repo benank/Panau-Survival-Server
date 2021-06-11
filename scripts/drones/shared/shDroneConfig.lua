@@ -37,9 +37,12 @@ Drone_Configuration =
     rocket_fire_rate = {base = 0.1, per_level = 0.025},
     attack_on_sight = {base = false, base_chance = 0, chance_per_level = 0.01},
     accuracy_modifier = {base = 0.03, per_level = 0.03},
-    health = {base = 25, per_level = 8},
+    health = {base = 25, per_level = 12},
     sight_range = {base = 20, per_level = 1.75},
-    attack_range = {base = 6, per_level = 0.75}
+    attack_range = {base = 6, per_level = 0.75},
+    airstrike = {base = 0.02, per_level = 0.001},
+    grenade = {base = 0.0015, per_level = 0.0002},
+    grenade_fire_rate = {base = 6, per_level = -0.03},
 }
 
 DroneState = 
