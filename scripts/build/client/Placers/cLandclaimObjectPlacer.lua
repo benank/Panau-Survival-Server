@@ -360,7 +360,7 @@ function cLandclaimObjectPlacer:CheckBoundingBox()
 
             local ray = Physics:Raycast(p1, diff, 0, len)
 
-            if (ray.distance < len and ray.entity) or ray.position.y <= 200 then
+            if (ray.distance < len and ray.entity) then
                 return false
             end
         end
