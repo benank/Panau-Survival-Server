@@ -47,7 +47,7 @@ Exp =
     Hack = 
     {
         [13] = 30, -- Locked Stash
-        [14] = 10, -- Proximity Alarm
+        [14] = 15, -- Proximity Alarm
         ["SAM"] = 50
     },
     DestroyStash = 
@@ -60,16 +60,16 @@ Exp =
     DestroySAM = 150,
     DestroyDrone = 
     {
-        [DamageEntity.Bullet] =         120,
-        [DamageEntity.Explosion] =      120,
-        [DamageEntity.Mine] =           100,
-        [DamageEntity.Claymore] =       100,
-        [DamageEntity.HEGrenade] =      100,
-        [DamageEntity.LaserGrenade] =   100,
-        [DamageEntity.C4] =             100,
-        [DamageEntity.CruiseMissile] =  80,
-        [DamageEntity.AreaBombing] =    80,
-        [DamageEntity.TacticalNuke] =   80,
+        [DamageEntity.Bullet] =         180,
+        [DamageEntity.Explosion] =      180,
+        [DamageEntity.Mine] =           160,
+        [DamageEntity.Claymore] =       160,
+        [DamageEntity.HEGrenade] =      160,
+        [DamageEntity.LaserGrenade] =   160,
+        [DamageEntity.C4] =             160,
+        [DamageEntity.CruiseMissile] =  120,
+        [DamageEntity.AreaBombing] =    120,
+        [DamageEntity.TacticalNuke] =   120,
         AdditionalPercentPerPlayer = 0.2 -- X% more total exp for each player who damages a drone
     },
     DestroyExplosive = 
