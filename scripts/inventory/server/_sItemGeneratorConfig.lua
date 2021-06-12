@@ -146,8 +146,10 @@ LootItems =
             rarity = 0.045,
             items = 
             {
-                ["Grapplehook"] = {rarity = 0.8, min = 1, max = 1},
-                ["Binoculars"] = {rarity = 0.2, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.7, min = 1, max = 1},
+                ["Binoculars"] = {rarity = 0.1, min = 1, max = 1},
+                ["Combat Backpack"] = {rarity = 0.1, min = 1, max = 1},
+                ["Explorer Backpack"] = {rarity = 0.1, min = 1, max = 1},
             }
         },
         ["HEALTH"] = 
@@ -172,13 +174,13 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Woet"] = {rarity = 0.08, min = 1, max = 1},
-                ["BackTrack"] = {rarity = 0.08, min = 1, max = 1},
-                ["Vehicle Guard"] = {rarity = 0.2, min = 1, max = 1},
-                ["Vehicle Repair"] = {rarity = 0.2, min = 1, max = 1},
+                ["Woet"] = {rarity = 0.13, min = 1, max = 1},
+                ["BackTrack"] = {rarity = 0.13, min = 1, max = 1},
+                ["Vehicle Guard"] = {rarity = 0.15, min = 1, max = 1},
+                ["Vehicle Repair"] = {rarity = 0.15, min = 1, max = 1},
                 ["Car Paint"] = {rarity = 0.1, min = 1, max = 1},
-                ["Nitro"] = {rarity = 0.19, min = 1, max = 1},
-                ["Battery"] = {rarity = 0.15, min = 1, max = 1},
+                ["Nitro"] = {rarity = 0.20, min = 1, max = 1},
+                ["Battery"] = {rarity = 0.14, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
