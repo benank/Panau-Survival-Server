@@ -466,7 +466,7 @@ function sHitDetection:PlayerDeath(args)
         -- Player died on their own without anyone else, like drowning or falling from too high
 
         local msg = ""
-        if args.reason == DamageEntity.DroneMachineGun or last_damaged.steam_id == "Drone" then
+        if args.reason == DamageEntity.DroneMachineGun or (last_damaged and last_damaged.steam_id == "Drone") then
 
             msg = string.format("%s [%s] was killed by a drone. [%s]", 
                 args.player:GetName(),
