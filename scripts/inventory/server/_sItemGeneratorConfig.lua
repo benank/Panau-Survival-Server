@@ -5,7 +5,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.41,
+            rarity = 0.44,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 10, max = 20},
@@ -19,9 +19,9 @@ LootItems =
             rarity = 0.25,
             items = 
             {
-                ["Flares"] = {rarity = 0.35, min = 1, max = 2},
+                ["Flares"] = {rarity = 0.25, min = 1, max = 2},
                 ["Flashbang"] = {rarity = 0.35, min = 1, max = 2},
-                ["HE Grenade"] = {rarity = 0.3, min = 1, max = 2},
+                ["HE Grenade"] = {rarity = 0.4, min = 1, max = 2},
             }
         },
         ["FOOD & DRINK"] = 
@@ -57,7 +57,7 @@ LootItems =
         },
         ["LOCKPICK"] = 
         {
-            rarity = 0.09,
+            rarity = 0.10,
             items = 
             {
                 ["Lockpick"] = {rarity = 1, min = 1, max = 2},
@@ -69,14 +69,14 @@ LootItems =
             items = 
             {
                 ["Woet"] = {rarity = 0.4, min = 1, max = 1},
-                ["BackTrack"] = {rarity = 0.2, min = 1, max = 1},
-                ["Vehicle Guard"] = {rarity = 0.2, min = 1, max = 1},
-                ["Vehicle Repair"] = {rarity = 0.2, min = 1, max = 1},
+                ["BackTrack"] = {rarity = 0.3, min = 1, max = 1},
+                ["Vehicle Guard"] = {rarity = 0.15, min = 1, max = 1},
+                ["Vehicle Repair"] = {rarity = 0.15, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
         {
-            rarity = 0.044,
+            rarity = 0.084,
             items = 
             {
                 ["Bubble Gun"] = {rarity = 0.1, min = 1, max = 1},
