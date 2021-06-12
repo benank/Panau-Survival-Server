@@ -66,7 +66,7 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 550,
-            bloom = 1.1,
+            bloom = 1.0,
             bullet_size = 0.4 -- Size of visual bullet only
         },
         [WeaponEnum.BubbleGun] = 
