@@ -263,9 +263,9 @@ LootItems =
             {
                 ["Grapplehook"] = {rarity = 0.1, min = 1, max = 1},
                 ["Binoculars"] = {rarity = 0.2, min = 1, max = 1},
-                ["Explosives Detector"] = {rarity = 0.35, min = 1, max = 1},
-                ["Combat Backpack"] = {rarity = 0.175, min = 1, max = 1},
-                ["Explorer Backpack"] = {rarity = 0.175, min = 1, max = 1},
+                ["Explosives Detector"] = {rarity = 0.25, min = 1, max = 1},
+                ["Combat Backpack"] = {rarity = 0.225, min = 1, max = 1},
+                ["Explorer Backpack"] = {rarity = 0.225, min = 1, max = 1},
             }
         },
         ["HEALTH"] = 
@@ -371,10 +371,10 @@ LootItems =
             items = 
             {
                 ["Grapplehook"] = {rarity = 0.10, min = 1, max = 1, min_dura = 1, max_dura = 2},
-                ["Combat Backpack"] = {rarity = 0.23, min = 1, max = 1},
-                ["Explorer Backpack"] = {rarity = 0.23, min = 1, max = 1},
-                ["Parachute"] = {rarity = 0.22, min = 1, max = 1},
-                ["RocketGrapple"] = {rarity = 0.22, min = 1, max = 1},
+                ["Combat Backpack"] = {rarity = 0.25, min = 1, max = 1},
+                ["Explorer Backpack"] = {rarity = 0.25, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.20, min = 1, max = 1},
+                ["RocketGrapple"] = {rarity = 0.20, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
