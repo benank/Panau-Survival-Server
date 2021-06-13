@@ -158,6 +158,8 @@ function sC4s:DestroyC4(args, player)
     local pos = c4:GetPosition()
 
     local owner_id = c4:GetValue("owner_id")
+    
+    Network:Broadcast("items/C4Explode", {position = pos, id = c4:GetId(), owner_id = owner_id})
 
     local lootbox_id = c4:GetValue("LootboxId")
     if lootbox_id then
