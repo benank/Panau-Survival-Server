@@ -15,3 +15,12 @@ function DeserializePosition(pos)
     local split = pos:split(",")
     return Vector3(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]))
 end
+
+function SerializeColor(c)
+    return tostring(c)
+end
+
+function DeserializeColor(c)
+    local split = tostring(c):split(",")
+    return Color(tonumber(split[1]), tonumber(split[2]), tonumber(split[3]))
+end

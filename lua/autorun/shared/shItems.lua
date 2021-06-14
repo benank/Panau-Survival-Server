@@ -759,6 +759,14 @@ Items =
         durable = true
     },
     {
+        name = "Sign",
+        category = "Survival",
+        stacklimit = 3,
+        max_durability = 200,
+        can_use = true,
+        durable = true
+    },
+    {
         name = "Table",
         category = "Survival",
         stacklimit = 3,

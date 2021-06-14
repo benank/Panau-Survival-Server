@@ -92,4 +92,17 @@ BuildObjects =
         },
         unclaimed_decay = true
     },
+    ["Sign"] = 
+    {
+        model = "general.blz/gd_wood01-c.lod",
+        collision = "general.blz/gd_wood01_lod1-c_col.pfx",
+        pole = 
+        {
+            model = "general.blz/gd_wood01-k.lod", 
+            collision = "general.blz/gd_wood01_lod1-k_col.pfx",
+            offset = Vector3(0, 0.95, 0),
+            angle = Angle(0, 0, math.pi / 2)
+        },
+        unclaimed_decay = false
+    },
 }

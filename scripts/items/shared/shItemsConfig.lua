@@ -41,6 +41,7 @@ ItemsConfig =
         ["Cone"] = {model = "35x12.nlz/go040-b.lod", disable_walls = true},
         ["Jump Pad"] = {model = "05x41.nlz/go224-h.lod", disable_walls = true},
         ["Christmas Tree"] = {model = "vegetation_0.blz/City_B10_roofbush-Whole.lod", disable_walls = true},
+        ["Sign"] = {model = "general.blz/gd_wood01-c.lod", angle = Angle(0, 0, math.pi / 2), offset = Vector3(1.5, 0, 0)},
     },
     airstrikes = 
     {

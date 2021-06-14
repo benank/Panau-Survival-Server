@@ -18,6 +18,7 @@ function sLandclaimManager:__init()
     Network:Subscribe("build/ReadyForInitialSync", self, self.PlayerReadyForInitialSync)
     Network:Subscribe("build/ActivateLight", self, self.ActivateLight)
     Network:Subscribe("build/ActivateDoor", self, self.ActivateDoor)
+    Network:Subscribe("build/EditSign", self, self.EditSign)
 
     Events:Subscribe("items/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
@@ -79,6 +80,13 @@ function sLandclaimManager:ActivateDoor(args, player)
     if not landclaim then return end
 
     landclaim:ActivateDoor(args, player)
+end
+
+function sLandclaimManager:EditSign(args, player)
+    local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_owner_id, args.landclaim_id)
+    if not landclaim then return end
+
+    landclaim:EditSign(args, player)
 end
 
 function sLandclaimManager:ActivateLight(args, player)
