@@ -94,7 +94,7 @@ Lootbox.GeneratorConfig =
         {
             min_items = 2,
             max_items = 3,
-            respawn = 45,
+            respawn = 30,
             max_spawned = 1.0
         },
         [Lootbox.Types.Level5] = 
@@ -107,14 +107,14 @@ Lootbox.GeneratorConfig =
         {
             min_items = 1,
             max_items = 2,
-            respawn = 15,
+            respawn = 10,
             max_spawned = 1.0
         },
         [Lootbox.Types.VendingMachineDrink] = 
         {
             min_items = 1,
             max_items = 2,
-            respawn = 15,
+            respawn = 10,
             max_spawned = 1.0
         },
         [Lootbox.Types.AirdropLevel1] = 
