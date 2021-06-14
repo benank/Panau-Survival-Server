@@ -130,7 +130,7 @@ DroneRegions =
     {
         radius = 6000,
         center = Vector3(-7605, 234, 7313),
-        level_range = {min = 1, max = 60},
+        level_range = {min = 1, max = 200},
         spawn = 
         {
             max = 150, -- Max drones alive at one time
@@ -141,7 +141,7 @@ DroneRegions =
     {
         radius = 700,
         center = Vector3(13815, 240, -2299),
-        level_range = {min = 25, max = 40},
+        level_range = {min = 25, max = 70},
         spawn = 
         {
             max = 25, -- Max drones alive at one time
@@ -179,7 +179,7 @@ DroneRegions =
     {
         radius = 3500,
         center = Vector3(11468, 267, -8950),
-        level_range = {min = 10, max = 30},
+        level_range = {min = 10, max = 50},
         spawn = 
         {
             max = 25, -- Max drones alive at one time
@@ -201,7 +201,7 @@ DroneRegions =
     {
         radius = 150,
         center = Vector3(-507, 750, -12054),
-        level_range = {min = 20, max = 40},
+        level_range = {min = 20, max = 50},
         spawn = 
         {
             max = 10, -- Max drones alive at one time
