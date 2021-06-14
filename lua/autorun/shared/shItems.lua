@@ -43,7 +43,7 @@ Items =
     {
         name = "Machine Gun Ammo",
         category = "Supplies",
-        stacklimit = 150,
+        stacklimit = 200,
     },
     {
         name = "Sawn-Off Ammo",
