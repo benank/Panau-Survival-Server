@@ -3,7 +3,7 @@ Items =
     {
         name = "Assault Ammo",
         category = "Supplies",
-        stacklimit = 100
+        stacklimit = 120
     },
     {
         name = "GrLauncher Ammo",
@@ -13,7 +13,7 @@ Items =
     {
         name = "Handgun Ammo",
         category = "Supplies",
-        stacklimit = 60,
+        stacklimit = 100,
     },
     {
         name = "Rockets",
@@ -23,12 +23,12 @@ Items =
     {
         name = "Revolver Ammo",
         category = "Supplies",
-        stacklimit = 60,
+        stacklimit = 100,
     },
     {
         name = "Shotgun Ammo",
         category = "Supplies",
-        stacklimit = 50,
+        stacklimit = 60,
     },
     {
         name = "SMG Ammo",
@@ -43,12 +43,12 @@ Items =
     {
         name = "Machine Gun Ammo",
         category = "Supplies",
-        stacklimit = 100,
+        stacklimit = 150,
     },
     {
         name = "Sawn-Off Ammo",
         category = "Supplies",
-        stacklimit = 60,
+        stacklimit = 80,
     },
     {
         name = "Bubbles",
