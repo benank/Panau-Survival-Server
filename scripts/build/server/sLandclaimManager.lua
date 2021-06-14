@@ -466,7 +466,7 @@ function sLandclaimManager:TryPlaceLandclaim(args)
     local ModelChangeAreas = SharedObject.GetByName("ModelLocations"):GetValues()
 
     for _, area in pairs(ModelChangeAreas) do
-        if Distance2D(position, area.pos) < 100 + size then
+        if Distance2D(position, area.pos) < 25 + size then
             self:SendPlayerErrorMessage(player, "Restricted Area")
             return
         end
