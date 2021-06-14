@@ -4,9 +4,9 @@ Exp =
     Max_Level = 1000,
     Lootbox = 
     {
-        [1] = 8,
-        [2] = 16,
-        [3] = 30,
+        [1] = 10,
+        [2] = 20,
+        [3] = 35,
         [4] = 50,
         [5] = 100,
         [9] = 25,
@@ -14,7 +14,7 @@ Exp =
         [16] = 100, -- Level 1 airdrop
         [17] = 200, -- Level 2 airdrop
         [18] = 300, -- Level 3 airdrop
-        [19] = 50 -- SAM lootbox
+        [19] = 40 -- SAM lootbox
     },    
     Kill = 
     {
@@ -60,29 +60,29 @@ Exp =
     DestroySAM = 150,
     DestroyDrone = 
     {
-        [DamageEntity.Bullet] =         180,
-        [DamageEntity.Explosion] =      180,
-        [DamageEntity.Mine] =           160,
-        [DamageEntity.Claymore] =       160,
-        [DamageEntity.HEGrenade] =      160,
-        [DamageEntity.LaserGrenade] =   160,
-        [DamageEntity.C4] =             160,
-        [DamageEntity.CruiseMissile] =  120,
-        [DamageEntity.AreaBombing] =    120,
-        [DamageEntity.TacticalNuke] =   120,
-        AdditionalPercentPerPlayer = 0.2 -- X% more total exp for each player who damages a drone
+        [DamageEntity.Bullet] =         240,
+        [DamageEntity.Explosion] =      240,
+        [DamageEntity.Mine] =           220,
+        [DamageEntity.Claymore] =       220,
+        [DamageEntity.HEGrenade] =      220,
+        [DamageEntity.LaserGrenade] =   220,
+        [DamageEntity.C4] =             220,
+        [DamageEntity.CruiseMissile] =  180,
+        [DamageEntity.AreaBombing] =    180,
+        [DamageEntity.TacticalNuke] =   180,
+        AdditionalPercentPerPlayer = 0.25 -- X% more total exp for each player who damages a drone
     },
     DestroyExplosive = 
     {
-        [DamageEntity.Mine] = 5,
-        [DamageEntity.Claymore] = 5,
-        [DamageEntity.C4] = 20
+        [DamageEntity.Mine] = 10,
+        [DamageEntity.Claymore] = 10,
+        [DamageEntity.C4] = 25
     },
     DestroyBuildObject = 
     {
         ["Wall"] = 15,
-        ["Door"] = 15,
-        ["Bed"] = 15
+        ["Door"] = 25,
+        ["Bed"] = 40
     },
     KillExpireTime = 60 * 60 * 10, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
     UnfriendTime = 60 * 60 * 24 * 7, -- Timer for killing a recently unfriended person
