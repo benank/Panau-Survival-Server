@@ -5,7 +5,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.44,
+            rarity = 0.41,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 10, max = 20},
@@ -68,15 +68,16 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Woet"] = {rarity = 0.4, min = 1, max = 1},
+                ["Woet"] = {rarity = 0.38, min = 1, max = 1},
                 ["BackTrack"] = {rarity = 0.3, min = 1, max = 1},
                 ["Vehicle Guard"] = {rarity = 0.15, min = 1, max = 1},
                 ["Vehicle Repair"] = {rarity = 0.15, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.02, min = 1, max = 1},
             }
         },
         ["WEAPON"] = 
         {
-            rarity = 0.084,
+            rarity = 0.114,
             items = 
             {
                 ["Bubble Gun"] = {rarity = 0.1, min = 1, max = 1},
@@ -91,7 +92,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.423,
+            rarity = 0.413,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.01, min = 15, max = 30},
@@ -143,7 +144,7 @@ LootItems =
         },
         ["GEAR"] = 
         {
-            rarity = 0.045,
+            rarity = 0.055,
             items = 
             {
                 ["Grapplehook"] = {rarity = 0.7, min = 1, max = 1},
@@ -171,7 +172,7 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.1,
+            rarity = 0.09,
             items = 
             {
                 ["Woet"] = {rarity = 0.13, min = 1, max = 1},
@@ -185,7 +186,7 @@ LootItems =
         },
         ["WEAPON"] = 
         {
-            rarity = 0.052,
+            rarity = 0.062,
             items = 
             {
                 ["Bubble Gun"] = {rarity = 0.05, min = 1, max = 1},
