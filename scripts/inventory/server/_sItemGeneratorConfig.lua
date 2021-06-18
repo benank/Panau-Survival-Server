@@ -319,7 +319,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.429,
+            rarity = 0.409,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 5, max = 10},
@@ -341,7 +341,7 @@ LootItems =
         },
         ["BUILD"] = 
         {
-            rarity = 0.167,
+            rarity = 0.187,
             items = 
             {
                 ["Table"] = {rarity = 0.02, min = 1, max = 1},
@@ -353,8 +353,8 @@ LootItems =
                 ["Bed"] = {rarity = 0.03, min = 1, max = 1},
                 ["Door"] = {rarity = 0.06, min = 1, max = 1, min_dura = 1, max_dura = 1},
                 ["Wall"] = {rarity = 0.68, min = 1, max = 1, min_dura = 1, max_dura = 1},
-                ["Proximity Alarm"] = {rarity = 0.065, min = 1, max = 1},
-                ["Locked Stash"] = {rarity = 0.015, min = 1, max = 1},
+                ["Proximity Alarm"] = {rarity = 0.06, min = 1, max = 1},
+                ["Locked Stash"] = {rarity = 0.02, min = 1, max = 1},
                 ["LandClaim"] = {rarity = 0.05, min = 1, max = 1},
             }
         },
