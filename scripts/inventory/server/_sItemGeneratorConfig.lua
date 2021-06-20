@@ -147,8 +147,8 @@ LootItems =
             rarity = 0.055,
             items = 
             {
-                ["Grapplehook"] = {rarity = 0.7, min = 1, max = 1},
-                ["Binoculars"] = {rarity = 0.1, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.75, min = 1, max = 1},
+                ["Binoculars"] = {rarity = 0.05, min = 1, max = 1},
                 ["Combat Backpack"] = {rarity = 0.1, min = 1, max = 1},
                 ["Explorer Backpack"] = {rarity = 0.1, min = 1, max = 1},
             }
@@ -353,8 +353,8 @@ LootItems =
                 ["Bed"] = {rarity = 0.03, min = 1, max = 1},
                 ["Door"] = {rarity = 0.06, min = 1, max = 1, min_dura = 1, max_dura = 1},
                 ["Wall"] = {rarity = 0.68, min = 1, max = 1, min_dura = 1, max_dura = 1},
-                ["Proximity Alarm"] = {rarity = 0.05, min = 1, max = 1},
-                ["Locked Stash"] = {rarity = 0.02, min = 1, max = 1},
+                ["Proximity Alarm"] = {rarity = 0.055, min = 1, max = 1},
+                ["Locked Stash"] = {rarity = 0.015, min = 1, max = 1},
                 ["LandClaim"] = {rarity = 0.05, min = 1, max = 1},
             }
         },
