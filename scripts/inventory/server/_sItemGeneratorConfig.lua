@@ -147,8 +147,8 @@ LootItems =
             rarity = 0.055,
             items = 
             {
-                ["Grapplehook"] = {rarity = 0.75, min = 1, max = 1},
-                ["Binoculars"] = {rarity = 0.05, min = 1, max = 1},
+                ["Grapplehook"] = {rarity = 0.7, min = 1, max = 1},
+                ["Binoculars"] = {rarity = 0.1, min = 1, max = 1},
                 ["Combat Backpack"] = {rarity = 0.1, min = 1, max = 1},
                 ["Explorer Backpack"] = {rarity = 0.1, min = 1, max = 1},
             }
