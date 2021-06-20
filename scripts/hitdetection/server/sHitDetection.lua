@@ -299,7 +299,7 @@ function sHitDetection:Respawn(args, player)
     if player:GetValue("dead") then return end
 
     if player:GetValue("Loading") then return end
-    if player:GetValue("InSafezone") then return end
+    -- if player:GetValue("InSafezone") then return end
 
     if player:InVehicle() then
         Chat:Send(player, "You must exit the vehicle to use this command.", Color.Red)
