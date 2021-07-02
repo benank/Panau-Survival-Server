@@ -147,6 +147,12 @@ function SAMManager:PostTick()
 							local model_id = player_vehicle:GetModelId()
 							local sam_key_level = player:GetValue("SAM Key")
 							
+							-- Get highest level SAM key in vehicle
+							local occupants = player_vehicle:GetOccupants()
+							for index, v_player in pairs(occupants) do
+								sam_key_level = math.max(sam_key_level, v_player:GetValue("SAM Key") or 0)
+							end
+							
 							if 
 							IsValidVehicle(model_id, SAMMissileVehicles) and 
 							player_vehicle:GetHealth() > 0 and 
