@@ -572,6 +572,7 @@ function sHitDetection:VehicleExplosionHit(args, player)
             local v = Vehicle.GetById(vehicle_id)
 
             if not IsValid(v) then return end
+            if not IsValid(player) then return end
             
             local perk_mods = {[1] = 1, [2] = 1}
             local damage_perks = WeaponDamage.ExplosiveDamagePerks[args.type]
@@ -720,6 +721,8 @@ function sHitDetection:HitDetectionSyncExplosion(args, player)
 
     local sub
     sub = Events:Subscribe("GetPlayerPerksById" .. tostring(args.attacker_id), function(perks)
+        
+        if not IsValid(player) then return end
 
         local perk_mods = {[1] = 1, [2] = 1}
         local damage_perks = WeaponDamage.ExplosiveDamagePerks[args.type]
