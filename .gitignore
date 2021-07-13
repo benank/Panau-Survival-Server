@@ -154,3 +154,5 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+panau-survival-dc2db763739b.json
