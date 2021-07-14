@@ -118,11 +118,7 @@ Events:Subscribe("ClientModuleLoad", function(args)
         
     end
     
-    local locale = args.player:GetValue("Locale")
-    if locale and locale ~= 'en' then
-        local data = encode{'locale_add', tostring(args.player:GetValue("Locale"))}
-        send(data)
-    end
+    PlayerLocaleUpdated(nil, args.player:GetValue("Locale"))
 end)
 
 Network:Subscribe("SetLanguage", function(args, player)
@@ -156,4 +152,9 @@ end
 
 Events:Subscribe("PlayerQuit", function(args)
     PlayerLocaleUpdated(args.player:GetValue("Locale"))
+end)
+
+Events:Subscribe("ModuleLoad", function(args)
+    local data = encode{'locale_reset', " "}
+    send(data)
 end)
