@@ -92,8 +92,6 @@ end
 function receive(text)
 
     if not text then return end
-    print("receive: ")
-    print(text)
     data = decode(text)
     
     local message_type = tostring(data.type)
@@ -132,7 +130,6 @@ Events:Subscribe("ClientModuleLoad", function(args)
         Chat:Send(args.player, " ", Color.White)
         Chat:Send(args.player, "Language: ", Color.White, tostring(Languages[result[1].locale]), Color(45, 252, 214))
         Chat:Send(args.player, "Type ", Color.White, "/language", Color(45, 252, 214), " to change your language.", Color.White)
-        Chat:Send(args.player, " ", Color.White)
     else
         
 		local command = SQL:Command("INSERT INTO language (steamID, locale) VALUES (?, ?)")
