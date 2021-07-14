@@ -99,7 +99,7 @@ async function translateText(text, origin_locale) {
     // Translate to each language
     for (let i = 0; i < Object.keys(active_languages).length; i++) {
         try {
-            const target_locale = active_languages[i];
+            const target_locale = Object.keys(active_languages)[i];
             console.log(target_locale);
             if (target_locale != source_locale) {
                 const [translation] = await translate.translate(text, target_locale);
