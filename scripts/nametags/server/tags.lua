@@ -54,7 +54,7 @@ function NameTags:Translation(args)
         end
     end
     
-    local string_message = message_args.player_name .. ": " .. (args.translations['en'] or original_message_args.message)
+    local string_message = message_args.player_name .. ": " .. (args.translations ~= nil and args.translations['en'] or original_message_args.message)
     if message_args.player_tag then
         string_message = "[" .. message_args.player_tag .. "] " .. string_message
     end
@@ -105,6 +105,11 @@ function NameTags:Chat(args)
     end
     
     self.pending_messages[message_args.id] = message_args
+    
+    Events:Fire("TranslateText", {
+        id = message_args.id,
+        text = args.text
+    })
     
     -- If no response in 5 seconds, display original message
     Timer.SetTimeout(1000 * 5, function()
