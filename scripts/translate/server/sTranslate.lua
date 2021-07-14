@@ -31,17 +31,17 @@ function send(content)
     assert(udp:sendto(tostring(content), ip, port))
 end
 
-
-
 -- https://www.lua.org/pil/20.3.html
 function unescape(s)
-    SetUnicode(true)
     s = string.gsub(s, "+", " ")
-    s = string.gsub(s, "%%u(%x%x%x%x)", function (h)
-            return string.char(tonumber(h, 16))
-        end)
     s = string.gsub(s, "%%(%x%x)", function (h)
           return string.char(tonumber(h, 16))
+        end)
+    s = string.gsub(s, "%%u(%x%x%x)", function (h)
+            return string.char(tonumber(h, 16))
+        end)
+    s = string.gsub(s, "%%u(%x%x%x%x)", function (h)
+            return string.char(tonumber(h, 16))
         end)
     return s
 end
