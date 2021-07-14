@@ -32,7 +32,7 @@ sock.on("message", async function (msg, rinfo) {
         // Translate message and send back
         const translated_text = await translateText(content.text, content.origin_locale);
         const send_data = JSON.stringify({type: 'translation', data: {id: content.id, translations: translated_text}});
-        sock.send(send_data, 0, send_data.length + 2, rinfo.port, rinfo.address);
+        sock.send(send_data, 0, send_data.length + 3, rinfo.port, rinfo.address);
     }
     else if (data_type == 'locale_add')
     {
