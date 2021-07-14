@@ -52,7 +52,31 @@ Events:Subscribe("TranslateText", function(args)
     send(data)
 end)
 
-Events:Subscribe("PlayerJoin", function(args)
+
+SQL:Execute("CREATE TABLE IF NOT EXISTS language (steamID VARCHAR UNIQUE, locale VARCHAR(2))")
+local DEFAULT_LOCALE = "en"
+
+Events:Subscribe("ClientModuleLoad", function(args)
+    
+    local steamID = tostring(args.player:GetSteamId())
+	local query = SQL:Query("SELECT * FROM language WHERE steamID = (?) LIMIT 1")
+    query:Bind(1, steamID)
+    
+    local result = query:Execute()
+    
+    if #result > 0 then -- if already in DB
+        args.player:SetNetworkValue("Locale", result[1].locale)
+    else
+        
+		local command = SQL:Command("INSERT INTO language (steamID, locale) VALUES (?, ?)")
+		command:Bind(1, steamID)
+		command:Bind(2, DEFAULT_LOCALE)
+        command:Execute()
+
+        args.player:SetNetworkValue("Locale", DEFAULT_LOCALE)
+        
+    end
+    
     local locale = args.player:GetValue("Locale")
     if locale and locale ~= 'en' then
         local data = encode{'locale_add', tostring(args.player:GetValue("Locale"))}
