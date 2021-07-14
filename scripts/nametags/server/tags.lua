@@ -39,7 +39,9 @@ function NameTags:Translation(args)
     -- Send individual messages to players
     for p in Server:GetPlayers() do
         local player_locale = p:GetValue("Locale") or 'en'
-        local player_translation = args.translations[player_locale] or args.translations['en']
+        local player_translation = args.translations ~= nil and 
+            (args.translations[player_locale] or args.translations['en']) or
+            nil
         
         -- Use original message if no translation is available
         if not player_translation then
