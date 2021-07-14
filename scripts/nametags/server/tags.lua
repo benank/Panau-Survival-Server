@@ -1,55 +1,127 @@
 class 'NameTags'
+
+local message_id = 0
+function GetNewMessageId()
+    message_id = message_id + 1
+    return "cm_" .. message_id
+end
+
 function NameTags:__init()
+    
+    self.pending_messages = {}
 
 	Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerChat", self, self.Chat)
     
+    Events:Subscribe("Translation", self, self.Translation)
+    
 end
+
+--[[
+    Called when we receive a translation from the server.
+    
+    Comes in the form of:
+    {
+        [id] = 'cm_323982', -- Chat message id
+        [translations] = {
+            ['en'] = 'chat message contents',
+            ['ru'] = 'chat message contents'
+        }
+    }
+
+]]
+function NameTags:Translation(args)
+    local message_args = self.pending_messages[args.id]
+    if not message_args then return end
+    
+    message_args.locale = "[" .. string.upper(message_args.locale) .. "] "
+    if message_args.player_tag then
+        message_args.player_tag = "[" .. message_args.player_tag .. "] "
+    end
+    
+    local original_message_args = Copy(message_args)
+    
+    -- Send individual messages to players
+    for p in Server:GetPlayers() do
+        local player_locale = p:GetValue("Locale") or 'en'
+        local player_translation = args.translations ~= nil and 
+            (args.translations[player_locale] or args.translations['en']) or
+            nil
+        
+        -- Use original message if no translation is available
+        if not player_translation then
+            player_translation = original_message_args.message
+        end
+        
+        if player_translation then
+            message_args.message = player_translation
+            SendMessageToPlayer(message_args, p)
+        end
+    end
+    
+    local string_message = message_args.player_name .. ": " .. (args.translations ~= nil and args.translations['en'] or original_message_args.message)
+    if message_args.player_tag then
+        string_message = message_args.player_tag .. string_message
+    end
+    
+    string_message = message_args.locale .. string_message
+    
+    Events:Fire("Discord", {
+        channel = "Chat",
+        content = string_message
+    })
+    
+    self.pending_messages[args.id] = nil
+end
+
+function SendMessageToPlayer(args, player)
+    args.message = ": " .. args.message
+    
+    if args.player_tag then
+        Chat:Send(player, args.locale, args.locale_color, args.player_tag, args.player_tag_color, 
+                       args.player_name, args.player_color, args.message, Color.White)
+    else
+        Chat:Send(player, args.locale, args.locale_color, args.player_name, args.player_color, args.message, Color.White)
+    end
+end
+
 function NameTags:Chat(args)
 
-	local timeTable = os.date("*t", os.time())
-	timeTable.sec = tostring(timeTable.sec)
-	timeTable.min = tostring(timeTable.min)
-    timeTable.hour = tostring(timeTable.hour)
-    
-	local timeString = string.format("[%s:%s:%s] ",
-                                timeTable.hour, timeTable.min, timeTable.sec)
-                                
     if string.sub(args.text, 1, 1) == "/" then return false end
     if args.player:GetValue("Slur") == 1 then return false end
     if args.player:GetValue("Muted") then return false end
     
+    local message_args = 
+    {
+        id = GetNewMessageId(),
+        player_name = args.player:GetName(),
+        player_color = args.player:GetColor(),
+        locale = args.player:GetValue("Locale") or 'en',
+        locale_color = Color(45, 252, 214),
+        message = args.text
+    }
+    
     if args.player:GetValue("NameTag") then
-        
-		local tag = tostring(args.player:GetValue("NameTag").name)
-		local color = args.player:GetValue("NameTag").color
-		local str1 = "[" .. tag .. "] "
-		local str2 = args.player:GetName()
-		local str3 = ": "..args.text
-        
-		Chat:Broadcast(str1, color, args.player:GetName(), args.player:GetColor(), str3, Color.White)
-        
-        print(str1..str2..str3)
-        Events:Fire("Discord", {
-            channel = "Chat",
-            content = str1..str2..str3
-        })
-        return false
-        
-    else
-        
-		local str2 = args.player:GetName()
-        local str3 = ": "..args.text
-        
-		Chat:Broadcast(args.player:GetName(), args.player:GetColor(), str3, Color.White)
-		print(str2..str3)
-        Events:Fire("Discord", {
-            channel = "Chat",
-            content = str2..str3
-        })
-        return false
-        
-	end
+        message_args.player_tag = tostring(args.player:GetValue("NameTag").name)
+		message_args.player_tag_color = args.player:GetValue("NameTag").color
+    end
+    
+    self.pending_messages[message_args.id] = message_args
+    
+    Events:Fire("TranslateText", {
+        id = message_args.id,
+        text = args.text,
+        player = args.player
+    })
+    
+    -- If no response in 5 seconds, display original message
+    Timer.SetTimeout(1000 * 5, function()
+        if self.pending_messages[message_args.id] then
+            self:Translation({id = message_args.id})
+        end
+    end)
+    
+    return false
 end
 
 function NameTags:ClientModuleLoad()
