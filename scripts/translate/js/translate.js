@@ -20,11 +20,16 @@ sock.on("error", function (err) {
 sock.bind(port, host);
 
 sock.on("message", async function (msg, rinfo) {
+    console.log("Got some data")
     const data = msg.toString();
+    console.log(data)
     
     const decoded_data = JSON.parse(data);
     const data_type = decoded_data[1]
     const content = decoded_data[2]
+    
+    console.log(data_type)
+    console.log(content)
     
     // Chat message
     if (data_type == 'message')
@@ -104,5 +109,3 @@ async function translateText(text) {
 
     return return_text;
 }
-
-translateText('Привет');

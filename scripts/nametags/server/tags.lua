@@ -88,20 +88,14 @@ function NameTags:Chat(args)
     local message_args = 
     {
         id = GetNewMessageId(),
-        translations = 
-        {
-            ['en'] = 
-            {
-                player_name = args.player:GetName(),
-                player_color = args.player:GetColor(),
-                message = args.text
-            }
-        }
+        player_name = args.player:GetName(),
+        player_color = args.player:GetColor(),
+        message = args.text
     }
     
     if args.player:GetValue("NameTag") then
-        message_args.translations['en'].player_tag = tostring(args.player:GetValue("NameTag").name)
-		message_args.translations['en'].player_tag_color = args.player:GetValue("NameTag").color
+        message_args.player_tag = tostring(args.player:GetValue("NameTag").name)
+		message_args.player_tag_color = args.player:GetValue("NameTag").color
     end
     
     self.pending_messages[message_args.id] = message_args

@@ -47,9 +47,12 @@ function receive(text)
 end
 
 Events:Subscribe("TranslateText", function(args)
+    print("TranslateText 1")
     if not args.text or not args.id then return end
+    print("TranslateText 2")
     local data = encode{'message', {id = args.id, text = tostring(args.text)}}
     send(data)
+    print("TranslateText sent data")
 end)
 
 
