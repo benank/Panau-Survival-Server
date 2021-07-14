@@ -24,14 +24,8 @@ end
     {
         [id] = 'cm_323982', -- Chat message id
         [translations] = {
-            ['en'] = {
-                ['player_tag'] = 'player tag',
-                ['message'] = 'chat message contents',
-            },
-            ['ru'] = {
-                ['player_tag'] = 'player tag',
-                ['message'] = 'chat message contents',
-            }
+            ['en'] = 'chat message contents',
+            ['ru'] = 'chat message contents'
         }
     }
 
@@ -40,21 +34,25 @@ function NameTags:Translation(args)
     local message_args = self.pending_messages[args.id]
     if not message_args then return end
     
+    local original_message_args = Copy(message_args)
+    
     -- Send individual messages to players
     for p in Server:GetPlayers() do
         local player_locale = p:GetValue("Locale") or 'en'
-        local player_translation = args.translations[player_locale] or message_args.translations[player_locale]
+        local player_translation = args.translations[player_locale] or args.translations['en']
+        
+        -- Use original message if no translation is available
         if not player_translation then
-            player_translation = message_args.translations['en'] or message_args.translations['en']
+            player_translation = original_message_args.message
         end
         
         if player_translation then
-            message_args.message = data.message
+            message_args.message = player_translation
             SendMessageToPlayer(message_args, p)
         end
     end
     
-    local string_message = message_args.player_name .. ": " .. message_args.message
+    local string_message = message_args.player_name .. ": " .. (args.translations['en'] or original_message_args.message)
     if message_args.player_tag then
         string_message = "[" .. message_args.player_tag .. "] " .. string_message
     end

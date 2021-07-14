@@ -1,37 +1,55 @@
-const port = 1777;
+const port = 1780;
 const host = "localhost";
+const dgram = require("dgram");
 const sock = dgram.createSocket("udp4");
 
 sock.on("listening", function () {
-    console.log("server listening ");
+    console.log("Server listening...");
 });
 
 sock.on("error", function (err) {
-    console.log("server error:\n" + err.stack);
+    console.log("Server error:\n" + err.stack);
+    console.log("Server closing...");
     sock.close();
+    console.log("Restarting server...");
+    setTimeout(() => {
+        sock.bind(port, host);
+    }, 3000);
 });
 
 sock.bind(port, host);
 
 sock.on("message", async function (msg, rinfo) {
     const data = msg.toString();
-    console.log("received: " + data);
-    console.log(msg);
-    console.log(rinfo);
-    
-    if (data == 'handshake') {return;}
     
     const decoded_data = JSON.parse(data);
     const data_type = decoded_data[1]
-    const message = decoded_data[2]
+    const content = decoded_data[2]
     
     // Chat message
-    if (data_type == 'translate_message')
+    if (data_type == 'message')
     {
-        
+        // Translate message and send back
+        const translated_text = await translateText(content.text);
+        const send_data = JSON.stringify(['translation', {id: content.id, translations: translated_text}]);
+        sock.send(send_data, 0, send_data.length, rinfo.port, rinfo.address);
     }
-    
-    // sock.send(translation, 0, translation.length, rinfo.port, rinfo.address);  
+    else if (data_type == 'locale_add')
+    {
+        // Add language
+        if (active_languages.indexOf(content) == -1)
+        {
+            active_languages.push(content);
+        }
+    }
+    else if (data_type == 'locale_remove')
+    {
+        // Remove language
+        if (active_languages.indexOf(content) == -1 && content != 'en')
+        {
+            active_languages.splice(active_languages.indexOf(content), 1);
+        }
+    }
 })
 
 const projectId = 'panau-survival';
