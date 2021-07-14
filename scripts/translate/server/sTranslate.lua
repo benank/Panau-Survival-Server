@@ -59,10 +59,9 @@ function receive(text)
     if not text then return end
     print("receive: ")
     print(text)
-    text = Utf8to32(text)
-    print("utf8 to 32: ")
-    print(text)
+    SetUnicode(false)
     data = decode(text)
+    SetUnicode(true)
     
     local message_type = tostring(data[1].type)
     
