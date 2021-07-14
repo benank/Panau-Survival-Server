@@ -73,7 +73,7 @@ function receive(text)
     
     if message_type == "translation" then
         for locale, message in pairs(data.data.translations) do
-            data.data.translations[locale] = Utf8to32(unescape(message))
+            data.data.translations[locale] = unescape(message)
         end
         
         Events:Fire("Translation", data.data)
