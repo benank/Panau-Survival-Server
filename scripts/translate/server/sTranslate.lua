@@ -130,7 +130,7 @@ Events:Subscribe("ClientModuleLoad", function(args)
     if #result > 0 then -- if already in DB
         args.player:SetNetworkValue("Locale", result[1].locale)
         Chat:Send(args.player, " ", Color.White)
-        Chat:Send(args.player, "Language: ", Color.White, tostring(Languages[result[1].locale]), Color(45, 193, 252))
+        Chat:Send(args.player, "Language: ", Color.White, tostring(Languages[result[1].locale]), Color(45, 252, 214))
         Chat:Send(args.player, "Type ", Color.White, "/language", Color(45, 252, 214), " to change your language.", Color.White)
         Chat:Send(args.player, " ", Color.White)
     else
@@ -162,7 +162,7 @@ Network:Subscribe("SetLanguage", function(args, player)
 	command:Execute()
 
     player:SetNetworkValue("Locale", args.locale)
-    Chat:Send(player, "Set chat language to: ", Color.White, tostring(Languages[args.locale]), Color(45, 193, 252))
+    Chat:Send(player, "Set chat language to: ", Color.White, tostring(Languages[args.locale]), Color(45, 252, 214))
 end)
 
 function PlayerLocaleUpdated(old_locale, new_locale)
