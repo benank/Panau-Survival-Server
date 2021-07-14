@@ -25,8 +25,8 @@ sock.on("message", async function (msg, rinfo) {
     console.log(data)
     
     const decoded_data = JSON.parse(data);
-    const data_type = decoded_data[1]
-    const content = decoded_data[2]
+    const data_type = decoded_data[0]
+    const content = decoded_data[1]
     
     console.log(data_type)
     console.log(content)
