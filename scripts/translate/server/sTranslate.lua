@@ -67,12 +67,15 @@ function receive(text)
     if not text then return end
     print("receive: ")
     print(text)
-    print(unescape(text))
-    data = decode(unescape(text))
+    data = decode(text)
     
     local message_type = tostring(data[1].type)
     
     if message_type == "translation" then
+        for locale, message in pairs(data[1].data.translations) do
+            data[1].data.translations[locale] = unescape(message)
+        end
+        
         Events:Fire("Translation", data[2].data)
     end
 end
