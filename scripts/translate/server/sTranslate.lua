@@ -69,14 +69,14 @@ function receive(text)
     print(text)
     data = decode(text)
     
-    local message_type = tostring(data[1].type)
+    local message_type = tostring(data.type)
     
     if message_type == "translation" then
-        for locale, message in pairs(data[1].data.translations) do
-            data[1].data.translations[locale] = unescape(message)
+        for locale, message in pairs(data.data.translations) do
+            data.data.translations[locale] = unescape(message)
         end
         
-        Events:Fire("Translation", data[2].data)
+        Events:Fire("Translation", data.data)
     end
 end
 
