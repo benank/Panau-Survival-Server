@@ -102,7 +102,8 @@ function NameTags:Chat(args)
     
     Events:Fire("TranslateText", {
         id = message_args.id,
-        text = args.text
+        text = args.text,
+        player = args.player
     })
     
     -- If no response in 5 seconds, display original message
