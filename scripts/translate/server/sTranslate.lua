@@ -31,7 +31,7 @@ function send(content)
     assert(udp:sendto(tostring(content), ip, port))
 end
 
--- Thanks Sister_Rectus for the unescape code
+-- Thanks Sister_Rectus for the utf8char code
 -----
 local str_char = string.char
 local band, bor, rshift = bit32.band, bit32.bor, bit32.rshift
@@ -75,6 +75,7 @@ local function utf8char(n)
     return table.concat(buf)
   end
 end
+-------
 
 local function unescape(s)
   s = string.gsub(s, "+", " ")
@@ -86,7 +87,6 @@ local function unescape(s)
   end)
   return s
 end
--------
 
 -- ip, port, bytes, text
 function receive(text)

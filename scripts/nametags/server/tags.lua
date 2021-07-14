@@ -69,13 +69,14 @@ end
 
 function SendMessageToPlayer(args, player)
     args.message = ": " .. args.message
+    args.locale = "[" .. string.upper(args.locale) .. "] "
     
     if args.player_tag then
         args.player_tag = "[" .. args.player_tag .. "] "
-        Chat:Send(player, args.player_tag, args.player_tag_color, 
+        Chat:Send(player, args.locale, args.locale_color, args.player_tag, args.player_tag_color, 
                        args.player_name, args.player_color, args.message, Color.White)
     else
-        Chat:Send(player, args.player_name, args.player_color, args.message, Color.White)
+        Chat:Send(player, args.locale, args.locale_color, args.player_name, args.player_color, args.message, Color.White)
     end
 end
 
@@ -90,6 +91,8 @@ function NameTags:Chat(args)
         id = GetNewMessageId(),
         player_name = args.player:GetName(),
         player_color = args.player:GetColor(),
+        locale = args.player:GetValue("Locale") or 'en',
+        locale_color = Color(45, 252, 214),
         message = args.text
     }
     
