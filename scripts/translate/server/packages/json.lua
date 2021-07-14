@@ -163,12 +163,12 @@ local literal_map = {
 
 
 local function next_char(str, idx, set, negate)
-  for i = idx, #str do
+  for i = idx, string.len(str) do
     if set[str:sub(i, i)] ~= negate then
       return i
     end
   end
-  return #str + 1
+  return string.len(str) + 1
 end
 
 
@@ -220,7 +220,7 @@ local function parse_string(str, i)
   local j = i + 1
   local k = j
 
-  while j <= #str do
+  while j <= string.len(str) do
     local x = str:byte(j)
 
     if x < 32 then
@@ -378,7 +378,7 @@ function json.decode(str)
   end
   local res, idx = parse(str, next_char(str, 1, space_chars, true))
   idx = next_char(str, idx, space_chars, true)
-  if idx <= #str then
+  if idx <= string.len(str) then
     decode_error(str, idx, "trailing garbage")
   end
   return res
