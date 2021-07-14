@@ -1,0 +1,9 @@
+{
+    "name": "translate",
+    "version": "1.0.0",
+    "author": "benank",
+    "dependencies": {
+        "@google-cloud/translate": "^6.2.5",
+        "dgram": "^1.0.1"
+    }
+}
