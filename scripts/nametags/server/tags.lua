@@ -34,6 +34,11 @@ function NameTags:Translation(args)
     local message_args = self.pending_messages[args.id]
     if not message_args then return end
     
+    message_args.locale = "[" .. string.upper(message_args.locale) .. "] "
+    if message_args.player_tag then
+        message_args.player_tag = "[" .. message_args.player_tag .. "] "
+    end
+    
     local original_message_args = Copy(message_args)
     
     -- Send individual messages to players
@@ -56,8 +61,10 @@ function NameTags:Translation(args)
     
     local string_message = message_args.player_name .. ": " .. (args.translations ~= nil and args.translations['en'] or original_message_args.message)
     if message_args.player_tag then
-        string_message = "[" .. message_args.player_tag .. "] " .. string_message
+        string_message = message_args.player_tag .. string_message
     end
+    
+    string_message = message_args.locale .. string_message
     
     Events:Fire("Discord", {
         channel = "Chat",
@@ -69,10 +76,8 @@ end
 
 function SendMessageToPlayer(args, player)
     args.message = ": " .. args.message
-    args.locale = "[" .. string.upper(args.locale) .. "] "
     
     if args.player_tag then
-        args.player_tag = "[" .. args.player_tag .. "] "
         Chat:Send(player, args.locale, args.locale_color, args.player_tag, args.player_tag_color, 
                        args.player_name, args.player_color, args.message, Color.White)
     else
