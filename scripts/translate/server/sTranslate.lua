@@ -53,15 +53,21 @@ function Utf8to32(utf8str)
 	return res
 end
 
+function unescape(s)
+    s = string.gsub(s, "+", " ")
+    s = string.gsub(s, "%%(%x%x)", function (h)
+          return string.char(tonumber(h, 16))
+        end)
+    return s
+end
+
 -- ip, port, bytes, text
 function receive(text)
 
     if not text then return end
     print("receive: ")
     print(text)
-    SetUnicode(false)
-    data = decode(text)
-    SetUnicode(true)
+    data = decode(unescape(text))
     
     local message_type = tostring(data[1].type)
     

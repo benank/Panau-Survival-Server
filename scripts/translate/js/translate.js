@@ -32,8 +32,7 @@ sock.on("message", async function (msg, rinfo) {
         // Translate message and send back
         const translated_text = await translateText(content.text, content.origin_locale);
         const send_data = JSON.stringify({type: 'translation', data: {id: content.id, translations: translated_text}});
-        const encoded_data = new TextEncoder().encode(send_data);
-        // const encoded_data = escape(encodeURIComponent(send_data));
+        const encoded_data = escape(send_data);
         console.log(encoded_data)
         console.log(encoded_data.length)
         sock.send(encoded_data, 0, encoded_data.length, rinfo.port, rinfo.address);
