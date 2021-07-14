@@ -67,6 +67,7 @@ function receive(text)
     if not text then return end
     print("receive: ")
     print(text)
+    print(unescape(text))
     data = decode(unescape(text))
     
     local message_type = tostring(data[1].type)
