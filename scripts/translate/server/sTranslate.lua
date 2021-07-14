@@ -40,23 +40,20 @@ function receive(text)
     local message_type = tostring(data[1])
     
     if message_type == "translation" then
-        print("got translation")
-        print(encode(data[2]))
         Events:Fire("Translation", data[2])
     end
 end
 
 Events:Subscribe("TranslateText", function(args)
-    print("TranslateText 1")
     if not args.text or not args.id then return end
-    print("TranslateText 2")
-    local data = encode{'message', {id = args.id, text = tostring(args.text)}}
+    
+    local locale = args.player:GetValue("Locale") or 'en'
+    local data = encode{'message', {id = args.id, origin_locale = locale, text = tostring(args.text)}}
     send(data)
-    print("TranslateText sent data")
 end)
 
 
-SQL:Execute("CREATE TABLE IF NOT EXISTS language (steamID VARCHAR UNIQUE, locale VARCHAR(2))")
+SQL:Execute("CREATE TABLE IF NOT EXISTS language (steamID VARCHAR UNIQUE, locale VARCHAR(5))")
 local DEFAULT_LOCALE = "en"
 
 Events:Subscribe("ClientModuleLoad", function(args)
@@ -69,6 +66,10 @@ Events:Subscribe("ClientModuleLoad", function(args)
     
     if #result > 0 then -- if already in DB
         args.player:SetNetworkValue("Locale", result[1].locale)
+        Chat:Send(args.player, " ", Color.White)
+        Chat:Send(args.player, "Language: ", Color.White, tostring(Languages[result[1].locale]), Color(45, 193, 252))
+        Chat:Send(args.player, "Type ", Color.White, "/language", Color(45, 252, 214), " to change your language.", Color.White)
+        Chat:Send(args.player, " ", Color.White)
     else
         
 		local command = SQL:Command("INSERT INTO language (steamID, locale) VALUES (?, ?)")
@@ -77,6 +78,7 @@ Events:Subscribe("ClientModuleLoad", function(args)
         command:Execute()
 
         args.player:SetNetworkValue("Locale", DEFAULT_LOCALE)
+        Network:Send(args.player, "OpenTranslateWindow")
         
     end
     
@@ -87,10 +89,35 @@ Events:Subscribe("ClientModuleLoad", function(args)
     end
 end)
 
-Events:Subscribe("PlayerQuit", function(args)
-    local locale = args.player:GetValue("Locale")
-    if locale and locale ~= 'en' then
-        local data = encode{'locale_remove', tostring(args.player:GetValue("Locale"))}
+Network:Subscribe("SetLanguage", function(args, player)
+    if not args.locale then return end
+    if args.locale == player:GetValue("Locale") then return end
+    if not Languages[args.locale] then return end
+    
+    PlayerLocaleUpdated(player:GetValue("Locale"), args.locale)
+    
+    local steamID = tostring(player:GetSteamId())
+	local command = SQL:Command("UPDATE language SET locale = ? WHERE steamID = (?)")
+	command:Bind(1, args.locale)
+	command:Bind(2, steamID)
+	command:Execute()
+
+    player:SetNetworkValue("Locale", args.locale)
+    Chat:Send(player, "Set chat language to: ", Color.White, tostring(Languages[args.locale]), Color(45, 193, 252))
+end)
+
+function PlayerLocaleUpdated(old_locale, new_locale)
+    if old_locale and old_locale ~= 'en' then
+        local data = encode{'locale_remove', tostring(old_locale)}
         send(data)
     end
+    
+    if new_locale and new_locale ~= 'en' then
+        local data = encode{'locale_add', tostring(new_locale)}
+        send(data)
+    end
+end
+
+Events:Subscribe("PlayerQuit", function(args)
+    PlayerLocaleUpdated(args.player:GetValue("Locale"))
 end)

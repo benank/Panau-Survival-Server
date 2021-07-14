@@ -14,45 +14,46 @@ sock.on("error", function (err) {
     console.log("Restarting server...");
     setTimeout(() => {
         sock.bind(port, host);
-    }, 3000);
+    }, 2000);
 });
 
 sock.bind(port, host);
 
 sock.on("message", async function (msg, rinfo) {
-    console.log("Got some data")
     const data = msg.toString();
-    console.log(data)
     
     const decoded_data = JSON.parse(data);
     const data_type = decoded_data[0]
     const content = decoded_data[1]
     
-    console.log(data_type)
-    console.log(content)
-    
     // Chat message
     if (data_type == 'message')
     {
         // Translate message and send back
-        const translated_text = await translateText(content.text);
+        const translated_text = await translateText(content.text, content.origin_locale);
         const send_data = JSON.stringify(['translation', {id: content.id, translations: translated_text}]);
         sock.send(send_data, 0, send_data.length, rinfo.port, rinfo.address);
     }
     else if (data_type == 'locale_add')
     {
         // Add language
-        if (active_languages.indexOf(content) == -1)
+        if (typeof active_languages[content] == 'undefined')
         {
-            active_languages.push(content);
+            active_languages[content] = 0;
         }
+        
+        active_languages[content] += 1;
     }
     else if (data_type == 'locale_remove')
     {
         // Remove language
-        if (active_languages.indexOf(content) == -1 && content != 'en')
+        if (typeof active_languages[content] != 'undefined' && content != 'en')
         {
-            active_languages.splice(active_languages.indexOf(content), 1);
+            active_languages[content] -= 1;
+            if (active_languages[content] <= 0)
+            {
+                delete active_languages[content];
+            }
         }
     }
 })
@@ -71,7 +72,10 @@ const translate = new Translate(
 );
 
 // Languages of people on the server, aka languages to translate to
-const active_languages = ['en'];
+const active_languages = 
+{
+    ['en']: 1
+}
 
 // Returns a table of the translated string, like:
 /*
@@ -81,11 +85,12 @@ const active_languages = ['en'];
 }
 
 */
-async function translateText(text) {
+async function translateText(text, origin_locale) {
     const [detection] = await translate.detect(text);
 
     // Get source language
-    const source_locale = detection.language;
+    // const source_locale = detection.language;
+    const source_locale = origin_locale;
     const return_text =
     {
         [source_locale]: text
