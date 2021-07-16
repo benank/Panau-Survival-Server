@@ -438,7 +438,8 @@ function sStashes:AddStash(args)
         angle = args.angle,
         tier = args.tier,
         active = true,
-        contents = args.contents
+        contents = args.contents,
+        vehicle = args.vehicle
     })
 
     local stash = sStash({
@@ -448,7 +449,8 @@ function sStashes:AddStash(args)
         lootbox = lootbox,
         access_mode = tonumber(args.access_mode),
         health = args.health,
-        name = args.name
+        name = args.name,
+        capacity = args.capacity
     })
 
     lootbox.stash = stash

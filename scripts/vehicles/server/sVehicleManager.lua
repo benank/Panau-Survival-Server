@@ -258,6 +258,7 @@ function sVehicleManager:VehicleDestroyed(vehicle, vehicle_data_input)
 
         self.despawning_vehicles[vehicle_data.vehicle_id] = nil
         self.owned_vehicles[vehicle_data.vehicle_id] = nil
+        Events:Fire("VehicleRemoved", {vehicle = vehicle})
 
         local cmd = SQL:Command("DELETE FROM vehicles WHERE vehicle_id = (?)")
         cmd:Bind(1, vehicle_data.vehicle_id)
@@ -410,6 +411,7 @@ function sVehicleManager:MinuteTick()
             self.despawning_vehicles[id] = nil
 
             local vehicle_id = self.owned_vehicles[id]:GetId()
+            Events:Fire("VehicleRemoved", {vehicle = self.owned_vehicles[id]})
             self.owned_vehicles[id]:Remove()
             self.owned_vehicles[id] = nil
 
@@ -563,6 +565,7 @@ function sVehicleManager:PlayerSpawnVehicle(args, player)
     player_owned_vehicles[args.vehicle_id] = vehicle_data
 
     self.owned_vehicles[args.vehicle_id] = vehicle
+    Events:Fire("VehicleCreated", {vehicle = vehicle})
 
     vehicle:SetNetworkValue("VehicleData", vehicle_data)
     player:SetValue("OwnedVehicles", player_owned_vehicles)
@@ -598,6 +601,7 @@ function sVehicleManager:PlayerDeleteVehicle(args, player)
     cmd:Execute()
 
     if IsValid(vehicle_data.vehicle) then
+        Events:Fire("VehicleRemoved", {vehicle = vehicle_data.vehicle})
         vehicle_data.vehicle:Remove()
     end
 

@@ -19,7 +19,8 @@ Lootbox.Types =
     AirdropLevel1 = 16,
     AirdropLevel2 = 17,
     AirdropLevel3 = 18,
-    SAM = 19
+    SAM = 19,
+    VehicleStorage = 20
 }
 
 StashAccessMode = 
@@ -49,6 +50,7 @@ Lootbox.Stashes =
     [Lootbox.Types.LockedStash] = {capacity = 12, name = "Locked Stash", health = 400, default_access = StashAccessMode.OnlyMe, can_change_access = true},
     [Lootbox.Types.ProximityAlarm] = {capacity = 1, name = "Proximity Alarm", health = 1, default_access = StashAccessMode.OnlyMe, can_change_access = true},
     [Lootbox.Types.Workbench] = {capacity = 3, name = "Workbench", health = 1, default_access = StashAccessMode.Everyone, can_change_access = false},
+    [Lootbox.Types.VehicleStorage] = {capacity = 3, name = "Vehicle", health = 1, default_access = StashAccessMode.Everyone, can_change_access = false},
 }
 
 Lootbox.GeneratorConfig = 

@@ -190,7 +190,7 @@ function cLootboxUI:UpdateLootboxTitle(locked)
         if not current_box.tier or not Lootbox.Stashes[current_box.tier] then return end
         local name = Lootbox.Stashes[current_box.tier].name
 
-        if current_box.stash and current_box.stash.name and is_owner then
+        if current_box.stash and current_box.stash.name and is_owner and not current_box.vehicle_storage then
             name = current_box.stash.name
         end 
 
