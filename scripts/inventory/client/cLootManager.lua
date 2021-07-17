@@ -5,6 +5,7 @@ function cLootManager:__init()
     self.loot = {} -- Create 2D array to store loot in cells
     self.objects = {}
     self.current_box = nil -- Current opened box
+    self.current_vehicle_storage_box = nil -- Current vehicle storage lootbox
     self.close_to_box = false -- If they are close enough to a box that we should raycast
 
     self.look_at_circle_size = Render.Size.x * 0.0075
@@ -22,11 +23,18 @@ function cLootManager:__init()
     Events:Subscribe(var("LocalPlayerChat"):get(), self, self.LocalPlayerChat)
 
     Events:Subscribe("Cells/LocalPlayerCellUpdate" .. tostring(Lootbox.Cell_Size), self, self.LocalPlayerCellUpdate)
+    
+    Events:Subscribe("LocalPlayerExitVehicle", self, self.LocalPlayerExitVehicle)
 
     if IsAdmin(LocalPlayer) then
         self.stash_render = Events:Subscribe("Render", self, self.StashRender)
     end
 
+end
+
+function cLootManager:LocalPlayerExitVehicle(args)
+    self.current_vehicle_storage_box = nil
+    self.current_box = nil
 end
 
 function cLootManager:LocalPlayerChat(args)
@@ -114,6 +122,7 @@ end
 function cLootManager:Render(args)
 
     if not ClientInventory or not ClientInventory.lootbox_ui then return end
+    if LocalPlayer:InVehicle() then return end
 
     local cam_pos = Camera:GetPosition()
     local cam_ang = Camera:GetAngle()
@@ -252,6 +261,12 @@ function cLootManager:IsOneBoxCloseEnough()
 end
 
 function cLootManager:OneLootboxCellSync(data)
+    
+    -- Lootbox is specifically a vehicle storage box
+    if data.vehicle_storage then
+        self.current_vehicle_storage_box = cLootbox(data)
+        return
+    end
 
     VerifyCellExists(self.loot, data.cell)
     if self.loot[data.cell.x][data.cell.y][data.uid] then

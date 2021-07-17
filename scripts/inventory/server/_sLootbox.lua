@@ -111,8 +111,8 @@ function sLootbox:PlayerAddStack(stack, player)
 
     Events:Fire("Discord", {
         channel = "Stashes",
-        content = string.format("%s [%s] added stack to stash %d [Tier %d]. \nStack: %s", 
-            player:GetName(), player:GetSteamId(), self.stash.id, self.tier, stack:ToString())
+        content = string.format("%s [%s] added stack to stash %s [Tier %d]. \nStack: %s", 
+            player:GetName(), player:GetSteamId(), tostring(self.stash.id), self.tier, stack:ToString())
     })
 
     local return_stack = self:AddStack(stack)
@@ -193,6 +193,11 @@ function sLootbox:TakeLootStack(args, player)
     if self.is_stash then
         if not self.stash:CanPlayerOpen(player) then return end
     end
+    
+    -- Cannot loot destroyed vehicles
+    if self.vehicle_storage then
+        if IsValid(self.vehicle) and self.vehicle:GetHealth() <= 0 then return end 
+    end
 
     local stack = self.contents[args.index]
 
@@ -208,8 +213,8 @@ function sLootbox:TakeLootStack(args, player)
     local id = self.is_stash and self.stash.id or self.uid
     Events:Fire("Discord", {
         channel = channel,
-        content = string.format("%s [%s] took stack from lootbox %d [Tier %d]. \nStack: %s", 
-            player:GetName(), player:GetSteamId(), id, self.tier, stack:ToString())
+        content = string.format("%s [%s] took stack from lootbox %s [Tier %d]. \nStack: %s", 
+            player:GetName(), player:GetSteamId(), tostring(id), self.tier, stack:ToString())
     })
 
     local return_stack = inv:AddStack({stack = stack})
@@ -322,6 +327,7 @@ function sLootbox:GetContentsSyncData()
     if self.is_stash then
         data.stash = self.stash:GetSyncData()
     end
+    data.vehicle_storage = self.vehicle_storage
     return data
 end
 
@@ -474,6 +480,11 @@ end
 -- Syncs the single lootbox to all nearby players, used for dropboxes to make them instantly appear
 function sLootbox:Sync()
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/OneLootboxCellSync", self:GetSyncData())
+end
+
+-- Syncs the single lootbox to a specific player, used for vehicle storages
+function sLootbox:SyncToPlayer(player)
+    Network:Send(player, "Inventory/OneLootboxCellSync", self:GetSyncData())
 end
 
 -- Update contents to anyone who has it open

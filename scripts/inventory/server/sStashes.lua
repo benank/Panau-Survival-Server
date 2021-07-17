@@ -431,8 +431,6 @@ end
 
 function sStashes:AddStash(args)
 
-    args.id = tonumber(args.id)
-
     local lootbox = CreateLootbox({
         position = args.position,
         angle = args.angle,
@@ -521,7 +519,7 @@ function sStashes:PlaceStash(position, angle, type, player)
     end
 
     local lootbox = self:AddStash({
-        id = result[1].id,
+        id = tonumber(result[1].id),
         owner_id = steamID,
         position = position,
         angle = angle,

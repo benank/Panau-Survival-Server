@@ -35,6 +35,8 @@ function sVehicleManager:__init()
     Events:Subscribe("LoadStatus", self, self.LoadStatus)
 
     Events:Subscribe("Items/PlayerUseVehicleGuard", self, self.PlayerUseVehicleGuard)
+    
+    Events:Subscribe("RefreshVehicleStorages", self, self.RefreshVehicleStorages)
 
     Network:Subscribe("Vehicles/SpawnVehicle", self, self.PlayerSpawnVehicle)
     Network:Subscribe("Vehicles/DeleteVehicle", self, self.PlayerDeleteVehicle)
@@ -78,6 +80,12 @@ function sVehicleManager:__init()
         self:SaveVehicles()
     end)
 
+end
+
+function sVehicleManager:RefreshVehicleStorages()
+    for _, vehicle in pairs(self.vehicles) do
+        Events:Fire("VehicleCreated", {vehicle = vehicle}) 
+    end
 end
 
 function sVehicleManager:LoadStatus(args)
@@ -639,6 +647,7 @@ function sVehicleManager:PlayerEnterVehicle(args)
     else
         -- This is an owned vehicle, so update it in the DB
         self:SaveVehicle(args.vehicle)
+        Events:Fire("PlayerEnteredVehicle", args)
 
         -- If a friend is using the vehicle, restart the timer
         if self.despawning_vehicles[data.vehicle_id] then
@@ -786,6 +795,7 @@ function sVehicleManager:TryBuyVehicle(args)
     args.vehicle:SetStreamDistance(2000)
 
     self:SaveVehicle(args.vehicle, args.player)
+    Events:Fire("PlayerEnteredVehicle", args)
 
     if args.data.spawn_index and args.data.spawn_type then
         self.spawns[args.data.spawn_type][args.data.spawn_index].respawn_timer:Restart()
