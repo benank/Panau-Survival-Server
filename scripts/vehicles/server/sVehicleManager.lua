@@ -37,6 +37,7 @@ function sVehicleManager:__init()
     Events:Subscribe("Items/PlayerUseVehicleGuard", self, self.PlayerUseVehicleGuard)
     
     Events:Subscribe("RefreshVehicleStorages", self, self.RefreshVehicleStorages)
+    Events:Subscribe("items/VehicleHackComplete", self, self.VehicleHackComplete)
 
     Network:Subscribe("Vehicles/SpawnVehicle", self, self.PlayerSpawnVehicle)
     Network:Subscribe("Vehicles/DeleteVehicle", self, self.PlayerDeleteVehicle)
@@ -199,6 +200,44 @@ function sVehicleManager:SaveVehicles()
 
             v:SetValue("VehicleLastUpdate", seconds)
         end
+    end
+
+end
+
+function sVehicleManager:VehicleHackComplete(args)
+    
+    local vehicle = Vehicle.GetById(args.vehicle_id)
+    if not IsValid(vehicle) then return end
+    args.vehicle = vehicle
+    
+    local vehicle_data = vehicle:GetValue("VehicleData")
+
+    if vehicle_data.guards > 0 then
+        -- Remove a vehicle guard due to the hack 
+        vehicle_data.guards = vehicle_data.guards - 1
+        args.vehicle:SetNetworkValue("VehicleData", vehicle_data)
+        self:SaveVehicle(vehicle)
+        
+        Chat:Send(args.player, "Successfully hacked the vehicle and removed a Vehicle Guard.", Color.Green)
+
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = vehicle_data.owner_steamid,
+            message = string.format("Your %s Vehicle Guard was hacked by %s %s", 
+                args.vehicle:GetName(), args.player:GetName(), WorldToMapString(args.player:GetPosition())),
+            color = Color(200, 0, 0)
+        })
+        
+        local msg = string.format("Player %s [%s] hacked vehicle and removed Vehicle Guard from vehicle %d", 
+            args.player:GetName(), args.player:GetSteamId(), vehicle_data.vehicle_id)
+        Events:Fire("Discord", {
+            channel = "Vehicles",
+            content = msg
+        })
+
+    else
+        -- No vehicle guards, so tell inventory to put the items from the vehicle on the ground
+        Events:Fire("Vehicles/VehicleItemsHacked", args)
+        
     end
 
 end
@@ -573,7 +612,6 @@ function sVehicleManager:PlayerSpawnVehicle(args, player)
     player_owned_vehicles[args.vehicle_id] = vehicle_data
 
     self.owned_vehicles[args.vehicle_id] = vehicle
-    Events:Fire("VehicleCreated", {vehicle = vehicle})
 
     vehicle:SetNetworkValue("VehicleData", vehicle_data)
     player:SetValue("OwnedVehicles", player_owned_vehicles)
@@ -583,6 +621,7 @@ function sVehicleManager:PlayerSpawnVehicle(args, player)
         self:SyncPlayerOwnedVehicles(player)
     end)
     
+    Events:Fire("VehicleCreated", {vehicle = vehicle})
 
     local msg = string.format("Player %s [%s] spawned vehicle %d", 
         player:GetName(), player:GetSteamId(), args.vehicle_id)

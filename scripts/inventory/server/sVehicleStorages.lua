@@ -9,7 +9,71 @@ function sVehicleStorages:__init()
     Events:Subscribe("PlayerEnteredVehicle", self, self.PlayerEnteredVehicle)
     Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
     
+    Events:Subscribe("Vehicles/VehicleItemsHacked", self, self.VehicleItemsHacked)
+    
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
+    Events:Subscribe("ServerStart", self, self.ModuleLoad)
+end
+
+function sVehicleStorages:VehicleItemsHacked(args)
+    if not IsValid(args.vehicle) then return end
+    
+    local storage_id = args.vehicle:GetValue("VehicleStorageId")
+    if not storage_id then return end
+    
+    local stash = sStashes.stashes[storage_id]
+    if not stash then return end
+    
+    local vehicle_data = args.vehicle:GetValue("VehicleData")
+
+    if vehicle_data.owner_steamid then
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = vehicle_data.owner_steamid,
+            message = string.format("Your %s vehicle storage was hacked by %s %s", 
+                args.vehicle:GetName(), args.player:GetName(), WorldToMapString(args.player:GetPosition())),
+            color = Color(200, 0, 0)
+        })
+    end
+    
+    if count_table(stash.lootbox.contents) == 0 then
+        Chat:Send(args.player, "Successfully hacked into the vehicle\'s storage, but no items were found.", Color.Green)
+        return
+    end
+    
+    Chat:Send(args.player, "Successfully hacked into the vehicle\'s storage.", Color.Green)
+    
+    -- Empty vehicle storage and put all items in dropbox at player's feet
+    Events:Fire("Inventory/CreateDropboxExternal", {
+        contents = stash.lootbox:GetContentsData(),
+        position = args.player:GetPosition(),
+        angle = Angle()
+    })
+    
+    local chat_msg = ""
+    for index, stack in pairs(stash.lootbox.contents) do
+        chat_msg = chat_msg .. string.format("%s (%s)", tostring(stack:GetProperty("name")), tostring(stack:GetAmount()))
+
+        if stack:GetProperty("durable") then
+            for _, item in pairs(stack.contents) do
+                chat_msg = chat_msg .. string.format(" [%.0f%%]", item.durability / item.max_durability * 100)
+            end
+        end
+
+        if index < #stash.lootbox.contents then
+            chat_msg = chat_msg .. ", "
+        end
+    end
+    
+    Events:Fire("Discord", {
+        channel = "Inventory",
+        content = string.format("%s [%s] hacked vehicle %d [%s] storage %s: %s", 
+            args.player:GetName(), tostring(args.player:GetSteamId()), 
+            vehicle_data.vehicle_id, tostring(vehicle_data.owner_steamid), WorldToMapString(args.player:GetPosition()), chat_msg)
+    })
+
+    stash.lootbox.contents = {}
+    stash.lootbox:UpdateToPlayers()
+    
 end
 
 function sVehicleStorages:ModuleLoad()
