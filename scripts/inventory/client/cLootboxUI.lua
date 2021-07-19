@@ -285,8 +285,8 @@ function cLootboxUI:LootboxOpen(args)
         LootManager.loot[LootManager.current_box.cell.x][LootManager.current_box.cell.y][LootManager.current_box.uid] = LootManager.current_box
     end
         
-    self:Update({action = "full", stash = args.stash, locked = args.locked})
-
+    self:Update({action = "full", stash = args.stash, locked = args.locked, open = true})
+    
 end
 
 function cLootboxUI:WindowClosed()
@@ -332,10 +332,17 @@ function cLootboxUI:Update(args)
     if not self.window:GetVisible() --[[or (#LootManager.current_box.contents == 0 and not args.stash and not LocalPlayer:GetValue("InSafezone"))]] then
         --self:RepositionWindow(args.stash and args.stash.capacity or nil)
         self:RepositionWindow()
-        self:ToggleVisible()
+        
+        if args.open or not LocalPlayer:InVehicle() then
+            self:ToggleVisible()
+        end
     end
 
     self:UpdateLootboxTitle(args.locked)
+    
+    if not self.window:GetVisible() then
+        self.lootbox_title_window:Hide()
+    end
 
 end
 
