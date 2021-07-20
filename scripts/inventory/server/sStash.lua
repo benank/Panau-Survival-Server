@@ -8,7 +8,7 @@ function sStash:__init(args)
     self.access_mode = args.access_mode
     self.name = args.name
     self.health = math.min(args.health, Lootbox.Stashes[self.lootbox.tier].health)
-    self.capacity = Lootbox.Stashes[self.lootbox.tier].capacity
+    self.capacity = args.capacity or Lootbox.Stashes[self.lootbox.tier].capacity
     self.can_change_access = Lootbox.Stashes[self.lootbox.tier].can_change_access
 
     self.lootbox.stash = self
@@ -79,6 +79,7 @@ function sStash:UpdateToDB()
     -- Updates stash to DB, including contents and access type
 
     if self.lootbox.tier == Lootbox.Types.Workbench then return end
+    if self.lootbox.tier == Lootbox.Types.VehicleStorage then return end
     
 	local command = SQL:Command("UPDATE stashes SET contents = ?, name = ?, access_mode = ?, health = ?, steamID = ? WHERE id = (?)")
 	command:Bind(1, Serialize(self.lootbox.contents))
@@ -116,6 +117,7 @@ function sStash:Sync(player)
     if not IsValid(player) then return end
     if tostring(player:GetSteamId()) ~= self.owner_id then return end
     if self.lootbox.tier == Lootbox.Types.ProximityAlarm then return end
+    if self.lootbox.tier == Lootbox.Types.VehicleStorage then return end
     Network:Send(player, "Stashes/Sync", self:GetSyncData())
 
     local player_stashes = player:GetValue("Stashes")
@@ -125,6 +127,8 @@ end
 
 -- Removes the stash from the world, DB, and owner's menu
 function sStash:Remove()
+    
+    if self.lootbox.tier == Lootbox.Types.VehicleStorage then return end
 
     -- Create dropbox with contents
     local cmd = SQL:Command("DELETE FROM stashes where id = ?")

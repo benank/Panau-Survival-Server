@@ -525,7 +525,6 @@ end
 
 function sInventory:DropStacks(args, player)
 
-    if player:InVehicle() then return end
     if not args.stacks then return end
     if count_table(args.stacks) == 0 then return end
     if count_table(args.stacks) > Lootbox.Max_Items_In_Dropbox then
@@ -593,11 +592,14 @@ function sInventory:DropStack(args, player)
     if not stack then return end
     if args.amount > stack:GetAmount() then return end
 
-    if player:InVehicle() then return end -- TODO drop in vehicle storage
-
     local dropping_in_stash = false
     local current_lootbox_data = player:GetValue("CurrentLootbox")
     local stash = nil
+
+    if player:InVehicle() then
+        if not current_lootbox_data then return end
+        if not current_lootbox_data.vehicle_storage then return end 
+    end
 
     if current_lootbox_data then
 

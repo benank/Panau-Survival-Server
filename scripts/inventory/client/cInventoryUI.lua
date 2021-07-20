@@ -805,10 +805,8 @@ function cInventoryUI:InventoryClosed()
                     self.window:FindChildByName("itemwindow_"..data.cat..tostring(data.index), true):FindChildByName("button", true))
             end
 
-            if not LocalPlayer:InVehicle() then
-                -- Send to server to drop
-                Network:Send("Inventory/Drop" .. self.steam_id, {stacks = self.dropping_items})
-            end
+            -- Send to server to drop
+            Network:Send("Inventory/Drop" .. self.steam_id, {stacks = self.dropping_items})
 
         end
 
@@ -826,14 +824,27 @@ function cInventoryUI:ToggleVisible()
         self.LPI = nil
         self:InventoryClosed()
         self.mouse_pos = Mouse:GetPosition()
+        
+        -- Close vehicle storage on inventory close if they're in a vehicle
+        if LocalPlayer:InVehicle() then
+            if ClientInventory.lootbox_ui.window:GetVisible() then
+                ClientInventory.lootbox_ui:ToggleVisible()
+            end
+        end
     else -- Open inventory
         self.window:Show()
         Mouse:SetPosition(self.mouse_pos or Render.Size * 0.75)
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
         self.window:BringToFront()
+        
+        if LocalPlayer:InVehicle() and LootManager.current_vehicle_storage_box then
+            -- Tell server to open vehicle storage
+            LootManager.current_box = LootManager.current_vehicle_storage_box
+            ClientInventory.lootbox_ui:LootboxOpen(LootManager.current_box)
+        end
     end
 
-    if not ClientInventory.lootbox_ui.window:GetVisible() then
+    if not ClientInventory.lootbox_ui.window:GetVisible() or LocalPlayer:InVehicle() then
         Mouse:SetVisible(self.window:GetVisible())
     end
     
