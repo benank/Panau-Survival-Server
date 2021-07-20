@@ -150,6 +150,8 @@ function sVehicleManager:PlayerChat(args)
 
         vehicle:SetNetworkValue("VehicleData", vehicle_data)
         self.vehicles[vehicle:GetId()] = vehicle
+        
+        Events:Fire("VehicleCreated", {vehicle = vehicle})
 
     end
 
@@ -1007,7 +1009,7 @@ function sVehicleManager:SpawnNaturalVehicle(spawn_type, index)
     local vehicle = self:SpawnVehicle(spawn_args)
     vehicle:SetHealth(health)
     vehicle:SetStreamDistance(500)
-
+    
     spawn_args.health = health
     local vehicle_data = self:GenerateVehicleData(spawn_args)
     vehicle_data.health = vehicle:GetHealth()
@@ -1020,6 +1022,8 @@ function sVehicleManager:SpawnNaturalVehicle(spawn_type, index)
 
     vehicle:SetNetworkValue("VehicleData", vehicle_data)
     self.vehicles[vehicle:GetId()] = vehicle
+
+    Events:Fire("VehicleCreated", {vehicle = vehicle})
 
 end
 
