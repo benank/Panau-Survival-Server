@@ -190,7 +190,7 @@ function cLootboxUI:UpdateLootboxTitle(locked)
         if not current_box.tier or not Lootbox.Stashes[current_box.tier] then return end
         local name = Lootbox.Stashes[current_box.tier].name
 
-        if current_box.stash and current_box.stash.name and is_owner then
+        if current_box.stash and current_box.stash.name and is_owner and not current_box.vehicle_storage then
             name = current_box.stash.name
         end 
 
@@ -204,7 +204,7 @@ function cLootboxUI:UpdateLootboxTitle(locked)
         self.access_mode_menu:SetPosition(self.stash_dismount_button:GetPosition() + 
             Vector2(0, self.stash_dismount_button:GetHeight() * 2))
 
-        if is_owner then
+        if is_owner and current_box.tier ~= Lootbox.Types.VehicleStorage then
             self.stash_dismount_button:Show()
             self.stash_dismount_button:SetText("DISMOUNT")
             self.stash_dismount_button:SetTextColor(Color.Red)
@@ -262,9 +262,13 @@ function cLootboxUI:LootboxSync(args)
 
     LootManager:RecreateContents(args.contents)
     LootManager.current_box.stash = args.stash
-
-    LootManager.loot[LootManager.current_box.cell.x][LootManager.current_box.cell.y][LootManager.current_box.uid] = LootManager.current_box
-
+    
+    if args.vehicle_storage then
+        LootManager.current_vehicle_storage_box = LootManager.current_box
+    else
+        LootManager.loot[LootManager.current_box.cell.x][LootManager.current_box.cell.y][LootManager.current_box.uid] = LootManager.current_box
+    end
+        
     self:Update({action = "full", stash = args.stash})
 
 end
@@ -277,10 +281,12 @@ function cLootboxUI:LootboxOpen(args)
     LootManager:RecreateContents(args.contents)
     LootManager.current_box.stash = args.stash
 
-    LootManager.loot[LootManager.current_box.cell.x][LootManager.current_box.cell.y][LootManager.current_box.uid] = LootManager.current_box
-
-    self:Update({action = "full", stash = args.stash, locked = args.locked})
-
+    if not LocalPlayer:InVehicle() then
+        LootManager.loot[LootManager.current_box.cell.x][LootManager.current_box.cell.y][LootManager.current_box.uid] = LootManager.current_box
+    end
+        
+    self:Update({action = "full", stash = args.stash, locked = args.locked, open = true})
+    
 end
 
 function cLootboxUI:WindowClosed()
@@ -326,10 +332,17 @@ function cLootboxUI:Update(args)
     if not self.window:GetVisible() --[[or (#LootManager.current_box.contents == 0 and not args.stash and not LocalPlayer:GetValue("InSafezone"))]] then
         --self:RepositionWindow(args.stash and args.stash.capacity or nil)
         self:RepositionWindow()
-        self:ToggleVisible()
+        
+        if args.open or not LocalPlayer:InVehicle() then
+            self:ToggleVisible()
+        end
     end
 
     self:UpdateLootboxTitle(args.locked)
+    
+    if not self.window:GetVisible() then
+        self.lootbox_title_window:Hide()
+    end
 
 end
 
@@ -368,14 +381,17 @@ function cLootboxUI:ToggleVisible()
         self.lootbox_title_window:Hide()
         Events:Unsubscribe(self.LPI)
         self.LPI = nil
-        if LootManager.current_box then
+        if LootManager.current_box and not LocalPlayer:InVehicle() then
             Network:Send(var("Inventory/CloseBox" .. tostring(LootManager.current_box.uid)):get()) -- Send event to close box
         end
     else
 
         self.window:Show()
         self.lootbox_title_window:Show()
-        Mouse:SetPosition(Render.Size / 2)
+        
+        if not LocalPlayer:InVehicle() then
+            Mouse:SetPosition(Render.Size / 2)
+        end
         self.window:BringToFront()
         --self:RepositionWindow()
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
@@ -390,6 +406,8 @@ function cLootboxUI:ToggleVisible()
 end
 
 function cLootboxUI:KeyUp(args)
+    
+    if LocalPlayer:InVehicle() then return end
 
     if args.key == string.byte(self.open_key) then
 

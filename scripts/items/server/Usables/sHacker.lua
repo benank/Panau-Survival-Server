@@ -96,6 +96,16 @@ function sHacker:HackComplete(args, player)
             }
         )
         player:SetValue("CurrentlyHackingSAM", nil)
+    elseif player:GetValue("CurrentlyHackingVehicle") then
+        Events:Fire(
+            "items/VehicleHackComplete",
+            {
+                player = player,
+                vehicle_id = player:GetValue("CurrentlyHackingVehicle"),
+                tier = "Vehicle"
+            }
+        )
+        player:SetValue("CurrentlyHackingVehicle", nil)
     end
 
     player:SetValue("CurrentlyHacking", false)
@@ -119,6 +129,8 @@ function sHacker:UseItem(args, player)
      then
         if args.forward_ray.sam_id then
             self:HackSAM(args, player)
+        elseif args.forward_ray.vehicle_id then
+            self:HackVehicle(args, player)
         else
             self:HackStash(args, player)
         end
@@ -173,6 +185,64 @@ function sHacker:HackStash(args, player)
     send_data.time = send_data.time + perk_mods[1]
 
     Network:Send(player, "items/StartHack", send_data)
+end
+
+function sHacker:HackVehicle(args, player)
+     
+    local player_iu = player:GetValue("ItemUse")
+    local steam_id = tostring(player:GetSteamId())
+    local player = player
+    local vehicle = Vehicle.GetById(args.forward_ray.vehicle_id)
+    
+    if not IsValid(vehicle) then return end
+    if vehicle:GetHealth() <= 0.2 then return end
+    if vehicle:GetPosition():Distance(player:GetPosition()) > 15 then return end
+    
+    local vehicle_data = vehicle:GetValue("VehicleData")
+    
+    -- if steam_id == vehicle_data.owner_steamid then
+    --     Chat:Send(player, "Hacking failed: You own this vehicle.", Color.Red)
+    --     return
+    -- end
+    
+    -- if AreFriends(player, vehicle_data.owner_steamid) then
+    --     Chat:Send(player, "Hacking failed: You are friends with this vehicle\'s owner.", Color.Red)
+    --     return
+    -- end
+    
+    local perk_mods = self:GetPerkMods(player)
+
+    local chance_to_keep = math.random()
+
+    if chance_to_keep <= perk_mods[2] then
+        Chat:Send(player, "Your Hacker was kept after using it, thanks to your perks!", Color(0, 220, 0))
+    else
+        Inventory.RemoveItem(
+            {
+                item = player_iu.item,
+                index = player_iu.index,
+                player = player
+            }
+        )
+    end
+
+    Inventory.OperationBlock({player = player, change = 1})
+    player:SetValue("CurrentlyHacking", true)
+    player:SetValue("CurrentlyHackingVehicle", vehicle:GetId())
+    local difficulty = self.difficulties[13]
+
+    local send_data = {difficulty = difficulty}
+
+    if player_iu.item.name == "Master Hacker" then
+        send_data.time = 20 -- Double time for Master Hacker
+    else
+        send_data.time = 10
+    end
+
+    send_data.time = send_data.time + perk_mods[1]
+
+    Network:Send(player, "items/StartHack", send_data)
+    
 end
 
 function sHacker:HackSAM(args, player)

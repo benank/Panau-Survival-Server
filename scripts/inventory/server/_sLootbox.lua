@@ -27,6 +27,9 @@ function sLootbox:__init(args)
     self.is_stash = Lootbox.Stashes[args.tier] ~= nil
     self.has_been_opened = false
     self.locked = args.locked or false
+    self.vehicle_storage = IsValid(args.vehicle)
+    self.vehicle = args.vehicle
+    self.no_object = args.no_object == true or self.vehicle_storage -- Does not exist in the world as an object - such as for vehicle storage
     -- Eventually add support for world specification
 
     self.players_opened = {}
@@ -108,8 +111,8 @@ function sLootbox:PlayerAddStack(stack, player)
 
     Events:Fire("Discord", {
         channel = "Stashes",
-        content = string.format("%s [%s] added stack to stash %d [Tier %d]. \nStack: %s", 
-            player:GetName(), player:GetSteamId(), self.stash.id, self.tier, stack:ToString())
+        content = string.format("%s [%s] added stack to stash %s [Tier %d]. \nStack: %s", 
+            player:GetName(), player:GetSteamId(), tostring(self.stash.id), self.tier, stack:ToString())
     })
 
     local return_stack = self:AddStack(stack)
@@ -190,6 +193,11 @@ function sLootbox:TakeLootStack(args, player)
     if self.is_stash then
         if not self.stash:CanPlayerOpen(player) then return end
     end
+    
+    -- Cannot loot destroyed vehicles
+    if self.vehicle_storage then
+        if IsValid(self.vehicle) and self.vehicle:GetHealth() <= 0 then return end 
+    end
 
     local stack = self.contents[args.index]
 
@@ -205,8 +213,8 @@ function sLootbox:TakeLootStack(args, player)
     local id = self.is_stash and self.stash.id or self.uid
     Events:Fire("Discord", {
         channel = channel,
-        content = string.format("%s [%s] took stack from lootbox %d [Tier %d]. \nStack: %s", 
-            player:GetName(), player:GetSteamId(), id, self.tier, stack:ToString())
+        content = string.format("%s [%s] took stack from lootbox %s [Tier %d]. \nStack: %s", 
+            player:GetName(), player:GetSteamId(), tostring(id), self.tier, stack:ToString())
     })
 
     local return_stack = inv:AddStack({stack = stack})
@@ -250,13 +258,30 @@ function sLootbox:TakeLootStack(args, player)
     end
 end
 
+function sLootbox:GetPosition()
+    
+    if self.vehicle_storage and IsValid(self.vehicle) then
+        return self.vehicle:GetPosition()
+    end
+    
+    return self.position 
+end
+
 function sLootbox:TryOpenBox(args, player)
 
     if not IsValid(player) then return end
     --if count_table(self.contents) == 0 and not self.is_stash then return end
     if player:GetHealth() <= 0 then return end
-    if player:GetPosition():Distance(self.position) > Lootbox.Distances.Can_Open + 1 then return end
-
+    if not self.vehicle_storage and player:GetPosition():Distance(self:GetPosition()) > Lootbox.Distances.Can_Open + 1 then return end
+    
+    -- Not in the vehicle, cannot open storage
+    if self.vehicle_storage then
+        if not IsValid(self.vehicle) then return end
+        local player_vehicle = player:GetVehicle()
+        if not IsValid(player_vehicle) or player_vehicle ~= self.vehicle then return end
+    end
+    
+    
     if player:GetPosition():Distance(Vector3(14145, 332, 14342)) < 50 and not IsAdmin(player) then
         
         Events:Fire("BanPlayer", {
@@ -302,6 +327,7 @@ function sLootbox:GetContentsSyncData()
     if self.is_stash then
         data.stash = self.stash:GetSyncData()
     end
+    data.vehicle_storage = self.vehicle_storage
     return data
 end
 
@@ -456,6 +482,11 @@ function sLootbox:Sync()
     Network:SendToPlayers(GetNearbyPlayersInCell(self.cell), "Inventory/OneLootboxCellSync", self:GetSyncData())
 end
 
+-- Syncs the single lootbox to a specific player, used for vehicle storages
+function sLootbox:SyncToPlayer(player)
+    Network:Send(player, "Inventory/OneLootboxCellSync", self:GetSyncData())
+end
+
 -- Update contents to anyone who has it open
 function sLootbox:UpdateToPlayers()
     Events:Fire("Inventory/LootboxUpdated", self:GetFullData())
@@ -484,13 +515,15 @@ function sLootbox:GetSyncData(player)
 
     local data = {
         tier = self.tier,
-        position = self.position,
+        position = self:GetPosition(),
         angle = self.angle,
         active = self.active,
         model_data = self.model_data,
         cell = self.cell,
         uid = self.uid,
-        locked = self.locked
+        locked = self.locked,
+        no_object = self.no_object,
+        vehicle_storage = self.vehicle_storage
     }
 
     -- If it's a stash and they aren't allowed to open it, then prevent them from doing so
@@ -500,7 +533,7 @@ function sLootbox:GetSyncData(player)
             data.locked = true
         end
     end
-
+    
     if not data.locked then
         data.contents = self:GetContentsData()
     end
