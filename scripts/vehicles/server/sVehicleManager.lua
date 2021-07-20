@@ -35,6 +35,9 @@ function sVehicleManager:__init()
     Events:Subscribe("LoadStatus", self, self.LoadStatus)
 
     Events:Subscribe("Items/PlayerUseVehicleGuard", self, self.PlayerUseVehicleGuard)
+    
+    Events:Subscribe("RefreshVehicleStorages", self, self.RefreshVehicleStorages)
+    Events:Subscribe("items/VehicleHackComplete", self, self.VehicleHackComplete)
 
     Network:Subscribe("Vehicles/SpawnVehicle", self, self.PlayerSpawnVehicle)
     Network:Subscribe("Vehicles/DeleteVehicle", self, self.PlayerDeleteVehicle)
@@ -78,6 +81,12 @@ function sVehicleManager:__init()
         self:SaveVehicles()
     end)
 
+end
+
+function sVehicleManager:RefreshVehicleStorages()
+    for _, vehicle in pairs(self.vehicles) do
+        Events:Fire("VehicleCreated", {vehicle = vehicle}) 
+    end
 end
 
 function sVehicleManager:LoadStatus(args)
@@ -195,6 +204,44 @@ function sVehicleManager:SaveVehicles()
 
 end
 
+function sVehicleManager:VehicleHackComplete(args)
+    
+    local vehicle = Vehicle.GetById(args.vehicle_id)
+    if not IsValid(vehicle) then return end
+    args.vehicle = vehicle
+    
+    local vehicle_data = vehicle:GetValue("VehicleData")
+
+    if vehicle_data.guards > 0 then
+        -- Remove a vehicle guard due to the hack 
+        vehicle_data.guards = vehicle_data.guards - 1
+        args.vehicle:SetNetworkValue("VehicleData", vehicle_data)
+        self:SaveVehicle(vehicle)
+        
+        Chat:Send(args.player, "Successfully hacked the vehicle and removed a Vehicle Guard.", Color.Green)
+
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = vehicle_data.owner_steamid,
+            message = string.format("Your %s Vehicle Guard was hacked by %s %s", 
+                args.vehicle:GetName(), args.player:GetName(), WorldToMapString(args.player:GetPosition())),
+            color = Color(200, 0, 0)
+        })
+        
+        local msg = string.format("Player %s [%s] hacked vehicle and removed Vehicle Guard from vehicle %d", 
+            args.player:GetName(), args.player:GetSteamId(), vehicle_data.vehicle_id)
+        Events:Fire("Discord", {
+            channel = "Vehicles",
+            content = msg
+        })
+
+    else
+        -- No vehicle guards, so tell inventory to put the items from the vehicle on the ground
+        Events:Fire("Vehicles/VehicleItemsHacked", args)
+        
+    end
+
+end
+
 function sVehicleManager:PlayerUseVehicleGuard(args)
 
     local vehicle_data = args.vehicle:GetValue("VehicleData")
@@ -258,6 +305,7 @@ function sVehicleManager:VehicleDestroyed(vehicle, vehicle_data_input)
 
         self.despawning_vehicles[vehicle_data.vehicle_id] = nil
         self.owned_vehicles[vehicle_data.vehicle_id] = nil
+        Events:Fire("VehicleRemoved", {vehicle = vehicle})
 
         local cmd = SQL:Command("DELETE FROM vehicles WHERE vehicle_id = (?)")
         cmd:Bind(1, vehicle_data.vehicle_id)
@@ -410,6 +458,7 @@ function sVehicleManager:MinuteTick()
             self.despawning_vehicles[id] = nil
 
             local vehicle_id = self.owned_vehicles[id]:GetId()
+            Events:Fire("VehicleRemoved", {vehicle = self.owned_vehicles[id]})
             self.owned_vehicles[id]:Remove()
             self.owned_vehicles[id] = nil
 
@@ -572,6 +621,7 @@ function sVehicleManager:PlayerSpawnVehicle(args, player)
         self:SyncPlayerOwnedVehicles(player)
     end)
     
+    Events:Fire("VehicleCreated", {vehicle = vehicle})
 
     local msg = string.format("Player %s [%s] spawned vehicle %d", 
         player:GetName(), player:GetSteamId(), args.vehicle_id)
@@ -598,6 +648,7 @@ function sVehicleManager:PlayerDeleteVehicle(args, player)
     cmd:Execute()
 
     if IsValid(vehicle_data.vehicle) then
+        Events:Fire("VehicleRemoved", {vehicle = vehicle_data.vehicle})
         vehicle_data.vehicle:Remove()
     end
 
@@ -635,6 +686,7 @@ function sVehicleManager:PlayerEnterVehicle(args)
     else
         -- This is an owned vehicle, so update it in the DB
         self:SaveVehicle(args.vehicle)
+        Events:Fire("PlayerEnteredVehicle", args)
 
         -- If a friend is using the vehicle, restart the timer
         if self.despawning_vehicles[data.vehicle_id] then
@@ -782,6 +834,7 @@ function sVehicleManager:TryBuyVehicle(args)
     args.vehicle:SetStreamDistance(2000)
 
     self:SaveVehicle(args.vehicle, args.player)
+    Events:Fire("PlayerEnteredVehicle", args)
 
     if args.data.spawn_index and args.data.spawn_type then
         self.spawns[args.data.spawn_type][args.data.spawn_index].respawn_timer:Restart()

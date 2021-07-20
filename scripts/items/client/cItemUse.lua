@@ -101,6 +101,12 @@ function cItemUse:CompleteUsage()
         forward_ray.collision = forward_ray.entity:GetCollision()
         forward_ray.entity = nil
         forward_ray.hit_type = "ClientStaticObject"
+    elseif forward_ray.entity and forward_ray.entity.__type == "Vehicle" then
+        if forward_ray.distance < 5 then
+            forward_ray.vehicle_id = forward_ray.entity:GetId()
+        end
+        
+        forward_ray.hit_type = "Vehicle"
     end
 
     local down_ray = Physics:Raycast(LocalPlayer:GetPosition() + Vector3.Up * 500, Vector3.Down, 0, 600)

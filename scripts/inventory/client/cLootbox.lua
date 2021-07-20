@@ -13,7 +13,8 @@ function cLootbox:__init(args)
     self.contents = args.contents or {}
     self.stash = args.stash
     self.locked = args.locked
-    self.hidden = false
+    self.hidden = args.hidden
+    self.no_object = args.no_object
 
     self:CreateModel()
 
@@ -49,6 +50,7 @@ end
 function cLootbox:CreateModel()
 
     if not self.active then return end
+    if self.no_object then return end
 
     local position = self.position + self.model_data.offset
     self.look_position = self.position + self.angle * (self.model_data.look_offset and self.model_data.look_offset or Vector3())
