@@ -236,15 +236,14 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Barrel Stash"] = {rarity = 0.15, min = 1, max = 1},
-                ["Garbage Stash"] = {rarity = 0.07, min = 1, max = 1},
-                ["Stop Sign"] = {rarity = 0.025, min = 1, max = 1},
-                ["Cone"] = {rarity = 0.01, min = 1, max = 1},
-                ["Light"] = {rarity = 0.1, min = 1, max = 1},
-                ["Chair"] = {rarity = 0.05, min = 1, max = 1},
-                ["Door"] = {rarity = 0.1, min = 1, max = 1, min_dura = 1, max_dura = 1},
                 ["Wall"] = {rarity = 0.48, min = 1, max = 1, min_dura = 1, max_dura = 1},
-                ["LandClaim"] = {rarity = 0.06, min = 1, max = 1},
+                ["Door"] = {rarity = 0.15, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                ["Barrel Stash"] = {rarity = 0.15, min = 1, max = 1},
+                ["Light"] = {rarity = 0.05, min = 1, max = 1},
+                ["Chair"] = {rarity = 0.05, min = 1, max = 1},
+                ["Stop Sign"] = {rarity = 0.025, min = 1, max = 1},
+                ["Cone"] = {rarity = 0.025, min = 1, max = 1},
+                ["Garbage Stash"] = {rarity = 0.07, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
@@ -312,8 +311,8 @@ LootItems =
             rarity = 0.067,
             items = 
             {
-                ["Cruise Missile"] = {rarity = 0.5, min = 1, max = 2},
-                ["Area Bombing"] = {rarity = 0.3, min = 1, max = 1},
+                ["Cruise Missile"] = {rarity = 0.3, min = 1, max = 2},
+                ["Area Bombing"] = {rarity = 0.5, min = 1, max = 1},
                 ["Tactical Nuke"] = {rarity = 0.2, min = 1, max = 1},
             }
         },
@@ -344,18 +343,21 @@ LootItems =
             rarity = 0.187,
             items = 
             {
-                ["Table"] = {rarity = 0.02, min = 1, max = 1},
-                ["Glass"] = {rarity = 0.01, min = 1, max = 1},
-                ["Hedgehog"] = {rarity = 0.02, min = 1, max = 1},
-                ["Sign"] = {rarity = 0.03, min = 1, max = 2},
-                ["Chair"] = {rarity = 0.02, min = 1, max = 1},
-                ["Helipad"] = {rarity = 0.01, min = 1, max = 1},
-                ["Bed"] = {rarity = 0.03, min = 1, max = 1},
-                ["Door"] = {rarity = 0.06, min = 1, max = 1, min_dura = 1, max_dura = 1},
                 ["Wall"] = {rarity = 0.68, min = 1, max = 1, min_dura = 1, max_dura = 1},
-                ["Proximity Alarm"] = {rarity = 0.055, min = 1, max = 1},
+                ["Door"] = {rarity = 0.06, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                ["Proximity Alarm"] = {rarity = 0.05, min = 1, max = 1},
+                ["Table"] = {rarity = 0.02, min = 1, max = 1},
+                ["Glass"] = {rarity = 0.02, min = 1, max = 1},
+                ["Hedgehog"] = {rarity = 0.02, min = 1, max = 1},
+                ["Sign"] = {rarity = 0.02, min = 1, max = 2},
+                ["Chair"] = {rarity = 0.02, min = 1, max = 1},
+                ["Bed"] = {rarity = 0.02, min = 1, max = 1},
+                ["Helipad"] = {rarity = 0.01, min = 1, max = 1},
+                ["LandClaim"] = {rarity = 0.02, min = 1, max = 1},
                 ["Locked Stash"] = {rarity = 0.015, min = 1, max = 1},
-                ["LandClaim"] = {rarity = 0.05, min = 1, max = 1},
+                ["Cone"] = {rarity = 0.015, min = 1, max = 1},
+                ["Stop Sign"] = {rarity = 0.015, min = 1, max = 1},
+                ["Light"] = {rarity = 0.015, min = 1, max = 1}
             }
         },
         ["EXPLOSIVE"] = 
