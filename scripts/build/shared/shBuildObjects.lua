@@ -105,12 +105,6 @@ BuildObjects =
         },
         unclaimed_decay = false
     },
-    ["Canopy Net"] = 
-    {
-        model = "areaset04.bl/go232-c.lod", 
-        collision = "areaset04.bl/go232_lod1-c_col.pfx",
-        unclaimed_decay = true
-    },
     ["Teleporter"] = 
     {
         model = "59x36.nlz/go210-a.lod", 

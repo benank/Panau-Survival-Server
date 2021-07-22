@@ -43,7 +43,6 @@ ItemsConfig =
         ["Christmas Tree"] = {model = "vegetation_0.blz/City_B10_roofbush-Whole.lod", disable_walls = true},
         ["Sign"] = {model = "general.blz/gd_wood01-c.lod", angle = Angle(0, 0, math.pi / 2), offset = Vector3(1.5, 0, 0)},
         
-        ["Canopy Net"] = {model = "areaset04.bl/go232-c.lod", offset = Vector3(0, 0.95, 0), disable_walls = true},
         ["Teleporter"] = {model = "59x36.nlz/go210-a.lod", disable_walls = true},
         ["Metal Railing"] = {model = "areaset08.blz/gb036_02-rail_4m.lod", disable_ceil = true},
         ["Metal Stairs"] = {model = "59x36.nl/go173-p.lod", offset = Vector3(0, 2.1, 0), disable_walls = true},

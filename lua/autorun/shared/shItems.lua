@@ -1037,14 +1037,6 @@ Items =
         equip_type = "sam_key"
     },
     {
-        name = "Canopy Net",
-        category = "Survival",
-        stacklimit = 3,
-        max_durability = 50,
-        can_use = true,
-        durable = true
-    },
-    {
         name = "Teleporter",
         category = "Survival",
         stacklimit = 1,
