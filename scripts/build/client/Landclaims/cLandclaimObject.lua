@@ -16,7 +16,7 @@ function cLandclaimObject:__init(args)
     self.spawned = false
     self.has_collision = false
     self.landclaim = args.landclaim
-    self.collision_range = LandclaimObjectCollisionRanges[self.name]
+    self.collision_range = LandclaimObjectCollisionRanges[self.name] or 100
 
 end
 

@@ -1036,6 +1036,38 @@ Items =
         can_equip = true,
         equip_type = "sam_key"
     },
+    {
+        name = "Canopy Net",
+        category = "Survival",
+        stacklimit = 3,
+        max_durability = 50,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Teleporter",
+        category = "Survival",
+        stacklimit = 1,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Metal Railing",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 50,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Metal Stairs",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 200,
+        can_use = true,
+        durable = true
+    },
 }
 
 Items_ammo_types = 

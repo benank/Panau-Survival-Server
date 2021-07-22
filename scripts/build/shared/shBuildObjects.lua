@@ -105,4 +105,28 @@ BuildObjects =
         },
         unclaimed_decay = false
     },
+    ["Canopy Net"] = 
+    {
+        model = "areaset04.bl/go232-c.lod", 
+        collision = "areaset04.bl/go232_lod1-c_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Teleporter"] = 
+    {
+        model = "59x36.nlz/go210-a.lod", 
+        collision = "59x36.nlz/go210_lod1-a_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Metal Railing"] = 
+    {
+        model = "areaset08.blz/gb036_02-rail_4m.lod", 
+        collision = "areaset08.blz/gb036_02_lod1-rail_4m_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Metal Stairs"] = 
+    {
+        model = "59x36.nl/go173-p.lod", 
+        collision = "59x36.nl/go173_lod1-p_col.pfx",
+        unclaimed_decay = true
+    },
 }
