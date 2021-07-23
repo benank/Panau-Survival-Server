@@ -355,11 +355,11 @@ LootItems =
                 ["Helipad"] = {rarity = 0.005, min = 1, max = 1},
                 ["LandClaim"] = {rarity = 0.02, min = 1, max = 1},
                 ["Locked Stash"] = {rarity = 0.015, min = 1, max = 1},
-                ["Cone"] = {rarity = 0.015, min = 1, max = 1},
-                ["Stop Sign"] = {rarity = 0.015, min = 1, max = 1},
+                ["Cone"] = {rarity = 0.02, min = 1, max = 1},
+                ["Stop Sign"] = {rarity = 0.02, min = 1, max = 1},
                 ["Light"] = {rarity = 0.015, min = 1, max = 1},
-                ["Metal Railing"] = {rarity = 0.015, min = 1, max = 1},
-                ["Metal Stairs"] = {rarity = 0.01, min = 1, max = 1},
+                -- ["Metal Railing"] = {rarity = 0.015, min = 1, max = 1},
+                ["Metal Stairs"] = {rarity = 0.015, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 
