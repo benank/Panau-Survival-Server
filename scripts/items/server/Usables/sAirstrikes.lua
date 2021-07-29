@@ -15,7 +15,7 @@ end
 function sAirStrikes:CreateAirstrikeDrone(args)
     
     local airstrike_names = {"Cruise Missile", "Area Bombing", "Tactical Nuke"}
-    local airstrike_name = airstrike_names[math.floor(math.random(#airstrike_names))]
+    local airstrike_name = args.airstrike_name or airstrike_names[math.floor(math.random(#airstrike_names))]
     local airstrike_item_data = ItemsConfig.airstrikes[airstrike_name]
      
     local airstrike_data = {
@@ -27,8 +27,16 @@ function sAirStrikes:CreateAirstrikeDrone(args)
     }
     if airstrike_name == "Area Bombing" then
         airstrike_data.num_bombs = ItemsConfig.airstrikes["Area Bombing"].num_bombs
+        
+        if args.num_bombs then
+            airstrike_data.num_bombs = args.num_bombs
+        end
+        
+        if args.radius then
+            airstrike_data.radius = args.radius
+        end
     end
-
+    
     local drop_position = args.position + Vector3.Up * 500
     local direction = Vector3(math.random() - 0.5, 0, math.random() - 0.5):Normalized()
     local start_position = drop_position - direction * 500

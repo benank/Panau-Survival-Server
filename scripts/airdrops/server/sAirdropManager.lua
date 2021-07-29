@@ -138,7 +138,38 @@ function sAirdropManager:DoorsDestroyed(args)
     -- Spawn more drones when doors are blown on Level 3 airdrop
     if self.airdrop.type == AirdropType.High then
         self:CreateAirdropDrones(true)
+        
+        Events:Fire("items/CreateGrenade", {
+            position = self.airdrop.position,
+            grenade_type = "Molotov",
+            fusetime = 0,
+            velocity = Vector3.Zero,
+            owner_id = "Airdrop"
+        })
+        
+        Events:Fire("drones/CreateAirstrike", {
+            airstrike_name = "Area Bombing",
+            position = self.airdrop.position,
+            num_bombs = 100,
+            radius = 300
+        })
+    elseif self.airdrop.type == AirdropType.Mid then
+        
+        Events:Fire("drones/CreateAirstrike", {
+            airstrike_name = "Area Bombing",
+            position = self.airdrop.position,
+            num_bombs = 50,
+            radius = 150
+        })
     end
+    
+    Events:Fire("items/CreateGrenade", {
+        position = self.airdrop.position,
+        grenade_type = "Toxic Grenade",
+        fusetime = 0,
+        velocity = Vector3.Zero,
+        owner_id = "Airdrop"
+    })
 end
 
 function sAirdropManager:PlayerChat(args)

@@ -14,9 +14,20 @@ function Grenades:__init()
     Network:Subscribe("items/PlayerInsideFireGrenadeArea", self, self.PlayerInsideFireGrenadeArea)
     Network:Subscribe("items/SnowballHit", self, self.SnowballHit)
     
+    Events:Subscribe("items/CreateGrenade", self, self.CreateGrenadeExternal)
     Events:Subscribe("drones/CreateGrenade", self, self.CreateGrenadeDrone)
     
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
+end
+
+function Grenades:CreateGrenadeExternal(args)
+	Network:Broadcast("items/GrenadeTossed", {
+        position = args.position,
+        velocity = args.velocity,
+        type = args.grenade_type,
+        fusetime = args.fusetime,
+        owner_id = args.owner_id or "???"
+    })
 end
 
 function Grenades:CreateGrenadeDrone(args)

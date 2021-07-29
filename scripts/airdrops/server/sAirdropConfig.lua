@@ -22,8 +22,8 @@ AirdropConfig =
             health = 5,
             drones = 
             {
-                amount = {min = 1, max = 3},
-                level = {min = 3, max = 10}
+                amount = {min = 1, max = 4},
+                level = {min = 5, max = 20}
             },
             map_preview = -- Preview on discord and ingame map
             {
@@ -39,8 +39,8 @@ AirdropConfig =
             health = 2,
             drones = 
             {
-                amount = {min = 3, max = 7},
-                level = {min = 10, max = 25}
+                amount = {min = 3, max = 8},
+                level = {min = 25, max = 60}
             },
             map_preview = 
             {
@@ -56,8 +56,8 @@ AirdropConfig =
             health = 4,
             drones = 
             {
-                amount = {min = 3, max = 6},
-                level = {min = 20, max = 50}
+                amount = {min = 3, max = 10},
+                level = {min = 70, max = 120}
             },
             map_preview = 
             {
