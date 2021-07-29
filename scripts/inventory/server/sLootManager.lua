@@ -62,7 +62,13 @@ function sLootManager:CreateLootboxExternal(args)
         if args.airdrop_tier then
             for _, stack in pairs(args.contents) do
                 if stack:GetProperty("name") == "Airdrop" then
-                    stack.contents[1].custom_data.level = args.airdrop_tier
+                    local next_tier_chance = 0.3
+                    
+                    if math.random() < next_tier_chance then
+                        stack.contents[1].custom_data.level = math.min(3, args.airdrop_tier + 1)
+                    else
+                        stack.contents[1].custom_data.level = args.airdrop_tier
+                    end
                 end
             end
         elseif args.sam_level then
