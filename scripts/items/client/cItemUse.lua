@@ -58,7 +58,7 @@ function cItemUse:StartUsage(args)
     self.progress.max = args.time
     self.progress.current = 0
     Events:Fire("SetInventoryState", false)
-
+    
     table.insert(self.events, Events:Subscribe("InputPoll", self, self.InputPoll))
     table.insert(self.events, Events:Subscribe("Render", self, self.Render))
     table.insert(self.events, Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput))
@@ -67,7 +67,8 @@ function cItemUse:StartUsage(args)
     table.insert(self.events, Events:Subscribe("LocalPlayerDeath", self, self.CancelUsage))
 
     if LocalPlayer:GetBaseState() ~= AnimationState.SUprightIdle
-    and LocalPlayer:GetBaseState() ~= AnimationState.SSwimIdle then
+    and LocalPlayer:GetBaseState() ~= AnimationState.SSwimIdle
+    and LocalPlayer:GetBaseState() ~= AnimationState.SSwimDiveIdle then
         self:CancelUsage()
     end
 
