@@ -63,6 +63,26 @@ Events:Subscribe("PlayerChat", function(args)
             contents = {}
         })
 
+    elseif args.text == "/lockbox" then
+
+        Events:Fire("inventory/CreateLootboxExternal", {
+            tier = Lootbox.Types.Lockbox,
+            position = args.player:GetPosition() + Vector3.Up,
+            angle = args.player:GetAngle(),
+            contents = {},
+            locked = true,
+        })
+
+    elseif args.text == "/lockboxx" then
+
+        Events:Fire("inventory/CreateLootboxExternal", {
+            tier = Lootbox.Types.LockboxX,
+            position = args.player:GetPosition() + Vector3.Up,
+            angle = args.player:GetAngle(),
+            contents = {},
+            locked = true,
+        })
+
     elseif args.text == "/badstash" and IsAdmin(args.player) then
 
         local current_box = args.player:GetValue("CurrentLootbox")

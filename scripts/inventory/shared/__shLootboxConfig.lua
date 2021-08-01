@@ -20,7 +20,9 @@ Lootbox.Types =
     AirdropLevel2 = 17,
     AirdropLevel3 = 18,
     SAM = 19,
-    VehicleStorage = 20
+    VehicleStorage = 20,
+    Lockbox = 21,
+    LockboxX = 22
 }
 
 StashAccessMode = 
@@ -62,6 +64,8 @@ Lootbox.GeneratorConfig =
         [Lootbox.Types.Level3] = true,
         [Lootbox.Types.Level4] = true,
         [Lootbox.Types.Level5] = true,
+        [Lootbox.Types.Lockbox] = true,
+        [Lootbox.Types.LockboxX] = true,
         [Lootbox.Types.VendingMachineFood] = true,
         [Lootbox.Types.VendingMachineDrink] = true,
         [Lootbox.Types.AirdropLevel1] = true,
@@ -104,6 +108,18 @@ Lootbox.GeneratorConfig =
             min_items = 1,
             max_items = 3,
             respawn = 55
+        },
+        [Lootbox.Types.Lockbox] = 
+        {
+            min_items = 1,
+            max_items = 2,
+            respawn = 120
+        },
+        [Lootbox.Types.LockboxX] = 
+        {
+            min_items = 2,
+            max_items = 3,
+            respawn = 240
         },
         [Lootbox.Types.VendingMachineFood] = 
         {
@@ -187,6 +203,26 @@ Lootbox.Models =
         col = "37x10.flz/go061_lod1-e_col.pfx",
         model2 = "general.blz/gae03-gae03.lod",
         offset = Vector3(0, -0.05, 0)
+    },
+    [Lootbox.Types.Lockbox] = 
+    {
+        model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        col = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx",
+        top_model = "mod.heavydrop.assault.eez/wea00-a1.lod",
+        top_col = "mod.heavydrop.assault.eez/wea00_lod1-a1_col.pfx",
+        offset = Vector3(0, 0, 0),
+        offset2 = Vector3(0, -0.04, -0.03),
+        look_offset = Vector3(0, 0, 0.25)
+    },
+    [Lootbox.Types.LockboxX] = 
+    {
+        model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        col = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx",
+        top_model = "mod.heavydrop.assault.eez/wea00-a1.lod",
+        top_col = "mod.heavydrop.assault.eez/wea00_lod1-a1_col.pfx",
+        offset = Vector3(0, 0, 0),
+        offset2 = Vector3(0, -0.04, -0.03),
+        look_offset = Vector3(0, 0, 0.25)
     },
     [Lootbox.Types.Dropbox] = 
     {

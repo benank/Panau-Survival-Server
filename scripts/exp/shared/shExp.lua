@@ -48,7 +48,9 @@ Exp =
     {
         [13] = 30, -- Locked Stash
         [14] = 15, -- Proximity Alarm
-        ["SAM"] = 50
+        ["SAM"] = 50,
+        [21] = 70, -- Lockbox
+        [22] = 120 -- Lockbox X
     },
     DestroyStash = 
     {

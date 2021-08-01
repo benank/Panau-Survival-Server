@@ -2,6 +2,8 @@ class "sHacker"
 
 function sHacker:__init()
     self.difficulties = {
+        [22] = 5, -- LockboxX
+        [21] = 4, -- Lockbox
         [13] = 3, -- Locked stash
         [14] = 2 -- Prox alarm
     }
@@ -82,14 +84,26 @@ function sHacker:HackComplete(args, player)
         return
     end
     if player:GetValue("CurrentLootbox") then
-        Events:Fire(
-            "items/HackComplete",
-            {
-                player = player,
-                stash_id = player:GetValue("CurrentLootbox").stash.id,
-                tier = player:GetValue("CurrentLootbox").tier
-            }
-        )
+        local current_box = player:GetValue("CurrentLootbox")
+        if current_box.stash then
+            Events:Fire(
+                "items/HackComplete",
+                {
+                    player = player,
+                    stash_id = current_box.stash.id,
+                    tier = current_box.tier
+                }
+            )
+        else
+            Events:Fire(
+                "items/LockboxHackComplete",
+                {
+                    player = player,
+                    lootbox_id = current_box.uid,
+                    tier = current_box.tier
+                }
+            )
+        end
     elseif player:GetValue("CurrentlyHackingSAM") then
         Events:Fire(
             "items/SAMHackComplete",
@@ -141,15 +155,32 @@ function sHacker:UseItem(args, player)
     end
 end
 
+function sHacker:CanHackBox(player, current_box)
+    
+    if not current_box then return false end
+    if not current_box.tier then return false end
+    
+    if current_box.locked then return true end
+    if not hackable_tiers[current_box.tier] then return false end
+    if not self.difficulties[current_box.tier] then return false end
+    
+    if current_box.stash then
+                   
+        if current_box.stash.access_mode == 1 or
+        current_box.stash.owner_id == tostring(player:GetSteamId()) or
+        AreFriends(player, current_box.stash.owner_id) then
+            return false 
+        end
+            
+    end
+    
+end
+
 function sHacker:HackStash(args, player)
     local player_iu = player:GetValue("ItemUse")
     local current_box = player:GetValue("CurrentLootbox")
-    if
-        not current_box or (not current_box.locked and not hackable_tiers[current_box.tier]) or
-            current_box.stash.access_mode == 1 or
-            current_box.stash.owner_id == tostring(player:GetSteamId()) or
-            AreFriends(player, current_box.stash.owner_id)
-     then
+    
+    if not self:CanHackBox(player, current_box) then
         Chat:Send(player, "You must open a hackable object first!", Color.Red)
         return
     end

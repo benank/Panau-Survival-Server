@@ -24,7 +24,20 @@ function sLootManager:__init()
     Events:Subscribe("Inventory/CreateDropboxExternal", self, self.CreateDropboxExternal)
     Events:Subscribe("inventory/CreateLootboxExternal", self, self.CreateLootboxExternal)
     Events:Subscribe("airdrops/RemoveAirdrop", self, self.RemoveAirdrop)
+    Events:Subscribe("items/LockboxHackComplete", self, self.LockboxHackComplete)
 
+end
+
+function sLootManager:LockboxHackComplete(args)
+    local lootbox = self.external_loot[args.lootbox_id]
+    if not lootbox then return end
+    
+    if not lootbox.locked then return end
+    
+    lootbox.locked = false
+    
+    lootbox:ForceClose()
+    lootbox:Sync()
 end
 
 function sLootManager:RemoveAirdrop()
