@@ -69,6 +69,10 @@ function sHacker:FailHack(args, player)
     
     player:SetValue("CurrentlyHackingSAM", nil)
     player:SetValue("CurrentlyHacking", false)
+    
+    Events:Fire("items/FailHack", {
+        player = player
+    })
 
     Inventory.OperationBlock({player = player, change = -1})
 end

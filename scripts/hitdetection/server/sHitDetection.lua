@@ -43,6 +43,7 @@ function sHitDetection:__init()
 
     Events:Subscribe("HitDetection/VehicleGuardActivate", self, self.VehicleGuardActivate)
     Events:Subscribe("HitDetection/WarpGrenade", self, self.WarpGrenade)
+    Events:Subscribe("items/FailHack", self, self.FailHack)
 
     Network:Subscribe("HitDetection/MeleeGrappleHit", self, self.MeleeGrappleHit)
     Network:Subscribe("HitDetection/MeleeStandingKickHit", self, self.MeleeStandingKickHit)
@@ -59,6 +60,11 @@ function sHitDetection:__init()
 
     Network:Subscribe("Hitdetection/Respawn", self, self.Respawn)
 
+end
+
+function sHitDetection:FailHack(args)
+    args.player:Damage(WeaponDamage.FailHackDamage, DamageEntity.Hacker)
+    self:SetPlayerLastDamaged(args.player, DamageEntityNames[WeaponDamage.FailHackDamage])
 end
 
 function sHitDetection:DealDamageIndicator(args)

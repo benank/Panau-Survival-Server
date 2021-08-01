@@ -108,6 +108,7 @@ function WeaponDamage:__init()
     self.FireDamagePerSecond = 0.1
     self.ToxicDamagePerSecond = 0.2
     self.WarpGrenadeDamage = 0.25
+    self.FailHackDamage = 0.3
     
     self.VehicleGuardDamage = 0.25 -- Instakill
     

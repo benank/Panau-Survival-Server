@@ -195,6 +195,12 @@ function HexagonPuzzle:Render(window)
 
         if not self.complete then
             Network:Send(var("items/FailHack"):get())
+			
+            ClientEffect.Play(AssetLocation.Game, {
+                position = LocalPlayer:GetPosition() + Vector3(0, 0.5, 0),
+                angle = LocalPlayer:GetAngle(),
+                effect_id = 92
+            })
         end
     end
 		
