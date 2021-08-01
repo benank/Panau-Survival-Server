@@ -1060,6 +1060,29 @@ Items =
         can_use = true,
         durable = true
     },
+    {
+        name = "RocketPara",
+        category = "Supplies",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 4000,
+        equip_type = "parachute"
+    },
+    {
+        name = "Booster",
+        category = "Supplies",
+        stacklimit = 2
+    },
+    {
+        name = "RocketSuit",
+        category = "Supplies",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 1000,
+        equip_type = "wingsuit"
+    },
 }
 
 Items_ammo_types = 
