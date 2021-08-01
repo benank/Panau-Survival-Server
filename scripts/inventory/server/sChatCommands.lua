@@ -69,7 +69,7 @@ Events:Subscribe("PlayerChat", function(args)
             tier = Lootbox.Types.Lockbox,
             position = args.player:GetPosition() + Vector3.Up,
             angle = args.player:GetAngle(),
-            contents = {},
+            -- contents = {},
             locked = true,
         })
 
@@ -79,7 +79,7 @@ Events:Subscribe("PlayerChat", function(args)
             tier = Lootbox.Types.LockboxX,
             position = args.player:GetPosition() + Vector3.Up,
             angle = args.player:GetAngle(),
-            contents = {},
+            -- contents = {},
             locked = true,
         })
 

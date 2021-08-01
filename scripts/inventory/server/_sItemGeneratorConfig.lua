@@ -316,9 +316,17 @@ LootItems =
                 ["Tactical Nuke"] = {rarity = 0.2, min = 1, max = 1},
             }
         },
+        ["SECRET"] = 
+        {
+            rarity = 0.005,
+            items = 
+            {
+                ["Secret"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
         ["AMMO"] = 
         {
-            rarity = 0.409,
+            rarity = 0.404,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 5, max = 10},
@@ -814,5 +822,111 @@ LootItems =
                 ["SAM Key"] = {rarity = 1, min = 1, max = 1},
             }
         },
+    },
+    [Lootbox.Types.Lockbox] = 
+    {
+        ["LANDCLAIM"] = 
+        {
+            rarity = 0.3,
+            items = 
+            {
+                ["LandClaim"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+        ["GEAR"] = 
+        {
+            rarity = 0.25,
+            items = 
+            {
+                ["Parachute"] = {rarity = 0.5, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["RocketGrapple"] = {rarity = 0.5, min = 1, max = 1, min_dura = 5, max_dura = 5},
+            }
+        },
+        ["SECRET"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Secret"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+        ["BUILD"] = 
+        {
+            rarity = 0.25,
+            items = 
+            {
+                ["Helipad"] = {rarity = 0.8, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["Jump Pad"] = {rarity = 0.2, min = 1, max = 2, min_dura = 5, max_dura = 5},
+            }
+        },
+        ["RADAR"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Player Radar"] = {rarity = 1, min = 1, max = 1, min_dura = 1, max_dura = 2},
+            }
+        },
+        ["AIRDROP"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Airdrop"] = {rarity = 1, min = 1, max = 1},
+            }
+        }
+    },
+    [Lootbox.Types.LockboxX] = 
+    {
+        ["LANDCLAIM"] = 
+        {
+            rarity = 0.2,
+            items = 
+            {
+                ["LandClaim"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+        ["GEAR"] = 
+        {
+            rarity = 0.15,
+            items = 
+            {
+                ["Parachute"] = {rarity = 0.4, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["RocketGrapple"] = {rarity = 0.6, min = 1, max = 1, min_dura = 5, max_dura = 5},
+            }
+        },
+        ["SECRET"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Secret"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+        ["BUILD"] = 
+        {
+            rarity = 0.2,
+            items = 
+            {
+                ["Helipad"] = {rarity = 0.3, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["Jump Pad"] = {rarity = 0.7, min = 5, max = 5, min_dura = 5, max_dura = 5},
+            }
+        },
+        ["RADAR"] = 
+        {
+            rarity = 0.2,
+            items = 
+            {
+                ["Player Radar"] = {rarity = 1, min = 1, max = 1, min_dura = 3, max_dura = 5},
+            }
+        },
+        ["AIRDROP"] = 
+        {
+            rarity = 0.2,
+            items = 
+            {
+                ["Airdrop"] = {rarity = 1, min = 1, max = 1},
+            }
+        }
     },
 }

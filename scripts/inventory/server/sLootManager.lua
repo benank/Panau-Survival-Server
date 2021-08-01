@@ -38,6 +38,62 @@ function sLootManager:LockboxHackComplete(args)
     
     lootbox:ForceClose()
     lootbox:Sync()
+    
+    -- Now spawn some grenades :)
+    if lootbox.tier == Lootbox.Types.Lockbox then
+        
+        local grenade_types = {"HE Grende", "Toxic Grenade", "Smoke Grenade", "Flashbang"}
+        local grenade_type = grenade_types[math.random(1, #grenade_types)]
+        
+        Events:Fire("items/CreateGrenade", {
+            position = lootbox.position,
+            grenade_type = grenade_type,
+            fusetime = 4 + math.random() * 4,
+            velocity = Vector3.Up,
+            owner_id = "Lockbox"
+        })
+        
+        Events:Fire("items/CreateGrenade", {
+            position = lootbox.position,
+            grenade_type = "Flares",
+            fusetime = 0,
+            velocity = Vector3.Up,
+            owner_id = "Lockbox"
+        })
+        
+    elseif lootbox.tier == Lootbox.Types.LockboxX then
+        
+        local grenade_types = {"HE Grende", "Flashbang", "Laser Grenade"}
+        local num_traps = math.random(1, 4)
+        
+        for i = 1, num_traps do
+            local grenade_type = grenade_types[math.random(1, #grenade_types)]
+            Events:Fire("items/CreateGrenade", {
+                position = lootbox.position,
+                grenade_type = grenade_type,
+                fusetime = 4 + math.random() * 4,
+                velocity = Vector3.Up * 3 * math.random(),
+                owner_id = "Lockbox"
+            })
+        end
+        
+        Events:Fire("items/CreateGrenade", {
+            position = lootbox.position,
+            grenade_type = "Toxic Grenade",
+            fusetime = 2,
+            velocity = Vector3.Up,
+            owner_id = "Lockbox"
+        })
+        
+        Events:Fire("items/CreateGrenade", {
+            position = lootbox.position,
+            grenade_type = "Flares",
+            fusetime = 0,
+            velocity = Vector3.Up,
+            owner_id = "Lockbox"
+        })
+        
+    end
 end
 
 function sLootManager:RemoveAirdrop()
