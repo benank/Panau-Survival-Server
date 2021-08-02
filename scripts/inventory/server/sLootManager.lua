@@ -25,7 +25,67 @@ function sLootManager:__init()
     Events:Subscribe("inventory/CreateLootboxExternal", self, self.CreateLootboxExternal)
     Events:Subscribe("airdrops/RemoveAirdrop", self, self.RemoveAirdrop)
     Events:Subscribe("items/LockboxHackComplete", self, self.LockboxHackComplete)
+    Events:Subscribe("items/CreateSecretLockbox", self, self.CreateSecretLockbox)
+    Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
 
+end
+
+function sLootManager:PlayerOpenLootbox(args)
+    if args.tier ~= Lootbox.Types.LockboxX and args.tier ~= Lootbox.Types.Lockbox then return end
+    
+    local original_box = self.active_lootboxes[args.tier][args.uid]
+    if not original_box then return end
+    
+    lootbox.disable_respawn = false
+    original_box:StartRespawnTimer()
+end
+
+function sLootManager:CreateSecretLockbox(args)
+    
+    local tier = args.x and Lootbox.Types.LockboxX or Lootbox.Types.Lockbox
+    
+    local function IsCandidate(lootbox)
+        if lootbox.in_sz then return false end
+        return not lootbox.has_been_opened or not lootbox.active
+    end
+    
+    Thread(function()
+        local count = 0
+        
+        local uid_candidates = {}
+
+        for uid, lootbox in pairs(self.active_lootboxes[Lootbox.Types.Level4]) do
+            
+            if IsCandidate(lootbox) then
+                count = count + 1
+                uid_candidates[count] = uid
+                
+                if count % 50 == 0 then
+                    Timer.Sleep(1)
+                end
+            end
+        end
+        
+        local uid = uid_candidates[math.random(1, #uid_candidates)]
+        local lootbox = self.active_lootboxes[Lootbox.Types.Level4][uid]
+        
+        lootbox.disable_respawn = true
+        lootbox:HideBox()
+        
+        local lockbox = self:CreateLootboxExternal({
+            tier = tier,
+            position = lootbox.position,
+            angle = lootbox.angle,
+            locked = true
+        })
+        
+        Events:Fire("Inventory/LockboxSpawned", 
+        {
+            uid = lockbox.uid,
+            tier = tier,
+            position = lockbox.position
+        })
+    end)
 end
 
 function sLootManager:LockboxHackComplete(args)
@@ -158,6 +218,8 @@ function sLootManager:CreateLootboxExternal(args)
             lootbox:Remove()
         end)
     end
+    
+    return lootbox
 end
 
 function sLootManager:CreateDropboxExternal(args)
