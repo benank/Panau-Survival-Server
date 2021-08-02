@@ -245,7 +245,12 @@ function sLootbox:TakeLootStack(args, player)
 
     if #self.contents == 0 then
 
-        if self.tier == Lootbox.Types.Dropbox or self.is_airdrop or self.tier == Lootbox.Types.SAM then
+        if self.tier == Lootbox.Types.Dropbox 
+        or self.is_airdrop 
+        or self.tier == Lootbox.Types.SAM 
+        or self.tier == Lootbox.Types.Lockbox 
+        or self.tier == Lootbox.Types.LockboxX 
+        then
             self:Remove()
         elseif not self.is_stash then
             self:HideBox()

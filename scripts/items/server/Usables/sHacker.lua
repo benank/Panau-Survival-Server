@@ -18,6 +18,12 @@ function sHacker:__init()
 
     Network:Subscribe("items/HackComplete", self, self.HackComplete)
     Network:Subscribe("items/FailHack", self, self.FailHack)
+    
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+end
+
+function sHacker:ModuleUnload()
+    Events:Fire("Drones/RemoveDronesInGroup", {group = "secret"}) 
 end
 
 function sHacker:GetPerkMods(player)
@@ -69,6 +75,26 @@ function sHacker:FailHack(args, player)
         Events:Fire("sams/GetSAMInfo", {id = player:GetValue("CurrentlyHackingSAM")})
     end
     
+    -- Spawn drone if failed hack on a lockbox
+    if player:GetValue("CurrentLootbox") then
+        local current_box = player:GetValue("CurrentLootbox")
+        if not current_box.stash then -- Secret box if not stash
+            if math.random() < 0.5 then
+                Events:Fire("Drones/SpawnDrone", {
+                    level = math.random(25, 75),
+                    static = true,
+                    position = player:GetPosition() + Vector3.Up * 1,
+                    tether_position = player:GetPosition(),
+                    tether_range = 200,
+                    config = {
+                        attack_on_sight = true
+                    },
+                    group = "secret"
+                }) 
+            end
+        end
+    end
+        
     player:SetValue("CurrentlyHackingSAM", nil)
     player:SetValue("CurrentlyHacking", false)
     

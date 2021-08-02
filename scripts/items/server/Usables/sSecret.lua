@@ -6,10 +6,10 @@ function sSecret:__init()
     self.tier_radius = 
     {
         [21] = 3000,
-        [22] = 5000
+        [22] = 4000
     }
     
-    -- Network:Subscribe("items/CompleteItemUsage", self, self.UseItem)
+    Network:Subscribe("items/CompleteItemUsage", self, self.UseItem)
     Events:Subscribe("Inventory/LockboxSpawned", self, self.LockboxSpawned)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
@@ -42,7 +42,8 @@ function sSecret:LockboxSpawned(args)
         uid = args.uid,
         tier = args.tier,
         position = approx_position,
-        radius = self.tier_radius[args.tier]
+        radius = self.tier_radius[args.tier],
+        -- exact_position = args.position
     }
     
     Network:Broadcast("items/NewSecret", self.active_secrets[args.uid])
