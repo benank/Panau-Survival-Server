@@ -9,7 +9,7 @@ function sSecret:__init()
         [22] = 4000
     }
     
-    -- Network:Subscribe("items/CompleteItemUsage", self, self.UseItem)
+    Network:Subscribe("items/CompleteItemUsage", self, self.UseItem)
     Events:Subscribe("Inventory/LockboxSpawned", self, self.LockboxSpawned)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
@@ -43,7 +43,7 @@ function sSecret:LockboxSpawned(args)
         tier = args.tier,
         position = approx_position,
         radius = self.tier_radius[args.tier],
-        -- exact_position = args.position
+        exact_position = args.position
     }
     
     Network:Broadcast("items/NewSecret", self.active_secrets[args.uid])
