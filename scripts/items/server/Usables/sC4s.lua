@@ -353,26 +353,8 @@ function sC4s:FinishC4Placement(args, player)
         end
     end
 
-    local sub = nil
-    sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(player:GetSteamId()), function(args)
+    self:TryPlaceC4(args, args.player)
     
-        Events:Unsubscribe(sub)
-        sub = nil
-
-        if args.too_close then
-
-            Chat:Send(player, "Cannot place C4 too close to loot!", Color.Red)
-            return
-
-        end
-
-        self:TryPlaceC4(args, args.player)
-        
-    end)
-    
-    args.player = player
-    Events:Fire("CheckIsTooCloseToLoot", args)
-
 end
 
 
