@@ -413,7 +413,7 @@ function sHitDetection:PlayerDeath(args)
 
     local last_damaged = args.player:GetValue("LastDamaged")
 
-    if last_damaged and Server:GetElapsedSeconds() - last_damaged.timer < self.last_damage_timeout and last_damaged.steam_id ~= "Drone" then
+    if last_damaged and Server:GetElapsedSeconds() - last_damaged.timer < self.last_damage_timeout and last_damaged.steam_id ~= "Drone" and last_damaged.steam_id then
         -- Kill attribution
         local query = SQL:Query("SELECT name FROM player_names WHERE steam_id = (?) LIMIT 1")
         query:Bind(1, last_damaged.steam_id)
