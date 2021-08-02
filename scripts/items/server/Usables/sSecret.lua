@@ -66,7 +66,7 @@ end
 function sSecret:ActivateSecret(player_iu, player)
     Events:Fire("items/CreateSecretLockbox", {
         player = player,
-        x = tonumber(player_iu.item.secret_x) == 1
+        x = tonumber(player_iu.item.custom_data.secret_x) == 1
     })
     Chat:Send(player, "Secret uploaded to map. This area is visible to all players.", Color.Yellow)
 end
