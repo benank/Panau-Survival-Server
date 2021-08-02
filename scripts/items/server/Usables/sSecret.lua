@@ -5,7 +5,7 @@ function sSecret:__init()
     
     self.tier_radius = 
     {
-        [21] = 2500,
+        [21] = 3000,
         [22] = 5000
     }
     

@@ -33,10 +33,13 @@ end
 function sLootManager:PlayerOpenLootbox(args)
     if args.tier ~= Lootbox.Types.LockboxX and args.tier ~= Lootbox.Types.Lockbox then return end
     
-    local original_box = self.active_lootboxes[args.tier][args.uid]
+    local original_uid = args.original_uid
+    if not original_uid then return end
+    
+    local original_box = self.active_lootboxes[Lootbox.Types.Level4][original_uid]
     if not original_box then return end
     
-    lootbox.disable_respawn = false
+    original_box.disable_respawn = false
     original_box:StartRespawnTimer()
 end
 
@@ -66,8 +69,14 @@ function sLootManager:CreateSecretLockbox(args)
             end
         end
         
-        local uid = uid_candidates[math.random(1, #uid_candidates)]
-        local lootbox = self.active_lootboxes[Lootbox.Types.Level4][uid]
+        local uid, lootbox
+        
+        while not uid or not lootbox or lootbox.position:Distance(Vector3(14145, 332, 14342)) < 100 do
+            uid = uid_candidates[math.random(1, #uid_candidates)]
+            if uid then
+                lootbox = self.active_lootboxes[Lootbox.Types.Level4][uid]
+            end
+        end
         
         lootbox.disable_respawn = true
         lootbox:HideBox()
@@ -78,6 +87,7 @@ function sLootManager:CreateSecretLockbox(args)
             angle = lootbox.angle,
             locked = true
         })
+        lockbox.original_uid = lootbox.uid
         
         Events:Fire("Inventory/LockboxSpawned", 
         {

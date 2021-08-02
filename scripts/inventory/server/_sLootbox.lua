@@ -355,7 +355,8 @@ function sLootbox:Open(player)
         has_been_opened = self.has_been_opened, 
         airdrop_tier = self.airdrop_tier, 
         tier = self.tier,
-        uid = self.uid
+        uid = self.uid,
+        original_uid = self.original_uid
     })
 
     self:StartRespawnTimer()
