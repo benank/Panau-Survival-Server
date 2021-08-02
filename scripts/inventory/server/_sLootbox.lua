@@ -349,7 +349,14 @@ function sLootbox:Open(player)
 
     Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
-    Events:Fire("PlayerOpenLootbox", {player = player, in_sz = self.in_sz, has_been_opened = self.has_been_opened, airdrop_tier = self.airdrop_tier, tier = self.tier})
+    Events:Fire("PlayerOpenLootbox", {
+        player = player, 
+        in_sz = self.in_sz, 
+        has_been_opened = self.has_been_opened, 
+        airdrop_tier = self.airdrop_tier, 
+        tier = self.tier,
+        uid = self.uid
+    })
 
     self:StartRespawnTimer()
 
@@ -365,6 +372,8 @@ function sLootbox:StartRespawnTimer()
     if self.in_sz then return end
     if self.is_airdrop then return end
     if self.tier == Lootbox.Types.SAM then return end
+    if self.tier == Lootbox.Types.LockboxX then return end
+    if self.tier == Lootbox.Types.Lockbox then return end
 
     if self.respawn_timer then return end
 
@@ -431,6 +440,11 @@ end
 
 -- Respawns the lootbox
 function sLootbox:RespawnBox()
+    
+    if self.disable_respawn then
+        self:StartRespawnTimer()
+        return
+    end
 
     self:ForceClose()
 

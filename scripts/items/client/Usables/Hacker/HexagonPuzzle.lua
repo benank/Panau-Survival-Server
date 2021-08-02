@@ -11,6 +11,12 @@ function HexagonPuzzle:__init(difficulty, time)
     self.window:BringToFront()
     self.window:Subscribe("Press", self, self.PressHexagon)
     self.window:Subscribe("RightPress", self, self.RightPressHexagon)
+	
+	self.invis_difficulties = 
+	{
+		[4] = {chance = 1, hide_clicked = false, hide_initially = true},
+		[5] = {chance = 0.4, hide_clicked = true, hide_initially = true}
+	}
 
     self.difficulty = difficulty
 	self.active = true
@@ -48,6 +54,10 @@ function HexagonPuzzle:InitHexagons()
 			
 		self.hexagons[i] = HexagonPiece(pos, self.size)
 		
+		if self.invis_difficulties[self.difficulty] then
+			self.hexagons[i].invisible = self.invis_difficulties[self.difficulty].hide_initially
+		end
+		
 	end
 	
 	self:GenerateEndsForAll()
@@ -75,6 +85,7 @@ end
 
 function HexagonPuzzle:MouseUp(args)
 
+	local clicked_index = nil
 	if (args.button == 1 or args.button == 2) and self.active then
 	
 		local mouse_pos = Mouse:GetPosition()
@@ -82,6 +93,8 @@ function HexagonPuzzle:MouseUp(args)
 		for index, hexagon in pairs(self.hexagons) do
 			if hexagon:Contains(mouse_pos) then
 				hexagon:Rotate(args.button == 1 and 1 or -1)
+				clicked_index = index
+				break
 			end
 		end
 		
@@ -89,6 +102,24 @@ function HexagonPuzzle:MouseUp(args)
 	
 	self:CheckConnected()
 	
+	if not self.complete and self.invis_difficulties[self.difficulty] and self.hexagons[clicked_index].has_ends then
+		self:ScrambleInvisible(clicked_index)
+	end
+	
+end
+
+function HexagonPuzzle:ScrambleInvisible(clicked_index)
+	
+	if not clicked_index then return end
+	
+	local diff_data = self.invis_difficulties[self.difficulty]
+	self.hexagons[clicked_index].invisible = diff_data.hide_clicked
+	
+	for index, hexagon in pairs(self.hexagons) do
+		if index ~= clicked_index then
+			hexagon.invisible = math.random() < diff_data.chance
+		end
+	end
 end
 
 function HexagonPuzzle:CheckConnected()

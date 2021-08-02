@@ -22,6 +22,7 @@ function sExp:__init()
 
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
     Events:Subscribe("items/SAMHackComplete", self, self.HackComplete)
+    Events:Subscribe("items/LockboxHackComplete", self, self.HackComplete)
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
     Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
     Events:Subscribe("sams/SamDestroyed", self, self.SamDestroyed)

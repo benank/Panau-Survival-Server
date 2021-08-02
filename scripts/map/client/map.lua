@@ -14,7 +14,8 @@ Location.Type = {
     Home 		= "Home",
     Skull 		= "Skull",
     Landclaim   = "Landclaim",
-    Airdrop     = "Airdrop"
+    Airdrop     = "Airdrop",
+    Secret      = "Secret"
     
 }
 
@@ -32,7 +33,8 @@ Location.TypeName = {
     Home 		= "Home",
     Skull		= "Skull",
     Landclaim   = "Landclaim",
-    Airdrop     = "Airdrop"
+    Airdrop     = "Airdrop",
+    Secret      = "Secret"
 }
 
 IconSizeUV = 1 / 18
@@ -43,7 +45,7 @@ Location.Icon = {
     UVSize = Vector2(IconSizeUV, 1),
     UV     = {
         Airdrop     = Vector2(IconSizeUV * 0, 0),
-        Question    = Vector2(IconSizeUV * 1, 0),
+        Secret      = Vector2(IconSizeUV * 1, 0),
         Exclamation = Vector2(IconSizeUV * 2, 0),
         Home        = Vector2(IconSizeUV * 3, 0),
         Landclaim   = Vector2(IconSizeUV * 4, 0),
@@ -91,12 +93,13 @@ MilitaryTypes =
     MilStrong   = true,
 }
 
-function Location:__init(name, position, type, color, show_on_minimap)
+function Location:__init(name, position, type, color, show_on_minimap, radius)
     self.name     = name
     self.position = position
     self.type     = type
     self.color    = color or Location.Color.Gray
     self.show_on_minimap = show_on_minimap == true
+    self.radius   = radius or 0
 
     if MilitaryTypes[self.type] then
         self.border = Location.Icon.UV.MilBorder
@@ -156,8 +159,25 @@ function Location:DrawColor(position, scale)
 end
 
 function Location:Draw(position, scale)
+    if self.radius > 0 then
+        self:DrawRadius(position, scale)
+    end
+    
     self:DrawColor(position, scale)
     self:DrawIcon(position, scale)
+end
+
+function Location:DrawRadius(position, scale)
+    
+    local alpha = 75
+
+    local pos = Map:WorldToScreen(self.position)
+    local size = self.radius / 32768 * Render.Height * Map.Zoom
+    local color = Color(self.color.r, self.color.g, self.color.b, alpha)
+    Render:FillCircle(pos, size, color)
+    color.a = 255
+    Render:DrawCircle(pos, size, color)
+
 end
 
 function Location:DrawTitle(position, scale)
@@ -179,6 +199,7 @@ Map = {
     WaypointScale  = 1.5,
     ActiveLocation = nil,
     Waypoint       = Location("Waypoint", Vector3(), Location.Type.Waypoint, Location.Color.None),
+    Secrets        = {},
     Locations      = {
         Location("Kepulauan", Vector3(-1396.228, 276.0449, 10460.26), Location.Type.Comm),
         Location("Negeri Gunung Berawn", Vector3(7826.969, 254.5643, 8466.012), Location.Type.MilLocation, Location.Color.Green),
@@ -303,7 +324,7 @@ Map = {
         --Location("Paya Luas", Vector3(12028.47, 187.8509, -10679.78), Location.Type.MilAir),
         Location("Paya Luas", Vector3(12028.47, 206.8509, -10679.78), Location.Type.MilAir, Location.Color.Green),
         Location("Kampung Sri Puteri", Vector3(-5166.081, 338.7373, -7321.45), Location.Type.CivVil),
-        Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.Skull, Location.Color.Red, true),
+        -- Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.Skull, Location.Color.Red, true),
         Location("Gunung Rata", Vector3(860.4727, 287.4586, 11726.06), Location.Type.MilLocation),
         Location("Kem Harimau Putih", Vector3(11212.44, 399.179, 848.4565), Location.Type.MilLocation),
         --Location("Palau Dayang Terlena", Vector3(-11911.88, 609.6496, 4799.679), Location.Type.MilAir),
@@ -521,7 +542,7 @@ Map = {
         Location("Bandar Kolam Dalam", Vector3(9983.953, 212.7729, -9679.302), Location.Type.CivVil),
         Location("Pelantar Gas Telok Beting Timur", Vector3(15525.08, 236.3287, -4305.083), Location.Type.OilRig),
         --Location("PAN MILSAT", Vector3(7056.561, 776.8174, 1036.695), Location.Type.MilLocation),
-        Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.Skull, Location.Color.Red, true),
+        -- Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.Skull, Location.Color.Red, true),
         Location("Cape Carnival", Vector3(13788.11, 222.02, -2315.564), Location.Type.MilLocation, Location.Color.Green),
         Location("Port Gurun Lautan Lama", Vector3(-13579.83, 209.6284, 6453.933), Location.Type.MilHarb),
         Location("Kampung Padang Luas", Vector3(10851.88, 200.9827, -8668.016), Location.Type.MilHarb, Location.Color.Green),
@@ -536,7 +557,7 @@ Map = {
         Location("Kampung Tanah Bernilai", Vector3(11262.32, 245.0957, 3103.462), Location.Type.CivVil),
         Location("Kem Sungai Floodgates", Vector3(-8053.476, 185.5706, 3221.842), Location.Type.MilLocation),
         Location("Kampung Sirip Tajam", Vector3(-6937.369, 212.0635, -11319.59), Location.Type.CivVil),
-        Location("Skull Island", Vector3(-1549.777, 208.8105, 939.5184), Location.Type.Skull, Location.Color.Red, true),
+        -- Location("Skull Island", Vector3(-1549.777, 208.8105, 939.5184), Location.Type.Skull, Location.Color.Red, true),
         Location("Fasility Gunung Hutan Tinggi", Vector3(12864.55, 595.9291, 12905.51), Location.Type.MilLocation),
         Location("Kampung Pasir Panjang", Vector3(-11559.06, 591.258, 3106.423), Location.Type.CivVil),
         Location("Kampung Tanjung Luas", Vector3(2414.036, 202.7877, 4478.184), Location.Type.CivVil),
@@ -784,6 +805,19 @@ function Map:Draw()
         end
     end
 
+    for uid, location in pairs(Map.Secrets) do
+        if location.position then
+            local position = Map:WorldToScreen(location.position)
+
+            if position.x > 0 and position.y > 0 and position.x < Render.Width and position.y < Render.Height then
+                if location:IsActive(position, scale * (PDA:IsUsingGamepad() and 2 or 1)) then
+                    Map.ActiveLocation = location
+                end
+
+                location:Draw(position, scale)
+            end
+        end
+    end
 
     --self:DrawRedAreas()
     
@@ -924,4 +958,38 @@ end)
 Events:Subscribe("airdrops/AddPreciseLocationToMap", function(args)
     Map.AirdropSize = nil
     Map.Locations["Airdrop"] = Location(args.name, args.position, Location.Type.Airdrop, Location.Color.Orange, true)
+end)
+
+
+function GetSecretNameFromTier(tier)
+    return tier == 21 and "Secret" or "Secret X" 
+end
+
+Events:Subscribe("items/RemoveSecret", function(args)
+    Map.Secrets[args.uid] = nil
+end)
+
+Events:Subscribe("items/NewSecret", function(args)
+    Map.Secrets[args.uid] = Location(
+        GetSecretNameFromTier(args.tier), 
+        args.position, 
+        Location.Type.Secret, 
+        Location.Color.Pink, 
+        true,
+        args.radius
+    )
+end)
+
+Events:Subscribe("items/SyncSecrets", function(args)
+    Map.Secrets = {}
+    for uid, secret_data in pairs(args) do
+        Map.Secrets[secret_data.uid] = Location(
+            GetSecretNameFromTier(secret_data.tier), 
+            secret_data.position, 
+            Location.Type.Secret, 
+            Location.Color.Pink, 
+            true,
+            secret_data.radius
+        )
+    end
 end)

@@ -1083,6 +1083,13 @@ Items =
         max_durability = 1000,
         equip_type = "wingsuit"
     },
+    {
+        name = "Secret",
+        category = "Supplies",
+        stacklimit = 3,
+        can_stack = true,
+        can_use = true
+    },
 }
 
 Items_ammo_types = 

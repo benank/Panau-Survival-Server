@@ -243,6 +243,7 @@ function cInventoryUIStyle:RenderItemWindow(itemWindow, stack, parent_window)
 
         elseif (item.name == "Woet" and tonumber(item.custom_data.woet_x) == 1)
         or (item.name == "Nitro" and tonumber(item.custom_data.nitro_x) == 1)
+        or (item.name == "Secret" and tonumber(item.custom_data.secret_x) == 1)
         or (item.name == "Burst Ping" and tonumber(item.custom_data.bp_x) == 1) then
 
             local text_size = ClientInventory.ui.inv_dimensions.text_size * 1.75

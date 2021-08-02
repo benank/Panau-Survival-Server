@@ -11,6 +11,7 @@ function HexagonPiece:__init(pos, size, ends)
 	self.move = 0
 	self.delay = 0
 	self.done = false
+	self.invisible = false
 	self.ends = ends or {
 		[1] = false,
 		[2] = false,
@@ -40,6 +41,7 @@ end
 function HexagonPiece:SetDone(done)
 
 	self.done = done
+	self.invisible = false
 	
 end
 
@@ -167,7 +169,6 @@ function HexagonPiece:Render(args)
 		hexagon_color = Color(67,137,200,120)
 	end
 	
-	
 	for i = 1, 6 do
 		
 		local t = Transform2()
@@ -188,31 +189,34 @@ function HexagonPiece:Render(args)
 		-- Hexagon outside lines
 		Render:DrawLine(Vector2(line_size / 1.725, 0), Vector2(-line_size / 1.725, 0), Color(255,255,255,255))
 		
-		-- Hexagon Inside Circle
-		if self.has_ends then
-			Render:FillCircle(Vector2(0, -line_size), line_size * 0.05, white)
-		end
-		
-		if self.ends[i] then
+		if not self.invisible then
 			
-			--Render:DrawLine(Vector2(0, -line_size), Vector2(), Color.White)
+			-- Hexagon Inside Circle
+			if self.has_ends then
+				Render:FillCircle(Vector2(0, -line_size), line_size * 0.05, white)
+			end
 			
-			-- Hexagon Lines Outward
-			local line_width = line_size * 0.025
-			Render:FillArea(
-				Vector2(-line_width / 2, -line_size), 
-				Vector2(line_width, line_size), 
-				white)
+			if self.ends[i] then
 				
-			-- Hexagon Squares on the Lines
-			local square_width = line_size * 0.1
-			Render:FillArea(
-				Vector2(-square_width / 2, -square_width - square_width * 2), 
-				Vector2(square_width, square_width - square_width * 2), 
-				white)
+				--Render:DrawLine(Vector2(0, -line_size), Vector2(), Color.White)
+				
+				-- Hexagon Lines Outward
+				local line_width = line_size * 0.025
+				Render:FillArea(
+					Vector2(-line_width / 2, -line_size), 
+					Vector2(line_width, line_size), 
+					white)
+					
+				-- Hexagon Squares on the Lines
+				local square_width = line_size * 0.1
+				Render:FillArea(
+					Vector2(-square_width / 2, -square_width - square_width * 2), 
+					Vector2(square_width, square_width - square_width * 2), 
+					white)
+				
+			end
+		end
 			
-        end
-        
 		--Render:DrawText(Vector2(0, -line_size * 0.15), tostring(i), Color.Red, 25)
 			
 		

@@ -130,6 +130,11 @@ function shItem:GetCustomData()
         -- 5% of BPs are BP Xs
         self.custom_data.bp_x = math.random() < 0.05 and 1 or 0
     
+    elseif self.name == "Secret" and self.custom_data.secret_x == nil then
+
+        -- 10% of secrets are secret Xs
+        self.custom_data.secret_x = math.random() < 0.1 and 1 or 0
+    
     elseif self.name == "Airdrop" and self.custom_data.level == nil then
         self.custom_data.level = 1
     elseif self.name == "SAM Key" and self.custom_data.level == nil then
