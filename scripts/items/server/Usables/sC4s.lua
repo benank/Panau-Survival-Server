@@ -353,6 +353,7 @@ function sC4s:FinishC4Placement(args, player)
         end
     end
 
+    args.player = player
     self:TryPlaceC4(args, player)
     
 end
