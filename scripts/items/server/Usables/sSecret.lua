@@ -9,7 +9,7 @@ function sSecret:__init()
         [22] = 5000
     }
     
-    Network:Subscribe("items/CompleteItemUsage", self, self.UseItem)
+    -- Network:Subscribe("items/CompleteItemUsage", self, self.UseItem)
     Events:Subscribe("Inventory/LockboxSpawned", self, self.LockboxSpawned)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
