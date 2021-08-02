@@ -15,7 +15,7 @@ function HexagonPuzzle:__init(difficulty, time)
 	self.invis_difficulties = 
 	{
 		[4] = {chance = 1, hide_clicked = false, hide_initially = true},
-		[5] = {chance = 0.4, hide_clicked = true, hide_initially = false}
+		[5] = {chance = 0.4, hide_clicked = true, hide_initially = true}
 	}
 
     self.difficulty = difficulty
