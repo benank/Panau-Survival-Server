@@ -318,7 +318,7 @@ LootItems =
         },
         ["SECRET"] = 
         {
-            rarity = 0.002,
+            rarity = 0.001,
             items = 
             {
                 ["Secret"] = {rarity = 1, min = 1, max = 1},
@@ -326,7 +326,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.407,
+            rarity = 0.408,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 5, max = 10},
