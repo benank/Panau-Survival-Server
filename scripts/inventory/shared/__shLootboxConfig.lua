@@ -100,7 +100,7 @@ Lootbox.GeneratorConfig =
         {
             min_items = 2,
             max_items = 3,
-            respawn = 2,
+            respawn = 30,
             max_spawned = 1.0
         },
         [Lootbox.Types.Level5] = 
