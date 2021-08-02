@@ -60,7 +60,9 @@ Events:Subscribe("Inventory/UseItem", function(args)
             
             if args.item.name == "Ping" then
                 local player_perks = GetPerkMods(p)
-                hidden_chance = player_perks[2]
+                if player_perks then
+                    hidden_chance = player_perks[2]
+                end
             end
 
             if p ~= args.player 
