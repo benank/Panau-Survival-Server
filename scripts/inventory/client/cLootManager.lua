@@ -88,7 +88,7 @@ function cLootManager:ForceCloseLootbox()
     self.current_looking_box = nil
     self.current_box = nil
 
-    if ClientInventory.lootbox_ui.window:GetVisible() then
+    if ClientInventory.lootbox_ui and ClientInventory.lootbox_ui.window:GetVisible() then
         ClientInventory.lootbox_ui:ToggleVisible()
     end
 
