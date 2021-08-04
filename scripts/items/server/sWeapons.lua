@@ -126,7 +126,7 @@ function sWeaponManager:FireWeapon(args, player)
 
         local weapon_ammo = weapon.ammo_clip + weapon.ammo_reserve
 
-        if weapon_ammo > ammo_amount + 2 then
+        if weapon_ammo > ammo_amount + 4 then
             Events:Fire("KickPlayer", {
                 player = player,
                 reason = string.format("Ammo mismatch. Player has more ammo in gun than in inventory. Gun: %d Ammo: %d", weapon_ammo, ammo_amount),
@@ -144,7 +144,9 @@ function sWeaponManager:FireWeapon(args, player)
 
         if not weapon_name then return end
 
-        equipped_weapons[weapon_name].ammo = ammo_amount - 1
+        if equipped_weapons[weapon_name] then
+            equipped_weapons[weapon_name].ammo = ammo_amount - 1
+        end
     else
         self.pending_fire[steam_id][weapon.id].ammo = args.ammo
         self.pending_fire[steam_id][weapon.id].adjusted_ammo = self.pending_fire[steam_id][weapon.id].adjusted_ammo - 1
