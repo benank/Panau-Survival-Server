@@ -7,7 +7,7 @@ Network:Subscribe("items/RemoveSecret", function(args)
 end)
 
 Network:Subscribe("items/NewSecret", function(args)
-    Waypoint:SetPosition(args.exact_position)
+    -- Waypoint:SetPosition(args.exact_position)
     Events:Fire("items/NewSecret", args)
 end)
 

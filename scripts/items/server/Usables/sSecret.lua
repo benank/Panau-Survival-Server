@@ -43,7 +43,7 @@ function sSecret:LockboxSpawned(args)
         tier = args.tier,
         position = approx_position,
         radius = self.tier_radius[args.tier],
-        exact_position = args.position
+        -- exact_position = args.position
     }
     
     Network:Broadcast("items/NewSecret", self.active_secrets[args.uid])
