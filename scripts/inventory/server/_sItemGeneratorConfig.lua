@@ -651,10 +651,10 @@ LootItems =
             rarity = 0.055,
             items = 
             {
-                ["Grapplehook"] = {rarity = 0.1, min_dura = 2, max_dura = 5, min = 1, max = 1},
-                ["Parachute"] = {rarity = 0.2, min_dura = 1, max_dura = 2, min = 1, max = 1},
-                ["RocketGrapple"] = {rarity = 0.2, min_dura = 1, max_dura = 2, min = 1, max = 1},
-                ["Explosives Detector"] = {rarity = 0.2, min_dura = 1, max_dura = 3, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.25, min_dura = 1, max_dura = 2, min = 1, max = 1},
+                ["RocketPara"] = {rarity = 0.05, min = 1, max = 1},
+                ["RocketGrapple"] = {rarity = 0.25, min_dura = 1, max_dura = 2, min = 1, max = 1},
+                ["Explosives Detector"] = {rarity = 0.15, min_dura = 1, max_dura = 3, min = 1, max = 1},
                 ["Combat Backpack"] = {rarity = 0.15, min_dura = 1, max_dura = 2, min = 1, max = 1},
                 ["Explorer Backpack"] = {rarity = 0.15, min_dura = 1, max_dura = 2, min = 1, max = 1},
             }
@@ -758,8 +758,9 @@ LootItems =
             rarity = 0.16,
             items = 
             {
-                ["Parachute"] = {rarity = 0.45, min_dura = 2, max_dura = 4, min = 1, max = 1},
-                ["RocketGrapple"] = {rarity = 0.4, min_dura = 2, max_dura = 4, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.4, min_dura = 2, max_dura = 4, min = 1, max = 1},
+                ["RocketPara"] = {rarity = 0.25, min = 1, max = 1, min_dura = 1, max_dura = 2},
+                ["RocketGrapple"] = {rarity = 0.2, min_dura = 2, max_dura = 4, min = 1, max = 1},
                 ["Explosives Detector"] = {rarity = 0.05, min_dura = 2, max_dura = 5, min = 1, max = 1},
                 ["Combat Backpack"] = {rarity = 0.05, min_dura = 2, max_dura = 5, min = 1, max = 1},
                 ["Explorer Backpack"] = {rarity = 0.05, min_dura = 2, max_dura = 5, min = 1, max = 1},
@@ -838,8 +839,9 @@ LootItems =
             rarity = 0.25,
             items = 
             {
-                ["Parachute"] = {rarity = 0.5, min = 1, max = 1, min_dura = 5, max_dura = 5},
-                ["RocketGrapple"] = {rarity = 0.5, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["Parachute"] = {rarity = 0.4, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["RocketGrapple"] = {rarity = 0.4, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["RocketPara"] = {rarity = 0.2, min = 1, max = 1},
             }
         },
         ["SECRET"] = 
@@ -891,8 +893,9 @@ LootItems =
             rarity = 0.15,
             items = 
             {
-                ["Parachute"] = {rarity = 0.4, min = 1, max = 1, min_dura = 5, max_dura = 5},
-                ["RocketGrapple"] = {rarity = 0.6, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["Parachute"] = {rarity = 0.2, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["RocketGrapple"] = {rarity = 0.2, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["RocketPara"] = {rarity = 0.6, min = 1, max = 1, min_dura = 2, max_dura = 5},
             }
         },
         ["SECRET"] = 

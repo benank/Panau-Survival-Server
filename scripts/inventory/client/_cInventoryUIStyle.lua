@@ -123,6 +123,7 @@ function cInventoryUIStyle:__init()
         ["RocketGrapple"] = self.item_colors.boldblue,
         ["Explosives Detector"] = self.item_colors.boldblue,
         ["Parachute"] = self.item_colors.boldblue,
+        ["RocketPara"] = self.item_colors.boldblue,
         ["EVAC"] = self.item_colors.pink,
         ["Respawner"] = self.item_colors.pink,
         ["Hacker"] = self.item_colors.pink,
