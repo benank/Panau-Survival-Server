@@ -125,7 +125,7 @@ Grenade.Types = {
             
             for i = 1, 6 do
                 local dir = Vector3(math.random() - 0.5, 0, math.random() - 0.5):Normalized()
-                local speed = 3 + math.random() * 6
+                local speed = 4 + math.random() * 7
                 
                 local args_copy = deepcopy(grenade.args)
                 args_copy.velocity = dir * speed + Vector3.Up * (math.random() * 5 + 3)
