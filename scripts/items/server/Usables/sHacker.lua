@@ -80,17 +80,20 @@ function sHacker:FailHack(args, player)
         local current_box = player:GetValue("CurrentLootbox")
         if not current_box.stash then -- Secret box if not stash
             if math.random() < 0.5 then
-                Events:Fire("Drones/SpawnDrone", {
-                    level = math.random(25, 75),
-                    static = true,
-                    position = player:GetPosition() + Vector3.Up * 1,
-                    tether_position = player:GetPosition(),
-                    tether_range = 200,
-                    config = {
-                        attack_on_sight = true
-                    },
-                    group = "secret"
-                }) 
+                local pos = player:GetPosition()
+                Timer.SetTimeout(3000, function()
+                    Events:Fire("Drones/SpawnDrone", {
+                        level = math.random(25, 75),
+                        static = true,
+                        position = pos + Vector3.Up * 1,
+                        tether_position = pos,
+                        tether_range = 200,
+                        config = {
+                            attack_on_sight = true
+                        },
+                        group = "secret"
+                    }) 
+                end)
             end
         end
     end
