@@ -864,7 +864,7 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Player Radar"] = {rarity = 1, min = 1, max = 1, min_dura = 1, max_dura = 2},
+                ["Player Radar"] = {rarity = 1, min = 1, max = 1},
             }
         },
         ["AIRDROP"] = 
@@ -917,7 +917,7 @@ LootItems =
             rarity = 0.2,
             items = 
             {
-                ["Player Radar"] = {rarity = 1, min = 1, max = 1, min_dura = 3, max_dura = 5},
+                ["Player Radar"] = {rarity = 1, min = 1, max = 1, min_dura = 1, max_dura = 2},
             }
         },
         ["AIRDROP"] = 
