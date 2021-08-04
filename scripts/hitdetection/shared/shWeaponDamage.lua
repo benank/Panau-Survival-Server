@@ -122,7 +122,7 @@ function WeaponDamage:__init()
         [DamageEntity.C4] = {damage = 600, radius = 40, knockback = 20, v_mod = 0.25},
         [DamageEntity.HEGrenade] = {damage = 300, radius = 8, knockback = 5, v_mod = 0.009},
         [DamageEntity.LaserGrenade] = {damage = 500, radius = 8, knockback = 15, v_mod = 0.008},
-        [DamageEntity.ClusterGrenade] = {damage = 300, radius = 10, knockback = 20, v_mod = 0.008},
+        [DamageEntity.ClusterGrenade] = {damage = 250, radius = 10, knockback = 20, v_mod = 0.008},
         [DamageEntity.CruiseMissile] = {damage = 300, radius = 80, knockback = 18, v_mod = 0.15},
         [DamageEntity.AreaBombing] = {damage = 250, radius = 25, knockback = 12, v_mod = 0.1}, -- Individual bombs
         [DamageEntity.TacticalNuke] = {damage = 1000, radius = 150, knockback = 25, v_mod = 0.2},
