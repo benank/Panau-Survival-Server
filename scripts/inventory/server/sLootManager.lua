@@ -26,6 +26,7 @@ function sLootManager:__init()
     Events:Subscribe("airdrops/RemoveAirdrop", self, self.RemoveAirdrop)
     Events:Subscribe("items/LockboxHackComplete", self, self.LockboxHackComplete)
     Events:Subscribe("items/CreateSecretLockbox", self, self.CreateSecretLockbox)
+    Events:Subscribe("items/RemoveSecret", self, self.RemoveSecret)
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
 
 end
@@ -47,12 +48,17 @@ function sLootManager:PlayerOpenLootbox(args)
     
     -- Remove box after 10 minutes
     Timer.SetTimeout(10 * 60 * 1000, function()
-        local lockbox = self.external_loot[args.uid]
-        if lockbox then
-            lockbox:Remove()
-        end
+        self:RemoveSecret(args)
     end)
 
+end
+
+function sLootManager:RemoveSecret(args)
+    local lockbox = self.external_loot[args.uid]
+    if lockbox then
+        lockbox:Remove()
+        self.external_loot[args.uid] = nil
+    end
 end
 
 function sLootManager:CreateSecretLockbox(args)

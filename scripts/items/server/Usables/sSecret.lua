@@ -9,6 +9,8 @@ function sSecret:__init()
         [22] = 2500
     }
     
+    self.secret_timeout = 1000 * 60 * 60 * 24 * 3
+    
     Network:Subscribe("items/CompleteItemUsage", self, self.UseItem)
     Events:Subscribe("Inventory/LockboxSpawned", self, self.LockboxSpawned)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
@@ -47,6 +49,12 @@ function sSecret:LockboxSpawned(args)
     }
     
     Network:Broadcast("items/NewSecret", self.active_secrets[args.uid])
+    
+    Timer.SetTimeout(self.secret_timeout, function()
+        self.active_secrets[args.uid] = nil
+        Network:Broadcast("items/RemoveSecret", {uid = args.uid})
+        Events:Fire("items/RemoveSecret", {uid = args.uid})
+    end)
 end
 
 function sSecret:UseItem(args, player)
