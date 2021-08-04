@@ -630,10 +630,10 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Cluster Grenade"] = {rarity = 0.2, min = 6, max = 10},
-                ["Mine"] = {rarity = 0.3, min = 3, max = 5},
-                ["Claymore"] = {rarity = 0.3, min = 3, max = 5},
-                ["C4"] = {rarity = 0.2, min = 1, max = 2},
+                ["Cluster Grenade"] = {rarity = 0.3, min = 6, max = 10},
+                ["Mine"] = {rarity = 0.2, min = 3, max = 5},
+                ["Claymore"] = {rarity = 0.2, min = 3, max = 5},
+                ["C4"] = {rarity = 0.3, min = 1, max = 2},
             }
         },
         ["AIRSTRIKE"] = 
@@ -737,9 +737,7 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Mine"] = {rarity = 0.1, min = 4, max = 5},
-                ["Claymore"] = {rarity = 0.1, min = 4, max = 5},
-                ["C4"] = {rarity = 0.8, min = 1, max = 2},
+                ["C4"] = {rarity = 1, min = 2, max = 3},
             }
         },
         ["AIRSTRIKE"] = 
@@ -757,12 +755,9 @@ LootItems =
             rarity = 0.16,
             items = 
             {
-                ["Parachute"] = {rarity = 0.4, min_dura = 2, max_dura = 4, min = 1, max = 1},
-                ["RocketPara"] = {rarity = 0.25, min = 1, max = 1, min_dura = 1, max_dura = 2},
-                ["RocketGrapple"] = {rarity = 0.2, min_dura = 2, max_dura = 4, min = 1, max = 1},
-                ["Explosives Detector"] = {rarity = 0.05, min_dura = 2, max_dura = 5, min = 1, max = 1},
-                ["Combat Backpack"] = {rarity = 0.05, min_dura = 2, max_dura = 5, min = 1, max = 1},
-                ["Explorer Backpack"] = {rarity = 0.05, min_dura = 2, max_dura = 5, min = 1, max = 1},
+                ["Parachute"] = {rarity = 0.3, min_dura = 2, max_dura = 4, min = 1, max = 1},
+                ["RocketPara"] = {rarity = 0.4, min = 1, max = 1, min_dura = 1, max_dura = 2},
+                ["RocketGrapple"] = {rarity = 0.3, min_dura = 2, max_dura = 4, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
