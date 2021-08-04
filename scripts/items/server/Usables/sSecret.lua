@@ -5,8 +5,8 @@ function sSecret:__init()
     
     self.tier_radius = 
     {
-        [21] = 3000,
-        [22] = 4000
+        [21] = 2000,
+        [22] = 2500
     }
     
     Network:Subscribe("items/CompleteItemUsage", self, self.UseItem)
