@@ -124,7 +124,7 @@ function sLootManager:LockboxHackComplete(args)
     -- Now spawn some grenades :)
     if lootbox.tier == Lootbox.Types.Lockbox then
         
-        local grenade_types = {"HE Grende", "Toxic Grenade"}
+        local grenade_types = {"HE Grenade", "Toxic Grenade"}
         local grenade_type = grenade_types[math.random(1, #grenade_types)]
         
         Events:Fire("items/CreateGrenade", {
@@ -145,7 +145,7 @@ function sLootManager:LockboxHackComplete(args)
         
     elseif lootbox.tier == Lootbox.Types.LockboxX then
         
-        local grenade_types = {"HE Grende", "Laser Grenade"}
+        local grenade_types = {"HE Grenade", "Laser Grenade"}
         local num_traps = math.random(1, 4)
         
         for i = 1, num_traps do
