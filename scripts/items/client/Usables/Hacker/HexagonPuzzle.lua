@@ -102,7 +102,7 @@ function HexagonPuzzle:MouseUp(args)
 	
 	self:CheckConnected()
 	
-	if not self.complete and self.invis_difficulties[self.difficulty] and self.hexagons[clicked_index].has_ends then
+	if not self.complete and self.invis_difficulties[self.difficulty] and clicked_index and self.hexagons[clicked_index].has_ends then
 		self:ScrambleInvisible(clicked_index)
 	end
 	
