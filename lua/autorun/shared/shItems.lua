@@ -1057,7 +1057,7 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 4000,
+        max_durability = 3500,
         equip_type = "parachute"
     },
     {

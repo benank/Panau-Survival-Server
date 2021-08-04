@@ -145,7 +145,7 @@ function sLootManager:LockboxHackComplete(args)
         
     elseif lootbox.tier == Lootbox.Types.LockboxX then
         
-        local grenade_types = {"HE Grenade", "Laser Grenade"}
+        local grenade_types = {"HE Grenade", "Laser Grenade", "Cluster Grenade"}
         local num_traps = math.random(1, 4)
         
         for i = 1, num_traps do
