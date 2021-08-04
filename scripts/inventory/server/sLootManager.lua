@@ -33,6 +33,9 @@ end
 function sLootManager:PlayerOpenLootbox(args)
     if args.tier ~= Lootbox.Types.LockboxX and args.tier ~= Lootbox.Types.Lockbox then return end
     
+    local lockbox = self.external_loot[args.uid]
+    if not lockbox or lockbox.has_been_opened then return end
+    
     local original_uid = args.original_uid
     if not original_uid then return end
     
@@ -61,7 +64,7 @@ function sLootManager:CreateSecretLockbox(args)
         return not lootbox.has_been_opened or not lootbox.active
     end
     
-    Thread(function()
+    -- Thread(function()
         local count = 0
         
         local uid_candidates = {}
@@ -72,9 +75,9 @@ function sLootManager:CreateSecretLockbox(args)
                 count = count + 1
                 uid_candidates[count] = uid
                 
-                if count % 50 == 0 then
-                    Timer.Sleep(1)
-                end
+                -- if count % 50 == 0 then
+                --     Timer.Sleep(1)
+                -- end
             end
         end
         
@@ -104,7 +107,7 @@ function sLootManager:CreateSecretLockbox(args)
             tier = tier,
             position = lockbox.position
         })
-    end)
+    -- end)
 end
 
 function sLootManager:LockboxHackComplete(args)
