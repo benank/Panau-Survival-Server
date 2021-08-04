@@ -974,7 +974,7 @@ Events:Subscribe("items/NewSecret", function(args)
         GetSecretNameFromTier(args.tier), 
         args.position, 
         Location.Type.Secret, 
-        Location.Color.Pink, 
+        Location.Color.Purple, 
         true,
         args.radius
     )
@@ -987,7 +987,7 @@ Events:Subscribe("items/SyncSecrets", function(args)
             GetSecretNameFromTier(secret_data.tier), 
             secret_data.position, 
             Location.Type.Secret, 
-            Location.Color.Pink, 
+            Location.Color.Purple, 
             true,
             secret_data.radius
         )
