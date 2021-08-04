@@ -625,15 +625,6 @@ Items =
         equip_type = "weapon_2h"
     },
     {
-        name = "Wingsuit",
-        category = "Supplies",
-        stacklimit = 1,
-        can_equip = true,
-        durable = true,
-        max_durability = 500,
-        equip_type = "wingsuit"
-    },
-    {
         name = "CamelBak",
         category = "Survival",
         stacklimit = 1,
