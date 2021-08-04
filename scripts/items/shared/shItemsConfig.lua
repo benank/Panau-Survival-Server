@@ -66,6 +66,7 @@ ItemsConfig =
         ["Binoculars"] = {dura_per_sec = 1, dura_per_use = 20},
         ["Player Radar"] = {dura_per_sec = 1, dura_per_use = 20, battery_dura_per_sec = 25, range = 560},
         ["SAM Key"] = {},
+        ["RocketPara"] = {dura_per_sec = 1.25, dura_per_use_sec = 1},
         weapons = 
         {
             ["Handgun"] = {dura_per_use = 1, weapon_id = Weapon.Handgun, equip_slot = WeaponSlot.Right},
@@ -106,6 +107,7 @@ ItemsConfig =
             ["Warp Grenade"] = DamageEntity.None,
             ["Laser Grenade"] = DamageEntity.LaserGrenade,
             ["Snowball"] = DamageEntity.Snowball,
+            ["Cluster Grenade"] = DamageEntity.ClusterGrenade,
         },
         costumes = 
         {

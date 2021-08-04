@@ -1066,22 +1066,8 @@ Items =
         stacklimit = 1,
         can_equip = true,
         durable = true,
-        max_durability = 4000,
+        max_durability = 3500,
         equip_type = "parachute"
-    },
-    {
-        name = "Booster",
-        category = "Supplies",
-        stacklimit = 2
-    },
-    {
-        name = "RocketSuit",
-        category = "Supplies",
-        stacklimit = 1,
-        can_equip = true,
-        durable = true,
-        max_durability = 1000,
-        equip_type = "wingsuit"
     },
     {
         name = "Secret",
@@ -1089,6 +1075,13 @@ Items =
         stacklimit = 3,
         can_stack = true,
         can_use = true
+    },
+    {
+        name = "Cluster Grenade",
+        category = "Explosives",
+        stacklimit = 10,
+        can_equip = true,
+        equip_type = "held"
     },
 }
 

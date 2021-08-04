@@ -112,6 +112,36 @@ Grenade.Types = {
         ["angle"] = Angle(0, math.pi / 2, 0),
         ["effect_time"] = 30 -- default effect time for this effect is 15
 	},
+	["Cluster Grenade"] = {
+		["effect_id"] = 411,
+        ["trail_effect_id"] = 61,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
+		["restitution"] = 0.3,
+        ["radius"] = 10,
+        ["custom_func"] = function(grenade)
+            
+            if grenade.cluster then return end
+            
+            for i = 1, 6 do
+                local dir = Vector3(math.random() - 0.5, 0, math.random() - 0.5):Normalized()
+                local speed = 3 + math.random() * 6
+                
+                local args_copy = deepcopy(grenade.args)
+                args_copy.velocity = dir * speed + Vector3.Up * (math.random() * 5 + 3)
+                args_copy.position = grenade.position
+                args_copy.fusetime = math.random() * 3 + 2
+                
+                local spawned_grenade = Grenade(args_copy)
+                spawned_grenade.cluster = true -- Cluster grenades do not spawn more grenades
+                Grenades.grenades[spawned_grenade.id] = spawned_grenade
+            end
+        end,
+        ["model"] = "general.blz/wea33-wea33.lod",
+        ["offset"] = Vector3(-0.32, 0, 0.03),
+        ["angle"] = Angle(0, math.pi / 2, 0),
+        ["effect_time"] = 30 -- default effect time for this effect is 15
+	},
 	["AntiGrav Grenade"] = {
 		["effect_id"] = 135,
         ["trail_effect_id"] = 61,
@@ -316,6 +346,9 @@ local function GET_GRENADE_ID()
     return GRENADE_ID
 end
 
+-- 411
+-- 348 for c4 fireworks
+
 function Grenade:__init(args)
     self.id = GET_GRENADE_ID()
 	self.object = ClientStaticObject.Create({
@@ -328,7 +361,7 @@ function Grenade:__init(args)
 		["angle"] = self.object:GetAngle(),
 		["effect_id"] = Grenade.Types[args.type].trail_effect_id
     })
-    
+
     if (args.type ~= "Molotov" and args.type ~= "Snowball") and args.fusetime > 0 then
 
         Timer.SetTimeout(math.max(0, (args.fusetime - 3.5)) * 1000, function()
@@ -368,6 +401,8 @@ function Grenade:__init(args)
     self.lastTime = 0
     self.detonated = false
     self.is_mine = args.is_mine == true
+    self.seed = args.seed
+    self.args = args
     self.owner_id = self.is_mine and tostring(LocalPlayer:GetSteamId()) or args.owner_id
 end
 

@@ -25,6 +25,7 @@ DamageEntity.Revenge = 28
 DamageEntity.BurstPing = 29
 DamageEntity.SAM = 30
 DamageEntity.Hacker = 31
+DamageEntity.ClusterGrenade = 32
 
 DamageEntityNames = 
 {
@@ -60,4 +61,5 @@ DamageEntityNames =
     [DamageEntity.BurstPing] = "Burst Ping",
     [DamageEntity.SAM] = "SAM",
     [DamageEntity.Hacker] = "Hacker",
+    [DamageEntity.ClusterGrenade] = "Cluster Grenade",
 }
