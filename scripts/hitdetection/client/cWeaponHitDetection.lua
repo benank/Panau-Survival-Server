@@ -574,6 +574,7 @@ end
 
 function WeaponHitDetection:GetDroneInLockonSight()
     if not LocalPlayer:GetValue("LockonModuleEquipped") then return end
+    if LocalPlayer:InVehicle() then return end
     
     local center_screen = Render.Size / 2
     local min_distance, cso_id
@@ -609,6 +610,8 @@ function WeaponHitDetection:GetDroneInLockonSight()
 end
 
 function WeaponHitDetection:DrawLockonIndicator(args)
+    
+    if LocalPlayer:InVehicle() then return end
     
     local color = Color(255,255,255,50)
     
