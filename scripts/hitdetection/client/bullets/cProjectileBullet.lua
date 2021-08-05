@@ -26,7 +26,7 @@ function ProjectileBullet:__init(args)
     local drone_target = cDroneContainer:CSOIdToDrone(WeaponHitDetection.lockon_cso_id)
     if drone_target then
         local drone_position = drone_target.cso:GetPosition()
-        dir = Angle.FromVectors(Vector3.Forward, drone_position - self.initial_position) * self:GetBloom()
+        dir = Angle.FromVectors(Vector3.Forward, drone_position - self.initial_position) --* self:GetBloom()
     end
     
     self.target_position = Physics:Raycast(self.initial_position, dir * Vector3.Forward, 0, 1000).position
