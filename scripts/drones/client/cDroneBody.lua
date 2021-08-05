@@ -249,6 +249,11 @@ function cDroneBody:CreateBody()
             model = object_data.model,
             collision = object_data.collision
         })
+        
+        if self.parent.config.explosion_immune then
+            self.objects[piece_enum]:SetOutlineColor(Color.Red)
+            self.objects[piece_enum]:SetOutlineEnabled(true)
+        end
 
         Events:Fire("drones/CreateDroneCSO", 
         {

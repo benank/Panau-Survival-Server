@@ -247,6 +247,10 @@ function sDroneManager:DroneDamaged(args)
     if not drone then
         return
     end
+    
+    if args.explosion and drone.config.explosion_immune then
+        return
+    end
 
     drone:Damage(args)
 end

@@ -706,7 +706,8 @@ function sHitDetection:HitDetectionSyncExplosionDrone(args, player)
             player = self.players[args.attacker_id],
             drone_id = args.drone_id,
             damage = damage,
-            type = args.type
+            type = args.type,
+            explosion = true
         })
 
         sub = Events:Unsubscribe(sub)
