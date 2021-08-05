@@ -32,7 +32,7 @@ end
 
 function Grenades:CreateGrenadeDrone(args)
     
-    local grenade_types = {"HE Grenade", "Flashbang", "Toxic Grenade"}
+    local grenade_types = {"HE Grenade", "Flashbang", "Toxic Grenade", "Cluster Grenade"}
     local grenade_type = grenade_types[math.floor(math.random(#grenade_types))]
 
 	Network:Broadcast("items/GrenadeTossed", {

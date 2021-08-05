@@ -357,11 +357,13 @@ function sAirdropManager:SpawnLootboxes()
         if key:find("lootbox") then
             local pos = self.airdrop.position + self.airdrop.angle * object_data.offset
             local angle = self.airdrop.angle * object_data.angle_offset
+            local locked = self.airdrop.type == 3 and math.random() < 0.2
             Events:Fire("inventory/CreateLootboxExternal", {
                 tier = self.airdrop.type + 15,
                 position = pos,
                 angle = angle,
-                airdrop_tier = self.airdrop.type
+                airdrop_tier = self.airdrop.type,
+                locked = locked
             })
         end
     end
