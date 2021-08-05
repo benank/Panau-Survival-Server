@@ -248,10 +248,6 @@ function sDroneManager:DroneDamaged(args)
         return
     end
     
-    if args.explosion and drone.config.explosion_immune then
-        args.damage = 0.001
-    end
-
     drone:Damage(args)
 end
 
