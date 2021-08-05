@@ -118,6 +118,7 @@ Grenade.Types = {
 		["weight"] = 0.7,
         ["drag"] = 0.12,
 		["restitution"] = 0.3,
+        ["trigger_explosives"] = true,
         ["radius"] = 10,
         ["custom_func"] = function(grenade)
             
