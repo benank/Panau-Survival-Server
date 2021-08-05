@@ -1074,6 +1074,15 @@ Items =
         can_equip = true,
         equip_type = "held"
     },
+    {
+        name = "Lock-On Module",
+        category = "Supplies",
+        stacklimit = 2,
+        can_equip = true,
+        durable = true,
+        max_durability = 1000,
+        equip_type = "lockon"
+    },
 }
 
 Items_ammo_types = 

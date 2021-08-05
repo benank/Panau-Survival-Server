@@ -203,6 +203,12 @@ function sWeaponManager:ProcessWeaponShot(args)
     equipped_item.durability = equipped_item.durability - ItemsConfig.equippables.weapons[weapon_name].dura_per_use * ammo_used
     Inventory.ModifyDurability({player = args.player, item = equipped_item})
     UpdateEquippedItem(args.player, equipped_item.name, equipped_item)
+    
+    Events:Fire("items/AmmoUsed", {
+        player = args.player,
+        item = equipped_item,
+        ammo_used = ammo_used
+    })
 
 end
 
