@@ -285,7 +285,8 @@ function sDrone:Destroyed(args)
         player = args.player,
         exp_split = exp_split,
         drone_level = self.level,
-        damage_entity = args.type
+        damage_entity = args.type,
+        position = self.position
     })
     
     Timer.SetTimeout(1000, function()

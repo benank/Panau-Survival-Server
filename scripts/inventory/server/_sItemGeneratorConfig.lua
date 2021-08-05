@@ -926,4 +926,209 @@ LootItems =
             }
         }
     },
+    [Lootbox.Types.DroneUnder30] = 
+    {
+        ["AMMO"] = 
+        {
+            rarity = 0.4,
+            items = 
+            {
+                ["Machine Gun Ammo"] = {rarity = 1, min = 20, max = 50},
+            }
+        },
+        ["AIRSTRIKE"] = 
+        {
+            rarity = 0.15,
+            items = 
+            {
+                ["Cruise Missile"] = {rarity = 0.4, min = 1, max = 1},
+                ["Area Bombing"] = {rarity = 0.3, min = 1, max = 1},
+                ["Tactical Nuke"] = {rarity = 0.3, min = 1, max = 1},
+            }
+        },
+        ["EXPLOSIVE"] = 
+        {
+            rarity = 0.2,
+            items = 
+            {
+                ["Toxic Grenade"] = {rarity = 0.25, min = 1, max = 3},
+                ["Cluster Grenade"] = {rarity = 0.25, min = 1, max = 2},
+                ["HE Grenade"] = {rarity = 0.25, min = 1, max = 3},
+                ["Flashbang"] = {rarity = 0.25, min = 1, max = 3},
+            }
+        },
+        ["BATTERIES"] = 
+        {
+            rarity = 0.2,
+            items = 
+            {
+                ["Battery"] = {rarity = 1, min = 3, max = 5},
+            }
+        },
+        ["LOCKON MODULE"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Lock-On Module"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+    },
+    [Lootbox.Types.Drone30to60] = 
+    {
+        ["AMMO"] = 
+        {
+            rarity = 0.3,
+            items = 
+            {
+                ["Machine Gun Ammo"] = {rarity = 1, min = 40, max = 60},
+            }
+        },
+        ["AIRSTRIKE"] = 
+        {
+            rarity = 0.25,
+            items = 
+            {
+                ["Cruise Missile"] = {rarity = 0.4, min = 1, max = 2},
+                ["Area Bombing"] = {rarity = 0.3, min = 1, max = 1},
+                ["Tactical Nuke"] = {rarity = 0.3, min = 1, max = 1},
+            }
+        },
+        ["EXPLOSIVE"] = 
+        {
+            rarity = 0.2,
+            items = 
+            {
+                ["Toxic Grenade"] = {rarity = 0.25, min = 1, max = 3},
+                ["Cluster Grenade"] = {rarity = 0.5, min = 1, max = 2},
+                ["HE Grenade"] = {rarity = 0.25, min = 1, max = 3},
+            }
+        },
+        ["BATTERIES"] = 
+        {
+            rarity = 0.15,
+            items = 
+            {
+                ["Battery"] = {rarity = 1, min = 3, max = 5},
+            }
+        },
+        ["LOCKON MODULE"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Lock-On Module"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+    },
+    [Lootbox.Types.Drone60to100] = 
+    {
+        ["AMMO"] = 
+        {
+            rarity = 0.25,
+            items = 
+            {
+                ["Machine Gun Ammo"] = {rarity = 1, min = 50, max = 70},
+            }
+        },
+        ["AIRSTRIKE"] = 
+        {
+            rarity = 0.25,
+            items = 
+            {
+                ["Cruise Missile"] = {rarity = 0.4, min = 1, max = 3},
+                ["Area Bombing"] = {rarity = 0.3, min = 1, max = 1},
+                ["Tactical Nuke"] = {rarity = 0.3, min = 1, max = 1},
+            }
+        },
+        ["EXPLOSIVE"] = 
+        {
+            rarity = 0.2,
+            items = 
+            {
+                ["Toxic Grenade"] = {rarity = 0.25, min = 1, max = 3},
+                ["Cluster Grenade"] = {rarity = 0.5, min = 1, max = 3},
+                ["HE Grenade"] = {rarity = 0.25, min = 1, max = 3},
+            }
+        },
+        ["BATTERIES"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Battery"] = {rarity = 0.25, min = 3, max = 5},
+            }
+        },
+        ["AIRDROP"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Airdrop"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+        ["LOCKON MODULE"] = 
+        {
+            rarity = 0.15,
+            items = 
+            {
+                ["Lock-On Module"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+    },
+    [Lootbox.Types.Drone100Plus] = 
+    {
+        ["AMMO"] = 
+        {
+            rarity = 0.2,
+            items = 
+            {
+                ["Machine Gun Ammo"] = {rarity = 1, min = 80, max = 100},
+            }
+        },
+        ["AIRSTRIKE"] = 
+        {
+            rarity = 0.25,
+            items = 
+            {
+                ["Cruise Missile"] = {rarity = 0.4, min = 2, max = 3},
+                ["Area Bombing"] = {rarity = 0.3, min = 2, max = 3},
+                ["Tactical Nuke"] = {rarity = 0.3, min = 2, max = 3},
+            }
+        },
+        ["EXPLOSIVE"] = 
+        {
+            rarity = 0.2,
+            items = 
+            {
+                ["Toxic Grenade"] = {rarity = 0.25, min = 3, max = 5},
+                ["Cluster Grenade"] = {rarity = 0.5, min = 3, max = 5},
+                ["HE Grenade"] = {rarity = 0.25, min = 3, max = 5},
+            }
+        },
+        ["BATTERIES"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Battery"] = {rarity = 0.25, min = 3, max = 5},
+            }
+        },
+        ["AIRDROP"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Airdrop"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+        ["LOCKON MODULE"] = 
+        {
+            rarity = 0.2,
+            items = 
+            {
+                ["Lock-On Module"] = {rarity = 1, min = 1, max = 2, min_dura = 1, max_dura = 2},
+            }
+        },
+    }
 }

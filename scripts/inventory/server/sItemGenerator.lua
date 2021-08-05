@@ -170,6 +170,17 @@ function sItemGenerator:GetTierSpecificCustomData(tier, item)
                 {chance = 0.3, min = 2, max = 2},
                 {chance = 1.0, min = 3, max = 3},
             }
+        elseif tier == Lootbox.Types.Drone60to100 then
+            sizes = 
+            {
+                {chance = 1.0, min = 1, max = 1},
+            }
+        elseif tier == Lootbox.Types.Drone100Plus then
+            sizes = 
+            {
+                {chance = 0.9, min = 1, max = 2},
+                {chance = 1.0, min = 1, max = 3},
+            }
         end
 
         local random = math.random()

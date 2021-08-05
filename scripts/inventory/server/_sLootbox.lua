@@ -248,6 +248,10 @@ function sLootbox:TakeLootStack(args, player)
         if self.tier == Lootbox.Types.Dropbox 
         or self.is_airdrop 
         or self.tier == Lootbox.Types.SAM 
+        or self.tier == Lootbox.Types.DroneUnder30 
+        or self.tier == Lootbox.Types.Drone30to60 
+        or self.tier == Lootbox.Types.Drone60to100 
+        or self.tier == Lootbox.Types.Drone100Plus 
         or self.tier == Lootbox.Types.Lockbox 
         or self.tier == Lootbox.Types.LockboxX 
         then
@@ -378,6 +382,10 @@ function sLootbox:StartRespawnTimer()
     if self.in_sz then return end
     if self.is_airdrop then return end
     if self.tier == Lootbox.Types.SAM then return end
+    if self.tier == Lootbox.Types.DroneUnder30 then return end
+    if self.tier == Lootbox.Types.Drone30to60 then return end
+    if self.tier == Lootbox.Types.Drone60to100 then return end
+    if self.tier == Lootbox.Types.Drone100Plus then return end
     if self.tier == Lootbox.Types.LockboxX then return end
     if self.tier == Lootbox.Types.Lockbox then return end
 
@@ -486,6 +494,10 @@ function sLootbox:Remove()
 
     LootCells.Loot[self.cell.x][self.cell.y][self.uid] = nil
 
+    if LootManager.external_loot[self.uid] then
+        LootManager.external_loot[self.uid] = nil
+    end
+    
     if self.network_subs then
         for k,v in pairs(self.network_subs) do
             Network:Unsubscribe(v)

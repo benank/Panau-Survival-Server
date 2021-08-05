@@ -1,3 +1,14 @@
+class 'IdPool'
+
+function IdPool:__init()
+    self.current_id = 0
+end
+
+function IdPool:GetNextId()
+    self.current_id = self.current_id + 1
+    return self.current_id
+end
+
 class 'sLootManager'
 
 function sLootManager:__init()
@@ -10,6 +21,8 @@ function sLootManager:__init()
     self.inactive_lootboxes = {}
 
     self.external_loot = {}
+    
+    self.ground_id_pool = IdPool()
 
     self:LoadFromFile()
     self:GenerateAllLoot()
@@ -28,7 +41,46 @@ function sLootManager:__init()
     Events:Subscribe("items/CreateSecretLockbox", self, self.CreateSecretLockbox)
     Events:Subscribe("items/RemoveSecret", self, self.RemoveSecret)
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
+    Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
 
+end
+
+function sLootManager:DroneDestroyed(args)
+    
+    if math.random() > 0.25 then return end
+    
+    local ground_id = self.ground_id_pool:GetNextId()
+    
+    Network:Send(args.player, "Inventory/GetGroundDataAtPos", {
+        ground_id = ground_id,
+        position = args.position
+    })
+    
+    local lootbox_tier = Lootbox.Types.DroneUnder30
+    
+    if args.drone_level >= 30 and args.drone_level < 60 then
+        lootbox_tier = Lootbox.Types.Drone30to60
+    elseif args.drone_level >= 60 and args.drone_level < 100 then
+        lootbox_tier = Lootbox.Types.Drone60to100
+    elseif args.drone_level >= 100 then
+        lootbox_tier = Lootbox.Types.Drone100Plus
+    end
+    
+    local sub
+    sub = Network:Subscribe("Inventory/GetGroundDataAtPos" .. tostring(ground_id), function(ground_args, player)
+        Network:Unsubscribe(sub)
+        
+        if player ~= args.player then return end
+        
+        local lootbox = self:CreateLootboxExternal({
+            tier = lootbox_tier,
+            position = ground_args.position,
+            angle = ground_args.angle,
+            remove_time = 1000 * 60 * 10
+        })
+        
+    end)
+    
 end
 
 function sLootManager:PlayerOpenLootbox(args)

@@ -22,7 +22,11 @@ Lootbox.Types =
     SAM = 19,
     VehicleStorage = 20,
     Lockbox = 21,
-    LockboxX = 22
+    LockboxX = 22,
+    DroneUnder30 = 23,
+    Drone30to60 = 24,
+    Drone60to100 = 25,
+    Drone100Plus = 26
 }
 
 StashAccessMode = 
@@ -72,6 +76,10 @@ Lootbox.GeneratorConfig =
         [Lootbox.Types.AirdropLevel2] = true,
         [Lootbox.Types.AirdropLevel3] = true,
         [Lootbox.Types.SAM] = true,
+        [Lootbox.Types.DroneUnder30] = true,
+        [Lootbox.Types.Drone30to60] = true,
+        [Lootbox.Types.Drone60to100] = true,
+        [Lootbox.Types.Drone100Plus] = true,
     },
     box = 
     {
@@ -154,6 +162,26 @@ Lootbox.GeneratorConfig =
         {
             min_items = 1,
             max_items = 2
+        },
+        [Lootbox.Types.DroneUnder30] = 
+        {
+            min_items = 1,
+            max_items = 2
+        },
+        [Lootbox.Types.Drone30to60] = 
+        {
+            min_items = 1,
+            max_items = 3
+        },
+        [Lootbox.Types.Drone60to100] = 
+        {
+            min_items = 2,
+            max_items = 4
+        },
+        [Lootbox.Types.Drone100Plus] = 
+        {
+            min_items = 3,
+            max_items = 4
         },
     }
 }
@@ -313,6 +341,30 @@ Lootbox.Models =
         look_offset = Vector3(0, 0, 0.25)
     },
     [Lootbox.Types.SAM] = 
+    {
+        model = "geo.cbb.eez/go152-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        offset = Vector3(0, -0.025, 0)
+    },
+    [Lootbox.Types.DroneUnder30] = 
+    {
+        model = "geo.cbb.eez/go152-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        offset = Vector3(0, -0.025, 0)
+    },
+    [Lootbox.Types.Drone30to60] = 
+    {
+        model = "geo.cbb.eez/go152-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        offset = Vector3(0, -0.025, 0)
+    },
+    [Lootbox.Types.Drone60to100] = 
+    {
+        model = "geo.cbb.eez/go152-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        offset = Vector3(0, -0.025, 0)
+    },
+    [Lootbox.Types.Drone100Plus] = 
     {
         model = "geo.cbb.eez/go152-a.lod",
         col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
