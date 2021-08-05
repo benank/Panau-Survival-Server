@@ -862,7 +862,7 @@ ExpPerks =
     },
     {
         name = "Revenge",
-        description = "Inflicts 25% damage on players who kill you",
+        description = "Inflicts 10% damage on players who kill you",
         level_req = 25,
         perk_req = 0,
         cost = 3,
@@ -1202,7 +1202,7 @@ ExpPerks =
     },
     {
         name = "Revenge",
-        description = "Inflicts 50% damage on players who kill you",
+        description = "Inflicts 20% damage on players who kill you",
         level_req = 35,
         perk_req = 103,
         cost = 4,
