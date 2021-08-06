@@ -160,7 +160,8 @@ function Grenades:GrenadeTossed(args, sender)
         velocity = args.velocity,
         type = sender:GetValue("EquippedGrenade"),
         fusetime = math.max(0, args.fusetime),
-        owner_id = tostring(sender:GetSteamId())
+        owner_id = tostring(sender:GetSteamId()),
+        seed = args.seed
     })
 end
 

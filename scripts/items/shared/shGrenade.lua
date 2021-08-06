@@ -123,6 +123,7 @@ Grenade.Types = {
         ["custom_func"] = function(grenade)
             
             if grenade.cluster then return end
+            math.randomseed(grenade.seed)
             
             for i = 1, 6 do
                 local dir = Vector3(math.random() - 0.5, 0, math.random() - 0.5):Normalized()
@@ -137,6 +138,8 @@ Grenade.Types = {
                 spawned_grenade.cluster = true -- Cluster grenades do not spawn more grenades
                 Grenades.grenades[spawned_grenade.id] = spawned_grenade
             end
+            
+            math.randomseed(os.time())
         end,
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),

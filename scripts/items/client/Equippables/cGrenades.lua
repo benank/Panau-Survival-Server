@@ -212,7 +212,8 @@ function Grenades:PostTick(args)
 				["position"] = position,
 				["velocity"] = Vector3.Zero,
                 ["fusetime"] = 0,
-                ["type"] = self.grenade_name
+                ["type"] = self.grenade_name,
+                seed = math.random(999999999999)
 			}
 
             Network:Send(var("items/GrenadeTossed"):get(), grenade)
@@ -233,7 +234,8 @@ function Grenades:PostTick(args)
 				["position"] = self.thrownPosition,
 				["velocity"] = self.thrownVelocity,
                 ["fusetime"] = math.max(0, self.max_time - self.charge_timer:GetSeconds()),
-                ["type"] = self.grenade_name
+                ["type"] = self.grenade_name,
+                seed = math.random(999999999999)
 			}
 
             Network:Send(var("items/GrenadeTossed"):get(), grenade)
