@@ -7,8 +7,30 @@ function sAirStrikes:__init()
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("drones/CreateAirstrike", self, self.CreateAirstrikeDrone)
+    Events:Subscribe("Vehicles/FireBeringBombsight", self, self.FireBeringBombsight)
     Network:Subscribe("items/PlaceAirstrike", self, self.PlaceAirstrike)
     Network:Subscribe("items/CancelAirstrikePlacement", self, self.CancelAirstrikePlacement)
+
+end
+
+function sAirStrikes:FireBeringBombsight(args)
+     
+    local airstrike_name = "Bering Bombsight"
+    local airstrike_item_data = ItemsConfig.airstrikes[airstrike_name]
+     
+    local airstrike_data = {
+        name = airstrike_name,
+        timer = Timer(),
+        position = args.center,
+        distance = args.vehicle:GetPosition():Distance(args.center),
+        vehicle = args.vehicle,
+        attacker_id = tostring(args.player:GetSteamId()),
+        seed = math.random(9999999999),
+        num_bombs = ItemsConfig.airstrikes["Bering Bombsight"].num_bombs,
+        radius = args.radius
+    }
+    
+    Network:Broadcast("items/CreateAirstrike", self:GetAirstrikeData(airstrike_data))
 
 end
 

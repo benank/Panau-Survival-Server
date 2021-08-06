@@ -52,6 +52,7 @@ ItemsConfig =
     {
         ["Cruise Missile"] = {delay = 7, radius = 80, damage_entity = DamageEntity.CruiseMissile, plane_velo = 110, plane_id = 34},
         ["Area Bombing"] = {delay = 10, radius = 120, damage_entity = DamageEntity.AreaBombing, plane_velo = 40, plane_id = 85, num_bombs = 30},
+        ["Bering Bombsight"] = {delay = 1, radius = 150, damage_entity = DamageEntity.BeringBombsight, num_bombs = 40},
         ["Tactical Nuke"] = {delay = 15, radius = 150, damage_entity = DamageEntity.TacticalNuke, plane_velo = 40, plane_id = 34},
     },
     equippables = -- Use equip

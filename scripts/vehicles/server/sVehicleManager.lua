@@ -47,6 +47,8 @@ function sVehicleManager:__init()
     Network:Subscribe("Vehicles/ExitGasStation", self, self.ExitGasStation)
 
     Network:Subscribe("Vehicles/VehicleDestroyed", self, self.VehicleDestroyedClient)
+    
+    Network:Subscribe("Vehicles/FireBeringBombsight", self, self.FireBeringBombsight)
 
     Timer.SetInterval(1000, function()
         self:Tick1000()
@@ -81,6 +83,31 @@ function sVehicleManager:__init()
         self:SaveVehicles()
     end)
 
+end
+
+function sVehicleManager:FireBeringBombsight(args, player)
+    if not args.center then return end
+    if not player:InVehicle() then return end
+    
+    local vehicle = player:GetVehicle()
+    if vehicle:GetModelId() ~= 85 then return end
+    
+    local last_fire_time = player:GetValue("BeringBombsightLastFire")
+    local server_time = Server:GetElapsedSeconds()
+    
+    if server_time - last_fire_time < 10 then return end
+    
+    if args.center:Distance(player:GetPosition()) > 4000 then return end
+    
+    player:SetValue("BeringBombsightLastFire", server_time)
+    
+    Events:Fire("Vehicles/FireBeringBombsight", {
+        player = player,
+        center = args.center,
+        radius = 150,
+        vehicle = vehicle
+    })
+    
 end
 
 function sVehicleManager:RefreshVehicleStorages()
@@ -862,6 +889,7 @@ function sVehicleManager:LoadFlowFinish(args)
     end
     
     args.player:SetNetworkValue("MaxVehicles", self:GetPlayerMaxVehicles(args.player))
+    args.player:SetValue("BeringBombsightLastFire", Server:GetElapsedSeconds())
 
     local result = SQL:Query("SELECT * FROM vehicles WHERE owner_steamid = (?)")
     result:Bind(1, tostring(args.player:GetSteamId()))

@@ -6,7 +6,8 @@ function cAirstrikes:__init()
     {
         ["Cruise Missile"] = cCruiseMissile,
         ["Area Bombing"] = cAreaBombing,
-        ["Tactical Nuke"] = cTacticalNuke
+        ["Tactical Nuke"] = cTacticalNuke,
+        ["Bering Bombsight"] = cBeringBombsight
     }
 
     Network:Subscribe("items/StartAirstrikePlacement", self, self.StartAirstrikePlacement)

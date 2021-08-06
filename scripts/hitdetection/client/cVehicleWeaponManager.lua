@@ -34,6 +34,7 @@ function cVehicleWeaponManager:__init()
         [WeaponEnum.V_MachineGun] = 4,
         [WeaponEnum.V_Minigun_Warmup] = 1.75,
         [WeaponEnum.V_Rockets] = 0,
+        [WeaponEnum.BeringBombsight] = 0,
         [WeaponEnum.V_Cannon] = 4,
         [WeaponEnum.V_Cannon_Slow] = 0,
     }
@@ -56,16 +57,23 @@ function cVehicleWeaponManager:__init()
     -- Cooldown for using secondary fire again
     self.secondary_fire_cooldown = 2
     self.secondary_fire_timer = Timer()
+    
+    self.can_fire_bering = false
 
     Events:Subscribe("LocalPlayerEnterVehicle", self, self.LocalPlayerEnterVehicle)
     Events:Subscribe("LocalPlayerExitVehicle", self, self.LocalPlayerExitVehicle)
     Events:Subscribe("SecondTick", self, self.SecondTick)
     Events:Subscribe("Render", self, self.Render)
+    Events:Subscribe("Vehicles/CanFireBeringBombsight", self, self.CanFireBeringBombsight)
 
     if LocalPlayer:InVehicle() or LocalPlayer:GetValue("VehicleMG") then
         self:SubscribeVehicleEvents()
     end
 
+end
+
+function cVehicleWeaponManager:CanFireBeringBombsight(args)
+    self.can_fire_bering = args.can_fire 
 end
 
 function cVehicleWeaponManager:SecondTick(args)
@@ -133,6 +141,7 @@ function cVehicleWeaponManager:LocalPlayerInput(args)
         if not weapon then return false end
 
         -- Fire delays for the weapons
+        self.secondary_fire_cooldown = VehicleWeapons:GetSecondaryFireCooldown(weapon)
         local seconds = Client:GetElapsedSeconds()
 
         if self.fire_delays[weapon] and self.fire_delay:GetMilliseconds() < self.fire_delays[weapon] then return end
@@ -159,6 +168,12 @@ function cVehicleWeaponManager:LocalPlayerInput(args)
             elseif self.restrict_right_active then
                 return false
             end
+            
+            if weapon == WeaponEnum.BeringBombsight 
+            and (not self.can_fire_bering or LocalPlayer:GetVehicle():GetHealth() <= 0.25) then
+                return false
+            end
+            
             self.secondary_fire_timer:Restart()
         end
 

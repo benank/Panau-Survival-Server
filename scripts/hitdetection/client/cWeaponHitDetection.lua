@@ -237,6 +237,14 @@ function WeaponHitDetection:FireVehicleWeapon(args)
     end
 
     local bullet_config = cWeaponBulletConfig:GetByWeaponEnum(args.weapon_enum)
+    
+    if args.weapon_enum == WeaponEnum.BeringBombsight then
+        Events:Fire(var("HitDetection/FireBeringBombsight"):get(),
+        {
+            cooldown = VehicleWeapons:GetSecondaryFireCooldown(args.weapon_enum)
+        })
+        return
+    end
 
     if not bullet_config then
         error(debug.traceback("No bullet configured for this weapon!"))

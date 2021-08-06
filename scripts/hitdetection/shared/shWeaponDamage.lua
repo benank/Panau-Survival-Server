@@ -96,7 +96,8 @@ function WeaponDamage:__init()
         [WeaponEnum.V_Cannon] =         5,
         [WeaponEnum.V_Cannon_Slow] =    5,
         [WeaponEnum.V_MachineGun] =     1,
-        [WeaponEnum.Drone_MachineGun] = 1
+        [WeaponEnum.Drone_MachineGun] = 1,
+        [WeaponEnum.BeringBombsight] = 1
     }
 
     self.FOVDamageModifier = 0.30 -- If hiding behind a wall, how much damage do you absorb 
@@ -126,6 +127,7 @@ function WeaponDamage:__init()
         [DamageEntity.CruiseMissile] = {damage = 300, radius = 80, knockback = 18, v_mod = 0.15},
         [DamageEntity.AreaBombing] = {damage = 250, radius = 25, knockback = 12, v_mod = 0.1}, -- Individual bombs
         [DamageEntity.TacticalNuke] = {damage = 1000, radius = 150, knockback = 25, v_mod = 0.2},
+        [DamageEntity.BeringBombsight] = {damage = 250, radius = 25, knockback = 12, v_mod = 0.1}, -- Individual bombs
     }
 
     self.ExplosiveDamagePerks = 

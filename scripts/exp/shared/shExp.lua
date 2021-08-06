@@ -44,6 +44,7 @@ Exp =
         [DamageEntity.CruiseMissile] = 150,
         [DamageEntity.AreaBombing] = 150,
         [DamageEntity.TacticalNuke] = 150,
+        [DamageEntity.BeringBombsight] = 150,
     },
     Hack = 
     {
@@ -74,6 +75,7 @@ Exp =
         [DamageEntity.CruiseMissile] =  180,
         [DamageEntity.AreaBombing] =    180,
         [DamageEntity.TacticalNuke] =   180,
+        [DamageEntity.BeringBombsight] =   180,
         AdditionalPercentPerPlayer = 0.25 -- X% more total exp for each player who damages a drone
     },
     DestroyExplosive = 
