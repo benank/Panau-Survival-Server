@@ -81,7 +81,7 @@ function VehicleWeapons:__init()
     self.default_secondary_fire_cooldown = 2
     self.secondary_fire_overrides = 
     {
-        [WeaponEnum.BeringBombsight] = 8 -- Bering I-86DP
+        [WeaponEnum.BeringBombsight] = 10 -- Bering I-86DP
     }
 
 end
