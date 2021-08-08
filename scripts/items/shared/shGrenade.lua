@@ -123,7 +123,7 @@ Grenade.Types = {
         ["custom_func"] = function(grenade)
             
             if grenade.cluster then return end
-            math.randomseed(grenade.seed)
+            if grenade.seed then math.randomseed(grenade.seed) end
             
             for i = 1, 6 do
                 local dir = Vector3(math.random() - 0.5, 0, math.random() - 0.5):Normalized()
