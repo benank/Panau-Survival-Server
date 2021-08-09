@@ -5,6 +5,7 @@ function sHacker:__init()
         [22] = 5, -- LockboxX
         [21] = 4, -- Lockbox
         [13] = 3, -- Locked stash
+        [18] = 4, -- Airdrop Level 3
         [14] = 2 -- Prox alarm
     }
 
