@@ -43,17 +43,46 @@ Inventory.config =
             amount = 10
         },
         {
-            name = "Grapplehook",
-            amount = 1,
-            durability = 0.25
-        },
-        {
             name = "Parachute",
             amount = 1,
             durability = 0.1
+        },
+        {
+            name = "Helmet",
+            amount = 1,
+            durability = 0.25
         }
     },
-    max_grapple_upgrades = 4
+    default_respawn_inv = 
+    {
+        {
+            name = "Grapplehook",
+            amount = 1,
+            durability = 0.10
+        },
+        {
+            name = "Handgun",
+            amount = 1,
+            durability = 0.5
+        },
+        {
+            name = "Handgun Ammo",
+            amount = 50
+        },
+        {
+            name = "Can of Beans",
+            amount = 3
+        },
+        {
+            name = "Bandages",
+            amount = 5
+        },
+        {
+            name = "Helmet",
+            amount = 1,
+            durability = 0.5
+        }
+    }
 }
 
 function CategoryExists(cat)

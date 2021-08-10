@@ -40,6 +40,7 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.ToggleBackpackEquipped-" .. self.steamID, self, self.ToggleBackpackEquipped))
 
     table.insert(self.events, Events:Subscribe("PlayerKilled", self, self.PlayerKilled))
+    table.insert(self.events, Events:Subscribe("spawn/PlayerSpawnedInSZ", self, self.PlayerSpawnedInSZ))
     table.insert(self.events, Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated))
 
     table.insert(self.network_events, Network:Subscribe("Inventory/Shift" .. self.steamID, self, self.ShiftStack))
@@ -95,7 +96,7 @@ function sInventory:Load()
         command:Execute()
         
         -- Load default inventory
-        for k,v in pairs(GenerateDefaultInventory()) do
+        for k,v in pairs(GenerateDefaultInventory(Inventory.config.default_inv)) do
             self:AddStack({stack = v})
         end
 
@@ -106,6 +107,18 @@ function sInventory:Load()
     self:Sync({sync_full = true})
 
     self.initial_sync = true
+
+end
+
+function sInventory:PlayerSpawnedInSZ(args)
+    if args.player ~= self.player then return end
+    if self:GetNumUsedSlots() > 0 then return end -- Only give items if they don't have any
+    if args.player:GetValue("Suicided") then return end
+    
+    -- Load default respawn inventory
+    for k,v in pairs(GenerateDefaultInventory(Inventory.config.default_respawn_inv)) do
+        self:AddStack({stack = v})
+    end
 
 end
 

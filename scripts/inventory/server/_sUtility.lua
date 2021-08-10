@@ -130,11 +130,11 @@ function table.clone(org)
     return {table.unpack(org)}
 end
 
-function GenerateDefaultInventory()
+function GenerateDefaultInventory(inv_config)
 
     local items = {}
 
-    for k,v in pairs(Inventory.config.default_inv) do 
+    for k,v in pairs(inv_config) do 
         
         local item = CreateItem(v)
         local contents = {item}
