@@ -236,11 +236,13 @@ LootItems =
             rarity = 0.05,
             items = 
             {
-                ["Wall"] = {rarity = 0.48, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                ["Wall"] = {rarity = 0.38, min = 1, max = 1, min_dura = 1, max_dura = 1},
                 ["Door"] = {rarity = 0.15, min = 1, max = 1, min_dura = 1, max_dura = 1},
                 ["Barrel Stash"] = {rarity = 0.15, min = 1, max = 1},
                 ["Light"] = {rarity = 0.05, min = 1, max = 1},
                 ["Chair"] = {rarity = 0.05, min = 1, max = 1},
+                ["Umbrella"] = {rarity = 0.05, min = 1, max = 1},
+                ["Potted Plant"] = {rarity = 0.05, min = 1, max = 1},
                 ["Stop Sign"] = {rarity = 0.025, min = 1, max = 1},
                 ["Cone"] = {rarity = 0.025, min = 1, max = 1},
                 ["Garbage Stash"] = {rarity = 0.07, min = 1, max = 1},
