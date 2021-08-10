@@ -123,4 +123,16 @@ BuildObjects =
         collision = "59x36.nl/go173_lod1-p_col.pfx",
         unclaimed_decay = true
     },
+    ["Umbrella"] = 
+    {
+        model = "cch66emp.nlz/go220-a.lod", 
+        collision = "cch66emp.nlz/go220_lod1-a_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Potted Plant"] = 
+    {
+        model = "f1m07milehigh.nlz/key001-m.lod", 
+        collision = "f1m07milehigh.nlz/key001_lod1-m_col.pfx",
+        unclaimed_decay = true
+    },
 }

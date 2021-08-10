@@ -710,6 +710,22 @@ Items =
         durable = true
     },
     {
+        name = "Potted Plant",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Umbrella",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
         name = "Light",
         category = "Survival",
         stacklimit = 5,

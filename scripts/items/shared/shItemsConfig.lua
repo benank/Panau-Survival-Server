@@ -47,6 +47,8 @@ ItemsConfig =
         ["Teleporter"] = {model = "59x36.nlz/go210-a.lod", disable_walls = true},
         ["Metal Railing"] = {model = "areaset08.blz/gb036_02-rail_4m.lod", disable_ceil = true},
         ["Metal Stairs"] = {model = "59x36.nl/go173-p.lod", offset = Vector3(0, 2.1, 0), disable_walls = true},
+        ["Umbrella"] = {model = "cch66emp.nlz/go220-a.lod", offset = Vector3(0, 0, 0), disable_walls = true},
+        ["Potted Plant"] = {model = "f1m07milehigh.nlz/key001-m.lod", offset = Vector3(0, 0, 0), disable_walls = true},
     },
     airstrikes = 
     {
