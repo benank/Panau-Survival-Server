@@ -126,7 +126,7 @@ function sItemGenerator:GetTierSpecificCustomData(tier, item)
         elseif tier == Lootbox.Types.AirdropLevel3 then
             sizes = 
             {
-                {chance = 1.0, min = 100, max = 200}
+                {chance = 1.0, min = 150, max = 250}
             }
         elseif tier == Lootbox.Types.Lockbox then
             sizes = 

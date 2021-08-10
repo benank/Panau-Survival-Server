@@ -95,6 +95,10 @@ function sAirdropManager:ItemExplode(args)
         Chat:Broadcast("MAP UPDATED WITH PRECISE AIRDROP COORDS.", Color.Red)
         Chat:Broadcast(" ", Color.Red)
         Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
+        
+        Timer.SetTimeout(5000, function()
+            self:CreateAirdropDrones()
+        end)
 
     end
 
@@ -296,7 +300,6 @@ end
 function sAirdropManager:CreateAirdrop()
 
     self:CreateAirdropPlane()
-    self:CreateAirdropDrones()
 
     -- Delay until the package reaches the ground
     Timer.SetTimeout(45000 + 6000, function()
@@ -357,7 +360,12 @@ function sAirdropManager:SpawnLootboxes()
         if key:find("lootbox") then
             local pos = self.airdrop.position + self.airdrop.angle * object_data.offset
             local angle = self.airdrop.angle * object_data.angle_offset
-            local locked = self.airdrop.type == 3 and math.random() < 0.2
+            local locked = self.airdrop.type == 3
+            
+            if self.airdrop.type == 2 then
+                locked = math.random() < 0.25
+            end
+            
             Events:Fire("inventory/CreateLootboxExternal", {
                 tier = self.airdrop.type + 15,
                 position = pos,

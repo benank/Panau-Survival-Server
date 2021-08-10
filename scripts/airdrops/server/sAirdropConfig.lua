@@ -18,7 +18,7 @@ AirdropConfig =
     {
         [AirdropType.Low] = 
         {
-            min_players = 2,
+            min_players = 3,
             health = 5,
             drones = 
             {
@@ -27,16 +27,16 @@ AirdropConfig =
             },
             map_preview = -- Preview on discord and ingame map
             {
-                time = 5, -- How many minutes it appears on the map before it drops
+                time = 10, -- How many minutes it appears on the map before it drops
                 size = 500 -- How big is the radius around it
             },
-            chance = 0.2, -- Chance of the airdrop spawning every interval if the conditions are met
-            interval = 30 -- 0.5 hours between airdrops of this type
+            chance = 0.1, -- Chance of the airdrop spawning every interval if the conditions are met
+            interval = 60 -- 1 hour between airdrops of this type
         },
         [AirdropType.Mid] = 
         {
-            min_players = 4,
-            health = 2,
+            min_players = 5,
+            health = 3,
             drones = 
             {
                 amount = {min = 3, max = 8},
@@ -44,16 +44,16 @@ AirdropConfig =
             },
             map_preview = 
             {
-                time = 10,
+                time = 15,
                 size = 1000
             },
             chance = 0.3,
-            interval = 60 -- 1 hour between airdrops
+            interval = 120 -- 2 hours between airdrops
         },
         [AirdropType.High] = 
         {
-            min_players = 6,
-            health = 4,
+            min_players = 7,
+            health = 6,
             drones = 
             {
                 amount = {min = 3, max = 10},
@@ -61,11 +61,11 @@ AirdropConfig =
             },
             map_preview = 
             {
-                time = 20,
+                time = 25,
                 size = 2000
             },
-            chance = 0.5,
-            interval = 120 -- 2 hours between airdrops
+            chance = 0.7,
+            interval = 240 -- 4 hours between airdrops
         }
     },
 
