@@ -472,7 +472,7 @@ LootItems =
         },
         ["AIRDROP"] = 
         {
-            rarity = 0.05,
+            rarity = 0.1,
             items = 
             {
                 ["Airdrop"] = {rarity = 1, min = 1, max = 1},
@@ -480,7 +480,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.2,
+            rarity = 0.15,
             items = 
             {
                 ["SMG Ammo"] = {rarity = 0.5, min = 120, max = 120},
@@ -571,7 +571,7 @@ LootItems =
         },
         ["AIRDROP"] = 
         {
-            rarity = 0.01,
+            rarity = 0.0125,
             items = 
             {
                 ["Airdrop"] = {rarity = 1, min = 1, max = 1},
@@ -610,7 +610,7 @@ LootItems =
         },
         ["BUILD"] = 
         {
-            rarity = 0.1,
+            rarity = 0.125,
             items = 
             {
                 ["Wall"] = {rarity = 0.6, min_dura = 2, max_dura = 3, min = 5, max = 10},
@@ -621,7 +621,7 @@ LootItems =
         },
         ["EXPLOSIVE"] = 
         {
-            rarity = 0.1,
+            rarity = 0.125,
             items = 
             {
                 ["Cluster Grenade"] = {rarity = 0.3, min = 7, max = 10},
@@ -650,7 +650,7 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.05,
+            rarity = 0.075,
             items = 
             {
                 ["Combat Ping"] = {rarity = 0.3, min = 5, max = 5},
@@ -678,7 +678,7 @@ LootItems =
             {
                 ["GrLauncher Ammo"] = {rarity = 0.2, min = 3, max = 5},
                 ["Machine Gun Ammo"] = {rarity = 0.5, min = 100, max = 100},
-                ["Rockets"] = {rarity = 0.3, min = 3, max = 3},
+                ["Rockets"] = {rarity = 0.3, min = 5, max = 5},
             }
         },
         ["WEAPON"] = 
@@ -736,8 +736,8 @@ LootItems =
             rarity = 0.16,
             items = 
             {
-                ["RocketPara"] = {rarity = 0.6, min = 1, max = 1, min_dura = 1, max_dura = 3},
-                ["RocketGrapple"] = {rarity = 0.4, min_dura = 5, max_dura = 5, min = 1, max = 1},
+                ["RocketPara"] = {rarity = 0.8, min = 1, max = 1, min_dura = 1, max_dura = 3},
+                ["RocketGrapple"] = {rarity = 0.2, min_dura = 5, max_dura = 5, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
@@ -747,9 +747,9 @@ LootItems =
             {
                 ["Ping"] = {rarity = 0.2, min = 10, max = 10},
                 ["Master Hacker"] = {rarity = 0.1, min = 1, max = 3},
-                ["Burst Ping"] = {rarity = 0.25, min = 5, max = 5},
+                ["Burst Ping"] = {rarity = 0.2, min = 5, max = 5},
                 ["EVAC"] = {rarity = 0.2, min = 2, max = 2},
-                ["Player Radar"] = {rarity = 0.25, min = 1, max = 1, min_dura = 1, max_dura = 3},
+                ["Player Radar"] = {rarity = 0.3, min = 1, max = 1, min_dura = 1, max_dura = 3},
             }
         },
     },

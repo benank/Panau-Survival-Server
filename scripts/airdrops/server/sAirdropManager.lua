@@ -84,6 +84,9 @@ function sAirdropManager:ItemExplode(args)
     if not self.airdrop.active then return end
     if not self.airdrop.landed then return end
     if self.airdrop.doors_destroyed then return end
+    
+    -- Only C4 and blow up airdrops
+    if args.type ~= DamageEntity.C4 then return end
 
     -- Announce airdrop coords when it is hit by an explosive
     if not self.airdrop.precise_announce and args.position:Distance(self.airdrop.position) < args.radius then
@@ -102,17 +105,8 @@ function sAirdropManager:ItemExplode(args)
 
     end
 
-    if self.airdrop.type == AirdropType.Low then
-        -- Any explosive can blow up Level 1 airdrops - takes 3 explosives of any kind
-        if args.position:Distance(self.airdrop.position) < args.radius then
-            self.airdrop.health = math.max(0, self.airdrop.health - 1)
-        end
-
-    elseif args.type == DamageEntity.C4 then
-        -- Only C4 and blow up Level 2 and 3 airdrops
-        if args.position:Distance(self.airdrop.position) < args.radius then
-            self.airdrop.health = math.max(0, self.airdrop.health - 1)
-        end
+    if args.position:Distance(self.airdrop.position) < args.radius then
+        self.airdrop.health = math.max(0, self.airdrop.health - 1)
     end
 
     if self.airdrop.health == 0 then
@@ -151,20 +145,52 @@ function sAirdropManager:DoorsDestroyed(args)
             owner_id = "Airdrop"
         })
         
-        Events:Fire("drones/CreateAirstrike", {
-            airstrike_name = "Area Bombing",
-            position = self.airdrop.position,
-            num_bombs = 100,
-            radius = 300
-        })
+        Timer.SetTimeout(5000, function()
+            Events:Fire("items/CreateGrenade", {
+                position = self.airdrop.position,
+                grenade_type = "Molotov",
+                fusetime = 0,
+                velocity = Vector3.Zero,
+                owner_id = "Airdrop"
+            })
+        end)
+        
+        Timer.SetTimeout(15000, function()
+            Events:Fire("drones/CreateAirstrike", {
+                airstrike_name = "Area Bombing",
+                position = self.airdrop.position,
+                num_bombs = 100,
+                radius = 700
+            })
+            
+            Events:Fire("items/CreateGrenade", {
+                position = self.airdrop.position,
+                grenade_type = "Toxic Grenade",
+                fusetime = 0,
+                velocity = Vector3.Zero,
+                owner_id = "Airdrop"
+            })
+        end)
+        
+        Timer.SetTimeout(60000, function()
+            Events:Fire("drones/CreateAirstrike", {
+                airstrike_name = "Area Bombing",
+                position = self.airdrop.position,
+                num_bombs = 100,
+                radius = 400
+            })
+        end)
+        
     elseif self.airdrop.type == AirdropType.Mid then
         
-        Events:Fire("drones/CreateAirstrike", {
-            airstrike_name = "Area Bombing",
-            position = self.airdrop.position,
-            num_bombs = 50,
-            radius = 150
-        })
+        Timer.SetTimeout(5000, function()
+            Events:Fire("drones/CreateAirstrike", {
+                airstrike_name = "Area Bombing",
+                position = self.airdrop.position,
+                num_bombs = 75,
+                radius = 300
+            })
+        end)
     end
     
     Events:Fire("items/CreateGrenade", {

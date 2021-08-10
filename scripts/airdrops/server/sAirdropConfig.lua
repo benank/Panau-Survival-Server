@@ -19,11 +19,11 @@ AirdropConfig =
         [AirdropType.Low] = 
         {
             min_players = 3,
-            health = 5,
+            health = 2,
             drones = 
             {
-                amount = {min = 1, max = 4},
-                level = {min = 5, max = 20}
+                amount = {min = 3, max = 8},
+                level = {min = 20, max = 30}
             },
             map_preview = -- Preview on discord and ingame map
             {
@@ -36,11 +36,11 @@ AirdropConfig =
         [AirdropType.Mid] = 
         {
             min_players = 5,
-            health = 3,
+            health = 4,
             drones = 
             {
-                amount = {min = 3, max = 8},
-                level = {min = 25, max = 60}
+                amount = {min = 4, max = 10},
+                level = {min = 30, max = 60}
             },
             map_preview = 
             {
@@ -56,8 +56,8 @@ AirdropConfig =
             health = 6,
             drones = 
             {
-                amount = {min = 3, max = 10},
-                level = {min = 70, max = 120}
+                amount = {min = 5, max = 10},
+                level = {min = 80, max = 120}
             },
             map_preview = 
             {
