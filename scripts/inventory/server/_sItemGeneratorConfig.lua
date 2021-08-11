@@ -652,7 +652,7 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.075,
+            rarity = 0.0975,
             items = 
             {
                 ["Combat Ping"] = {rarity = 0.3, min = 5, max = 5},
