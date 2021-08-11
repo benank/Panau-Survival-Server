@@ -474,7 +474,7 @@ LootItems =
         },
         ["AIRDROP"] = 
         {
-            rarity = 0.1,
+            rarity = 0.01,
             items = 
             {
                 ["Airdrop"] = {rarity = 1, min = 1, max = 1},
@@ -552,7 +552,7 @@ LootItems =
         },
         ["TOOL"] = 
         {
-            rarity = 0.08,
+            rarity = 0.17,
             items = 
             {
                 ["Nitro"] = {rarity = 0.3, min_dura = 5, max_dura = 5, min = 3, max = 5},
@@ -573,7 +573,7 @@ LootItems =
         },
         ["AIRDROP"] = 
         {
-            rarity = 0.0125,
+            rarity = 0.01,
             items = 
             {
                 ["Airdrop"] = {rarity = 1, min = 1, max = 1},
@@ -592,7 +592,7 @@ LootItems =
         },
         ["WEAPON"] = 
         {
-            rarity = 0.1,
+            rarity = 0.1025,
             items = 
             {
                 ["Shotgun"] = {rarity = 0.25, min_dura = 2, max_dura = 2, min = 1, max = 1},
@@ -1032,7 +1032,7 @@ LootItems =
         },
         ["EXPLOSIVE"] = 
         {
-            rarity = 0.2,
+            rarity = 0.225,
             items = 
             {
                 ["Toxic Grenade"] = {rarity = 0.25, min = 1, max = 3},
@@ -1050,7 +1050,7 @@ LootItems =
         },
         ["AIRDROP"] = 
         {
-            rarity = 0.05,
+            rarity = 0.025,
             items = 
             {
                 ["Airdrop"] = {rarity = 1, min = 1, max = 1},
@@ -1069,7 +1069,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.2,
+            rarity = 0.225,
             items = 
             {
                 ["Machine Gun Ammo"] = {rarity = 1, min = 80, max = 100},
@@ -1105,7 +1105,7 @@ LootItems =
         },
         ["AIRDROP"] = 
         {
-            rarity = 0.05,
+            rarity = 0.025,
             items = 
             {
                 ["Airdrop"] = {rarity = 1, min = 1, max = 1},
