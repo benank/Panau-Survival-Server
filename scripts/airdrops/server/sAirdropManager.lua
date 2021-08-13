@@ -176,7 +176,7 @@ function sAirdropManager:DoorsDestroyed(args)
             Events:Fire("drones/CreateAirstrike", {
                 airstrike_name = "Area Bombing",
                 position = self.airdrop.position,
-                num_bombs = 100,
+                num_bombs = 200,
                 radius = 400
             })
         end)
@@ -187,7 +187,7 @@ function sAirdropManager:DoorsDestroyed(args)
             Events:Fire("drones/CreateAirstrike", {
                 airstrike_name = "Area Bombing",
                 position = self.airdrop.position,
-                num_bombs = 75,
+                num_bombs = 150,
                 radius = 300
             })
         end)
