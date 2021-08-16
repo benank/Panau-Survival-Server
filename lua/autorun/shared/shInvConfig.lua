@@ -48,6 +48,11 @@ Inventory.config =
             durability = 0.1
         },
         {
+            name = "Grapplehook",
+            amount = 1,
+            durability = 0.25
+        },
+        {
             name = "Helmet",
             amount = 1,
             durability = 0.25
