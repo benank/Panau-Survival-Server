@@ -101,7 +101,7 @@ local function GetNearbyPlayers(player)
     for p in Server:GetPlayers() do
         local player_position = p:GetPosition()
         if p ~= player 
-        and not AreFriends(player, p:GetSteamId()) 
+        and not AreFriends(player, tostring(p:GetSteamId())) 
         and p:GetHealth() > 0
         and not p:GetValue("Loading")
         and not p:GetValue("dead")
