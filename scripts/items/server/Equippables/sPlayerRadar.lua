@@ -116,12 +116,14 @@ end
 
 local function UpdatePlayerRadars()
     
+    print("test 3")
     local sleep_amount = 5000
 
     for steam_id, args in pairs(players_using_radar) do
         if not IsValid(args.player) then
             players_using_radar[steam_id] = nil
         else
+            print("test 4")
             
             -- Unequip if they don't have a battery
             if not HasAtLeastOneBattery(args.player) then
@@ -129,30 +131,41 @@ local function UpdatePlayerRadars()
                 Chat:Send(args.player, "Player Radar requires batteries to use!", Color.Red)
             else
                 
+                print("test 5")
                 local nearby_players = GetNearbyPlayers(args.player)
                 
+                print("test 6")
                 args.item.durability = args.item.durability - ItemsConfig.equippables[args.item.name].dura_per_sec
                 Inventory.ModifyDurability({
                     player = args.player,
                     item = args.item
                 })
+                print("test 7")
                 UpdateEquippedItem(args.player, "Player Radar", args.item)
+                print("test 8")
                 DecreaseDuraOfBattery(args.player)
                 
+                print("test 9")
                 Timer.Sleep(1)
+                print("test 10")
                 sleep_amount = sleep_amount - 1
                 
                 Network:Send(args.player, "items/UpdateRadarPlayers", nearby_players)
+                print("test 11")
             end
         end
     end
     
+    print("test 12")
     Timer.Sleep(sleep_amount)
+    print("test 13")
     
 end
 
 Events:Subscribe("ModuleLoad", function()
+    print("test 1")
     Thread(function()
+        print("test 2")
         while true do
             UpdatePlayerRadars()
         end
