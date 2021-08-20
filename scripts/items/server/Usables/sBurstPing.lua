@@ -2,7 +2,7 @@ class 'sBurstPing'
 
 function sBurstPing:__init()
     
-    self.cooldown = 5
+    self.cooldown = 0
     
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)

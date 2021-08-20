@@ -469,25 +469,25 @@ function sClaymores:FinishClaymorePlacement(args, player)
         end
     end
 
-    local sub = nil
-    sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(player:GetSteamId()), function(args)
+    -- local sub = nil
+    -- sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(player:GetSteamId()), function(args)
     
-        Events:Unsubscribe(sub)
-        sub = nil
+    --     Events:Unsubscribe(sub)
+    --     sub = nil
 
-        if args.too_close then
+    --     if args.too_close then
 
-            Chat:Send(player, "Cannot place claymores too close to loot!", Color.Red)
-            return
+    --         Chat:Send(player, "Cannot place claymores too close to loot!", Color.Red)
+    --         return
 
-        end
-
-        self:TryPlaceClaymore(args, args.player)
-        
-    end)
+    --     end
 
     args.player = player
-    Events:Fire("CheckIsTooCloseToLoot", args)
+    self:TryPlaceClaymore(args, args.player)
+        
+    -- end)
+
+    -- Events:Fire("CheckIsTooCloseToLoot", args)
 
 end
 

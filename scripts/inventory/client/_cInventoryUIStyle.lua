@@ -123,6 +123,7 @@ function cInventoryUIStyle:__init()
         ["RocketGrapple"] = self.item_colors.boldblue,
         ["Explosives Detector"] = self.item_colors.boldblue,
         ["Parachute"] = self.item_colors.boldblue,
+        ["RocketPara"] = self.item_colors.boldblue,
         ["EVAC"] = self.item_colors.pink,
         ["Respawner"] = self.item_colors.pink,
         ["Hacker"] = self.item_colors.pink,
@@ -169,6 +170,7 @@ function cInventoryUIStyle:__init()
         ["Master Hacker"] = self.item_colors.purple,
         ["Stick Disguise"] = self.item_colors.purple,
         ["Lightning Gloves"] = self.item_colors.purple,
+        ["Player Radar"] = self.item_colors.purple,
 
         -- Halloween Event Items
         ["Halloween Lootbag"] = self.item_colors.darkorange,
@@ -242,6 +244,7 @@ function cInventoryUIStyle:RenderItemWindow(itemWindow, stack, parent_window)
 
         elseif (item.name == "Woet" and tonumber(item.custom_data.woet_x) == 1)
         or (item.name == "Nitro" and tonumber(item.custom_data.nitro_x) == 1)
+        or (item.name == "Secret" and tonumber(item.custom_data.secret_x) == 1)
         or (item.name == "Burst Ping" and tonumber(item.custom_data.bp_x) == 1) then
 
             local text_size = ClientInventory.ui.inv_dimensions.text_size * 1.75

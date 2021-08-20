@@ -61,7 +61,9 @@ function sStashPlacement:PlaceStash(args, player)
         return
     end
 
-    if args.position.y < 200 then
+    local player_iu = player:GetValue("StashUsingItem")
+    local type = self:GetStashTypeFromName(player_iu.item.name)
+    if type and args.position.y < 200 and (type == Lootbox.Types.BarrelStash or type == Lootbox.Types.GarbageStash) then
         Chat:Send(player, "You cannot place this stash underwater!", Color.Red)
         return
     end
@@ -75,7 +77,7 @@ function sStashPlacement:PlaceStash(args, player)
 
     -- If they are within nz, we don't let them place that close
     if player:GetPosition():Distance(self.sz_config.neutralzone.position) < self.sz_config.neutralzone.radius then
-        Chat:Send(player, "Cannot place stashes while near the neutral zone!", Color.Red)
+        Chat:Send(player, "Cannot place stashes while in the neutral zone!", Color.Red)
         return
     end
 

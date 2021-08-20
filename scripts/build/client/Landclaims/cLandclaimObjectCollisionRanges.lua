@@ -4,6 +4,8 @@ LandclaimObjectCollisionRanges =
     ["Table"] = 100,
     ["Light"] = 150,
     ["Helipad"] = 150,
+    ["Umbrella"] = 50,
+    ["Potted Plant"] = 50,
     ["Door"] = 100,
     ["Bed"] = 100,
     ["Chair"] = 100,
@@ -12,5 +14,6 @@ LandclaimObjectCollisionRanges =
     ["Hedgehog"] = 100,
     ["Cone"] = 100,
     ["Jump Pad"] = 100,
-    ["Christmas Tree"] = 100
+    ["Christmas Tree"] = 100,
+    ["Sign"] = 100
 }

@@ -96,6 +96,10 @@ function cLandclaimObjectMenu:TryToOpenMenu()
         end
     end
 
+    if landclaim_object.name == "Sign" and landclaim_object.landclaim:CanPlayerPlaceObject(LocalPlayer) then
+        options.edit_sign = true
+    end
+
     if count_table(options) > 0 then
         self:CreateMenu(options)
     end
@@ -145,6 +149,10 @@ function cLandclaimObjectMenu:CreateMenu(options)
 
     if options.unset_spawn then
         table.insert(self.button_names, "Unset Spawn")
+    end
+
+    if options.edit_sign then
+        table.insert(self.button_names, "Edit Sign")
     end
 
     if options.remove then
@@ -239,7 +247,13 @@ function cLandclaimObjectMenu:PressButton(btn)
     if self.button_cooldown:GetSeconds() < 1 then return end
     self.button_cooldown:Restart()
 
-
+    if btn:GetDataString("button_name") == "Edit Sign" then
+        local object = self.object
+        self:CloseMenu()
+        SignExtensionMenu:Show(object.custom_data.text, object.custom_data.color, object.id, object)
+        return
+    end
+    
     Network:Send("build/PressBuildObjectMenuButton", {
         name = btn:GetDataString("button_name"),
         id = self.object.id,

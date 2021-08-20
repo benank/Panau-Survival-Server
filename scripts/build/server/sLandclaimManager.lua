@@ -18,6 +18,7 @@ function sLandclaimManager:__init()
     Network:Subscribe("build/ReadyForInitialSync", self, self.PlayerReadyForInitialSync)
     Network:Subscribe("build/ActivateLight", self, self.ActivateLight)
     Network:Subscribe("build/ActivateDoor", self, self.ActivateDoor)
+    Network:Subscribe("build/EditSign", self, self.EditSign)
 
     Events:Subscribe("items/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
@@ -79,6 +80,13 @@ function sLandclaimManager:ActivateDoor(args, player)
     if not landclaim then return end
 
     landclaim:ActivateDoor(args, player)
+end
+
+function sLandclaimManager:EditSign(args, player)
+    local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_owner_id, args.landclaim_id)
+    if not landclaim then return end
+
+    landclaim:EditSign(args, player)
 end
 
 function sLandclaimManager:ActivateLight(args, player)
@@ -458,7 +466,7 @@ function sLandclaimManager:TryPlaceLandclaim(args)
     local ModelChangeAreas = SharedObject.GetByName("ModelLocations"):GetValues()
 
     for _, area in pairs(ModelChangeAreas) do
-        if Distance2D(position, area.pos) < 300 + size then
+        if Distance2D(position, area.pos) < 25 + size then
             self:SendPlayerErrorMessage(player, "Restricted Area")
             return
         end
@@ -480,46 +488,28 @@ function sLandclaimManager:TryPlaceLandclaim(args)
         end
     end
     
-    local sub
-    sub = Events:Subscribe("sams/AllSAMs", function(sams)
-        Thread(function()
-            Events:Unsubscribe(sub)
-            for id, sam in pairs(sams) do
-                if Distance2D(sam.position, position) <= size * 1.1 then
-                    self:SendPlayerErrorMessage(player, "Too close to a SAM")
-                    return
-                end
-                Timer.Sleep(1)
-            end
-            
-            if not IsValid(player) then return end
-            
-            Inventory.RemoveItem({
-                item = player_iu.item,
-                index = player_iu.index,
-                player = player
-            })
+    Inventory.RemoveItem({
+        item = player_iu.item,
+        index = player_iu.index,
+        player = player
+    })
 
-            -- Check for proximity to existing owned landclaims
-            local player_landclaims = self:GetPlayerActiveLandclaims(player)
-            for id, landclaim in pairs(player_landclaims) do
-                if IsInSquare(landclaim.position, landclaim.size, position) then
-                    self:UpdateLandclaimExpiry(size, landclaim, player)
-                    return
-                end
-            end
+    -- Check for proximity to existing owned landclaims
+    local player_landclaims = self:GetPlayerActiveLandclaims(player)
+    for id, landclaim in pairs(player_landclaims) do
+        if IsInSquare(landclaim.position, landclaim.size, position) then
+            self:UpdateLandclaimExpiry(size, landclaim, player)
+            return
+        end
+    end
 
-            if count_table(player_landclaims) >= player:GetValue("MaxLandclaims") then
-                Chat:Send(player, "You already have the maximum amount of landclaims placed!", Color.Red)
-                return
-            end
+    if count_table(player_landclaims) >= player:GetValue("MaxLandclaims") then
+        Chat:Send(player, "You already have the maximum amount of landclaims placed!", Color.Red)
+        return
+    end
 
-            self:PlaceLandclaim(size, player)
-            
-        end)
-    end)
-    Events:Fire("sams/GetAllSAMs")
-
+    self:PlaceLandclaim(size, player)
+    
 end
 
 sLandclaimManager = sLandclaimManager()

@@ -183,7 +183,7 @@ function cHitDetection:CheckForVehicleExplosionDamage(args)
         local dir = (v_pos - args.position + Vector3(0, 0.1, 0)):Normalized()
         local ray = Physics:Raycast(args.position, dir, 0, args.radius)
 
-        if dist < args.radius and v:GetHealth() > 0 and not v:GetValue("Destroyed") then
+        if IsValid(v) and dist < args.radius and v:GetHealth() > 0 and not v:GetValue("Destroyed") then
             hit_vehicles[v:GetId()] = 
             {
                 in_fov = ray.entity and ray.entity.__type == "Vehicle" and ray.entity == v,

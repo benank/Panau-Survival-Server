@@ -10,7 +10,9 @@ function cDroneContainer:__init()
 end
 
 function cDroneContainer:CSOIdToDrone(cso_id)
-    return self.cso_id_to_drone_id[cso_id]
+    if cso_id and self.cso_id_to_drone_id[cso_id] and IsValid(self.cso_id_to_drone_id[cso_id].cso) then
+        return self.cso_id_to_drone_id[cso_id]
+    end
 end
 
 function cDroneContainer:CreateDroneCSO(args)

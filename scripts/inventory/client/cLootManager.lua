@@ -18,6 +18,7 @@ function cLootManager:__init()
     Network:Subscribe(var("Inventory/OneLootboxCellSync"):get(), self, self.OneLootboxCellSync)
     Network:Subscribe(var("Inventory/RemoveLootbox"):get(), self, self.RemoveLootbox)
     Network:Subscribe(var("Inventory/ForceCloseLootbox"):get(), self, self.ForceCloseLootbox)
+    Network:Subscribe(var("Inventory/GetGroundDataAtPos"):get(), self, self.GetGroundDataAtPos)
     
     Events:Subscribe("ModuleUnload", self, self.Unload)
     Events:Subscribe(var("LocalPlayerChat"):get(), self, self.LocalPlayerChat)
@@ -30,6 +31,15 @@ function cLootManager:__init()
         self.stash_render = Events:Subscribe("Render", self, self.StashRender)
     end
 
+end
+
+function cLootManager:GetGroundDataAtPos(args)
+    local ray = Physics:Raycast(args.position, Vector3.Down, 0, 500)
+    
+    Network:Send("Inventory/GetGroundDataAtPos" .. tostring(args.ground_id), {
+        position = ray.position,
+        angle = Angle.FromVectors(Vector3.Up, ray.normal) * Angle(math.random() * math.pi * 2, 0, 0)
+    })
 end
 
 function cLootManager:LocalPlayerExitVehicle(args)
@@ -88,7 +98,7 @@ function cLootManager:ForceCloseLootbox()
     self.current_looking_box = nil
     self.current_box = nil
 
-    if ClientInventory.lootbox_ui.window:GetVisible() then
+    if ClientInventory.lootbox_ui and ClientInventory.lootbox_ui.window:GetVisible() then
         ClientInventory.lootbox_ui:ToggleVisible()
     end
 

@@ -278,7 +278,15 @@ function sSpawnManager:PlayerSpawn(args)
 	if args.player:GetValue("FirstSpawn") then
 		Network:Send(args.player, "spawn/PlayerSetPosition")
 	end
-
+	
+	local sz_spawn = target_pos:Distance(config.safezone.position) < config.safezone.radius * 1.25
+	if sz_spawn and args.player:GetValue("FirstSpawn") then
+		-- Give player grapple
+		Events:Fire("spawn/PlayerSpawnedInSZ", {
+			player = args.player
+		})
+	end
+	
 	local pos = args.player:GetPosition()
 	local s_pos = args.player:GetValue("SpawnPosition")
 

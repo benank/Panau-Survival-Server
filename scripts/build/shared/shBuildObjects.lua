@@ -92,4 +92,47 @@ BuildObjects =
         },
         unclaimed_decay = true
     },
+    ["Sign"] = 
+    {
+        model = "general.blz/gd_wood01-c.lod",
+        collision = "general.blz/gd_wood01_lod1-c_col.pfx",
+        pole = 
+        {
+            model = "general.blz/gd_wood01-k.lod", 
+            collision = "general.blz/gd_wood01_lod1-k_col.pfx",
+            offset = Vector3(0, 0.95, 0),
+            angle = Angle(0, 0, math.pi / 2)
+        },
+        unclaimed_decay = false
+    },
+    ["Teleporter"] = 
+    {
+        model = "59x36.nlz/go210-a.lod", 
+        collision = "59x36.nlz/go210_lod1-a_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Metal Railing"] = 
+    {
+        model = "areaset08.blz/gb036_02-rail_4m.lod", 
+        collision = "areaset08.blz/gb036_02_lod1-rail_4m_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Metal Stairs"] = 
+    {
+        model = "59x36.nl/go173-p.lod", 
+        collision = "59x36.nl/go173_lod1-p_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Umbrella"] = 
+    {
+        model = "cch66emp.nlz/go220-a.lod", 
+        collision = "cch66emp.nlz/go220_lod1-a_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Potted Plant"] = 
+    {
+        model = "f1m07milehigh.nlz/key001-m.lod", 
+        collision = "f1m07milehigh.nlz/key001_lod1-m_col.pfx",
+        unclaimed_decay = true
+    },
 }

@@ -6,8 +6,8 @@ ItemsConfig =
         ["Claymore"] = {trigger_range = 3, cell_size = 256, use_time = 5, delay_use = true},
         ["C4"] = {use_time = 6, delay_use = true},
         ["Proximity Alarm"] = {use_time = 4, delay_use = true, range = 10, battery_dura_per_hour = 100}, -- 10% per hour
-        ["Bandages"] = {restore_hp = 0.2, use_time = 3},
-        ["Healthpack"] = {restore_hp = 1.0, use_time = 10},
+        ["Bandages"] = {restore_hp = 0.2, use_time = 2},
+        ["Healthpack"] = {restore_hp = 1.0, use_time = 5},
         ["Woet"] = {use_time = 2, range = 10},
         ["Vehicle Repair"] = {use_time = 5, range = 5},
         ["Vehicle Guard"] = {use_time = 3, range = 5},
@@ -17,7 +17,7 @@ ItemsConfig =
         ["Car Paint"] = {use_time = 3, range = 5},
         ["Hacker"] = {use_time = 3},
         ["Master Hacker"] = {use_time = 5},
-        ["Ping"] = {max_distance = 5000, max_height = 4000},
+        ["Ping"] = {max_distance = 6000, max_height = 4000},
         ["Combat Ping"] = {max_distance = 550, max_height = 200},
         ["EMP"] = {range = 400, disable_time = 30, use_time = 10},
         ["LandClaim"] = {use_time = 10, delay_use = true},
@@ -25,6 +25,7 @@ ItemsConfig =
         ["Holiday Lootbag"] = {use_time = 3},
         ["Airdrop"] = {use_time = 30},
         ["Burst Ping"] = {range = 12, knockback = 25},
+        ["Secret"] = {use_time = 5},
     },
     build = 
     {
@@ -41,11 +42,19 @@ ItemsConfig =
         ["Cone"] = {model = "35x12.nlz/go040-b.lod", disable_walls = true},
         ["Jump Pad"] = {model = "05x41.nlz/go224-h.lod", disable_walls = true},
         ["Christmas Tree"] = {model = "vegetation_0.blz/City_B10_roofbush-Whole.lod", disable_walls = true},
+        ["Sign"] = {model = "general.blz/gd_wood01-c.lod", angle = Angle(0, 0, math.pi / 2), offset = Vector3(1.5, 0, 0)},
+        
+        ["Teleporter"] = {model = "59x36.nlz/go210-a.lod", disable_walls = true},
+        ["Metal Railing"] = {model = "areaset08.blz/gb036_02-rail_4m.lod", disable_ceil = true},
+        ["Metal Stairs"] = {model = "59x36.nl/go173-p.lod", offset = Vector3(0, 2.1, 0), disable_walls = true},
+        ["Umbrella"] = {model = "cch66emp.nlz/go220-a.lod", offset = Vector3(0, 0, 0), disable_walls = true},
+        ["Potted Plant"] = {model = "f1m07milehigh.nlz/key001-m.lod", offset = Vector3(0, 0, 0), disable_walls = true},
     },
     airstrikes = 
     {
         ["Cruise Missile"] = {delay = 7, radius = 80, damage_entity = DamageEntity.CruiseMissile, plane_velo = 110, plane_id = 34},
         ["Area Bombing"] = {delay = 10, radius = 120, damage_entity = DamageEntity.AreaBombing, plane_velo = 40, plane_id = 85, num_bombs = 30},
+        ["Bering Bombsight"] = {delay = 1, radius = 150, damage_entity = DamageEntity.BeringBombsight, num_bombs = 40},
         ["Tactical Nuke"] = {delay = 15, radius = 150, damage_entity = DamageEntity.TacticalNuke, plane_velo = 40, plane_id = 34},
     },
     equippables = -- Use equip
@@ -53,21 +62,24 @@ ItemsConfig =
         ["Grapplehook"] = {dura_per_sec = 1},
         ["RocketGrapple"] = {dura_per_sec = 4},
         ["Parachute"] = {dura_per_sec = 1.25},
-        ["Explosives Detector"] = {dura_per_sec = 5, dura_per_activation = 15, battery_dura_per_sec = 25},
+        ["Explosives Detector"] = {dura_per_sec = 10, dura_per_activation = 15, battery_dura_per_sec = 25},
         ["Cloud Strider Boots"] = {dura_per_5_sec = 1},
         ["Stick Disguise"] = {dura_per_hit = 2},
         ["Nitro"] = {dura_per_sec = 20},
         ["Binoculars"] = {dura_per_sec = 1, dura_per_use = 20},
+        ["Player Radar"] = {dura_per_sec = 1, dura_per_use = 20, battery_dura_per_sec = 25, range = 560},
         ["SAM Key"] = {},
+        ["RocketPara"] = {dura_per_sec = 1.25, dura_per_use_sec = 1.5},
+        ["Lock-On Module"] = {dura_per_bullet = 1},
         weapons = 
         {
             ["Handgun"] = {dura_per_use = 1, weapon_id = Weapon.Handgun, equip_slot = WeaponSlot.Right},
             ["Assault Rifle"] = {dura_per_use = 1, weapon_id = Weapon.Assault, equip_slot = WeaponSlot.Primary},
             ["Bubble Gun"] = {dura_per_use = 1, weapon_id = Weapon.BubbleGun, equip_slot = WeaponSlot.Right},
-            ["Grenade Launcher"] = {dura_per_use = 5, weapon_id = Weapon.GrenadeLauncher, equip_slot = WeaponSlot.Right},
+            ["Grenade Launcher"] = {dura_per_use = 3, weapon_id = Weapon.GrenadeLauncher, equip_slot = WeaponSlot.Right},
             ["Machine Gun"] = {dura_per_use = 2, weapon_id = Weapon.MachineGun, equip_slot = WeaponSlot.Primary},
             ["Revolver"] = {dura_per_use = 1, weapon_id = Weapon.Revolver, equip_slot = WeaponSlot.Right},
-            ["Rocket Launcher"] = {dura_per_use = 10, weapon_id = Weapon.RocketLauncher, equip_slot = WeaponSlot.Primary},
+            ["Rocket Launcher"] = {dura_per_use = 5, weapon_id = Weapon.RocketLauncher, equip_slot = WeaponSlot.Primary},
             ["SMG"] = {dura_per_use = 1, weapon_id = Weapon.SMG, equip_slot = WeaponSlot.Right},
             ["Sawn-Off Shotgun"] = {dura_per_use = 2, weapon_id = Weapon.SawnOffShotgun, equip_slot = WeaponSlot.Right},
             ["Shotgun"] = {dura_per_use = 3, weapon_id = Weapon.Shotgun, equip_slot = WeaponSlot.Primary},
@@ -99,6 +111,7 @@ ItemsConfig =
             ["Warp Grenade"] = DamageEntity.None,
             ["Laser Grenade"] = DamageEntity.LaserGrenade,
             ["Snowball"] = DamageEntity.Snowball,
+            ["Cluster Grenade"] = DamageEntity.ClusterGrenade,
         },
         costumes = 
         {

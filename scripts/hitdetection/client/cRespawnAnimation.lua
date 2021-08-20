@@ -56,6 +56,11 @@ function cRespawnAnimation:Render(args)
 
     Render:DrawText(pos + Vector2(2,2), text, Color.Black, size)
     Render:DrawText(pos, text, Color.Red, size)
+    
+    if self.respawn_health ~= LocalPlayer:GetHealth() then
+        self:Cancel()
+        return
+    end
 
     if self.respawn_timer:GetSeconds() >= self.time_to_respawn then
         self:Cancel()
@@ -143,6 +148,7 @@ function cRespawnAnimation:LocalPlayerChat(args)
         end
 
         self.respawning = true
+        self.respawn_health = LocalPlayer:GetHealth()
         self.respawn_timer = Timer()
 
         if not self.render then

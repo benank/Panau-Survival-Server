@@ -84,6 +84,9 @@ function sAirdropManager:ItemExplode(args)
     if not self.airdrop.active then return end
     if not self.airdrop.landed then return end
     if self.airdrop.doors_destroyed then return end
+    
+    -- Only C4 and blow up airdrops
+    if args.type ~= DamageEntity.C4 then return end
 
     -- Announce airdrop coords when it is hit by an explosive
     if not self.airdrop.precise_announce and args.position:Distance(self.airdrop.position) < args.radius then
@@ -95,20 +98,15 @@ function sAirdropManager:ItemExplode(args)
         Chat:Broadcast("MAP UPDATED WITH PRECISE AIRDROP COORDS.", Color.Red)
         Chat:Broadcast(" ", Color.Red)
         Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
+        
+        Timer.SetTimeout(5000, function()
+            self:CreateAirdropDrones()
+        end)
 
     end
 
-    if self.airdrop.type == AirdropType.Low then
-        -- Any explosive can blow up Level 1 airdrops - takes 3 explosives of any kind
-        if args.position:Distance(self.airdrop.position) < args.radius then
-            self.airdrop.health = math.max(0, self.airdrop.health - 1)
-        end
-
-    elseif args.type == DamageEntity.C4 then
-        -- Only C4 and blow up Level 2 and 3 airdrops
-        if args.position:Distance(self.airdrop.position) < args.radius then
-            self.airdrop.health = math.max(0, self.airdrop.health - 1)
-        end
+    if args.position:Distance(self.airdrop.position) < args.radius then
+        self.airdrop.health = math.max(0, self.airdrop.health - 1)
     end
 
     if self.airdrop.health == 0 then
@@ -138,7 +136,70 @@ function sAirdropManager:DoorsDestroyed(args)
     -- Spawn more drones when doors are blown on Level 3 airdrop
     if self.airdrop.type == AirdropType.High then
         self:CreateAirdropDrones(true)
+        
+        Events:Fire("items/CreateGrenade", {
+            position = self.airdrop.position,
+            grenade_type = "Molotov",
+            fusetime = 0,
+            velocity = Vector3.Zero,
+            owner_id = "Airdrop"
+        })
+        
+        Timer.SetTimeout(5000, function()
+            Events:Fire("items/CreateGrenade", {
+                position = self.airdrop.position,
+                grenade_type = "Molotov",
+                fusetime = 0,
+                velocity = Vector3.Zero,
+                owner_id = "Airdrop"
+            })
+        end)
+        
+        Timer.SetTimeout(15000, function()
+            Events:Fire("drones/CreateAirstrike", {
+                airstrike_name = "Area Bombing",
+                position = self.airdrop.position,
+                num_bombs = 100,
+                radius = 700
+            })
+            
+            Events:Fire("items/CreateGrenade", {
+                position = self.airdrop.position,
+                grenade_type = "Toxic Grenade",
+                fusetime = 0,
+                velocity = Vector3.Zero,
+                owner_id = "Airdrop"
+            })
+        end)
+        
+        Timer.SetTimeout(60000, function()
+            Events:Fire("drones/CreateAirstrike", {
+                airstrike_name = "Area Bombing",
+                position = self.airdrop.position,
+                num_bombs = 200,
+                radius = 400
+            })
+        end)
+        
+    elseif self.airdrop.type == AirdropType.Mid then
+        
+        Timer.SetTimeout(5000, function()
+            Events:Fire("drones/CreateAirstrike", {
+                airstrike_name = "Area Bombing",
+                position = self.airdrop.position,
+                num_bombs = 150,
+                radius = 300
+            })
+        end)
     end
+    
+    Events:Fire("items/CreateGrenade", {
+        position = self.airdrop.position,
+        grenade_type = "Toxic Grenade",
+        fusetime = 0,
+        velocity = Vector3.Zero,
+        owner_id = "Airdrop"
+    })
 end
 
 function sAirdropManager:PlayerChat(args)
@@ -265,7 +326,6 @@ end
 function sAirdropManager:CreateAirdrop()
 
     self:CreateAirdropPlane()
-    self:CreateAirdropDrones()
 
     -- Delay until the package reaches the ground
     Timer.SetTimeout(45000 + 6000, function()
@@ -326,11 +386,18 @@ function sAirdropManager:SpawnLootboxes()
         if key:find("lootbox") then
             local pos = self.airdrop.position + self.airdrop.angle * object_data.offset
             local angle = self.airdrop.angle * object_data.angle_offset
+            local locked = self.airdrop.type == 3
+            
+            if self.airdrop.type == 2 then
+                locked = math.random() < 0.25
+            end
+            
             Events:Fire("inventory/CreateLootboxExternal", {
                 tier = self.airdrop.type + 15,
                 position = pos,
                 angle = angle,
-                airdrop_tier = self.airdrop.type
+                airdrop_tier = self.airdrop.type,
+                locked = locked
             })
         end
     end

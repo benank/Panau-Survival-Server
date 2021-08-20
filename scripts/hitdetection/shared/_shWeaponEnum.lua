@@ -24,6 +24,8 @@ function WeaponEnum:__init()
     -- Drone weapons
     self.Drone_MachineGun = 18
     self.Drone_Rockets = 19
+    
+    self.BeringBombsight = 19
 
     self.descriptions = {
         [self.MachineGun] = "Machine Gun",
@@ -44,7 +46,8 @@ function WeaponEnum:__init()
         [self.V_Minigun_Warmup] = "Vehicle Minigun",
         [self.V_Cannon_Slow] = "Vehicle Auto Cannon",
         [self.Drone_MachineGun] = "Drone Machine Gun",
-        [self.Drone_Rockets] = "Drone Rockets"
+        [self.Drone_Rockets] = "Drone Rockets",
+        [self.BeringBombsight] = "Bering Bombsight"
     }
 
     --] li""t is on https://wiki.jc-mp.com/Lua/Shared/Weapon

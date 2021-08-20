@@ -245,7 +245,16 @@ function sLootbox:TakeLootStack(args, player)
 
     if #self.contents == 0 then
 
-        if self.tier == Lootbox.Types.Dropbox or self.is_airdrop or self.tier == Lootbox.Types.SAM then
+        if self.tier == Lootbox.Types.Dropbox 
+        or self.is_airdrop 
+        or self.tier == Lootbox.Types.SAM 
+        or self.tier == Lootbox.Types.DroneUnder30 
+        or self.tier == Lootbox.Types.Drone30to60 
+        or self.tier == Lootbox.Types.Drone60to100 
+        or self.tier == Lootbox.Types.Drone100Plus 
+        or self.tier == Lootbox.Types.Lockbox 
+        or self.tier == Lootbox.Types.LockboxX 
+        then
             self:Remove()
         elseif not self.is_stash then
             self:HideBox()
@@ -349,7 +358,15 @@ function sLootbox:Open(player)
 
     Network:Send(player, "Inventory/LootboxOpen", self:GetContentsSyncData())
 
-    Events:Fire("PlayerOpenLootbox", {player = player, in_sz = self.in_sz, has_been_opened = self.has_been_opened, airdrop_tier = self.airdrop_tier, tier = self.tier})
+    Events:Fire("PlayerOpenLootbox", {
+        player = player, 
+        in_sz = self.in_sz, 
+        has_been_opened = self.has_been_opened, 
+        airdrop_tier = self.airdrop_tier, 
+        tier = self.tier,
+        uid = self.uid,
+        original_uid = self.original_uid
+    })
 
     self:StartRespawnTimer()
 
@@ -365,6 +382,12 @@ function sLootbox:StartRespawnTimer()
     if self.in_sz then return end
     if self.is_airdrop then return end
     if self.tier == Lootbox.Types.SAM then return end
+    if self.tier == Lootbox.Types.DroneUnder30 then return end
+    if self.tier == Lootbox.Types.Drone30to60 then return end
+    if self.tier == Lootbox.Types.Drone60to100 then return end
+    if self.tier == Lootbox.Types.Drone100Plus then return end
+    if self.tier == Lootbox.Types.LockboxX then return end
+    if self.tier == Lootbox.Types.Lockbox then return end
 
     if self.respawn_timer then return end
 
@@ -431,6 +454,11 @@ end
 
 -- Respawns the lootbox
 function sLootbox:RespawnBox()
+    
+    if self.disable_respawn then
+        self:StartRespawnTimer()
+        return
+    end
 
     self:ForceClose()
 
@@ -466,6 +494,10 @@ function sLootbox:Remove()
 
     LootCells.Loot[self.cell.x][self.cell.y][self.uid] = nil
 
+    if LootManager.external_loot[self.uid] then
+        LootManager.external_loot[self.uid] = nil
+    end
+    
     if self.network_subs then
         for k,v in pairs(self.network_subs) do
             Network:Unsubscribe(v)

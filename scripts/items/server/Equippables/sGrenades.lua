@@ -14,7 +14,34 @@ function Grenades:__init()
     Network:Subscribe("items/PlayerInsideFireGrenadeArea", self, self.PlayerInsideFireGrenadeArea)
     Network:Subscribe("items/SnowballHit", self, self.SnowballHit)
     
+    Events:Subscribe("items/CreateGrenade", self, self.CreateGrenadeExternal)
+    Events:Subscribe("drones/CreateGrenade", self, self.CreateGrenadeDrone)
+    
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
+end
+
+function Grenades:CreateGrenadeExternal(args)
+	Network:Broadcast("items/GrenadeTossed", {
+        position = args.position,
+        velocity = args.velocity,
+        type = args.grenade_type,
+        fusetime = args.fusetime,
+        owner_id = args.owner_id or "???"
+    })
+end
+
+function Grenades:CreateGrenadeDrone(args)
+    
+    local grenade_types = {"HE Grenade", "Flashbang", "Toxic Grenade", "Cluster Grenade"}
+    local grenade_type = grenade_types[math.floor(math.random(#grenade_types))]
+
+	Network:Broadcast("items/GrenadeTossed", {
+        position = args.drone_position,
+        velocity = (args.position - args.drone_position):Normalized() * args.distance,
+        type = grenade_type,
+        fusetime = math.random() * 3 + 2,
+        owner_id = "Drone"
+    })
 end
 
 function Grenades:PlayerInsideFireGrenadeArea(args, player)
@@ -133,7 +160,8 @@ function Grenades:GrenadeTossed(args, sender)
         velocity = args.velocity,
         type = sender:GetValue("EquippedGrenade"),
         fusetime = math.max(0, args.fusetime),
-        owner_id = tostring(sender:GetSteamId())
+        owner_id = tostring(sender:GetSteamId()),
+        seed = args.seed
     })
 end
 

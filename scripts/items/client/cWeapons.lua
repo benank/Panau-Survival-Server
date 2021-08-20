@@ -120,7 +120,8 @@ function WeaponManager:PostTick(args)
     if not self.equipped then return end
 
     if weapon.id ~= current_weapon_id 
-    and self.cheat_timer:GetSeconds() > 1 then
+    and self.cheat_timer:GetSeconds() > 1
+    and LocalPlayer:GetHealth() > 0 then
         -- kick for weapon hax
         Network:Send("items/Cheating", 
         {
@@ -132,7 +133,8 @@ function WeaponManager:PostTick(args)
     end
 
     if self:GetTotalAmmoInWeapon(weapon) > current_ammo 
-    and self.cheat_timer:GetSeconds() > 1 then
+    and self.cheat_timer:GetSeconds() > 1
+    and LocalPlayer:GetHealth() > 0 then
         -- kick for ammo hax
         Network:Send("items/Cheating", 
         {

@@ -239,7 +239,7 @@ function cObjectPlacer:CheckBoundingBox()
 
             local ray = Physics:Raycast(p1, diff, 0, len)
 
-            if ray.distance < len or ray.position.y <= 200 then
+            if ray.distance < len then
                 return false
             end
         end
