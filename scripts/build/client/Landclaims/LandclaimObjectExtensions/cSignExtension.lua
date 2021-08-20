@@ -24,7 +24,8 @@ function cSignExtension:UpdateToExternalModules()
         landclaim_id = self.object.landclaim.id,
         landclaim_owner_id = self.object.landclaim.owner_id,
         id = self.object.id,
-        cso_id = self.pole_object:GetId()
+        cso_id = self.pole_object:GetId(),
+        model = self.pole_object:GetModel()
     })
 end
 

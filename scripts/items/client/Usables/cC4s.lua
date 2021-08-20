@@ -30,21 +30,21 @@ function cC4s:PlayC4TriggerAnimation()
 end
 
 function cC4s:BuildObjectSpawned(args)
-    self.near_build_objects[args.cso_id] = args
+    self.near_build_objects[GetCSOIdArgs(args)] = args
 end
 
 function cC4s:BuildObjectDespawned(args)
-    self.near_build_objects[args.cso_id] = nil
+    self.near_build_objects[GetCSOIdArgs(args)] = nil
 end
 
 function cC4s:LootboxCreate(args)
     if args.tier ~= 11 and args.tier ~= 12 and args.tier ~= 13 then return end
-    self.near_stashes[args.cso_id] = args.id
+    self.near_stashes[GetCSOIdArgs(args)] = args.id
 end
 
 function cC4s:LootboxRemove(args)
     if args.tier ~= 11 and args.tier ~= 12 and args.tier ~= 13 then return end
-    self.near_stashes[args.cso_id] = nil
+    self.near_stashes[GetCSOIdArgs(args)] = nil
 end
 
 function cC4s:WorldNetworkObjectCreate(args)
@@ -126,10 +126,10 @@ function cC4s:PlaceObject(args)
     -- If they are placing the explosive on a stash/lootbox
     if ray.entity and ray.entity.__type == "ClientStaticObject" then
 
-        if self.near_stashes[ray.entity:GetId()] then
-            send_data.lootbox_uid = self.near_stashes[ray.entity:GetId()]
-        elseif self.near_build_objects[ray.entity:GetId()] then
-            send_data.landclaim_data = self.near_build_objects[ray.entity:GetId()]
+        if self.near_stashes[GetCSOId(ray.entity)] then
+            send_data.lootbox_uid = self.near_stashes[GetCSOId(ray.entity)]
+        elseif self.near_build_objects[GetCSOId(ray.entity)] then
+            send_data.landclaim_data = self.near_build_objects[GetCSOId(ray.entity)]
         end
 
     end
