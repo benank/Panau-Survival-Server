@@ -39,7 +39,8 @@ function cLandclaimObject:Create(no_collision)
         landclaim_id = self.landclaim.id,
         landclaim_owner_id = self.landclaim.owner_id,
         id = self.id,
-        cso_id = self.object:GetId()
+        cso_id = self.object:GetId(),
+        model = self.object:GetModel()
     })
 
     if self.extension then
