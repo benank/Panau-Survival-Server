@@ -65,10 +65,10 @@ function cClaymores:PlaceObject(args)
         local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 7)
     
         -- Placing it on a stash or build object
-        if IsValid(ray.entity) and cC4s.near_stashes[ray.entity:GetId()] then
-            lootbox_uid = cC4s.near_stashes[ray.entity:GetId()]
-        elseif IsValid(ray.entity) and cC4s.near_build_objects[ray.entity:GetId()] then
-            landclaim_data = cC4s.near_build_objects[ray.entity:GetId()]
+        if IsValid(ray.entity) and cC4s.near_stashes[GetCSOId(ray.entity)] then
+            lootbox_uid = cC4s.near_stashes[GetCSOId(ray.entity)]
+        elseif IsValid(ray.entity) and cC4s.near_build_objects[GetCSOId(ray.entity)] then
+            landclaim_data = cC4s.near_build_objects[GetCSOId(ray.entity)]
         end
 
     end
@@ -133,7 +133,7 @@ function cClaymores:FireWeapon(args)
     if not target.entity then return end
     if target.entity.__type ~= "ClientStaticObject" then return end
 
-    local claymore = self.CSO_register[target.entity:GetId()]
+    local claymore = self.CSO_register[GetCSOId(target.entity)]
     if not claymore then return end
 
     Network:Send(var("items/DestroyClaymore"):get(), {id = claymore.id})
@@ -144,7 +144,7 @@ function cClaymores:RemoveClaymore(args)
     VerifyCellExists(self.claymore_cells, args.cell)
     if self.claymore_cells[args.cell.x][args.cell.y][args.id] then
         local claymore = self.claymore_cells[args.cell.x][args.cell.y][args.id]
-        self.CSO_register[claymore.object:GetId()] = nil
+        self.CSO_register[GetCSOId(claymore.object)] = nil
         self.claymore_cells[args.cell.x][args.cell.y][args.id]:Remove()
         self.claymore_cells[args.cell.x][args.cell.y][args.id] = nil
     end
@@ -164,7 +164,7 @@ function cClaymores:KeyUp(args)
         if not ray.entity then return end
         if ray.entity.__type ~= "ClientStaticObject" then return end
 
-        local claymore = self.CSO_register[ray.entity:GetId()]
+        local claymore = self.CSO_register[GetCSOId(ray.entity)]
         if not claymore then return end
 
         --if claymore.owner_id ~= tostring(LocalPlayer:GetSteamId()) then return end
@@ -191,7 +191,7 @@ function cClaymores:AddClaymore(args)
         self.claymore_cells[cell.x][cell.y][claymore.id]:Remove()
     end
 
-    self.CSO_register[claymore.object:GetId()] = claymore
+    self.CSO_register[GetCSOId(claymore.object)] = claymore
     self.claymore_cells[cell.x][cell.y][claymore.id] = claymore
 
 end
@@ -212,7 +212,7 @@ function cClaymores:ClaymoreExplode(args)
 
                     self.claymore_cells[x][y][id]:Remove()
                     self.claymore_cells[x][y][id] = nil
-                    self.CSO_register[claymore.object:GetId()] = nil
+                    self.CSO_register[GetCSOId(claymore.object)] = nil
 
                     break
                 end

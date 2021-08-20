@@ -26,6 +26,7 @@ function cLootbox:Remove(no_event)
         Events:Fire("Inventory/LootboxRemove", {
             id = self.uid,
             tier = self.tier,
+            model = self.model_data.model,
             cso_id = self.cso_id
         })
 
@@ -101,6 +102,7 @@ function cLootbox:CreateModel()
         id = self.uid,
         cso_id = self.cso_id,
         tier = self.tier,
+        model = self.model_data.model,
         position = self.position,
         angle = self.angle
     })
