@@ -675,7 +675,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.2,
+            rarity = 0.25,
             items = 
             {
                 ["GrLauncher Ammo"] = {rarity = 0.2, min = 3, max = 5},
@@ -705,13 +705,13 @@ LootItems =
         },
         ["BUILD"] = 
         {
-            rarity = 0.1,
+            rarity = 0.15,
             items = 
             {
                 ["Bed"] = {rarity = 0.1, min_dura = 5, max_dura = 5, min = 2, max = 3},
-                ["Door"] = {rarity = 0.1, min_dura = 5, max_dura = 5, min = 3, max = 3},
-                ["Wall"] = {rarity = 0.25, min_dura = 5, max_dura = 5, min = 5, max = 10},
-                ["Locked Stash"] = {rarity = 0.2, min = 1, max = 2},
+                ["Door"] = {rarity = 0.15, min_dura = 5, max_dura = 5, min = 3, max = 3},
+                ["Wall"] = {rarity = 0.25, min_dura = 5, max_dura = 5, min = 10, max = 15},
+                ["Locked Stash"] = {rarity = 0.15, min = 1, max = 2},
                 ["LandClaim"] = {rarity = 0.2, min = 1, max = 1},
                 ["Jump Pad"] = {rarity = 0.15, min_dura = 5, max_dura = 5, min = 1, max = 1},
             }
@@ -735,23 +735,23 @@ LootItems =
         },
         ["GEAR"] = 
         {
-            rarity = 0.16,
+            rarity = 0.11,
             items = 
             {
-                ["RocketPara"] = {rarity = 0.8, min = 1, max = 1, min_dura = 1, max_dura = 3},
-                ["RocketGrapple"] = {rarity = 0.2, min_dura = 5, max_dura = 5, min = 1, max = 1},
+                ["RocketPara"] = {rarity = 0.7, min = 1, max = 1, min_dura = 1, max_dura = 2},
+                ["RocketGrapple"] = {rarity = 0.3, min_dura = 5, max_dura = 5, min = 1, max = 1},
             }
         },
         ["TOOL"] = 
         {
-            rarity = 0.09,
+            rarity = 0.04,
             items = 
             {
-                ["Ping"] = {rarity = 0.2, min = 10, max = 10},
-                ["Master Hacker"] = {rarity = 0.1, min = 1, max = 3},
+                ["Ping"] = {rarity = 0.1, min = 10, max = 10},
+                ["Master Hacker"] = {rarity = 0.2, min = 1, max = 3},
                 ["Burst Ping"] = {rarity = 0.2, min = 5, max = 5},
-                ["EVAC"] = {rarity = 0.2, min = 2, max = 2},
-                ["Player Radar"] = {rarity = 0.3, min = 1, max = 1, min_dura = 1, max_dura = 3},
+                ["EVAC"] = {rarity = 0.3, min = 2, max = 2},
+                ["Player Radar"] = {rarity = 0.2, min = 1, max = 1, min_dura = 1, max_dura = 2},
             }
         },
     },
