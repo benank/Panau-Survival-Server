@@ -115,7 +115,7 @@ config =
         --[48] = {["BuggyMG"] = 0.05}, -- Maddox Machine Gun
         [3] = {--[[["Armed"] = 0.01,]] ["FullyUpgraded"] = 0.2}, -- Armed Rowlinson K22
         --[62] = {["Dome"] = 0.01, ["default"] = 0.03}, -- Adds rockets or MG, Use UnArmed for unarmed vehicle
-        [7] = {["Default"] = 1, --[[["Armed"] = 0.1]]}, -- default (use Armed for MG)
+        [7] = {["Armed"] = 1, --[[["Armed"] = 0.1]]}, -- default (use Armed for MG)
         [81] = {["FullyUpgraded"] = 0.2}
     },
     colors = -- HSV car colors based on the biome they spawn in
