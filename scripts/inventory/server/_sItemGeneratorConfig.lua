@@ -709,11 +709,12 @@ LootItems =
             items = 
             {
                 ["Bed"] = {rarity = 0.1, min_dura = 5, max_dura = 5, min = 2, max = 3},
-                ["Door"] = {rarity = 0.15, min_dura = 5, max_dura = 5, min = 3, max = 3},
-                ["Wall"] = {rarity = 0.25, min_dura = 5, max_dura = 5, min = 10, max = 15},
+                ["Door"] = {rarity = 0.1, min_dura = 5, max_dura = 5, min = 3, max = 3},
+                ["Wall"] = {rarity = 0.2, min_dura = 5, max_dura = 5, min = 10, max = 15},
                 ["Locked Stash"] = {rarity = 0.15, min = 1, max = 2},
                 ["LandClaim"] = {rarity = 0.2, min = 1, max = 1},
                 ["Jump Pad"] = {rarity = 0.15, min_dura = 5, max_dura = 5, min = 1, max = 1},
+                ["Helipad"] = {rarity = 0.1, min_dura = 5, max_dura = 5, min = 3, max = 3},
             }
         },
         ["EXPLOSIVE"] = 
