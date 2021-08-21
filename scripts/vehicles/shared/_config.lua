@@ -96,7 +96,7 @@ config =
     templates = -- Use these templates for spawning
     {
         [69] = {["Armed"] = 0.1}, -- winstons amen party boat
-        [88] = {["Default"] = 1}, -- only default mta powerruns without weapons spawn in the wild (use FullyUpgraded for MG and rockets, Armed for MG)
+        [88] = {["Armed"] = 1}, -- only default mta powerruns without weapons spawn in the wild (use FullyUpgraded for MG and rockets, Armed for MG)
         [5] = {["Cab"] = 0.3, ["Fishing"] = 0.3},
         [11] = {["Civil"] = 0.5},
         --[35] = {["Armed"] = 0.01}, -- Garret Traver Z with MG
