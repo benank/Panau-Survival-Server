@@ -91,11 +91,6 @@ let active_languages =
     ['en']: 1
 }
 
-translateText('hello there', 'en', function(return_text)
-{
-    console.log(return_text);
-})
-
 // Returns a table of the translated string, like:
 /*
 {
