@@ -114,7 +114,7 @@ Events:Subscribe("TranslateText", function(args)
 end)
 
 
-SQL:Execute("CREATE TABLE IF NOT EXISTS language (steamID VARCHAR UNIQUE, locale VARCHAR(5))")
+SQL:Execute("CREATE TABLE IF NOT EXISTS language (steamID VARCHAR UNIQUE, locale VARCHAR(8))")
 local DEFAULT_LOCALE = "en"
 
 Events:Subscribe("ClientModuleLoad", function(args)

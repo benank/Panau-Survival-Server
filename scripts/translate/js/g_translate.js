@@ -4,7 +4,7 @@ const dgram = require("dgram");
 const sock = dgram.createSocket("udp4");
 
 sock.on("listening", function () {
-    console.log("Server listening...");
+    console.log("G translate server listening...");
 });
 
 sock.on("error", function (err) {
