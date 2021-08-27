@@ -247,7 +247,7 @@ function sDroneManager:DroneDamaged(args)
     if not drone then
         return
     end
-
+    
     drone:Damage(args)
 end
 

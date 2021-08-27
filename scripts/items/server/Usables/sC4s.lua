@@ -158,15 +158,8 @@ function sC4s:DestroyC4(args, player)
     local pos = c4:GetPosition()
 
     local owner_id = c4:GetValue("owner_id")
-
-    if not self.sz_config then
-        self.sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
-    end
-
-    -- If they are within sz radius * 2, we don't let them detonate that close
-    if pos:Distance(self.sz_config.safezone.position) > self.sz_config.safezone.radius * 2 then
-        Network:Broadcast("items/C4Explode", {position = pos, id = c4:GetId(), owner_id = owner_id})
-    end
+    
+    Network:Broadcast("items/C4Explode", {position = pos, id = c4:GetId(), owner_id = owner_id})
 
     local lootbox_id = c4:GetValue("LootboxId")
     if lootbox_id then
@@ -360,26 +353,9 @@ function sC4s:FinishC4Placement(args, player)
         end
     end
 
-    local sub = nil
-    sub = Events:Subscribe("IsTooCloseToLootCheck"..tostring(player:GetSteamId()), function(args)
-    
-        Events:Unsubscribe(sub)
-        sub = nil
-
-        if args.too_close then
-
-            Chat:Send(player, "Cannot place C4 too close to loot!", Color.Red)
-            return
-
-        end
-
-        self:TryPlaceC4(args, args.player)
-        
-    end)
-    
     args.player = player
-    Events:Fire("CheckIsTooCloseToLoot", args)
-
+    self:TryPlaceC4(args, player)
+    
 end
 
 

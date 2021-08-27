@@ -4,8 +4,8 @@ function Revenge:__init()
         
     self.perks = 
     {
-        [103] = 0.25,
-        [133] = 0.50
+        [103] = 0.10,
+        [133] = 0.20
     }
     
     Events:Subscribe("PlayerKilled", self, self.PlayerKilled)

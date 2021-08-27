@@ -126,7 +126,17 @@ function sItemGenerator:GetTierSpecificCustomData(tier, item)
         elseif tier == Lootbox.Types.AirdropLevel3 then
             sizes = 
             {
+                {chance = 1.0, min = 150, max = 250}
+            }
+        elseif tier == Lootbox.Types.Lockbox then
+            sizes = 
+            {
                 {chance = 1.0, min = 100, max = 200}
+            }
+        elseif tier == Lootbox.Types.LockboxX then
+            sizes = 
+            {
+                {chance = 1.0, min = 100, max = 300}
             }
         end
 
@@ -139,6 +149,50 @@ function sItemGenerator:GetTierSpecificCustomData(tier, item)
             end
         end
 
+    elseif item.name == "Airdrop" then
+        
+        -- Landclaim size chances based on loot tier
+        local sizes = 
+        {
+            {chance = 0.5, min = 1, max = 1},
+            {chance = 1.0, min = 2, max = 2},
+        }
+
+        if tier == Lootbox.Types.Lockbox then
+            sizes = 
+            {
+                {chance = 0.5, min = 1, max = 1},
+                {chance = 1.0, min = 2, max = 2},
+            }
+        elseif tier == Lootbox.Types.LockboxX then
+            sizes = 
+            {
+                {chance = 0.3, min = 2, max = 2},
+                {chance = 1.0, min = 3, max = 3},
+            }
+        elseif tier == Lootbox.Types.Drone60to100 then
+            sizes = 
+            {
+                {chance = 1.0, min = 1, max = 1},
+            }
+        elseif tier == Lootbox.Types.Drone100Plus then
+            sizes = 
+            {
+                {chance = 0.9, min = 1, max = 2},
+                {chance = 1.0, min = 1, max = 3},
+            }
+        end
+
+        local random = math.random()
+
+        for _, size_data in ipairs(sizes) do
+            if random <= size_data.chance then
+                local random_amount = size_data.max - size_data.min ~= 0 and math.random(size_data.max - size_data.min) or 0
+                custom_data.level = size_data.min + random_amount
+                break
+            end
+        end
+        
     end
 
     return custom_data
@@ -179,7 +233,7 @@ function sItemGenerator:FindGroupName(tier)
 
     end
 
-    error(debug.traceback("No group name found in sItemGenerator:FindGroupName! Did you make the rarities absolute?"))
+    error(debug.traceback("No group name found in sItemGenerator:FindGroupName! Did you make the rarities absolute? Tier: " .. tier))
 
 end
 

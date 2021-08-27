@@ -119,6 +119,8 @@ function cLootboxUI:AccessModeRender(args)
 end
 
 function cLootboxUI:WindowRender()
+    
+    if not LootManager.current_box then return end
 
     for index, stack in pairs(LootManager.current_box.contents) do
 

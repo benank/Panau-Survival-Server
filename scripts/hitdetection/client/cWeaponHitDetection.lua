@@ -9,6 +9,14 @@ function WeaponHitDetection:__init()
 
     self.bullet_id_counter = 0
     self.bullets = {}
+    
+    self.delta = 0
+    self.lockon_cso_id = nil
+    self.drone_lockon_size = 70 -- 70 units to lockon from center of screen
+    
+    Timer.SetInterval(100, function()
+        self:GetDroneInLockonSight()
+    end)
 
     Events:Subscribe("PreTick", self, self.PreTick)
     Events:Subscribe("Render", self, self.Render)
@@ -229,6 +237,14 @@ function WeaponHitDetection:FireVehicleWeapon(args)
     end
 
     local bullet_config = cWeaponBulletConfig:GetByWeaponEnum(args.weapon_enum)
+    
+    if args.weapon_enum == WeaponEnum.BeringBombsight then
+        Events:Fire(var("HitDetection/FireBeringBombsight"):get(),
+        {
+            cooldown = VehicleWeapons:GetSecondaryFireCooldown(args.weapon_enum)
+        })
+        return
+    end
 
     if not bullet_config then
         error(debug.traceback("No bullet configured for this weapon!"))
@@ -554,10 +570,95 @@ function WeaponHitDetection:Render(args)
         
     end
 
+    if LocalPlayer:GetValue("LockonModuleEquipped") then
+        self:DrawLockonIndicator(args)
+    end
+        
     if self.debug_enabled then
         self:RenderDebug()
     end
 
+end
+
+function WeaponHitDetection:GetDroneInLockonSight()
+    if not LocalPlayer:GetValue("LockonModuleEquipped") then return end
+    if LocalPlayer:InVehicle() then return end
+    
+    local center_screen = Render.Size / 2
+    local min_distance, cso_id
+    
+    local cam_pos = Camera:GetPosition()
+    
+    -- Find the closest drone in range
+    for _cso_id, drone in pairs(cDroneContainer.cso_id_to_drone_id) do
+        
+        if IsValid(drone.cso) then
+            local pos_2d = Render:WorldToScreen(drone.cso:GetPosition())
+            local distance = center_screen:Distance(pos_2d)
+            
+            if distance < self.drone_lockon_size and (not min_distance or distance < min_distance) then
+                
+                -- Raycast to make sure they are visible
+                local ray = Physics:Raycast(cam_pos, drone.cso:GetPosition() - cam_pos, 0, 200)
+                
+                if ray.entity and ray.entity.__type == "ClientStaticObject" then
+                    
+                    local cso = cDroneContainer:CSOIdToDrone(ray.entity:GetId())
+                    
+                    if IsValid(cso) then
+                        min_distance = distance
+                        cso_id = _cso_id 
+                    end
+                end
+            end
+        end
+    end
+    
+    self.lockon_cso_id = cso_id
+end
+
+function WeaponHitDetection:DrawLockonIndicator(args)
+    
+    if LocalPlayer:InVehicle() then return end
+    
+    local color = Color(255,255,255,50)
+    
+    if self.lockon_cso_id then
+        color = Color(255,0,0,100)
+    end
+    
+    local circle_size = self.drone_lockon_size
+    -- Render:DrawCircle(Render.Size / 2, circle_size, color)
+    
+    local size = 20
+    local num_triangles = 3
+    local pos = Render.Size / 2
+    
+    local triangle_distance = circle_size - size
+    
+    local drone = cDroneContainer:CSOIdToDrone(self.lockon_cso_id)
+    if drone then
+        pos = Render:WorldToScreen(drone.cso:GetPosition())
+        triangle_distance = size * 0.25
+    end
+    
+    for i = 1, 3 do
+        local rotation = self.delta - math.pi * 2 * i / num_triangles
+        
+        Render:SetTransform(Transform2():Translate(pos):Rotate(rotation):Translate(Vector2(triangle_distance, 0)))
+
+        Render:FillTriangle(
+            Vector2(size * 0.15, 0),
+            Vector2(size * 1, size / 2),
+            Vector2(size * 1, -size / 2),
+            color
+        )
+
+    end
+
+	Render:ResetTransform()
+    self.delta = self.delta + args.delta
+    
 end
 
 function WeaponHitDetection:RenderDebug()

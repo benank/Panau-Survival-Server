@@ -106,9 +106,9 @@ function shItem:GetCustomData()
        
         local sizes = 
         {
-            {chance = 0.8, min = 20, max = 50},
-            {chance = 0.95, min = 50, max = 100},
-            {chance = 1.0, min = 100, max = 200}
+            {chance = 0.6, min = 30, max = 70},
+            {chance = 0.9, min = 70, max = 150},
+            {chance = 1.0, min = 150, max = 300}
         }
 
         local random = math.random()
@@ -129,6 +129,11 @@ function shItem:GetCustomData()
 
         -- 5% of BPs are BP Xs
         self.custom_data.bp_x = math.random() < 0.05 and 1 or 0
+    
+    elseif self.name == "Secret" and self.custom_data.secret_x == nil then
+
+        -- 10% of secrets are secret Xs
+        self.custom_data.secret_x = math.random() < 0.1 and 1 or 0
     
     elseif self.name == "Airdrop" and self.custom_data.level == nil then
         self.custom_data.level = 1

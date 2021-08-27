@@ -16,7 +16,7 @@ function cLandclaimObject:__init(args)
     self.spawned = false
     self.has_collision = false
     self.landclaim = args.landclaim
-    self.collision_range = LandclaimObjectCollisionRanges[self.name]
+    self.collision_range = LandclaimObjectCollisionRanges[self.name] or 100
 
 end
 
@@ -98,6 +98,8 @@ function cLandclaimObject:GetExtension()
         return cJumpPadExtension(self)
     elseif self.name == "Christmas Tree" then
         return cChristmasTreeExtension(self)
+    elseif self.name == "Sign" then
+        return cSignExtension(self)
     end
 
 end

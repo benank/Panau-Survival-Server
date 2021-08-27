@@ -126,7 +126,7 @@ function sWeaponManager:FireWeapon(args, player)
 
         local weapon_ammo = weapon.ammo_clip + weapon.ammo_reserve
 
-        if weapon_ammo > ammo_amount + 2 then
+        if weapon_ammo > ammo_amount + 4 then
             Events:Fire("KickPlayer", {
                 player = player,
                 reason = string.format("Ammo mismatch. Player has more ammo in gun than in inventory. Gun: %d Ammo: %d", weapon_ammo, ammo_amount),
@@ -144,7 +144,9 @@ function sWeaponManager:FireWeapon(args, player)
 
         if not weapon_name then return end
 
-        equipped_weapons[weapon_name].ammo = ammo_amount - 1
+        if equipped_weapons[weapon_name] then
+            equipped_weapons[weapon_name].ammo = ammo_amount - 1
+        end
     else
         self.pending_fire[steam_id][weapon.id].ammo = args.ammo
         self.pending_fire[steam_id][weapon.id].adjusted_ammo = self.pending_fire[steam_id][weapon.id].adjusted_ammo - 1
@@ -201,6 +203,12 @@ function sWeaponManager:ProcessWeaponShot(args)
     equipped_item.durability = equipped_item.durability - ItemsConfig.equippables.weapons[weapon_name].dura_per_use * ammo_used
     Inventory.ModifyDurability({player = args.player, item = equipped_item})
     UpdateEquippedItem(args.player, equipped_item.name, equipped_item)
+    
+    Events:Fire("items/AmmoUsed", {
+        player = args.player,
+        item = equipped_item,
+        ammo_used = ammo_used
+    })
 
 end
 

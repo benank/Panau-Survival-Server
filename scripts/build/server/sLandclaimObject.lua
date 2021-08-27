@@ -11,6 +11,10 @@ function sLandclaimObject:__init(args)
     self.angle = type(args.angle) == "string" and DeserializeAngle(args.angle) or args.angle
     self.health = args.health
     self.custom_data = args.custom_data or self:GetDefaultCustomData()
+    
+    if args.custom_data and args.custom_data.color and type(args.custom_data.color) == "string" then
+        self.custom_data.color = DeserializeColor(args.custom_data.color)
+    end
 
 end
 
@@ -47,16 +51,24 @@ function sLandclaimObject:GetDefaultCustomData()
         custom_data.enabled = true -- If the light is turned on or not
     elseif self.name == "Bed" then
         custom_data.player_spawns = {} -- List of player spawns for this bed
+    elseif self.name == "Sign" then
+        custom_data.color = Color(255, 0, 0)
+        custom_data.text = "Sample Text\nSample Text"
     end
 
     return custom_data
 end
 
 function sLandclaimObject:GetSerializable()
-    local data = self:GetSyncObject()
+    local data = deepcopy(self:GetSyncObject())
     data.id = nil
     data.angle = SerializeAngle(data.angle)
     data.position = SerializePosition(data.position)
+    
+    if data.custom_data.color then
+        data.custom_data.color = SerializeColor(data.custom_data.color)
+    end
+    
     return data
 end
 

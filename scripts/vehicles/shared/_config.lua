@@ -46,11 +46,11 @@ config =
         },
         half_off_chance = 0.002,
         health = {max = 1, min = 0.7},
-        cost_modifier = 1 -- Global cost modifier for all vehicles (integer)
+        cost_modifier = 0.5 -- Global cost modifier for all vehicles (integer)
     },
-    cost_multiplier_on_purchase = 3, -- Cost multiplier after purchasing an unowned vehicle
+    cost_multiplier_on_purchase = 2, -- Cost multiplier after purchasing an unowned vehicle
     max_vehicle_guards = 5, -- Maximum vehicle guards per vehicle
-    player_max_vehicles_base = 3,
+    player_max_vehicles_base = 10,
     player_max_vehicles =  -- Vehicle bonuses per perk
     {
         [7] = 1,
@@ -96,7 +96,7 @@ config =
     templates = -- Use these templates for spawning
     {
         [69] = {["Armed"] = 0.1}, -- winstons amen party boat
-        [88] = {["Default"] = 1}, -- only default mta powerruns without weapons spawn in the wild (use FullyUpgraded for MG and rockets, Armed for MG)
+        [88] = {["Armed"] = 1}, -- only default mta powerruns without weapons spawn in the wild (use FullyUpgraded for MG and rockets, Armed for MG)
         [5] = {["Cab"] = 0.3, ["Fishing"] = 0.3},
         [11] = {["Civil"] = 0.5},
         --[35] = {["Armed"] = 0.01}, -- Garret Traver Z with MG
@@ -115,7 +115,7 @@ config =
         --[48] = {["BuggyMG"] = 0.05}, -- Maddox Machine Gun
         [3] = {--[[["Armed"] = 0.01,]] ["FullyUpgraded"] = 0.2}, -- Armed Rowlinson K22
         --[62] = {["Dome"] = 0.01, ["default"] = 0.03}, -- Adds rockets or MG, Use UnArmed for unarmed vehicle
-        [7] = {["Default"] = 1, --[[["Armed"] = 0.1]]}, -- default (use Armed for MG)
+        [7] = {["Armed"] = 1, --[[["Armed"] = 0.1]]}, -- default (use Armed for MG)
         [81] = {["FullyUpgraded"] = 0.2}
     },
     colors = -- HSV car colors based on the biome they spawn in

@@ -1,3 +1,14 @@
+class 'IdPool'
+
+function IdPool:__init()
+    self.current_id = 0
+end
+
+function IdPool:GetNextId()
+    self.current_id = self.current_id + 1
+    return self.current_id
+end
+
 class 'sLootManager'
 
 function sLootManager:__init()
@@ -10,6 +21,8 @@ function sLootManager:__init()
     self.inactive_lootboxes = {}
 
     self.external_loot = {}
+    
+    self.ground_id_pool = IdPool()
 
     self:LoadFromFile()
     self:GenerateAllLoot()
@@ -24,7 +37,203 @@ function sLootManager:__init()
     Events:Subscribe("Inventory/CreateDropboxExternal", self, self.CreateDropboxExternal)
     Events:Subscribe("inventory/CreateLootboxExternal", self, self.CreateLootboxExternal)
     Events:Subscribe("airdrops/RemoveAirdrop", self, self.RemoveAirdrop)
+    Events:Subscribe("items/LockboxHackComplete", self, self.LockboxHackComplete)
+    Events:Subscribe("items/CreateSecretLockbox", self, self.CreateSecretLockbox)
+    Events:Subscribe("items/RemoveSecret", self, self.RemoveSecret)
+    Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
+    Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
 
+end
+
+function sLootManager:DroneDestroyed(args)
+    
+    if math.random() > 0.25 then return end
+    
+    local ground_id = self.ground_id_pool:GetNextId()
+    
+    Network:Send(args.player, "Inventory/GetGroundDataAtPos", {
+        ground_id = ground_id,
+        position = args.position
+    })
+    
+    local lootbox_tier = Lootbox.Types.DroneUnder30
+    
+    if args.drone_level >= 30 and args.drone_level < 60 then
+        lootbox_tier = Lootbox.Types.Drone30to60
+    elseif args.drone_level >= 60 and args.drone_level < 100 then
+        lootbox_tier = Lootbox.Types.Drone60to100
+    elseif args.drone_level >= 100 then
+        lootbox_tier = Lootbox.Types.Drone100Plus
+    end
+    
+    local sub
+    sub = Network:Subscribe("Inventory/GetGroundDataAtPos" .. tostring(ground_id), function(ground_args, player)
+        Network:Unsubscribe(sub)
+        
+        if player ~= args.player then return end
+        
+        local lootbox = self:CreateLootboxExternal({
+            tier = lootbox_tier,
+            position = ground_args.position,
+            angle = ground_args.angle,
+            remove_time = 1000 * 60 * 10
+        })
+        
+    end)
+    
+end
+
+function sLootManager:PlayerOpenLootbox(args)
+    if args.tier ~= Lootbox.Types.LockboxX and args.tier ~= Lootbox.Types.Lockbox then return end
+    
+    local lockbox = self.external_loot[args.uid]
+    if not lockbox or lockbox.has_been_opened then return end
+    
+    local original_uid = args.original_uid
+    if not original_uid then return end
+    
+    local original_box = self.active_lootboxes[Lootbox.Types.Level4][original_uid]
+    if not original_box then return end
+    
+    original_box.disable_respawn = false
+    original_box:StartRespawnTimer()
+    
+    -- Remove box after 10 minutes
+    Timer.SetTimeout(10 * 60 * 1000, function()
+        self:RemoveSecret(args)
+    end)
+
+end
+
+function sLootManager:RemoveSecret(args)
+    local lockbox = self.external_loot[args.uid]
+    if lockbox then
+        lockbox:Remove()
+        self.external_loot[args.uid] = nil
+    end
+end
+
+function sLootManager:CreateSecretLockbox(args)
+    
+    local tier = args.x and Lootbox.Types.LockboxX or Lootbox.Types.Lockbox
+    
+    local function IsCandidate(lootbox)
+        if lootbox.in_sz then return false end
+        return not lootbox.has_been_opened or not lootbox.active
+    end
+    
+    -- Thread(function()
+        local count = 0
+        
+        local uid_candidates = {}
+
+        for uid, lootbox in pairs(self.active_lootboxes[Lootbox.Types.Level4]) do
+            
+            if IsCandidate(lootbox) then
+                count = count + 1
+                uid_candidates[count] = uid
+                
+                -- if count % 50 == 0 then
+                --     Timer.Sleep(1)
+                -- end
+            end
+        end
+        
+        local uid, lootbox
+        
+        while not uid or not lootbox or lootbox.position:Distance(Vector3(14145, 332, 14342)) < 100 do
+            uid = uid_candidates[math.random(1, #uid_candidates)]
+            if uid then
+                lootbox = self.active_lootboxes[Lootbox.Types.Level4][uid]
+            end
+        end
+        
+        lootbox.disable_respawn = true
+        lootbox:HideBox()
+        
+        local lockbox = self:CreateLootboxExternal({
+            tier = tier,
+            position = lootbox.position,
+            angle = lootbox.angle,
+            locked = true
+        })
+        lockbox.original_uid = lootbox.uid
+        
+        Events:Fire("Inventory/LockboxSpawned", 
+        {
+            uid = lockbox.uid,
+            tier = tier,
+            position = lockbox.position
+        })
+    -- end)
+end
+
+function sLootManager:LockboxHackComplete(args)
+    local lootbox = self.external_loot[args.lootbox_id]
+    if not lootbox then return end
+    
+    if not lootbox.locked then return end
+    
+    lootbox.locked = false
+    
+    lootbox:ForceClose()
+    lootbox:Sync()
+    
+    -- Now spawn some grenades :)
+    if lootbox.tier == Lootbox.Types.Lockbox then
+        
+        local grenade_types = {"HE Grenade", "Toxic Grenade"}
+        local grenade_type = grenade_types[math.random(1, #grenade_types)]
+        
+        Events:Fire("items/CreateGrenade", {
+            position = lootbox.position,
+            grenade_type = grenade_type,
+            fusetime = 4 + math.random() * 4,
+            velocity = Vector3.Up,
+            owner_id = "Lockbox"
+        })
+        
+        Events:Fire("items/CreateGrenade", {
+            position = lootbox.position,
+            grenade_type = "Flares",
+            fusetime = 0,
+            velocity = Vector3.Up,
+            owner_id = "Lockbox"
+        })
+        
+    elseif lootbox.tier == Lootbox.Types.LockboxX then
+        
+        local grenade_types = {"HE Grenade", "Laser Grenade", "Cluster Grenade"}
+        local num_traps = math.random(1, 4)
+        
+        for i = 1, num_traps do
+            local grenade_type = grenade_types[math.random(1, #grenade_types)]
+            Events:Fire("items/CreateGrenade", {
+                position = lootbox.position,
+                grenade_type = grenade_type,
+                fusetime = 4 + math.random() * 4,
+                velocity = Vector3.Up * 3 * math.random(),
+                owner_id = "Lockbox"
+            })
+        end
+        
+        Events:Fire("items/CreateGrenade", {
+            position = lootbox.position,
+            grenade_type = "Toxic Grenade",
+            fusetime = 2,
+            velocity = Vector3.Up,
+            owner_id = "Lockbox"
+        })
+        
+        Events:Fire("items/CreateGrenade", {
+            position = lootbox.position,
+            grenade_type = "Flares",
+            fusetime = 0,
+            velocity = Vector3.Up,
+            owner_id = "Lockbox"
+        })
+        
+    end
 end
 
 function sLootManager:RemoveAirdrop()
@@ -62,7 +271,13 @@ function sLootManager:CreateLootboxExternal(args)
         if args.airdrop_tier then
             for _, stack in pairs(args.contents) do
                 if stack:GetProperty("name") == "Airdrop" then
-                    stack.contents[1].custom_data.level = args.airdrop_tier
+                    local next_tier_chance = 0.3
+                    
+                    if math.random() < next_tier_chance then
+                        stack.contents[1].custom_data.level = math.min(3, args.airdrop_tier + 1)
+                    else
+                        stack.contents[1].custom_data.level = args.airdrop_tier
+                    end
                 end
             end
         elseif args.sam_level then
@@ -83,6 +298,8 @@ function sLootManager:CreateLootboxExternal(args)
             lootbox:Remove()
         end)
     end
+    
+    return lootbox
 end
 
 function sLootManager:CreateDropboxExternal(args)

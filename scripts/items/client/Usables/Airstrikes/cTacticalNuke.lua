@@ -97,6 +97,14 @@ function cTacticalNuke:Strike()
         type = DamageEntity.TacticalNuke,
         attacker_id = self.attacker_id
     })
+    
+    Events:Fire("items/GrenadeTossed", {
+        position = self.position,
+        velocity = Vector3.Zero,
+        type = "Toxic Grenade",
+        fusetime = 0,
+        owner_id = self.attacker_id
+    })
 
 end
 

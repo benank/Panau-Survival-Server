@@ -112,6 +112,13 @@ function cLandclaimManager:SyncSmallLandclaimUpdate(args)
         object.extension:StateUpdated()
     elseif args.type == "access_mode" then
         landclaim.access_mode = args.access_mode
+    elseif args.type == "sign" then
+        local object = landclaim.objects[args.id]
+        if not object then return end
+
+        object.custom_data.color = args.color
+        object.custom_data.text = args.text
+        object.extension:StateUpdated()
     end
     
     Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))

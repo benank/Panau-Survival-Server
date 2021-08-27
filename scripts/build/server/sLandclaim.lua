@@ -376,6 +376,25 @@ function sLandclaim:ActivateDoor(args, player)
     })
 end
 
+function sLandclaim:EditSign(args, player)
+    local object = self.objects[args.id]
+    if not object then return end
+
+    if object.name ~= "Sign" then return end
+    if not self:CanPlayerAccess(player, self.access_mode) then return end
+    
+    object.custom_data.color = args.color
+    object.custom_data.text = tostring(args.text):sub(1, 23)
+    
+    self:UpdateToDB()
+    self:SyncSmallUpdate({
+        type = "sign",
+        id = object.id,
+        color = object.custom_data.color,
+        text = object.custom_data.text
+    })
+end
+
 function sLandclaim:CanPlayerRemoveObject(object, player)
     local steam_id = tostring(player:GetSteamId())
     return steam_id == self.owner_id or object.owner_id == steam_id

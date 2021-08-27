@@ -2,10 +2,10 @@ WorkBenchConfig =
 {
     locations = 
     {
-        ["Southern Workbench"] = {position = Vector3(4755.66, 572.124, 13219.67), angle = Angle()}, -- South
-        ["Eastern Workbench"] = {position = Vector3(11455.59, 444, -516.274), angle = Angle(-math.pi * 0.2, 0, 0)}, -- East
-        ["Northern Workbench"] = {position = Vector3(3018.479, 206.05, -11952.077), angle = Angle(-math.pi * 0.2, -math.pi * 0.01, -math.pi * 0.02)}, -- North
-        ["Western Workbench"] = {position = Vector3(-7116.8, 388.85, 2928.25), angle = Angle(math.pi * 0.4, 0, 0)}, -- West
+        -- ["Southern Workbench"] = {position = Vector3(4755.66, 572.124, 13219.67), angle = Angle()}, -- South
+        -- ["Eastern Workbench"] = {position = Vector3(11455.59, 444, -516.274), angle = Angle(-math.pi * 0.2, 0, 0)}, -- East
+        ["Central Workbench"] = {position = Vector3(2192.39, 648.9, 1365), angle = Angle(0, 0, 0)}, -- North
+        ["Western Workbench"] = {position = Vector3(-15314, 501.761, -2408.28), angle = Angle(math.pi * 0.4, 0, 0)}, -- West
     },
     blacklisted_items = -- Put any blacklisted items in here
     {

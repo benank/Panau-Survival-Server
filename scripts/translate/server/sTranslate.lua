@@ -4,7 +4,7 @@ local encode, decode = json.encode, json.decode
 
 
 -- change here to the host an port you want to contact
-local host, port = "localhost", 1780
+local host, port = "localhost", 1781
 
 -- load namespace
 local socket = require("socket")

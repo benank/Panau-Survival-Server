@@ -116,6 +116,8 @@ end
 function sVehicleStorages:VehicleCreated(args)
     -- Create a new vehicle storage for the vehicle
     
+    if not IsValid(args.vehicle) then return end
+    
     local vehicle_data = args.vehicle:GetValue("VehicleData")
     if not vehicle_data then return end
 
