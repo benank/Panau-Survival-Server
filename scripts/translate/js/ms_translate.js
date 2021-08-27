@@ -117,7 +117,7 @@ function translateText(text, origin_locale, cb) {
     // No translation needed
     if (languages_to_translate_to.length == 0)
     {
-        return return_text;
+        return cb(return_text);
     }
     
     // Translate to all other languages
