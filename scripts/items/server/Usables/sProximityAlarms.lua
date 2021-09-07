@@ -42,6 +42,8 @@ end
 
 function sProxAlarms:ItemExplode(args)
 
+    if args.in_landclaim then return end
+    
     for id, alarm in pairs(self.alarms) do
         if alarm.position:Distance(args.position) < args.radius then
             self:DestroyProx({id = id}, args.player)
