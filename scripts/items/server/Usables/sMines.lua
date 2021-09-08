@@ -71,6 +71,8 @@ function sMines:ClearBadMines()
 end
 
 function sMines:ItemExplode(args)
+    
+    if args.in_landclaim then return end
 
     local cell = GetCell(args.position, ItemsConfig.usables.Mine.cell_size)
     local adjacent_cells = GetAdjacentCells(cell)

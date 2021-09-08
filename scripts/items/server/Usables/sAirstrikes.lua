@@ -204,13 +204,14 @@ function sAirStrikes:PlaceAirstrike(args, player)
         local landclaim = FindFirstActiveLandclaimContainingPosition(args.position, airstrike_item_data.radius)
         
         -- Trigger other explosives if not in a landclaim
-        if IsValid(player) and not landclaim then
+        if IsValid(player) then
             Events:Fire("items/ItemExplode", {
                 position = args.position,
                 radius = airstrike_item_data.radius,
                 player = player,
                 owner_id = tostring(player:GetSteamId()),
-                type = airstrike_item_data.damage_entity
+                type = airstrike_item_data.damage_entity,
+                in_landclaim = landclaim ~= nil
             })
         end
 
