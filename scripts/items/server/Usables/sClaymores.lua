@@ -92,6 +92,8 @@ end
 
 function sClaymores:ItemExplode(args)
 
+    if args.in_landclaim then return end
+    
     local cell = GetCell(args.position, ItemsConfig.usables.Claymore.cell_size)
     local adjacent_cells = GetAdjacentCells(cell)
 
