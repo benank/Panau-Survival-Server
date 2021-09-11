@@ -736,7 +736,7 @@ Items =
     {
         name = "Helipad",
         category = "Survival",
-        stacklimit = 1,
+        stacklimit = 3,
         max_durability = 800,
         can_use = true,
         durable = true
