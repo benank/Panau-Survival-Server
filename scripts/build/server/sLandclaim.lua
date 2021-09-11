@@ -523,12 +523,12 @@ function sLandclaim:Expire()
     
     Events:Fire("Discord", {
         channel = "Build",
-        content = string.format("Landclaim expired (%s)", self:ToLogString())
+        content = string.format("Landclaim expired (%s) %s", self:ToLogString(), WorldToMapString(self.position))
     })
 
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = self.owner_id,
-        message = string.format("Your landclaim %s expired on %s.", self.name, formatted_date),
+        message = string.format("Your landclaim %s expired on %s %s", self.name, formatted_date, WorldToMapString(self.position)),
         color = Color(200, 0, 0)
     })
 end
