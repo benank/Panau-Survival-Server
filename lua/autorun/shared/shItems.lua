@@ -809,7 +809,7 @@ Items =
     {
         name = "Halloween Lootbag",
         category = "Survival",
-        stacklimit = 1,
+        stacklimit = 10,
         can_use = true
     },
     {
