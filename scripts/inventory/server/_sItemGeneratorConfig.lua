@@ -3,17 +3,17 @@ LootItems =
     -- {Item,Rarity,MinQuantity,MaxQuantity}
     [Lootbox.Types.Level1] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
-            }
-        },
+        -- ["EVENT"] = 
+        -- {
+        --     rarity = 0.05,
+        --     items = 
+        --     {
+        --         ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
+        --     }
+        -- },
         ["AMMO"] = 
         {
-            rarity = 0.35,
+            rarity = 0.40,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 10, max = 20},
@@ -97,17 +97,17 @@ LootItems =
     },
     [Lootbox.Types.Level2] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
-            }
-        },
+        -- ["EVENT"] = 
+        -- {
+        --     rarity = 0.05,
+        --     items = 
+        --     {
+        --         ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
+        --     }
+        -- },
         ["AMMO"] = 
         {
-            rarity = 0.45,
+            rarity = 0.50,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.05, min = 15, max = 30},
@@ -213,14 +213,14 @@ LootItems =
     },
     [Lootbox.Types.Level3] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
-            }
-        },
+        -- ["EVENT"] = 
+        -- {
+        --     rarity = 0.05,
+        --     items = 
+        --     {
+        --         ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
+        --     }
+        -- },
         ["AIRSTRIKE"] = 
         {
             rarity = 0.015,
@@ -231,7 +231,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.4,
+            rarity = 0.45,
             items = 
             {
                 ["Sawn-Off Ammo"] = {rarity = 0.1, min = 6, max = 10},
@@ -328,14 +328,14 @@ LootItems =
     },
     [Lootbox.Types.Level4] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
-            }
-        },
+        -- ["EVENT"] = 
+        -- {
+        --     rarity = 0.05,
+        --     items = 
+        --     {
+        --         ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
+        --     }
+        -- },
         ["AIRSTRIKE"] = 
         {
             rarity = 0.037,
@@ -348,7 +348,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.459,
+            rarity = 0.509,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 5, max = 10},
