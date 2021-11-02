@@ -18,6 +18,7 @@ function sSurvivalManager:__init()
 
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Network:Subscribe("Survival/UpdateClimateZone", self, self.UpdateClimateZone)
+    Network:Subscribe("Survival/UpdateOxygen", self, self.UpdateOxygen)
     Events:Subscribe("PlayerSpawn", self, self.PlayerSpawn)
     Events:Subscribe("Inventory/UseItem", self, self.UseItem)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
@@ -130,6 +131,10 @@ function sSurvivalManager:PlayerSpawn(args)
 
         self:SyncToPlayer(args.player)
         self:UpdateDB(args.player)
+        
+        args.player:SetValue("Oxygen", 1)
+        self:UpdateOxygenDB(args.player)
+        self:SyncOxygenToPlayer(args.player)
 
     end
 
@@ -270,7 +275,39 @@ function sSurvivalManager:ClientModuleLoad(args)
     self:CheckForDyingPlayer(player)
 
     player:SetValue("SurvivalLastUpdate", Server:GetElapsedSeconds())
+    
+    self:LoadOxygen(player)
 
+end
+
+function sSurvivalManager:LoadOxygen(player)
+    
+    local steamID = tostring(player:GetSteamId())
+    
+	local query = SQL:Query("SELECT * FROM oxygen WHERE steamID = (?) LIMIT 1")
+    query:Bind(1, steamID)
+    
+    local result = query:Execute()
+    
+    if #result > 0 then -- if already in DB
+        
+        local oxygen = tonumber(result[1].oxygen)
+
+        -- Don't set health here because it's too early and won't work
+        player:SetValue("Oxygen", oxygen)
+
+    else
+        
+		local command = SQL:Command("INSERT INTO oxygen (steamID, oxygen) VALUES (?, ?)")
+		command:Bind(1, steamID)
+		command:Bind(2, 1)
+        command:Execute()
+
+        player:SetValue("Oxygen", 1)
+        
+    end
+    
+    self:SyncOxygenToPlayer(player)
 end
 
 function sSurvivalManager:UpdateDB(player)
@@ -295,6 +332,46 @@ function sSurvivalManager:UpdateDB(player)
     
 end
 
+function sSurvivalManager:UpdateOxygen(args, player) 
+    if not args.oxygen then return end
+    
+    args.oxygen = math.clamp(args.oxygen, 0, 1)
+    
+    if args.oxygen == 0 then
+        player:Damage(9999, DamageEntity.Oxygen)
+    end
+    
+    player:SetValue("Oxygen", args.oxygen)
+    
+    self:UpdateOxygenDB(player)
+    
+end
+
+function sSurvivalManager:UpdateOxygenDB(player)
+
+    if not IsValid(player) then return end
+
+    local steamID = tostring(player:GetSteamId())
+    local oxygen = player:GetValue("Oxygen")
+
+    if not oxygen then return end
+
+    local update = SQL:Command("UPDATE oxygen SET oxygen = ? WHERE steamID = (?)")
+	update:Bind(1, oxygen)
+	update:Bind(2, steamID)
+    update:Execute()
+    
+end
+
+function sSurvivalManager:SyncOxygenToPlayer(player)
+
+    if not IsValid(player) then return end
+    if not player:GetValue("Oxygen") then return end
+
+    Network:Send(player, "Survival/UpdateOxygen", {oxygen = player:GetValue("Oxygen")})
+
+end
+
 function sSurvivalManager:SyncToPlayer(player)
 
     if not IsValid(player) then return end
@@ -305,5 +382,6 @@ function sSurvivalManager:SyncToPlayer(player)
 end
 
 SQL:Execute("CREATE TABLE IF NOT EXISTS survival (steamID VARCHAR UNIQUE, health REAL, hunger REAL, thirst REAL, radiation REAL)")
+SQL:Execute("CREATE TABLE IF NOT EXISTS oxygen (steamID VARCHAR UNIQUE, oxygen REAL)")
 
 SurvivalManager = sSurvivalManager()
