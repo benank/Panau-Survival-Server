@@ -1,4 +1,4 @@
-local oxygen = var(50)
+local oxygen = var(tostring(50))
 local oxygen_per_sec_above = var(5)
 local oxygen_per_sec_below = var(1)
 
@@ -12,7 +12,7 @@ function GetOxygen()
 end
 
 Network:Subscribe("Survival/UpdateOxygen", function(args)
-    oxygen:set(args.oxygen * 100)
+    oxygen:set(tostring(args.oxygen * 100))
 end)
 
 
