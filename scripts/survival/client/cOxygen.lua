@@ -1,24 +1,24 @@
-local oxygen = var(0.5)
-local oxygen_per_sec_above = var(0.05)
-local oxygen_per_sec_below = var(-0.01)
+local oxygen = var(50)
+local oxygen_per_sec_above = var(5)
+local oxygen_per_sec_below = var(1)
 
 function GetOxygen()
     local o2 = oxygen:get()
     if o2 then
         return tonumber(o2)
     else
-        return 0.5
+        return 50
     end
 end
 
 Network:Subscribe("Survival/UpdateOxygen", function(args)
-    oxygen:set(args.oxygen)
+    oxygen:set(args.oxygen * 100)
 end)
 
 
 Events:Subscribe("Render", function(args)
     if LocalPlayer:GetHealth() > 0 and not LocalPlayer:GetValue("Loading") then
-        LocalPlayer:SetOxygen(GetOxygen())
+        LocalPlayer:SetOxygen(GetOxygen() / 100)
     else
         LocalPlayer:SetOxygen(1)
     end
@@ -31,12 +31,12 @@ Events:Subscribe("SecondTick", function()
     local current_oxygen = GetOxygen()
     
     if above_water then
-        oxygen:set(math.min(1, current_oxygen + tonumber(oxygen_per_sec_above:get())))
+        oxygen:set(math.min(100, current_oxygen + tonumber(oxygen_per_sec_above:get())))
     else
-        oxygen:set(math.min(1, current_oxygen + tonumber(oxygen_per_sec_below:get())))
+        oxygen:set(math.max(0, current_oxygen - tonumber(oxygen_per_sec_below:get())))
     end
     
     if current_oxygen ~= GetOxygen() then
-        Network:Send("Survival/UpdateOxygen", {oxygen = GetOxygen()})
+        Network:Send("Survival/UpdateOxygen", {oxygen = GetOxygen() / 100})
     end
 end)
