@@ -9,6 +9,14 @@ function sSecret:__init()
         [22] = 2500
     }
     
+    self.secret_random_spawn_chance = 0.1 -- % per day to spawn a secret randomly
+    self.max_secrets_for_random_spawn = 3
+    self.random_secret_x_chance = 0.05
+    
+    local interval = Timer.SetInterval(1000 * 60 * 60 * 9, function()
+        self:TrySpawnRandomSecret()
+    end)
+
     self.secret_timeout = 1000 * 60 * 60 * 24 * 3
     
     Network:Subscribe("items/CompleteItemUsage", self, self.UseItem)
@@ -16,6 +24,14 @@ function sSecret:__init()
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
 
+end
+
+function sSecret:TrySpawnRandomSecret()
+    if math.random() < self.secret_random_spawn_chance and count_table(self.active_secrets) < self.max_secrets_for_random_spawn then
+        Events:Fire("items/CreateSecretLockbox", {
+            x = math.random() < self.random_secret_x_chance
+        })
+    end
 end
 
 function sSecret:PlayerOpenLootbox(args)
@@ -37,6 +53,11 @@ function sSecret:GetApproximatePosition(position, tier)
 end
 
 function sSecret:LockboxSpawned(args)
+    Events:Fire("Discord", {
+        channel = "Item Usage",
+        content = string.format("Secret spawned %s", WorldToMapString(args.position))
+    })
+    
     local approx_position = self:GetApproximatePosition(args.position, args.tier)
     
     self.active_secrets[args.uid] = 
