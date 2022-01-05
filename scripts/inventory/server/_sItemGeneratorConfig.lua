@@ -394,9 +394,9 @@ LootItems =
                 ["Chair"] = {rarity = 0.015, min = 1, max = 1},
                 ["Bed"] = {rarity = 0.015, min = 1, max = 1},
                 ["Helipad"] = {rarity = 0.005, min = 1, max = 1},
-                ["LandClaim"] = {rarity = 0.02, min = 1, max = 1},
+                ["LandClaim"] = {rarity = 0.025, min = 1, max = 1},
                 ["Locked Stash"] = {rarity = 0.015, min = 1, max = 1},
-                ["Cone"] = {rarity = 0.02, min = 1, max = 1},
+                ["Cone"] = {rarity = 0.015, min = 1, max = 1},
                 ["Stop Sign"] = {rarity = 0.02, min = 1, max = 1},
                 ["Light"] = {rarity = 0.015, min = 1, max = 1},
                 -- ["Metal Railing"] = {rarity = 0.015, min = 1, max = 1},
@@ -808,7 +808,7 @@ LootItems =
         },
         ["BATTERY"] = 
         {
-            rarity = 0.5,
+            rarity = 0.495,
             items = 
             {
                 ["Battery"] = {rarity = 1, min_dura = 1, max_dura = 2, min = 2, max = 3},
@@ -825,7 +825,7 @@ LootItems =
         },
         ["KEY"] = 
         {
-            rarity = 0.01,
+            rarity = 0.0105,
             items = 
             {
                 ["SAM Key"] = {rarity = 1, min = 1, max = 1},
