@@ -542,7 +542,7 @@ function Nametags:Render()
 
     local time = Client:GetElapsedSeconds()
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 1000)
-    if ray.entity and ray.entity.__type == "ClientStaticObject" and ray.entity:GetModel() == "lave.v023_customcar.eez/v023-base.lod" then
+    if ray.entity and ray.entity.__type == "ClientStaticObject" and (ray.entity:GetModel() == "lave.v023_customcar.eez/v023-base.lod" or ray.entity:GetModel() == "f3m06.afterski.nlz/key020_01-t.lod") then
         self.recent_drones[ray.entity:GetId()] = {time = time, entity = ray.entity}
     elseif ray.entity and ray.entity.__type == "ClientStaticObject" then
         local sam = cSAMContainer:CSOIdToSAM(ray.entity:GetId())
