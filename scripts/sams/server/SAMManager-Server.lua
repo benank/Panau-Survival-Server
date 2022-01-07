@@ -137,10 +137,12 @@ function SAMManager:PostTick()
 					
 					if IsValid(player) then
 						local player_pos = player:GetPosition()
+						local player_exp = player:GetValue("Exp")
 						
 						if player:InVehicle() and 
 						player:GetPosition().y > 220 and 
 						not player:GetValue("InSafezone") and
+						player_exp and player_exp.level > 10 and
 						not player:GetValue("Invisible") then
 							local player_vehicle = player:GetVehicle()
 							local speed = math.abs(math.floor(player_vehicle:GetLinearVelocity():Length()))
