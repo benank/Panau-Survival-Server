@@ -134,6 +134,10 @@ Network:Subscribe("items/ParaDecreaseDura", function(args, player)
             perk_mod = math.min(perk_mod, dura_mod)
         end
     end
+    
+    if ItemsConfig.equippables[parachute_type] == nil then
+        return
+    end
 
     item.durability = item.durability - change * math.ceil(ItemsConfig.equippables[parachute_type].dura_per_use_sec * perk_mod)
     Inventory.ModifyDurability({
