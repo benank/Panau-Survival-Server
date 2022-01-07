@@ -233,7 +233,9 @@ function EquippableRocketGrapple:Render(args)
 
     local cam_pos = Camera:GetPosition()
     if IsNaN(cam_pos.x) or IsNaN(cam_pos.y) or IsNaN(cam_pos.z) then return end
-	local ray = Physics:Raycast(cam_pos, Camera:GetAngle() * Vector3.Forward, 2, self.range)
+    local direction = Camera:GetAngle() * Vector3.Forward
+    if IsNaN(direction.x) or IsNaN(direction.y) or IsNaN(direction.z) then return end
+	local ray = Physics:Raycast(cam_pos, direction, 2, self.range)
 
 	self:RenderGrappleDistance(ray)
 
