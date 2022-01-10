@@ -23,7 +23,9 @@ function cLandclaimObjectHealthDisplay:Render(args)
     if LocalPlayer:InVehicle() then return end
 
     -- Get current object that we are looking at
-    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, self.range)
+    local angle = Camera:GetAngle() * Vector3.Forward
+    if IsNaN(angle) then return end
+    local ray = Physics:Raycast(Camera:GetPosition(), angle, 0, self.range)
     local landclaim_object = self:GetLandclaimObjectFromRaycastEntity(ray.entity)
     if not landclaim_object then return end
 
