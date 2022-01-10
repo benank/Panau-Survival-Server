@@ -121,7 +121,8 @@ function sWorkBench:GetCombineTime(total_durability_percent, player)
         end
     end
 
-    return math.min(240 * perk_mod, math.ceil(max_dura_percent * max_dura_percent * 4.8 / total_durability_percent * num_items * perk_mod))
+    local combine_time = math.min(240 * perk_mod, math.ceil(max_dura_percent * max_dura_percent * 4.8 / total_durability_percent * num_items * perk_mod))
+    return math.ceil(combine_time / 2)
 
 end
 
