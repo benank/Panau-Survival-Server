@@ -24,10 +24,8 @@ DroneBodyObjects =
 {
     [DroneBodyPiece.Base] = 
     {
-        model = "f3m06.afterski.nlz/key020_01-t.lod",
-        -- model = "lave.v023_customcar.eez/v023-base.lod",
-        -- collision = "lave.v023_customcar.eez/v023_lod1-base_col.pfx"
-        collision = "f3m06.afterski.nlz/key020_01_lod1-t_col.pfx"
+        model = "lave.v023_customcar.eez/v023-base.lod",
+        collision = "lave.v023_customcar.eez/v023_lod1-base_col.pfx"
     },
     [DroneBodyPiece.LeftGun] = 
     {
