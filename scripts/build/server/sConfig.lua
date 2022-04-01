@@ -1,6 +1,6 @@
 Config = 
 {
-    base_landclaim_lifetime = 30, -- 30 days lifetime for a landclaim once placed
+    base_landclaim_lifetime = 60, -- 60 days lifetime for a landclaim once placed
     landclaim_name_max_length = 20,
     player_base_landclaims = 10, -- 2 initial max landclaims
     player_max_landclaims = -- Additional max landclaims per perk
