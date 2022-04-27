@@ -34,3 +34,5 @@ bans.txt
 kicks.txt
 libstdc++.so.6
 *.db
+node_modules/
+.env
