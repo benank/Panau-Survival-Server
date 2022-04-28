@@ -30,7 +30,34 @@ function cLootManager:__init()
     if IsAdmin(LocalPlayer) then
         self.stash_render = Events:Subscribe("Render", self, self.StashRender)
     end
+    
+    self.loot_radar_tiers = {
+        [Lootbox.Types.Level1] = true, 
+        [Lootbox.Types.Level2] = true, 
+        [Lootbox.Types.Level3] = true, 
+        [Lootbox.Types.DroneUnder30] = true
+    }
+    self.max_loot_radar_level = var(5)
+    Events:Subscribe("PlayerExpUpdated", self, self.PlayerExpUpdated)
+    self:PlayerExpUpdated()
 
+end
+
+function cLootManager:PlayerExpUpdated(_exp)
+    local exp = _exp or LocalPlayer:GetValue("Exp")
+    if not exp then return end
+    
+    if exp.level >= tonumber(self.max_loot_radar_level:get()) then
+        if self.loot_radar_render then
+            self.loot_radar_render = Events:Unsubscribe(self.loot_radar_render)
+        end
+        return
+    end
+    
+    -- Player is low enough level to get loot radar
+    if not self.loot_radar_render then
+        self.loot_radar_render = Events:Subscribe("Render", self, self.RenderLootRadar)
+    end
 end
 
 function cLootManager:GetGroundDataAtPos(args)
@@ -59,6 +86,46 @@ function cLootManager:LocalPlayerChat(args)
         end
     end
 
+end
+
+function cLootManager:RenderLootRadar(args)
+    for x, data in pairs(self.loot) do
+        for y, data in pairs(self.loot[x]) do
+            for id, box in pairs(self.loot[x][y]) do
+                if self.loot_radar_tiers[box.tier] then
+                    local pos, on_screen = Render:WorldToScreen(box.position)
+                    if on_screen then
+                        local distance = math.abs(LocalPlayer:GetPosition():Distance(box.position))
+                        local alpha = math.max(0, 1 - distance / 50) * 255
+                        if distance < 5 then alpha = 0 end
+                        local lootbox_color = Color(Lootbox.LootRadarColor.r, Lootbox.LootRadarColor.g, Lootbox.LootRadarColor.b, alpha)
+                        Render:FillCircle(pos, self.look_at_circle_size, Color(0, 0, 0, alpha))
+                        Render:FillCircle(pos, self.look_at_circle_size_inner, lootbox_color)
+                    end
+                end
+            end
+        end
+    end
+    
+    self:RenderNearbyUnownedVehicles()
+end
+
+function cLootManager:RenderNearbyUnownedVehicles()
+    for vehicle in Client:GetVehicles() do
+        local vehicle_pos = vehicle:GetPosition()
+        local vehicle_data = vehicle:GetValue("VehicleData")
+        if not vehicle_data or not vehicle_data.owner_steamid then
+            local pos, on_screen = Render:WorldToScreen(vehicle_pos)
+            if on_screen then
+                local distance = math.abs(LocalPlayer:GetPosition():Distance(vehicle_pos))
+                local alpha = math.max(0, 1 - distance / 150) * 255
+                if distance < 5 then alpha = 0 end
+                local lootbox_color = Color(219, 32, 135, alpha)
+                Render:FillCircle(pos, self.look_at_circle_size, Color(0, 0, 0, alpha))
+                Render:FillCircle(pos, self.look_at_circle_size_inner, lootbox_color)
+            end
+        end
+    end
 end
 
 function cLootManager:StashRender(args)

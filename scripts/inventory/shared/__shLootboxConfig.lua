@@ -373,6 +373,7 @@ Lootbox.Models =
 }
 
 Lootbox.LookAtColor = Color(56, 198, 43)
+Lootbox.LootRadarColor = Color(247, 243, 12)
 
 Lootbox.Distances = 
 {
