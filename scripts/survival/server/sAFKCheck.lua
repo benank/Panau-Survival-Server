@@ -13,7 +13,9 @@ Events:Subscribe("MinuteTick", function()
             
             if timeElapsed > 120 then
                 p:SetValue("AFKTimerCount", p:GetValue("AFKTimerCount") + 1)
-            elseif timeElapsed > 60 then
+            end
+            
+            if timeElapsed > 60 then
                 Network:Send(p, "AFKCheck")
             end
             
