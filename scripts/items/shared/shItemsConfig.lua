@@ -40,7 +40,7 @@ ItemsConfig =
         ["Glass"] = {model = "km02.towercomplex.nlz/key013_01-g2.lod", offset = Vector3(0, -0.8, -4.1)},
         ["Hedgehog"] = {model = "31x14.nlz/go041-d.lod", disable_walls = true},
         ["Cone"] = {model = "35x12.nlz/go040-b.lod", disable_walls = true},
-        ["Jump Pad"] = {model = "05x41.nlz/go224-h.lod", disable_walls = true},
+        ["Jump Pad"] = {model = "05x41.nlz/go224-h.lod", disable_ceil = true},
         ["Christmas Tree"] = {model = "vegetation_0.blz/City_B10_roofbush-Whole.lod", disable_walls = true},
         ["Sign"] = {model = "general.blz/gd_wood01-c.lod", angle = Angle(0, 0, math.pi / 2), offset = Vector3(1.5, 0, 0)},
         
