@@ -298,6 +298,8 @@ function sDrone:TryToFireAirstrike(position)
     
     if self.airstrike_timer:GetSeconds() < 15 then return end
     
+    if self.level < 15 then return end
+    
     if math.random() < self.config.airstrike then
         Events:Fire("drones/CreateAirstrike", {
             position = position
