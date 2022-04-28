@@ -277,10 +277,11 @@ LootItems =
             rarity = 0.12,
             items = 
             {
-                ["Toxic Grenade"] = {rarity = 0.25, min = 1, max = 3},
+                ["Toxic Grenade"] = {rarity = 0.15, min = 1, max = 3},
                 ["Mine"] = {rarity = 0.25, min = 1, max = 3},
                 ["Claymore"] = {rarity = 0.25, min = 1, max = 2},
-                ["Molotov"] = {rarity = 0.25, min = 1, max = 3},
+                ["Molotov"] = {rarity = 0.15, min = 1, max = 3},
+                ["Impulse Grenade"] = {rarity = 0.2, min = 1, max = 3},
             }
         },
         ["GEAR"] = 
@@ -408,8 +409,9 @@ LootItems =
             rarity = 0.177,
             items = 
             {
-                ["Mine"] = {rarity = 0.308, min = 1, max = 3},
-                ["Claymore"] = {rarity = 0.272, min = 1, max = 2},
+                ["Mine"] = {rarity = 0.208, min = 1, max = 3},
+                ["Claymore"] = {rarity = 0.172, min = 1, max = 2},
+                ["Impulse Grenade"] = {rarity = 0.2, min = 3, max = 5},
                 ["Cluster Grenade"] = {rarity = 0.25, min = 2, max = 4},
                 ["C4"] = {rarity = 0.17, min = 1, max = 1},
             }

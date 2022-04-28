@@ -112,6 +112,7 @@ ItemsConfig =
             ["Laser Grenade"] = DamageEntity.LaserGrenade,
             ["Snowball"] = DamageEntity.Snowball,
             ["Cluster Grenade"] = DamageEntity.ClusterGrenade,
+            ["Impulse Grenade"] = DamageEntity.None,
         },
         costumes = 
         {

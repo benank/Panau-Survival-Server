@@ -1099,6 +1099,13 @@ Items =
         max_durability = 1000,
         equip_type = "lockon"
     },
+    {
+        name = "Impulse Grenade",
+        category = "Explosives",
+        stacklimit = 15,
+        can_equip = true,
+        equip_type = "held"
+    },
 }
 
 Items_ammo_types = 

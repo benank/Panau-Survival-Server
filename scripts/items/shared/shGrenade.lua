@@ -197,6 +197,67 @@ Grenade.Types = {
         ["angle"] = Angle(0, math.pi / 2, 0),
         ["effect_time"] = 30 -- default effect time for this effect is 15
 	},
+	["Impulse Grenade"] = {
+		["effect_id"] = 135,
+        ["trail_effect_id"] = 61,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
+		["restitution"] = 0.3,
+        ["radius"] = 15,
+        ["custom_func"] = function(grenade)
+            
+            y_velo = 100
+            
+            local local_pos = LocalPlayer:GetBonePosition("ragdoll_Spine")
+            if local_pos:Distance(grenade.position) < grenade.type.radius and not LocalPlayer:GetValue("InSafezone") then
+                velo = (local_pos - grenade.position):Normalized() * y_velo + Vector3.Up * 3
+                LocalPlayer:SetLinearVelocity(velo)
+                        
+                LocalPlayer:SetOutlineEnabled(true)
+                LocalPlayer:SetOutlineColor(Color(0, 200, 255, 200))
+        
+                local velo_interval
+                velo_interval = Timer.SetInterval(1, function()
+                    LocalPlayer:SetLinearVelocity(velo)
+                end)
+                
+                local interval
+                interval = Timer.SetInterval(1, function()
+                    LocalPlayer:SetBaseState(AnimationState.SFall)
+                    local speed = LocalPlayer:GetLinearVelocity():Length()
+                    if speed < 15 then
+                        LocalPlayer:SetOutlineEnabled(false)
+                        Timer.Clear(interval)
+                    end
+                end)
+                    
+                Timer.SetTimeout(1000, function()
+                    Timer.Clear(velo_interval)
+                end)
+                
+            end
+
+            ClientParticleSystem.Play(AssetLocation.Game, {
+                position = grenade.position,
+                timeout = grenade.type.effect_time,
+                angle = Angle(),
+                path = "fx_f2m06_emptoweractive_05.psmb"
+            })
+            
+            ClientLight.Play({
+                position = grenade.position + Vector3(0, 10, 0),
+                angle = Angle(),
+                color = Color(0, 200, 255, 200),
+                multiplier = 3,
+                radius = 25,
+                timeout = grenade.type.effect_time
+            })
+        end,
+        ["model"] = "general.blz/wea33-wea33.lod",
+        ["offset"] = Vector3(-0.32, 0, 0.03),
+        ["angle"] = Angle(0, math.pi / 2, 0),
+        ["effect_time"] = 1
+	},
 	["Flares"] = {
         ["effect_id"] = 266,
         ["effect_angle"] = Angle(0, -math.pi / 12, 0),
