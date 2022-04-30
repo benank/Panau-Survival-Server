@@ -19,6 +19,8 @@ function Nametags:__init()
 
     self.size               = TextSize.Default -- Font size
     self.recent_drones      = {}
+    
+    self.static_npcs = {}
 
     self:CreateSettings()
 
@@ -29,6 +31,14 @@ function Nametags:__init()
     Events:Subscribe( "ModuleLoad", self, self.ModulesLoad )
     Events:Subscribe( "ModulesLoad", self, self.ModulesLoad )
     Events:Subscribe( "ModuleUnload", self, self.ModuleUnload )
+    Events:Subscribe("SecondTick", self, self.SecondTick)
+end
+
+function Nametags:SecondTick()
+    local static_npcs = SharedObject.GetByName("StaticNPCs")
+    if static_npcs then
+        self.static_npcs = static_npcs:GetValues()["StaticNPCs"]
+    end
 end
 
 function Nametags:UpdateLimits()
@@ -316,13 +326,20 @@ end
 function Nametags:DrawDrone(args)
     local drone = args.drone
     local pos = args.position + Vector3.Up * 0.5
-    self:DrawFullTag( pos, "Drone", 5, self:GetDroneNameColor(args.drone.level), drone.health / drone.max_health, nil, drone.level )
+    self:DrawFullTag( pos, "Drone", 5, self:GetEnemyNameColor(args.drone.level), drone.health / drone.max_health, nil, drone.level )
+end
+
+function Nametags:DrawNPC(args)
+    local npc_data = args.npc_data
+    local pos       = args.actor:GetBonePosition( "ragdoll_Head" ) + 
+                      (args.actor:GetAngle() * Vector3( 0, 0.25, 0 ))
+    self:DrawFullTag( pos, npc_data.name, 5, self:GetEnemyNameColor(npc_data.level), npc_data.health / npc_data.max_health, npc_data.nametag, npc_data.level )
 end
 
 function Nametags:DrawSAM(sam)
     local pos = sam.position + Vector3.Up * 2
     local name = "SAM"
-    local name_color = self:GetDroneNameColor(sam.level)
+    local name_color = self:GetEnemyNameColor(sam.level)
     local steam_id = tostring(LocalPlayer:GetSteamId())
     local friendly = AreFriends(LocalPlayer, sam.hacked_owner) or steam_id == sam.hacked_owner
     
@@ -337,7 +354,7 @@ function Nametags:DrawSAM(sam)
     self:DrawFullTag( pos, name, 5, name_color, sam.health / sam.config.MaxHealth, nil, sam.level )
 end
 
-function Nametags:GetDroneNameColor(drone_level)
+function Nametags:GetEnemyNameColor(drone_level)
 
     local LevelCutoffs =
     {
@@ -469,6 +486,28 @@ function Nametags:ModuleUnload()
     --     } )
 end
 
+function Nametags:DrawNPCs(local_pos)
+    local sorted_actors = {}
+
+    for _, npc_data in pairs(self.static_npcs) do
+        local actor = ClientActor.GetById(npc_data.client_actor_id)
+        if IsValid(actor) then
+            local pos = actor:GetPosition()
+            table.insert( sorted_actors, { actor = actor, npc_data = npc_data, dist = local_pos:Distance(pos) } )
+        end
+    end
+
+    -- Sort by distance, descending
+    table.sort( sorted_actors, 
+        function( a, b ) 
+            return (a.dist > b.dist) 
+        end )
+
+    for _, actor_data in ipairs( sorted_actors ) do
+        self:DrawNPC( actor_data )
+    end 
+end
+
 function Nametags:Render()
     -- If we're not supposed to draw now, then take us out
     if not self.enabled or Game:GetState() ~= GUIState.Game or LocalPlayer:GetValue("MapOpen") then
@@ -517,6 +556,8 @@ function Nametags:Render()
             end
         end
     end
+    
+    self:DrawNPCs(local_pos)
 
     if self.player_enabled then
         local sorted_players = {}
