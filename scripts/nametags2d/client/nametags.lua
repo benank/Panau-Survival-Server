@@ -451,22 +451,22 @@ function Nametags:WindowClosed( args )
 end
 
 function Nametags:ModulesLoad()
-    Events:Fire( "HelpAddItem",
-        {
-            name = "Nametags",
-            text = 
-                "The nametags are the names you see on players and vehicles." ..
-                "\n\n" ..
-                "To configure them, type /tags in chat to bring " ..
-                "up a window in which you can choose your own settings."
-        } )
+    -- Events:Fire( "HelpAddItem",
+    --     {
+    --         name = "Nametags",
+    --         text = 
+    --             "The nametags are the names you see on players and vehicles." ..
+    --             "\n\n" ..
+    --             "To configure them, type /tags in chat to bring " ..
+    --             "up a window in which you can choose your own settings."
+    --     } )
 end
 
 function Nametags:ModuleUnload()
-    Events:Fire( "HelpRemoveItem",
-        {
-            name = "Nametags"
-        } )
+    -- Events:Fire( "HelpRemoveItem",
+    --     {
+    --         name = "Nametags"
+    --     } )
 end
 
 function Nametags:Render()

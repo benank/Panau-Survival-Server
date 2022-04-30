@@ -329,31 +329,31 @@ end
 ---------- INFO ----------
 
 function FreeCam:ModulesLoad()
-    Events:Fire("HelpAddItem",
-        {
-            name = "FreeCam",
-            text = 
-            	"FreeCam v0.3.1\n\n"..
-                "A free/spectator cam.\n\n"..
-                "-> Press V to activate/deactive\n"..
-                "-> Use SHIFT to speed up, CTRL to slow down or Increase/Decrease trust on gamepad\n\n"..
-                "Making trajectories (while in FreeCam mode):\n"..
-                "- numpad1/gamepad X: reset trajectory\n"..
-                "- numpad2/left mouse click/gamepad A: add waypoint to current trajectory\n"..
-                "- numpad3/gamepad B: start/stop auto follow trajectory mode (starting from the first waypoint)\n"..
-                "- numpad4: start/stop auto follow trajectory mode (starting from current camera position)\n"..
-                "- P: pause the auto follow trajectory mode\n\n"..
-                "Commands for saving trajectories and spawnpoints (white listed players only):\n"..
-				"-> Type /freecam <save/load/delete> trajectory <trajectory_name> to manage trajectories\n"..
-				"-> Type /freecam save position <position_name> to save positions"
-        })
+    -- Events:Fire("HelpAddItem",
+    --     {
+    --         name = "FreeCam",
+    --         text = 
+    --         	"FreeCam v0.3.1\n\n"..
+    --             "A free/spectator cam.\n\n"..
+    --             "-> Press V to activate/deactive\n"..
+    --             "-> Use SHIFT to speed up, CTRL to slow down or Increase/Decrease trust on gamepad\n\n"..
+    --             "Making trajectories (while in FreeCam mode):\n"..
+    --             "- numpad1/gamepad X: reset trajectory\n"..
+    --             "- numpad2/left mouse click/gamepad A: add waypoint to current trajectory\n"..
+    --             "- numpad3/gamepad B: start/stop auto follow trajectory mode (starting from the first waypoint)\n"..
+    --             "- numpad4: start/stop auto follow trajectory mode (starting from current camera position)\n"..
+    --             "- P: pause the auto follow trajectory mode\n\n"..
+    --             "Commands for saving trajectories and spawnpoints (white listed players only):\n"..
+	-- 			"-> Type /freecam <save/load/delete> trajectory <trajectory_name> to manage trajectories\n"..
+	-- 			"-> Type /freecam save position <position_name> to save positions"
+    --     })
 end
 
 function FreeCam:ModuleUnload()
-    Events:Fire("HelpRemoveItem",
-        {
-            name = "FreeCam"
-        })
+    -- Events:Fire("HelpRemoveItem",
+    --     {
+    --         name = "FreeCam"
+    --     })
 end
 
 freeCam = FreeCam()

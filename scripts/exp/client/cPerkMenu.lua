@@ -10,7 +10,7 @@ function cPerkMenu:__init()
     self.window:SetPositionRel( Vector2( 0.5, 0.5 ) - self.window:GetSizeRel()/2 )
     self.window:SetVisible( self.active )
     self.window:SetMinimumSize(self.window:GetSize() * 0.85)
-    self.window:SetTitle( "Player Stats & Perks" )
+    self.window:SetTitle( "Player Perks" )
     self.window:Subscribe( "WindowClosed", self, self.Close )
 
     self.tab_control = TabControl.Create( self.window )
@@ -20,9 +20,9 @@ function cPerkMenu:__init()
 
     self.category_names = 
     {
-        [1] = "Stats",
-        [2] = "Perks",
-        [3] = "Leaderboard"
+        -- [1] = "Stats",
+        [1] = "Perks",
+        -- [3] = "Leaderboard"
     }
 
     self.column_index = 
