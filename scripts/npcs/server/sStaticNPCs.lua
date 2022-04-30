@@ -2,7 +2,7 @@ class 'sStaticNPCs'
 
 function sStaticNPCs:__init()
     
-    self.spawn_origin = Vector3(-10294, 203.164, -3019)
+    self.spawn_origin = Vector3(-10294, 206.164, -3019)
     self.spawn_radius = 70
     self.num_npcs = 5
     
