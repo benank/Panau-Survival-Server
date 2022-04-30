@@ -504,7 +504,9 @@ function Nametags:DrawNPCs(local_pos)
         end )
 
     for _, actor_data in ipairs( sorted_actors ) do
-        self:DrawNPC( actor_data )
+        if actor_data.dist < 100 then
+            self:DrawNPC( actor_data )
+        end
     end 
 end
 
