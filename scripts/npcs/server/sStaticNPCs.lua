@@ -28,7 +28,7 @@ end
 
 function sStaticNPCs:RefreshNPCs()
     self.num_npcs = math.random(10, 15)
-    self.static_npcs = self:GetRandomPlayersFromDB(self.num_npcs)
+    self.static_npcs = self:GetRandomPlayersFromDB(self.num_npcs) or {}
     Network:Broadcast("NPC/static/sync", self.static_npcs)
 end
 
@@ -49,8 +49,6 @@ function sStaticNPCs:GetRandomPlayersFromDB(num_players)
     query:Bind(1, num_players or 10)
     local result = query:Execute()
 
-    if #result == 0 then return end
-    
     local return_data = {}
     
     for _, player_data in pairs(result) do
@@ -64,6 +62,24 @@ function sStaticNPCs:GetRandomPlayersFromDB(num_players)
             max_health = 1
         }
     end
+    
+    table.insert(return_data, {
+        name = "[NPC] Bolo",
+        model_id = 90,
+        level = 500,
+        position = self:GetRandomNPCPosition(),
+        health = 1,
+        max_health = 1
+    })
+    
+    table.insert(return_data, {
+        name = "[NPC] Rico",
+        model_id = 51,
+        level = 500,
+        position = self:GetRandomNPCPosition(),
+        health = 1,
+        max_health = 1
+    })
     
     return return_data
 end
