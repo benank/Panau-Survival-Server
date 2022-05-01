@@ -406,7 +406,7 @@ LootItems =
         },
         ["EXPLOSIVE"] = 
         {
-            rarity = 0.177,
+            rarity = 0.167,
             items = 
             {
                 ["Mine"] = {rarity = 0.208, min = 1, max = 3},
@@ -453,7 +453,14 @@ LootItems =
                 ["Rocket Launcher"] = {rarity = 0.025, min = 1, max = 1},
             }
         },
-
+        ["AIRDROP"] = 
+        {
+            rarity = 0.01,
+            items = 
+            {
+                ["Airdrop"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
     },
     [Lootbox.Types.Level5] = 
     {
@@ -514,9 +521,17 @@ LootItems =
                 ["Airdrop"] = {rarity = 1, min = 1, max = 1},
             }
         },
+        ["SAM KEY"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["SAM Key"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
         ["AMMO"] = 
         {
-            rarity = 0.15,
+            rarity = 0.10,
             items = 
             {
                 ["SMG Ammo"] = {rarity = 0.5, min = 120, max = 120},

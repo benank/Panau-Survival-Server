@@ -151,7 +151,7 @@ function sItemGenerator:GetTierSpecificCustomData(tier, item)
 
     elseif item.name == "Airdrop" then
         
-        -- Landclaim size chances based on loot tier
+        -- Airdrop levels based on loot tier
         local sizes = 
         {
             {chance = 0.5, min = 1, max = 1},
@@ -193,6 +193,30 @@ function sItemGenerator:GetTierSpecificCustomData(tier, item)
             end
         end
         
+    elseif item.name == "SAM Key" then
+        
+        -- SAM key levels based on loot tier
+        local sizes = 
+        {
+            {chance = 0, min = 1, max = 1}
+        }
+
+        if tier == Lootbox.Types.AirdropLevel1 then
+            sizes = 
+            {
+                {chance = 1, min = 10, max = 30}
+            }
+        end
+
+        local random = math.random()
+
+        for _, size_data in ipairs(sizes) do
+            if random <= size_data.chance then
+                local random_amount = size_data.max - size_data.min ~= 0 and math.random(size_data.max - size_data.min) or 0
+                custom_data.level = size_data.min + random_amount
+                break
+            end
+        end
     end
 
     return custom_data
