@@ -32,11 +32,11 @@ Inventory.config =
         {
             name = "Handgun",
             amount = 1,
-            durability = 0.5
+            durability = 0.75
         },
         {
             name = "Handgun Ammo",
-            amount = 75
+            amount = 100
         },
         {
             name = "HE Grenade",
@@ -55,7 +55,26 @@ Inventory.config =
         {
             name = "Helmet",
             amount = 1,
-            durability = 0.25
+            durability = 0.75
+        },
+        {
+            name = "Wall",
+            amount = 10
+        },
+        {
+            name = "Door",
+            amount = 1
+        },
+        {
+            name = "Bed",
+            amount = 1
+        },
+        {
+            name = "LandClaim",
+            amount = 1,
+            custom_data = {
+                size = 20
+            }
         }
     },
     default_respawn_inv = 
