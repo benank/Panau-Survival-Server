@@ -1,0 +1,1 @@
+-- Spawn static drones above sub
