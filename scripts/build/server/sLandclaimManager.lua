@@ -30,6 +30,7 @@ function sLandclaimManager:__init()
     -- Check for expired landclaims every 3 hours and on load
     Timer.SetInterval(1000 * 60 * 60 * 3, function()
         self:CheckForExpiredLandclaims()
+        self:TotalBuildObjectsUpdate()
     end)
 
     -- Update health of decaying objects in expired claims every 10 minutes
@@ -238,6 +239,7 @@ function sLandclaimManager:LoadAllLandclaims()
     print(string.format("Loaded %d landclaims!", count_table(result)))
 
     self:CheckForExpiredLandclaims()
+    self:TotalBuildObjectsUpdate()
 
 end
 
@@ -324,6 +326,16 @@ function sLandclaimManager:AddClaim(claim_data)
     self:UpdateLandclaimsSharedObject()
     return landclaim
 
+end
+
+function sLandclaimManager:TotalBuildObjectsUpdate()
+    local total_build_objects = 0
+    for steam_id, player_landclaims in pairs(self.landclaims) do
+        for id, landclaim in pairs(player_landclaims) do
+            total_build_objects = total_build_objects + count_table(landclaim.objects)
+        end
+    end
+    Events:Fire("build/TotalBuildObjectsUpdate", {total = total_build_objects})
 end
 
 function sLandclaimManager:UpdateLandclaimsSharedObject()
