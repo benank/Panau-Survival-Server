@@ -32,8 +32,8 @@ function sLandclaimManager:__init()
         self:CheckForExpiredLandclaims()
     end)
 
-    -- Update health of decaying objects in expired claims every 10 minutes
-    Timer.SetInterval(1000 * 60 * 10, function()
+    -- Update health of decaying objects in expired claims every 2 hours
+    Timer.SetInterval(1000 * 60 * 60 * 2, function()
         self:DecayExpiredLandclaims()
     end)
 

@@ -4,7 +4,7 @@ BuildObjects =
     {
         model = "obj.jumpgarbage.eez/gb206-g.lod", 
         collision = "obj.jumpgarbage.eez/gb206_lod1-g_col.pfx",
-        unclaimed_decay = false
+        unclaimed_decay = true
     },
     ["Table"] = 
     {
@@ -22,7 +22,7 @@ BuildObjects =
     {
         model = "31x08.flz/gb030-d.lod", 
         collision = "31x08.flz/gb030_lod1-d_col.pfx",
-        unclaimed_decay = false
+        unclaimed_decay = true
     },
     ["Door"] = 
     {
@@ -103,7 +103,7 @@ BuildObjects =
             offset = Vector3(0, 0.95, 0),
             angle = Angle(0, 0, math.pi / 2)
         },
-        unclaimed_decay = false
+        unclaimed_decay = true
     },
     ["Teleporter"] = 
     {

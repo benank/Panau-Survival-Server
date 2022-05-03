@@ -81,7 +81,7 @@ function sLandclaim:Decay()
     for id, object in pairs(self.objects) do
         local object_data = BuildObjects[object.name]
 
-        if object_data and object_data.unclaimed_decay then
+        if object_data and object_data.unclaimed_decay and object.health > LandclaimObjectConfig.min_object_decay_health then
             object:Damage(LandclaimObjectConfig.decay_per_interval)
             landclaim_updated = true
 
