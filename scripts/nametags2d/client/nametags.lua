@@ -490,10 +490,12 @@ function Nametags:DrawNPCs(local_pos)
     local sorted_actors = {}
 
     for _, npc_data in pairs(self.static_npcs) do
-        local actor = ClientActor.GetById(npc_data.client_actor_id)
-        if IsValid(actor) then
-            local pos = actor:GetPosition()
-            table.insert( sorted_actors, { actor = actor, npc_data = npc_data, dist = local_pos:Distance(pos) } )
+        if npc_data.client_actor_id then
+            local actor = ClientActor.GetById(npc_data.client_actor_id)
+            if IsValid(actor) then
+                local pos = actor:GetPosition()
+                table.insert( sorted_actors, { actor = actor, npc_data = npc_data, dist = local_pos:Distance(pos) } )
+            end
         end
     end
 

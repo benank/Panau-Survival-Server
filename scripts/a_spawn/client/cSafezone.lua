@@ -80,6 +80,7 @@ function cSafezone:SecondTick()
 
     self.in_neutralzone = LocalPlayer:GetPosition():Distance(config.neutralzone.position) < config.neutralzone.radius
 
+    Events:Fire("NearSafezone", {near_sz = self.near_safezone})
 end
 
 function cSafezone:EnterSafezone()
