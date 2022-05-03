@@ -314,6 +314,19 @@ function HelpEntries:ModulesLoad()
     
     Events:Fire("HelpAddItem",
     {
+        name = "SAM Sites",
+        text = 
+            "SAM Sites\n\n"..
+            "SAM Sites are Surface-to-Air-Missiles. If you are above level 10, these sites will launch missiles at you when you fly nearby in planes or helicopters.\n\n"..
+            "There are many of these sites throughout the world, so be careful when flying!\n\n"..
+            "However, there are a few ways to disable SAM Sites:\n"..
+            "\t • Destroying: You can use explosives (airstrikes, grenades, C4, etc) to destroy SAM sites. This can yield rare loot, such as SAM Keys. (see below)\n"..
+            "\t • Hacking: You can use a Hacker on a SAM Site and it will be friendly towards you and your friends and will shoot down enemies for you.\n\n\n"..
+            "SAM Key\n"..
+            "This is an item that can be obtained from destroying SAM Sites. The level of the key will be the same level of the SAM site. When equipped, SAM Sites of the same level and lower will no longer attack you when you fly near them."
+    })
+    Events:Fire("HelpAddItem",
+    {
         name = "Secrets",
         text = 
             "Secrets\n\n"..

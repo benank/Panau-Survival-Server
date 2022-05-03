@@ -8,7 +8,7 @@ function SAM:__init(args)
     self.cell = args.cell
     self.config = GetSAMConfiguration(self.level)
     self.health = self.config.MaxHealth
-    self.hacked_owner = ""
+    self.hacked_owner = args.hacked_owner or ""
     self.destroyed = false
     self.drone_spawned = false
     self.fire_timer = Timer()
@@ -55,6 +55,12 @@ function SAM:Hacked(player)
         self:Sync(player, "hacked_owner")
     end
     
+    -- Sync hacked SAM to DB
+    local command = SQL:Command("INSERT INTO hacked_sams (steamID, sam_id) VALUES (?, ?)")
+    command:Bind(1, self.hacked_owner)
+    command:Bind(2, self.id)
+    command:Execute()
+    
 end
 
 function SAM:CanFire()
@@ -80,7 +86,7 @@ function SAM:Damage(amount, player)
     else
         Network:Broadcast("sams/SyncSAM", self:GetSyncData("health"))
         
-        if not self.drone_spawned then
+        if not self.drone_spawned and not self:IsFriendlyTowardsPlayer(player) then
             self.drone_spawned = true
             Timer.SetTimeout(1000 * 30 + 1 * math.random(), function()
                 if not self.destroyed then
@@ -137,7 +143,7 @@ function SAM:Destroyed(player)
     self.hacked_owner = ""
     self.drone_spawned = false
     
-    if math.random() < self.config.LootChance then
+    if not self:IsFriendlyTowardsPlayer(player) and math.random() < self.config.LootChance then
         -- Spawn SAM lootbox
         Events:Fire("inventory/CreateLootboxExternal", {
             tier = 19,
@@ -147,7 +153,10 @@ function SAM:Destroyed(player)
         }) 
     end
     
-    -- TODO: respawn SAM later
+    local command = SQL:Command("DELETE FROM hacked_sams WHERE sam_id = (?)")
+    command:Bind(1, self.id)
+    command:Execute()
+    
     Thread(function()
         Timer.Sleep(1000 * 60 * 60)
         self:Respawn()
