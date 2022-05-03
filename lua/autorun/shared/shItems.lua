@@ -1106,6 +1106,22 @@ Items =
         can_equip = true,
         equip_type = "held"
     },
+    {
+        name = "Two Year Party Hat",
+        category = "Survival",
+        stacklimit = 5,
+        can_equip = true,
+        durable = true,
+        max_durability = 300,
+        equip_type = "costume_hat"
+    },
+    {
+        name = "Boombox",
+        category = "Supplies",
+        stacklimit = 3,
+        can_equip = true,
+        equip_type = "boombox"
+    },
 }
 
 Items_ammo_types = 

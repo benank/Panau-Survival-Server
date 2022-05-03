@@ -38,7 +38,6 @@ function sServerStats:UpdateVehicleTotalStats(args)
 end
 
 function sServerStats:TotalBuildObjectsUpdate(args)
-    print(args.total)
     self.stats["BuildObjects"] = args.total
     self:Refresh()
 end

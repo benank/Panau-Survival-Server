@@ -201,6 +201,9 @@ function cInventoryUIStyle:__init()
         ["Snowman Outfit"] = self.item_colors.snow,
         ["Snowball"] = self.item_colors.snow,
         ["Christmas Tree"] = self.item_colors.snow,
+        
+        -- Two Year Anniversary Event Items
+        
     }
 
 
