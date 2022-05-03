@@ -206,7 +206,7 @@ Grenade.Types = {
         ["radius"] = 15,
         ["custom_func"] = function(grenade)
             
-            y_velo = 100
+            y_velo = 70
             
             local local_pos = LocalPlayer:GetBonePosition("ragdoll_Spine")
             if local_pos:Distance(grenade.position) < grenade.type.radius and not LocalPlayer:GetValue("InSafezone") then

@@ -1,19 +1,9 @@
 class 'SAMManager'
 
-class 'IdPool'
-
-function IdPool:__init()
-    self.current_id = 0
-end
-
-function IdPool:GetNextId()
-    self.current_id = self.current_id + 1
-    return self.current_id
-end
-
 function SAMManager:__init()
 	
-	self.id_pool = IdPool()
+	SQL:Execute("CREATE TABLE IF NOT EXISTS hacked_sams (steamID VARCHAR, sam_id INTEGER)")
+	
 	self.sams = {}
 	self.cell_size = 512
 	self.players = {}
@@ -35,7 +25,7 @@ end
 
 function SAMManager:GetAllSAMs()
 	local sams = {}
-	for id, sam in pairs(self.sams) do
+	for id, sam in ipairs(self.sams) do
 		sams[id] = sam:GetSyncData()
 	end
 	Events:Fire("sams/AllSAMs", sams)
@@ -75,7 +65,7 @@ function SAMManager:ItemExplode(args)
 	
 	Thread(function()
 		local count = 0
-		for id, sam in pairs(self.sams) do
+		for id, sam in ipairs(self.sams) do
 			local hit_distance = sam.position:Distance(args.position)
 			local hit_damage = damage * (1 - hit_distance / args.radius)
 
@@ -130,7 +120,7 @@ end
 
 function SAMManager:PostTick()
 	if self.scan_timer:GetSeconds() > 1.5 then
-		for id, sam in pairs(self.sams) do
+		for id, sam in ipairs(self.sams) do
 			if sam:CanFire() then
 				local close_valid_players = {}
 				for player in Server:GetPlayers() do
@@ -186,16 +176,32 @@ function SAMManager:PostTick()
 end
 
 function SAMManager:CreateAllSAMs()
-	for _, sam_data in pairs(SAMAnchorLocationsTable) do
+	local all_hacked_sams = self:GetAllHackedSAMsFromDB()
+	
+	for sam_id, sam_data in ipairs(SAMAnchorLocationsTable) do
 		local sam = SAM({
-			id = self.id_pool:GetNextId(),
+			id = sam_id,
 			position = sam_data.pos,
 			base_level = sam_data.level,
-			cell = GetCell(sam_data.pos, self.cell_size)
+			cell = GetCell(sam_data.pos, self.cell_size),
+			hacked_owner = all_hacked_sams[sam_id]
 		})
 		self.sams[sam.id] = sam
 	end
 	print(string.format("Created %d SAMs.", count_table(self.sams)))
+end
+
+function SAMManager:GetAllHackedSAMsFromDB()
+	local all_hacked_sams = {}
+	local result = SQL:Query("SELECT * FROM hacked_sams"):Execute()
+	
+    if result and count_table(result) > 0 then
+        for _, sam_data in pairs(result) do
+			all_hacked_sams[tonumber(sam_data.sam_id)] = sam_data.steamID
+		end
+    end
+	
+	return all_hacked_sams
 end
 
 function SAMManager:PlayerCellUpdate(args)

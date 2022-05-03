@@ -14,16 +14,8 @@ Inventory.config =
     default_inv = 
     {
         {
-            name = "Bandages",
-            amount = 10
-        },
-        {
-            name = "Water",
-            amount = 5
-        },
-        {
             name = "Can of Beans",
-            amount = 5
+            amount = 15
         },
         {
             name = "Lockpick",
@@ -59,14 +51,42 @@ Inventory.config =
         },
         {
             name = "Wall",
-            amount = 10
-        },
-        {
-            name = "Door",
             amount = 1
         },
         {
-            name = "Bed",
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
             amount = 1
         },
         {
