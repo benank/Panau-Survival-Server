@@ -489,7 +489,7 @@ end
 function Nametags:DrawNPCs(local_pos)
     local sorted_actors = {}
 
-    for _, npc_data in pairs(self.static_npcs) do
+    for _, npc_data in pairs(self.static_npcs or {}) do
         if npc_data.client_actor_id then
             local actor = ClientActor.GetById(npc_data.client_actor_id)
             if IsValid(actor) then
