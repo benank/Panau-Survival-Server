@@ -55,6 +55,9 @@ function SAM:Hacked(player)
         self:Sync(player, "hacked_owner")
     end
     
+    -- First delete SAM from db if it exists
+    self:DeleteFromDB()
+    
     -- Sync hacked SAM to DB
     local command = SQL:Command("INSERT INTO hacked_sams (steamID, sam_id) VALUES (?, ?)")
     command:Bind(1, self.hacked_owner)
@@ -153,14 +156,18 @@ function SAM:Destroyed(player)
         }) 
     end
     
-    local command = SQL:Command("DELETE FROM hacked_sams WHERE sam_id = (?)")
-    command:Bind(1, self.id)
-    command:Execute()
+    self:DeleteFromDB()
     
     Thread(function()
         Timer.Sleep(1000 * 60 * 60)
         self:Respawn()
     end)
+end
+
+function SAM:DeleteFromDB()
+    local command = SQL:Command("DELETE FROM hacked_sams WHERE sam_id = (?)")
+    command:Bind(1, self.id)
+    command:Execute()
 end
 
 function SAM:Respawn()
