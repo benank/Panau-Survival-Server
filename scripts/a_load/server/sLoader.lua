@@ -13,20 +13,6 @@ end
 
 function sLoader:PlayerJoin(args)
     self:TogglePlayerEnabled(args.player, false)
-    Chat:Send(args.player, 
-        "Welcome to ", Color.White, 
-        "Panau Survival", Color.Orange,
-        ". Get food and gear from lootboxes, fight drones and players to level up, and build a base and defend your loot from raiders!", Color.White)
-        
-    Chat:Send(args.player, "", Color.White)
-    
-    Chat:Send(args.player, 
-    "If you need help, please check out the " , Color.White, 
-    "Help Window ", Color(0, 200, 0),
-    "by pressing ", Color.White,
-    "F5", Color.Yellow,
-    ". If you need extra help, feel free to join our Discord or ask other players. Link is in the Help Window!", Color.White)
-
 end
 
 function sLoader:PlayerDeath(args)

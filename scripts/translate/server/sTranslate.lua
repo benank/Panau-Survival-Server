@@ -4,7 +4,7 @@ local encode, decode = json.encode, json.decode
 
 
 -- change here to the host an port you want to contact
-local host, port = "localhost", 1781
+local host, port = "localhost", 1780
 
 -- load namespace
 local socket = require("socket")
@@ -106,9 +106,9 @@ function receive(text)
 end
 
 Events:Subscribe("TranslateText", function(args)
-    if not args.text or not args.id then return end
+    if not args.text or not args.id or not IsValid(args.player) then return end
     
-    local locale = args.player:GetValue("Locale") or 'en'
+    local locale = args.origin_locale or args.player:GetValue("Locale") or 'en'
     local data = encode{'message', {id = args.id, origin_locale = locale, text = tostring(args.text)}}
     send(data)
 end)
@@ -130,6 +130,7 @@ Events:Subscribe("ClientModuleLoad", function(args)
         Chat:Send(args.player, " ", Color.White)
         Chat:Send(args.player, "Language: ", Color.White, tostring(Languages[result[1].locale]), Color(45, 252, 214))
         Chat:Send(args.player, "Type ", Color.White, "/language", Color(45, 252, 214), " to change your language.", Color.White)
+        Chat:Send(args.player, " ", Color.White)
     else
         
 		local command = SQL:Command("INSERT INTO language (steamID, locale) VALUES (?, ?)")
@@ -143,7 +144,97 @@ Events:Subscribe("ClientModuleLoad", function(args)
     end
     
     PlayerLocaleUpdated(nil, args.player:GetValue("Locale"))
+    SendPlayerLocalizedJoinMessage(args.player)
 end)
+
+
+local players_waiting_for_translate = {}
+local join_msg_parts = 
+{
+    "Welcome to ",
+    "Panau Survival",
+    ". Get food and gear from lootboxes, fight drones and players to level up, and build a base and defend your loot from raiders!",
+    "If you need help, please check out the ",
+    "Help Window ",
+    "by pressing ",
+    "F5",
+    ". If you need extra help, feel free to join our Discord or ask other players. Link is in the Help Window!",
+}
+
+local translated_join_msg_parts = 
+{
+    ["en"] = deepcopy(join_msg_parts)
+}
+
+function PlayerLocaleChanged(args)
+    SendPlayerLocalizedJoinMessage(args.player)
+end
+
+function Translation(args)
+    local split = args.id:split("_")
+    local joinmsg = split[1]
+    if joinmsg ~= "joinmsg" then return end
+    
+    local msg_locale = split[2]
+    local msg_index = tonumber(split[3])
+    
+    if not translated_join_msg_parts[msg_locale] then
+        translated_join_msg_parts[msg_locale] = {}
+    end
+    
+    translated_join_msg_parts[msg_locale][msg_index] = args.translations[msg_locale]
+    
+    if count_table(translated_join_msg_parts[msg_locale]) == count_table(join_msg_parts) and players_waiting_for_translate[msg_locale] then
+        for id, player in pairs(players_waiting_for_translate[msg_locale]) do
+            if IsValid(player) then
+                SendPlayerLocalizedJoinMessage(player) 
+            end
+        end
+        players_waiting_for_translate[msg_locale] = nil
+    end
+end
+
+function SendPlayerLocalizedJoinMessage(player)
+    local locale = player:GetValue("Locale") or 'en'
+    
+    if not translated_join_msg_parts[locale] or count_table(translated_join_msg_parts[locale]) ~= count_table(join_msg_parts) then
+        if not players_waiting_for_translate[locale] then
+            players_waiting_for_translate[locale] = {}
+        end
+        
+        local steam_id = tostring(player:GetSteamId())
+        players_waiting_for_translate[locale][steam_id] = player
+        
+        for index, text in pairs(join_msg_parts) do
+            Events:Fire("TranslateText", {
+                text = text,
+                id = string.format("joinmsg_%s_%d", locale, index),
+                player = player,
+                origin_locale = 'en'
+            }) 
+        end
+        
+        return
+    end
+    
+    Chat:Send(player, 
+        translated_join_msg_parts[locale][1], Color.White, 
+        translated_join_msg_parts[locale][2], Color.Orange,
+        translated_join_msg_parts[locale][3], Color.White)
+        
+    Chat:Send(player, "", Color.White)
+    
+    Chat:Send(player, 
+        translated_join_msg_parts[locale][4], Color.White, 
+        translated_join_msg_parts[locale][5], Color(0, 200, 0),
+        translated_join_msg_parts[locale][6], Color.White,
+        join_msg_parts[7], Color.Yellow,
+        translated_join_msg_parts[locale][8], Color.White)
+end
+
+Events:Subscribe("PlayerLocaleChanged", PlayerLocaleChanged)
+Events:Subscribe("Translation", Translation)
+
 
 Network:Subscribe("SetLanguage", function(args, player)
     if not args.locale then return end
@@ -160,6 +251,10 @@ Network:Subscribe("SetLanguage", function(args, player)
 
     player:SetNetworkValue("Locale", args.locale)
     Chat:Send(player, "Set chat language to: ", Color.White, tostring(Languages[args.locale]), Color(45, 252, 214))
+    
+    Events:Fire("PlayerLocaleChanged", {
+      player = player
+    })
 end)
 
 function PlayerLocaleUpdated(old_locale, new_locale)
