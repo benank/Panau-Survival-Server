@@ -19,6 +19,18 @@ function sMines:__init()
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(ItemsConfig.usables.Mine.cell_size), self, self.PlayerCellUpdate)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
+    Events:Subscribe("items/AddServerOwnedMines", self, self.AddServerOwnedMine)
+end
+
+function sMines:AddServerOwnedMine(args)
+    for _, mine in pairs(args.mines) do
+        self:AddMine({
+            id = mine.id,
+            owner_id = "SERVER",
+            position = mine.position,
+            angle = mine.angle
+        })
+    end
 end
 
 function sMines:ClearBadMines()
@@ -257,6 +269,10 @@ function sMines:AddMine(args)
 
     args.id = tonumber(args.id)
 
+    if self.mines[args.id] then
+        self.mines[args.id]:Remove()
+    end
+
     local mine = sMine({
         id = args.id,
         owner_id = args.owner_id,
@@ -297,6 +313,8 @@ function sMines:LoadAllMines()
         end
 
     end
+    
+    Events:Fire("items/AllMinesLoaded")
 
 end
 

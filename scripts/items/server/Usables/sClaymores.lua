@@ -24,6 +24,18 @@ function sClaymores:__init()
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
     Events:Subscribe("ItemUse/CancelUsage", self, self.ItemUseCancelUsage)
+    Events:Subscribe("items/AddServerOwnedClaymores", self, self.AddServerOwnedClaymore)
+end
+
+function sClaymores:AddServerOwnedClaymore(args)
+    for _, claymore in pairs(args.claymores) do
+        self:AddClaymore({
+            id = claymore.id,
+            owner_id = "SERVER",
+            position = claymore.position,
+            angle = claymore.angle
+        })
+    end
 end
 
 function sClaymores:ItemUseCancelUsage(args)
@@ -271,6 +283,10 @@ end
 function sClaymores:AddClaymore(args)
 
     args.id = tonumber(args.id)
+    
+    if self.claymores[args.id] then
+        self.claymores[args.id]:Remove()
+    end
 
     local claymore = sClaymore(args)
     
@@ -307,6 +323,8 @@ function sClaymores:LoadAllClaymores()
         end
 
     end
+    
+    Events:Fire("items/AllClaymoresLoaded")
 
 end
 
