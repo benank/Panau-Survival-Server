@@ -106,7 +106,7 @@ function receive(text)
 end
 
 Events:Subscribe("TranslateText", function(args)
-    if not args.text or not args.id or not IsValid(args.player) then return end
+    if not args.text or not args.id or (not IsValid(args.player) and not args.origin_locale) then return end
     
     local locale = args.origin_locale or args.player:GetValue("Locale") or 'en'
     local data = encode{'message', {id = args.id, origin_locale = locale, text = tostring(args.text)}}
