@@ -209,7 +209,7 @@ Grenade.Types = {
             y_velo = 70
             
             local local_pos = LocalPlayer:GetBonePosition("ragdoll_Spine")
-            if local_pos:Distance(grenade.position) < grenade.type.radius and not LocalPlayer:GetValue("InSafezone") then
+            if local_pos:Distance(grenade.position) < grenade.type.radius and not LocalPlayer:GetValue("InSafezone") and not LocalPlayer:InVehicle() then
                 velo = (local_pos - grenade.position):Normalized() * y_velo + Vector3.Up * 3
                 LocalPlayer:SetLinearVelocity(velo)
                         
