@@ -159,7 +159,7 @@ function SAM:Destroyed(player)
     self:DeleteFromDB()
     
     Thread(function()
-        Timer.Sleep(1000 * 60 * 60)
+        Timer.Sleep(1000 * 60 * 60 * Math.ceil(self.level / 10))
         self:Respawn()
     end)
 end
