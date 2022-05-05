@@ -28,7 +28,7 @@ Events:Subscribe("Translation", function(args)
         if count_table_deep(shHelpEntries[locale]) == total_help_entries then
             locales_awaiting_translation[locale] = nil
             
-            for _, player in pairs(players_awaiting_translation[locale]) do
+            for _, player in pairs(players_awaiting_translation[locale] or {}) do
                 if IsValid(player) then
                     Network:Send(player, "help/LocalizedHelpEntries", {
                         entries = shHelpEntries[locale],
