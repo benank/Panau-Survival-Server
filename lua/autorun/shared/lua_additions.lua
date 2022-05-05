@@ -9,6 +9,20 @@ function count_table(table)
     return count
 end
 
+function count_table_deep(table)
+    local count = 0
+
+    for k, v in pairs(table) do
+        if type(v) == 'table' then
+            count = count + count_table_deep(v)
+        else
+            count = count + 1
+        end
+    end
+
+    return count
+end
+
 function count_table_async(table, callback)
     Thread(function()
         local count = 0

@@ -61,7 +61,8 @@ function Help:WindowClosed( args )
 end
 
 function Help:AddItem( args )
-	if self.tabs[args.name] ~= nil then
+	args.internal_name = args.internal_name or args.name
+	if self.tabs[args.internal_name] ~= nil then
 		self:RemoveItem( args )
 	end
 
@@ -86,15 +87,15 @@ function Help:AddItem( args )
 		label:SizeToContents()
 	end)
 
-	self.tabs[args.name] = tab_button
+	self.tabs[args.internal_name] = tab_button
 end
 
 function Help:RemoveItem( args )
-	if self.tabs[args.name] == nil then return end
+	if self.tabs[args.internal_name] == nil then return end
 
-	self.tabs[args.name]:GetPage():Remove()
-	self.tab_control:RemovePage( self.tabs[args.name] )
-	self.tabs[args.name] = nil
+	self.tabs[args.internal_name]:GetPage():Remove()
+	self.tab_control:RemovePage( self.tabs[args.internal_name] )
+	self.tabs[args.internal_name] = nil
 end
 
 help = Help()
