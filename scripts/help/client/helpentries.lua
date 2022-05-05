@@ -45,7 +45,7 @@ function HelpEntries:RefreshHelpEntries()
                 self.entries.Welcome.Text2 .. "\n\n\n"..
                 self.entries.Welcome.Text3 .. "\n\n\n"..
                 self.entries.Welcome.Text4 .. "\n\n\n"..
-                self.entries.Welcome.Text5 .. ": https://discord.gg/DWGfX3b\n\n\n",
+                self.entries.Welcome.Text5 .. ": https://discord.gg/DWGfX3b\n\n\n"..
                 self.entries.Welcome.Text6
         })
     Events:Fire("HelpAddItem",
