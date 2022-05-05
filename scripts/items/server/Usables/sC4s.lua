@@ -177,7 +177,8 @@ function sC4s:DestroyC4(args, player)
             landclaim_data = landclaim_data,
             player = IsValid(c4:GetValue("Owner")) and c4:GetValue("Owner") or player,
             owner_id = c4:GetValue("owner_id"),
-            type = "C4"
+            type = "C4",
+            c4_position = pos
         })
     end
 

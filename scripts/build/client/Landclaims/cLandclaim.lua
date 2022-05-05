@@ -250,7 +250,7 @@ function cLandclaim:DamageObject(args, player)
     local object = self.objects[args.id]
     object.health = args.health
 
-    if IsValid(player) and player == LocalPlayer then
+    if IsValid(player) and player == LocalPlayer and args.primary then
         -- Display HP
         cLandclaimObjectHealthDisplay:Display(object)
     end

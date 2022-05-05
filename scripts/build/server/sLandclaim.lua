@@ -462,13 +462,18 @@ function sLandclaim:DamageObject(args, player)
     end
 
     damage = damage * mod
+    local is_splash = args.percent_damage ~= nil
+    
+    if args.percent_damage then
+        damage = damage * args.percent_damage
+    end
 
     object:Damage(damage)
 
     Events:Fire("Discord", {
         channel = "Build",
-        content = string.format("%s [%s] damaged object %s %d for %.0f damage using %s (Remaining HP: %.0f) (%s)", 
-            player:GetName(), tostring(player:GetSteamId()), object.name, object.id, damage, args.type, object.health, self:ToLogString())
+        content = string.format("%s [%s] damaged object %s %d for %.0f damage using %s (Remaining HP: %.0f) (Splash: %s) (%s)", 
+            player:GetName(), tostring(player:GetSteamId()), object.name, object.id, damage, args.type, object.health, tostring(is_splash), self:ToLogString())
     })
 
     if object.health <= 0 then
@@ -482,8 +487,8 @@ function sLandclaim:DamageObject(args, player)
 
         Events:Fire("Discord", {
             channel = "Build",
-            content = string.format("%s [%s] destroyed object %s %d (%s)", 
-                player:GetName(), tostring(player:GetSteamId()), object.name, object.id, self:ToLogString())
+            content = string.format("%s [%s] destroyed object %s %d (Splash: %s) (%s)", 
+                player:GetName(), tostring(player:GetSteamId()), object.name, object.id, tostring(is_splash), self:ToLogString())
         })
     end
 
@@ -493,7 +498,8 @@ function sLandclaim:DamageObject(args, player)
         type = "object_damaged",
         id = id,
         health = object.health,
-        player = player
+        player = player,
+        primary = not is_splash
     })    
 
 end

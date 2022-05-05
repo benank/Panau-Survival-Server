@@ -112,7 +112,30 @@ function sLandclaimManager:DetonateOnBuildObject(args)
     local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_data.landclaim_owner_id, args.landclaim_data.landclaim_id)
     if not landclaim then return end
 
+    local target_object_id = tonumber(args.landclaim_data.id)
     landclaim:DamageObject(args, args.player)
+    Thread(function()
+        -- Loop through all objects in landclaim and see if they are close enough to get hit
+        local splash_radius = ExplosiveRadius[args.type]
+        if not splash_radius then return end
+        
+        for id, landclaim_object in pairs(landclaim.objects) do
+            if target_object_id ~= id then
+                local dist = landclaim_object.position:Distance(args.c4_position)
+                if dist < splash_radius then
+                    local percent_damage = 1 - (dist / splash_radius)
+                    args.percent_damage = percent_damage
+                    args.landclaim_data.id = id
+                    landclaim:DamageObject(args, args.player)
+                    -- print(string.format("Damage object %d with mod %.2f", id, percent_damage))
+                end
+            end
+            
+            Timer.Sleep(1)
+        end
+        
+    end)
+    
     self:UpdateLandclaimsSharedObject()
 end
 

@@ -348,25 +348,25 @@ end
 function cLandclaimObjectPlacer:CheckBoundingBox()
 
     -- Don't check bounding box for build items because some of them are terrible
-    if self.vertices then
-        local angle = self.object:GetAngle()
-        local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.1, 0)
-        for i = 1, #self.vertices, 2 do
-            local p1 = angle * self.vertices[i].position * 0.5 * self.bb_mod + object_pos
-            local p2 = angle * self.vertices[i+1].position * 0.5 * self.bb_mod + object_pos
+    -- if self.vertices then
+    --     local angle = self.object:GetAngle()
+    --     local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.1, 0)
+    --     for i = 1, #self.vertices, 2 do
+    --         local p1 = angle * self.vertices[i].position * 0.5 * self.bb_mod + object_pos
+    --         local p2 = angle * self.vertices[i+1].position * 0.5 * self.bb_mod + object_pos
 
-            local diff = p2 - p1
-            local len = diff:Length()
+    --         local diff = p2 - p1
+    --         local len = diff:Length()
 
-            local ray = Physics:Raycast(p1, diff, 0, len)
+    --         local ray = Physics:Raycast(p1, diff, 0, len)
 
-            if (ray.distance < len and ray.entity) then
-                return false
-            end
-        end
-    else
-        return false
-    end
+    --         if (ray.distance < len and ray.entity) then
+    --             return false
+    --         end
+    --     end
+    -- else
+    --     return false
+    -- end
 
     return true
 end
