@@ -97,9 +97,9 @@ function EquippableGrapplehook:HandleGrapplehookSpeedPerks()
     if perk_speed_mod == 1 then return end -- No speed mods
 
     local base_state = LocalPlayer:GetBaseState()
-
-    local parachuting = base_state == AnimationState.SParachute
-
+    
+    if base_state ~= AnimationState.SReelFlight then return end
+    
     local cam_pos = Camera:GetPosition()
     if IsNaN(cam_pos.x) or IsNaN(cam_pos.y) or IsNaN(cam_pos.z) then return end
 	local ray = Physics:Raycast(cam_pos, Camera:GetAngle() * Vector3.Forward, 0, 1000)
@@ -108,10 +108,10 @@ function EquippableGrapplehook:HandleGrapplehookSpeedPerks()
     local speed = math.abs((-LocalPlayer:GetAngle() * localplayer_velo).z)
     
     if self.grappling 
-    and not parachuting
 	and speed > 5 
 	and speed < self.base_speed * perk_speed_mod
     and ray.distance > 15 then
+        print(os.time())
 		LocalPlayer:SetLinearVelocity(localplayer_velo * 1.1)
 	end
 
