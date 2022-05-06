@@ -111,7 +111,6 @@ function EquippableGrapplehook:HandleGrapplehookSpeedPerks()
 	and speed > 5 
 	and speed < self.base_speed * perk_speed_mod
     and ray.distance > 15 then
-        print(os.time())
 		LocalPlayer:SetLinearVelocity(localplayer_velo * 1.1)
 	end
 
