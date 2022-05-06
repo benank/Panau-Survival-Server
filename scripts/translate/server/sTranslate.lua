@@ -159,6 +159,8 @@ local join_msg_parts =
     "by pressing ",
     "F5",
     ". If you need extra help, feel free to join our Discord or ask other players. Link is in the Help Window!",
+    "Server will go down for maintenance on May 9-12. ",
+    "Server event starts May 13."
 }
 
 local translated_join_msg_parts = 
@@ -230,6 +232,12 @@ function SendPlayerLocalizedJoinMessage(player)
         translated_join_msg_parts[locale][6], Color.White,
         join_msg_parts[7], Color.Yellow,
         translated_join_msg_parts[locale][8], Color.White)
+        
+    Chat:Send(player, "", Color.White)
+    
+    Chat:Send(player, 
+        translated_join_msg_parts[locale][9], Color.Red,
+        translated_join_msg_parts[locale][10], Color.White)
 end
 
 Events:Subscribe("PlayerLocaleChanged", PlayerLocaleChanged)
