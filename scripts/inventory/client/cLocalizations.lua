@@ -10,7 +10,7 @@ Events:Subscribe("NetworkObjectValueChange", function(args)
     if args.key ~= "Locale" then return end
     
     local locale = args.value
-    if LocalizedItemNames[locale] then
+    if LocalizedItemNames[locale] and ClientInventory and ClientInventory.ui then
         ClientInventory.ui:CreateWindow()
         ClientInventory.ui:RefreshInventoryDisplay()
     end

@@ -58,7 +58,6 @@ function cInventoryUI:__init()
     Events:Subscribe(var("KeyUp"):get(), self, self.KeyUp)
     Events:Subscribe(var("KeyDown"):get(), self, self.KeyDown)
     Events:Subscribe(var("MouseScroll"):get(), self, self.MouseScroll)
-    self.window:Subscribe(var("PostRender"):get(), self, self.WindowRender)
     Events:Subscribe(var("SetInventoryState"):get(), self, self.SetInventoryState)
     Events:Subscribe(var("ResolutionChanged"):get(), self, self.ResolutionChanged)
     
@@ -74,6 +73,7 @@ function cInventoryUI:CreateWindow()
     self.window:Hide()
     self.window:Focus()
     self.window:SetBackgroundVisible(false)
+    self.window:Subscribe(var("PostRender"):get(), self, self.WindowRender)
 
 end
 
