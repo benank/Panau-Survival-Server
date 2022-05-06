@@ -1131,3 +1131,8 @@ Items_indexed = {}
 for k,v in pairs(Items) do
     Items_indexed[v.name] = v
 end
+
+Items_indexed['Survival'] = 'Survival'
+Items_indexed['Supplies'] = 'Supplies'
+Items_indexed['Weapons'] = 'Weapons'
+Items_indexed['Explosives'] = 'Explosives'

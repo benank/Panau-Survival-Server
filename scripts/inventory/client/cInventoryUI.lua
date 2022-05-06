@@ -93,12 +93,14 @@ function cInventoryUI:RecalculateInventoryResolution()
 end
 
 function cInventoryUI:ResolutionChanged()
+    self:RefreshInventoryDisplay()
+end
 
+function cInventoryUI:RefreshInventoryDisplay()
     self:RecalculateInventoryResolution()
     self:CreateInventory()
 
-    self:Update({action = "full"})
-
+    self:Update({action = "full"}) 
 end
 
 function cInventoryUI:SetInventoryState(open)
@@ -156,17 +158,25 @@ end
 
 -- Gets formatted stack name for inventory/loot, like: Lockpick (50)
 function cInventoryUI:GetItemNameWithAmount(stack, index)
-    if stack:GetProperty("name") == "LandClaim" and stack.contents[1].custom_data.size then
-        return string.format("%s (%dm)", stack:GetProperty("name"), stack.contents[1].custom_data.size)
-    elseif stack:GetProperty("name") == "Airdrop" and stack.contents[1].custom_data.level then
-        return string.format("%s (Level %d)", stack:GetProperty("name"), stack.contents[1].custom_data.level)
-    elseif stack:GetProperty("name") == "SAM Key" and stack.contents[1].custom_data.level then
-        return string.format("%s (Level %d)", stack:GetProperty("name"), stack.contents[1].custom_data.level)
+    local item_name = stack:GetProperty("name")
+    local localized_item_name = self:GetLocalizedText(item_name)
+    if item_name == "LandClaim" and stack.contents[1].custom_data.size then
+        return string.format("%s (%dm)", localized_item_name, stack.contents[1].custom_data.size)
+    elseif item_name == "Airdrop" and stack.contents[1].custom_data.level then
+        return string.format("%s (Lv %d)", localized_item_name, stack.contents[1].custom_data.level)
+    elseif item_name == "SAM Key" and stack.contents[1].custom_data.level then
+        return string.format("%s (Lv %d)", localized_item_name, stack.contents[1].custom_data.level)
     else
         return stack:GetAmount() > 1 and 
-            string.format("%s (%s)", stack:GetProperty("name"), tostring(self:GetItemButtonStackAmount(stack, index))) or
-            string.format("%s", stack:GetProperty("name"))
+            string.format("%s (%s)", localized_item_name, tostring(self:GetItemButtonStackAmount(stack, index))) or
+            string.format("%s", localized_item_name)
     end
+end
+
+function cInventoryUI:GetLocalizedText(item_name)
+    local locale = LocalPlayer:GetValue("Locale") or 'en'
+    local localized_item_names = LocalizedItemNames[locale] or LocalizedItemNames['en']
+    return localized_item_names[item_name]
 end
 
 -- Returns 5/10 if dropping, otherwise returns the amount in the stack
@@ -227,10 +237,19 @@ function cInventoryUI:PopulateEntry(args)
             itemwindow:Show()
         end
 
-        local item_name = stack:GetProperty("name")
-
-        button:GetParent():FindChildByName("text"):SetText(self:GetItemNameWithAmount(stack, args.index))
-        button:GetParent():FindChildByName("text_shadow"):SetText(self:GetItemNameWithAmount(stack, args.index))
+        local item_name_localized = self:GetItemNameWithAmount(stack, args.index)
+        button:GetParent():FindChildByName("text"):SetText(item_name_localized)
+        button:GetParent():FindChildByName("text_shadow"):SetText(item_name_localized)
+        
+        local text_size_modifier = 1
+        
+        if item_name_localized:len() > 20 then
+            local length_over = item_name_localized:len() - 20
+            text_size_modifier = 1 - (length_over * 0.02)
+        end
+        
+        button:GetParent():FindChildByName("text"):SetTextSize(self.inv_dimensions.text_size * text_size_modifier)
+        button:GetParent():FindChildByName("text_shadow"):SetTextSize(self.inv_dimensions.text_size * text_size_modifier)
         
         if stack:GetProperty("durable") then
 
@@ -357,7 +376,7 @@ end
 
 function cInventoryUI:GetCategoryTitleText(cat)
     return string.format("%s %i/%i%s",
-        cat,
+        self:GetLocalizedText(cat),
         #Inventory.contents[cat],
         self:GetNumSlotsInCategory(cat) or 0,
         Inventory.slots[cat].backpack > 0 and " (+" .. tostring(Inventory.slots[cat].backpack) .. ")" or ""
