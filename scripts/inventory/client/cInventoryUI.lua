@@ -65,8 +65,14 @@ end
 
 function cInventoryUI:CreateWindow()
 
-    if self.window then self.window:Remove() end
-
+    if self.window then
+        if self.window:GetVisible() then
+            self:ToggleVisible()
+            self.can_open = false
+        end
+        self.window:Remove()
+    end
+    
     self.window = BaseWindow.Create("Inventory")
     self.window:SetSize(Vector2(math.min(1000, math.max(InventoryUIStyle.default_inv_size, Render.Size.x * 0.55)), Render.Size.y))
     self.window:SetPosition(Render.Size - self.window:GetSize())
@@ -74,6 +80,7 @@ function cInventoryUI:CreateWindow()
     self.window:Focus()
     self.window:SetBackgroundVisible(false)
     self.window:Subscribe(var("PostRender"):get(), self, self.WindowRender)
+    self.can_open = true
 
 end
 
@@ -836,6 +843,8 @@ function cInventoryUI:InventoryClosed()
 end
 
 function cInventoryUI:ToggleVisible()
+    
+    if not self.can_open then return end
 
     if self.window:GetVisible() then -- Close inventory
         self.window:Hide()
