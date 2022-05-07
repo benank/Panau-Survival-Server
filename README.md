@@ -8,6 +8,7 @@ All server code for the JC2MP server Panau Survival
 4. Edit line 5 of `scripts/inventory/server/sLootManager.lua` and replace `"lootspawns/lootspawns.txt"` with `"lootspawns_old.txt"`. This will allow the loot to spawn using the old loot spawns data file.
 5. Copy `scripts/modelchanger/shModelLocations_old.lua` to `scripts/modelchanger/shared/shModelLocations.lua`
 5. Copy `scripts/modelchanger/shModelLocationsObject.lua` to `scripts/modelchanger/shared/shModelLocationsObject.lua`
+5. Run `git submodule update --init scripts/voice` to install the voice chat submodule, then navigate inside and follow setup in `website` to complete setup for voice chat.
 5. You're all set!
 
 ## Contributing Guidelines
