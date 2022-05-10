@@ -88,8 +88,6 @@ function sServerStats:RefreshStats()
     claymoreCount = claymoreCount[1]["COUNT(*)"]
     self.stats["PlacedExplosives"] = mineCount + claymoreCount
     
-    output_table(self.stats)
-    
     self:Refresh()
 end
 
