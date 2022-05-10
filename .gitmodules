@@ -1,0 +1,3 @@
+[submodule "scripts/voice"]
+	path = scripts/voice
+	url = https://github.com/benank/JC2MP-Voice-Chat
