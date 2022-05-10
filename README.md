@@ -20,7 +20,7 @@ Want to help development? Awesome! Here are a couple guidelines for helping out.
 
 I'll review your changes and let you know if there are any problems. If it's all good, I'll merge it with the main repo!
 
-If you'd like to be more involved with development, send me (Lord Farquaad) a DM on [Discord](https://discord.gg/DWGfX3b) telling me a bit about your experience and I'll add you to the developer channel.
+If you'd like to be more involved with development, send me (benank) a DM on [Discord](https://discord.gg/DWGfX3b) telling me a bit about your experience and I'll add you to the developer channel.
 
 ## What's not open source?
 There are a few things that aren't open source because of privacy and exploitation concerns. These items are:
