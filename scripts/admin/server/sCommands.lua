@@ -31,6 +31,16 @@ Events:Subscribe("PlayerChat", function(args)
         else
             Chat:Send(args.player, string.format("Player with id %d not found", tonumber(words[2])), Color.Yellow)
         end
+    elseif words[1] == "/tppos" and words[2] then
+        local words_split = words[2]:split(",")
+        local tp_pos = Vector3(tonumber(words_split[1]), tonumber(words_split[2]), tonumber(words_split[3]))
+
+        if tp_pos then
+            args.player:SetPosition(tp_pos)
+            Chat:Send(args.player, "Teleported to " .. tostring(tp_pos), Color.Yellow)
+        else
+            Chat:Send(args.player, string.format("No tp location specified", tonumber(words[2])), Color.Yellow)
+        end
     elseif words[1] == "/spec" and words[2] then
         local target_player = Player.GetById(tonumber(words[2]))
 
