@@ -597,8 +597,15 @@ Map = {
         -- Workbenches
         -- ["Southern Workbench"] = Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench, Location.Color.Pink, true),
         -- ["Eastern Workbench"] = Location("Eastern Workbench", Vector3(11455.59, 444, -516.274), Location.Type.Workbench, Location.Color.Pink, true),
-        ["Central Workbench"] = Location("Central Workbench", Vector3(2192.39, 649.05, 1365), Location.Type.Workbench, Location.Color.Pink, true),
-        ["Western Workbench"] = Location("Western Workbench", Vector3(-15314, 501.761, -2408.28), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Panau Falls Casino Workbench"] = Location("Panau Falls Casino Workbench", Vector3(2192.39, 649.05, 1365), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Docks District Workbench"] = Location("Docks District Workbench", Vector3(-15314, 501.761, -2408.28), Location.Type.Workbench, Location.Color.Pink, true),
+        ["PBC Tower Workbench"] = Location("PBC Tower Workbench", Vector3(-497.348846, 799.554688, -12044.131836), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Parks District Workbench"] = Location("Parks District Workbench", Vector3(-11642.025391, 203.040579, -5215.140137), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Residential District Workbench"] = Location("Residential District Workbench", Vector3(-11616.697266, 211.920645, -954.870911), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Gambler\'s Den Workbench"] = Location("Gambler\'s Den Workbench", Vector3(-7745.649414, 205.799719, 6750.222656), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Party Workbench"] = Location("Party Workbench", Vector3(6921.548340, 201.228071, 12321.868164), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Ski Resort Workbench"] = Location("Ski Resort Workbench", Vector3(8037.465332, 540.931311, -1561.646973), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Flower Workbench"] = Location("Flower Workbench", Vector3(9226.545898, 223.351470, -11987.953125), Location.Type.Workbench, Location.Color.Pink, true),
 
         -- Home
         ["Home"] = Location("Home", Vector3(), Location.Type.Home, Location.Color.Blue)
