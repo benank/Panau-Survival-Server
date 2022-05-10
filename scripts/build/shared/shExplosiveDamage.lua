@@ -6,6 +6,6 @@ ExplosiveDamage =
 
 ExplosiveRadius =
 {
-    ["C4"] = 5,
-    ["Claymore"] = 3
+    ["C4"] = 3,
+    ["Claymore"] = 2
 }
