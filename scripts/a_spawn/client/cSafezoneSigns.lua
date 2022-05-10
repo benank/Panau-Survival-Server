@@ -19,20 +19,110 @@ function cSafezoneSigns:__init()
         ["LootSpawns"] = {
             text = "Spawned Loot: %s",
             value = "0/0",
-            position = Vector3(-10252.943359, 258.488586, -2957.324219),
+            position = Vector3(-10252.943359, 258.488586 + 0.5, -2957.324219),
             angle = Angle(0.523597 + math.pi, math.pi, 0),
-            color = Color.White,
+            color = Color.Yellow,
+            fontsize = 50,
+            scale = 0.03
+        },
+        ["Vehicles"] = {
+            text = "Spawned Vehicles: %s",
+            value = "0",
+            position = Vector3(-10252.943359, 255.488586 + 1, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color.Yellow,
             fontsize = 50,
             scale = 0.03
         },
         ["Drones"] = {
             text = "Spawned Drones: %s",
             value = 0,
-            position = Vector3(-10252.943359, 255.488586, -2957.324219),
+            position = Vector3(-10252.943359, 252.488586 + 1.5, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color.Yellow,
+            fontsize = 50,
+            scale = 0.03
+        },
+        ["UniquePlayers"] = {
+            text = "Unique Players: %s",
+            value = 0,
+            position = Vector3(-10252.943359, 249.488586 + 2, -2957.324219),
             angle = Angle(0.523597 + math.pi, math.pi, 0),
             color = Color.White,
             fontsize = 50,
             scale = 0.03
+        },
+        ["BoxesLooted"] = {
+            text = "Boxes Looted: %s",
+            value = 0,
+            position = Vector3(-10252.943359, 246.488586 + 2.5, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color(54, 206, 30),
+            fontsize = 50,
+            scale = 0.03
+        },
+        ["DronesDestroyed"] = {
+            text = "Drones Destroyed: %s",
+            value = 0,
+            position = Vector3(-10252.943359, 243.488586 + 3, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color.Red,
+            fontsize = 50,
+            scale = 0.03
+        },
+        ["TotalKills"] = {
+            text = "Total Kills: %s",
+            value = 0,
+            position = Vector3(-10252.943359, 240.488586 + 3.5, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color.Orange,
+            fontsize = 50,
+            scale = 0.03
+        },
+        ["TotalDeaths"] = {
+            text = "Total Deaths: %s",
+            value = 0,
+            position = Vector3(-10252.943359, 237.488586 + 4, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color.Orange,
+            fontsize = 50,
+            scale = 0.03
+        },
+        ["BuildObjects"] = {
+            text = "Build Objects: %s",
+            value = 0,
+            position = Vector3(-10252.943359, 234.488586 + 4.5, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color(29, 244, 212),
+            fontsize = 50,
+            scale = 0.03
+        },
+        ["TotalStashes"] = {
+            text = "Stashes: %s",
+            value = 0,
+            position = Vector3(-10252.943359, 231.488586 + 5, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color(101, 78, 232),
+            fontsize = 50,
+            scale = 0.03
+        },
+        ["PlacedExplosives"] = {
+            text = "Mines & Claymores: %s",
+            value = 0,
+            position = Vector3(-10252.943359, 228.488586 + 5.5, -2957.324219),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color.Red,
+            fontsize = 50,
+            scale = 0.03
+        },
+        ["HelpText"] = {
+            text = "Press F5 for help",
+            value = 0,
+            position = Vector3(-10276.071, 205.5, -3000),
+            angle = Angle(0.523597 + math.pi, math.pi, 0),
+            color = Color.Yellow,
+            fontsize = 70,
+            scale = 0.015
         },
     }
 
@@ -130,9 +220,11 @@ function cSafezoneSigns:LoadImages()
 end
 
 function cSafezoneSigns:Update(args)
-    self.stats["PlayersOnline"].value = args.stats["PlayersOnline"]
-    self.stats["LootSpawns"].value = args.stats["LootSpawns"]
-    self.stats["Drones"].value = args.stats["Drones"]
+    for key, value in pairs(args.stats) do
+        if self.stats[key] then
+            self.stats[key].value = value
+        end
+    end
 end
 
 function cSafezoneSigns:ModuleUnload()

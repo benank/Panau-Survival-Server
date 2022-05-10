@@ -16,10 +16,12 @@ function sVehicleManager:__init()
     self.spawn_weights = {}
 
     self.players = {}
+    self.total_vehicle_spawnable_count = 0
 
     self:SetupSpawnTables()
     self:ReadVehicleSpawnData("spawns/spawns.txt")
     self:SpawnVehicles()
+    self:UpdateVehicleTotalStats()
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("LoadFlowFinish", self, self.LoadFlowFinish)
@@ -82,7 +84,15 @@ function sVehicleManager:__init()
     Timer.SetInterval(1000 * 60, function()
         self:SaveVehicles()
     end)
+    
+    Timer.SetInterval(1000 * 60 * 60, function()
+        self:UpdateVehicleTotalStats()
+    end)
 
+end
+
+function sVehicleManager:UpdateVehicleTotalStats()
+    Events:Fire("Vehicles/UpdateVehicleTotalStats", {total = string.format("%d/%d", count_table(self.vehicles), self.total_vehicle_spawnable_count)})
 end
 
 function sVehicleManager:FireBeringBombsight(args, player)
@@ -1014,6 +1024,7 @@ function sVehicleManager:SpawnVehicles()
         end
     end
 
+    self.total_vehicle_spawnable_count = total_cnt
     print(string.format("Spawned %d/%d vehicles, %.02f seconds", cnt, total_cnt, timer:GetSeconds()))
 
 end

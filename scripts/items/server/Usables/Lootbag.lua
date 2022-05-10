@@ -29,6 +29,10 @@ local lootbag_config =
         ["Candy Cane"] =      {amount = 12, chance = 0.2},
         ["Hot Chocolate"] =     {amount = 1, chance = 0.1},
         ["Christmas Tree"] =     {amount = 1, chance = 0.05}
+    },
+    ["Two Year Lootbag"] = 
+    {
+        ["Two Year Party Hat"] =     {amount = 1, chance = 1},
     }
 }
 
