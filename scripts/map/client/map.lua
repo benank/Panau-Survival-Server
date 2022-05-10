@@ -100,6 +100,7 @@ function Location:__init(name, position, type, color, show_on_minimap, radius)
     self.color    = color or Location.Color.Gray
     self.show_on_minimap = show_on_minimap == true
     self.radius   = radius or 0
+    self.scale    = self.color == Location.Color.Gray and 0.7 or 1
 
     if MilitaryTypes[self.type] then
         self.border = Location.Icon.UV.MilBorder
@@ -126,19 +127,19 @@ function Location:IsActive(position, scale)
 end
 
 function Location:DrawIcon(position, scale)
-
+    
     -- Draw shine
     if self.color ~= Location.Color.None then
         Location.Icon.Sheet:Draw(
-            position - (Location.Icon.Size * scale / 2), 
-            Location.Icon.Size * scale, 
+            position - (Location.Icon.Size * scale / 2 * self.scale), 
+            Location.Icon.Size * scale * self.scale, 
             Location.Icon.UV.Shine, 
             Location.Icon.UV.Shine + Location.Icon.UVSize)
     end
     
     Location.Icon.Sheet:Draw(
-        position - (Location.Icon.Size * scale / 2), 
-        Location.Icon.Size * scale, 
+        position - (Location.Icon.Size * scale / 2 * self.scale), 
+        Location.Icon.Size * scale * self.scale, 
         Location.Icon.UV[self.type], 
         Location.Icon.UV[self.type] + Location.Icon.UVSize)
 
@@ -146,8 +147,8 @@ function Location:DrawIcon(position, scale)
 
     -- Draw border
     Location.Icon.Sheet:Draw(
-        position - (Location.Icon.Size * scale / 2), 
-        Location.Icon.Size * scale, 
+        position - (Location.Icon.Size * scale / 2 * self.scale), 
+        Location.Icon.Size * scale * self.scale, 
         self.border, 
         self.border + Location.Icon.UVSize)
     
@@ -155,10 +156,12 @@ end
 
 function Location:DrawColor(position, scale)
     if not self.color then return end
-    Render:FillArea(position - (Location.Icon.Size * scale / 2) + Vector2(2,2), Location.Icon.Size * scale - Vector2(4,4), self.color)
+    Render:FillArea(position - (Location.Icon.Size * scale / 2 * self.scale) + Vector2(2,2), Location.Icon.Size * scale * self.scale - Vector2(4,4), self.color)
 end
 
 function Location:Draw(position, scale)
+    -- if self.color == Location.Color.Gray then return end
+    
     if self.radius > 0 then
         self:DrawRadius(position, scale)
     end
