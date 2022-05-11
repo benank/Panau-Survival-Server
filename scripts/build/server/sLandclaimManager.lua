@@ -112,6 +112,8 @@ function sLandclaimManager:DetonateOnBuildObject(args)
 
     local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_data.landclaim_owner_id, args.landclaim_data.landclaim_id)
     if not landclaim then return end
+    
+    if landclaim.owner_id == "SERVER" then return end
 
     local target_object_id = tonumber(args.landclaim_data.id)
     landclaim:DamageObject(args, args.player)
