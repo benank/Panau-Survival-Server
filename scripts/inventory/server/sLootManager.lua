@@ -467,32 +467,39 @@ function sLootManager:GenerateAllLoot()
 
         local cnt = 0
 
+        local sub_pos = Vector3(10839, 235, 9868)
+        local sub_radius = 400
+        
         for _, lootbox_data in pairs(self.loot_data) do
 
-            local in_sz = lootbox_data.pos:Distance(sz_position) < sz_radius
-            local active = rand() <= Lootbox.GeneratorConfig.box[lootbox_data.tier].max_spawned
+            if not in_sub then
+                
+                local in_sz = lootbox_data.pos:Distance(sz_position) < sz_radius
+                local in_sub = lootbox_data.pos:Distance(sub_pos) < sub_radius
+                local active = rand() <= Lootbox.GeneratorConfig.box[lootbox_data.tier].max_spawned
 
-            local box = CreateLootbox({
-                position = lootbox_data.pos,
-                angle = lootbox_data.ang,
-                tier = lootbox_data.tier,
-                active = active or in_sz,
-                in_sz = in_sz,
-                contents = in_sz and {} or ItemGenerator:GetLoot(lootbox_data.tier)
-            })
+                local box = CreateLootbox({
+                    position = lootbox_data.pos,
+                    angle = lootbox_data.ang,
+                    tier = lootbox_data.tier,
+                    active = active or in_sz,
+                    in_sz = in_sz,
+                    contents = in_sz and {} or ItemGenerator:GetLoot(lootbox_data.tier)
+                })
 
-            -- Separate active & inactive boxes
-            if active then
-                self.active_lootboxes[box.tier][box.uid] = box
-            else
-                self.inactive_lootboxes[box.tier][box.uid] = box
+                -- Separate active & inactive boxes
+                if active then
+                    self.active_lootboxes[box.tier][box.uid] = box
+                else
+                    self.inactive_lootboxes[box.tier][box.uid] = box
+                end
+
+                cnt = cnt + 1
+
+                --if cnt % 100 == 0 then
+                --    Timer.Sleep(1)
+                --end
             end
-
-            cnt = cnt + 1
-
-            --if cnt % 100 == 0 then
-            --    Timer.Sleep(1)
-            --end
 
         end
 
