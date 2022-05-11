@@ -143,6 +143,8 @@ function cAirdropManager:RenderAirdropInfo()
 
     Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     local airdrop_time = math.ceil(self:GetTimeUntilDrop())
+    
+    if airdrop_time < -15 then return end
 
     local text
 

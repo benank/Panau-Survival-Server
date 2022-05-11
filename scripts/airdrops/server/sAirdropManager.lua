@@ -337,6 +337,13 @@ function sAirdropManager:CreateAirdrop()
             channel = "Airdrops",
             content = string.format(AirdropConfig.Messages.Delivered, self.airdrop.type)
         })
+        
+        -- Clear airdrops if it has been more than 2 hours since drop without action or players
+        Timer.SetTimeout(1000 * 60 * 60 * 2, function()
+            if Server:GetPlayerCount() == 0 and self.airdrop.active and not self.airdrop.doors_destroyed then
+                self:RemoveAirdrop()
+            end
+        end)
 
     end)
 
