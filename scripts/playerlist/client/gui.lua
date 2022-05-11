@@ -177,6 +177,7 @@ function ListGUI:AddPlayer( player )
     for i = 0, 4 do
         item:GetCellContents(i):SetTextSize(20)
         item:GetCellContents(i):SetPadding(Vector2(4,4), Vector2(4,4))
+		item:GetCellContents(i):SetFont(AssetLocation.Disk, "Archivo.ttf")
 
         if i ~= 1 then
             item:GetCellContents(i):SetAlignment(GwenPosition.Center)
@@ -190,6 +191,7 @@ function ListGUI:AddPlayer( player )
             btn:SetSize(Vector2(128,24))
             btn:SetPadding(Vector2(20,20), Vector2(20,20))
             btn:SetDataString("steam_id", tostring(player:GetSteamId()))
+			btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
             item:SetCellContents(i, btn)
             btn:Subscribe("Press", self, self.PressFriendButton)
         end

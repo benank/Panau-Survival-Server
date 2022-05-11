@@ -518,6 +518,7 @@ function Nametags:Render()
         return
     end
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     -- Create some prerequisite variables
     --local local_pos = LocalPlayer:GetPosition()
     local local_pos = Camera:GetPosition()

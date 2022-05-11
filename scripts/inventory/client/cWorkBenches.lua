@@ -67,6 +67,7 @@ end
 
 function cWorkBenches:GameRender(args)
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     local angle = Angle(Camera:GetAngle().yaw,0,0)
 
     for index, data in pairs(self.active_workbenches) do

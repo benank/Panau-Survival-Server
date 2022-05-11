@@ -192,7 +192,7 @@ function cInventoryUI:GetItemButtonStackAmount(stack, index)
     local button = itemWindow:FindChildByName("button", true)
 
     if button:GetDataBool("dropping") then -- If they are dropping this stack
-        return string.format("%i/%i", button:GetDataNumber("drop_amount"), stack:GetAmount())
+        return string.format("%i / %i", button:GetDataNumber("drop_amount"), stack:GetAmount())
     else -- Otherwise
         return stack:GetAmount()
     end
@@ -382,7 +382,7 @@ function cInventoryUI:GetNumSlotsInCategory(cat)
 end
 
 function cInventoryUI:GetCategoryTitleText(cat)
-    return string.format("%s %i/%i%s",
+    return string.format("%s %i / %i%s",
         self:GetLocalizedText(cat),
         #Inventory.contents[cat],
         self:GetNumSlotsInCategory(cat) or 0,
@@ -407,6 +407,7 @@ function cInventoryUI:CreateCategoryTitle(cat, is_shadow, parent)
     categoryTitle:SetSize(Vector2(self.inv_dimensions.button_size.x, self.inv_dimensions.button_size.y * 0.5))
     categoryTitle:SetTextSize(self.inv_dimensions.category_title_text_size)
     categoryTitle:SetAlignment(GwenPosition.Center)
+    categoryTitle:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     if is_shadow then
         categoryTitle:SetTextColor(Color.Black)
@@ -469,6 +470,14 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     text_shadow:SetAlignment(GwenPosition.Center)
     text_shadow:SetPosition(Vector2(1,1))
     text_shadow:SetTextPadding(Vector2(0, 4), Vector2(0, 0))
+    text_shadow:SetFont(AssetLocation.Disk, "Archivo.ttf")
+    
+    
+	-- self.fonts = {}
+	-- self.fonts["Main"] = "LeagueGothic.ttf"
+	-- self.fonts["Text"] = "Archivo.ttf"
+	-- self.fonts["Icons"] = "FontAwesome.ttf"
+	-- self.fonts["Roboto"] = "Roboto.ttf"
 
     local text = Label.Create(itemWindow, "text")
     text:SetSizeAutoRel(Vector2(1, 1))
@@ -476,6 +485,7 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     text:SetTextColor(Color.White)
     text:SetAlignment(GwenPosition.Center)
     text:SetTextPadding(Vector2(0, 4), Vector2(0, 0))
+    text:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     local colors = InventoryUIStyle.colors.default
     button:SetTextColor(colors.text)
@@ -495,6 +505,7 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     tooltip_text:SetTextColor(Color.White)
     tooltip_text:SetAlignment(GwenPosition.Center)
     tooltip_text:SetTextPadding(Vector2(0, 2), Vector2(0, 0))
+    tooltip_text:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     local total_dura_width = 0.9
     local total_dura_height = 0.15

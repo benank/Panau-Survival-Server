@@ -149,6 +149,7 @@ end
 
 function cItemUse:Render(args)
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     self.progress_circle:Render(args)
 
     self:RenderCountdown(args)

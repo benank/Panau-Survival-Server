@@ -201,14 +201,14 @@ function cSafezoneSigns:LoadImages()
         }
 
         Timer.Sleep(1000)
-        self.signs["GetConnected"] = 
-        {
-            image = Image.Create(AssetLocation.Resource, "Safezone_GetConnected"),
-            size = Vector2(2128, 276),
-            scale = 2.5,
-            position = Vector3(-10341.725586, 205.002228, -3062.086182),
-            angle = Angle(-2.094716 + math.pi, 0, 0)
-        }
+        -- self.signs["GetConnected"] = 
+        -- {
+        --     image = Image.Create(AssetLocation.Resource, "Safezone_GetConnected"),
+        --     size = Vector2(2128, 276),
+        --     scale = 2.5,
+        --     position = Vector3(-10341.725586, 205.002228, -3062.086182),
+        --     angle = Angle(-2.094716 + math.pi, 0, 0)
+        -- }
 
         Timer.Sleep(1000)
         self:CreateModels()
@@ -321,6 +321,7 @@ end
 function cSafezoneSigns:GameRender(args)
 
     if not self.models_created then return end
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     for name, sign_data in pairs(self.signs) do
         local t = Transform3():Translate(sign_data.position):Rotate(sign_data.angle)

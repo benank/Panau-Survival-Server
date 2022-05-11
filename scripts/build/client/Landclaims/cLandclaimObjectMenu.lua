@@ -182,6 +182,7 @@ function cLandclaimObjectMenu:CreateMenu(options)
         end
         button:SetBackgroundVisible(false)
         button:SetDataString("button_name", name)
+        button:SetFont(AssetLocation.Disk, "Archivo.ttf")
         button:Subscribe("Press", self, self.PressButton)
         self.buttons[name] = button
     end

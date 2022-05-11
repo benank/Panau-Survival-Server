@@ -24,6 +24,7 @@ end
 
 function cPingPlayerIndicators:Render(args)
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     local current_time = Client:GetElapsedSeconds()
     local local_pos = LocalPlayer:GetPosition()
 

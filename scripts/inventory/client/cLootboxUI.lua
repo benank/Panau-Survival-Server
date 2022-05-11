@@ -31,6 +31,7 @@ function cLootboxUI:__init()
     self.stash_dismount_button:SetTextHoveredColor(Color.Red)
     self.stash_dismount_button:SetTextPressedColor(Color.Red)
     self.stash_dismount_button:SetTextDisabledColor(Color.Red)
+    self.stash_dismount_button:SetFont(AssetLocation.Disk, "Archivo.ttf")
     self.stash_dismount_button:Hide()
     self.stash_dismount_button:Subscribe("Press", self, self.PressDismountStashButton)
 
@@ -72,6 +73,7 @@ function cLootboxUI:CreateAccessModeMenu()
         button:SetBackgroundVisible(false)
         button:SetDataNumber("access_mode", i)
         button:Subscribe("Press", self, self.PressStashAccessModeButton)
+        button:SetFont(AssetLocation.Disk, "Archivo.ttf")
     end
 
 end
@@ -166,7 +168,7 @@ end
 
 function cLootboxUI:SetLootboxTitle(name, num_items, capacity)
 
-    local text = string.format("%s (%s/%d)", name, tostring(num_items), tostring(capacity))
+    local text = string.format("%s (%s / %d)", name, tostring(num_items), tostring(capacity))
 
     self.lootbox_title:SetText(text)
     self.lootbox_title:SetTextSize(ClientInventory.ui.inv_dimensions.text_size)

@@ -141,6 +141,7 @@ end
 -- Renders information about the airdrop on the side of the screen
 function cAirdropManager:RenderAirdropInfo()
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     local airdrop_time = math.ceil(self:GetTimeUntilDrop())
 
     local text
@@ -161,6 +162,26 @@ function cAirdropManager:RenderAirdropInfo()
     local shadow_size = 2
     Render:DrawText(
         Vector2(render_size.x / 2 - text_size.x / 2, render_size.y * 0.15 - text_size.y / 2) + Vector2(shadow_size, shadow_size),
+        text,
+        Color.Black,
+        size)
+    Render:DrawText(
+        Vector2(render_size.x / 2 - text_size.x / 2, render_size.y * 0.15 - text_size.y / 2) + Vector2(0, shadow_size),
+        text,
+        Color.Black,
+        size)
+    Render:DrawText(
+        Vector2(render_size.x / 2 - text_size.x / 2, render_size.y * 0.15 - text_size.y / 2) + Vector2(0, -shadow_size),
+        text,
+        Color.Black,
+        size)
+    Render:DrawText(
+        Vector2(render_size.x / 2 - text_size.x / 2, render_size.y * 0.15 - text_size.y / 2) + Vector2(shadow_size, 0),
+        text,
+        Color.Black,
+        size)
+    Render:DrawText(
+        Vector2(render_size.x / 2 - text_size.x / 2, render_size.y * 0.15 - text_size.y / 2) + Vector2(-shadow_size, 0),
         text,
         Color.Black,
         size)

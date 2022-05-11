@@ -42,7 +42,7 @@ function sStaticNPCs:GetRandomPlayersFromDB(num_players)
         "LEFT OUTER JOIN player_names on player_names.steam_id=player_data.steamID "..
         "LEFT OUTER JOIN models on models.steamID=player_data.steamID "..
         "LEFT OUTER JOIN exp on exp.steamID=player_data.steamID "..
-        "WHERE time_online > 60 "..
+        "WHERE time_online > 120 AND level > 1 "..
         "ORDER BY random() LIMIT ?"
     
 	local query = SQL:Query(cmd)

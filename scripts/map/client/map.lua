@@ -748,6 +748,7 @@ function Map:ToggleWaypoint(position)
 end
 
 function Map:Draw()
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     Render:FillArea(Vector2.Zero, Render.Size, Color(5, 38, 48))
 
     Map.Image:SetSize(Vector2.One * Render.Height * Map.Zoom)

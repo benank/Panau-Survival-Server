@@ -27,6 +27,7 @@ function AssetManagerMenu:__init()
     delete_text:SetMargin(Vector2(0, 10), Vector2(0, 0))
     delete_text:SetAlignment(GwenPosition.Center)
     delete_text:SetDock(GwenPosition.Top)
+    delete_text:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     local delete_btn = Button.Create(self.delete_confirm_menu)
     delete_btn:SetText("Delete")
@@ -36,6 +37,7 @@ function AssetManagerMenu:__init()
     delete_btn:SetMargin(Vector2(0, 10), Vector2(0, 0))
     delete_btn:SetDock(GwenPosition.Bottom)
     delete_btn:Subscribe("Press", self, self.ConfirmDeleteButton)
+    delete_btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     self.delete_confirm_menu:Hide()
 
@@ -285,6 +287,7 @@ function AssetManagerMenu:AddVehicle(data)
     for i = 0, 7 do
         item:GetCellContents(i):SetTextSize(20)
         item:GetCellContents(i):SetPadding(Vector2(4, 4), Vector2(4, 4))
+        item:GetCellContents(i):SetFont(AssetLocation.Disk, "Archivo.ttf")
 
         if i ~= 0 then
             item:GetCellContents(i):SetAlignment(GwenPosition.Center)
@@ -307,6 +310,7 @@ function AssetManagerMenu:AddVehicle(data)
         btn:SetDataString("vehicle_id", tostring(data.vehicle_id))
         btn:SetDataString("type", name)
         item:SetCellContents(index, btn)
+        btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
         btn:Subscribe("Press", self, self.PressVehicleButton)
 
         if name == "Spawn" and data.spawned then
@@ -470,6 +474,7 @@ function AssetManagerMenu:AddLandclaim(data)
     for i = 0, 5 do
         item:GetCellContents(i):SetTextSize(20)
         item:GetCellContents(i):SetPadding(Vector2(4, 4), Vector2(4, 4))
+        item:GetCellContents(i):SetFont(AssetLocation.Disk, "Archivo.ttf")
 
         if i ~= 0 then
             item:GetCellContents(i):SetAlignment(GwenPosition.Center)
@@ -484,6 +489,7 @@ function AssetManagerMenu:AddLandclaim(data)
     combo_box:SelectItemByName(data.access_mode_string)
     combo_box:Subscribe("Selection", self, self.SelectLandclaimAccessType)
     combo_box:SetDataString("landclaim_id", tostring(data.id))
+    combo_box:SetFont(AssetLocation.Disk, "Archivo.ttf")
     item:SetCellContents(5, combo_box)
 
     local button_names = {
@@ -501,6 +507,7 @@ function AssetManagerMenu:AddLandclaim(data)
         btn:SetSize(Vector2(80, 24))
         btn:SetDataString("landclaim_id", tostring(data.id))
         btn:SetDataString("type", name)
+        btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
         item:SetCellContents(index, btn)
         btn:Subscribe("Press", self, self.PressLandclaimButton)
     end
@@ -551,6 +558,7 @@ function AssetManagerMenu:AddStash(data)
     for i = 0, 5 do
         item:GetCellContents(i):SetTextSize(20)
         item:GetCellContents(i):SetPadding(Vector2(4, 4), Vector2(4, 4))
+        item:GetCellContents(i):SetFont(AssetLocation.Disk, "Archivo.ttf")
 
         if i ~= 0 then
             item:GetCellContents(i):SetAlignment(GwenPosition.Center)
@@ -571,6 +579,7 @@ function AssetManagerMenu:AddStash(data)
         btn:SetSize(Vector2(80, 24))
         btn:SetDataString("stash_id", tostring(data.id))
         btn:SetDataString("type", name)
+        btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
         item:SetCellContents(index, btn)
         btn:Subscribe("Press", self, self.PressStashButton)
     end
@@ -667,6 +676,7 @@ function AssetManagerMenu:CreateLandclaimsMenu()
     self.landclaim_rename_input:SetMargin(Vector2(4, 4), Vector2(4, 4))
     self.landclaim_rename_input:SetDock(GwenPosition.Fill)
     self.landclaim_rename_input:SetAlignment(GwenPosition.Center)
+    self.landclaim_rename_input:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     local rename_btn = Button.Create(self.landclaim_rename_menu)
     rename_btn:SetText("Rename")
@@ -675,6 +685,7 @@ function AssetManagerMenu:CreateLandclaimsMenu()
     rename_btn:SetMargin(Vector2(0, 10), Vector2(0, 0))
     rename_btn:SetDock(GwenPosition.Bottom)
     rename_btn:Subscribe("Press", self, self.PressRenameLandclaimButton)
+    rename_btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     self.landclaim_rename_menu:Hide()
 end
@@ -755,6 +766,7 @@ function AssetManagerMenu:CreateStashesMenu()
     self.stash_rename_input:SetMargin(Vector2(4, 4), Vector2(4, 4))
     self.stash_rename_input:SetDock(GwenPosition.Fill)
     self.stash_rename_input:SetAlignment(GwenPosition.Center)
+    self.stash_rename_input:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     local rename_btn = Button.Create(self.stash_rename_menu)
     rename_btn:SetText("Rename")
@@ -763,6 +775,7 @@ function AssetManagerMenu:CreateStashesMenu()
     rename_btn:SetMargin(Vector2(0, 10), Vector2(0, 0))
     rename_btn:SetDock(GwenPosition.Bottom)
     rename_btn:Subscribe("Press", self, self.PressRenameStashButton)
+    rename_btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     self.stash_rename_menu:Hide()
 end

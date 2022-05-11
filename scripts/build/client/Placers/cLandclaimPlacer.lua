@@ -80,6 +80,7 @@ end
 function cLandclaimPlacer:Render(args)
 
     if not self.placing then return end
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     self.position = LocalPlayer:GetPosition()
 
@@ -114,7 +115,7 @@ function cLandclaimPlacer:RenderText(can_place_here)
 end
 
 function cLandclaimPlacer:DrawShadowedText(pos, text, color, number)
-    Render:DrawText(pos + Vector2(2,2), text, Color.Black, number)
+    Render:DrawText(pos + Vector2(1,1), text, Color.Black, number)
     Render:DrawText(pos, text, color, number)
 end
 

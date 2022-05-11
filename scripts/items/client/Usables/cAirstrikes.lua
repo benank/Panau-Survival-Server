@@ -22,6 +22,7 @@ function cAirstrikes:RenderCountdown(position, time_left)
     local pos, on_screen = Render:WorldToScreen(position)
 
     if not on_screen then return end
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     local text = string.format("%.0f sec", time_left + 1)
     local text_offset = Vector2(30, 0)

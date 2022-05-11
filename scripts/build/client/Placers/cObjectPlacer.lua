@@ -161,6 +161,7 @@ function cObjectPlacer:Render(args)
 
     if not self.placing then return end
     if not IsValid(self.object) then return end
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     if not self.model then
         self:CreateModel()
@@ -269,7 +270,7 @@ function cObjectPlacer:RenderText(can_place_here)
 end
 
 function cObjectPlacer:DrawShadowedText(pos, text, color, number)
-    Render:DrawText(pos + Vector2(2,2), text, Color.Black, number)
+    Render:DrawText(pos + Vector2(1,1), text, Color.Black, number)
     Render:DrawText(pos, text, color, number)
 end
 

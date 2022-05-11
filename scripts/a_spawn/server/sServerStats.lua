@@ -48,7 +48,7 @@ function sServerStats:UpdateTotalDrones(args)
 end
 
 function sServerStats:UpdateTotalLootSpawns(args)
-    self.stats["LootSpawns"] = string.format("%d/%d", args.spawned, args.total)
+    self.stats["LootSpawns"] = string.format("%d / %d", args.spawned, args.total)
     self:Refresh()
 end
 

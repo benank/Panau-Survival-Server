@@ -21,9 +21,10 @@ function cLoader:__init()
     self.load_text:SetAlignment(GwenPosition.CenterH)
     self.load_text:SetPosition(Vector2(0, 50))
     self.load_text:SetText("Joining Panau Survival")
-    self.load_text:SetTextColor(Color.Red)
+    self.load_text:SetTextColor(Color.White)
     self.load_text:SetTextSize(Render.Size.x * 0.02)
     self.load_text:SetSizeRel(Vector2(1,1))
+    self.load_text:SetFont(AssetLocation.Disk, "Archivo.ttf")
     self.load_text_dots = 0;
     self.max_load_text_dots = 3
 
@@ -245,6 +246,7 @@ function cLoader:Start()
 end
 
 function cLoader:PostRender(args)
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     local i = 0
     local pos = Vector2(0, 0)
     local fontsize = 20

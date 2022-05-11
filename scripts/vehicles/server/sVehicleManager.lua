@@ -92,7 +92,7 @@ function sVehicleManager:__init()
 end
 
 function sVehicleManager:UpdateVehicleTotalStats()
-    Events:Fire("Vehicles/UpdateVehicleTotalStats", {total = string.format("%d/%d", count_table(self.vehicles), self.total_vehicle_spawnable_count)})
+    Events:Fire("Vehicles/UpdateVehicleTotalStats", {total = string.format("%d / %d", count_table(self.vehicles), self.total_vehicle_spawnable_count)})
 end
 
 function sVehicleManager:FireBeringBombsight(args, player)

@@ -67,6 +67,7 @@ end
 function cBattery:Render(args)
 
     if LocalPlayer:GetValue("InventoryOpen") and Render.Size.x < 1300 then return end
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     local num_batteries = self:GetNumBatteries()
     local battery_text = string.format("Battery (%d)", num_batteries)

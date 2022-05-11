@@ -172,6 +172,7 @@ end
 
 function HexagonPuzzle:Render(window)
 
+	Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     self.delta = Client:GetElapsedSeconds() - self.last_time
     self.last_time = Client:GetElapsedSeconds()
 

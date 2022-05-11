@@ -54,6 +54,7 @@ end
 
 function cSafezone:RenderSafezoneText(text, subtext, color)
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     local c = Color(color.r, color.g, color.b, 200)
 
     local top_margin = 10

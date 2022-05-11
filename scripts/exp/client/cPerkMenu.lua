@@ -24,7 +24,7 @@ function cPerkMenu:__init()
         [1] = "Perks",
         -- [3] = "Leaderboard"
     }
-
+    
     self.column_index = 
     {
         Id = 0,
@@ -75,6 +75,7 @@ function cPerkMenu:CreateConfirmMenu()
     confirm_text:SetMargin(Vector2(0, 10), Vector2(0, 0))
     confirm_text:SetAlignment(GwenPosition.Center)
     confirm_text:SetDock( GwenPosition.Top )
+    confirm_text:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     local confirm_btn = Button.Create(self.confirm_menu)
     confirm_btn:SetText("Unlock Perk")
@@ -83,6 +84,7 @@ function cPerkMenu:CreateConfirmMenu()
     confirm_btn:SetMargin(Vector2(0, 10), Vector2(0, 0))
     confirm_btn:SetDock( GwenPosition.Bottom )
     confirm_btn:Subscribe("Press", self, self.ConfirmPerkButton)
+    confirm_btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     self.confirm_menu:Hide()
 
@@ -107,6 +109,7 @@ function cPerkMenu:CreateChoiceMenu(choice_data)
     confirm_text:SetMargin(Vector2(0, 10), Vector2(0, 0))
     confirm_text:SetAlignment(GwenPosition.Center)
     confirm_text:SetDock( GwenPosition.Top )
+    confirm_text:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     for choice_index, choice_text in ipairs(choice_data.choices) do
 
@@ -118,6 +121,7 @@ function cPerkMenu:CreateChoiceMenu(choice_data)
         confirm_btn:SetDock( GwenPosition.Bottom )
         confirm_btn:SetDataNumber("choice_index", choice_index)
         confirm_btn:Subscribe("Press", self, self.PressChoiceButton)
+        confirm_btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     end
 
@@ -270,7 +274,7 @@ function cPerkMenu:AddPerk(data)
 	item:SetCellText( self.column_index.Cost, data.cost > 0 and tostring(data.cost) or "Free" )
 	item:SetCellText( self.column_index.LevelReq, tostring(data.level_req) )
     item:SetCellText( self.column_index.PerkReq, data.perk_req > 0 and "#" .. tostring(ExpPerksById[data.perk_req].position) or "" )
-
+    
     for i = 0, 5 do
         if i == self.column_index.Details then
             item:GetCellContents(i):SetWidth(300)
@@ -279,6 +283,8 @@ function cPerkMenu:AddPerk(data)
             item:GetCellContents(i):SetWrap(true)
         end
         item:GetCellContents(i):SetAlignment(GwenPosition.Center)
+        item:GetCellContents(i):SetTextSize(15)
+        item:GetCellContents(i):SetFont(AssetLocation.Disk, "Archivo.ttf")
     end
 
     local button_names = 
@@ -292,6 +298,8 @@ function cPerkMenu:AddPerk(data)
         btn:SetAlignment(GwenPosition.Center)
         btn:SetDock(GwenPosition.Fill)
         btn:SetDataNumber("perk_id", data.id)
+        btn:SetTextSize(15)
+        btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
         item:SetCellContents(index, btn)
         btn:Subscribe("Press", self, self.PressPerkButton)
     end
