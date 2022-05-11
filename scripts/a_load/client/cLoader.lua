@@ -265,6 +265,15 @@ function cLoader:PostRender(args)
     for i = 1, num_circles do
         Render:FillCircle(circle_pos, math.sin(self.delta * 5 - i * 0.5) * circle_size, Color(color.r,color.g,color.b,25))
     end
+    
+    self:DrawPercentComplete()
+end
+
+function cLoader:DrawPercentComplete()
+    local pos = Render.Size / 2
+    local text = string.format("%.0f%%", self.progressBar:GetValue() * 100)
+    local text_size = Render:GetTextSize(text, 80)
+    Render:DrawText(pos - text_size / 2, text, Color(255, 255, 255, 150), 80)
 end
 
 function cLoader:Render2(args)
