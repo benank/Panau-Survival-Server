@@ -107,7 +107,7 @@ function cAirdropManager:AirdropHitGround()
 end
 
 function cAirdropManager:Render(args)
-    if self.airdrop.active then
+    if self.airdrop.active and self.airdrop.position then
         self:RenderAirdropInfo()
 
         if self:GetTimeUntilDrop() < 0 then
