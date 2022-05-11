@@ -27,9 +27,9 @@ function cLootManager:__init()
     
     Events:Subscribe("LocalPlayerExitVehicle", self, self.LocalPlayerExitVehicle)
 
-    if IsAdmin(LocalPlayer) then
-        self.stash_render = Events:Subscribe("Render", self, self.StashRender)
-    end
+    -- if IsAdmin(LocalPlayer) then
+    --     self.stash_render = Events:Subscribe("Render", self, self.StashRender)
+    -- end
     
     self.loot_radar_tiers = {
         [Lootbox.Types.Level1] = true, 
