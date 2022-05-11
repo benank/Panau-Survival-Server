@@ -275,6 +275,7 @@ end
 function EquippableRocketGrapple:RenderGrappleDistance(ray)
 
     if ray.distance < 80 and not self.distance then return end
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
 	local triangleColor = Color(0,200,0,150)
 	
