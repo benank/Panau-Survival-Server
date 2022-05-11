@@ -154,13 +154,15 @@ local join_msg_parts =
     "Welcome to ",
     "Panau Survival",
     ". Get food and gear from lootboxes, fight drones and players to level up, and build a base and defend your loot from raiders!",
-    "If you need help, please check out the ",
+    "Learn how to play from the ",
     "Help Window ",
     "by pressing ",
     "F5",
-    ". If you need extra help, feel free to join our Discord or ask other players. Link is in the Help Window!",
-    "Server will go down for maintenance on May 9-12. ",
-    "Server event starts May 13."
+    ".",
+    "Type ",
+    "/voice",
+    " to connect to proximity voice chat and talk with nearby players!",
+    "2 year anniversary server event happening now through May 22!"
 }
 
 local translated_join_msg_parts = 
@@ -236,8 +238,14 @@ function SendPlayerLocalizedJoinMessage(player)
     Chat:Send(player, "", Color.White)
     
     Chat:Send(player, 
-        translated_join_msg_parts[locale][9], Color.Red,
-        translated_join_msg_parts[locale][10], Color.White)
+        translated_join_msg_parts[locale][9], Color.White,
+        join_msg_parts[10], Color(255, 0, 255),
+        translated_join_msg_parts[locale][11], Color.White)
+        
+    Chat:Send(player, "", Color.White)
+    
+    Chat:Send(player, 
+        translated_join_msg_parts[locale][12], Color.Yellow)
 end
 
 Events:Subscribe("PlayerLocaleChanged", PlayerLocaleChanged)
