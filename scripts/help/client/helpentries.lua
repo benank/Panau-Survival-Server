@@ -115,7 +115,10 @@ function HelpEntries:RefreshHelpEntries()
                 "/w PlayerName Message\n\t" .. self.entries.ChatCommands.Text1_1 .. "\n\t" .. self.entries.ChatCommands.Text_Example .. ": /w benank " .. self.entries.ChatCommands.Text1_2 .. "\n\n"..
                 "/r Message\n\t" .. self.entries.ChatCommands.Text2_1 .. "\n\t" .. self.entries.ChatCommands.Text_Example .. ": /r " .. self.entries.ChatCommands.Text2_2 .. "\n\n"..
                 "/report Message\n\t" .. self.entries.ChatCommands.Text3_1 .. "\n\t" .. self.entries.ChatCommands.Text_Example .. ": /report benank " .. self.entries.ChatCommands.Text3_2 .. "\n\n"..
-                "/respawn\n\t" .. self.entries.ChatCommands.Text4_1
+                "/respawn\n\t" .. self.entries.ChatCommands.Text4_1 .. "\n\n"..
+                "/sit\n\t" .. self.entries.ChatCommands.Text5_1 .. "\n\n"..
+                "/voice\n\t" .. self.entries.ChatCommands.Text6_1 .. "\n\n"..
+                "/language\n\t" .. self.entries.ChatCommands.Text7_1
         })
     Events:Fire("HelpAddItem",
         {

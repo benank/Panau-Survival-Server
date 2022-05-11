@@ -90,7 +90,10 @@ shHelpEntries =
             Text2_2 = "On my way!",
             Text3_1 = "Report a player for breaking the rules.",
             Text3_2 = "has just been spamming the chat with vulgar comments.",
-            Text4_1 = "Teleport to your respawn point (safezone by default)."
+            Text4_1 = "Teleport to your respawn point (safezone by default).",
+            Text5_1 = "Sit down on the ground.",
+            Text6_1 = "Open the Voice Chat Menu.",
+            Text7_1 = "Open the Language Selection Menu."
         },
         Rules = {
             Title = "Rules",
