@@ -5,7 +5,7 @@ LootItems =
     {
         ["EVENT"] = 
         {
-            rarity = 0.02,
+            rarity = 0.04,
             items = 
             {
                 ["Two Year Party Hat"] = {rarity = 1, min = 1, max = 1},
@@ -13,7 +13,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.39,
+            rarity = 0.37,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 10, max = 20},
@@ -385,7 +385,7 @@ LootItems =
             rarity = 0.187,
             items = 
             {
-                ["Wall"] = {rarity = 0.68, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                ["Wall"] = {rarity = 0.68, min = 1, max = 2, min_dura = 1, max_dura = 1},
                 ["Door"] = {rarity = 0.06, min = 1, max = 1, min_dura = 1, max_dura = 1},
                 ["Proximity Alarm"] = {rarity = 0.05, min = 1, max = 1},
                 ["Table"] = {rarity = 0.02, min = 1, max = 1},
