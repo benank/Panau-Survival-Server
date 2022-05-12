@@ -12,6 +12,8 @@ end
 class 'sLootManager'
 
 function sLootManager:__init()
+    
+    collectgarbage("collect")
 
     self.ready = false
     self.lootspawn_file = "lootspawns/lootspawns.txt"
