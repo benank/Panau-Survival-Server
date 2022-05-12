@@ -9,7 +9,7 @@ function sDroneManager:__init()
     self.player_cells = {} -- Players in cells [x][y][steam_id] = player
     self.players = {}
 
-    Timer.SetInterval(1000 * 60 * 5, function()
+    Timer.SetInterval(1000 * 60 * 30, function()
         self:UpdateDronesCountsInSZ()
     end)
 
