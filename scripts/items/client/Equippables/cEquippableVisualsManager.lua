@@ -21,7 +21,7 @@ function cEquippableVisualsManager:Render(args)
     for id, visual in pairs(self.nearby_players) do
 
         if IsValid(visual.player) then
-            visual:Render()
+            visual:Render(args)
         elseif time - visual.time > 1 then 
             visual:Remove()
             self.nearby_players[id] = nil
@@ -58,7 +58,7 @@ function cEquippableVisualsManager:CheckPlayer(player)
     end
 
     if not self.render and count_table(self.nearby_players) > 0 then
-        self.render = Events:Subscribe("Render", self, self.Render)
+        self.render = Events:Subscribe("GameRender", self, self.Render)
     elseif self.render and count_table(self.nearby_players) == 0 then
         Events:Unsubscribe(self.render)
         self.render = nil
