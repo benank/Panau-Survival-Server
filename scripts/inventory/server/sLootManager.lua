@@ -474,10 +474,10 @@ function sLootManager:GenerateAllLoot()
         
         for _, lootbox_data in pairs(self.loot_data) do
 
+            local in_sub = lootbox_data.pos:Distance(sub_pos) < sub_radius
             if not in_sub then
                 
                 local in_sz = lootbox_data.pos:Distance(sz_position) < sz_radius
-                local in_sub = lootbox_data.pos:Distance(sub_pos) < sub_radius
                 local active = rand() <= Lootbox.GeneratorConfig.box[lootbox_data.tier].max_spawned
 
                 local box = CreateLootbox({
