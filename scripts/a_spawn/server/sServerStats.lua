@@ -18,11 +18,11 @@ function sServerStats:__init()
         ["PlacedExplosives"] = 0
     }
     
-    self:RefreshStats()
     Timer.SetInterval(1000 * 60 * 60 * 6, function()
         self:RefreshStats()
     end)
 
+    Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("Inventory/UpdateTotalLootSpawns", self, self.UpdateTotalLootSpawns)
@@ -30,6 +30,13 @@ function sServerStats:__init()
     Events:Subscribe("build/TotalBuildObjectsUpdate", self, self.TotalBuildObjectsUpdate)
     Events:Subscribe("Vehicles/UpdateVehicleTotalStats", self, self.UpdateVehicleTotalStats)
 
+end
+
+function sServerStats:ModuleLoad()
+    self:RefreshStats()
+    Timer.SetTimeout(30000, function()
+        Events:Fire("Stats/GetBuildObjectsCount")
+    end)
 end
 
 function sServerStats:UpdateVehicleTotalStats(args)
