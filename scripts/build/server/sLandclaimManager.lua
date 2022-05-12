@@ -7,6 +7,10 @@ function sLandclaimManager:__init()
     self.landclaims = {} -- [steam_id] = {[landclaim_id] = landclaim, [landclaim_id] = landclaim}
     self.player_spawns = {} -- [steam id] = {id = id, landclaim_id = landclaim id, landclaim_owner_id = landclaim_owner_id}
     self.players = {}
+    
+    if SharedObject.GetByName("Landclaims") then
+        SharedObject.GetByName("Landclaims"):Remove()
+    end
 
     self.landclaims_sharedobject = SharedObject.Create("Landclaims")
     self:UpdateLandclaimsSharedObject()
