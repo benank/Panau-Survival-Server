@@ -68,7 +68,7 @@ end
 function sLandclaimManager:CheckForExpiredLandclaims()
     for steam_id, player_landclaims in pairs(self.landclaims) do
         for id, landclaim in pairs(player_landclaims) do
-            if landclaim.state == LandclaimStateEnum.Active and GetLandclaimDaysTillExpiry(landclaim.expiry_date) <= 0 then
+            if landclaim.owner_id ~= "SERVER" and landclaim.state == LandclaimStateEnum.Active and GetLandclaimDaysTillExpiry(landclaim.expiry_date) <= 0 then
                 landclaim:Expire()
             end
         end
