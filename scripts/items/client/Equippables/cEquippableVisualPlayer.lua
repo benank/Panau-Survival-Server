@@ -76,7 +76,7 @@ function cEquippableVisualPlayer:Render(args)
     for name, obj in pairs(self.objs) do
 
         if not self.equipped_visuals[name] then
-            if IsValid(obj) then obj:Remove() end
+            if IsValid(obj) and not obj.render then obj:Remove() end
             self.objs[name] = nil
         else
             self:RenderVisual(name)
