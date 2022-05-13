@@ -45,7 +45,7 @@ function HelpEntries:RefreshHelpEntries()
                 self.entries.Welcome.Text2 .. "\n\n\n"..
                 self.entries.Welcome.Text3 .. "\n\n\n"..
                 self.entries.Welcome.Text4 .. "\n\n\n"..
-                self.entries.Welcome.Text5 .. ": https://discord.gg/DWGfX3b\n\n\n"..
+                self.entries.Welcome.Text5 .. ": https://panausurvival.com/discord\n\n\n"..
                 self.entries.Welcome.Text6
         })
     Events:Fire("HelpAddItem",
@@ -61,7 +61,7 @@ function HelpEntries:RefreshHelpEntries()
                 self.entries.QuickHelp.Text6_1 .. "\n\t" .. self.entries.QuickHelp.Text6_2 .. "\n\n\n"..
                 self.entries.QuickHelp.Text7_1 .. "\n\t" .. self.entries.QuickHelp.Text7_2 .. "\n\n\n"..
                 self.entries.QuickHelp.Text8_1 .. "\n\t" .. self.entries.QuickHelp.Text8_2 .. "\n\n\n"..
-                self.entries.QuickHelp.Text9_1 .. "\n\t" .. self.entries.QuickHelp.Text9_2 .. ": https://discord.gg/DWGfX3b\n\n"
+                self.entries.QuickHelp.Text9_1 .. "\n\t" .. self.entries.QuickHelp.Text9_2 .. ": https://panausurvival.com/discord\n\n"
         })
     Events:Fire("HelpAddItem",
     {
