@@ -5,6 +5,8 @@ function sStats:__init()
     SQL:Execute("CREATE TABLE IF NOT EXISTS player_data (steamID VARCHAR UNIQUE, kills INTEGER, deaths INTEGER, time_online INTEGER, ip VARCHAR, "..
     "first_login VARCHAR, last_login VARCHAR, tier1_looted INTEGER, tier2_looted INTEGER, tier3_looted INTEGER, tier4_looted INTEGER, tier5_looted INTEGER, stashes_hacked INTEGER)")
 
+    SQL:Execute("CREATE TABLE IF NOT EXISTS player_counts (time TEXT, players_online INTEGER)")
+    
     Events:Subscribe("PlayerKilled", self, self.PlayerKilled)
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
@@ -21,6 +23,12 @@ function sStats:__init()
 
 end
 
+function sStats:RecordPlayercount()
+    local cmd = SQL:Command("INSERT INTO player_counts (time, players_online) VALUES(datetime('now', 'localtime'), ?)")
+    cmd:Bind(1, Server:GetPlayerCount())
+    cmd:Execute()
+end
+
 function sStats:ModuleUnload()
     for p in Server:GetPlayers() do
         self:UpdateAllStats(p)
@@ -29,6 +37,9 @@ end
 
 function sStats:PlayerQuit(args)
     self:UpdateAllStats(args.player)
+    Timer.SetTimeout(1000, function()
+        self:RecordPlayercount()
+    end)
 end
 
 function sStats:HackComplete(args)
@@ -222,6 +233,7 @@ function sStats:PlayerJoin(args)
         value = self:GetDateNow()
     })
 
+    self:RecordPlayercount()
 end
 
 
