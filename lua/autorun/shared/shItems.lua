@@ -211,10 +211,13 @@ Items =
         max_durability = 1000
     },
     {
-        name = "Oxygen",
+        name = "Oxygen Tank",
         category = "Survival",
-        stacklimit = 10,
-        can_use = true
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 400,
+        equip_type = "tank"
     },
     {
         name = "Ping",
@@ -363,6 +366,13 @@ Items =
     },
     {
         name = "Warp Grenade",
+        category = "Explosives",
+        stacklimit = 10,
+        can_equip = true,
+        equip_type = "held"
+    },
+    {
+        name = "Stealth Grenade",
         category = "Explosives",
         stacklimit = 10,
         can_equip = true,

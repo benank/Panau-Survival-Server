@@ -5,7 +5,12 @@ function Grenades:__init()
     for player in Server:GetPlayers() do
         player:SetNetworkValue("ThrowingGrenade", nil)
         player:SetNetworkValue("EquippedGrenade", nil)
+        player:SetValue("StealthEnabled", nil)
     end
+    
+    -- 10 minutes of stealth
+    self.stealth_time = 1000 * 60 * 10
+    self.stealthed_players = {}
 
     Network:Subscribe("items/GrenadeTossed", self, self.GrenadeTossed)
     Network:Subscribe("items/StartThrowingGrenade", self, self.StartThrowingGrenade)
@@ -18,6 +23,22 @@ function Grenades:__init()
     Events:Subscribe("drones/CreateGrenade", self, self.CreateGrenadeDrone)
     
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
+    Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
+    Events:Subscribe("LoadStatus", self, self.LoadStatus)
+end
+
+function Grenades:LoadStatus(args)
+    local steamID = tostring(args.player:GetSteamId())
+    if self.stealthed_players[steamID] then
+        self:PlayerEnterStealth(args.player, true)
+    end
+end
+
+function Grenades:PlayerDeath(args)
+    local steamID = tostring(args.player:GetSteamId())
+    if self.stealthed_players[steamID] then
+        self:PlayerExitStealth(args.player)
+    end
 end
 
 function Grenades:CreateGrenadeExternal(args)
@@ -88,6 +109,54 @@ function Grenades:GrenadeExploded(args, player)
         Events:Fire("HitDetection/WarpGrenade", {
             player = player
         })
+    end
+    
+    if args.type == "Stealth Grenade" then
+        Network:Send(player, "items/WarpEffect", {position = player:GetPosition()})
+        Network:SendNearby(player, "items/WarpEffect", {position = player:GetPosition()})
+        -- Set player model to invisible, set network val and time
+        self:PlayerEnterStealth(player)
+    end
+end
+
+function Grenades:PlayerExitStealth(player)
+    if not IsValid(player) then return end
+    
+    local steamID = tostring(player:GetSteamId())
+     
+    if self.stealthed_players[steamID] then
+        if self.stealthed_players[steamID].timeout then
+            Timer.Clear(self.stealthed_players[steamID].timeout)
+        end
+        player:SetModelId(player:GetValue("OldModel"))
+        player:SetValue("StealthEnabled", false)
+        self.stealthed_players[steamID] = nil
+    end
+end
+
+function Grenades:PlayerEnterStealth(player, do_not_refresh)
+    if not IsValid(player) then return end
+    
+    local steamID = tostring(player:GetSteamId())
+    if self.stealthed_players[steamID] and self.stealthed_players[steamID].timeout and not do_not_refresh then
+        Timer.Clear(self.stealthed_players[steamID].timeout)
+    end
+    
+    player:SetValue("StealthEnabled", true)
+    player:SetValue("OldModel", player:GetModelId())
+    player:SetModelId(20)
+    if not self.stealthed_players[steamID] then
+        self.stealthed_players[steamID] = {}
+    end
+    
+    self.stealthed_players[steamID].player = player
+    if not do_not_refresh then
+        local timeout = Timer.SetTimeout(self.stealth_time, function()
+            self:PlayerExitStealth(self.stealthed_players[steamID].player)
+            self.stealthed_players[steamID] = nil
+        end)
+    
+        self.stealthed_players[steamID].timeout = timeout
     end
 end
 

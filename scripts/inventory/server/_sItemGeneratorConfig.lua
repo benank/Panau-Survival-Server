@@ -859,6 +859,14 @@ LootItems =
                 ["LandClaim"] = {rarity = 1, min = 1, max = 1},
             }
         },
+        ["EXCLUSIVE"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Stealth Grenade"] = {rarity = 1, min = 1, max = 2},
+            }
+        },
         ["GEAR"] = 
         {
             rarity = 0.25,
@@ -879,7 +887,7 @@ LootItems =
         },
         ["BUILD"] = 
         {
-            rarity = 0.25,
+            rarity = 0.15,
             items = 
             {
                 ["Helipad"] = {rarity = 0.8, min = 1, max = 1, min_dura = 5, max_dura = 5},
@@ -933,7 +941,7 @@ LootItems =
         },
         ["BUILD"] = 
         {
-            rarity = 0.2,
+            rarity = 0.1,
             items = 
             {
                 ["Helipad"] = {rarity = 0.3, min = 3, max = 3, min_dura = 5, max_dura = 5},
@@ -954,6 +962,14 @@ LootItems =
             items = 
             {
                 ["Airdrop"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+        ["EXCLUSIVE"] = 
+        {
+            rarity = 0.1,
+            items = 
+            {
+                ["Stealth Grenade"] = {rarity = 1, min = 3, max = 5},
             }
         },
         ["SECONDLIFE"] = 

@@ -109,6 +109,7 @@ ItemsConfig =
             ["Flares"] = DamageEntity.None,
             ["AntiGrav Grenade"] = DamageEntity.None,
             ["Warp Grenade"] = DamageEntity.None,
+            ["Stealth Grenade"] = DamageEntity.None,
             ["Laser Grenade"] = DamageEntity.LaserGrenade,
             ["Snowball"] = DamageEntity.Snowball,
             ["Cluster Grenade"] = DamageEntity.ClusterGrenade,

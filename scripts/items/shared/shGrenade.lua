@@ -53,6 +53,19 @@ Grenade.Types = {
         ["angle"] = Angle(0, math.pi / 2, 0),
         ["effect_time"] = 5
 	},
+	["Stealth Grenade"] = {
+		["effect_id"] = 700,
+        ["trail_effect_id"] = 61,
+		["weight"] = 0.5,
+        ["drag"] = 0.11,
+        ["trigger_explosives"] = true,
+		["restitution"] = 0.3,
+		["radius"] = 8,
+        ["model"] = "general.blz/wea33-wea33.lod",
+        ["offset"] = Vector3(-0.32, 0, 0.03),
+        ["angle"] = Angle(0, math.pi / 2, 0),
+        ["effect_time"] = 5
+	},
 	["Flashbang"] = {
 		["effect_id"] = 19,
         ["trail_effect_id"] = 61,
