@@ -124,12 +124,13 @@ function cLandclaimPlacer:GameRender(args)
     if not self.placing then return end
     if not self.position then return end
 
+    local color = Color(0, 255, 0, 100)
     self.delta = args.delta + self.delta
-    self:RenderLandClaimBorder(self.position, self.size, self.delta)
+    self:RenderLandClaimBorder(self.position, self.size, self.delta, color)
 
 end
 
-function cLandclaimPlacer:RenderLandClaimBorder(position, size, delta)
+function cLandclaimPlacer:RenderLandClaimBorder(position, size, delta, color)
     for i = 1, 25 do
 
         -- draw border lines
@@ -141,7 +142,7 @@ function cLandclaimPlacer:RenderLandClaimBorder(position, size, delta)
             t = t:Rotate(Angle(math.pi / 2, 0, 0))
             Render:SetTransform(t)
 
-            Render:FillArea(Vector3(-size / 2, i * 3 + (delta % 3) - 25, size / 2), Vector3(size, 0.5, 0), Color(0, 255, 0, 100))
+            Render:FillArea(Vector3(-size / 2, i * 3 + (delta % 3) - 25, size / 2), Vector3(size, 0.5, 0), color)
 
         end
 

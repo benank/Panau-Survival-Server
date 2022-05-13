@@ -141,10 +141,11 @@ function cLandclaimManager:GameRender(args)
 
     self.delta = self.delta + args.delta
 
+    local color = Color(0, 255, 255, 100)
     -- Render landclaim borders for the owner if they are enabled
     for id, landclaim in pairs(my_claims) do
         if landclaim.visible then
-            cLandclaimPlacer:RenderLandClaimBorder(landclaim.position, landclaim.size, self.delta)
+            cLandclaimPlacer:RenderLandClaimBorder(landclaim.position, landclaim.size, self.delta, color)
         end
     end
 
