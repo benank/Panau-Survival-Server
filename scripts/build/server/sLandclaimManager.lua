@@ -359,13 +359,22 @@ function sLandclaimManager:AddClaim(claim_data)
 end
 
 function sLandclaimManager:TotalBuildObjectsUpdate()
+    local counted_landclaims = 0
+    local total_landclaims = 0
     local total_build_objects = 0
     for steam_id, player_landclaims in pairs(self.landclaims) do
         for id, landclaim in pairs(player_landclaims) do
-            total_build_objects = total_build_objects + count_table(landclaim.objects)
+            total_landclaims = total_landclaims + 1
+            count_table_async(landclaim.objects, function(count)
+                counted_landclaims = counted_landclaims + 1
+                total_build_objects = total_build_objects + count
+                
+                if total_landclaims == counted_landclaims then
+                    Events:Fire("build/TotalBuildObjectsUpdate", {total = total_build_objects})
+                end
+            end)
         end
     end
-    Events:Fire("build/TotalBuildObjectsUpdate", {total = total_build_objects})
 end
 
 function sLandclaimManager:UpdateLandclaimsSharedObject()
