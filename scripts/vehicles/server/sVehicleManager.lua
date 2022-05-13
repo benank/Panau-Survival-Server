@@ -28,6 +28,7 @@ function sVehicleManager:__init()
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
     Events:Subscribe("PlayerEnterVehicle", self, self.PlayerEnterVehicle)
+    Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
     Events:Subscribe("MinuteTick", self, self.MinuteTick)
     Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
@@ -89,6 +90,10 @@ function sVehicleManager:__init()
         self:UpdateVehicleTotalStats()
     end)
 
+end
+
+function sVehicleManager:ModulesLoad()
+    self:UpdateVehicleTotalStats() 
 end
 
 function sVehicleManager:UpdateVehicleTotalStats()

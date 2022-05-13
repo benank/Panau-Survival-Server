@@ -17,6 +17,7 @@ function sDroneManager:__init()
     Events:Subscribe("HitDetection/DroneDamaged", self, self.DroneDamaged)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
+    Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
@@ -24,6 +25,10 @@ function sDroneManager:__init()
     Events:Subscribe("Drones/RemoveDronesInGroup", self, self.RemoveDronesInGroup)
 
     Network:Subscribe("drones/sync/batch", self, self.DroneBatchSync)
+end
+
+function sDroneManager:ModulesLoad()
+    self:UpdateDronesCountsInSZ() 
 end
 
 --[[

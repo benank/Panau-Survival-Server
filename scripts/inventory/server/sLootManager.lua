@@ -36,6 +36,7 @@ function sLootManager:__init()
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(Lootbox.Cell_Size), self, self.PlayerCellUpdate)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
+    Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
     Events:Subscribe("Inventory/CreateDropboxExternal", self, self.CreateDropboxExternal)
     Events:Subscribe("inventory/CreateLootboxExternal", self, self.CreateLootboxExternal)
     Events:Subscribe("airdrops/RemoveAirdrop", self, self.RemoveAirdrop)
@@ -45,6 +46,10 @@ function sLootManager:__init()
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
     Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
 
+end
+
+function sLootManager:ModulesLoad()
+    self:UpdateSpawnedLootCountsInSZ() 
 end
 
 function sLootManager:DroneDestroyed(args)
