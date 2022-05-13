@@ -29,7 +29,7 @@ function count_table_async(table, callback)
 
         for k, v in pairs(table) do
             count = count + 1
-            if count % 50 == 0 then
+            if count % 100 == 0 then
                 Timer.Sleep(1)
             end
         end
