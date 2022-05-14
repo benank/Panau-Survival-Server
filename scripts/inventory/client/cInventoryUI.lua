@@ -167,6 +167,10 @@ end
 function cInventoryUI:GetItemNameWithAmount(stack, index)
     local item_name = stack:GetProperty("name")
     local localized_item_name = self:GetLocalizedText(item_name)
+    if tostring(stack.contents[1].custom_data.no_consume) == "1" then
+        localized_item_name = "Infinity " .. localized_item_name
+    end
+    
     if item_name == "LandClaim" and stack.contents[1].custom_data.size then
         return string.format("%s (%dm)", localized_item_name, stack.contents[1].custom_data.size)
     elseif item_name == "Airdrop" and stack.contents[1].custom_data.level then

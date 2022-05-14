@@ -314,11 +314,14 @@ function sLandclaim:PlaceObject(args)
     })
 
     -- Remove item once it has been placed successfully
-    Inventory.RemoveItem({
-        item = args.player_iu.item,
-        index = args.player_iu.index,
-        player = args.player
-    })
+    local no_consume = args.player_iu.item.custom_data and tostring(args.player_iu.item.custom_data.no_consume) == "1"
+    if not no_consume then
+        Inventory.RemoveItem({
+            item = args.player_iu.item,
+            index = args.player_iu.index,
+            player = args.player
+        })
+    end
 
     Events:Fire("Discord", {
         channel = "Build",
