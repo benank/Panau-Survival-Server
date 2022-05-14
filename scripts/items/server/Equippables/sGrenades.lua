@@ -143,7 +143,9 @@ function Grenades:PlayerEnterStealth(player, do_not_refresh)
     end
     
     player:SetValue("StealthEnabled", true)
-    player:SetValue("OldModel", player:GetModelId())
+    if player:GetModelId() ~= 20 then
+        player:SetValue("OldModel", player:GetModelId())
+    end
     player:SetModelId(20)
     if not self.stealthed_players[steamID] then
         self.stealthed_players[steamID] = {}
