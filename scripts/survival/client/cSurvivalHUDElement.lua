@@ -32,6 +32,11 @@ function cSurvivalHUDElement:UpdateExp()
     self.percent = exp_data.combat_exp / exp_data.combat_max_exp
     self.percent2 = exp_data.explore_exp / exp_data.explore_max_exp
     self.level = exp_data.level
+    
+    if self.level == 100 then
+        self.percent = 0.5
+        self.percent2 = 0.5
+    end
 end
 
 -- Renders the large version of the element
