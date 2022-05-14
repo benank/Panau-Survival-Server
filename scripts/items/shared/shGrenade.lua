@@ -566,10 +566,6 @@ function Grenade:Detonate(ray)
 
     self.detonated = true
     
-    print(self.grenade_type)
-    print(LocalPlayer:GetPosition():Distance(self.object:GetPosition()))
-    print(self.radius)
-
 	if not table.compare(self.type, Grenade.Types.Flashbang) then
         Events:Fire(var("HitDetection/Explosion"):get(), {
 			position = self.object:GetPosition(),
