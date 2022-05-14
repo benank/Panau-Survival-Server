@@ -58,9 +58,9 @@ Grenade.Types = {
         ["trail_effect_id"] = 61,
 		["weight"] = 0.5,
         ["drag"] = 0.11,
-        ["trigger_explosives"] = true,
+        ["trigger_explosives"] = false,
 		["restitution"] = 0.3,
-		["radius"] = 8,
+		["radius"] = 6,
         ["model"] = "general.blz/wea33-wea33.lod",
         ["offset"] = Vector3(-0.32, 0, 0.03),
         ["angle"] = Angle(0, math.pi / 2, 0),
@@ -565,6 +565,10 @@ function Grenade:Detonate(ray)
     if self.detonated then return end
 
     self.detonated = true
+    
+    print(self.grenade_type)
+    print(LocalPlayer:GetPosition():Distance(self.object:GetPosition()))
+    print(self.radius)
 
 	if not table.compare(self.type, Grenade.Types.Flashbang) then
         Events:Fire(var("HitDetection/Explosion"):get(), {
@@ -580,6 +584,8 @@ function Grenade:Detonate(ray)
                 radius = self.type.radius,
                 type = self.grenade_type
             })
+        elseif self.grenade_type == "Stealth Grenade" and LocalPlayer:GetPosition():Distance(self.object:GetPosition()) < self.radius then
+            Network:Send(var("items/HitByStealthGrenade"):get())
         end
 
         if self.is_mine and ray and IsValid(ray.entity) and ray.entity.__type == "Player" then

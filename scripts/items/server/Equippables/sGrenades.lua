@@ -18,6 +18,7 @@ function Grenades:__init()
     Network:Subscribe("items/PlayerInsideToxicGrenadeArea", self, self.PlayerInsideToxicGrenadeArea)
     Network:Subscribe("items/PlayerInsideFireGrenadeArea", self, self.PlayerInsideFireGrenadeArea)
     Network:Subscribe("items/SnowballHit", self, self.SnowballHit)
+    Network:Subscribe("items/HitByStealthGrenade", self, self.HitByStealthGrenade)
     
     Events:Subscribe("items/CreateGrenade", self, self.CreateGrenadeExternal)
     Events:Subscribe("drones/CreateGrenade", self, self.CreateGrenadeDrone)
@@ -25,6 +26,12 @@ function Grenades:__init()
     Events:Subscribe("Inventory/ToggleEquipped", self, self.ToggleEquipped)
     Events:Subscribe("PlayerDeath", self, self.PlayerDeath)
     Events:Subscribe("LoadStatus", self, self.LoadStatus)
+end
+
+function Grenades:HitByStealthGrenade(args, player)
+    Network:Send(player, "items/WarpEffect", {position = player:GetPosition()})
+    Network:SendNearby(player, "items/WarpEffect", {position = player:GetPosition()})
+    self:PlayerEnterStealth(player)
 end
 
 function Grenades:LoadStatus(args)
@@ -109,13 +116,6 @@ function Grenades:GrenadeExploded(args, player)
         Events:Fire("HitDetection/WarpGrenade", {
             player = player
         })
-    end
-    
-    if args.type == "Stealth Grenade" then
-        Network:Send(player, "items/WarpEffect", {position = player:GetPosition()})
-        Network:SendNearby(player, "items/WarpEffect", {position = player:GetPosition()})
-        -- Set player model to invisible, set network val and time
-        self:PlayerEnterStealth(player)
     end
 end
 
