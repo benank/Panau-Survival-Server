@@ -243,9 +243,9 @@ function cLandclaimObjectPlacer:Render(args)
 
     if self.flat and self.name == "Wall" then
         if self.rotation_axis == 1 then
-            ang.roll = 0.157 + math.pi / 2
+            ang.roll = 0.1668722001 + math.pi / 2
         else
-            ang.roll = 0.157
+            ang.roll = 0.1668722001
             --ang.pitch = ang.pitch + math.pi
         end
     end
