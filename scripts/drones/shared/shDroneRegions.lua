@@ -41,7 +41,7 @@ DroneRegions =
         level_range = {min = 1, max = 10},
         spawn = 
         {
-            max = 40, -- Max drones alive at one time
+            max = 0, -- Max drones alive at one time
             chance = 0.9, -- Chance of a drone spawning every interval
             height = 
             {
