@@ -3,6 +3,7 @@ class 'sLandclaimManager'
 function sLandclaimManager:__init()
 
     SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, name VARCHAR(20), size INTEGER, expiry_date VARCHAR, access_mode INTEGER, state INTEGER, objects BLOB)")
+    SQL:Execute("DELETE FROM landclaims WHERE state == 0 AND objects == \"[]\"")
     
     self.landclaims = {} -- [steam_id] = {[landclaim_id] = landclaim, [landclaim_id] = landclaim}
     self.player_spawns = {} -- [steam id] = {id = id, landclaim_id = landclaim id, landclaim_owner_id = landclaim_owner_id}
