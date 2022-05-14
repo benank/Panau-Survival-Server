@@ -124,9 +124,14 @@ function cLandclaimPlacer:GameRender(args)
     if not self.placing then return end
     if not self.position then return end
 
-    local color = Color(0, 255, 0, 100)
+    local color = Color(0, 255, 0, 70)
     self.delta = args.delta + self.delta
     self:RenderLandClaimBorder(self.position, self.size, self.delta, color)
+    
+    local static_pos = Vector3(self.position.x, self.position.y, self.position.z)
+    static_pos.y = math.max(200, Physics:Raycast(self.position, Vector3.Down, 0, 500).position.y)
+    color.a = 150
+    self:RenderLandClaimStaticBorder(static_pos, self.size, color)
 
 end
 
@@ -142,11 +147,26 @@ function cLandclaimPlacer:RenderLandClaimBorder(position, size, delta, color)
             t = t:Rotate(Angle(math.pi / 2, 0, 0))
             Render:SetTransform(t)
 
-            Render:FillArea(Vector3(-size / 2, i * 3 + (delta % 3) - 25, size / 2), Vector3(size, 0.5, 0), color)
+            Render:FillArea(Vector3(-size / 2, i * 3 + (delta % 3), size / 2), Vector3(size, 0.5, 0), color)
 
         end
 
     end
+end
+
+function cLandclaimPlacer:RenderLandClaimStaticBorder(position, size, color)
+    -- draw border lines
+    local t = Transform3():Translate(position)
+
+    for j = 1, 4 do
+
+        t = t:Rotate(Angle(math.pi / 2, 0, 0))
+        Render:SetTransform(t)
+
+        Render:FillArea(Vector3(-size / 2, 0, size / 2), Vector3(size, 2, 0), color)
+
+    end
+    Render:ResetTransform()
 end
 
 function cLandclaimPlacer:MouseUp(args)
