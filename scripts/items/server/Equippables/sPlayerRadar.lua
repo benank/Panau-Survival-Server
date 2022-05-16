@@ -106,6 +106,7 @@ local function GetNearbyPlayers(player)
         and not p:GetValue("Loading")
         and not p:GetValue("dead")
         and not p:GetValue("Invisible")
+        and not p:GetValue("StealthEnabled")
         and player_position:Distance(radar_position) < range then
             table.insert(nearby, player_position)
         end
