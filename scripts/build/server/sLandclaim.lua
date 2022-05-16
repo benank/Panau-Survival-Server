@@ -41,7 +41,8 @@ end
 -- We do this to sort old landclaims from current, active ones but keep the old ones
 -- to persist the objects that were on them
 function sLandclaim:IsActive()
-    return self.state == LandclaimStateEnum.Active and GetLandclaimDaysTillExpiry(self.expiry_date) > 0
+    return self.state == LandclaimStateEnum.Active
+    -- return self.state == LandclaimStateEnum.Active and GetLandclaimDaysTillExpiry(self.expiry_date) > 0
 end
 
 function sLandclaim:GetNewUniqueObjectId()
