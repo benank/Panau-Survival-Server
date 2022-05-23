@@ -3,17 +3,17 @@ LootItems =
     -- {Item,Rarity,MinQuantity,MaxQuantity}
     [Lootbox.Types.Level1] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.04,
-            items = 
-            {
-                ["Two Year Party Hat"] = {rarity = 1, min = 1, max = 1},
-            }
-        },
+        -- ["EVENT"] = 
+        -- {
+        --     rarity = 0.04,
+        --     items = 
+        --     {
+        --         ["Two Year Party Hat"] = {rarity = 1, min = 1, max = 1},
+        --     }
+        -- },
         ["AMMO"] = 
         {
-            rarity = 0.37,
+            rarity = 0.41,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 10, max = 20},
