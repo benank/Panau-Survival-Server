@@ -21,6 +21,7 @@ function SAM:IsSAMKeyEffective(level)
 end
 
 function SAM:IsFriendlyTowardsPlayer(player)
+    if not IsValid(player) then return false end
     local steam_id = tostring(player:GetSteamId())
     return AreFriends(player, self.hacked_owner) or steam_id == self.hacked_owner
 end
