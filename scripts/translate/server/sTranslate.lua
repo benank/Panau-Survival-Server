@@ -162,7 +162,7 @@ local join_msg_parts =
     "Type ",
     "/voice",
     " to connect to proximity voice chat and talk with nearby players!",
-    "2 year anniversary server event happening now through May 22!"
+    -- "2 year anniversary server event happening now through May 22!"
 }
 
 local translated_join_msg_parts = 
@@ -241,11 +241,6 @@ function SendPlayerLocalizedJoinMessage(player)
         translated_join_msg_parts[locale][9], Color.White,
         join_msg_parts[10], Color(255, 0, 255),
         translated_join_msg_parts[locale][11], Color.White)
-        
-    Chat:Send(player, "", Color.White)
-    
-    Chat:Send(player, 
-        translated_join_msg_parts[locale][12], Color.Yellow)
 end
 
 Events:Subscribe("PlayerLocaleChanged", PlayerLocaleChanged)
