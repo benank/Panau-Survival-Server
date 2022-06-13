@@ -134,8 +134,10 @@ function cPerkMenu:PressChoiceButton(btn)
     if not btn:GetDataNumber("choice_index") then return end
 
     self.current_unlocking_choice = btn:GetDataNumber("choice_index")
-
-    self.choice_menu = self.choice_menu:Remove()
+    
+    if self.choice_menu then
+        self.choice_menu = self.choice_menu:Remove()
+    end
 
     self.confirm_menu:Show()
 
