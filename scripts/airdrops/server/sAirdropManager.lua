@@ -271,7 +271,7 @@ function sAirdropManager:BeginSpawningAirdrop(type, position)
     self.airdrop.timer = Timer()
     self.airdrop_timer = Timer()
     self.airdrop.interval = airdrop_data.interval
-    self.airdrop.position = position or random_table_value(AirdropLocations[type])
+    self.airdrop.position = position or random_table_value(AirdropLocations[type]) or random_table_value(AirdropLocations[type])
     self.airdrop.angle = Angle(math.pi * math.random(), 0, 0)
 
     -- Create a "general location" of where to place the circle before the airdrop comes

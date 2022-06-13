@@ -1,7 +1,19 @@
-Network:Subscribe("Inventory/LocalizedItems", function(args)
-    LocalizedItemNames[args.locale] = args.entries
+function RefreshInventory()
+    if not ClientInventory.ui then
+        Thread(function()
+            Timer.Sleep(5000)
+            RefreshInventory()
+        end)
+        return
+    end
+    
     ClientInventory.ui:CreateWindow()
     ClientInventory.ui:RefreshInventoryDisplay()
+end
+
+Network:Subscribe("Inventory/LocalizedItems", function(args)
+    LocalizedItemNames[args.locale] = args.entries
+    RefreshInventory()
 end)
 
 Events:Subscribe("NetworkObjectValueChange", function(args)
