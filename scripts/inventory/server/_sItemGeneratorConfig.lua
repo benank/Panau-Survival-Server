@@ -842,7 +842,7 @@ LootItems =
         },
         ["KEY"] = 
         {
-            rarity = 0.0105,
+            rarity = 0.0150,
             items = 
             {
                 ["SAM Key"] = {rarity = 1, min = 1, max = 1},
