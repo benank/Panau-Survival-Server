@@ -99,7 +99,7 @@ function sAirdropManager:ItemExplode(args)
         Chat:Broadcast(" ", Color.Red)
         Chat:Broadcast("--------------------------------------------------------------", Color.Orange)
         
-        Timer.SetTimeout(5000, function()
+        Timer.SetTimeout(3000 + 5000 * math.random(), function()
             self:CreateAirdropDrones()
         end)
 
@@ -160,7 +160,7 @@ function sAirdropManager:DoorsDestroyed(args)
                 airstrike_name = "Area Bombing",
                 position = self.airdrop.position,
                 num_bombs = 100,
-                radius = 700
+                radius = 750
             })
             
             Events:Fire("items/CreateGrenade", {
@@ -176,8 +176,8 @@ function sAirdropManager:DoorsDestroyed(args)
             Events:Fire("drones/CreateAirstrike", {
                 airstrike_name = "Area Bombing",
                 position = self.airdrop.position,
-                num_bombs = 200,
-                radius = 400
+                num_bombs = 250,
+                radius = 500
             })
         end)
         
@@ -362,17 +362,19 @@ function sAirdropManager:CreateAirdropDrones(second_wave)
 
         local position = self.airdrop.position + Vector3(math.random() * 20 - 10, height, math.random() * 20 - 10)
 
-        Events:Fire("Drones/SpawnDrone", {
-            level = drone_level,
-            static = true,
-            position = position,
-            tether_position = position,
-            tether_range = 300,
-            config = {
-                attack_on_sight = true
-            },
-            group = "airdrop"
-        })
+        Timer.SetTimeout(3000 + 15000 * math.random(), function()
+            Events:Fire("Drones/SpawnDrone", {
+                level = drone_level,
+                static = true,
+                position = position,
+                tether_position = position,
+                tether_range = 300,
+                config = {
+                    attack_on_sight = true
+                },
+                group = "airdrop"
+            })
+        end)
     end
 end
 
