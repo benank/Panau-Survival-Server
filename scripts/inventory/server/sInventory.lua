@@ -212,7 +212,7 @@ function sInventory:PlayerKilled(args)
 
         Events:Fire("Discord", {
             channel = "Inventory",
-            content = string.format("%s [%s] death drop: %s", self.player:GetName(), tostring(self.player:GetSteamId()), chat_msg)
+            content = string.format("%s [%s] death drop %s: %s", self.player:GetName(), tostring(self.player:GetSteamId()), WorldToMapString(self.player:GetPosition()), chat_msg)
         })
 
         self:SpawnDropbox(stacks_to_drop, true)
