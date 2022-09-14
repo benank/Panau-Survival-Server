@@ -47,7 +47,6 @@ function sSpawnManager:ResetHomePosition(args)
         player_id = args.player_id,
         pos = Vector3(0, 0, 0)
     })
-	args.player:SetNetworkValue("HomePosition", nil)
 end
 
 function sSpawnManager:SetHomePosition(args)
