@@ -135,7 +135,7 @@ Network:Subscribe("items/ParaDecreaseDura", function(args, player)
         end
     end
     
-    if ItemsConfig.equippables[parachute_type] == nil then
+    if ItemsConfig.equippables[parachute_type] == nil or ItemsConfig.equippables[parachute_type].dura_per_use_sec == nil then
         return
     end
 
