@@ -8,6 +8,7 @@ function sLandclaimManager:__init()
     self.landclaims = {} -- [steam_id] = {[landclaim_id] = landclaim, [landclaim_id] = landclaim}
     self.player_spawns = {} -- [steam id] = {id = id, landclaim_id = landclaim id, landclaim_owner_id = landclaim_owner_id}
     self.players = {}
+    self.teleporters = {} -- [tp_id] = landclaim_object
     
     if SharedObject.GetByName("Landclaims") then
         SharedObject.GetByName("Landclaims"):Remove()
@@ -24,6 +25,10 @@ function sLandclaimManager:__init()
     Network:Subscribe("build/ActivateLight", self, self.ActivateLight)
     Network:Subscribe("build/ActivateDoor", self, self.ActivateDoor)
     Network:Subscribe("build/EditSign", self, self.EditSign)
+    Network:Subscribe("build/EditTeleporterLinkId", self, self.EditTeleporterLinkId)
+    Network:Subscribe("build/EnterTeleporter", self, self.EnterTeleporter)
+    Network:Subscribe("build/ExitTeleporter", self, self.ExitTeleporter)
+    Network:Subscribe("build/FinishTeleporting", self, self.FinishTeleporting)
 
     Events:Subscribe("items/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
@@ -32,6 +37,9 @@ function sLandclaimManager:__init()
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
     Events:Subscribe("items/DetonateOnBuildObject", self, self.DetonateOnBuildObject)
+    Events:Subscribe("build/ObjectDestroyed", self, self.ObjectDestroyed)
+    Events:Subscribe("build/ObjectPlaced", self, self.ObjectPlaced)
+    
 
     -- Check for expired landclaims every 3 hours and on load
     Timer.SetInterval(1000 * 60 * 60 * 3, function()
@@ -94,6 +102,72 @@ function sLandclaimManager:EditSign(args, player)
     if not landclaim then return end
 
     landclaim:EditSign(args, player)
+end
+
+function sLandclaimManager:ObjectDestroyed(args)
+    if args.object.name == "Teleporter" then
+        self:RemoveTeleporter(args.object) 
+    end
+end
+
+function sLandclaimManager:ObjectPlaced(args)
+    if args.object.name == "Teleporter" then
+        self:AddOrUpdateTeleporter(args.object) 
+    end
+end
+
+function sLandclaimManager:EnterTeleporter(args, player)
+    if player:GetValue("InTeleporter") or player:GetValue("Loading") then return end
+    
+    local teleporter = self.teleporters[args.tp_id]
+    if teleporter and player:GetPosition():Distance(teleporter.position) < 3 then
+        local linked_teleporter = self.teleporters[teleporter.custom_data.tp_link_id]
+        
+        if linked_teleporter then
+            Network:Broadcast("build/TeleporterActivate", {
+                pos1 = teleporter.position,
+                pos2 = linked_teleporter.position,
+                id = player:GetId()
+            })
+            
+            player:SetNetworkValue("InTeleporter", true)
+            player:SetNetworkValue("Invisible", true)
+            
+            Timer.SetTimeout(4000, function()
+                if IsValid(player) then
+                    player:SetPosition(linked_teleporter.position)
+                end
+            end)
+        end
+    end
+end
+
+function sLandclaimManager:ExitTeleporter(args, player)
+end
+
+function sLandclaimManager:FinishTeleporting(args, player)
+    player:SetNetworkValue("InTeleporter", false)
+    player:SetNetworkValue("Invisible", false)
+    Network:Broadcast("build/TeleporterActivate2", {
+        pos = player:GetPosition()
+    })
+end
+
+function sLandclaimManager:AddOrUpdateTeleporter(object)
+    if object.name ~= "Teleporter" or not object.custom_data.tp_id then return end
+    self.teleporters[object.custom_data.tp_id] = object
+end
+
+function sLandclaimManager:RemoveTeleporter(object)
+    if object.name ~= "Teleporter" or not object.custom_data.tp_id then return end
+    self.teleporters[object.custom_data.tp_id] = nil
+end
+
+function sLandclaimManager:EditTeleporterLinkId(args, player)
+    local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_owner_id, args.landclaim_id)
+    if not landclaim then return end
+
+    landclaim:EditTeleporterLinkId(args, player)
 end
 
 function sLandclaimManager:ActivateLight(args, player)

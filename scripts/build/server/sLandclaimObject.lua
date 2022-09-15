@@ -54,6 +54,9 @@ function sLandclaimObject:GetDefaultCustomData()
     elseif self.name == "Sign" then
         custom_data.color = Color(255, 0, 0)
         custom_data.text = "Sample Text\nSample Text"
+    elseif self.name == "Teleporter" then
+        custom_data.tp_id = GenerateNewTeleporterId()
+        custom_data.tp_link_id = ""
     end
 
     return custom_data

@@ -89,17 +89,8 @@ function cLandclaimObject:GetCollision()
 end
 
 function cLandclaimObject:GetExtension()
-
-    if self.name == "Door" then
-        return cDoorExtension(self)
-    elseif self.name == "Light" then
-        return cLightExtension(self)
-    elseif self.name == "Jump Pad" then
-        return cJumpPadExtension(self)
-    elseif self.name == "Christmas Tree" then
-        return cChristmasTreeExtension(self)
-    elseif self.name == "Sign" then
-        return cSignExtension(self)
+    local ext = LandClaimObjectExtensions[self.name]
+    if ext then
+        return ext(self)
     end
-
 end

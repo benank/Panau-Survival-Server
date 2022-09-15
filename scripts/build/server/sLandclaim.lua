@@ -62,11 +62,14 @@ function sLandclaim:ParseObjects(objects)
         local id = self:GetNewUniqueObjectId()
         object.id = id
         self.objects[id] = sLandclaimObject(object)
+        object = self.objects[id]
         
         if object.name == "Bed" then
             for steam_id, _ in pairs(object.custom_data.player_spawns) do
                 sLandclaimManager.player_spawns[steam_id] = {id = object.id, landclaim_id = self.id, landclaim_owner_id = self.owner_id}
             end
+        elseif object.name == "Teleporter" then
+            sLandclaimManager:AddOrUpdateTeleporter(object)
         end
 
     end
@@ -262,11 +265,15 @@ function sLandclaim:UnsetOldSpawn(player_id, old_spawn_data)
 
 end
 
+function sLandclaim:IsPlayerOwner(player)
+    return self.owner_id == tostring(player:GetSteamId())
+end
+
 function sLandclaim:CanPlayerAccess(player, access_mode)
 
     if not self:IsActive() then return end
 
-    local is_owner = self.owner_id == tostring(player:GetSteamId())
+    local is_owner = self:IsPlayerOwner(player)
 
     if access_mode == LandclaimAccessModeEnum.OnlyMe then
         return is_owner
@@ -307,6 +314,7 @@ function sLandclaim:PlaceObject(args)
     }
 
     self.objects[object.id] = sLandclaimObject(object)
+    sLandclaimManager:AddOrUpdateTeleporter(self.objects[object.id])
 
     self:UpdateToDB()
     self:SyncSmallUpdate({
@@ -323,6 +331,13 @@ function sLandclaim:PlaceObject(args)
             player = args.player
         })
     end
+    
+    Events:Fire("build/ObjectPlaced", {
+        player = player,
+        owner_id = self.owner_id,
+        object_name = object.name,
+        object = self.objects[object.id]:GetSyncObject()
+    })
 
     Events:Fire("Discord", {
         channel = "Build",
@@ -399,6 +414,29 @@ function sLandclaim:EditSign(args, player)
     })
 end
 
+function sLandclaim:EditTeleporterLinkId(args, player)
+    local object = self.objects[args.id]
+    if not object then return end
+
+    if object.name ~= "Teleporter" then return end
+    if not self:IsPlayerOwner(player) then return end
+    
+    -- Do not allow self-setting
+    if args.tp_link_id == object.custom_data.tp_id then
+        args.tp_link_id = ""
+    end
+    
+    object.custom_data.tp_link_id = string.trim(tostring(args.tp_link_id or ""):sub(1, 5):upper())
+    
+    self:UpdateToDB()
+    self:SyncSmallUpdate({
+        type = "teleporter",
+        id = object.id,
+        tp_link_id = object.custom_data.tp_link_id
+    })
+    sLandclaimManager:AddOrUpdateTeleporter(object)
+end
+
 function sLandclaim:CanPlayerRemoveObject(object, player)
     local steam_id = tostring(player:GetSteamId())
     return steam_id == self.owner_id or object.owner_id == steam_id
@@ -425,6 +463,7 @@ function sLandclaim:RemoveObject(args, player)
     end
 
     self.objects[args.id] = nil
+    sLandclaimManager:RemoveTeleporter(object)
 
     self:UpdateToDB()
 
@@ -486,7 +525,8 @@ function sLandclaim:DamageObject(args, player)
         Events:Fire("build/ObjectDestroyed", {
             player = player,
             owner_id = self.owner_id,
-            object_name = object.name
+            object_name = object.name,
+            object = object:GetSyncObject()
         })
 
         Events:Fire("Discord", {

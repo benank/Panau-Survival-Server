@@ -38,6 +38,10 @@ function cEquippableVisualsManager:CheckPlayer(player)
 
     local equipped_visuals = player:GetValue("EquippedVisuals")
     local steamID = tostring(player:GetSteamId())
+    
+    if player:GetId() == LocalPlayer:GetId() and LocalPlayer:GetValue("LocalTeleporting") then
+        equipped_visuals = {}
+    end
 
     if self.nearby_players[steamID] then
 
