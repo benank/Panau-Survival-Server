@@ -172,3 +172,69 @@ function TeleporterExtensionMenu:CloseMenu()
 end
 
 TeleporterExtensionMenu = TeleporterExtensionMenu()
+
+local max_fov = 3
+local default_fov = Camera:GetFOV()
+local dtime = 0
+local time = 3
+local wait_time = 4
+local sub, sub2 = nil
+
+function RenderTeleport(args)
+    dtime = dtime + args.delta
+    
+    if dtime < (time + wait_time) then
+        local color = Color(255, 255, 255, math.min(255, dtime / time * 255))
+        Render:FillArea(Vector2.Zero, Render.Size, color)
+        Camera:SetFOV(math.min(max_fov, default_fov + dtime / time * (max_fov - default_fov)))
+    elseif dtime < (time * 2) + wait_time then
+        local color = Color(255, 255, 255, 255 - (dtime - time - wait_time) / time * 255)
+        Render:FillArea(Vector2.Zero, Render.Size, color)
+        Camera:SetFOV(math.max(default_fov, max_fov - (dtime - time - wait_time) / time * (max_fov - default_fov)))
+    else
+        sub = Events:Unsubscribe(sub)
+        sub2 = Events:Unsubscribe(sub2)
+        Camera:SetFOV(default_fov)
+    end
+end
+
+function BlockActions()
+    return false 
+end
+
+function StartTeleporting()
+    current_fov = default_fov
+    dtime = 0
+    sub = Events:Subscribe("PostRender", RenderTeleport)
+    sub2 = Events:Subscribe("LocalPlayerInput", BlockActions)
+end
+
+Network:Subscribe("build/TeleporterActivate", function(args)
+    ClientEffect.Play(AssetLocation.Game, {position = args.pos1, angle = Angle(0,0,0), effect_id = 135})
+    ClientEffect.Play(AssetLocation.Game, {position = args.pos1, angle = Angle(0,0,0), effect_id = 137})
+    
+    if args.id == LocalPlayer:GetId() then
+        
+        LocalPlayer:SetValue("LocalTeleporting", true)
+        -- Game:FireEvent(var("ply.pause"):get())
+        Game:FireEvent("ply.parachute.disable")
+        StartTeleporting()
+    
+        Thread(function()
+            local i = 0
+            while LandclaimManager and LandclaimManager:AreAnyLandclaimsLoading() or i < 10 do
+                Timer.Sleep(1000)
+                i = i + 1
+            end
+            Game:FireEvent("ply.parachute.enable")
+            LocalPlayer:SetValue("LocalTeleporting", false)
+            Network:Send("build/FinishTeleporting")
+            ClientEffect.Play(AssetLocation.Game, {position = args.pos2, angle = Angle(0,0,0), effect_id = 135})
+        end)
+    end
+    
+end)
+
+Network:Subscribe("build/TeleporterActivate2", function(args)
+    ClientEffect.Play(AssetLocation.Game, {position = args.pos, angle = Angle(0,0,0), effect_id = 137})
+end)

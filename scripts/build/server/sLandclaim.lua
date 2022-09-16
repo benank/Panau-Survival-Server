@@ -61,6 +61,7 @@ function sLandclaim:ParseObjects(objects)
     for _, object in pairs(objects) do
         local id = self:GetNewUniqueObjectId()
         object.id = id
+        object.landclaim_id = self.id
         self.objects[id] = sLandclaimObject(object)
         object = self.objects[id]
         
@@ -310,7 +311,8 @@ function sLandclaim:PlaceObject(args)
         angle = args.angle,
         health = args.player_iu.item.durability,
         owner_id = tostring(args.player:GetSteamId()),
-        owner_name = args.player:GetName()
+        owner_name = args.player:GetName(),
+        landclaim_id = self.id
     }
 
     self.objects[object.id] = sLandclaimObject(object)
@@ -544,6 +546,41 @@ function sLandclaim:DamageObject(args, player)
         health = object.health,
         player = player,
         primary = not is_splash
+    })    
+
+end
+
+function sLandclaim:TeleporterDamaged(object)
+    
+    Events:Fire("Discord", {
+        channel = "Build",
+        content = string.format("Object %s %d by teleporting (Remaining HP: %.0f) (%s)", 
+            object.name, object.id, object.health, self:ToLogString())
+    })
+
+    if object.health <= 0 then
+        self.objects[object.id] = nil
+        object:RemoveAllBedSpawns()
+        Events:Fire("build/ObjectDestroyed", {
+            player = player,
+            owner_id = self.owner_id,
+            object_name = object.name,
+            object = object:GetSyncObject()
+        })
+
+        Events:Fire("Discord", {
+            channel = "Build",
+            content = string.format("Object %s %d was destroyed (%s)", 
+                object.name, object.id, self:ToLogString())
+        })
+    end
+
+    self:UpdateToDB()
+
+    self:SyncSmallUpdate({
+        type = "object_damaged",
+        id = object.id,
+        health = object.health
     })    
 
 end

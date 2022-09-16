@@ -130,14 +130,27 @@ function sLandclaimManager:EnterTeleporter(args, player)
                 id = player:GetId()
             })
             
+            if player:GetModelId() ~= 20 then
+                player:SetValue("ModelId", player:GetModelId())
+            end
+            player:SetModelId(20)
             player:SetNetworkValue("InTeleporter", true)
             player:SetNetworkValue("Invisible", true)
+            teleporter:Damage(TeleporterDamagePerUse)
+            -- linked_teleporter:Damage(TeleporterDamagePerUse) -- Only damage the teleporter that they stepped in
             
             Timer.SetTimeout(4000, function()
                 if IsValid(player) then
                     player:SetPosition(linked_teleporter.position)
                 end
             end)
+            
+            Events:Fire("Discord", {
+                channel = "Positions",
+                content = string.format("%s [%s] used teleporter %s (%s) and warped to teleporter %s (%s).", 
+                    player:GetName(), tostring(player:GetSteamId()), teleporter.custom_data.tp_id, WorldToMapString(teleporter.position), 
+                    linked_teleporter.custom_data.tp_id, WorldToMapString(linked_teleporter.position))
+            })
         end
     end
 end
@@ -148,6 +161,10 @@ end
 function sLandclaimManager:FinishTeleporting(args, player)
     player:SetNetworkValue("InTeleporter", false)
     player:SetNetworkValue("Invisible", false)
+    if not player:GetValue("StealthEnabled") and player:GetValue("ModelId") then
+        player:SetModelId(player:GetValue("ModelId"))
+    end
+    
     Network:Broadcast("build/TeleporterActivate2", {
         pos = player:GetPosition()
     })
@@ -155,7 +172,7 @@ end
 
 function sLandclaimManager:AddOrUpdateTeleporter(object)
     if object.name ~= "Teleporter" or not object.custom_data.tp_id then return end
-    self.teleporters[object.custom_data.tp_id] = object
+    self.teleporters[object.custom_data.tp_id] = sLandclaimObject(object)
 end
 
 function sLandclaimManager:RemoveTeleporter(object)
