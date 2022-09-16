@@ -62,6 +62,7 @@ function sLandclaim:ParseObjects(objects)
         local id = self:GetNewUniqueObjectId()
         object.id = id
         object.landclaim_id = self.id
+        object.landclaim_owner_id = self.owner_id
         self.objects[id] = sLandclaimObject(object)
         object = self.objects[id]
         
@@ -312,7 +313,8 @@ function sLandclaim:PlaceObject(args)
         health = args.player_iu.item.durability,
         owner_id = tostring(args.player:GetSteamId()),
         owner_name = args.player:GetName(),
-        landclaim_id = self.id
+        landclaim_id = self.id,
+        landclaim_owner_id = self.owner_id
     }
 
     self.objects[object.id] = sLandclaimObject(object)

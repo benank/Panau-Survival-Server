@@ -5,6 +5,7 @@ function sLandclaimObject:__init(args)
 
     self.id = args.id -- Unique object id per claim, changes every reload
     self.landclaim_id = args.landclaim_id
+    self.landclaim_owner_id = args.landclaim_owner_id
     self.owner_id = args.owner_id -- Steam id of player who placed it
     self.owner_name = args.owner_name
     self.name = args.name
@@ -22,8 +23,8 @@ end
 function sLandclaimObject:Damage(amount)
     self.health = math.max(0, self.health - math.abs(amount))
     
-    if self.name == "Teleporter" then
-        sLandclaimManager.landclaims[self.owner_id][self.landclaim_id]:TeleporterDamaged(self)
+    if self.name == "Teleporter" and self.landclaim_owner_id ~= "SERVER" then
+        sLandclaimManager.landclaims[self.landclaim_owner_id][self.landclaim_id]:TeleporterDamaged(self)
     end
 end
 
