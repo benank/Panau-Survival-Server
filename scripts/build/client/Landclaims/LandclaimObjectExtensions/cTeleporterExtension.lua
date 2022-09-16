@@ -5,6 +5,7 @@ function cTeleporterExtension:__init(object)
     self.object = object
     self.timer = Timer()
     self.evenodd = 0
+    self.cdelta = math.random() * 360
 end
 
 function cTeleporterExtension:StreamIn()
@@ -21,6 +22,21 @@ function cTeleporterExtension:UpdateToExternalModules()
 end
 
 function cTeleporterExtension:Render(args)
+    local t = Transform3():Translate(self.object.position):Rotate(self.object.angle * Angle(math.pi, 0, 0))
+    Render:SetTransform(t)
+    
+    local size = 1.2
+    self.cdelta = self.cdelta + args.delta
+    local color = Color.FromHSV(self.cdelta * 360 * 0.2, 0.7, 0.85)
+    color.a = 100
+    Render:FillArea(Vector3(-size / 2, 0.1, size / 2), Vector3(size, 3, 0), color)
+    
+    Render:ResetTransform()
+    
+    if IsValid(self.light) then
+        color.a = 255
+        self.light:SetColor(color) 
+    end
 end
 
 function cTeleporterExtension:Create(streamed_in)
@@ -54,11 +70,21 @@ function cTeleporterExtension:Create(streamed_in)
             Events:Subscribe("ShapeTriggerEnter", self, self.ShapeTriggerEnter),
             Events:Subscribe("ShapeTriggerExit", self, self.ShapeTriggerExit)
         }
+        self.light = ClientLight.Create({
+            position = self.object.position + Vector3.Up * 2,
+            color = Color.White,
+            multiplier = 10,
+            radius = 10
+        })
     elseif not streamed_in and self.trigger then
         self.trigger = self.trigger:Remove()
         
         for _, event in pairs(self.trigger_events) do
             Events:Unsubscribe(event) 
+        end
+        
+        if IsValid(self.light) then
+            self.light = self.light:Remove()
         end
         
         self.trigger_events = {}
@@ -84,6 +110,12 @@ end
 function cTeleporterExtension:Remove()
     if self.render then
         self.render = Events:Unsubscribe(self.render)
+    end
+    if IsValid(self.trigger) then
+        self.trigger:Remove()
+    end
+    if IsValid(self.light) then
+        self.light:Remove()
     end
 end
 
