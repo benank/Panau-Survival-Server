@@ -107,7 +107,7 @@ function cAirdropManager:AirdropHitGround()
 end
 
 function cAirdropManager:Render(args)
-    if self.airdrop.active then
+    if self.airdrop.active and self.airdrop.position then
         self:RenderAirdropInfo()
 
         if self:GetTimeUntilDrop() < 0 then
@@ -141,7 +141,10 @@ end
 -- Renders information about the airdrop on the side of the screen
 function cAirdropManager:RenderAirdropInfo()
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     local airdrop_time = math.ceil(self:GetTimeUntilDrop())
+    
+    if airdrop_time < -15 then return end
 
     local text
 
@@ -153,7 +156,7 @@ function cAirdropManager:RenderAirdropInfo()
         text = string.format("LEVEL %d AIRDROP (%d MINUTES SINCE DROP - SEE MAP)", self.airdrop.type, -airdrop_time)
     end
 
-    if self.airdrop.doors_destroyed then return end
+    if self.airdrop.precise_announce then return end
 
     local render_size = Render.Size
     local size = Render.Size.y * 0.03
@@ -161,6 +164,26 @@ function cAirdropManager:RenderAirdropInfo()
     local shadow_size = 2
     Render:DrawText(
         Vector2(render_size.x / 2 - text_size.x / 2, render_size.y * 0.15 - text_size.y / 2) + Vector2(shadow_size, shadow_size),
+        text,
+        Color.Black,
+        size)
+    Render:DrawText(
+        Vector2(render_size.x / 2 - text_size.x / 2, render_size.y * 0.15 - text_size.y / 2) + Vector2(0, shadow_size),
+        text,
+        Color.Black,
+        size)
+    Render:DrawText(
+        Vector2(render_size.x / 2 - text_size.x / 2, render_size.y * 0.15 - text_size.y / 2) + Vector2(0, -shadow_size),
+        text,
+        Color.Black,
+        size)
+    Render:DrawText(
+        Vector2(render_size.x / 2 - text_size.x / 2, render_size.y * 0.15 - text_size.y / 2) + Vector2(shadow_size, 0),
+        text,
+        Color.Black,
+        size)
+    Render:DrawText(
+        Vector2(render_size.x / 2 - text_size.x / 2, render_size.y * 0.15 - text_size.y / 2) + Vector2(-shadow_size, 0),
         text,
         Color.Black,
         size)

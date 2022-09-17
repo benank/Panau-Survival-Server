@@ -19,6 +19,8 @@ function Nametags:__init()
 
     self.size               = TextSize.Default -- Font size
     self.recent_drones      = {}
+    
+    self.static_npcs = {}
 
     self:CreateSettings()
 
@@ -29,6 +31,14 @@ function Nametags:__init()
     Events:Subscribe( "ModuleLoad", self, self.ModulesLoad )
     Events:Subscribe( "ModulesLoad", self, self.ModulesLoad )
     Events:Subscribe( "ModuleUnload", self, self.ModuleUnload )
+    Events:Subscribe("SecondTick", self, self.SecondTick)
+end
+
+function Nametags:SecondTick()
+    local static_npcs = SharedObject.GetByName("StaticNPCs")
+    if static_npcs then
+        self.static_npcs = static_npcs:GetValues()["StaticNPCs"]
+    end
 end
 
 function Nametags:UpdateLimits()
@@ -320,13 +330,20 @@ end
 function Nametags:DrawDrone(args)
     local drone = args.drone
     local pos = args.position + Vector3.Up * 0.5
-    self:DrawFullTag( pos, "Drone", 5, self:GetDroneNameColor(args.drone.level), drone.health / drone.max_health, nil, drone.level )
+    self:DrawFullTag( pos, "Drone", 5, self:GetEnemyNameColor(args.drone.level), drone.health / drone.max_health, nil, drone.level )
+end
+
+function Nametags:DrawNPC(args)
+    local npc_data = args.npc_data
+    local pos       = args.actor:GetBonePosition( "ragdoll_Head" ) + 
+                      (args.actor:GetAngle() * Vector3( 0, 0.25, 0 ))
+    self:DrawFullTag( pos, npc_data.name, 5, self:GetEnemyNameColor(npc_data.level), npc_data.health / npc_data.max_health, npc_data.nametag, npc_data.level )
 end
 
 function Nametags:DrawSAM(sam)
     local pos = sam.position + Vector3.Up * 2
     local name = "SAM"
-    local name_color = self:GetDroneNameColor(sam.level)
+    local name_color = self:GetEnemyNameColor(sam.level)
     local steam_id = tostring(LocalPlayer:GetSteamId())
     local friendly = AreFriends(LocalPlayer, sam.hacked_owner) or steam_id == sam.hacked_owner
     
@@ -341,7 +358,7 @@ function Nametags:DrawSAM(sam)
     self:DrawFullTag( pos, name, 5, name_color, sam.health / sam.config.MaxHealth, nil, sam.level )
 end
 
-function Nametags:GetDroneNameColor(drone_level)
+function Nametags:GetEnemyNameColor(drone_level)
 
     local LevelCutoffs =
     {
@@ -455,22 +472,48 @@ function Nametags:WindowClosed( args )
 end
 
 function Nametags:ModulesLoad()
-    Events:Fire( "HelpAddItem",
-        {
-            name = "Nametags",
-            text = 
-                "The nametags are the names you see on players and vehicles." ..
-                "\n\n" ..
-                "To configure them, type /tags in chat to bring " ..
-                "up a window in which you can choose your own settings."
-        } )
+    -- Events:Fire( "HelpAddItem",
+    --     {
+    --         name = "Nametags",
+    --         text = 
+    --             "The nametags are the names you see on players and vehicles." ..
+    --             "\n\n" ..
+    --             "To configure them, type /tags in chat to bring " ..
+    --             "up a window in which you can choose your own settings."
+    --     } )
 end
 
 function Nametags:ModuleUnload()
-    Events:Fire( "HelpRemoveItem",
-        {
-            name = "Nametags"
-        } )
+    -- Events:Fire( "HelpRemoveItem",
+    --     {
+    --         name = "Nametags"
+    --     } )
+end
+
+function Nametags:DrawNPCs(local_pos)
+    local sorted_actors = {}
+
+    for _, npc_data in pairs(self.static_npcs or {}) do
+        if npc_data.client_actor_id then
+            local actor = ClientActor.GetById(npc_data.client_actor_id)
+            if IsValid(actor) then
+                local pos = actor:GetPosition()
+                table.insert( sorted_actors, { actor = actor, npc_data = npc_data, dist = local_pos:Distance(pos) } )
+            end
+        end
+    end
+
+    -- Sort by distance, descending
+    table.sort( sorted_actors, 
+        function( a, b ) 
+            return (a.dist > b.dist) 
+        end )
+
+    for _, actor_data in ipairs( sorted_actors ) do
+        if actor_data.dist < 100 then
+            self:DrawNPC( actor_data )
+        end
+    end 
 end
 
 function Nametags:Render()
@@ -479,6 +522,7 @@ function Nametags:Render()
         return
     end
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     -- Create some prerequisite variables
     --local local_pos = LocalPlayer:GetPosition()
     local local_pos = Camera:GetPosition()
@@ -521,6 +565,8 @@ function Nametags:Render()
             end
         end
     end
+    
+    self:DrawNPCs(local_pos)
 
     if self.player_enabled then
         local sorted_players = {}
@@ -545,10 +591,12 @@ function Nametags:Render()
     end
 
     local time = Client:GetElapsedSeconds()
-    local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, 1000)
-    if ray.entity and ray.entity.__type == "ClientStaticObject" and ray.entity:GetModel() == "lave.v023_customcar.eez/v023-base.lod" then
+    local direction = Camera:GetAngle() * Vector3.Forward
+    if IsNaN(direction.x) or IsNaN(direction.y) or IsNaN(direction.z) then return end
+    local ray = Physics:Raycast(Camera:GetPosition(), direction, 0, 1000)
+    if ray.entity and ray.entity.__type == "ClientStaticObject" and (ray.entity:GetModel() == "lave.v023_customcar.eez/v023-base.lod" or ray.entity:GetModel() == "f3m06.afterski.nlz/key020_01-t.lod") then
         self.recent_drones[ray.entity:GetId()] = {time = time, entity = ray.entity}
-    elseif ray.entity and ray.entity.__type == "ClientStaticObject" then
+    elseif ray.entity and ray.entity.__type == "ClientStaticObject" and (ray.entity:GetModel() == "general.blz/wea31-a.lod" or ray.entity:GetModel() == "general.blz/wea31-b.lod" or ray.entity:GetModel() == "general.blz/wea31-e.lod" or ray.entity:GetModel() == "general.blz/wea31-c.lod") then
         local sam = cSAMContainer:CSOIdToSAM(ray.entity:GetId())
         if sam then
             self:DrawSAM(sam)

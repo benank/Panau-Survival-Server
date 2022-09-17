@@ -53,6 +53,19 @@ Grenade.Types = {
         ["angle"] = Angle(0, math.pi / 2, 0),
         ["effect_time"] = 5
 	},
+	["Stealth Grenade"] = {
+		["effect_id"] = 700,
+        ["trail_effect_id"] = 61,
+		["weight"] = 0.5,
+        ["drag"] = 0.11,
+        ["trigger_explosives"] = false,
+		["restitution"] = 0.3,
+		["radius"] = 6,
+        ["model"] = "general.blz/wea33-wea33.lod",
+        ["offset"] = Vector3(-0.32, 0, 0.03),
+        ["angle"] = Angle(0, math.pi / 2, 0),
+        ["effect_time"] = 5
+	},
 	["Flashbang"] = {
 		["effect_id"] = 19,
         ["trail_effect_id"] = 61,
@@ -112,6 +125,40 @@ Grenade.Types = {
         ["angle"] = Angle(0, math.pi / 2, 0),
         ["effect_time"] = 30 -- default effect time for this effect is 15
 	},
+	["Cluster Grenade"] = {
+		["effect_id"] = 411,
+        ["trail_effect_id"] = 61,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
+		["restitution"] = 0.3,
+        ["trigger_explosives"] = true,
+        ["radius"] = 10,
+        ["custom_func"] = function(grenade)
+            
+            if grenade.cluster then return end
+            if grenade.seed then math.randomseed(grenade.seed) end
+            
+            for i = 1, 6 do
+                local dir = Vector3(math.random() - 0.5, 0, math.random() - 0.5):Normalized()
+                local speed = 4 + math.random() * 7
+                
+                local args_copy = deepcopy(grenade.args)
+                args_copy.velocity = dir * speed + Vector3.Up * (math.random() * 5 + 3)
+                args_copy.position = grenade.position
+                args_copy.fusetime = math.random() * 3 + 2
+                
+                local spawned_grenade = Grenade(args_copy)
+                spawned_grenade.cluster = true -- Cluster grenades do not spawn more grenades
+                Grenades.grenades[spawned_grenade.id] = spawned_grenade
+            end
+            
+            math.randomseed(os.time())
+        end,
+        ["model"] = "general.blz/wea33-wea33.lod",
+        ["offset"] = Vector3(-0.32, 0, 0.03),
+        ["angle"] = Angle(0, math.pi / 2, 0),
+        ["effect_time"] = 30 -- default effect time for this effect is 15
+	},
 	["AntiGrav Grenade"] = {
 		["effect_id"] = 135,
         ["trail_effect_id"] = 61,
@@ -162,6 +209,74 @@ Grenade.Types = {
         ["offset"] = Vector3(-0.32, 0, 0.03),
         ["angle"] = Angle(0, math.pi / 2, 0),
         ["effect_time"] = 30 -- default effect time for this effect is 15
+	},
+	["Impulse Grenade"] = {
+		["effect_id"] = 135,
+        ["trail_effect_id"] = 61,
+		["weight"] = 0.7,
+        ["drag"] = 0.12,
+		["restitution"] = 0.3,
+        ["radius"] = 15,
+        ["custom_func"] = function(grenade)
+            
+            y_velo = 70
+            
+            local local_pos = LocalPlayer:GetBonePosition("ragdoll_Spine")
+            local base_state = LocalPlayer:GetBaseState()
+            if local_pos:Distance(grenade.position) < grenade.type.radius 
+            and not LocalPlayer:GetValue("InSafezone") 
+            and not LocalPlayer:InVehicle() 
+            and not LocalPlayer:GetValue("StuntingVehicle")
+            and base_state ~= AnimationState.SReeledInIdle
+            and base_state ~= AnimationState.SReelFlight
+            and base_state ~= AnimationState.SHangstuntIdle then
+                velo = (local_pos - grenade.position):Normalized() * y_velo + Vector3.Up * 3
+                LocalPlayer:SetLinearVelocity(velo)
+                        
+                LocalPlayer:SetOutlineEnabled(true)
+                LocalPlayer:SetOutlineColor(Color(0, 200, 255, 200))
+        
+                local velo_interval
+                velo_interval = Timer.SetInterval(1, function()
+                    LocalPlayer:SetLinearVelocity(velo)
+                end)
+                
+                local interval
+                interval = Timer.SetInterval(1, function()
+                    LocalPlayer:SetBaseState(AnimationState.SFall)
+                    local speed = LocalPlayer:GetLinearVelocity():Length()
+                    if speed < 15 then
+                        LocalPlayer:SetOutlineEnabled(false)
+                        Timer.Clear(interval)
+                    end
+                end)
+                    
+                Timer.SetTimeout(1000, function()
+                    Timer.Clear(velo_interval)
+                end)
+                
+            end
+
+            ClientParticleSystem.Play(AssetLocation.Game, {
+                position = grenade.position,
+                timeout = grenade.type.effect_time,
+                angle = Angle(),
+                path = "fx_f2m06_emptoweractive_05.psmb"
+            })
+            
+            ClientLight.Play({
+                position = grenade.position + Vector3(0, 10, 0),
+                angle = Angle(),
+                color = Color(0, 200, 255, 200),
+                multiplier = 3,
+                radius = 25,
+                timeout = grenade.type.effect_time
+            })
+        end,
+        ["model"] = "general.blz/wea33-wea33.lod",
+        ["offset"] = Vector3(-0.32, 0, 0.03),
+        ["angle"] = Angle(0, math.pi / 2, 0),
+        ["effect_time"] = 1
 	},
 	["Flares"] = {
         ["effect_id"] = 266,
@@ -316,6 +431,9 @@ local function GET_GRENADE_ID()
     return GRENADE_ID
 end
 
+-- 411
+-- 348 for c4 fireworks
+
 function Grenade:__init(args)
     self.id = GET_GRENADE_ID()
 	self.object = ClientStaticObject.Create({
@@ -328,7 +446,7 @@ function Grenade:__init(args)
 		["angle"] = self.object:GetAngle(),
 		["effect_id"] = Grenade.Types[args.type].trail_effect_id
     })
-    
+
     if (args.type ~= "Molotov" and args.type ~= "Snowball") and args.fusetime > 0 then
 
         Timer.SetTimeout(math.max(0, (args.fusetime - 3.5)) * 1000, function()
@@ -368,6 +486,8 @@ function Grenade:__init(args)
     self.lastTime = 0
     self.detonated = false
     self.is_mine = args.is_mine == true
+    self.seed = args.seed
+    self.args = args
     self.owner_id = self.is_mine and tostring(LocalPlayer:GetSteamId()) or args.owner_id
 end
 
@@ -445,7 +565,7 @@ function Grenade:Detonate(ray)
     if self.detonated then return end
 
     self.detonated = true
-
+    
 	if not table.compare(self.type, Grenade.Types.Flashbang) then
         Events:Fire(var("HitDetection/Explosion"):get(), {
 			position = self.object:GetPosition(),
@@ -460,6 +580,8 @@ function Grenade:Detonate(ray)
                 radius = self.type.radius,
                 type = self.grenade_type
             })
+        elseif self.grenade_type == "Stealth Grenade" and LocalPlayer:GetPosition():Distance(self.object:GetPosition()) < self.radius then
+            Network:Send(var("items/HitByStealthGrenade"):get())
         end
 
         if self.is_mine and ray and IsValid(ray.entity) and ray.entity.__type == "Player" then

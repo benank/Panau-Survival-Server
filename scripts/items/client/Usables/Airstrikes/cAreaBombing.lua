@@ -9,7 +9,7 @@ function cAreaBombing:__init(args)
     self.attacker_id = args.attacker_id
     self.name = args.name
     self.seed = args.seed
-    self.radius = ItemsConfig.airstrikes[self.name].radius
+    self.radius = args.radius or ItemsConfig.airstrikes[self.name].radius
     self.timer = Timer()
 
     self.fx = {} -- Effects, sounds, and lights

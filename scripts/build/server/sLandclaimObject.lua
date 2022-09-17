@@ -4,6 +4,8 @@ class 'sLandclaimObject'
 function sLandclaimObject:__init(args)
 
     self.id = args.id -- Unique object id per claim, changes every reload
+    self.landclaim_id = args.landclaim_id
+    self.landclaim_owner_id = args.landclaim_owner_id
     self.owner_id = args.owner_id -- Steam id of player who placed it
     self.owner_name = args.owner_name
     self.name = args.name
@@ -11,11 +13,19 @@ function sLandclaimObject:__init(args)
     self.angle = type(args.angle) == "string" and DeserializeAngle(args.angle) or args.angle
     self.health = args.health
     self.custom_data = args.custom_data or self:GetDefaultCustomData()
+    
+    if args.custom_data and args.custom_data.color and type(args.custom_data.color) == "string" then
+        self.custom_data.color = DeserializeColor(args.custom_data.color)
+    end
 
 end
 
 function sLandclaimObject:Damage(amount)
     self.health = math.max(0, self.health - math.abs(amount))
+    
+    if self.name == "Teleporter" and self.landclaim_owner_id ~= "SERVER" then
+        sLandclaimManager.landclaims[self.landclaim_owner_id][self.landclaim_id]:TeleporterDamaged(self)
+    end
 end
 
 -- Removes all existing spawns from this bed object if they exist
@@ -47,16 +57,27 @@ function sLandclaimObject:GetDefaultCustomData()
         custom_data.enabled = true -- If the light is turned on or not
     elseif self.name == "Bed" then
         custom_data.player_spawns = {} -- List of player spawns for this bed
+    elseif self.name == "Sign" then
+        custom_data.color = Color(255, 0, 0)
+        custom_data.text = "Sample Text\nSample Text"
+    elseif self.name == "Teleporter" then
+        custom_data.tp_id = GenerateNewTeleporterId()
+        custom_data.tp_link_id = ""
     end
 
     return custom_data
 end
 
 function sLandclaimObject:GetSerializable()
-    local data = self:GetSyncObject()
+    local data = deepcopy(self:GetSyncObject())
     data.id = nil
     data.angle = SerializeAngle(data.angle)
     data.position = SerializePosition(data.position)
+    
+    if data.custom_data.color then
+        data.custom_data.color = SerializeColor(data.custom_data.color)
+    end
+    
     return data
 end
 

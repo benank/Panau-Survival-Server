@@ -2,7 +2,11 @@ class "sHacker"
 
 function sHacker:__init()
     self.difficulties = {
+        [22] = 5, -- LockboxX
+        [21] = 4, -- Lockbox
         [13] = 3, -- Locked stash
+        [17] = 3, -- Airdrop Level 2
+        [18] = 4, -- Airdrop Level 3
         [14] = 2 -- Prox alarm
     }
 
@@ -16,6 +20,12 @@ function sHacker:__init()
 
     Network:Subscribe("items/HackComplete", self, self.HackComplete)
     Network:Subscribe("items/FailHack", self, self.FailHack)
+    
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
+end
+
+function sHacker:ModuleUnload()
+    Events:Fire("Drones/RemoveDronesInGroup", {group = "secret"}) 
 end
 
 function sHacker:GetPerkMods(player)
@@ -67,8 +77,35 @@ function sHacker:FailHack(args, player)
         Events:Fire("sams/GetSAMInfo", {id = player:GetValue("CurrentlyHackingSAM")})
     end
     
+    -- Spawn drone if failed hack on a lockbox
+    if player:GetValue("CurrentLootbox") then
+        local current_box = player:GetValue("CurrentLootbox")
+        if not current_box.stash then -- Secret box if not stash
+            if math.random() < 0.5 then
+                local pos = player:GetPosition()
+                Timer.SetTimeout(3000, function()
+                    Events:Fire("Drones/SpawnDrone", {
+                        level = math.random(25, 75),
+                        static = true,
+                        position = pos + Vector3.Up * 1,
+                        tether_position = pos,
+                        tether_range = 200,
+                        config = {
+                            attack_on_sight = true
+                        },
+                        group = "secret"
+                    }) 
+                end)
+            end
+        end
+    end
+        
     player:SetValue("CurrentlyHackingSAM", nil)
     player:SetValue("CurrentlyHacking", false)
+    
+    Events:Fire("items/FailHack", {
+        player = player
+    })
 
     Inventory.OperationBlock({player = player, change = -1})
 end
@@ -78,14 +115,26 @@ function sHacker:HackComplete(args, player)
         return
     end
     if player:GetValue("CurrentLootbox") then
-        Events:Fire(
-            "items/HackComplete",
-            {
-                player = player,
-                stash_id = player:GetValue("CurrentLootbox").stash.id,
-                tier = player:GetValue("CurrentLootbox").tier
-            }
-        )
+        local current_box = player:GetValue("CurrentLootbox")
+        if current_box.stash then
+            Events:Fire(
+                "items/HackComplete",
+                {
+                    player = player,
+                    stash_id = current_box.stash.id,
+                    tier = current_box.tier
+                }
+            )
+        else
+            Events:Fire(
+                "items/LockboxHackComplete",
+                {
+                    player = player,
+                    lootbox_id = current_box.uid,
+                    tier = current_box.tier
+                }
+            )
+        end
     elseif player:GetValue("CurrentlyHackingSAM") then
         Events:Fire(
             "items/SAMHackComplete",
@@ -96,6 +145,16 @@ function sHacker:HackComplete(args, player)
             }
         )
         player:SetValue("CurrentlyHackingSAM", nil)
+    elseif player:GetValue("CurrentlyHackingVehicle") then
+        Events:Fire(
+            "items/VehicleHackComplete",
+            {
+                player = player,
+                vehicle_id = player:GetValue("CurrentlyHackingVehicle"),
+                tier = "Vehicle"
+            }
+        )
+        player:SetValue("CurrentlyHackingVehicle", nil)
     end
 
     player:SetValue("CurrentlyHacking", false)
@@ -119,21 +178,40 @@ function sHacker:UseItem(args, player)
      then
         if args.forward_ray.sam_id then
             self:HackSAM(args, player)
+        elseif args.forward_ray.vehicle_id then
+            self:HackVehicle(args, player)
         else
             self:HackStash(args, player)
         end
     end
 end
 
+function sHacker:CanHackBox(player, current_box)
+    
+    if not current_box then return false end
+    if not current_box.tier then return false end
+    
+    if current_box.locked then return true end
+    if not hackable_tiers[current_box.tier] then return false end
+    if not self.difficulties[current_box.tier] then return false end
+    
+    if current_box.stash then
+                   
+        if current_box.stash.access_mode == 1 or
+        current_box.stash.owner_id == tostring(player:GetSteamId()) or
+        AreFriends(player, current_box.stash.owner_id) then
+            return false 
+        end
+            
+    end
+    
+end
+
 function sHacker:HackStash(args, player)
     local player_iu = player:GetValue("ItemUse")
     local current_box = player:GetValue("CurrentLootbox")
-    if
-        not current_box or (not current_box.locked and not hackable_tiers[current_box.tier]) or
-            current_box.stash.access_mode == 1 or
-            current_box.stash.owner_id == tostring(player:GetSteamId()) or
-            AreFriends(player, current_box.stash.owner_id)
-     then
+    
+    if not self:CanHackBox(player, current_box) then
         Chat:Send(player, "You must open a hackable object first!", Color.Red)
         return
     end
@@ -173,6 +251,64 @@ function sHacker:HackStash(args, player)
     send_data.time = send_data.time + perk_mods[1]
 
     Network:Send(player, "items/StartHack", send_data)
+end
+
+function sHacker:HackVehicle(args, player)
+     
+    local player_iu = player:GetValue("ItemUse")
+    local steam_id = tostring(player:GetSteamId())
+    local player = player
+    local vehicle = Vehicle.GetById(args.forward_ray.vehicle_id)
+    
+    if not IsValid(vehicle) then return end
+    if vehicle:GetHealth() <= 0.2 then return end
+    if vehicle:GetPosition():Distance(player:GetPosition()) > 15 then return end
+    
+    local vehicle_data = vehicle:GetValue("VehicleData")
+    
+    -- if steam_id == vehicle_data.owner_steamid then
+    --     Chat:Send(player, "Hacking failed: You own this vehicle.", Color.Red)
+    --     return
+    -- end
+    
+    -- if AreFriends(player, vehicle_data.owner_steamid) then
+    --     Chat:Send(player, "Hacking failed: You are friends with this vehicle\'s owner.", Color.Red)
+    --     return
+    -- end
+    
+    local perk_mods = self:GetPerkMods(player)
+
+    local chance_to_keep = math.random()
+
+    if chance_to_keep <= perk_mods[2] then
+        Chat:Send(player, "Your Hacker was kept after using it, thanks to your perks!", Color(0, 220, 0))
+    else
+        Inventory.RemoveItem(
+            {
+                item = player_iu.item,
+                index = player_iu.index,
+                player = player
+            }
+        )
+    end
+
+    Inventory.OperationBlock({player = player, change = 1})
+    player:SetValue("CurrentlyHacking", true)
+    player:SetValue("CurrentlyHackingVehicle", vehicle:GetId())
+    local difficulty = self.difficulties[13]
+
+    local send_data = {difficulty = difficulty}
+
+    if player_iu.item.name == "Master Hacker" then
+        send_data.time = 20 -- Double time for Master Hacker
+    else
+        send_data.time = 10
+    end
+
+    send_data.time = send_data.time + perk_mods[1]
+
+    Network:Send(player, "items/StartHack", send_data)
+    
 end
 
 function sHacker:HackSAM(args, player)

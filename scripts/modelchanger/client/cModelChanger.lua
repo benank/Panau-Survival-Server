@@ -22,6 +22,7 @@ function cModelChanger:__init()
         button:SetTextSize(16)
         button:SetText(i == 1 and "Model Change" or "Model Name")
         button:SetBackgroundVisible(i ~= 1)
+        button:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
         if i == 1 then
             local rect = Rectangle.Create(button)

@@ -6,7 +6,7 @@ Inventory.config =
     {
         [1] = {name = "Weapons", slots = 2},
         [2] = {name = "Explosives", slots = 3},
-        [3] = {name = "Supplies", slots = 6},
+        [3] = {name = "Supplies", slots = 7},
         [4] = {name = "Survival", slots = 6}
     },
     max_slots_per_category = 20,
@@ -14,20 +14,95 @@ Inventory.config =
     default_inv = 
     {
         {
-            name = "Bandages",
-            amount = 5
-        },
-        {
-            name = "Water",
-            amount = 5
-        },
-        {
             name = "Can of Beans",
-            amount = 5
+            amount = 15
         },
         {
             name = "Lockpick",
             amount = 3
+        },
+        {
+            name = "Handgun",
+            amount = 1,
+            durability = 0.75
+        },
+        {
+            name = "Handgun Ammo",
+            amount = 100
+        },
+        {
+            name = "HE Grenade",
+            amount = 10
+        },
+        {
+            name = "Parachute",
+            amount = 1,
+            durability = 0.1
+        },
+        {
+            name = "Grapplehook",
+            amount = 1,
+            durability = 0.25
+        },
+        {
+            name = "Helmet",
+            amount = 1,
+            durability = 0.75
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "Wall",
+            amount = 1
+        },
+        {
+            name = "LandClaim",
+            amount = 1,
+            custom_data = {
+                size = 20
+            }
+        }
+    },
+    default_respawn_inv = 
+    {
+        {
+            name = "Grapplehook",
+            amount = 1,
+            durability = 0.10
         },
         {
             name = "Handgun",
@@ -39,16 +114,19 @@ Inventory.config =
             amount = 50
         },
         {
-            name = "HE Grenade",
+            name = "Can of Beans",
+            amount = 3
+        },
+        {
+            name = "Bandages",
             amount = 5
         },
         {
-            name = "Grapplehook",
+            name = "Helmet",
             amount = 1,
-            durability = 0.1
+            durability = 0.5
         }
-    },
-    max_grapple_upgrades = 4
+    }
 }
 
 function CategoryExists(cat)

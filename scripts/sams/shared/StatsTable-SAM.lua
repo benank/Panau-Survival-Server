@@ -18,12 +18,12 @@ SAMStatsTable	=	{
 SAM_Configuration = 
 {
     Damage = {base = 0.2, per_level = 0.001},
-    MaxHealth = {base = 300, per_level = 15},
+    MaxHealth = {base = 300, per_level = 20},
     MaxSpeed = {base = 85, per_level = 2.25},
     TurnRate = {base = 42, per_level = 0.5},
-    FireInterval = {base = 12, per_level = -0.1},
-    Range = {base = 1000, per_level = 20},
-    LootChance = {base = 0.2, per_level = 0.01}
+    FireInterval = {base = 12, per_level = -0.05},
+    Range = {base = 1000, per_level = 10},
+    LootChance = {base = 0.2, per_level = 0.006}
 }
 	
 --[[

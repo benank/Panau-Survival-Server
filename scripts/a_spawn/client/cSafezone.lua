@@ -54,6 +54,7 @@ end
 
 function cSafezone:RenderSafezoneText(text, subtext, color)
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     local c = Color(color.r, color.g, color.b, 200)
 
     local top_margin = 10
@@ -80,6 +81,7 @@ function cSafezone:SecondTick()
 
     self.in_neutralzone = LocalPlayer:GetPosition():Distance(config.neutralzone.position) < config.neutralzone.radius
 
+    Events:Fire("NearSafezone", {near_sz = self.near_safezone})
 end
 
 function cSafezone:EnterSafezone()

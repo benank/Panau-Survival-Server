@@ -8,6 +8,7 @@ function cDroneManager:__init()
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("PostTick", self, self.PostTick)
+    Events:Subscribe("LoadingFinished", self, self.LoadingFinished)
 
     Network:Subscribe("Drones/SingleSync", self, self.SingleDroneSync)
     Network:Subscribe("Drones/Remove", self, self.RemoveDrone)
@@ -51,6 +52,13 @@ function cDroneManager:__init()
     self:DroneSyncToServerLoop()
     self:DroneCellUpdateLoop()
 
+end
+
+function cDroneManager:LoadingFinished(args)
+    -- Remake all drones to get particle effects back
+    for _, drone in pairs(self.drones) do
+        drone.body:RemakeParticles()
+    end 
 end
 
 -- Send drone information to all other modules when requested

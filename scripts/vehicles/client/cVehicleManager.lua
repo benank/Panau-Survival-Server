@@ -138,6 +138,7 @@ end
 
 function cVehicleManager:Render(args)
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     if LocalPlayer:InVehicle() then
         self:RenderCurrentVehicleData()
         return

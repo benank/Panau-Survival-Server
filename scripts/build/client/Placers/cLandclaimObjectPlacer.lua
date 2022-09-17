@@ -208,6 +208,7 @@ function cLandclaimObjectPlacer:Render(args)
 
     if not self.placing then return end
     if not IsValid(self.object) then return end
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     if not self.model then
         self:CreateModel()
@@ -242,9 +243,9 @@ function cLandclaimObjectPlacer:Render(args)
 
     if self.flat and self.name == "Wall" then
         if self.rotation_axis == 1 then
-            ang.roll = 0.157 + math.pi / 2
+            ang.roll = 0.1668722001 + math.pi / 2
         else
-            ang.roll = 0.157
+            ang.roll = 0.1668722001
             --ang.pitch = ang.pitch + math.pi
         end
     end
@@ -348,25 +349,25 @@ end
 function cLandclaimObjectPlacer:CheckBoundingBox()
 
     -- Don't check bounding box for build items because some of them are terrible
-    if self.vertices then
-        local angle = self.object:GetAngle()
-        local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.1, 0)
-        for i = 1, #self.vertices, 2 do
-            local p1 = angle * self.vertices[i].position * 0.5 * self.bb_mod + object_pos
-            local p2 = angle * self.vertices[i+1].position * 0.5 * self.bb_mod + object_pos
+    -- if self.vertices then
+    --     local angle = self.object:GetAngle()
+    --     local object_pos = self.object:GetPosition() + angle * Vector3(0, 0.1, 0)
+    --     for i = 1, #self.vertices, 2 do
+    --         local p1 = angle * self.vertices[i].position * 0.5 * self.bb_mod + object_pos
+    --         local p2 = angle * self.vertices[i+1].position * 0.5 * self.bb_mod + object_pos
 
-            local diff = p2 - p1
-            local len = diff:Length()
+    --         local diff = p2 - p1
+    --         local len = diff:Length()
 
-            local ray = Physics:Raycast(p1, diff, 0, len)
+    --         local ray = Physics:Raycast(p1, diff, 0, len)
 
-            if (ray.distance < len and ray.entity) or ray.position.y <= 200 then
-                return false
-            end
-        end
-    else
-        return false
-    end
+    --         if (ray.distance < len and ray.entity) then
+    --             return false
+    --         end
+    --     end
+    -- else
+    --     return false
+    -- end
 
     return true
 end
@@ -402,7 +403,7 @@ function cLandclaimObjectPlacer:RenderText(can_place_here)
 end
 
 function cLandclaimObjectPlacer:DrawShadowedText(pos, text, color, number)
-    Render:DrawText(pos + Vector2(2,2), text, Color.Black, number)
+    Render:DrawText(pos + Vector2(1,1), text, Color.Black, number)
     Render:DrawText(pos, text, color, number)
 end
 

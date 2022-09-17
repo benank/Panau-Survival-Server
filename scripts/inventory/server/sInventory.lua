@@ -40,6 +40,7 @@ function sInventory:__init(player)
     table.insert(self.events, Events:Subscribe("Inventory.ToggleBackpackEquipped-" .. self.steamID, self, self.ToggleBackpackEquipped))
 
     table.insert(self.events, Events:Subscribe("PlayerKilled", self, self.PlayerKilled))
+    table.insert(self.events, Events:Subscribe("spawn/PlayerSpawnedInSZ", self, self.PlayerSpawnedInSZ))
     table.insert(self.events, Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated))
 
     table.insert(self.network_events, Network:Subscribe("Inventory/Shift" .. self.steamID, self, self.ShiftStack))
@@ -95,7 +96,7 @@ function sInventory:Load()
         command:Execute()
         
         -- Load default inventory
-        for k,v in pairs(GenerateDefaultInventory()) do
+        for k,v in pairs(GenerateDefaultInventory(Inventory.config.default_inv)) do
             self:AddStack({stack = v})
         end
 
@@ -106,6 +107,18 @@ function sInventory:Load()
     self:Sync({sync_full = true})
 
     self.initial_sync = true
+
+end
+
+function sInventory:PlayerSpawnedInSZ(args)
+    if args.player ~= self.player then return end
+    if self:GetNumUsedSlots() > 0 then return end -- Only give items if they don't have any
+    if args.player:GetValue("Suicided") then return end
+    
+    -- Load default respawn inventory
+    for k,v in pairs(GenerateDefaultInventory(Inventory.config.default_respawn_inv)) do
+        self:AddStack({stack = v})
+    end
 
 end
 
@@ -199,7 +212,7 @@ function sInventory:PlayerKilled(args)
 
         Events:Fire("Discord", {
             channel = "Inventory",
-            content = string.format("%s [%s] death drop: %s", self.player:GetName(), tostring(self.player:GetSteamId()), chat_msg)
+            content = string.format("%s [%s] death drop %s: %s", self.player:GetName(), tostring(self.player:GetSteamId()), WorldToMapString(self.player:GetPosition()), chat_msg)
         })
 
         self:SpawnDropbox(stacks_to_drop, true)
@@ -525,7 +538,6 @@ end
 
 function sInventory:DropStacks(args, player)
 
-    if player:InVehicle() then return end
     if not args.stacks then return end
     if count_table(args.stacks) == 0 then return end
     if count_table(args.stacks) > Lootbox.Max_Items_In_Dropbox then
@@ -593,11 +605,14 @@ function sInventory:DropStack(args, player)
     if not stack then return end
     if args.amount > stack:GetAmount() then return end
 
-    if player:InVehicle() then return end -- TODO drop in vehicle storage
-
     local dropping_in_stash = false
     local current_lootbox_data = player:GetValue("CurrentLootbox")
     local stash = nil
+
+    if player:InVehicle() then
+        if not current_lootbox_data then return end
+        if not current_lootbox_data.vehicle_storage then return end 
+    end
 
     if current_lootbox_data then
 
@@ -1288,13 +1303,13 @@ function sInventory:Sync(args)
     -- Initial sync, so also equip all things that were equipped before
     if not self.initial_sync then
         for cat, _ in pairs(self.contents) do
-            for _, stack in pairs(self.contents[cat]) do
+            for stack_index, stack in pairs(self.contents[cat]) do
                 if stack:GetOneEquipped() then
                     for _, item in pairs(stack.contents) do
                         if item.equipped then
                             Events:Fire("Inventory/ToggleEquipped", {
                                 player = self.player, 
-                                index = _,
+                                index = stack_index,
                                 initial = true,
                                 item = item:Copy():GetSyncObject()})
                         end

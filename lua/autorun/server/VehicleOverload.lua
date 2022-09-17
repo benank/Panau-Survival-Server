@@ -14,7 +14,7 @@ function Vehicle:SetHealth(amt)
 
         local vehicle_data = self:GetValue("VehicleData")
 
-        if vehicle_data.owner_steamid then
+        if vehicle_data and vehicle_data.owner_steamid then
             Events:Fire("Discord", {
                 channel = "Vehicles",
                 content = string.format("**Possible vehicle health hacking detected!** Vehicle: %s Vehicle id: %d Owner steam id: %s",

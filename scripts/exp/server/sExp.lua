@@ -22,6 +22,7 @@ function sExp:__init()
 
     Events:Subscribe("items/HackComplete", self, self.HackComplete)
     Events:Subscribe("items/SAMHackComplete", self, self.HackComplete)
+    Events:Subscribe("items/LockboxHackComplete", self, self.HackComplete)
     Events:Subscribe("Stashes/DestroyStash", self, self.DestroyStash)
     Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
     Events:Subscribe("sams/SamDestroyed", self, self.SamDestroyed)
@@ -264,9 +265,9 @@ function sExp:PlayerKilled(args)
 
     if not args.player:GetValue("Exp") then return end
 
-    if args.player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius
-    and args.player:GetValue("Exp").level > 3 then return end
-
+    -- In safezone
+    if args.player:GetPosition():Distance(sz_config.safezone.position) < sz_config.safezone.radius then return end
+    
     -- Give killer exp
     if args.killer then
         self:AwardExpToKillerOnKill(args)
@@ -490,6 +491,12 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
     if not exp_data then return end
     if exp <= 0 then return end
 
+    -- Less exp while in NZ
+    local sz_config = SharedObject.GetByName("SafezoneConfig"):GetValues()
+    if IsValid(player) and player:GetPosition():Distance(sz_config.neutralzone.position) < sz_config.neutralzone.radius then
+        exp = exp / 4
+    end
+    
     local initial_exp_data = deepcopy(exp_data)
     exp = math.ceil(exp * self.global_multiplier)
 
@@ -504,9 +511,10 @@ function sExp:GivePlayerExp(exp, type, steamID, exp_data, player)
     end
 
     local gained_level = false
+    
+    local total_exp = exp_data.combat_exp + exp_data.explore_exp
 
-    if exp_data.combat_exp == exp_data.combat_max_exp
-    and exp_data.explore_exp == exp_data.explore_max_exp
+    if total_exp >= exp_data.combat_max_exp
     and exp_data.level < Exp.Max_Level then
         exp_data = self:PlayerGainLevel(exp_data)
 

@@ -60,13 +60,16 @@ Events:Subscribe("Inventory/UseItem", function(args)
             
             if args.item.name == "Ping" then
                 local player_perks = GetPerkMods(p)
-                hidden_chance = player_perks[2]
+                if player_perks then
+                    hidden_chance = player_perks[2]
+                end
             end
 
             if p ~= args.player 
             and player_pos:Distance(pos) < range
-            and not p:GetValue("Loading") and exp and exp.level > 0
+            and not p:GetValue("Loading")
             and not p:GetValue("Invisible")
+            and not p:GetValue("StealthEnabled")
             and math.random() > hidden_chance then
                 nearby_players[p:GetId()] = {position = p:GetPosition(), name = p:GetName()}
             end

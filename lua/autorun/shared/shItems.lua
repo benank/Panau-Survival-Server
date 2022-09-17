@@ -3,7 +3,7 @@ Items =
     {
         name = "Assault Ammo",
         category = "Supplies",
-        stacklimit = 100
+        stacklimit = 120
     },
     {
         name = "GrLauncher Ammo",
@@ -13,22 +13,22 @@ Items =
     {
         name = "Handgun Ammo",
         category = "Supplies",
-        stacklimit = 60,
+        stacklimit = 100,
     },
     {
         name = "Rockets",
         category = "Supplies",
-        stacklimit = 3,
+        stacklimit = 5,
     },
     {
         name = "Revolver Ammo",
         category = "Supplies",
-        stacklimit = 60,
+        stacklimit = 100,
     },
     {
         name = "Shotgun Ammo",
         category = "Supplies",
-        stacklimit = 50,
+        stacklimit = 60,
     },
     {
         name = "SMG Ammo",
@@ -43,12 +43,12 @@ Items =
     {
         name = "Machine Gun Ammo",
         category = "Supplies",
-        stacklimit = 100,
+        stacklimit = 200,
     },
     {
         name = "Sawn-Off Ammo",
         category = "Supplies",
-        stacklimit = 60,
+        stacklimit = 80,
     },
     {
         name = "Bubbles",
@@ -140,7 +140,7 @@ Items =
     {
         name = "Area Bombing",
         category = "Explosives",
-        stacklimit = 3,
+        stacklimit = 5,
         can_use = true
     },
     {
@@ -152,7 +152,7 @@ Items =
     {
         name = "Bandages",
         category = "Survival",
-        stacklimit = 5,
+        stacklimit = 10,
         can_use = true
     },
     {
@@ -179,7 +179,7 @@ Items =
     {
         name = "Cruise Missile",
         category = "Explosives",
-        stacklimit = 5,
+        stacklimit = 10,
         can_use = true
     },
     {
@@ -198,7 +198,7 @@ Items =
     {
         name = "Healthpack",
         category = "Survival",
-        stacklimit = 2,
+        stacklimit = 3,
         can_use = true
     },
     {
@@ -211,15 +211,18 @@ Items =
         max_durability = 1000
     },
     {
-        name = "Oxygen",
+        name = "Oxygen Tank",
         category = "Survival",
-        stacklimit = 10,
-        can_use = true
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 400,
+        equip_type = "tank"
     },
     {
         name = "Ping",
         category = "Supplies",
-        stacklimit = 10,
+        stacklimit = 15,
         can_use = true
     },
     {
@@ -249,7 +252,7 @@ Items =
     {
         name = "Master Hacker",
         category = "Supplies",
-        stacklimit = 1,
+        stacklimit = 5,
         can_use = true
     },
     {
@@ -273,7 +276,7 @@ Items =
     {
         name = "Tactical Nuke",
         category = "Explosives",
-        stacklimit = 2,
+        stacklimit = 3,
         can_use = true
     },
     {
@@ -298,7 +301,7 @@ Items =
     {
         name = "C4",
         category = "Explosives",
-        stacklimit = 2,
+        stacklimit = 3,
         can_use = true,
         can_stack = true,
         non_persistent_custom_data = true
@@ -312,7 +315,7 @@ Items =
     {
         name = "HE Grenade",
         category = "Explosives",
-        stacklimit = 10,
+        stacklimit = 15,
         can_equip = true,
         equip_type = "held"
     },
@@ -326,7 +329,7 @@ Items =
     {
         name = "Mine",
         category = "Explosives",
-        stacklimit = 5,
+        stacklimit = 10,
         can_use = true
     },
     {
@@ -363,6 +366,13 @@ Items =
     },
     {
         name = "Warp Grenade",
+        category = "Explosives",
+        stacklimit = 10,
+        can_equip = true,
+        equip_type = "held"
+    },
+    {
+        name = "Stealth Grenade",
         category = "Explosives",
         stacklimit = 10,
         can_equip = true,
@@ -487,7 +497,7 @@ Items =
     {
         name = "Grapplehook",
         category = "Supplies",
-        stacklimit = 2,
+        stacklimit = 3,
         can_equip = true,
         durable = true,
         max_durability = 1000,
@@ -625,15 +635,6 @@ Items =
         equip_type = "weapon_2h"
     },
     {
-        name = "Wingsuit",
-        category = "Supplies",
-        stacklimit = 1,
-        can_equip = true,
-        durable = true,
-        max_durability = 500,
-        equip_type = "wingsuit"
-    },
-    {
         name = "CamelBak",
         category = "Survival",
         stacklimit = 1,
@@ -660,7 +661,8 @@ Items =
         stacklimit = 1,
         can_equip = true,
         equip_type = "radar",
-        durable = true
+        durable = true,
+        max_durability = 1000
     },
     {
         name = "Cloud Strider Boots",
@@ -704,7 +706,7 @@ Items =
     {
         name = "Wall",
         category = "Survival",
-        stacklimit = 10,
+        stacklimit = 15,
         max_durability = 400,
         can_use = true,
         durable = true
@@ -714,6 +716,22 @@ Items =
         category = "Survival",
         stacklimit = 3,
         max_durability = 400,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Potted Plant",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Umbrella",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 100,
         can_use = true,
         durable = true
     },
@@ -728,7 +746,7 @@ Items =
     {
         name = "Helipad",
         category = "Survival",
-        stacklimit = 1,
+        stacklimit = 3,
         max_durability = 800,
         can_use = true,
         durable = true
@@ -754,6 +772,14 @@ Items =
         category = "Survival",
         stacklimit = 5,
         max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Sign",
+        category = "Survival",
+        stacklimit = 3,
+        max_durability = 200,
         can_use = true,
         durable = true
     },
@@ -809,7 +835,7 @@ Items =
     {
         name = "Halloween Lootbag",
         category = "Survival",
-        stacklimit = 1,
+        stacklimit = 10,
         can_use = true
     },
     {
@@ -1023,10 +1049,106 @@ Items =
     {
         name = "SAM Key",
         category = "Supplies",
-        stacklimit = 3,
-        can_stack = true,
+        stacklimit = 1,
         can_equip = true,
         equip_type = "sam_key"
+    },
+    {
+        name = "Teleporter",
+        category = "Survival",
+        stacklimit = 1,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Teleporter Upgrade",
+        category = "Supplies",
+        stacklimit = 3
+    },
+    {
+        name = "Warp Core",
+        category = "Supplies",
+        stacklimit = 5
+    },
+    {
+        name = "Phone Booth",
+        category = "Survival",
+        stacklimit = 1,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Metal Railing",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 50,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Metal Stairs",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 200,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "RocketPara",
+        category = "Supplies",
+        stacklimit = 1,
+        can_equip = true,
+        durable = true,
+        max_durability = 3500,
+        equip_type = "parachute"
+    },
+    {
+        name = "Secret",
+        category = "Supplies",
+        stacklimit = 3,
+        can_stack = true,
+        can_use = true
+    },
+    {
+        name = "Cluster Grenade",
+        category = "Explosives",
+        stacklimit = 10,
+        can_equip = true,
+        equip_type = "held"
+    },
+    {
+        name = "Lock-On Module",
+        category = "Supplies",
+        stacklimit = 2,
+        can_equip = true,
+        durable = true,
+        max_durability = 1000,
+        equip_type = "lockon"
+    },
+    {
+        name = "Impulse Grenade",
+        category = "Explosives",
+        stacklimit = 15,
+        can_equip = true,
+        equip_type = "held"
+    },
+    {
+        name = "Two Year Party Hat",
+        category = "Survival",
+        stacklimit = 5,
+        can_equip = true,
+        durable = true,
+        max_durability = 300,
+        equip_type = "costume_hat"
+    },
+    {
+        name = "Boombox",
+        category = "Supplies",
+        stacklimit = 3,
+        can_equip = true,
+        equip_type = "boombox"
     },
 }
 
@@ -1053,3 +1175,8 @@ Items_indexed = {}
 for k,v in pairs(Items) do
     Items_indexed[v.name] = v
 end
+
+Items_indexed['Survival'] = 'Survival'
+Items_indexed['Supplies'] = 'Supplies'
+Items_indexed['Weapons'] = 'Weapons'
+Items_indexed['Explosives'] = 'Explosives'

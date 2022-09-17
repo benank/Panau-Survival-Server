@@ -39,6 +39,8 @@ end
 
 -- When an explosive (Claymore or C4) attached to a stash detonates
 function sStashes:DetonateOnStash(args)
+    
+    if not IsValid(args.player) then return end
 
     local stash = self.stashes_by_uid[args.lootbox_uid]
 
@@ -429,14 +431,13 @@ end
 
 function sStashes:AddStash(args)
 
-    args.id = tonumber(args.id)
-
     local lootbox = CreateLootbox({
         position = args.position,
         angle = args.angle,
         tier = args.tier,
         active = true,
-        contents = args.contents
+        contents = args.contents,
+        vehicle = args.vehicle
     })
 
     local stash = sStash({
@@ -446,7 +447,8 @@ function sStashes:AddStash(args)
         lootbox = lootbox,
         access_mode = tonumber(args.access_mode),
         health = args.health,
-        name = args.name
+        name = args.name,
+        capacity = args.capacity
     })
 
     lootbox.stash = stash
@@ -517,7 +519,7 @@ function sStashes:PlaceStash(position, angle, type, player)
     end
 
     local lootbox = self:AddStash({
-        id = result[1].id,
+        id = tonumber(result[1].id),
         owner_id = steamID,
         position = position,
         angle = angle,

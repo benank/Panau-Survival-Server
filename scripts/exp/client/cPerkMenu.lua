@@ -10,7 +10,7 @@ function cPerkMenu:__init()
     self.window:SetPositionRel( Vector2( 0.5, 0.5 ) - self.window:GetSizeRel()/2 )
     self.window:SetVisible( self.active )
     self.window:SetMinimumSize(self.window:GetSize() * 0.85)
-    self.window:SetTitle( "Player Stats & Perks" )
+    self.window:SetTitle( "Player Perks & Stats" )
     self.window:Subscribe( "WindowClosed", self, self.Close )
 
     self.tab_control = TabControl.Create( self.window )
@@ -20,11 +20,11 @@ function cPerkMenu:__init()
 
     self.category_names = 
     {
-        [1] = "Stats",
-        [2] = "Perks",
-        [3] = "Leaderboard"
+        [1] = "Perks",
+        [2] = "Stats",
+        -- [3] = "Leaderboard"
     }
-
+    
     self.column_index = 
     {
         Id = 0,
@@ -40,6 +40,7 @@ function cPerkMenu:__init()
     self:LoadCategories()
     self:CreatePerksMenu()
     self:AddAllPerksToMenu()
+    self:CreateStatsMenu()
 
 
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
@@ -50,6 +51,7 @@ function cPerkMenu:__init()
     Events:Subscribe( "KeyUp", self, self.KeyUp )
 
     Events:Subscribe("SecondTick", self, self.SecondTick)
+    Network:Subscribe("Exp/UpdatePlayerStats", self, self.UpdatePlayerStats)
 
 end
 
@@ -75,6 +77,7 @@ function cPerkMenu:CreateConfirmMenu()
     confirm_text:SetMargin(Vector2(0, 10), Vector2(0, 0))
     confirm_text:SetAlignment(GwenPosition.Center)
     confirm_text:SetDock( GwenPosition.Top )
+    confirm_text:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     local confirm_btn = Button.Create(self.confirm_menu)
     confirm_btn:SetText("Unlock Perk")
@@ -83,6 +86,7 @@ function cPerkMenu:CreateConfirmMenu()
     confirm_btn:SetMargin(Vector2(0, 10), Vector2(0, 0))
     confirm_btn:SetDock( GwenPosition.Bottom )
     confirm_btn:Subscribe("Press", self, self.ConfirmPerkButton)
+    confirm_btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     self.confirm_menu:Hide()
 
@@ -107,6 +111,7 @@ function cPerkMenu:CreateChoiceMenu(choice_data)
     confirm_text:SetMargin(Vector2(0, 10), Vector2(0, 0))
     confirm_text:SetAlignment(GwenPosition.Center)
     confirm_text:SetDock( GwenPosition.Top )
+    confirm_text:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     for choice_index, choice_text in ipairs(choice_data.choices) do
 
@@ -118,6 +123,7 @@ function cPerkMenu:CreateChoiceMenu(choice_data)
         confirm_btn:SetDock( GwenPosition.Bottom )
         confirm_btn:SetDataNumber("choice_index", choice_index)
         confirm_btn:Subscribe("Press", self, self.PressChoiceButton)
+        confirm_btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     end
 
@@ -128,8 +134,10 @@ function cPerkMenu:PressChoiceButton(btn)
     if not btn:GetDataNumber("choice_index") then return end
 
     self.current_unlocking_choice = btn:GetDataNumber("choice_index")
-
-    self.choice_menu = self.choice_menu:Remove()
+    
+    if self.choice_menu then
+        self.choice_menu = self.choice_menu:Remove()
+    end
 
     self.confirm_menu:Show()
 
@@ -270,7 +278,7 @@ function cPerkMenu:AddPerk(data)
 	item:SetCellText( self.column_index.Cost, data.cost > 0 and tostring(data.cost) or "Free" )
 	item:SetCellText( self.column_index.LevelReq, tostring(data.level_req) )
     item:SetCellText( self.column_index.PerkReq, data.perk_req > 0 and "#" .. tostring(ExpPerksById[data.perk_req].position) or "" )
-
+    
     for i = 0, 5 do
         if i == self.column_index.Details then
             item:GetCellContents(i):SetWidth(300)
@@ -279,6 +287,8 @@ function cPerkMenu:AddPerk(data)
             item:GetCellContents(i):SetWrap(true)
         end
         item:GetCellContents(i):SetAlignment(GwenPosition.Center)
+        item:GetCellContents(i):SetTextSize(15)
+        item:GetCellContents(i):SetFont(AssetLocation.Disk, "Archivo.ttf")
     end
 
     local button_names = 
@@ -292,6 +302,8 @@ function cPerkMenu:AddPerk(data)
         btn:SetAlignment(GwenPosition.Center)
         btn:SetDock(GwenPosition.Fill)
         btn:SetDataNumber("perk_id", data.id)
+        btn:SetTextSize(15)
+        btn:SetFont(AssetLocation.Disk, "Archivo.ttf")
         item:SetCellContents(index, btn)
         btn:Subscribe("Press", self, self.PressPerkButton)
     end
@@ -323,6 +335,66 @@ function cPerkMenu:PressPerkButton(btn)
 
     end
 
+end
+
+function cPerkMenu:UpdatePlayerStats(args)
+    
+    local text = "Player Stats\n\n"..
+        "Level: %d\n"..
+        "Total Exp: %d / %d\n\n"..
+        "Time Online: %.2f hours\n\n"..
+        "Boxes Looted: %d\n"..
+        "Tier 1: %d\n"..
+        "Tier 2: %d\n"..
+        "Tier 3: %d\n"..
+        "Tier 4: %d\n\n"..
+        "Stashes Hacked: %d\n\n"..
+        "Kills: %d\n"..
+        "Deaths: %d\n"..
+        "Drones Destroyed: %d"
+        
+    local formatted_text = string.format(text, 
+        args.level or 1,
+        args.exp or 0, args.max_exp or 0,
+        args.time_online or 0,
+        args.total_boxes_looted or 0,
+        args.tier1_looted or 0,
+        args.tier2_looted or 0,
+        args.tier3_looted or 0,
+        args.tier4_looted or 0,
+        args.hacks or 0,
+        args.kills or 0,
+        args.deaths or 0,
+        args.drone_kills or 0
+    )
+    
+    self.categories["Stats"].stats_label:SetText(formatted_text)
+    
+end
+
+function cPerkMenu:CreateStatsMenu()
+    
+    local page = self.categories["Stats"].button:GetPage()
+    
+	local scroll_control = ScrollControl.Create( page )
+	scroll_control:SetMargin( Vector2( 4, 4 ), Vector2( 4, 4 ) )
+	scroll_control:SetScrollable( false, true )
+	scroll_control:SetDock( GwenPosition.Fill )
+
+	local label = Label.Create( scroll_control )
+	-- Ugly hack to make the text not render under the scrollbar.
+	label:SetPadding( Vector2( 10, 10 ), Vector2( 14, 10 ) )
+    label:SetTextSize(18)
+    label:SetFont(AssetLocation.Disk, "Archivo.ttf")
+	label:SetWrap( true )
+	
+	-- Ugly hack to get word wrapping with ScrollControl working decently.
+	label:Subscribe( "Render" , function(label)
+		label:SetWidth( label:GetParent():GetWidth() )
+		label:SizeToContents()
+	end)
+    
+    self.categories["Stats"].stats_label = label
 end
 
 function cPerkMenu:CreatePerksMenu()

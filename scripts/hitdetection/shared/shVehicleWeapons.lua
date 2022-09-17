@@ -72,8 +72,22 @@ function VehicleWeapons:__init()
         {
             [VehicleSeat.Driver] = {FireLeft = WeaponEnum.V_MachineGun, FireRight = WeaponEnum.V_Rockets},
         }, -- AH-33 Topachula
+        [85] = 
+        {
+            [VehicleSeat.Driver] = {FireRight = WeaponEnum.BeringBombsight},
+        }, -- Bering I-86DP
+    }
+    
+    self.default_secondary_fire_cooldown = 2
+    self.secondary_fire_overrides = 
+    {
+        [WeaponEnum.BeringBombsight] = 10 -- Bering I-86DP
     }
 
+end
+
+function VehicleWeapons:GetSecondaryFireCooldown(vehicle_id)
+    return self.secondary_fire_overrides[vehicle_id] or self.default_secondary_fire_cooldown 
 end
 
 -- Returns vehicle weapon enum

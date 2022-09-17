@@ -70,5 +70,6 @@ local drop_slot_amounts =
 }
 
 function GetNumSlotsDroppedOnDeath(level)
-    return GetMaxFromLevel(level, drop_slot_amounts)
+    -- return GetMaxFromLevel(level, drop_slot_amounts)
+    return 999
 end

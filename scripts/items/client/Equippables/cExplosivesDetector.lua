@@ -107,6 +107,7 @@ function cExplosivesDetector:Render(args)
 
     if cBattery:GetNumBatteries() == 0 then return end
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     for id, data in pairs(self.nearby_explosives) do
         self:DrawExplosive(data)
     end

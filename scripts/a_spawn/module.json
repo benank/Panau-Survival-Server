@@ -7,12 +7,12 @@
   },
   "resources":
   {
-    "Safezone_Lootboxes": "http://paradigm.mp/resources/ps/lootboxes.png",
-    "Safezone_ServerBasics": "http://paradigm.mp/resources/ps/serverbasics.png",
-    "Safezone_Rules": "http://paradigm.mp/resources/ps/rules.png",
-    "Safezone_Team": "http://paradigm.mp/resources/ps/serverteam.png",
-    "Safezone_Welcome": "http://paradigm.mp/resources/ps/panausurvival.png",
-    "Safezone_Keybinds": "http://paradigm.mp/resources/ps/controls.png",
-    "Safezone_GetConnected": "http://paradigm.mp/resources/ps/qrcodes.png"
+    "Safezone_Lootboxes": "https://github.com/benank/Panau-Survival-Server/raw/master/scripts/a_spawn/images/Safezone_-_Lootboxes.png",
+    "Safezone_ServerBasics": "https://github.com/benank/Panau-Survival-Server/raw/master/scripts/a_spawn/images/Safezone_-_Server_Basics.png",
+    "Safezone_Rules": "https://github.com/benank/Panau-Survival-Server/raw/master/scripts/a_spawn/images/Safezone_-_Rules.png",
+    "Safezone_Team": "https://github.com/benank/Panau-Survival-Server/raw/master/scripts/a_spawn/images/Safezone_-_Server_Team.png",
+    "Safezone_Welcome": "https://github.com/benank/Panau-Survival-Server/raw/master/scripts/a_spawn/images/Safezone_-_Welcome_Banner_v2.png",
+    "Safezone_Keybinds": "https://github.com/benank/Panau-Survival-Server/raw/master/scripts/a_spawn/images/keybinds.png",
+    "Safezone_GetConnected": "https://github.com/benank/Panau-Survival-Server/raw/master/scripts/a_spawn/images/Safezone_-_QR_Codes.png"
   }
 }

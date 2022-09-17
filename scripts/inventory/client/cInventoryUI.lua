@@ -58,7 +58,6 @@ function cInventoryUI:__init()
     Events:Subscribe(var("KeyUp"):get(), self, self.KeyUp)
     Events:Subscribe(var("KeyDown"):get(), self, self.KeyDown)
     Events:Subscribe(var("MouseScroll"):get(), self, self.MouseScroll)
-    self.window:Subscribe(var("PostRender"):get(), self, self.WindowRender)
     Events:Subscribe(var("SetInventoryState"):get(), self, self.SetInventoryState)
     Events:Subscribe(var("ResolutionChanged"):get(), self, self.ResolutionChanged)
     
@@ -66,14 +65,22 @@ end
 
 function cInventoryUI:CreateWindow()
 
-    if self.window then self.window:Remove() end
-
+    if self.window then
+        if self.window:GetVisible() then
+            self:ToggleVisible()
+            self.can_open = false
+        end
+        self.window:Remove()
+    end
+    
     self.window = BaseWindow.Create("Inventory")
     self.window:SetSize(Vector2(math.min(1000, math.max(InventoryUIStyle.default_inv_size, Render.Size.x * 0.55)), Render.Size.y))
     self.window:SetPosition(Render.Size - self.window:GetSize())
     self.window:Hide()
     self.window:Focus()
     self.window:SetBackgroundVisible(false)
+    self.window:Subscribe(var("PostRender"):get(), self, self.WindowRender)
+    self.can_open = true
 
 end
 
@@ -93,12 +100,14 @@ function cInventoryUI:RecalculateInventoryResolution()
 end
 
 function cInventoryUI:ResolutionChanged()
+    self:RefreshInventoryDisplay()
+end
 
+function cInventoryUI:RefreshInventoryDisplay()
     self:RecalculateInventoryResolution()
     self:CreateInventory()
 
-    self:Update({action = "full"})
-
+    self:Update({action = "full"}) 
 end
 
 function cInventoryUI:SetInventoryState(open)
@@ -156,17 +165,29 @@ end
 
 -- Gets formatted stack name for inventory/loot, like: Lockpick (50)
 function cInventoryUI:GetItemNameWithAmount(stack, index)
-    if stack:GetProperty("name") == "LandClaim" and stack.contents[1].custom_data.size then
-        return string.format("%s (%dm)", stack:GetProperty("name"), stack.contents[1].custom_data.size)
-    elseif stack:GetProperty("name") == "Airdrop" and stack.contents[1].custom_data.level then
-        return string.format("%s (Level %d)", stack:GetProperty("name"), stack.contents[1].custom_data.level)
-    elseif stack:GetProperty("name") == "SAM Key" and stack.contents[1].custom_data.level then
-        return string.format("%s (Level %d)", stack:GetProperty("name"), stack.contents[1].custom_data.level)
+    local item_name = stack:GetProperty("name")
+    local localized_item_name = self:GetLocalizedText(item_name)
+    if tostring(stack.contents[1].custom_data.no_consume) == "1" then
+        localized_item_name = "Infinity " .. localized_item_name
+    end
+    
+    if item_name == "LandClaim" and stack.contents[1].custom_data.size then
+        return string.format("%s (%dm)", localized_item_name, stack.contents[1].custom_data.size)
+    elseif item_name == "Airdrop" and stack.contents[1].custom_data.level then
+        return string.format("%s (Lv %d)", localized_item_name, stack.contents[1].custom_data.level)
+    elseif item_name == "SAM Key" and stack.contents[1].custom_data.level then
+        return string.format("%s (Lv %d)", localized_item_name, stack.contents[1].custom_data.level)
     else
         return stack:GetAmount() > 1 and 
-            string.format("%s (%s)", stack:GetProperty("name"), tostring(self:GetItemButtonStackAmount(stack, index))) or
-            string.format("%s", stack:GetProperty("name"))
+            string.format("%s (%s)", localized_item_name, tostring(self:GetItemButtonStackAmount(stack, index))) or
+            string.format("%s", localized_item_name)
     end
+end
+
+function cInventoryUI:GetLocalizedText(item_name)
+    local locale = LocalPlayer:GetValue("Locale") or 'en'
+    local localized_item_names = LocalizedItemNames[locale] or LocalizedItemNames['en']
+    return localized_item_names[item_name]
 end
 
 -- Returns 5/10 if dropping, otherwise returns the amount in the stack
@@ -175,7 +196,7 @@ function cInventoryUI:GetItemButtonStackAmount(stack, index)
     local button = itemWindow:FindChildByName("button", true)
 
     if button:GetDataBool("dropping") then -- If they are dropping this stack
-        return string.format("%i/%i", button:GetDataNumber("drop_amount"), stack:GetAmount())
+        return string.format("%i / %i", button:GetDataNumber("drop_amount"), stack:GetAmount())
     else -- Otherwise
         return stack:GetAmount()
     end
@@ -227,10 +248,19 @@ function cInventoryUI:PopulateEntry(args)
             itemwindow:Show()
         end
 
-        local item_name = stack:GetProperty("name")
-
-        button:GetParent():FindChildByName("text"):SetText(self:GetItemNameWithAmount(stack, args.index))
-        button:GetParent():FindChildByName("text_shadow"):SetText(self:GetItemNameWithAmount(stack, args.index))
+        local item_name_localized = self:GetItemNameWithAmount(stack, args.index)
+        button:GetParent():FindChildByName("text"):SetText(item_name_localized)
+        button:GetParent():FindChildByName("text_shadow"):SetText(item_name_localized)
+        
+        local text_size_modifier = 1
+        
+        if item_name_localized:len() > 20 then
+            local length_over = item_name_localized:len() - 20
+            text_size_modifier = 1 - (length_over * 0.02)
+        end
+        
+        button:GetParent():FindChildByName("text"):SetTextSize(self.inv_dimensions.text_size * text_size_modifier)
+        button:GetParent():FindChildByName("text_shadow"):SetTextSize(self.inv_dimensions.text_size * text_size_modifier)
         
         if stack:GetProperty("durable") then
 
@@ -356,8 +386,8 @@ function cInventoryUI:GetNumSlotsInCategory(cat)
 end
 
 function cInventoryUI:GetCategoryTitleText(cat)
-    return string.format("%s %i/%i%s",
-        cat,
+    return string.format("%s %i / %i%s",
+        self:GetLocalizedText(cat),
         #Inventory.contents[cat],
         self:GetNumSlotsInCategory(cat) or 0,
         Inventory.slots[cat].backpack > 0 and " (+" .. tostring(Inventory.slots[cat].backpack) .. ")" or ""
@@ -381,6 +411,7 @@ function cInventoryUI:CreateCategoryTitle(cat, is_shadow, parent)
     categoryTitle:SetSize(Vector2(self.inv_dimensions.button_size.x, self.inv_dimensions.button_size.y * 0.5))
     categoryTitle:SetTextSize(self.inv_dimensions.category_title_text_size)
     categoryTitle:SetAlignment(GwenPosition.Center)
+    categoryTitle:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     if is_shadow then
         categoryTitle:SetTextColor(Color.Black)
@@ -443,6 +474,14 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     text_shadow:SetAlignment(GwenPosition.Center)
     text_shadow:SetPosition(Vector2(1,1))
     text_shadow:SetTextPadding(Vector2(0, 4), Vector2(0, 0))
+    text_shadow:SetFont(AssetLocation.Disk, "Archivo.ttf")
+    
+    
+	-- self.fonts = {}
+	-- self.fonts["Main"] = "LeagueGothic.ttf"
+	-- self.fonts["Text"] = "Archivo.ttf"
+	-- self.fonts["Icons"] = "FontAwesome.ttf"
+	-- self.fonts["Roboto"] = "Roboto.ttf"
 
     local text = Label.Create(itemWindow, "text")
     text:SetSizeAutoRel(Vector2(1, 1))
@@ -450,6 +489,7 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     text:SetTextColor(Color.White)
     text:SetAlignment(GwenPosition.Center)
     text:SetTextPadding(Vector2(0, 4), Vector2(0, 0))
+    text:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     local colors = InventoryUIStyle.colors.default
     button:SetTextColor(colors.text)
@@ -469,6 +509,7 @@ function cInventoryUI:CreateItemWindow(cat, index, parent)
     tooltip_text:SetTextColor(Color.White)
     tooltip_text:SetAlignment(GwenPosition.Center)
     tooltip_text:SetTextPadding(Vector2(0, 2), Vector2(0, 0))
+    tooltip_text:SetFont(AssetLocation.Disk, "Archivo.ttf")
 
     local total_dura_width = 0.9
     local total_dura_height = 0.15
@@ -805,10 +846,8 @@ function cInventoryUI:InventoryClosed()
                     self.window:FindChildByName("itemwindow_"..data.cat..tostring(data.index), true):FindChildByName("button", true))
             end
 
-            if not LocalPlayer:InVehicle() then
-                -- Send to server to drop
-                Network:Send("Inventory/Drop" .. self.steam_id, {stacks = self.dropping_items})
-            end
+            -- Send to server to drop
+            Network:Send("Inventory/Drop" .. self.steam_id, {stacks = self.dropping_items})
 
         end
 
@@ -819,6 +858,8 @@ function cInventoryUI:InventoryClosed()
 end
 
 function cInventoryUI:ToggleVisible()
+    
+    if not self.can_open then return end
 
     if self.window:GetVisible() then -- Close inventory
         self.window:Hide()
@@ -826,14 +867,27 @@ function cInventoryUI:ToggleVisible()
         self.LPI = nil
         self:InventoryClosed()
         self.mouse_pos = Mouse:GetPosition()
+        
+        -- Close vehicle storage on inventory close if they're in a vehicle
+        if LocalPlayer:InVehicle() then
+            if ClientInventory.lootbox_ui.window:GetVisible() then
+                ClientInventory.lootbox_ui:ToggleVisible()
+            end
+        end
     else -- Open inventory
         self.window:Show()
         Mouse:SetPosition(self.mouse_pos or Render.Size * 0.75)
         self.LPI = Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput)
         self.window:BringToFront()
+        
+        if LocalPlayer:InVehicle() and LootManager.current_vehicle_storage_box then
+            -- Tell server to open vehicle storage
+            LootManager.current_box = LootManager.current_vehicle_storage_box
+            ClientInventory.lootbox_ui:LootboxOpen(LootManager.current_box)
+        end
     end
 
-    if not ClientInventory.lootbox_ui.window:GetVisible() then
+    if not ClientInventory.lootbox_ui.window:GetVisible() or LocalPlayer:InVehicle() then
         Mouse:SetVisible(self.window:GetVisible())
     end
     

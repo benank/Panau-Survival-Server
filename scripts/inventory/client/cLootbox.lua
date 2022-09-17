@@ -13,7 +13,8 @@ function cLootbox:__init(args)
     self.contents = args.contents or {}
     self.stash = args.stash
     self.locked = args.locked
-    self.hidden = false
+    self.hidden = args.hidden
+    self.no_object = args.no_object
 
     self:CreateModel()
 
@@ -25,6 +26,7 @@ function cLootbox:Remove(no_event)
         Events:Fire("Inventory/LootboxRemove", {
             id = self.uid,
             tier = self.tier,
+            model = self.model_data.model,
             cso_id = self.cso_id
         })
 
@@ -49,6 +51,7 @@ end
 function cLootbox:CreateModel()
 
     if not self.active then return end
+    if self.no_object then return end
 
     local position = self.position + self.model_data.offset
     self.look_position = self.position + self.angle * (self.model_data.look_offset and self.model_data.look_offset or Vector3())
@@ -99,6 +102,7 @@ function cLootbox:CreateModel()
         id = self.uid,
         cso_id = self.cso_id,
         tier = self.tier,
+        model = self.model_data.model,
         position = self.position,
         angle = self.angle
     })

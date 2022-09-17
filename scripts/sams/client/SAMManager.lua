@@ -21,7 +21,7 @@ function SAMManager:LocalPlayerBulletSplash(args)
 	
     Thread(function()
         for id, sam in pairs(self.sams) do
-            if not sam.destroyed and sam.position:Distance(args.hit_position) < args.radius then
+            if not sam.destroyed and sam.position and sam.position:Distance(args.hit_position) < args.radius then
                 args.sam_id = sam.id
                 Network:Send("sams/SplashHitSAM", args)
             end
@@ -44,13 +44,17 @@ function SAMManager:SyncSAM(args)
 		-- SAM destroyed
 		if not self.sams[args.id].destroyed and args.destroyed then
 			SAMAnimationManager:RemoveById(args.id)
-			-- 97, 252, 442
-			ClientEffect.Play(AssetLocation.Game, {
-				effect_id = 252,
-				position = self.sams[args.id].position,
-				angle = Angle()
-			})
+
+			local pos = self.sams[args.id].position
 			self.sams[args.id] = nil
+			
+			if pos then
+				ClientEffect.Play(AssetLocation.Game, {
+					effect_id = 252,
+					position = pos,
+					angle = Angle()
+				})
+			end
 		else
 		
 			for key, value in pairs(args) do

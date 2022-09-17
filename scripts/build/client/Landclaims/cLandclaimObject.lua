@@ -16,7 +16,7 @@ function cLandclaimObject:__init(args)
     self.spawned = false
     self.has_collision = false
     self.landclaim = args.landclaim
-    self.collision_range = LandclaimObjectCollisionRanges[self.name]
+    self.collision_range = LandclaimObjectCollisionRanges[self.name] or 100
 
 end
 
@@ -39,7 +39,8 @@ function cLandclaimObject:Create(no_collision)
         landclaim_id = self.landclaim.id,
         landclaim_owner_id = self.landclaim.owner_id,
         id = self.id,
-        cso_id = self.object:GetId()
+        cso_id = self.object:GetId(),
+        model = self.object:GetModel()
     })
 
     if self.extension then
@@ -88,15 +89,8 @@ function cLandclaimObject:GetCollision()
 end
 
 function cLandclaimObject:GetExtension()
-
-    if self.name == "Door" then
-        return cDoorExtension(self)
-    elseif self.name == "Light" then
-        return cLightExtension(self)
-    elseif self.name == "Jump Pad" then
-        return cJumpPadExtension(self)
-    elseif self.name == "Christmas Tree" then
-        return cChristmasTreeExtension(self)
+    local ext = LandClaimObjectExtensions[self.name]
+    if ext then
+        return ext(self)
     end
-
 end

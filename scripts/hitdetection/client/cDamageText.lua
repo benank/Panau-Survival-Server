@@ -40,6 +40,7 @@ end
 
 function cDamageText:Render(args)
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     local time = Client:GetElapsedSeconds()
 
     for index, data in pairs(self.texts) do

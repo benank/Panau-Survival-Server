@@ -80,6 +80,7 @@ end
 
 function cAirstrikePlacer:Render(args)
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     if not self.placing then return end
 
     local ray = Physics:Raycast(Camera:GetPosition(), Camera:GetAngle() * Vector3.Forward, 0, self.range)
@@ -134,7 +135,7 @@ function cAirstrikePlacer:RenderText(can_place_here)
 end
 
 function cAirstrikePlacer:DrawShadowedText(pos, text, color, number)
-    Render:DrawText(pos + Vector2(2,2), text, Color.Black, number)
+    Render:DrawText(pos + Vector2(1,1), text, Color.Black, number)
     Render:DrawText(pos, text, color, number)
 end
 

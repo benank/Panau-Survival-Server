@@ -67,7 +67,9 @@ function EndGenerator:__init()
     {
         [1] = {min = 2, max = 3}, -- Easiest difficulty
         [2] = {min = 4, max = 5},
-        [3] = {min = 6, max = 9} -- Hardest difficulty
+        [3] = {min = 6, max = 9}, -- Hardest difficulty
+        [4] = {min = 5, max = 8}, -- Lockbox
+        [5] = {min = 6, max = 10} -- Lockbox X
     }
 	
 end

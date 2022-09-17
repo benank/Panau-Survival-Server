@@ -8,6 +8,7 @@ All server code for the JC2MP server Panau Survival
 4. Edit line 5 of `scripts/inventory/server/sLootManager.lua` and replace `"lootspawns/lootspawns.txt"` with `"lootspawns_old.txt"`. This will allow the loot to spawn using the old loot spawns data file.
 5. Copy `scripts/modelchanger/shModelLocations_old.lua` to `scripts/modelchanger/shared/shModelLocations.lua`
 5. Copy `scripts/modelchanger/shModelLocationsObject.lua` to `scripts/modelchanger/shared/shModelLocationsObject.lua`
+5. Run `git submodule update --init scripts/voice` to install the voice chat submodule, then navigate inside and follow setup in `website` to complete setup for voice chat.
 5. You're all set!
 
 ## Contributing Guidelines
@@ -19,7 +20,7 @@ Want to help development? Awesome! Here are a couple guidelines for helping out.
 
 I'll review your changes and let you know if there are any problems. If it's all good, I'll merge it with the main repo!
 
-If you'd like to be more involved with development, send me (Lord Farquaad) a DM on [Discord](https://discord.gg/DWGfX3b) telling me a bit about your experience and I'll add you to the developer channel.
+If you'd like to be more involved with development, send me (benank) a DM on [Discord](https://discord.gg/DWGfX3b) telling me a bit about your experience and I'll add you to the developer channel.
 
 ## What's not open source?
 There are a few things that aren't open source because of privacy and exploitation concerns. These items are:

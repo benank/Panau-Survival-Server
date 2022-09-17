@@ -113,6 +113,7 @@ end
 function GrenadeEffectZones:ShapeTriggerEnter(args)
     if args.entity.__type ~= "LocalPlayer" then return end
     if args.entity ~= LocalPlayer then return end
+    if not args.trigger then return end
     if not self.active_zones[args.trigger:GetId()] then return end
     self:EnterZone(self.active_zones[args.trigger:GetId()])
 end

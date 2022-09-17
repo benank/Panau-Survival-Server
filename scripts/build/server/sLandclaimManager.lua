@@ -3,10 +3,16 @@ class 'sLandclaimManager'
 function sLandclaimManager:__init()
 
     SQL:Execute("CREATE TABLE IF NOT EXISTS landclaims (id INTEGER PRIMARY KEY AUTOINCREMENT, steamID VARCHAR, position VARCHAR, name VARCHAR(20), size INTEGER, expiry_date VARCHAR, access_mode INTEGER, state INTEGER, objects BLOB)")
+    SQL:Execute("DELETE FROM landclaims WHERE state == 0 AND objects == \"[]\"")
     
     self.landclaims = {} -- [steam_id] = {[landclaim_id] = landclaim, [landclaim_id] = landclaim}
     self.player_spawns = {} -- [steam id] = {id = id, landclaim_id = landclaim id, landclaim_owner_id = landclaim_owner_id}
     self.players = {}
+    self.teleporters = {} -- [tp_id] = landclaim_object
+    
+    if SharedObject.GetByName("Landclaims") then
+        SharedObject.GetByName("Landclaims"):Remove()
+    end
 
     self.landclaims_sharedobject = SharedObject.Create("Landclaims")
     self:UpdateLandclaimsSharedObject()
@@ -18,21 +24,31 @@ function sLandclaimManager:__init()
     Network:Subscribe("build/ReadyForInitialSync", self, self.PlayerReadyForInitialSync)
     Network:Subscribe("build/ActivateLight", self, self.ActivateLight)
     Network:Subscribe("build/ActivateDoor", self, self.ActivateDoor)
+    Network:Subscribe("build/EditSign", self, self.EditSign)
+    Network:Subscribe("build/EditTeleporterLinkId", self, self.EditTeleporterLinkId)
+    Network:Subscribe("build/EnterTeleporter", self, self.EnterTeleporter)
+    Network:Subscribe("build/ExitTeleporter", self, self.ExitTeleporter)
+    Network:Subscribe("build/FinishTeleporting", self, self.FinishTeleporting)
 
     Events:Subscribe("items/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
+    Events:Subscribe("Stats/GetBuildObjectsCount", self, self.TotalBuildObjectsUpdate)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
     Events:Subscribe("items/DetonateOnBuildObject", self, self.DetonateOnBuildObject)
+    Events:Subscribe("build/ObjectDestroyed", self, self.ObjectDestroyed)
+    Events:Subscribe("build/ObjectPlaced", self, self.ObjectPlaced)
+    
 
     -- Check for expired landclaims every 3 hours and on load
     Timer.SetInterval(1000 * 60 * 60 * 3, function()
         self:CheckForExpiredLandclaims()
+        self:TotalBuildObjectsUpdate()
     end)
 
-    -- Update health of decaying objects in expired claims every 10 minutes
-    Timer.SetInterval(1000 * 60 * 10, function()
+    -- Update health of decaying objects in expired claims every 2 hours
+    Timer.SetInterval(1000 * 60 * 60 * 2, function()
         self:DecayExpiredLandclaims()
     end)
 
@@ -62,7 +78,7 @@ end
 function sLandclaimManager:CheckForExpiredLandclaims()
     for steam_id, player_landclaims in pairs(self.landclaims) do
         for id, landclaim in pairs(player_landclaims) do
-            if landclaim.state == LandclaimStateEnum.Active and GetLandclaimDaysTillExpiry(landclaim.expiry_date) <= 0 then
+            if landclaim.owner_id ~= "SERVER" and landclaim.state == LandclaimStateEnum.Active and GetLandclaimDaysTillExpiry(landclaim.expiry_date) <= 0 then
                 landclaim:Expire()
             end
         end
@@ -79,6 +95,99 @@ function sLandclaimManager:ActivateDoor(args, player)
     if not landclaim then return end
 
     landclaim:ActivateDoor(args, player)
+end
+
+function sLandclaimManager:EditSign(args, player)
+    local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_owner_id, args.landclaim_id)
+    if not landclaim then return end
+
+    landclaim:EditSign(args, player)
+end
+
+function sLandclaimManager:ObjectDestroyed(args)
+    if args.object.name == "Teleporter" then
+        self:RemoveTeleporter(args.object) 
+    end
+end
+
+function sLandclaimManager:ObjectPlaced(args)
+    if args.object.name == "Teleporter" then
+        self:AddOrUpdateTeleporter(args.object) 
+    end
+end
+
+function sLandclaimManager:EnterTeleporter(args, player)
+    if player:GetValue("InTeleporter") or player:GetValue("Loading") then return end
+    
+    local teleporter = self.teleporters[args.tp_id]
+    if teleporter and player:GetPosition():Distance(teleporter.position) < 3 then
+        local linked_teleporter = self.teleporters[teleporter.custom_data.tp_link_id]
+        
+        if linked_teleporter then
+            Network:Broadcast("build/TeleporterActivate", {
+                pos1 = teleporter.position,
+                pos2 = linked_teleporter.position,
+                id = player:GetId()
+            })
+            
+            if player:GetModelId() ~= 20 then
+                player:SetValue("ModelId", player:GetModelId())
+            end
+            player:SetModelId(20)
+            player:SetNetworkValue("InTeleporter", true)
+            player:SetValue("TPInvisible", player:GetValue("Invisible"))
+            player:SetStreamDistance(0)
+            player:SetNetworkValue("Invisible", true)
+            teleporter:Damage(TeleporterDamagePerUse)
+            -- linked_teleporter:Damage(TeleporterDamagePerUse) -- Only damage the teleporter that they stepped in
+            
+            Timer.SetTimeout(4000, function()
+                if IsValid(player) then
+                    player:SetPosition(linked_teleporter.position)
+                end
+            end)
+            
+            Events:Fire("Discord", {
+                channel = "Positions",
+                content = string.format("%s [%s] used teleporter %s (%s) and warped to teleporter %s (%s).", 
+                    player:GetName(), tostring(player:GetSteamId()), teleporter.custom_data.tp_id, WorldToMapString(teleporter.position), 
+                    linked_teleporter.custom_data.tp_id, WorldToMapString(linked_teleporter.position))
+            })
+        end
+    end
+end
+
+function sLandclaimManager:ExitTeleporter(args, player)
+end
+
+function sLandclaimManager:FinishTeleporting(args, player)
+    player:SetNetworkValue("InTeleporter", false)
+    player:SetNetworkValue("Invisible", player:GetValue("TPInvisible") == true)
+    player:SetStreamDistance(player:GetValue("Invisible") and 0 or 1024)
+    if not player:GetValue("StealthEnabled") and player:GetValue("ModelId") then
+        player:SetModelId(player:GetValue("ModelId"))
+    end
+    
+    Network:Broadcast("build/TeleporterActivate2", {
+        pos = player:GetPosition()
+    })
+end
+
+function sLandclaimManager:AddOrUpdateTeleporter(object)
+    if object.name ~= "Teleporter" or not object.custom_data.tp_id then return end
+    self.teleporters[object.custom_data.tp_id] = sLandclaimObject(object)
+end
+
+function sLandclaimManager:RemoveTeleporter(object)
+    if object.name ~= "Teleporter" or not object.custom_data.tp_id then return end
+    self.teleporters[object.custom_data.tp_id] = nil
+end
+
+function sLandclaimManager:EditTeleporterLinkId(args, player)
+    local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_owner_id, args.landclaim_id)
+    if not landclaim then return end
+
+    landclaim:EditTeleporterLinkId(args, player)
 end
 
 function sLandclaimManager:ActivateLight(args, player)
@@ -103,8 +212,33 @@ function sLandclaimManager:DetonateOnBuildObject(args)
 
     local landclaim = sLandclaimManager:GetLandclaimFromData(args.landclaim_data.landclaim_owner_id, args.landclaim_data.landclaim_id)
     if not landclaim then return end
+    
+    if landclaim.owner_id == "SERVER" then return end
 
+    local target_object_id = tonumber(args.landclaim_data.id)
     landclaim:DamageObject(args, args.player)
+    Thread(function()
+        -- Loop through all objects in landclaim and see if they are close enough to get hit
+        local splash_radius = ExplosiveRadius[args.type]
+        if not splash_radius then return end
+        
+        for id, landclaim_object in pairs(landclaim.objects) do
+            if target_object_id ~= id then
+                local dist = landclaim_object.position:Distance(args.c4_position)
+                if dist < splash_radius then
+                    local percent_damage = 1 - (dist / splash_radius)
+                    args.percent_damage = percent_damage
+                    args.landclaim_data.id = id
+                    landclaim:DamageObject(args, args.player)
+                    -- print(string.format("Damage object %d with mod %.2f", id, percent_damage))
+                end
+            end
+            
+            Timer.Sleep(1)
+        end
+        
+    end)
+    
     self:UpdateLandclaimsSharedObject()
 end
 
@@ -230,6 +364,7 @@ function sLandclaimManager:LoadAllLandclaims()
     print(string.format("Loaded %d landclaims!", count_table(result)))
 
     self:CheckForExpiredLandclaims()
+    self:TotalBuildObjectsUpdate()
 
 end
 
@@ -316,6 +451,25 @@ function sLandclaimManager:AddClaim(claim_data)
     self:UpdateLandclaimsSharedObject()
     return landclaim
 
+end
+
+function sLandclaimManager:TotalBuildObjectsUpdate()
+    local counted_landclaims = 0
+    local total_landclaims = 0
+    local total_build_objects = 0
+    for steam_id, player_landclaims in pairs(self.landclaims) do
+        for id, landclaim in pairs(player_landclaims) do
+            total_landclaims = total_landclaims + 1
+            count_table_async(landclaim.objects, function(count)
+                counted_landclaims = counted_landclaims + 1
+                total_build_objects = total_build_objects + count
+                
+                if total_landclaims == counted_landclaims then
+                    Events:Fire("build/TotalBuildObjectsUpdate", {total = total_build_objects})
+                end
+            end)
+        end
+    end
 end
 
 function sLandclaimManager:UpdateLandclaimsSharedObject()
@@ -422,7 +576,7 @@ end
 
 function sLandclaimManager:TryPlaceLandclaim(args)
 
-    Chat:Send(player, "Placing landclaim...", Color.Yellow)
+    Chat:Send(args.player, "Placing landclaim...", Color.Yellow)
     
     local player = args.player
     local player_iu = args.player_iu
@@ -458,7 +612,7 @@ function sLandclaimManager:TryPlaceLandclaim(args)
     local ModelChangeAreas = SharedObject.GetByName("ModelLocations"):GetValues()
 
     for _, area in pairs(ModelChangeAreas) do
-        if Distance2D(position, area.pos) < 300 + size then
+        if Distance2D(position, area.pos) < 25 + size then
             self:SendPlayerErrorMessage(player, "Restricted Area")
             return
         end
@@ -480,46 +634,28 @@ function sLandclaimManager:TryPlaceLandclaim(args)
         end
     end
     
-    local sub
-    sub = Events:Subscribe("sams/AllSAMs", function(sams)
-        Thread(function()
-            Events:Unsubscribe(sub)
-            for id, sam in pairs(sams) do
-                if Distance2D(sam.position, position) <= size * 1.1 then
-                    self:SendPlayerErrorMessage(player, "Too close to a SAM")
-                    return
-                end
-                Timer.Sleep(1)
-            end
-            
-            if not IsValid(player) then return end
-            
-            Inventory.RemoveItem({
-                item = player_iu.item,
-                index = player_iu.index,
-                player = player
-            })
+    Inventory.RemoveItem({
+        item = player_iu.item,
+        index = player_iu.index,
+        player = player
+    })
 
-            -- Check for proximity to existing owned landclaims
-            local player_landclaims = self:GetPlayerActiveLandclaims(player)
-            for id, landclaim in pairs(player_landclaims) do
-                if IsInSquare(landclaim.position, landclaim.size, position) then
-                    self:UpdateLandclaimExpiry(size, landclaim, player)
-                    return
-                end
-            end
+    -- Check for proximity to existing owned landclaims
+    local player_landclaims = self:GetPlayerActiveLandclaims(player)
+    for id, landclaim in pairs(player_landclaims) do
+        if IsInSquare(landclaim.position, landclaim.size, position) then
+            self:UpdateLandclaimExpiry(size, landclaim, player)
+            return
+        end
+    end
 
-            if count_table(player_landclaims) >= player:GetValue("MaxLandclaims") then
-                Chat:Send(player, "You already have the maximum amount of landclaims placed!", Color.Red)
-                return
-            end
+    if count_table(player_landclaims) >= player:GetValue("MaxLandclaims") then
+        Chat:Send(player, "You already have the maximum amount of landclaims placed!", Color.Red)
+        return
+    end
 
-            self:PlaceLandclaim(size, player)
-            
-        end)
-    end)
-    Events:Fire("sams/GetAllSAMs")
-
+    self:PlaceLandclaim(size, player)
+    
 end
 
 sLandclaimManager = sLandclaimManager()

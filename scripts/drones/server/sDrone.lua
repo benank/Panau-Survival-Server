@@ -41,6 +41,8 @@ function sDrone:__init(args)
     self.has_update = true
     self.updates = {}
     self.static = args.static
+    self.airstrike_timer = Timer()
+    self.grenade_timer = Timer()
 
     if self.static then
         self.state = DroneState.Static
@@ -85,7 +87,7 @@ function sDrone:ReconsiderLoop()
     end
 end
 
-function sDrone:PursueTarget(target)
+function sDrone:PursueTarget(target, new_attacker)
     self.target = self:IsPlayerAValidTarget(target) and target or nil
 
     if not IsValid(self.target) then
@@ -113,7 +115,7 @@ end
 
 function sDrone:AttackOnSightTarget(args, player)
     if self.target then return end
-    self:PursueTarget(player)
+    self:PursueTarget(player, true)
 end
 
 -- Updates the drone's cell in DroneManager cells
@@ -139,7 +141,7 @@ function sDrone:ReconsiderTarget()
     if self.state ~= DroneState.Pursuing then return end
 
     if not self:IsPlayerAValidTarget(self.target) then
-        self:PursueTarget(self:FindNewTarget())
+        self:PursueTarget(self:FindNewTarget(), true)
         return true
     end
 
@@ -270,7 +272,7 @@ end
 -- Called when a player destroys a drone
 function sDrone:Destroyed(args)
     if self:IsDestroyed() then return end
-
+    
     self.state = DroneState.Destroyed
 
     local exp_split = {}
@@ -283,7 +285,8 @@ function sDrone:Destroyed(args)
         player = args.player,
         exp_split = exp_split,
         drone_level = self.level,
-        damage_entity = args.type
+        damage_entity = args.type,
+        position = self.position
     })
     
     Timer.SetTimeout(1000, function()
@@ -291,17 +294,49 @@ function sDrone:Destroyed(args)
     end)
 end
 
+function sDrone:TryToFireAirstrike(position)
+    
+    if self.airstrike_timer:GetSeconds() < 15 then return end
+    
+    if self.level < 15 then return end
+    
+    if math.random() < self.config.airstrike then
+        Events:Fire("drones/CreateAirstrike", {
+            position = position
+        })
+        self.airstrike_timer:Restart()
+    end
+        
+end
+
+function sDrone:TryToFireGrenade(grenade_position)
+    
+    if not IsValid(self.target) then return end
+    
+    local position = self.target:GetPosition()
+    local distance = grenade_position:Distance(position)
+    Events:Fire("drones/CreateGrenade", {
+        drone_position = grenade_position,
+        position = position,
+        distance = distance
+    })
+
+end
+
 function sDrone:Damage(args)
     if self:IsDestroyed() then return end
 
     local steam_id = tostring(args.player:GetSteamId())
+    local new_attacker = not self.players_who_damaged[steam_id]
     if not self.players_who_damaged[steam_id] then
         self.players_who_damaged[steam_id] = 0
     end
 
     self.players_who_damaged[steam_id] = self.players_who_damaged[steam_id] + args.damage
     self.health = math.max(0, self.health - args.damage)
-    self:PursueTarget(args.player)
+    self:PursueTarget(args.player, new_attacker)
+    
+    self:TryToFireAirstrike(args.player:GetPosition())
 
     if self.health == 0 then
         self:Destroyed(args)
@@ -348,7 +383,11 @@ function sDrone:OneHostSync(args, player)
             position = self.position
         })
     end
-
+    
+    if args.grenade then
+        self:TryToFireGrenade(args.grenade_position) 
+    end
+    
 end
 
 function sDrone:UpdateApplied()

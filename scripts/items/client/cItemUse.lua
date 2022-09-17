@@ -58,7 +58,7 @@ function cItemUse:StartUsage(args)
     self.progress.max = args.time
     self.progress.current = 0
     Events:Fire("SetInventoryState", false)
-
+    
     table.insert(self.events, Events:Subscribe("InputPoll", self, self.InputPoll))
     table.insert(self.events, Events:Subscribe("Render", self, self.Render))
     table.insert(self.events, Events:Subscribe("LocalPlayerInput", self, self.LocalPlayerInput))
@@ -67,7 +67,8 @@ function cItemUse:StartUsage(args)
     table.insert(self.events, Events:Subscribe("LocalPlayerDeath", self, self.CancelUsage))
 
     if LocalPlayer:GetBaseState() ~= AnimationState.SUprightIdle
-    and LocalPlayer:GetBaseState() ~= AnimationState.SSwimIdle then
+    and LocalPlayer:GetBaseState() ~= AnimationState.SSwimIdle
+    and LocalPlayer:GetBaseState() ~= AnimationState.SSwimDiveIdle then
         self:CancelUsage()
     end
 
@@ -101,6 +102,12 @@ function cItemUse:CompleteUsage()
         forward_ray.collision = forward_ray.entity:GetCollision()
         forward_ray.entity = nil
         forward_ray.hit_type = "ClientStaticObject"
+    elseif forward_ray.entity and forward_ray.entity.__type == "Vehicle" then
+        if forward_ray.distance < 5 then
+            forward_ray.vehicle_id = forward_ray.entity:GetId()
+        end
+        
+        forward_ray.hit_type = "Vehicle"
     end
 
     local down_ray = Physics:Raycast(LocalPlayer:GetPosition() + Vector3.Up * 500, Vector3.Down, 0, 600)
@@ -142,6 +149,7 @@ end
 
 function cItemUse:Render(args)
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     self.progress_circle:Render(args)
 
     self:RenderCountdown(args)

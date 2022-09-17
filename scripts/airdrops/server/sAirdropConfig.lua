@@ -18,53 +18,53 @@ AirdropConfig =
     {
         [AirdropType.Low] = 
         {
-            min_players = 2,
-            health = 5,
+            min_players = 1,
+            health = 2,
             drones = 
             {
-                amount = {min = 1, max = 3},
-                level = {min = 3, max = 10}
+                amount = {min = 3, max = 8},
+                level = {min = 15, max = 30}
             },
             map_preview = -- Preview on discord and ingame map
             {
                 time = 10, -- How many minutes it appears on the map before it drops
-                size = 750 -- How big is the radius around it
+                size = 500 -- How big is the radius around it
             },
-            chance = 0.2, -- Chance of the airdrop spawning every interval if the conditions are met
-            interval = 30 -- 0.5 hours between airdrops of this type
+            chance = 0.03, -- Chance of the airdrop spawning every interval if the conditions are met
+            interval = 30 -- 30m between airdrops of this type
         },
         [AirdropType.Mid] = 
         {
-            min_players = 4,
-            health = 2,
-            drones = 
-            {
-                amount = {min = 3, max = 7},
-                level = {min = 10, max = 25}
-            },
-            map_preview = 
-            {
-                time = 20,
-                size = 1500
-            },
-            chance = 0.3,
-            interval = 60 -- 1 hour between airdrops
-        },
-        [AirdropType.High] = 
-        {
-            min_players = 7,
+            min_players = 3,
             health = 4,
             drones = 
             {
-                amount = {min = 3, max = 6},
-                level = {min = 20, max = 50}
+                amount = {min = 4, max = 10},
+                level = {min = 30, max = 70}
             },
             map_preview = 
             {
-                time = 30,
-                size = 3000
+                time = 15,
+                size = 1000
             },
-            chance = 0.5,
+            chance = 0.3,
+            interval = 60 -- 1 hours between airdrops
+        },
+        [AirdropType.High] = 
+        {
+            min_players = 5,
+            health = 6,
+            drones = 
+            {
+                amount = {min = 5, max = 12},
+                level = {min = 80, max = 200}
+            },
+            map_preview = 
+            {
+                time = 25,
+                size = 2000
+            },
+            chance = 0.7,
             interval = 120 -- 2 hours between airdrops
         }
     },

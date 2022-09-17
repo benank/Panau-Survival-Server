@@ -19,7 +19,14 @@ Lootbox.Types =
     AirdropLevel1 = 16,
     AirdropLevel2 = 17,
     AirdropLevel3 = 18,
-    SAM = 19
+    SAM = 19,
+    VehicleStorage = 20,
+    Lockbox = 21,
+    LockboxX = 22,
+    DroneUnder30 = 23,
+    Drone30to60 = 24,
+    Drone60to100 = 25,
+    Drone100Plus = 26
 }
 
 StashAccessMode = 
@@ -49,6 +56,7 @@ Lootbox.Stashes =
     [Lootbox.Types.LockedStash] = {capacity = 12, name = "Locked Stash", health = 400, default_access = StashAccessMode.OnlyMe, can_change_access = true},
     [Lootbox.Types.ProximityAlarm] = {capacity = 1, name = "Proximity Alarm", health = 1, default_access = StashAccessMode.OnlyMe, can_change_access = true},
     [Lootbox.Types.Workbench] = {capacity = 3, name = "Workbench", health = 1, default_access = StashAccessMode.Everyone, can_change_access = false},
+    [Lootbox.Types.VehicleStorage] = {capacity = 3, name = "Vehicle Storage", health = 1, default_access = StashAccessMode.Everyone, can_change_access = false},
 }
 
 Lootbox.GeneratorConfig = 
@@ -60,12 +68,18 @@ Lootbox.GeneratorConfig =
         [Lootbox.Types.Level3] = true,
         [Lootbox.Types.Level4] = true,
         [Lootbox.Types.Level5] = true,
+        [Lootbox.Types.Lockbox] = true,
+        [Lootbox.Types.LockboxX] = true,
         [Lootbox.Types.VendingMachineFood] = true,
         [Lootbox.Types.VendingMachineDrink] = true,
         [Lootbox.Types.AirdropLevel1] = true,
         [Lootbox.Types.AirdropLevel2] = true,
         [Lootbox.Types.AirdropLevel3] = true,
         [Lootbox.Types.SAM] = true,
+        [Lootbox.Types.DroneUnder30] = true,
+        [Lootbox.Types.Drone30to60] = true,
+        [Lootbox.Types.Drone60to100] = true,
+        [Lootbox.Types.Drone100Plus] = true,
     },
     box = 
     {
@@ -92,9 +106,9 @@ Lootbox.GeneratorConfig =
         },
         [Lootbox.Types.Level4] = 
         {
-            min_items = 1,
-            max_items = 2,
-            respawn = 45,
+            min_items = 2,
+            max_items = 3,
+            respawn = 30,
             max_spawned = 1.0
         },
         [Lootbox.Types.Level5] = 
@@ -103,24 +117,36 @@ Lootbox.GeneratorConfig =
             max_items = 3,
             respawn = 55
         },
+        [Lootbox.Types.Lockbox] = 
+        {
+            min_items = 1,
+            max_items = 2,
+            respawn = 120
+        },
+        [Lootbox.Types.LockboxX] = 
+        {
+            min_items = 2,
+            max_items = 3,
+            respawn = 240
+        },
         [Lootbox.Types.VendingMachineFood] = 
         {
             min_items = 1,
             max_items = 2,
-            respawn = 15,
+            respawn = 10,
             max_spawned = 1.0
         },
         [Lootbox.Types.VendingMachineDrink] = 
         {
             min_items = 1,
             max_items = 2,
-            respawn = 15,
+            respawn = 10,
             max_spawned = 1.0
         },
         [Lootbox.Types.AirdropLevel1] = 
         {
             min_items = 2,
-            max_items = 3
+            max_items = 4
         },
         [Lootbox.Types.AirdropLevel2] = 
         {
@@ -129,18 +155,33 @@ Lootbox.GeneratorConfig =
         },
         [Lootbox.Types.AirdropLevel3] = 
         {
-            min_items = 2,
-            max_items = 5
-        },
-        [Lootbox.Types.AirdropLevel3] = 
-        {
-            min_items = 2,
+            min_items = 3,
             max_items = 5
         },
         [Lootbox.Types.SAM] = 
         {
             min_items = 1,
             max_items = 2
+        },
+        [Lootbox.Types.DroneUnder30] = 
+        {
+            min_items = 1,
+            max_items = 2
+        },
+        [Lootbox.Types.Drone30to60] = 
+        {
+            min_items = 1,
+            max_items = 3
+        },
+        [Lootbox.Types.Drone60to100] = 
+        {
+            min_items = 2,
+            max_items = 4
+        },
+        [Lootbox.Types.Drone100Plus] = 
+        {
+            min_items = 3,
+            max_items = 4
         },
     }
 }
@@ -190,6 +231,26 @@ Lootbox.Models =
         col = "37x10.flz/go061_lod1-e_col.pfx",
         model2 = "general.blz/gae03-gae03.lod",
         offset = Vector3(0, -0.05, 0)
+    },
+    [Lootbox.Types.Lockbox] = 
+    {
+        model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        col = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx",
+        top_model = "mod.heavydrop.assault.eez/wea00-a1.lod",
+        top_col = "mod.heavydrop.assault.eez/wea00_lod1-a1_col.pfx",
+        offset = Vector3(0, 0, 0),
+        offset2 = Vector3(0, -0.04, -0.03),
+        look_offset = Vector3(0, 0, 0.25)
+    },
+    [Lootbox.Types.LockboxX] = 
+    {
+        model = "mod.heavydrop.assault.eez/wea00-a.lod",
+        col = "mod.heavydrop.assault.eez/wea00_lod1-a_col.pfx",
+        top_model = "mod.heavydrop.assault.eez/wea00-a1.lod",
+        top_col = "mod.heavydrop.assault.eez/wea00_lod1-a1_col.pfx",
+        offset = Vector3(0, 0, 0),
+        offset2 = Vector3(0, -0.04, -0.03),
+        look_offset = Vector3(0, 0, 0.25)
     },
     [Lootbox.Types.Dropbox] = 
     {
@@ -285,9 +346,34 @@ Lootbox.Models =
         col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
         offset = Vector3(0, -0.025, 0)
     },
+    [Lootbox.Types.DroneUnder30] = 
+    {
+        model = "geo.cbb.eez/go152-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        offset = Vector3(0, -0.025, 0)
+    },
+    [Lootbox.Types.Drone30to60] = 
+    {
+        model = "geo.cbb.eez/go152-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        offset = Vector3(0, -0.025, 0)
+    },
+    [Lootbox.Types.Drone60to100] = 
+    {
+        model = "geo.cbb.eez/go152-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        offset = Vector3(0, -0.025, 0)
+    },
+    [Lootbox.Types.Drone100Plus] = 
+    {
+        model = "geo.cbb.eez/go152-a.lod",
+        col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
+        offset = Vector3(0, -0.025, 0)
+    },
 }
 
 Lootbox.LookAtColor = Color(56, 198, 43)
+Lootbox.LootRadarColor = Color(247, 243, 12)
 
 Lootbox.Distances = 
 {
@@ -298,7 +384,7 @@ Lootbox.Cell_Size = 256
 Lootbox.Scan_Interval = 2000 -- How often the client checks for new cells
 Lootbox.Dropbox_Despawn_Time = 10 * 60 * 1000
 Lootbox.Loot_Despawn_Time = 10 * 60 * 1000 -- How long it takes for an opened lootbox to despawn
-Lootbox.Deathdrop_Despawn_Time = 60 * 60 * 1000 -- How long it takes for a death drop to despawn
+Lootbox.Deathdrop_Despawn_Time = 60 * 60 * 1000 * 24 -- How long it takes for a death drop to despawn
 Lootbox.uid = 0
 Lootbox.Max_Items_In_Dropbox = 6
 Lootbox.Min_Respawn_Modifier = 0.25 -- Minimum percentage of respawn time a lootbox resapwns at given nearby players

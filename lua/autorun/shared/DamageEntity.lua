@@ -24,6 +24,10 @@ DamageEntity.Snowball = 27
 DamageEntity.Revenge = 28
 DamageEntity.BurstPing = 29
 DamageEntity.SAM = 30
+DamageEntity.Hacker = 31
+DamageEntity.ClusterGrenade = 32
+DamageEntity.BeringBombsight = 33
+DamageEntity.Oxygen = 34
 
 DamageEntityNames = 
 {
@@ -58,4 +62,8 @@ DamageEntityNames =
     [DamageEntity.Revenge] = "Revenge",
     [DamageEntity.BurstPing] = "Burst Ping",
     [DamageEntity.SAM] = "SAM",
+    [DamageEntity.Hacker] = "Hacker",
+    [DamageEntity.ClusterGrenade] = "Cluster Grenade",
+    [DamageEntity.BeringBombsight] = "Bering Bombsight",
+    [DamageEntity.Oxygen] = "Drowned",
 }

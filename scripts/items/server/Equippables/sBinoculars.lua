@@ -33,7 +33,10 @@ Network:Subscribe("items/BinocularsScan", function(args, player)
             item = item
         })
         UpdateEquippedItem(player, "Binoculars", item)
-        players_using_binos[steam_id].item = item
+        
+        if players_using_binos[steam_id] then
+            players_using_binos[steam_id].item = item
+        end
     end
 
 end)
@@ -60,7 +63,7 @@ end)
 
 Timer.SetInterval(2000, function()
     for steam_id, args in pairs(players_using_binos) do
-        if not IsValid(args.player) then
+        if not IsValid(args.player) or not args.item then
             players_using_binos[steam_id] = nil
         else
             

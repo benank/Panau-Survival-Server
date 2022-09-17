@@ -40,6 +40,18 @@ function cLandclaimManager:__init()
 
 end
 
+function cLandclaimManager:AreAnyLandclaimsLoading()
+    for steam_id, landclaims in pairs(self.landclaims) do
+        for id, landclaim in pairs(landclaims) do
+            if landclaim.loading then
+                return true
+            end
+        end
+    end
+    
+    return false
+end
+
 function cLandclaimManager:ModulesLoad()
     Events:Fire("build/ResetLandclaimsMenu")
     Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))
@@ -112,6 +124,19 @@ function cLandclaimManager:SyncSmallLandclaimUpdate(args)
         object.extension:StateUpdated()
     elseif args.type == "access_mode" then
         landclaim.access_mode = args.access_mode
+    elseif args.type == "sign" then
+        local object = landclaim.objects[args.id]
+        if not object then return end
+
+        object.custom_data.color = args.color
+        object.custom_data.text = args.text
+        object.extension:StateUpdated()
+    elseif args.type == "teleporter" then
+        local object = landclaim.objects[args.id]
+        if not object then return end
+
+        object.custom_data.tp_link_id = args.tp_link_id
+        object.extension:StateUpdated()
     end
     
     Events:Fire("build/UpdateLandclaims", self:GetLocalPlayerOwnedLandclaims(true))
@@ -134,10 +159,13 @@ function cLandclaimManager:GameRender(args)
 
     self.delta = self.delta + args.delta
 
+    local color = Color(0, 255, 255, 25)
+    local color_static = Color(0, 255, 255, 100)
     -- Render landclaim borders for the owner if they are enabled
     for id, landclaim in pairs(my_claims) do
         if landclaim.visible then
-            cLandclaimPlacer:RenderLandClaimBorder(landclaim.position, landclaim.size, self.delta)
+            cLandclaimPlacer:RenderLandClaimBorder(landclaim.position, landclaim.size, self.delta, color)
+            cLandclaimPlacer:RenderLandClaimStaticBorder(landclaim.position, landclaim.size, color_static)
         end
     end
 

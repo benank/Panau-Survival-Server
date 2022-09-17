@@ -42,6 +42,8 @@ end
 
 function sProxAlarms:ItemExplode(args)
 
+    if args.in_landclaim then return end
+    
     for id, alarm in pairs(self.alarms) do
         if alarm.position:Distance(args.position) < args.radius then
             self:DestroyProx({id = id}, args.player)
@@ -139,6 +141,7 @@ function sProxAlarms:InsideProximityAlarm(args, player)
     if exp and exp.level == 0 then return end -- Does not work on level 0s
 
     if player:GetValue("Invisible") then return end
+    if player:GetValue("StealthEnabled") then return end
 
     -- OK now broadcast to owner, if online
 

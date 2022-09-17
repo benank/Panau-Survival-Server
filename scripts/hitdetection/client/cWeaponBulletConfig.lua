@@ -52,21 +52,21 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 650,
-            bloom = 1.2,
+            bloom = 1,
             bullet_size = 0.5 -- Size of visual bullet only
         },
         [WeaponEnum.Handgun] = 
         {
             type = ProjectileBullet,
             speed = 550,
-            bloom = 1,
+            bloom = 0.9,
             bullet_size = 0.1
         },
         [WeaponEnum.Assault] = 
         {
             type = ProjectileBullet,
             speed = 550,
-            bloom = 1.25,
+            bloom = 1.0,
             bullet_size = 0.4 -- Size of visual bullet only
         },
         [WeaponEnum.BubbleGun] = 
@@ -88,7 +88,7 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 600,
-            bloom = 5,
+            bloom = 3,
             bullet_size = 0.25
         },
         [WeaponEnum.RocketLauncher] = 
@@ -103,21 +103,21 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 700,
-            bloom = 0.75,
+            bloom = 0.45,
             bullet_size = 0.1
         },
         [WeaponEnum.Sniper] = 
         {
             type = ProjectileBullet,
             speed = 1500,
-            bloom = 4.5,
+            bloom = 2.5,
             bullet_size = 2
         },
         [WeaponEnum.SawnOffShotgun] = 
         {
             type = ProjectileBullet,
             speed = 400,
-            bloom = 1.5,
+            bloom = 1.2,
             bullet_size = 0.1,
             multi_shot = 3
         },
@@ -125,7 +125,7 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 400,
-            bloom = 1,
+            bloom = 0.95,
             bullet_size = 0.2,
             multi_shot = 3
         },
@@ -134,7 +134,7 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 600,
-            bloom = 0.3,
+            bloom = 0.2,
             bullet_size = 0.2,
             indicator = true,
             angle = fixed_reticle_angle_func
@@ -143,7 +143,7 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 600,
-            bloom = 0.75,
+            bloom = 0.5,
             bullet_size = 0.3,
             indicator = true,
             angle = function(cam_angle, v_angle, model_id)
@@ -178,7 +178,7 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 300,
-            bloom = 10,
+            bloom = 5,
             bullet_size = 0.5,
             splash = true,
             indicator = true,
@@ -194,7 +194,7 @@ function cWeaponBulletConfig:__init()
         {
             type = ProjectileBullet,
             speed = 500,
-            bloom = 1.5,
+            bloom = 1.2,
             bullet_size = 0.5,
             indicator = true,
             angle = function(cam_angle, v_angle)

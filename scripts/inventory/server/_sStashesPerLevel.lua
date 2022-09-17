@@ -1,4 +1,4 @@
-Initial_Stash_Amount = 3
+Initial_Stash_Amount = 15
 
 Stashes_Per_Perk = 
 {

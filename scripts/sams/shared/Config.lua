@@ -234,6 +234,5 @@ SAMAnchorLocationsTable	=	{	--	Table of SAM Site Locations. By default this cont
 	{pos = Vector3(-14668.455, 200.196, -11514.078), 	level = 50},
 	{pos = Vector3(-15291.619, 267.212, -3047.666), 	level = 20},
 	{pos = Vector3(-15239.429, 352.777, -2317.317), 	level = 20},
-	{pos = Vector3(14130.785, 528.019, 14340.953), 		level = 40},
 							}
 					

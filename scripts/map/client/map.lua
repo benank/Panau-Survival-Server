@@ -14,7 +14,8 @@ Location.Type = {
     Home 		= "Home",
     Skull 		= "Skull",
     Landclaim   = "Landclaim",
-    Airdrop     = "Airdrop"
+    Airdrop     = "Airdrop",
+    Secret      = "Secret"
     
 }
 
@@ -32,7 +33,8 @@ Location.TypeName = {
     Home 		= "Home",
     Skull		= "Skull",
     Landclaim   = "Landclaim",
-    Airdrop     = "Airdrop"
+    Airdrop     = "Airdrop",
+    Secret      = "Secret"
 }
 
 IconSizeUV = 1 / 18
@@ -43,7 +45,7 @@ Location.Icon = {
     UVSize = Vector2(IconSizeUV, 1),
     UV     = {
         Airdrop     = Vector2(IconSizeUV * 0, 0),
-        Question    = Vector2(IconSizeUV * 1, 0),
+        Secret      = Vector2(IconSizeUV * 1, 0),
         Exclamation = Vector2(IconSizeUV * 2, 0),
         Home        = Vector2(IconSizeUV * 3, 0),
         Landclaim   = Vector2(IconSizeUV * 4, 0),
@@ -74,6 +76,7 @@ Location.Color =
     Green = Color(22, 149, 0, 255),
     LightBlue = Color(0, 172, 175, 255),
     Blue = Color(0, 99, 166, 255),
+    Cyan = Color(24, 163, 142, 255),
     Fuschia = Color(158, 25, 57, 255),
     Pink = Color(144, 61, 143, 255),
     Purple = Color(52, 29, 145, 255),
@@ -91,12 +94,14 @@ MilitaryTypes =
     MilStrong   = true,
 }
 
-function Location:__init(name, position, type, color, show_on_minimap)
+function Location:__init(name, position, type, color, show_on_minimap, radius)
     self.name     = name
     self.position = position
     self.type     = type
     self.color    = color or Location.Color.Gray
     self.show_on_minimap = show_on_minimap == true
+    self.radius   = radius or 0
+    self.scale    = self.color == Location.Color.Gray and 0.7 or 1
 
     if MilitaryTypes[self.type] then
         self.border = Location.Icon.UV.MilBorder
@@ -123,19 +128,19 @@ function Location:IsActive(position, scale)
 end
 
 function Location:DrawIcon(position, scale)
-
+    
     -- Draw shine
     if self.color ~= Location.Color.None then
         Location.Icon.Sheet:Draw(
-            position - (Location.Icon.Size * scale / 2), 
-            Location.Icon.Size * scale, 
+            position - (Location.Icon.Size * scale / 2 * self.scale), 
+            Location.Icon.Size * scale * self.scale, 
             Location.Icon.UV.Shine, 
             Location.Icon.UV.Shine + Location.Icon.UVSize)
     end
     
     Location.Icon.Sheet:Draw(
-        position - (Location.Icon.Size * scale / 2), 
-        Location.Icon.Size * scale, 
+        position - (Location.Icon.Size * scale / 2 * self.scale), 
+        Location.Icon.Size * scale * self.scale, 
         Location.Icon.UV[self.type], 
         Location.Icon.UV[self.type] + Location.Icon.UVSize)
 
@@ -143,8 +148,8 @@ function Location:DrawIcon(position, scale)
 
     -- Draw border
     Location.Icon.Sheet:Draw(
-        position - (Location.Icon.Size * scale / 2), 
-        Location.Icon.Size * scale, 
+        position - (Location.Icon.Size * scale / 2 * self.scale), 
+        Location.Icon.Size * scale * self.scale, 
         self.border, 
         self.border + Location.Icon.UVSize)
     
@@ -152,12 +157,31 @@ end
 
 function Location:DrawColor(position, scale)
     if not self.color then return end
-    Render:FillArea(position - (Location.Icon.Size * scale / 2) + Vector2(2,2), Location.Icon.Size * scale - Vector2(4,4), self.color)
+    Render:FillArea(position - (Location.Icon.Size * scale / 2 * self.scale) + Vector2(2,2), Location.Icon.Size * scale * self.scale - Vector2(4,4), self.color)
 end
 
 function Location:Draw(position, scale)
+    -- if self.color == Location.Color.Gray then return end
+    
+    if self.radius > 0 then
+        self:DrawRadius(position, scale)
+    end
+    
     self:DrawColor(position, scale)
     self:DrawIcon(position, scale)
+end
+
+function Location:DrawRadius(position, scale)
+    
+    local alpha = 75
+
+    local pos = Map:WorldToScreen(self.position)
+    local size = self.radius / 32768 * Render.Height * Map.Zoom
+    local color = Color(self.color.r, self.color.g, self.color.b, alpha)
+    Render:FillCircle(pos, size, color)
+    color.a = 255
+    Render:DrawCircle(pos, size, color)
+
 end
 
 function Location:DrawTitle(position, scale)
@@ -179,6 +203,7 @@ Map = {
     WaypointScale  = 1.5,
     ActiveLocation = nil,
     Waypoint       = Location("Waypoint", Vector3(), Location.Type.Waypoint, Location.Color.None),
+    Secrets        = {},
     Locations      = {
         Location("Kepulauan", Vector3(-1396.228, 276.0449, 10460.26), Location.Type.Comm),
         Location("Negeri Gunung Berawn", Vector3(7826.969, 254.5643, 8466.012), Location.Type.MilLocation, Location.Color.Green),
@@ -303,7 +328,7 @@ Map = {
         --Location("Paya Luas", Vector3(12028.47, 187.8509, -10679.78), Location.Type.MilAir),
         Location("Paya Luas", Vector3(12028.47, 206.8509, -10679.78), Location.Type.MilAir, Location.Color.Green),
         Location("Kampung Sri Puteri", Vector3(-5166.081, 338.7373, -7321.45), Location.Type.CivVil),
-        Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.Skull, Location.Color.Red, true),
+        -- Location("Wajah Ramah Fortress", Vector3(13803.25, 368.3176, 14003.32), Location.Type.Skull, Location.Color.Red, true),
         Location("Gunung Rata", Vector3(860.4727, 287.4586, 11726.06), Location.Type.MilLocation),
         Location("Kem Harimau Putih", Vector3(11212.44, 399.179, 848.4565), Location.Type.MilLocation),
         --Location("Palau Dayang Terlena", Vector3(-11911.88, 609.6496, 4799.679), Location.Type.MilAir),
@@ -336,7 +361,7 @@ Map = {
         Location("Teluk Panau Tengah Gamma", Vector3(-3793.139, 284.7395, 10017.39), Location.Type.Comm),
         Location("Kem Harimau Bintang", Vector3(12218.26, 619.968, 14088.2), Location.Type.MilLocation),
         Location("Bukit Rendah", Vector3(82.44434, 1122.303, -9012.872), Location.Type.MilLocation, Location.Color.Green),
-        Location("Loji Bahan Bakar Fossin", Vector3(9516.775, 209.9794, -10177.47), Location.Type.MilLocation, Location.Color.Green),
+        Location("Loji Bahan Bakar Fossin (Hotspot)", Vector3(9516.775, 209.9794, -10177.47), Location.Type.MilLocation, Location.Color.Cyan),
         Location("Pulau Ketam Besar", Vector3(3825.969, 209.4087, 10260.54), Location.Type.MilLocation),
         Location("Kem Lembah Hutan", Vector3(11215.5, 295.0118, 13618.05), Location.Type.MilLocation),
         Location("Bandar Pekan Lama", Vector3(12355.14, 236.5235, 1199.771), Location.Type.CivVil),
@@ -410,7 +435,7 @@ Map = {
         Location("Kampung Ekor Bengkok", Vector3(-8873.11, 1485.185, 12322.43), Location.Type.CivVil),
         Location("Kota Kersik", Vector3(-5658.505, 367.7077, 3482.761), Location.Type.CivVil),
         Location("Pelantar Gas Panau Barat", Vector3(-15234.85, 236.3287, 6915.199), Location.Type.OilRig),
-        Location("Kepulauan Pelaut Alpha", Vector3(7336.418, 240.0916, -12408.51), Location.Type.Comm, Location.Color.Green),
+        Location("Kepulauan Pelaut Alpha (Hotspot)", Vector3(7336.418, 240.0916, -12408.51), Location.Type.Comm, Location.Color.Cyan),
         Location("Pelantar Gas Panau Selatan", Vector3(13466.77, 236.3287, 8369.213), Location.Type.OilRig),
         Location("Tanjung Intan", Vector3(-5837.049, 213.8395, -12813.25), Location.Type.CivVil),
         Location("Pelantar Gas Telok Panau", Vector3(-4903.697, 236.3287, -1400.066), Location.Type.OilRig, Location.Color.Green),
@@ -433,7 +458,7 @@ Map = {
         Location("Pekan Rusa Pantas", Vector3(-3671.027, 333.1158, -5993.409), Location.Type.CivVil),
         Location("Lembah Genting Tinggi", Vector3(-451.7679, 836.5936, -8860.411), Location.Type.MilLocation),
         Location("Port Rajang Selatan", Vector3(-7951.542, 203.5004, 7720.742), Location.Type.CivVil, Location.Color.Green),
-        Location("Kepulauan Pelaut Beta", Vector3(7275.744, 241.37, -10821.89), Location.Type.Comm, Location.Color.Green),
+        Location("Kepulauan Pelaut Beta (Hotspot)", Vector3(7275.744, 241.37, -10821.89), Location.Type.Comm, Location.Color.Cyan),
         -- Location("Kem Gunung Gurun Supply Depot", Vector3(-10699.12, 381.8536, 11071.68), Location.Type.MilStrong, Location.Color.Green),
         Location("Kem Gunung Gurun Supply Depot", Vector3(-10699.12, 381.8536, 11071.68), Location.Type.MilLocation, Location.Color.Green),
         Location("Rajang Temple", Vector3(-4325.398, 497.1956, 6872.245), Location.Type.CivVil, Location.Color.Green),
@@ -472,7 +497,7 @@ Map = {
         Location("Gunung Condong", Vector3(9350.65, 306.0321, 9314.123), Location.Type.MilLocation),
         Location("Kampung Papan Tanda", Vector3(2637.957, 245.1643, 4867.09), Location.Type.CivVil),
         Location("Bandar Jeti Batu", Vector3(7286.844, 202.1595, 3302.721), Location.Type.CivVil),
-        Location("Pekan Kesuma", Vector3(5374.749, 204.2978, 13954.49), Location.Type.CivCity, Location.Color.Green),
+        Location("Pekan Kesuma (Hotspot)", Vector3(5374.749, 204.2978, 13954.49), Location.Type.CivCity, Location.Color.Cyan),
         --Location("Gunung Tasik Facility", Vector3(3164.62, 1296.626, -3777.025), Location.Type.MilLocation),
         Location("Gunung Tasik Facility", Vector3(3164.62, 1234, -3777.025), Location.Type.MilLocation),
         Location("Gurun Lautan Lama Beta", Vector3(-10360.72, 334.369, 5189.125), Location.Type.Comm),
@@ -521,8 +546,8 @@ Map = {
         Location("Bandar Kolam Dalam", Vector3(9983.953, 212.7729, -9679.302), Location.Type.CivVil),
         Location("Pelantar Gas Telok Beting Timur", Vector3(15525.08, 236.3287, -4305.083), Location.Type.OilRig),
         --Location("PAN MILSAT", Vector3(7056.561, 776.8174, 1036.695), Location.Type.MilLocation),
-        Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.Skull, Location.Color.Red, true),
-        Location("Cape Carnival", Vector3(13788.11, 222.02, -2315.564), Location.Type.MilLocation, Location.Color.Green),
+        -- Location("PAN MILSAT", Vector3(6923.709473, 716.891052, 1037.186035), Location.Type.Skull, Location.Color.Red, true),
+        Location("Cape Carnival (Hotspot)", Vector3(13788.11, 222.02, -2315.564), Location.Type.MilLocation, Location.Color.Cyan),
         Location("Port Gurun Lautan Lama", Vector3(-13579.83, 209.6284, 6453.933), Location.Type.MilHarb),
         Location("Kampung Padang Luas", Vector3(10851.88, 200.9827, -8668.016), Location.Type.MilHarb, Location.Color.Green),
         Location("Kampung Nipah", Vector3(12970.27, 265.3497, 606.3408), Location.Type.CivVil),
@@ -536,7 +561,7 @@ Map = {
         Location("Kampung Tanah Bernilai", Vector3(11262.32, 245.0957, 3103.462), Location.Type.CivVil),
         Location("Kem Sungai Floodgates", Vector3(-8053.476, 185.5706, 3221.842), Location.Type.MilLocation),
         Location("Kampung Sirip Tajam", Vector3(-6937.369, 212.0635, -11319.59), Location.Type.CivVil),
-        Location("Skull Island", Vector3(-1549.777, 208.8105, 939.5184), Location.Type.Skull, Location.Color.Red, true),
+        -- Location("Skull Island", Vector3(-1549.777, 208.8105, 939.5184), Location.Type.Skull, Location.Color.Red, true),
         Location("Fasility Gunung Hutan Tinggi", Vector3(12864.55, 595.9291, 12905.51), Location.Type.MilLocation),
         Location("Kampung Pasir Panjang", Vector3(-11559.06, 591.258, 3106.423), Location.Type.CivVil),
         Location("Kampung Tanjung Luas", Vector3(2414.036, 202.7877, 4478.184), Location.Type.CivVil),
@@ -574,10 +599,17 @@ Map = {
         -- Location("Pie Island", Vector3(8068.52, 204.97, -15463.15), Location.Type.CivVil, Location.Color.Green)
         
         -- Workbenches
-        ["Southern Workbench"] = Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench, Location.Color.Pink, true),
-        ["Eastern Workbench"] = Location("Eastern Workbench", Vector3(11455.59, 444, -516.274), Location.Type.Workbench, Location.Color.Pink, true),
-        ["Northern Workbench"] = Location("Northern Workbench", Vector3(3018.479, 206.1557, -11952.077), Location.Type.Workbench, Location.Color.Pink, true),
-        ["Western Workbench"] = Location("Western Workbench", Vector3(-7116.8, 388.98, 2928.25), Location.Type.Workbench, Location.Color.Pink, true),
+        -- ["Southern Workbench"] = Location("Southern Workbench", Vector3(4755.66, 572.224, 13219.67), Location.Type.Workbench, Location.Color.Pink, true),
+        -- ["Eastern Workbench"] = Location("Eastern Workbench", Vector3(11455.59, 444, -516.274), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Panau Falls Casino Workbench"] = Location("Panau Falls Casino Workbench", Vector3(2192.39, 649.05, 1365), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Docks District Workbench"] = Location("Docks District Workbench", Vector3(-15314, 501.761, -2408.28), Location.Type.Workbench, Location.Color.Pink, true),
+        ["PBC Tower Workbench"] = Location("PBC Tower Workbench", Vector3(-497.348846, 799.554688, -12044.131836), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Parks District Workbench"] = Location("Parks District Workbench", Vector3(-11642.025391, 203.040579, -5215.140137), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Residential District Workbench"] = Location("Residential District Workbench", Vector3(-11616.697266, 211.920645, -954.870911), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Gambler\'s Den Workbench"] = Location("Gambler\'s Den Workbench", Vector3(-7745.649414, 205.799719, 6750.222656), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Party Workbench"] = Location("Party Workbench", Vector3(6921.548340, 201.228071, 12321.868164), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Ski Resort Workbench"] = Location("Ski Resort Workbench", Vector3(8037.465332, 540.931311, -1561.646973), Location.Type.Workbench, Location.Color.Pink, true),
+        ["Flower Workbench"] = Location("Flower Workbench", Vector3(9226.545898, 223.351470, -11987.953125), Location.Type.Workbench, Location.Color.Pink, true),
 
         -- Home
         ["Home"] = Location("Home", Vector3(), Location.Type.Home, Location.Color.Blue)
@@ -717,6 +749,7 @@ function Map:ToggleWaypoint(position)
 end
 
 function Map:Draw()
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     Render:FillArea(Vector2.Zero, Render.Size, Color(5, 38, 48))
 
     Map.Image:SetSize(Vector2.One * Render.Height * Map.Zoom)
@@ -784,6 +817,19 @@ function Map:Draw()
         end
     end
 
+    for uid, location in pairs(Map.Secrets) do
+        if location.position then
+            local position = Map:WorldToScreen(location.position)
+
+            if position.x > 0 and position.y > 0 and position.x < Render.Width and position.y < Render.Height then
+                if location:IsActive(position, scale * (PDA:IsUsingGamepad() and 2 or 1)) then
+                    Map.ActiveLocation = location
+                end
+
+                location:Draw(position, scale)
+            end
+        end
+    end
 
     --self:DrawRedAreas()
     
@@ -924,4 +970,38 @@ end)
 Events:Subscribe("airdrops/AddPreciseLocationToMap", function(args)
     Map.AirdropSize = nil
     Map.Locations["Airdrop"] = Location(args.name, args.position, Location.Type.Airdrop, Location.Color.Orange, true)
+end)
+
+
+function GetSecretNameFromTier(tier)
+    return tier == 21 and "Secret" or "Secret X" 
+end
+
+Events:Subscribe("items/RemoveSecret", function(args)
+    Map.Secrets[args.uid] = nil
+end)
+
+Events:Subscribe("items/NewSecret", function(args)
+    Map.Secrets[args.uid] = Location(
+        GetSecretNameFromTier(args.tier), 
+        args.position, 
+        Location.Type.Secret, 
+        Location.Color.Purple, 
+        true,
+        args.radius
+    )
+end)
+
+Events:Subscribe("items/SyncSecrets", function(args)
+    Map.Secrets = {}
+    for uid, secret_data in pairs(args) do
+        Map.Secrets[secret_data.uid] = Location(
+            GetSecretNameFromTier(secret_data.tier), 
+            secret_data.position, 
+            Location.Type.Secret, 
+            Location.Color.Purple, 
+            true,
+            secret_data.radius
+        )
+    end
 end)

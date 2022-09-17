@@ -1,26 +1,19 @@
 class 'SAMManager'
 
-class 'IdPool'
-
-function IdPool:__init()
-    self.current_id = 0
-end
-
-function IdPool:GetNextId()
-    self.current_id = self.current_id + 1
-    return self.current_id
-end
-
 function SAMManager:__init()
 	
-	self.id_pool = IdPool()
+	SQL:Execute("CREATE TABLE IF NOT EXISTS hacked_sams (steamID VARCHAR, sam_id INTEGER)")
+	
 	self.sams = {}
 	self.cell_size = 512
 	self.players = {}
 	
+	self.scan_timer = Timer()
+	
     Events:Subscribe("Cells/PlayerCellUpdate" .. tostring(self.cell_size), self, self.PlayerCellUpdate)
 	Network:Subscribe("sams/MissileStrikeDamagePlayer", self, self.MissileStrikeDamagePlayer)
 	Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
+	Events:Subscribe("PostTick", self, self.PostTick)
 	
 	Network:Subscribe("sams/SplashHitSAM", self, self.SplashHitSAM)
 	Events:Subscribe("items/ItemExplode", self, self.ItemExplode)
@@ -32,7 +25,7 @@ end
 
 function SAMManager:GetAllSAMs()
 	local sams = {}
-	for id, sam in pairs(self.sams) do
+	for id, sam in ipairs(self.sams) do
 		sams[id] = sam:GetSyncData()
 	end
 	Events:Fire("sams/AllSAMs", sams)
@@ -72,7 +65,7 @@ function SAMManager:ItemExplode(args)
 	
 	Thread(function()
 		local count = 0
-		for id, sam in pairs(self.sams) do
+		for id, sam in ipairs(self.sams) do
 			local hit_distance = sam.position:Distance(args.position)
 			local hit_damage = damage * (1 - hit_distance / args.radius)
 
@@ -123,27 +116,34 @@ end
 
 function SAMManager:ModuleLoad()
 	self:CreateAllSAMs()
-	self:StartSAMMonitoring()
 end
 
-function SAMManager:StartSAMMonitoring()
-	Thread(function()
-		while true do
-			for id, sam in pairs(self.sams) do
-				if sam:CanFire() then
-					local close_valid_players = {}
-					for player in Server:GetPlayers() do
-						
+function SAMManager:PostTick()
+	if self.scan_timer:GetSeconds() > 1.5 then
+		for id, sam in ipairs(self.sams) do
+			if sam:CanFire() then
+				local close_valid_players = {}
+				for player in Server:GetPlayers() do
+					
+					if IsValid(player) then
 						local player_pos = player:GetPosition()
+						local player_exp = player:GetValue("Exp")
 						
 						if player:InVehicle() and 
 						player:GetPosition().y > 220 and 
 						not player:GetValue("InSafezone") and
+						player_exp and player_exp.level > 10 and
 						not player:GetValue("Invisible") then
 							local player_vehicle = player:GetVehicle()
 							local speed = math.abs(math.floor(player_vehicle:GetLinearVelocity():Length()))
 							local model_id = player_vehicle:GetModelId()
-							local sam_key_level = player:GetValue("SAM Key")
+							local sam_key_level = player:GetValue("SAM Key") or 0
+							
+							-- Get highest level SAM key in vehicle
+							local occupants = player_vehicle:GetOccupants()
+							for index, v_player in pairs(occupants) do
+								sam_key_level = math.max(sam_key_level, v_player:GetValue("SAM Key") or 0)
+							end
 							
 							if 
 							IsValidVehicle(model_id, SAMMissileVehicles) and 
@@ -157,36 +157,51 @@ function SAMManager:StartSAMMonitoring()
 							
 						end
 						
-						Timer.Sleep(1)
+						-- Timer.Sleep(1)
 					end
-					
-					if count_table(close_valid_players) > 0 then
-						local target = random_table_value(close_valid_players)
-						if IsValid(target) then
-							sam:Fire(target, target:GetVehicle())
-							Timer.Sleep(1)
-						end
+				end
+				
+				if count_table(close_valid_players) > 0 then
+					local target = random_table_value(close_valid_players)
+					if IsValid(target) then
+						sam:Fire(target, target:GetVehicle())
+						-- Timer.Sleep(1)
 					end
 				end
 			end
-			
-			
-			Timer.Sleep(1000)
+			-- Timer.Sleep(1000)
 		end
-	end)
+		self.scan_timer:Restart()
+	end
 end
 
 function SAMManager:CreateAllSAMs()
-	for _, sam_data in pairs(SAMAnchorLocationsTable) do
+	local all_hacked_sams = self:GetAllHackedSAMsFromDB()
+	
+	for sam_id, sam_data in ipairs(SAMAnchorLocationsTable) do
 		local sam = SAM({
-			id = self.id_pool:GetNextId(),
+			id = sam_id,
 			position = sam_data.pos,
 			base_level = sam_data.level,
-			cell = GetCell(sam_data.pos, self.cell_size)
+			cell = GetCell(sam_data.pos, self.cell_size),
+			hacked_owner = all_hacked_sams[sam_id]
 		})
 		self.sams[sam.id] = sam
 	end
 	print(string.format("Created %d SAMs.", count_table(self.sams)))
+end
+
+function SAMManager:GetAllHackedSAMsFromDB()
+	local all_hacked_sams = {}
+	local result = SQL:Query("SELECT * FROM hacked_sams"):Execute()
+	
+    if result and count_table(result) > 0 then
+        for _, sam_data in pairs(result) do
+			all_hacked_sams[tonumber(sam_data.sam_id)] = sam_data.steamID
+		end
+    end
+	
+	return all_hacked_sams
 end
 
 function SAMManager:PlayerCellUpdate(args)

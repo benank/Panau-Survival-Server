@@ -9,7 +9,7 @@ function sDroneManager:__init()
     self.player_cells = {} -- Players in cells [x][y][steam_id] = player
     self.players = {}
 
-    Timer.SetInterval(1000 * 60 * 5, function()
+    Timer.SetInterval(1000 * 60 * 30, function()
         self:UpdateDronesCountsInSZ()
     end)
 
@@ -17,6 +17,7 @@ function sDroneManager:__init()
     Events:Subscribe("HitDetection/DroneDamaged", self, self.DroneDamaged)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
+    Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
@@ -24,6 +25,10 @@ function sDroneManager:__init()
     Events:Subscribe("Drones/RemoveDronesInGroup", self, self.RemoveDronesInGroup)
 
     Network:Subscribe("drones/sync/batch", self, self.DroneBatchSync)
+end
+
+function sDroneManager:ModulesLoad()
+    self:UpdateDronesCountsInSZ() 
 end
 
 --[[
@@ -127,11 +132,12 @@ function sDroneManager:DroneBatchSyncLoop()
     Thread(
         function()
             while true do
-                local drone_data = {}
+                local drone_data_by_cells = {}
                 local at_least_one_sync = false
                 for id, drone in pairs(self.drones_by_id) do
                     if drone.has_update then
-                        drone_data[id] = drone.updates
+                        VerifyCellExists(drone_data_by_cells, drone.cell)
+                        drone_data_by_cells[drone.cell.x][drone.cell.y][id] = drone.updates
                         at_least_one_sync = true
                         drone:UpdateApplied()
                     end
@@ -140,13 +146,36 @@ function sDroneManager:DroneBatchSyncLoop()
                 -- TODO: actually optimize this using cells
                 -- sDroneManager:GetNearbyPlayersInCell(cell)
                 if at_least_one_sync then
-                    Network:Broadcast("Drones/BatchSync", drone_data)
+                    self:BatchSync(drone_data_by_cells)
                 end
 
-                Timer.Sleep(250)
+                Timer.Sleep(500)
             end
         end
     )
+end
+
+function sDroneManager:BatchSync(drone_data_by_cells)
+    
+    local count = 0
+    
+    for x, _ in pairs(drone_data_by_cells) do
+        for y, drone_data in pairs(drone_data_by_cells[x]) do
+            
+            local nearby_players = self:GetNearbyPlayersInCell({x = x, y = y})
+            
+            if count_table(nearby_players) > 0 then
+                Network:SendToPlayers(nearby_players, "Drones/BatchSync", drone_data)
+            end
+            
+            count = count + 1
+            
+            if count % 100 == 0 then
+                Timer.Sleep(1)
+            end
+        end
+        
+    end
 end
 
 function sDroneManager:DroneReconsiderLoops()
@@ -223,7 +252,7 @@ function sDroneManager:DroneDamaged(args)
     if not drone then
         return
     end
-
+    
     drone:Damage(args)
 end
 

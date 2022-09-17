@@ -43,7 +43,8 @@ function cDoorExtension:UpdateToExternalModules()
         landclaim_id = self.object.landclaim.id,
         landclaim_owner_id = self.object.landclaim.owner_id,
         id = self.object.id,
-        cso_id = self.door_object:GetId()
+        cso_id = self.door_object:GetId(),
+        model = self.door_object:GetModel()
     })
 end
 

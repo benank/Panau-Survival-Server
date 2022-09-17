@@ -16,16 +16,19 @@ function sVehicleManager:__init()
     self.spawn_weights = {}
 
     self.players = {}
+    self.total_vehicle_spawnable_count = 0
 
     self:SetupSpawnTables()
     self:ReadVehicleSpawnData("spawns/spawns.txt")
     self:SpawnVehicles()
+    self:UpdateVehicleTotalStats()
 
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("LoadFlowFinish", self, self.LoadFlowFinish)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("PlayerExitVehicle", self, self.PlayerExitVehicle)
     Events:Subscribe("PlayerEnterVehicle", self, self.PlayerEnterVehicle)
+    Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
     Events:Subscribe("MinuteTick", self, self.MinuteTick)
     Events:Subscribe("PlayerJoin", self, self.PlayerJoin)
@@ -35,6 +38,9 @@ function sVehicleManager:__init()
     Events:Subscribe("LoadStatus", self, self.LoadStatus)
 
     Events:Subscribe("Items/PlayerUseVehicleGuard", self, self.PlayerUseVehicleGuard)
+    
+    Events:Subscribe("RefreshVehicleStorages", self, self.RefreshVehicleStorages)
+    Events:Subscribe("items/VehicleHackComplete", self, self.VehicleHackComplete)
 
     Network:Subscribe("Vehicles/SpawnVehicle", self, self.PlayerSpawnVehicle)
     Network:Subscribe("Vehicles/DeleteVehicle", self, self.PlayerDeleteVehicle)
@@ -44,6 +50,8 @@ function sVehicleManager:__init()
     Network:Subscribe("Vehicles/ExitGasStation", self, self.ExitGasStation)
 
     Network:Subscribe("Vehicles/VehicleDestroyed", self, self.VehicleDestroyedClient)
+    
+    Network:Subscribe("Vehicles/FireBeringBombsight", self, self.FireBeringBombsight)
 
     Timer.SetInterval(1000, function()
         self:Tick1000()
@@ -77,7 +85,50 @@ function sVehicleManager:__init()
     Timer.SetInterval(1000 * 60, function()
         self:SaveVehicles()
     end)
+    
+    Timer.SetInterval(1000 * 60 * 60, function()
+        self:UpdateVehicleTotalStats()
+    end)
 
+end
+
+function sVehicleManager:ModulesLoad()
+    self:UpdateVehicleTotalStats() 
+end
+
+function sVehicleManager:UpdateVehicleTotalStats()
+    Events:Fire("Vehicles/UpdateVehicleTotalStats", {total = string.format("%d / %d", count_table(self.vehicles), self.total_vehicle_spawnable_count)})
+end
+
+function sVehicleManager:FireBeringBombsight(args, player)
+    if not args.center then return end
+    if not player:InVehicle() then return end
+    
+    local vehicle = player:GetVehicle()
+    if vehicle:GetModelId() ~= 85 then return end
+    
+    local last_fire_time = player:GetValue("BeringBombsightLastFire")
+    local server_time = Server:GetElapsedSeconds()
+    
+    if server_time - last_fire_time < 10 then return end
+    
+    if args.center:Distance(player:GetPosition()) > 4000 then return end
+    
+    player:SetValue("BeringBombsightLastFire", server_time)
+    
+    Events:Fire("Vehicles/FireBeringBombsight", {
+        player = player,
+        center = args.center,
+        radius = 150,
+        vehicle = vehicle
+    })
+    
+end
+
+function sVehicleManager:RefreshVehicleStorages()
+    for _, vehicle in pairs(self.vehicles) do
+        Events:Fire("VehicleCreated", {vehicle = vehicle}) 
+    end
 end
 
 function sVehicleManager:LoadStatus(args)
@@ -141,6 +192,8 @@ function sVehicleManager:PlayerChat(args)
 
         vehicle:SetNetworkValue("VehicleData", vehicle_data)
         self.vehicles[vehicle:GetId()] = vehicle
+        
+        Events:Fire("VehicleCreated", {vehicle = vehicle})
 
     end
 
@@ -191,6 +244,44 @@ function sVehicleManager:SaveVehicles()
 
             v:SetValue("VehicleLastUpdate", seconds)
         end
+    end
+
+end
+
+function sVehicleManager:VehicleHackComplete(args)
+    
+    local vehicle = Vehicle.GetById(args.vehicle_id)
+    if not IsValid(vehicle) then return end
+    args.vehicle = vehicle
+    
+    local vehicle_data = vehicle:GetValue("VehicleData")
+
+    if vehicle_data.guards > 0 then
+        -- Remove a vehicle guard due to the hack 
+        vehicle_data.guards = vehicle_data.guards - 1
+        args.vehicle:SetNetworkValue("VehicleData", vehicle_data)
+        self:SaveVehicle(vehicle)
+        
+        Chat:Send(args.player, "Successfully hacked the vehicle and removed a Vehicle Guard.", Color.Green)
+
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = vehicle_data.owner_steamid,
+            message = string.format("Your %s Vehicle Guard was hacked by %s %s", 
+                args.vehicle:GetName(), args.player:GetName(), WorldToMapString(args.player:GetPosition())),
+            color = Color(200, 0, 0)
+        })
+        
+        local msg = string.format("Player %s [%s] hacked vehicle and removed Vehicle Guard from vehicle %d", 
+            args.player:GetName(), args.player:GetSteamId(), vehicle_data.vehicle_id)
+        Events:Fire("Discord", {
+            channel = "Vehicles",
+            content = msg
+        })
+
+    else
+        -- No vehicle guards, so tell inventory to put the items from the vehicle on the ground
+        Events:Fire("Vehicles/VehicleItemsHacked", args)
+        
     end
 
 end
@@ -258,6 +349,7 @@ function sVehicleManager:VehicleDestroyed(vehicle, vehicle_data_input)
 
         self.despawning_vehicles[vehicle_data.vehicle_id] = nil
         self.owned_vehicles[vehicle_data.vehicle_id] = nil
+        Events:Fire("VehicleRemoved", {vehicle = vehicle})
 
         local cmd = SQL:Command("DELETE FROM vehicles WHERE vehicle_id = (?)")
         cmd:Bind(1, vehicle_data.vehicle_id)
@@ -410,6 +502,7 @@ function sVehicleManager:MinuteTick()
             self.despawning_vehicles[id] = nil
 
             local vehicle_id = self.owned_vehicles[id]:GetId()
+            Events:Fire("VehicleRemoved", {vehicle = self.owned_vehicles[id]})
             self.owned_vehicles[id]:Remove()
             self.owned_vehicles[id] = nil
 
@@ -572,6 +665,7 @@ function sVehicleManager:PlayerSpawnVehicle(args, player)
         self:SyncPlayerOwnedVehicles(player)
     end)
     
+    Events:Fire("VehicleCreated", {vehicle = vehicle})
 
     local msg = string.format("Player %s [%s] spawned vehicle %d", 
         player:GetName(), player:GetSteamId(), args.vehicle_id)
@@ -598,6 +692,7 @@ function sVehicleManager:PlayerDeleteVehicle(args, player)
     cmd:Execute()
 
     if IsValid(vehicle_data.vehicle) then
+        Events:Fire("VehicleRemoved", {vehicle = vehicle_data.vehicle})
         vehicle_data.vehicle:Remove()
     end
 
@@ -635,6 +730,7 @@ function sVehicleManager:PlayerEnterVehicle(args)
     else
         -- This is an owned vehicle, so update it in the DB
         self:SaveVehicle(args.vehicle)
+        Events:Fire("PlayerEnteredVehicle", args)
 
         -- If a friend is using the vehicle, restart the timer
         if self.despawning_vehicles[data.vehicle_id] then
@@ -782,6 +878,7 @@ function sVehicleManager:TryBuyVehicle(args)
     args.vehicle:SetStreamDistance(2000)
 
     self:SaveVehicle(args.vehicle, args.player)
+    Events:Fire("PlayerEnteredVehicle", args)
 
     if args.data.spawn_index and args.data.spawn_type then
         self.spawns[args.data.spawn_type][args.data.spawn_index].respawn_timer:Restart()
@@ -807,6 +904,7 @@ function sVehicleManager:LoadFlowFinish(args)
     end
     
     args.player:SetNetworkValue("MaxVehicles", self:GetPlayerMaxVehicles(args.player))
+    args.player:SetValue("BeringBombsightLastFire", Server:GetElapsedSeconds())
 
     local result = SQL:Query("SELECT * FROM vehicles WHERE owner_steamid = (?)")
     result:Bind(1, tostring(args.player:GetSteamId()))
@@ -931,6 +1029,7 @@ function sVehicleManager:SpawnVehicles()
         end
     end
 
+    self.total_vehicle_spawnable_count = total_cnt
     print(string.format("Spawned %d/%d vehicles, %.02f seconds", cnt, total_cnt, timer:GetSeconds()))
 
 end
@@ -954,7 +1053,7 @@ function sVehicleManager:SpawnNaturalVehicle(spawn_type, index)
     local vehicle = self:SpawnVehicle(spawn_args)
     vehicle:SetHealth(health)
     vehicle:SetStreamDistance(500)
-
+    
     spawn_args.health = health
     local vehicle_data = self:GenerateVehicleData(spawn_args)
     vehicle_data.health = vehicle:GetHealth()
@@ -967,6 +1066,8 @@ function sVehicleManager:SpawnNaturalVehicle(spawn_type, index)
 
     vehicle:SetNetworkValue("VehicleData", vehicle_data)
     self.vehicles[vehicle:GetId()] = vehicle
+
+    Events:Fire("VehicleCreated", {vehicle = vehicle})
 
 end
 

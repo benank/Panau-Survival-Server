@@ -12,7 +12,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 4 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 4,
         perk_req = 0,
         cost = 0,
@@ -22,7 +22,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 4 stashes",
+        description = "Gain an extra stash slot",
         level_req = 4,
         perk_req = 0,
         cost = 0,
@@ -53,7 +53,7 @@ ExpPerks =
     {
         name = "Workbench",
         description = "You can now use workbenches to combine items",
-        level_req = 5,
+        level_req = 0,
         perk_req = 0,
         cost = 0,
         id = 12,
@@ -68,7 +68,7 @@ ExpPerks =
         cost = 1,
         id = 16,
         position = 7,
-        enabled = true
+        enabled = false
     },
     {
         name = "Bandages",
@@ -88,7 +88,7 @@ ExpPerks =
         cost = 2,
         id = 18,
         position = 9,
-        enabled = true
+        enabled = false
     },
     {
         name = "Inventory",
@@ -122,7 +122,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 5 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 8,
         perk_req = 7,
         cost = 0,
@@ -132,7 +132,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 5 stashes",
+        description = "Gain an extra stash slot",
         level_req = 8,
         perk_req = 8,
         cost = 0,
@@ -158,7 +158,7 @@ ExpPerks =
         cost = 2,
         id = 28,
         position = 16,
-        enabled = true
+        enabled = false
     },
     {
         name = "Area Bombing",
@@ -168,7 +168,7 @@ ExpPerks =
         cost = 2,
         id = 54,
         position = 17,
-        enabled = true
+        enabled = false
     },
     {
         name = "Inventory",
@@ -198,7 +198,7 @@ ExpPerks =
         cost = 2,
         id = 30,
         position = 20,
-        enabled = true
+        enabled = false
     },
     {
         name = "SMG",
@@ -288,7 +288,7 @@ ExpPerks =
         cost = 0,
         id = 34,
         position = 29,
-        enabled = true
+        enabled = false
     },
     {
         name = "Parachute",
@@ -318,7 +318,7 @@ ExpPerks =
         cost = 3,
         id = 55,
         position = 32,
-        enabled = true
+        enabled = false
     },
     {
         name = "Inventory",
@@ -332,7 +332,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 6 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 12,
         perk_req = 25,
         cost = 0,
@@ -342,7 +342,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 6 stashes",
+        description = "Gain an extra stash slot",
         level_req = 12,
         perk_req = 26,
         cost = 0,
@@ -368,7 +368,7 @@ ExpPerks =
         cost = 2,
         id = 61,
         position = 37,
-        enabled = true
+        enabled = false
     },
     {
         name = "Sniper Rifle",
@@ -388,7 +388,7 @@ ExpPerks =
         cost = 3,
         id = 50,
         position = 39,
-        enabled = true
+        enabled = false
     },
     {
         name = "SMG",
@@ -414,7 +414,7 @@ ExpPerks =
         name = "C4",
         description = "Increases damage by 10%",
         level_req = 14,
-        perk_req = 30,
+        perk_req = 0,
         cost = 3,
         id = 56,
         position = 42,
@@ -448,7 +448,7 @@ ExpPerks =
         cost = 1,
         id = 59,
         position = 45,
-        enabled = true
+        enabled = false
     },
     {
         name = "Shotgun",
@@ -464,7 +464,7 @@ ExpPerks =
         name = "LandClaim",
         description = "Allows you to place 1 extra LandClaim",
         level_req = 15,
-        perk_req = 34,
+        perk_req = 0,
         cost = 2,
         id = 58,
         position = 47,
@@ -488,11 +488,11 @@ ExpPerks =
         cost = 2,
         id = 75,
         position = 49,
-        enabled = true
+        enabled = false
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 7 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 16,
         perk_req = 47,
         cost = 0,
@@ -502,7 +502,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 7 stashes",
+        description = "Gain an extra stash slot",
         level_req = 16,
         perk_req = 48,
         cost = 0,
@@ -528,7 +528,7 @@ ExpPerks =
         cost = 6,
         id = 65,
         position = 53,
-        enabled = true
+        enabled = false
     },
     {
         name = "Assault Rifle",
@@ -594,7 +594,7 @@ ExpPerks =
         name = "LandClaim",
         description = "Allows you to place 1 extra LandClaim",
         level_req = 20,
-        perk_req = 34,
+        perk_req = 0,
         cost = 0,
         id = 76,
         position = 60,
@@ -602,7 +602,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 8 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 20,
         perk_req = 66,
         cost = 0,
@@ -612,7 +612,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 8 stashes",
+        description = "Gain an extra stash slot",
         level_req = 20,
         perk_req = 67,
         cost = 0,
@@ -762,7 +762,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 9 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 24,
         perk_req = 77,
         cost = 0,
@@ -772,7 +772,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 9 stashes",
+        description = "Gain an extra stash slot",
         level_req = 24,
         perk_req = 78,
         cost = 0,
@@ -844,7 +844,7 @@ ExpPerks =
         name = "Hacker",
         description = "Choose: 1 extra second to solve Hacker puzzles or 10% extra chance that Hacker won't be consumed when used",
         level_req = 25,
-        perk_req = 16,
+        perk_req = 0,
         cost = 2,
         id = 102,
         position = 86,
@@ -862,7 +862,7 @@ ExpPerks =
     },
     {
         name = "Revenge",
-        description = "Inflicts 25% damage on players who kill you",
+        description = "Inflicts 10% damage on players who kill you",
         level_req = 25,
         perk_req = 0,
         cost = 3,
@@ -888,7 +888,7 @@ ExpPerks =
         cost = 2,
         id = 104,
         position = 90,
-        enabled = true
+        enabled = false
     },
     {
         name = "RocketGrapple",
@@ -924,7 +924,7 @@ ExpPerks =
         name = "Area Bombing",
         description = "Choose: 10% extra damage or 5 extra bombs",
         level_req = 27,
-        perk_req = 54,
+        perk_req = 0,
         cost = 1,
         id = 108,
         position = 94,
@@ -962,7 +962,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 10 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 28,
         perk_req = 92,
         cost = 0,
@@ -972,7 +972,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 10 stashes",
+        description = "Gain an extra stash slot",
         level_req = 28,
         perk_req = 93,
         cost = 0,
@@ -994,7 +994,7 @@ ExpPerks =
         name = "Machine Gun",
         description = "Machine Gun now does 5% extra damage",
         level_req = 29,
-        perk_req = 50,
+        perk_req = 0,
         cost = 1,
         id = 115,
         position = 101,
@@ -1044,7 +1044,7 @@ ExpPerks =
         name = "Rocket Launcher",
         description = "Rocket Launcher now does 5% extra damage",
         level_req = 30,
-        perk_req = 65,
+        perk_req = 0,
         cost = 1,
         id = 122,
         position = 106,
@@ -1112,7 +1112,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 11 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 32,
         perk_req = 112,
         cost = 0,
@@ -1122,7 +1122,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 11 stashes",
+        description = "Gain an extra stash slot",
         level_req = 32,
         perk_req = 113,
         cost = 0,
@@ -1202,7 +1202,7 @@ ExpPerks =
     },
     {
         name = "Revenge",
-        description = "Inflicts 50% damage on players who kill you",
+        description = "Inflicts 20% damage on players who kill you",
         level_req = 35,
         perk_req = 103,
         cost = 4,
@@ -1222,7 +1222,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 12 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 36,
         perk_req = 126,
         cost = 0,
@@ -1232,7 +1232,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 12 stashes",
+        description = "Gain an extra stash slot",
         level_req = 36,
         perk_req = 127,
         cost = 0,
@@ -1274,7 +1274,7 @@ ExpPerks =
         name = "Tactical Nuke",
         description = "Choose: 10% extra damage or 10% extra range",
         level_req = 38,
-        perk_req = 75,
+        perk_req = 0,
         cost = 3,
         id = 140,
         position = 129,
@@ -1312,7 +1312,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 13 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 40,
         perk_req = 136,
         cost = 0,
@@ -1322,7 +1322,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 13 stashes",
+        description = "Gain an extra stash slot",
         level_req = 40,
         perk_req = 137,
         cost = 0,
@@ -1432,7 +1432,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 14 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 44,
         perk_req = 143,
         cost = 0,
@@ -1442,7 +1442,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 14 stashes",
+        description = "Gain an extra stash slot",
         level_req = 44,
         perk_req = 144,
         cost = 0,
@@ -1542,7 +1542,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 15 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 48,
         perk_req = 154,
         cost = 0,
@@ -1552,7 +1552,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 15 stashes",
+        description = "Gain an extra stash slot",
         level_req = 48,
         perk_req = 155,
         cost = 0,
@@ -1602,7 +1602,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 16 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 52,
         perk_req = 165,
         cost = 0,
@@ -1612,7 +1612,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 16 stashes",
+        description = "Gain an extra stash slot",
         level_req = 52,
         perk_req = 166,
         cost = 0,
@@ -1662,7 +1662,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 17 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 56,
         perk_req = 170,
         cost = 0,
@@ -1672,7 +1672,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 17 stashes",
+        description = "Gain an extra stash slot",
         level_req = 56,
         perk_req = 171,
         cost = 0,
@@ -1732,7 +1732,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 18 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 60,
         perk_req = 176,
         cost = 0,
@@ -1742,7 +1742,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 18 stashes",
+        description = "Gain an extra stash slot",
         level_req = 60,
         perk_req = 177,
         cost = 0,
@@ -1792,7 +1792,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 19 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 64,
         perk_req = 183,
         cost = 0,
@@ -1802,7 +1802,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 19 stashes",
+        description = "Gain an extra stash slot",
         level_req = 64,
         perk_req = 184,
         cost = 0,
@@ -1852,7 +1852,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 20 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 68,
         perk_req = 189,
         cost = 0,
@@ -1862,7 +1862,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 20 stashes",
+        description = "Gain an extra stash slot",
         level_req = 68,
         perk_req = 190,
         cost = 0,
@@ -1912,7 +1912,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 21 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 72,
         perk_req = 195,
         cost = 0,
@@ -1922,7 +1922,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 21 stashes",
+        description = "Gain an extra stash slot",
         level_req = 72,
         perk_req = 196,
         cost = 0,
@@ -1962,7 +1962,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 22 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 76,
         perk_req = 201,
         cost = 0,
@@ -1972,7 +1972,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 22 stashes",
+        description = "Gain an extra stash slot",
         level_req = 76,
         perk_req = 202,
         cost = 0,
@@ -2002,7 +2002,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 23 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 80,
         perk_req = 206,
         cost = 0,
@@ -2012,7 +2012,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 23 stashes",
+        description = "Gain an extra stash slot",
         level_req = 80,
         perk_req = 207,
         cost = 0,
@@ -2052,7 +2052,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 24 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 84,
         perk_req = 210,
         cost = 0,
@@ -2062,7 +2062,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 24 stashes",
+        description = "Gain an extra stash slot",
         level_req = 84,
         perk_req = 211,
         cost = 0,
@@ -2082,7 +2082,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 25 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 88,
         perk_req = 215,
         cost = 0,
@@ -2092,7 +2092,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 25 stashes",
+        description = "Gain an extra stash slot",
         level_req = 88,
         perk_req = 216,
         cost = 0,
@@ -2122,7 +2122,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 26 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 92,
         perk_req = 218,
         cost = 0,
@@ -2132,7 +2132,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 26 stashes",
+        description = "Gain an extra stash slot",
         level_req = 92,
         perk_req = 219,
         cost = 0,
@@ -2172,7 +2172,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 27 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 96,
         perk_req = 222,
         cost = 0,
@@ -2182,7 +2182,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 27 stashes",
+        description = "Gain an extra stash slot",
         level_req = 96,
         perk_req = 223,
         cost = 0,
@@ -2212,7 +2212,7 @@ ExpPerks =
     },
     {
         name = "Vehicles",
-        description = "You can now own up to 28 vehicles",
+        description = "Gain an extra vehicle slot",
         level_req = 100,
         perk_req = 227,
         cost = 0,
@@ -2222,7 +2222,7 @@ ExpPerks =
     },
     {
         name = "Stashes",
-        description = "You can now own up to 28 stashes",
+        description = "Gain an extra stash slot",
         level_req = 100,
         perk_req = 228,
         cost = 0,

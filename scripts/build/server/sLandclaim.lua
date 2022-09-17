@@ -41,7 +41,8 @@ end
 -- We do this to sort old landclaims from current, active ones but keep the old ones
 -- to persist the objects that were on them
 function sLandclaim:IsActive()
-    return self.state == LandclaimStateEnum.Active and GetLandclaimDaysTillExpiry(self.expiry_date) > 0
+    return self.state == LandclaimStateEnum.Active
+    -- return self.state == LandclaimStateEnum.Active and GetLandclaimDaysTillExpiry(self.expiry_date) > 0
 end
 
 function sLandclaim:GetNewUniqueObjectId()
@@ -60,12 +61,17 @@ function sLandclaim:ParseObjects(objects)
     for _, object in pairs(objects) do
         local id = self:GetNewUniqueObjectId()
         object.id = id
+        object.landclaim_id = self.id
+        object.landclaim_owner_id = self.owner_id
         self.objects[id] = sLandclaimObject(object)
+        object = self.objects[id]
         
         if object.name == "Bed" then
             for steam_id, _ in pairs(object.custom_data.player_spawns) do
                 sLandclaimManager.player_spawns[steam_id] = {id = object.id, landclaim_id = self.id, landclaim_owner_id = self.owner_id}
             end
+        elseif object.name == "Teleporter" then
+            sLandclaimManager:AddOrUpdateTeleporter(object)
         end
 
     end
@@ -81,7 +87,7 @@ function sLandclaim:Decay()
     for id, object in pairs(self.objects) do
         local object_data = BuildObjects[object.name]
 
-        if object_data and object_data.unclaimed_decay then
+        if object_data and object_data.unclaimed_decay and object.health > LandclaimObjectConfig.min_object_decay_health then
             object:Damage(LandclaimObjectConfig.decay_per_interval)
             landclaim_updated = true
 
@@ -261,11 +267,15 @@ function sLandclaim:UnsetOldSpawn(player_id, old_spawn_data)
 
 end
 
+function sLandclaim:IsPlayerOwner(player)
+    return self.owner_id == tostring(player:GetSteamId())
+end
+
 function sLandclaim:CanPlayerAccess(player, access_mode)
 
     if not self:IsActive() then return end
 
-    local is_owner = self.owner_id == tostring(player:GetSteamId())
+    local is_owner = self:IsPlayerOwner(player)
 
     if access_mode == LandclaimAccessModeEnum.OnlyMe then
         return is_owner
@@ -302,10 +312,13 @@ function sLandclaim:PlaceObject(args)
         angle = args.angle,
         health = args.player_iu.item.durability,
         owner_id = tostring(args.player:GetSteamId()),
-        owner_name = args.player:GetName()
+        owner_name = args.player:GetName(),
+        landclaim_id = self.id,
+        landclaim_owner_id = self.owner_id
     }
 
     self.objects[object.id] = sLandclaimObject(object)
+    sLandclaimManager:AddOrUpdateTeleporter(self.objects[object.id])
 
     self:UpdateToDB()
     self:SyncSmallUpdate({
@@ -314,10 +327,20 @@ function sLandclaim:PlaceObject(args)
     })
 
     -- Remove item once it has been placed successfully
-    Inventory.RemoveItem({
-        item = args.player_iu.item,
-        index = args.player_iu.index,
-        player = args.player
+    local no_consume = args.player_iu.item.custom_data and tostring(args.player_iu.item.custom_data.no_consume) == "1"
+    if not no_consume then
+        Inventory.RemoveItem({
+            item = args.player_iu.item,
+            index = args.player_iu.index,
+            player = args.player
+        })
+    end
+    
+    Events:Fire("build/ObjectPlaced", {
+        player = player,
+        owner_id = self.owner_id,
+        object_name = object.name,
+        object = self.objects[object.id]:GetSyncObject()
     })
 
     Events:Fire("Discord", {
@@ -376,6 +399,48 @@ function sLandclaim:ActivateDoor(args, player)
     })
 end
 
+function sLandclaim:EditSign(args, player)
+    local object = self.objects[args.id]
+    if not object then return end
+
+    if object.name ~= "Sign" then return end
+    if not self:CanPlayerAccess(player, self.access_mode) then return end
+    
+    object.custom_data.color = args.color
+    object.custom_data.text = tostring(args.text):sub(1, 23)
+    
+    self:UpdateToDB()
+    self:SyncSmallUpdate({
+        type = "sign",
+        id = object.id,
+        color = object.custom_data.color,
+        text = object.custom_data.text
+    })
+end
+
+function sLandclaim:EditTeleporterLinkId(args, player)
+    local object = self.objects[args.id]
+    if not object then return end
+
+    if object.name ~= "Teleporter" then return end
+    if not self:IsPlayerOwner(player) then return end
+    
+    -- Do not allow self-setting
+    if args.tp_link_id == object.custom_data.tp_id then
+        args.tp_link_id = ""
+    end
+    
+    object.custom_data.tp_link_id = string.trim(tostring(args.tp_link_id or ""):sub(1, 5):upper())
+    
+    self:UpdateToDB()
+    self:SyncSmallUpdate({
+        type = "teleporter",
+        id = object.id,
+        tp_link_id = object.custom_data.tp_link_id
+    })
+    sLandclaimManager:AddOrUpdateTeleporter(object)
+end
+
 function sLandclaim:CanPlayerRemoveObject(object, player)
     local steam_id = tostring(player:GetSteamId())
     return steam_id == self.owner_id or object.owner_id == steam_id
@@ -402,6 +467,7 @@ function sLandclaim:RemoveObject(args, player)
     end
 
     self.objects[args.id] = nil
+    sLandclaimManager:RemoveTeleporter(object)
 
     self:UpdateToDB()
 
@@ -443,13 +509,18 @@ function sLandclaim:DamageObject(args, player)
     end
 
     damage = damage * mod
+    local is_splash = args.percent_damage ~= nil
+    
+    if args.percent_damage then
+        damage = damage * args.percent_damage
+    end
 
     object:Damage(damage)
 
     Events:Fire("Discord", {
         channel = "Build",
-        content = string.format("%s [%s] damaged object %s %d for %.0f damage using %s (Remaining HP: %.0f) (%s)", 
-            player:GetName(), tostring(player:GetSteamId()), object.name, object.id, damage, args.type, object.health, self:ToLogString())
+        content = string.format("%s [%s] damaged object %s %d for %.0f damage using %s (Remaining HP: %.0f) (Splash: %s) (%s)", 
+            player:GetName(), tostring(player:GetSteamId()), object.name, object.id, damage, args.type, object.health, tostring(is_splash), self:ToLogString())
     })
 
     if object.health <= 0 then
@@ -458,13 +529,14 @@ function sLandclaim:DamageObject(args, player)
         Events:Fire("build/ObjectDestroyed", {
             player = player,
             owner_id = self.owner_id,
-            object_name = object.name
+            object_name = object.name,
+            object = object:GetSyncObject()
         })
 
         Events:Fire("Discord", {
             channel = "Build",
-            content = string.format("%s [%s] destroyed object %s %d (%s)", 
-                player:GetName(), tostring(player:GetSteamId()), object.name, object.id, self:ToLogString())
+            content = string.format("%s [%s] destroyed object %s %d (Splash: %s) (%s)", 
+                player:GetName(), tostring(player:GetSteamId()), object.name, object.id, tostring(is_splash), self:ToLogString())
         })
     end
 
@@ -474,7 +546,43 @@ function sLandclaim:DamageObject(args, player)
         type = "object_damaged",
         id = id,
         health = object.health,
-        player = player
+        player = player,
+        primary = not is_splash
+    })    
+
+end
+
+function sLandclaim:TeleporterDamaged(object)
+    
+    Events:Fire("Discord", {
+        channel = "Build",
+        content = string.format("Object %s %d by teleporting (Remaining HP: %.0f) (%s)", 
+            object.name, object.id, object.health, self:ToLogString())
+    })
+
+    if object.health <= 0 then
+        self.objects[object.id] = nil
+        object:RemoveAllBedSpawns()
+        Events:Fire("build/ObjectDestroyed", {
+            player = player,
+            owner_id = self.owner_id,
+            object_name = object.name,
+            object = object:GetSyncObject()
+        })
+
+        Events:Fire("Discord", {
+            channel = "Build",
+            content = string.format("Object %s %d was destroyed (%s)", 
+                object.name, object.id, self:ToLogString())
+        })
+    end
+
+    self:UpdateToDB()
+
+    self:SyncSmallUpdate({
+        type = "object_damaged",
+        id = object.id,
+        health = object.health
     })    
 
 end
@@ -523,12 +631,12 @@ function sLandclaim:Expire()
     
     Events:Fire("Discord", {
         channel = "Build",
-        content = string.format("Landclaim expired (%s)", self:ToLogString())
+        content = string.format("Landclaim expired (%s) %s", self:ToLogString(), WorldToMapString(self.position))
     })
 
     Events:Fire("SendPlayerPersistentMessage", {
         steam_id = self.owner_id,
-        message = string.format("Your landclaim %s expired on %s.", self.name, formatted_date),
+        message = string.format("Your landclaim %s expired on %s %s", self.name, formatted_date, WorldToMapString(self.position)),
         color = Color(200, 0, 0)
     })
 end
