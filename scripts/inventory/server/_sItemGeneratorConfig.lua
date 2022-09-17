@@ -809,7 +809,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.08,
+            rarity = 0.1,
             items = 
             {
                 ["Rockets"] = {rarity = 1, min = 1, max = 3}
@@ -817,7 +817,7 @@ LootItems =
         },
         ["EXPLOSIVES"] = 
         {
-            rarity = 0.21,
+            rarity = 0.2,
             items = 
             {
                 ["Cruise Missile"] = {rarity = 1, min = 1, max = 3}
@@ -825,7 +825,7 @@ LootItems =
         },
         ["BATTERY"] = 
         {
-            rarity = 0.495,
+            rarity = 0.45,
             items = 
             {
                 ["Battery"] = {rarity = 1, min_dura = 1, max_dura = 2, min = 2, max = 3},
@@ -842,7 +842,7 @@ LootItems =
         },
         ["KEY"] = 
         {
-            rarity = 0.0150,
+            rarity = 0.05,
             items = 
             {
                 ["SAM Key"] = {rarity = 1, min = 1, max = 1},

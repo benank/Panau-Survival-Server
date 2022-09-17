@@ -3,6 +3,7 @@ class 'sItemGenerator'
 function sItemGenerator:__init()
 
     self.computed_rarity_sums = {}
+    self.computed_hotspot_rarity_sums = {}
 
     self:ComputeRaritySums()
 
@@ -23,39 +24,53 @@ function sItemGenerator:__init()
 
 end
 
--- Returns a table of contents yummy
-function sItemGenerator:GetLoot(tier)
+-- Returns a table of contents
+function sItemGenerator:GetLoot(tier, pos)
 
     local contents = {}
 
     local num_items = math.random(Lootbox.GeneratorConfig.box[tier].min_items, Lootbox.GeneratorConfig.box[tier].max_items)
     local groups = {}
+    local hotspot_name = sLootHotspots:GetHotspotForPosition(pos)
 
     for i = 1, num_items do
-        table.insert(contents, self:GetStack(tier, groups))
+        table.insert(contents, self:GetStack(tier, groups, hotspot_name))
     end
 
     return contents
 
 end
 
-function sItemGenerator:GetStack(tier, groups)
+function sItemGenerator:GetStack(tier, groups, hotspot_name)
 
     if not Lootbox.GeneratorConfig.spawnable[tier] then
         error(debug.traceback("sItemGenerator:GetItem failed: invalid tier specified"))
     end
 
-    local group = self:FindGroupName(tier)
+    local group = self:FindGroupName(tier, hotspot_name)
+    local loot_items = {}
+    if hotspot_name and HotspotLootItems[hotspot_name][tier] then
+        loot_items = HotspotLootItems[hotspot_name][tier]
+    else
+        loot_items = LootItems[tier]
+    end
 
-    while groups[group] and count_table(LootItems[tier]) > 1 do
-        group = self:FindGroupName(tier)
+    local retry_count = 0
+    while groups[group] and count_table(loot_items) > 1 and retry_count < 10 do
+        group = self:FindGroupName(tier, hotspot_name)
+        retry_count = retry_count + 1
     end
 
     groups[group] = true
 
-    local target = self.computed_rarity_sums[tier][group] * math.random()
+    local target = 0
+    if hotspot_name and self.computed_hotspot_rarity_sums[hotspot_name][tier] then
+        target = self.computed_hotspot_rarity_sums[hotspot_name][tier][group] * math.random()
+    else
+        target = self.computed_rarity_sums[tier][group] * math.random()
+    end
 
-    local item_name, item_data_loot = self:FindTargetItem(target, tier, group)
+    local item_name, item_data_loot = self:FindTargetItem(target, tier, group, hotspot_name)
 
     if item_name then
 
@@ -73,7 +88,7 @@ function sItemGenerator:GetStack(tier, groups)
         end
 
         local stack = shStack({contents = {item}})
-        local amount = self:GetItemAmount(LootItems[tier][group].items[item_name], tier)
+        local amount = self:GetItemAmount(loot_items[group].items[item_name], tier)
 
         -- Add items to stack like this so it handles all the dirty work for us
         for i = 1, amount - 1 do -- Amount - 1 because there is already one item in there
@@ -226,11 +241,18 @@ function sItemGenerator:GetItemAmount(item, tier)
     return math.random(item.min, item.max)
 end
 
-function sItemGenerator:FindTargetItem(target, tier, group)
+function sItemGenerator:FindTargetItem(target, tier, group, hotspot_name)
 
     local sum = 0
 
-    for item_name, item_data in pairs(LootItems[tier][group].items) do
+    local loot_items = {}
+    if hotspot_name and HotspotLootItems[hotspot_name][tier] then
+        loot_items = HotspotLootItems[hotspot_name][tier][group].items
+    else
+        loot_items = LootItems[tier][group].items
+    end
+    
+    for item_name, item_data in pairs(loot_items) do
 
         sum = sum + item_data.rarity
 
@@ -242,12 +264,19 @@ function sItemGenerator:FindTargetItem(target, tier, group)
 
 end
 
-function sItemGenerator:FindGroupName(tier)
+function sItemGenerator:FindGroupName(tier, hotspot_name)
     
     local random = math.random()
     local sum = 0
 
-    for group_name, group_data in pairs(LootItems[tier]) do
+    local loot_items = {}
+    if hotspot_name and HotspotLootItems[hotspot_name][tier] then
+        loot_items = HotspotLootItems[hotspot_name][tier]
+    else
+        loot_items = LootItems[tier]
+    end
+    
+    for group_name, group_data in pairs(loot_items) do
 
         sum = sum + group_data.rarity
 
@@ -257,30 +286,36 @@ function sItemGenerator:FindGroupName(tier)
 
     end
 
-    error(debug.traceback("No group name found in sItemGenerator:FindGroupName! Did you make the rarities absolute? Tier: " .. tier))
+    error(debug.traceback("No group name found in sItemGenerator:FindGroupName! Did you make the rarities absolute? Tier: " .. tier .. " hotspot: " .. tostring(hotspot_name)))
 
 end
 
 function sItemGenerator:ComputeRaritySums()
 
     for tier, tier_data in pairs(LootItems) do
-
         self.computed_rarity_sums[tier] = {}
-
         for group_name, group_data in pairs(tier_data) do
-
             self.computed_rarity_sums[tier][group_name] = 0
-
             for _, item_data in pairs(group_data.items) do
-
                 -- Sum up all the rarities per tier
                 self.computed_rarity_sums[tier][group_name] = self.computed_rarity_sums[tier][group_name] + item_data.rarity
-
             end
         end
-
     end
 
+    for hotspot_name, loot_items in pairs(HotspotLootItems) do
+        self.computed_hotspot_rarity_sums[hotspot_name] = {}
+        for tier, tier_data in pairs(loot_items) do
+            self.computed_hotspot_rarity_sums[hotspot_name][tier] = {}
+            for group_name, group_data in pairs(tier_data) do
+                self.computed_hotspot_rarity_sums[hotspot_name][tier][group_name] = 0
+                for _, item_data in pairs(group_data.items) do
+                    -- Sum up all the rarities per tier
+                    self.computed_hotspot_rarity_sums[hotspot_name][tier][group_name] = self.computed_hotspot_rarity_sums[hotspot_name][tier][group_name] + item_data.rarity
+                end
+            end
+        end
+    end
 end
 
 ItemGenerator = sItemGenerator()

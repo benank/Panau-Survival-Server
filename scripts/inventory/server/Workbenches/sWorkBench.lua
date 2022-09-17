@@ -79,6 +79,17 @@ function sWorkBench:CraftItems(player, recipe)
 
     self:SyncStatus()
 
+    if recipe.announce ~= nil then
+        Chat:Broadcast("[BROADCAST] ", Color.Red, 
+            string.format("%s started crafting a %s at the %s! Crafting will complete in %s minutes.",
+            player:GetName(), recipe.result_item.name, self.name, tostring(recipe.craft_time / 60)), Color.Yellow)
+        Events:Fire("Discord", {
+            channel = "Airdrops",
+            content = string.format(recipe.announce, 
+                player:GetName(), recipe.result_item.name, self.name, tostring(recipe.craft_time / 60))
+        })
+    end
+    
     Events:Fire("Discord", {
         channel = "Inventory",
         content = string.format("%s [%s] started a craft of %s using %s at the %s", 

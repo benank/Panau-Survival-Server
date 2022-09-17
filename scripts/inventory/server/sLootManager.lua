@@ -26,9 +26,6 @@ function sLootManager:__init()
     
     self.ground_id_pool = IdPool()
 
-    self:LoadFromFile()
-    self:GenerateAllLoot()
-
     Timer.SetInterval(1000 * 60 * 5, function()
         self:UpdateSpawnedLootCountsInSZ()
     end)
@@ -37,6 +34,7 @@ function sLootManager:__init()
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
+    Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
     Events:Subscribe("Inventory/CreateDropboxExternal", self, self.CreateDropboxExternal)
     Events:Subscribe("inventory/CreateLootboxExternal", self, self.CreateLootboxExternal)
     Events:Subscribe("airdrops/RemoveAirdrop", self, self.RemoveAirdrop)
@@ -46,6 +44,12 @@ function sLootManager:__init()
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
     Events:Subscribe("drones/DroneDestroyed", self, self.DroneDestroyed)
 
+end
+
+function sLootManager:ModuleLoad()
+    sLootHotspots:ModuleLoad()
+    self:LoadFromFile()
+    self:GenerateAllLoot()
 end
 
 function sLootManager:ModulesLoad()
@@ -272,7 +276,7 @@ function sLootManager:CreateLootboxExternal(args)
             args.contents[stack_index] = shStack(stack)
         end
     else
-        args.contents = ItemGenerator:GetLoot(args.tier)
+        args.contents = ItemGenerator:GetLoot(args.tier, args.position)
 
         -- If there are airdrop items, set them to this airdrop's tier
         if args.airdrop_tier then
@@ -491,7 +495,7 @@ function sLootManager:GenerateAllLoot()
                     tier = lootbox_data.tier,
                     active = active or in_sz,
                     in_sz = in_sz,
-                    contents = in_sz and {} or ItemGenerator:GetLoot(lootbox_data.tier)
+                    contents = in_sz and {} or ItemGenerator:GetLoot(lootbox_data.tier, lootbox_data.pos)
                 })
 
                 -- Separate active & inactive boxes
