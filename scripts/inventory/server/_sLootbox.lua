@@ -462,7 +462,7 @@ function sLootbox:RespawnBox()
 
     self:ForceClose()
 
-    self.contents = ItemGenerator:GetLoot(self.tier)
+    self.contents = ItemGenerator:GetLoot(self.tier, self.position)
     self.players_opened = {}
     self.has_been_opened = false
 
