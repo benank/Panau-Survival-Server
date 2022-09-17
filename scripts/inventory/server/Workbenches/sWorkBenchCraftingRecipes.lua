@@ -25,7 +25,7 @@ WorkbenchCraftingRecpies =
     {
         craft_time = 180,
         result_item = {
-            name = "Teleporter Repair Tool"
+            name = "Teleporter Upgrade"
         },
         recipe = {
             {
@@ -39,6 +39,23 @@ WorkbenchCraftingRecpies =
             },
             {
                 name = "Warp Core",
+                amount = 1
+            }
+        }
+    },
+    {
+        craft_time = 300,
+        result_item = {
+            name = "Teleporter",
+            add_dura = {from = "Teleporter", amount = 100}
+        },
+        recipe = {
+            {
+                name = "Teleporter",
+                amount = 1
+            },
+            {
+                name = "Teleporter Upgrade",
                 amount = 1
             }
         }

@@ -1062,10 +1062,9 @@ Items =
         durable = true
     },
     {
-        name = "Teleporter Repair Tool",
+        name = "Teleporter Upgrade",
         category = "Supplies",
-        stacklimit = 3,
-        can_use = true
+        stacklimit = 3
     },
     {
         name = "Warp Core",

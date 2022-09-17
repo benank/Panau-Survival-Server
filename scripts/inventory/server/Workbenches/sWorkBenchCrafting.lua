@@ -7,7 +7,7 @@ end
 function sWorkBenchCrafting:StackMeetsRequirements(stack, req)
     
     local meets_reqs = stack:GetProperty("name") == req.name and
-        stack:GetAmount() >= req.amount
+        stack:GetAmount() == req.amount
     
     if req.min_durability then
         for _, item in pairs(stack.contents) do
@@ -27,7 +27,7 @@ function sWorkBenchCrafting:GetCraftingRecipeFromContentsIfExists(contents)
         local contents_matched = {}
         local recipe_matched = {}
         local satisfied_reqs = 0
-        local needed_reqs = 3
+        local needed_reqs = count_table(crafting_recipe.recipe)
         
         for stack_index, stack in pairs(contents) do
             local found = false

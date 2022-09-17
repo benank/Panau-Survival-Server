@@ -71,23 +71,48 @@ end
 function sWorkBench:CraftItems(player, recipe)
 
     self.combine_time = recipe.craft_time
+    
+    local recipe_items = ""
+    for _, item_req in pairs(recipe.recipe) do
+        recipe_items = item_req.name .. ", " .. recipe_items
+    end
 
     self:SyncStatus()
 
     Events:Fire("Discord", {
         channel = "Inventory",
-        content = string.format("%s [%s] started a craft of %s at the %s", 
-            player:GetName(), tostring(player:GetSteamId()), recipe.result_item.name, self.name)
+        content = string.format("%s [%s] started a craft of %s using %s at the %s", 
+            player:GetName(), tostring(player:GetSteamId()), recipe.result_item.name, recipe_items, self.name)
     })
 
     Timer.SetTimeout(1000 * self.combine_time, function()
     
+        local durability = recipe.result_item.durability
+        
+        if recipe.result_item.add_dura then
+            local current_dura = 0
+            
+            for _, stack in pairs(self.lootbox.contents) do
+                if stack:GetProperty("name") ==  recipe.result_item.add_dura.from then
+                    current_dura = stack.contents[1].durability
+                    break
+                end
+            end
+            
+            durability = current_dura + recipe.result_item.add_dura.amount
+        end
+        
         local new_item = CreateItem({
             name = recipe.result_item.name,
             amount = 1,
-            durability = recipe.result_item.durability
+            durability = durability
         })
-
+        
+        -- Durability over 500%
+        if new_item.durability < durability then
+             new_item.durability = new_item.max_durability * WorkBenchConfig.maximum_durability
+        end
+        
         self.lootbox.contents = {[1] = shStack({contents = {new_item}})}
     
         self.state = WorkBenchState.Idle
