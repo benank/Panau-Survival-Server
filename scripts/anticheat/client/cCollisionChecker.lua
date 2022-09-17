@@ -24,6 +24,8 @@ end
 
 function cCollisionChecker:Render(args)
     if not IsValid(self.object) then return end
+    if LocalPlayer:GetValue("Loading") then return end
+    if LocalPlayer:GetHealth() <= 0 then return end
 
     local basepos = Camera:GetPosition() + Vector3(0, 300, 0)
 
@@ -31,7 +33,7 @@ function cCollisionChecker:Render(args)
 
     local ray = Physics:Raycast(basepos, Vector3.Down, 0, 5)
 
-    if ray.distance == 5 and self.timer:GetSeconds() > 1 and not LocalPlayer:GetValue("Loading") and LocalPlayer:GetHealth() > 0 then
+    if ray.distance == 5 and self.timer:GetSeconds() > 1 then
         self.timer:Restart()
         self.strikes:set(tonumber(self.strikes:get()) + 1)
 
