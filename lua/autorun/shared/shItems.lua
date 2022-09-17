@@ -1062,6 +1062,22 @@ Items =
         durable = true
     },
     {
+        name = "Teleporter Repair Tool",
+        category = "Supplies",
+        stacklimit = 3,
+        can_use = true
+    },
+    {
+        name = "Warp Core",
+        category = "Supplies",
+        stacklimit = 5
+    },
+    {
+        name = "Teleporter Hull",
+        category = "Survival",
+        stacklimit = 1
+    },
+    {
         name = "Metal Railing",
         category = "Survival",
         stacklimit = 5,
