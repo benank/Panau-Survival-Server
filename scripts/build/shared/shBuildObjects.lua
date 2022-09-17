@@ -24,6 +24,42 @@ BuildObjects =
         collision = "31x08.flz/gb030_lod1-d_col.pfx",
         unclaimed_decay = true
     },
+    ["Airdrop Crate"] = 
+    {
+        model = "f2t15.jump.eez/go005-a.lod", 
+        collision = "f2t15.jump.eez/go005_lod1-a_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Wooden Slab"] = 
+    {
+        model = "km03.gamblinghouse.nlz/key032_01-walkway.lod", 
+        collision = "km03.gamblinghouse.nlz/key032_01_lod1-walkway_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Wooden Deck"] = 
+    {
+        model = "areaset03.blz/gb185-i.lod", 
+        collision = "areaset03.blz/gb185_lod1-i_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Metal Crate"] = 
+    {
+        model = "f1t05bomb01.eez/go126-a.lod", 
+        collision = "f1t05bomb01.eez/go126_lod1-a_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Stadium Light"] = 
+    {
+        model = "general.blz/go063-i.lod", 
+        collision = "general.blz/go063_lod1-i_col.pfx",
+        unclaimed_decay = true
+    },
+    ["Garage Door"] = 
+    {
+        model = "km01.base.nlz/key036-f.lod", 
+        collision = "km01.base.nlz/key036_lod1-f_col.pfx",
+        unclaimed_decay = true
+    },
     ["Door"] = 
     {
         model = "f2m01.village.nlz/gb206-b.lod",
