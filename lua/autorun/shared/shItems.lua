@@ -1072,9 +1072,12 @@ Items =
         stacklimit = 5
     },
     {
-        name = "Teleporter Hull",
+        name = "Phone Booth",
         category = "Survival",
-        stacklimit = 1
+        stacklimit = 1,
+        max_durability = 100,
+        can_use = true,
+        durable = true
     },
     {
         name = "Metal Railing",

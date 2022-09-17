@@ -8,8 +8,9 @@ WorkbenchCraftingRecpies =
         },
         recipe = {
             {
-                name = "Teleporter Hull",
-                amount = 1 -- Relative durabilities
+                name = "Phone Booth",
+                amount = 1, -- Relative durabilities
+                min_durability = 5
             },
             {
                 name = "Lock-On Module",

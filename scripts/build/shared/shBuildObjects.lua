@@ -111,6 +111,12 @@ BuildObjects =
         collision = "59x36.nlz/go210_lod1-a_col.pfx",
         unclaimed_decay = true
     },
+    ["Phone Booth"] = 
+    {
+        model = "59x36.nlz/go210-a.lod", 
+        collision = "59x36.nlz/go210_lod1-a_col.pfx",
+        unclaimed_decay = true
+    },
     ["Metal Railing"] = 
     {
         model = "areaset08.blz/gb036_02-rail_4m.lod", 
