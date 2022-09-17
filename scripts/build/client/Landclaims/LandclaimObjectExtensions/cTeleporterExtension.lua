@@ -33,10 +33,11 @@ function cTeleporterExtension:Render(args)
     
     Render:ResetTransform()
     
-    if IsValid(self.light) then
-        color.a = 255
-        self.light:SetColor(color) 
-    end
+    -- Too laggy
+    -- if IsValid(self.light) then
+    --     color.a = 255
+    --     self.light:SetColor(color) 
+    -- end
 end
 
 function cTeleporterExtension:Create(streamed_in)
@@ -92,7 +93,7 @@ function cTeleporterExtension:Create(streamed_in)
 end
 
 function cTeleporterExtension:ShapeTriggerEnter(args)
-    if not self.trigger or args.trigger:GetId() ~= self.trigger:GetId() then return end
+    if not IsValid(self.trigger) or args.trigger:GetId() ~= self.trigger:GetId() then return end
     if LocalPlayer:GetValue("InTeleporter") or LocalPlayer:GetValue("Loading") then return end
     Network:Send("build/EnterTeleporter", {
         tp_id = self.object.custom_data.tp_id
@@ -100,7 +101,7 @@ function cTeleporterExtension:ShapeTriggerEnter(args)
 end
 
 function cTeleporterExtension:ShapeTriggerExit(args)
-    if not self.trigger or args.trigger:GetId() ~= self.trigger:GetId() then return end
+    if not IsValid(self.trigger) or args.trigger:GetId() ~= self.trigger:GetId() then return end
     -- Do nothing
     Network:Send("build/ExitTeleporter", {
         tp_id = self.object.custom_data.tp_id

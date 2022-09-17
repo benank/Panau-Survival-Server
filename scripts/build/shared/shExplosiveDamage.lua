@@ -10,4 +10,4 @@ ExplosiveRadius =
     ["Claymore"] = 2
 }
 
-TeleporterDamagePerUse = 4 -- 25 uses per 100% dura
+TeleporterDamagePerUse = 3 -- 33 uses per 100% dura
