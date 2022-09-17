@@ -8,7 +8,7 @@ WorkbenchCraftingRecpies =
         },
         announce = 
             "--------------------------------------------------------------\n\n" ..
-            "**Player %s started crafting a __%s__! at the %s**\n\n" ..
+            "**Player %s started crafting a __%s__ at the %s!**\n\n" ..
             "Crafting will complete in **%s** minutes.\n\n" ..
             "*Join the server to interrupt the process and steal it for your own.*\n\n" ..
             "--------------------------------------------------------------",
