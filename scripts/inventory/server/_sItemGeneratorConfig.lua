@@ -763,7 +763,8 @@ LootItems =
                 ["Locked Stash"] = {rarity = 0.15, min = 1, max = 2},
                 ["LandClaim"] = {rarity = 0.2, min = 1, max = 1},
                 ["Jump Pad"] = {rarity = 0.15, min_dura = 5, max_dura = 5, min = 1, max = 1},
-                ["Helipad"] = {rarity = 0.1, min_dura = 5, max_dura = 5, min = 3, max = 3},
+                ["Helipad"] = {rarity = 0.07, min_dura = 5, max_dura = 5, min = 3, max = 3},
+                ["Airdrop Crate"] = {rarity = 0.03, min_dura = 5, max_dura = 5, min = 1, max = 2},
             }
         },
         ["EXPLOSIVE"] = 
@@ -890,7 +891,8 @@ LootItems =
             rarity = 0.15,
             items = 
             {
-                ["Helipad"] = {rarity = 0.8, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["Helipad"] = {rarity = 0.7, min = 1, max = 1, min_dura = 5, max_dura = 5},
+                ["Airdrop Crate"] = {rarity = 0.1, min = 1, max = 1, min_dura = 5, max_dura = 5},
                 ["Jump Pad"] = {rarity = 0.2, min = 1, max = 2, min_dura = 5, max_dura = 5},
             }
         },
@@ -944,7 +946,8 @@ LootItems =
             rarity = 0.1,
             items = 
             {
-                ["Helipad"] = {rarity = 0.3, min = 3, max = 3, min_dura = 5, max_dura = 5},
+                ["Helipad"] = {rarity = 0.2, min = 3, max = 3, min_dura = 5, max_dura = 5},
+                ["Airdrop Crate"] = {rarity = 0.1, min = 3, max = 3, min_dura = 5, max_dura = 5},
                 ["Jump Pad"] = {rarity = 0.7, min = 5, max = 5, min_dura = 5, max_dura = 5},
             }
         },
