@@ -136,6 +136,7 @@ function sLandclaimManager:EnterTeleporter(args, player)
             player:SetModelId(20)
             player:SetNetworkValue("InTeleporter", true)
             player:SetValue("TPInvisible", player:GetValue("Invisible"))
+            player:SetStreamDistance(0)
             player:SetNetworkValue("Invisible", true)
             teleporter:Damage(TeleporterDamagePerUse)
             -- linked_teleporter:Damage(TeleporterDamagePerUse) -- Only damage the teleporter that they stepped in
@@ -162,6 +163,7 @@ end
 function sLandclaimManager:FinishTeleporting(args, player)
     player:SetNetworkValue("InTeleporter", false)
     player:SetNetworkValue("Invisible", player:GetValue("TPInvisible") == true)
+    player:SetStreamDistance(player:GetValue("Invisible") and 0 or 1024)
     if not player:GetValue("StealthEnabled") and player:GetValue("ModelId") then
         player:SetModelId(player:GetValue("ModelId"))
     end
