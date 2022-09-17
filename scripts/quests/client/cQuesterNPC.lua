@@ -56,6 +56,7 @@ function cQuesterNPC:Render(args)
 end
 
 function cQuesterNPC:EnterSafezone()
+    self.client_actor:SetPosition(QuesterConfig.position)
     if not self.render then
         self.render = Events:Subscribe("Render", self, self.Render)
     end 
