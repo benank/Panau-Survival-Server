@@ -4,6 +4,8 @@ class 'sLandclaimObject'
 function sLandclaimObject:__init(args)
 
     self.id = args.id -- Unique object id per claim, changes every reload
+    self.landclaim_id = args.landclaim_id
+    self.landclaim_owner_id = args.landclaim_owner_id
     self.owner_id = args.owner_id -- Steam id of player who placed it
     self.owner_name = args.owner_name
     self.name = args.name
@@ -20,6 +22,10 @@ end
 
 function sLandclaimObject:Damage(amount)
     self.health = math.max(0, self.health - math.abs(amount))
+    
+    if self.name == "Teleporter" and self.landclaim_owner_id ~= "SERVER" then
+        sLandclaimManager.landclaims[self.landclaim_owner_id][self.landclaim_id]:TeleporterDamaged(self)
+    end
 end
 
 -- Removes all existing spawns from this bed object if they exist
@@ -54,6 +60,9 @@ function sLandclaimObject:GetDefaultCustomData()
     elseif self.name == "Sign" then
         custom_data.color = Color(255, 0, 0)
         custom_data.text = "Sample Text\nSample Text"
+    elseif self.name == "Teleporter" then
+        custom_data.tp_id = GenerateNewTeleporterId()
+        custom_data.tp_link_id = ""
     end
 
     return custom_data

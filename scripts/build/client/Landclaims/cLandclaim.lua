@@ -261,11 +261,15 @@ function cLandclaim:DamageObject(args, player)
     end
 end
 
+function cLandclaim:IsPlayerOwner(player)
+    return self.owner_id == tostring(player:GetSteamId())
+end
+
 function cLandclaim:CanPlayerPlaceObject(player)
 
     if not self:IsActive() then return end
 
-    local is_owner = self.owner_id == tostring(player:GetSteamId())
+    local is_owner = self:IsPlayerOwner(player)
 
     if self.access_mode == LandclaimAccessModeEnum.OnlyMe then
         return is_owner

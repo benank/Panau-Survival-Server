@@ -100,6 +100,16 @@ function cLandclaimObjectMenu:TryToOpenMenu()
         options.edit_sign = true
     end
 
+    -- Teleporter IDs can be seen by anyone
+    if landclaim_object.name == "Teleporter" then
+        options.teleporter = true
+    end
+
+    -- Teleporrter Link IDs can only be seen and edited by the owner
+    if landclaim_object.name == "Teleporter" and landclaim_object.landclaim:IsPlayerOwner(LocalPlayer) then
+        options.teleporter_link = true
+    end
+
     if count_table(options) > 0 then
         self:CreateMenu(options)
     end
@@ -114,6 +124,9 @@ Recreates the menu with specified options
         access = true: adds the access mode options to the menu for doors (similar to stash access menu)
         spawn = true: add the "Set Spawn" option
         unset_spawn = true: adds the "Unset Spawn" option
+        edit_sign = true: adds the "Edit Sign" option
+        teleporter = true: adds the Teleporter's ID option
+        teleporter_link = true: adds the Teleporter's Link ID option
 
 ]] 
 
@@ -153,6 +166,15 @@ function cLandclaimObjectMenu:CreateMenu(options)
 
     if options.edit_sign then
         table.insert(self.button_names, "Edit Sign")
+    end
+
+    if options.teleporter then
+        table.insert(self.button_names, string.format("Teleporter ID: %s", self.object.custom_data.tp_id or '???'))
+    end
+
+    if options.teleporter_link and self.object.custom_data.tp_link_id then
+        table.insert(self.button_names, string.format("Teleporter Link ID: %s", 
+                self.object.custom_data.tp_link_id:len() > 0 and self.object.custom_data.tp_link_id or 'None'))
     end
 
     if options.remove then
@@ -244,14 +266,21 @@ function cLandclaimObjectMenu:PressButton(btn)
 
     if not self.object then return end
 
-    if btn:GetDataString("button_name"):find("Owner:") then return end
+    local button_name = btn:GetDataString("button_name")
+    if button_name:find("Owner:") then return end
+    if button_name:find("Teleporter ID:") then return end
     if self.button_cooldown:GetSeconds() < 1 then return end
     self.button_cooldown:Restart()
 
-    if btn:GetDataString("button_name") == "Edit Sign" then
+    if button_name == "Edit Sign" then
         local object = self.object
         self:CloseMenu()
         SignExtensionMenu:Show(object.custom_data.text, object.custom_data.color, object.id, object)
+        return
+    elseif button_name:find("Teleporter Link ID") then
+        local object = self.object
+        self:CloseMenu()
+        TeleporterExtensionMenu:Show(object.custom_data.tp_link_id, object)
         return
     end
     

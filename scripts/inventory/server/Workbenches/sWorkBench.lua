@@ -45,11 +45,13 @@ function sWorkBench:BeginCombining(player)
         return
     end
 
-    if not self:CanConbineItems() then
+    local can_combine = self:CanCombineItems()
+    local recipe = sWorkBenchCrafting:GetCraftingRecipeFromContentsIfExists(self.lootbox.contents)
+    if not can_combine and recipe == nil then
         Chat:Send(player, "These items cannot be combined.", Color.Red)
         return
     end
-
+    
     self.state = WorkBenchState.Combining
     self.stash.access_mode = StashAccessMode.OnlyMe
     self.lootbox:ForceClose()
@@ -58,6 +60,81 @@ function sWorkBench:BeginCombining(player)
 
     self.timer = Timer()
     
+    if can_combine then
+        self:CombineItems(player)
+    elseif recipe ~= nil then
+        self:CraftItems(player, recipe)
+    end
+    
+end
+
+function sWorkBench:CraftItems(player, recipe)
+
+    self.combine_time = recipe.craft_time
+    
+    local recipe_items = ""
+    for _, item_req in pairs(recipe.recipe) do
+        recipe_items = item_req.name .. ", " .. recipe_items
+    end
+
+    self:SyncStatus()
+
+    Events:Fire("Discord", {
+        channel = "Inventory",
+        content = string.format("%s [%s] started a craft of %s using %s at the %s", 
+            player:GetName(), tostring(player:GetSteamId()), recipe.result_item.name, recipe_items, self.name)
+    })
+
+    Timer.SetTimeout(1000 * self.combine_time, function()
+    
+        local durability = recipe.result_item.durability
+        
+        if recipe.result_item.add_dura then
+            local current_dura = 0
+            
+            for _, stack in pairs(self.lootbox.contents) do
+                if stack:GetProperty("name") ==  recipe.result_item.add_dura.from then
+                    current_dura = stack.contents[1].durability
+                    break
+                end
+            end
+            
+            durability = current_dura + recipe.result_item.add_dura.amount
+        end
+        
+        local new_item = CreateItem({
+            name = recipe.result_item.name,
+            amount = 1,
+            durability = durability
+        })
+        
+        -- Durability over 500%
+        if new_item.durability < durability then
+             new_item.durability = new_item.max_durability * WorkBenchConfig.maximum_durability
+        end
+        
+        self.lootbox.contents = {[1] = shStack({contents = {new_item}})}
+    
+        self.state = WorkBenchState.Idle
+        self.stash.access_mode = StashAccessMode.Everyone
+
+        self.stash:Sync()
+        self.lootbox:Sync()
+
+        self:SyncStatus()
+
+        Events:Fire("Discord", {
+            channel = "Inventory",
+            content = string.format("Finished a craft of %s at the %s", 
+                self.lootbox.contents[1]:GetProperty("name"), self.name)
+        })
+    
+    end)
+ 
+end
+
+function sWorkBench:CombineItems(player)
+   
     local combined_dura = self:GetCombinedDurability()
     local max_dura = self.lootbox.contents[1].contents[1].max_durability
     local name = self.lootbox.contents[1]:GetProperty("name")
@@ -100,7 +177,7 @@ function sWorkBench:BeginCombining(player)
         })
     
     end)
-
+ 
 end
 
 function sWorkBench:GetCombineTime(total_durability_percent, player)
@@ -145,7 +222,7 @@ function sWorkBench:GetCombinedDurability()
 end
 
 -- Returns whether or not the items in the workbench can be combined
-function sWorkBench:CanConbineItems()
+function sWorkBench:CanCombineItems()
 
     if count_table(self.lootbox.contents) < 1 then return false end
 

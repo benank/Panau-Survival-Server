@@ -88,6 +88,7 @@ Exp =
     {
         ["Wall"] = 15,
         ["Door"] = 25,
+        ["Teleporter"] = 500,
         ["Bed"] = 40
     },
     KillExpireTime = 60 * 60 * 10, -- Timer for killing the same person. If killed again before this timer expires, no exp is given
