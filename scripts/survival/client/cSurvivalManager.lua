@@ -49,7 +49,7 @@ end
 
 function cSurvivalManager:Render(args)
 
-    Game:FireEvent(event:get())
+    Game:FireEvent(event)
     Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     self.hud:Render(args)
 
