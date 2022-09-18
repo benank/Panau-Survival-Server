@@ -6,7 +6,7 @@ local signal_expire_time = 120 -- Lasts for 60 seconds
 
 local color = Color(255, 0, 0, 75)
 local alpha = 75
-
+MeasureMemory("hitdetection")
 function RenderSignals(args)
 
     local angle = Angle(Camera:GetAngle().yaw,0,0)

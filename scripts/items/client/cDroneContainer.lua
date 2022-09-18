@@ -11,7 +11,7 @@ function cDroneContainer:__init()
     Events:Fire("drones/RefreshDroneCSOs")
 
 end
-
+MeasureMemory("items")
 function cDroneContainer:CSOIdToDrone(cso_id)
     return self.cso_id_to_drone[cso_id]
 end

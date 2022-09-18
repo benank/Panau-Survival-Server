@@ -12,7 +12,7 @@ function cInventory:__init()
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
 
 end
-
+MeasureMemory("inventory")
 function cInventory:GetGroundData(args)
     local start_pos = LocalPlayer:GetBonePosition("ragdoll_Spine")
 

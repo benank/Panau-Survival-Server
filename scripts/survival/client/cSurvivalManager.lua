@@ -1,6 +1,6 @@
 class 'cSurvivalManager'
 
-local event = var("gsy.exit.settlement")
+local event = "gsy.exit.settlement"
 
 function cSurvivalManager:__init()
 

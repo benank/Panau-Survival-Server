@@ -54,10 +54,12 @@ function cRunSwimSpeed:PostTick(args)
 
     -- Use PostTick instead of LocalPlayerInput so people can auto swim/run with chat open
 
+    local perk_mods = self:GetPerkMods()
+    
+    if not (perk_mods[1] > 1 or perk_mods[2] > 1) then return end
+
     local base_state = LocalPlayer:GetBaseState()
     local speed = math.abs(-(-LocalPlayer:GetAngle() * LocalPlayer:GetLinearVelocity()).z)
-
-    local perk_mods = self:GetPerkMods()
 
     if self.swim_states[base_state] and perk_mods[1] > 1 and speed < self.base_swim_speed * perk_mods[1] and speed > 3 then
 
