@@ -1,7 +1,7 @@
 Angle.Delta = function(q1, q2)
 	return ((math.acos(math.min(math.abs(q1:Dot(q2)), 1)) * 2))
 end
-
+MeasureMemory("sams")
 Angle.NormalisedDir = function(a1, a2)
 	return (a1 - a2):Normalized()
 end

@@ -1,5 +1,5 @@
 class 'cAirstrikePlacer'
-
+MeasureMemory("build")
 function cAirstrikePlacer:__init()
 
     self.placing = false

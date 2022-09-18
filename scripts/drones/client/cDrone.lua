@@ -1,5 +1,5 @@
 class 'cDrone'
-
+MeasureMemory("drones")
 --[[
     Creates a new drone.
 

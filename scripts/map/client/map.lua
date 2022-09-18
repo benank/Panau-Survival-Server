@@ -1,5 +1,5 @@
 class "Location"
-
+MeasureMemory("map")
 Location.Type = {
     Comm        = "Comm",
     CivCity     = "CivCity",

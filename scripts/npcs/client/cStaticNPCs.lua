@@ -1,5 +1,5 @@
 class 'cStaticNPCs'
-
+MeasureMemory("npcs")
 function cStaticNPCs:__init()
     
     self.near_sz = false

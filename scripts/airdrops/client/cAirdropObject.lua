@@ -1,5 +1,5 @@
 class 'cAirdropObject'
-
+MeasureMemory("airdrops")
 -- Class for handling all the objects that comprise the actual airdrop container
 function cAirdropObject:__init(args)
 

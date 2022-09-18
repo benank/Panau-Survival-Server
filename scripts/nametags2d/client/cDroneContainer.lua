@@ -1,5 +1,5 @@
 class 'cDroneContainer'
-
+MeasureMemory("nametags2d")
 function cDroneContainer:__init()
 
     self.cso_id_to_drone_id = {}
