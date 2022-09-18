@@ -44,7 +44,7 @@ function cLandclaim:StartObjectStreamingThread()
                 if is_in_collision_range and not has_collision then
                     object:ToggleCollision(true)
                     collision_sleep_count = collision_sleep_count + 1
-                    if collision_sleep_count % 100 == 0 then
+                    if collision_sleep_count % 40 == 0 then
                         Timer.Sleep(1)
                     end
                 elseif not is_in_collision_range and has_collision then
@@ -53,7 +53,7 @@ function cLandclaim:StartObjectStreamingThread()
 
                 sleep_count = sleep_count + 1
                 -- Adjust this number to speed up checks at the cost of performance
-                if sleep_count % 300 == 0 then
+                if sleep_count % 250 == 0 then
                     Timer.Sleep(1)
                 end
             end
