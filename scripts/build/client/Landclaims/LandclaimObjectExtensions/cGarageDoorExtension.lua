@@ -50,6 +50,7 @@ function cGarageDoorExtension:Remove()
 end
 
 function cGarageDoorExtension:UpdateDoorAngle()
+    if not IsValid(self.object.object) then return end
     self.object.object:SetAngle(self.base_angle * self:GetAngle())
 end
 

@@ -336,6 +336,7 @@ function Nametags:DrawDrone(args)
 end
 
 function Nametags:DrawNPC(args)
+    if not IsValid(args.actor) then return end
     local npc_data = args.npc_data
     local pos       = args.actor:GetBonePosition( "ragdoll_Head" ) + 
                       (args.actor:GetAngle() * Vector3( 0, 0.25, 0 ))
