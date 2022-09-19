@@ -857,4 +857,4 @@ HotspotLootItems =
 }
 
 HotspotLootItems["PekanKesumaSouthBuildHotspot"] = HotspotLootItems["NorthEastBuildHotspot"]
-HotspotLootItems["PekanKesumaSouthBuildHotspot"] = HotspotLootItems["NorthEastBuildHotspot"]
+HotspotLootItems["Top3CitiesBuildHotspot"] = HotspotLootItems["NorthEastBuildHotspot"]
