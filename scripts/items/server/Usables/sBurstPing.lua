@@ -42,7 +42,7 @@ function sBurstPing:UseItem(args)
     
     local item_data = ItemsConfig.usables['Burst Ping']
     for player in Server:GetPlayers() do
-        if not player:GetValue("InSafezone") and player ~= args.player and not player:GetValue("Loading") then
+        if not player:GetValue("InSafezone") and player ~= args.player and IsPlayerActive(player) then
             local distance = player:GetPosition():Distance(attacker_pos)
             
             if distance < item_data.range then

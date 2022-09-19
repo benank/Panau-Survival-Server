@@ -825,6 +825,7 @@ function AssetManagerMenu:GetActive()
 end
 
 function AssetManagerMenu:SetActive(active)
+    if LocalPlayer:GetValue("InIntroScreen") then return end
     if self.active ~= active then
         self.active = active
         Mouse:SetVisible(self.active)

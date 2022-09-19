@@ -544,6 +544,8 @@ function WeaponHitDetection:GameRenderOpaque(args)
 end
 
 function WeaponHitDetection:Render(args)
+    
+    if not IsPlayerActive(LocalPlayer) then return end
 
     -- Draw bloom circle
     if self.bloom > 0 then

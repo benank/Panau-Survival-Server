@@ -36,6 +36,8 @@ end
 
 function cSafezone:RenderText(args)
 
+    if not IsPlayerActive(LocalPlayer) then return end
+    
     if LocalPlayer:GetValue("InSafezone") then
 
         self:RenderSafezoneText("In Safezone", "You cannot be killed here", config.safezone.color)

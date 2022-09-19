@@ -525,6 +525,7 @@ function Nametags:Render(args)
     if not self.enabled or Game:GetState() ~= GUIState.Game or LocalPlayer:GetValue("MapOpen") then
         return
     end
+    if LocalPlayer:GetValue("InIntroScreen") then return end
 
     Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     -- Create some prerequisite variables

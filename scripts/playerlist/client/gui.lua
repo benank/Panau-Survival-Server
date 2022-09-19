@@ -118,6 +118,7 @@ function ListGUI:GetActive()
 end
 
 function ListGUI:SetActive( state )
+	if LocalPlayer:GetValue("InIntroScreen") then return end
 	self.active = state
 	self.window:SetVisible( self.active )
 	Mouse:SetVisible( self.active )

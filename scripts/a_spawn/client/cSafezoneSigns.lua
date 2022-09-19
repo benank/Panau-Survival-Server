@@ -319,6 +319,8 @@ function cSafezoneSigns:SecondTick()
 end
 
 function cSafezoneSigns:GameRender(args)
+    
+    if LocalPlayer:GetValue("InIntroScreen") then return end
 
     if not self.models_created then return end
     Render:SetFont(AssetLocation.Disk, "Archivo.ttf")

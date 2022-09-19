@@ -94,7 +94,7 @@ end
 
 function cTeleporterExtension:ShapeTriggerEnter(args)
     if not IsValid(self.trigger) or args.trigger:GetId() ~= self.trigger:GetId() then return end
-    if LocalPlayer:GetValue("InTeleporter") or LocalPlayer:GetValue("Loading") then return end
+    if LocalPlayer:GetValue("InTeleporter") or not IsPlayerActive(LocalPlayer) then return end
     Network:Send("build/EnterTeleporter", {
         tp_id = self.object.custom_data.tp_id
     })

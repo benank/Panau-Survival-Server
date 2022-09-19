@@ -107,6 +107,7 @@ function cAirdropManager:AirdropHitGround()
 end
 
 function cAirdropManager:Render(args)
+    if LocalPlayer:GetValue("InIntroScreen") then return end
     if self.airdrop.active and self.airdrop.position then
         self:RenderAirdropInfo()
 

@@ -18,7 +18,7 @@ end
 
 function cLandclaimExtensionManager:TryToUseExtension()
 
-    if LocalPlayer:GetValue("Loading") then return end
+    if not IsPlayerActive(LocalPlayer) then return end
     if cObjectPlacer.placing then return end
     if LocalPlayer:GetValue("InventoryOpen") then return end
     if LocalPlayer:InVehicle() then return end

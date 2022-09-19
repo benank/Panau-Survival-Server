@@ -160,7 +160,7 @@ end
 function sSurvivalManager:DamageDyingPlayers()
 
     for id, player in pairs(self.players_dying) do
-        if not IsValid(player) then
+        if not IsValid(player) or not IsPlayerActive(player) then
             self.players_dying[id] = nil
         else
 
@@ -187,6 +187,8 @@ function sSurvivalManager:DamageDyingPlayers()
 end
 
 function sSurvivalManager:AdjustSurvivalStats(player)
+    
+    if not IsPlayerActive(player) then return end
 
     local survival = player:GetValue("Survival")
 

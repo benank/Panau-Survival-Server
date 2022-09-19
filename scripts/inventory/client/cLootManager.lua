@@ -89,6 +89,8 @@ function cLootManager:LocalPlayerChat(args)
 end
 
 function cLootManager:RenderLootRadar(args)
+    if LocalPlayer:GetValue("InIntroScreen") then return end
+    
     for x, data in pairs(self.loot) do
         for y, data in pairs(self.loot[x]) do
             for id, box in pairs(self.loot[x][y]) do
@@ -198,6 +200,7 @@ end
 
 function cLootManager:Render(args)
 
+    if LocalPlayer:GetValue("InIntroScreen") then return end
     if not ClientInventory or not ClientInventory.lootbox_ui then return end
     if LocalPlayer:InVehicle() then return end
 

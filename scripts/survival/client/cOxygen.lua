@@ -25,7 +25,7 @@ Events:Subscribe("Render", function(args)
 end)
 
 Events:Subscribe("SecondTick", function()
-    if LocalPlayer:GetValue("Loading") or LocalPlayer:GetHealth() <= 0 then return end
+    if not IsPlayerActive(LocalPlayer) or LocalPlayer:GetHealth() <= 0 then return end
     
     local above_water = LocalPlayer:GetBonePosition("ragdoll_Head").y > 199
     local current_oxygen = GetOxygen()

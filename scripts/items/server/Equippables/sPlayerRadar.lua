@@ -60,7 +60,7 @@ end)
 
 local function DecreaseDuraOfBattery(player)
 
-    if not IsValid(player) then return end
+    if not IsValid(player) or not IsPlayerActive(player) then return end
 
     local inv = Inventory.Get({player = player})
     if not inv then return end
@@ -103,7 +103,7 @@ local function GetNearbyPlayers(player)
         if p ~= player 
         and not AreFriends(player, tostring(p:GetSteamId())) 
         and p:GetHealth() > 0
-        and not p:GetValue("Loading")
+        and IsPlayerActive(p)
         and not p:GetValue("dead")
         and not p:GetValue("Invisible")
         and not p:GetValue("StealthEnabled")
@@ -120,7 +120,7 @@ local function UpdatePlayerRadars()
     local sleep_amount = 5000
 
     for steam_id, args in pairs(players_using_radar) do
-        if not IsValid(args.player) then
+        if not IsValid(args.player) or not IsPlayerActive(args.player) then
             players_using_radar[steam_id] = nil
         else
             

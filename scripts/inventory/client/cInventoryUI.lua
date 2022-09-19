@@ -896,6 +896,8 @@ function cInventoryUI:ToggleVisible()
 end
 
 function cInventoryUI:KeyUp(args)
+    
+    if LocalPlayer:GetValue("InIntroScreen") then return end
 
     if args.key == string.byte(self.open_key) then
         self:ToggleVisible()
@@ -904,7 +906,9 @@ function cInventoryUI:KeyUp(args)
 end
 
 function cInventoryUI:KeyDown(args)
-
+    
+    if LocalPlayer:GetValue("InIntroScreen") then return end
+    
     if args.key == string.byte(self.open_key) and not self.window:GetVisible() then
         self:ToggleVisible()
     end

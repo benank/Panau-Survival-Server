@@ -221,7 +221,7 @@ function cDrone:IsPlayerAValidTarget(player, distance)
     return IsValid(player) and
         not player:GetValue("Invisible") and 
         player:GetHealth() > 0 and
-        not player:GetValue("Loading") and
+        IsPlayerActive(player) and
         not player:GetValue("dead") and
         not player:GetValue("InSafezone") and
         Distance2D(self.position, player:GetPosition()) < (distance or 500)

@@ -24,6 +24,7 @@ function cLandclaimManager:__init()
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("GameRender", self, self.GameRender)
     Events:Subscribe("ModulesLoad", self, self.ModulesLoad)
+    Events:Subscribe("build/AreAnyLandclaimsLoadingQuery", self, self.AreAnyLandclaimsLoadingQuery)
 
     -- Wait until player position has been set to load landclaims
     if LocalPlayer:GetValue("Loading") then
@@ -38,6 +39,10 @@ function cLandclaimManager:__init()
         Network:Send("build/ReadyForInitialSync")
     end
 
+end
+
+function cLandclaimManager:AreAnyLandclaimsLoadingQuery()
+    Events:Fire("build/AreAnyLandclaimsLoading", {loading = self:AreAnyLandclaimsLoading()}) 
 end
 
 function cLandclaimManager:AreAnyLandclaimsLoading()

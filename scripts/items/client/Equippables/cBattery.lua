@@ -66,6 +66,7 @@ end
 
 function cBattery:Render(args)
 
+    if not IsPlayerActive(LocalPlayer) then return end
     if LocalPlayer:GetValue("InventoryOpen") and Render.Size.x < 1300 then return end
     Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
 

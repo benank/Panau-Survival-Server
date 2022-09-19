@@ -17,6 +17,7 @@ function PDA:IsUsingGamepad()
 end
 
 function PDA:Toggle()
+	if LocalPlayer:GetValue("InIntroScreen") then return end
 	self.active = not self.active
 	LocalPlayer:SetValue("MapOpen", self.active)
 end
@@ -63,6 +64,7 @@ function PDA:MouseUp(args)
 end
 
 function PDA:LocalPlayerInput(args)
+	if LocalPlayer:GetValue("InIntroScreen") then return end
 	if args.input == Action.GuiPDA then
 		if self.timer:GetSeconds() > PDA.ToggleDelay then
 			PDA:Toggle()

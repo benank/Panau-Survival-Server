@@ -1,6 +1,7 @@
 class 'stats'
 
 function stats:__init()
+    self.render = Events:Subscribe("PostRender", self, self.RenderText)
     Events:Subscribe("LocalPlayerChat", self, self.LocalPlayerChat)
 end
 

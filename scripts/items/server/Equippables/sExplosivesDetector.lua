@@ -33,7 +33,7 @@ ExplosivesDetectorPerks =
 Timer.SetInterval(5000, function()
 
     for p in Server:GetPlayers() do
-        if IsValid(p) then
+        if IsValid(p) and IsPlayerActive(p) then
             local item = GetEquippedItem("Explosives Detector", p)
             if item then
 

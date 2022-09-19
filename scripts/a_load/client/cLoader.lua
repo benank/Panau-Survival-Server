@@ -75,6 +75,7 @@ end
 
 -- Call this event to allow RegisterResource so you can have a load screen for different dimensions
 function cLoader:StartLoad()
+    self.resources = {}
     self.can_add_resources = true
 end
 

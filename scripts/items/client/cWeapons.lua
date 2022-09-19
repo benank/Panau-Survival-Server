@@ -94,7 +94,7 @@ end
 
 function WeaponManager:PostTick(args)
 
-    if LocalPlayer:GetValue("Loading") then return end
+    if not IsPlayerActive(args.player) then return end
 
     local weapon = LocalPlayer:GetEquippedWeapon()
     if not weapon then return end
@@ -213,7 +213,7 @@ end
 
 function WeaponManager:ForceInputWeaponSwitch(slot)
 
-    if LocalPlayer:GetValue("Loading") then return end
+    if not IsPlayerActive(LocalPlayer) then return end
 
     if self.weapon_switch_input_sub then return end
 

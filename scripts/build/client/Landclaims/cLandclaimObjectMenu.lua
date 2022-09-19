@@ -51,7 +51,7 @@ function cLandclaimObjectMenu:GetLandclaimObjectFromRaycastEntity(entity)
 end
 
 function cLandclaimObjectMenu:TryToOpenMenu()
-    if LocalPlayer:GetValue("Loading") then return end
+    if not IsPlayerActive(LocalPlayer) then return end
     if cLandclaimObjectPlacer.placing then return end
     if LocalPlayer:GetValue("InventoryOpen") then return end
     if LocalPlayer:InVehicle() then return end

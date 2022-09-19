@@ -123,7 +123,7 @@ function sSpawnManager:UpdatePlayer(player)
 
     if not IsValid(player) then return end
 	if player:GetValue("IsOkToSavePosition") ~= 0 then return end
-	if player:GetValue("Loading") and not player:GetValue("dead") then return end
+	if not IsPlayerActive(player) or player:GetValue("dead") then return end
 
 	local pos = player:GetPosition()
 	local steamid = tostring(player:GetSteamId().id)

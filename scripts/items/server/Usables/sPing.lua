@@ -67,7 +67,7 @@ Events:Subscribe("Inventory/UseItem", function(args)
 
             if p ~= args.player 
             and player_pos:Distance(pos) < range
-            and not p:GetValue("Loading")
+            and IsPlayerActive(p)
             and not p:GetValue("Invisible")
             and not p:GetValue("StealthEnabled")
             and math.random() > hidden_chance then

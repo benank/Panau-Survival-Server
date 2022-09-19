@@ -104,7 +104,7 @@ end
 
 function sHitDetection:ApplyDamage(args)
 
-    if args.player:GetValue("Loading") then return end
+    if not IsPlayerActive(args.player) then return end
     if args.player:GetValue("Invincible") then return end
     if args.player:GetValue("InSafezone") 
     and args.source ~= DamageEntity.Suicide 

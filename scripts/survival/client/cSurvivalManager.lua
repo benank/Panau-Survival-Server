@@ -51,6 +51,8 @@ function cSurvivalManager:Render(args)
 
     Game:FireEvent(event)
     Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
+    
+    if LocalPlayer:GetValue("InIntroScreen") then return end
     self.hud:Render(args)
 
 end

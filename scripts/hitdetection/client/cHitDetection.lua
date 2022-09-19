@@ -41,7 +41,7 @@ end
 function cHitDetection:CheckHealth()
     -- Called on PostTick to check for health changes and apply a red screen
 
-    if LocalPlayer:GetValue("Loading") then
+    if not IsPlayerActive(LocalPlayer) then
         self.old_health = LocalPlayer:GetHealth()
         return
     end

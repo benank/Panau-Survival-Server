@@ -117,7 +117,7 @@ function sLandclaimManager:ObjectPlaced(args)
 end
 
 function sLandclaimManager:EnterTeleporter(args, player)
-    if player:GetValue("InTeleporter") or player:GetValue("Loading") then return end
+    if player:GetValue("InTeleporter") or not IsPlayerActive(player) then return end
     
     local teleporter = self.teleporters[args.tp_id]
     if teleporter and player:GetPosition():Distance(teleporter.position) < 3 then
