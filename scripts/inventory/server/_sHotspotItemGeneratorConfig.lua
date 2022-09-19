@@ -23,13 +23,11 @@ HotspotLootItems =
                 rarity = 0.5,
                 items = 
                 {
-                    ["Wall"] = {rarity = 0.1, min = 1, max = 1, min_dura = 1, max_dura = 1},
-                    ["Barrel Stash"] = {rarity = 0.4, min = 1, max = 1},
-                    ["Garbage Stash"] = {rarity = 0.3, min = 1, max = 1},
-                    ["Light"] = {rarity = 0.05, min = 1, max = 1},
-                    ["Chair"] = {rarity = 0.05, min = 1, max = 1},
-                    ["Umbrella"] = {rarity = 0.05, min = 1, max = 1},
-                    ["Potted Plant"] = {rarity = 0.05, min = 1, max = 1},
+                    ["Wall"] = {rarity = 0.4, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                    ["Light"] = {rarity = 0.2, min = 1, max = 1},
+                    ["Chair"] = {rarity = 0.2, min = 1, max = 1},
+                    ["Umbrella"] = {rarity = 0.1, min = 1, max = 1},
+                    ["Potted Plant"] = {rarity = 0.1, min = 1, max = 1},
                 }
             },
             ["EXPLOSIVE"] = 
@@ -239,8 +237,8 @@ HotspotLootItems =
                 rarity = 0.20,
                 items = 
                 {
-                    ["Wall"] = {rarity = 0.67, min = 1, max = 3, min_dura = 1, max_dura = 1},
-                    ["Door"] = {rarity = 0.1, min = 1, max = 2, min_dura = 1, max_dura = 1},
+                    ["Wall"] = {rarity = 0.67, min = 1, max = 3, min_dura = 1, max_dura = 2},
+                    ["Door"] = {rarity = 0.1, min = 1, max = 2, min_dura = 1, max_dura = 2},
                     
                     ["Table"] = {rarity = 0.03, min = 1, max = 2},
                     ["Sign"] = {rarity = 0.03, min = 1, max = 3},
@@ -264,7 +262,7 @@ HotspotLootItems =
                     ["Wooden Slab"] = {rarity = 0.65, min = 1, max = 1},
                     ["Metal Stairs"] = {rarity = 0.05, min = 1, max = 1},
                     ["Wooden Deck"] = {rarity = 0.05, min = 1, max = 1},
-                    ["Metal Crate"] = {rarity = 0.05, min = 1, max = 1},
+                    ["Metal Crate"] = {rarity = 0.05, min = 1, max = 2},
                     ["Stadium Light"] = {rarity = 0.05, min = 1, max = 1},
                     ["Garage Door"] = {rarity = 0.05, min = 1, max = 1},
                 }
