@@ -53,6 +53,56 @@ Events:Subscribe("PlayerChat", function(args)
             Chat:Send(args.player, "Added " .. name .. " [x" .. tostring(amount) .. "]", Color.Green)
         end)
 
+    elseif args.text:sub(1, 7) == "/itemd " then
+
+            local text = string.gsub(args.text, "/itemd ", "")
+            if not GetLootAmount(text) then text = text .. " 1" end
+            
+            local name = GetLootName(text)
+            local amount = GetLootAmount(text)
+    
+            if amount > 500 then
+                Chat:Send(args.player, "Woah! Slow down there cowboy. You're trying to add TOO MUCH SAUCE.", Color.Red)
+                return
+            end
+    
+            local items = {}
+    
+            if not Items_indexed[name] then
+                Chat:Send(args.player, "Failed to add " .. name .. " [x" .. amount .. "]", Color.Red)
+                return
+            end
+    
+            Thread(function()
+                if not Items_indexed[name].durable and not Items_indexed[name].can_equip then
+                    
+                    Inventory.AddItem({
+                        player = args.player,
+                        item = CreateItem({
+                            name = name,
+                            amount = amount
+                        }):GetSyncObject()
+                    })
+    
+                else
+                    for i = 1, amount do
+    
+                        Inventory.AddItem({
+                            player = args.player,
+                            item = CreateItem({
+                                name = name,
+                                amount = 1,
+                                durability_percent = 5
+                            }):GetSyncObject()
+                        })
+    
+                        Timer.Sleep(20)
+    
+                    end
+                end
+                Chat:Send(args.player, "Added " .. name .. " [x" .. tostring(amount) .. "]", Color.Green)
+            end)
+    
     elseif args.text:sub(1, 6) == "/itemn" then
 
             local text = string.gsub(args.text, "/itemn ", "")
