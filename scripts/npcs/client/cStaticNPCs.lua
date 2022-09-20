@@ -70,7 +70,7 @@ function cStaticNPCs:CreateClientActor(npc_data)
     return ClientActor.Create(AssetLocation.Game, {
         model_id = tonumber(npc_data.model_id),
         position = npc_data.position,
-        angle = Angle(math.random() * math.pi * 2, 0, 0)
+        angle = Angle(0.460283, 0, 0)
     })
 end
 

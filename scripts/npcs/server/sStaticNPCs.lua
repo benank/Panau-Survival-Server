@@ -2,9 +2,14 @@ class 'sStaticNPCs'
 
 function sStaticNPCs:__init()
     
-    self.spawn_origin = Vector3(-10294, 206.164, -3019)
-    self.spawn_radius = 70
-    self.num_npcs = 5
+    self.spawn_positions = 
+    {
+        Vector3(-10280.558594, 211.391998, -2968.227783),
+        Vector3(-10282.451172, 211.391998, -2967.233154),
+        Vector3(-10284.397461, 211.391998, -2966.209229),
+        Vector3(-10286.445313, 211.391998, -2965.128906),
+        Vector3(-10288.744141, 211.391998, -2963.910645)
+    }
     
     -- Table of static NPCs queried from DB
     self.static_npcs = {}
@@ -27,14 +32,8 @@ function sStaticNPCs:ModuleLoad()
 end
 
 function sStaticNPCs:RefreshNPCs()
-    self.num_npcs = math.random(10, 15)
     self.static_npcs = self:GetRandomPlayersFromDB(self.num_npcs) or {}
     Network:Broadcast("NPC/static/sync", self.static_npcs)
-end
-
-function sStaticNPCs:GetRandomNPCPosition()
-    local direction = Vector3(math.random() - 0.5, 0, math.random() - 0.5)
-    return self.spawn_origin + direction * self.spawn_radius
 end
 
 function sStaticNPCs:GetRandomPlayersFromDB(num_players)
@@ -46,7 +45,7 @@ function sStaticNPCs:GetRandomPlayersFromDB(num_players)
         "ORDER BY random() LIMIT ?"
     
 	local query = SQL:Query(cmd)
-    query:Bind(1, num_players or 10)
+    query:Bind(1, num_players or 5)
     local result = query:Execute()
 
     local return_data = {}
@@ -57,29 +56,29 @@ function sStaticNPCs:GetRandomPlayersFromDB(num_players)
             name = "[NPC] " .. player_data.name,
             model_id = tonumber(player_data.model),
             level = tonumber(player_data.level),
-            position = self:GetRandomNPCPosition(),
+            position = self.spawn_positions[_],
             health = 1,
             max_health = 1
         }
     end
     
-    table.insert(return_data, {
-        name = "[NPC] Bolo",
-        model_id = 90,
-        level = 500,
-        position = self:GetRandomNPCPosition(),
-        health = 1,
-        max_health = 1
-    })
+    -- table.insert(return_data, {
+    --     name = "[NPC] Bolo",
+    --     model_id = 90,
+    --     level = 500,
+    --     position = self:GetRandomNPCPosition(),
+    --     health = 1,
+    --     max_health = 1
+    -- })
     
-    table.insert(return_data, {
-        name = "[NPC] Rico",
-        model_id = 51,
-        level = 500,
-        position = self:GetRandomNPCPosition(),
-        health = 1,
-        max_health = 1
-    })
+    -- table.insert(return_data, {
+    --     name = "[NPC] Rico",
+    --     model_id = 51,
+    --     level = 500,
+    --     position = self:GetRandomNPCPosition(),
+    --     health = 1,
+    --     max_health = 1
+    -- })
     
     return return_data
 end
