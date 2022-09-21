@@ -120,7 +120,7 @@ function sWorkBench:CraftItems(player, recipe)
         })
         
         -- Durability over 500%
-        if new_item.durability < durability then
+        if new_item.durability and new_item.durability < durability then
              new_item.durability = new_item.max_durability * WorkBenchConfig.maximum_durability
         end
         
