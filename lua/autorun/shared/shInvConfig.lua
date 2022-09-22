@@ -102,7 +102,7 @@ Inventory.config =
         {
             name = "Grapplehook",
             amount = 1,
-            durability = 0.10
+            durability = 0.15
         },
         {
             name = "Handgun",
