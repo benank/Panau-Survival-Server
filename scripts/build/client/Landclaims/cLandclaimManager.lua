@@ -112,13 +112,13 @@ function cLandclaimManager:SyncSmallLandclaimUpdate(args)
         landclaim:RemoveObject(args)
     elseif args.type == "light_state" then
         local object = landclaim.objects[args.id]
-        if not object then return end
+        if not object or not object.extension then return end
 
         object.custom_data.enabled = args.enabled
         object.extension:StateUpdated(args.enabled)
     elseif args.type == "door_state" then
         local object = landclaim.objects[args.id]
-        if not object then return end
+        if not object or not object.extension then return end
 
         object.custom_data.open = args.open
         object.extension:StateUpdated()
@@ -126,14 +126,14 @@ function cLandclaimManager:SyncSmallLandclaimUpdate(args)
         landclaim.access_mode = args.access_mode
     elseif args.type == "sign" then
         local object = landclaim.objects[args.id]
-        if not object then return end
+        if not object or not object.extension then return end
 
         object.custom_data.color = args.color
         object.custom_data.text = args.text
         object.extension:StateUpdated()
     elseif args.type == "teleporter" then
         local object = landclaim.objects[args.id]
-        if not object then return end
+        if not object or not object.extension then return end
 
         object.custom_data.tp_link_id = args.tp_link_id
         object.extension:StateUpdated()

@@ -36,12 +36,12 @@ DroneRegions =
 {
     [DroneRegionEnum.FinancialDistrict] = 
     {
-        radius = 1000,
+        radius = 600,
         center = Vector3(-10314, 203, -3000),
         level_range = {min = 1, max = 10},
         spawn = 
         {
-            max = 0, -- Max drones alive at one time
+            max = 20, -- Max drones alive at one time
             chance = 0.9, -- Chance of a drone spawning every interval
             height = 
             {

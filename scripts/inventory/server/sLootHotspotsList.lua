@@ -17,4 +17,8 @@ LootHotspots =
         position = Vector3(-14048, 340, -14143),
         radius = 250,
     },
+    ["Top3CitiesBuildHotspot"] = {
+        position = Vector3(-204, 200, -12635),
+        radius = 1000,
+    },
 }

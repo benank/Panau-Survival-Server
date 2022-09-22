@@ -1,6 +1,6 @@
 class 'cSurvivalManager'
 
-local event = var("gsy.exit.settlement")
+local event = "gsy.exit.settlement"
 
 function cSurvivalManager:__init()
 
@@ -49,7 +49,7 @@ end
 
 function cSurvivalManager:Render(args)
 
-    Game:FireEvent(event:get())
+    Game:FireEvent(event)
     Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     self.hud:Render(args)
 

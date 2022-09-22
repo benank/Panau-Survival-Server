@@ -54,6 +54,7 @@ function cRespawnAnimation:Render(args)
 
     local pos = Vector2(Render.Size.x / 2 - text_size.x / 2, Render.Size.y * 0.25 - text_size.y / 2)
 
+    Render:SetFont(AssetLocation.Disk, "Archivo.ttf")
     Render:DrawText(pos + Vector2(2,2), text, Color.Black, size)
     Render:DrawText(pos, text, Color.Red, size)
     

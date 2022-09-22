@@ -89,13 +89,14 @@ function cLootManager:LocalPlayerChat(args)
 end
 
 function cLootManager:RenderLootRadar(args)
+    local local_pos = LocalPlayer:GetPosition()
     for x, data in pairs(self.loot) do
         for y, data in pairs(self.loot[x]) do
             for id, box in pairs(self.loot[x][y]) do
                 if self.loot_radar_tiers[box.tier] then
                     local pos, on_screen = Render:WorldToScreen(box.position)
                     if on_screen then
-                        local distance = math.abs(LocalPlayer:GetPosition():Distance(box.position))
+                        local distance = math.abs(local_pos:Distance(box.position))
                         local alpha = math.max(0, 1 - distance / 50) * 255
                         if distance < 5 then alpha = 0 end
                         local lootbox_color = Color(Lootbox.LootRadarColor.r, Lootbox.LootRadarColor.g, Lootbox.LootRadarColor.b, alpha)
@@ -111,13 +112,14 @@ function cLootManager:RenderLootRadar(args)
 end
 
 function cLootManager:RenderNearbyUnownedVehicles()
+    local local_pos = LocalPlayer:GetPosition()
     for vehicle in Client:GetVehicles() do
         local vehicle_pos = vehicle:GetPosition()
         local vehicle_data = vehicle:GetValue("VehicleData")
         if not vehicle_data or not vehicle_data.owner_steamid then
             local pos, on_screen = Render:WorldToScreen(vehicle_pos)
             if on_screen then
-                local distance = math.abs(LocalPlayer:GetPosition():Distance(vehicle_pos))
+                local distance = math.abs(local_pos:Distance(vehicle_pos))
                 local alpha = math.max(0, 1 - distance / 150) * 255
                 if distance < 5 then alpha = 0 end
                 local lootbox_color = Color(219, 32, 135, alpha)
@@ -282,28 +284,23 @@ function cLootManager:RecreateContents(_contents)
 end
 
 function cLootManager:CheckIfCloseToBox()
-
-    if self:IsOneBoxCloseEnough() then
-
-        if not self.render_event then
-            self.render_event = Events:Subscribe("Render", self, self.Render)
+    
+    Thread(function()
+        while true do 
+            if self:IsOneBoxCloseEnough() then
+                if not self.render_event then
+                    self.render_event = Events:Subscribe("Render", self, self.Render)
+                end
+                self.close_to_box = true
+            else
+                if self.render_event then
+                    Events:Unsubscribe(self.render_event)
+                    self.render_event = nil
+                end
+                self.close_to_box = false
+            end
+            Timer.Sleep(1500)
         end
-
-        self.close_to_box = true
-
-    else
-
-        if self.render_event then
-            Events:Unsubscribe(self.render_event)
-            self.render_event = nil
-        end
-
-        self.close_to_box = false
-
-    end
-
-    Timer.SetTimeout(2500, function()
-        self:CheckIfCloseToBox()
     end)
 
 end
@@ -314,9 +311,8 @@ function cLootManager:IsOneBoxCloseEnough()
     local player_pos = LocalPlayer:GetPosition()
     local player_cell = GetCell(player_pos, Lootbox.Cell_Size)
 
-    -- TODO optimize this (but still needs to check for boxes in adjacent cells)
-
     local adjacent_cells = GetAdjacentCells(player_cell)
+    local distance_calls = 0
 
     for _, cell in pairs(adjacent_cells) do
 
@@ -327,6 +323,11 @@ function cLootManager:IsOneBoxCloseEnough()
 
                 return true
 
+            end
+            distance_calls = distance_calls + 1
+            
+            if distance_calls % 30 == 0 then
+                Timer.Sleep(1)
             end
 
         end

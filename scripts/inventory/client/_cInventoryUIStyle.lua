@@ -131,6 +131,7 @@ function cInventoryUIStyle:__init()
         ["Airdrop"] = self.item_colors.pink,
         ["Bed"] = self.item_colors.pink,
         ["Helipad"] = self.item_colors.pink,
+        ["Airdrop Crate"] = self.item_colors.pink,
         -- ["Lockpick"] = self.item_colors.pink,
         ["Barrel Stash"] = self.item_colors.fuschia,
         ["Garbage Stash"] = self.item_colors.fuschia,

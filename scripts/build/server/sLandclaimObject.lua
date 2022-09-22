@@ -50,10 +50,10 @@ function sLandclaimObject:GetDefaultCustomData()
     
     local custom_data = {}
 
-    if self.name == "Door" then
+    if self.name == "Door" or self.name == "Garage Door" then
         custom_data.access_mode = LandclaimAccessModeEnum.OnlyMe
         custom_data.open = false
-    elseif self.name == "Light" then
+    elseif self.name == "Light" or self.name == "Stadium Light" then
         custom_data.enabled = true -- If the light is turned on or not
     elseif self.name == "Bed" then
         custom_data.player_spawns = {} -- List of player spawns for this bed

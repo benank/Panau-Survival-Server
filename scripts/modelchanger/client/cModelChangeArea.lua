@@ -1,5 +1,5 @@
 class  'cModelChangeArea'
-
+MeasureMemory("modelchanger")
 function cModelChangeArea:__init(args)
 
     self.position = args.position

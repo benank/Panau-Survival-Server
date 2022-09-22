@@ -5,3 +5,4 @@ Thread(function()
     end
 end)
 
+MeasureMemory("anticheat")

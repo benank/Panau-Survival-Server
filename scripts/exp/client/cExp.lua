@@ -1,5 +1,5 @@
 class 'cExp'
-
+MeasureMemory("exp")
 function cExp:__init()
 
     Events:Subscribe("NetworkObjectValueChange", self, self.NetworkObjectValueChange)

@@ -1,28 +1,37 @@
 class 'cStaticNPCs'
-
+MeasureMemory("npcs")
 function cStaticNPCs:__init()
     
     self.near_sz = false
     self.static_npcs = {}
     self.static_npcs_shared_object = SharedObject.Create("StaticNPCs")
     
+    if LocalPlayer:GetValue("InSafezone") then
+        self:EnterSafezone()
+    end
+    
     Network:Subscribe("NPC/static/sync", self, self.SyncStaticNPCs)
     Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
-    Events:Subscribe("NearSafezone", self, self.NearSafezone)
+    Events:Subscribe("EnterSafezone", self, self.EnterSafezone)
+    Events:Subscribe("ExitSafezone", self, self.ExitSafezone)
+end
+
+function cStaticNPCs:EnterSafezone()
+    Thread(function()
+        Timer.Sleep(5000)
+        self.near_sz = true
+        self:CreateActors()
+        self:UpdateSharedNPCs()
+    end)
+end
+
+function cStaticNPCs:ExitSafezone()
+    self.near_sz = false
+    self:RemoveAllActors()
+    self:UpdateSharedNPCs()
 end
 
 function cStaticNPCs:NearSafezone(args)
-    
-    if self.near_sz ~= args.near_sz then
-        if args.near_sz == true then
-            -- Became close to SZ
-            self:CreateActors()
-        else
-            -- Became far from SZ
-            self:RemoveAllActors()
-        end
-    end
-    
     
     self:UpdateSharedNPCs()
     self.near_sz = args.near_sz
@@ -70,7 +79,7 @@ function cStaticNPCs:CreateClientActor(npc_data)
     return ClientActor.Create(AssetLocation.Game, {
         model_id = tonumber(npc_data.model_id),
         position = npc_data.position,
-        angle = Angle(math.random() * math.pi * 2, 0, 0)
+        angle = Angle(0.460283, 0, 0)
     })
 end
 

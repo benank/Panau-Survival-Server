@@ -21,6 +21,8 @@ function Nametags:__init()
     self.recent_drones      = {}
     
     self.static_npcs = {}
+    self.sorted_actor_delta = 0
+    self.sorted_actors = {}
 
     self:CreateSettings()
 
@@ -334,6 +336,7 @@ function Nametags:DrawDrone(args)
 end
 
 function Nametags:DrawNPC(args)
+    if not IsValid(args.actor) then return end
     local npc_data = args.npc_data
     local pos       = args.actor:GetBonePosition( "ragdoll_Head" ) + 
                       (args.actor:GetAngle() * Vector3( 0, 0.25, 0 ))
@@ -490,33 +493,35 @@ function Nametags:ModuleUnload()
     --     } )
 end
 
-function Nametags:DrawNPCs(local_pos)
-    local sorted_actors = {}
+function Nametags:UpdateSortedActorsList(local_pos)
+    self.sorted_actors = {}
 
     for _, npc_data in pairs(self.static_npcs or {}) do
         if npc_data.client_actor_id then
             local actor = ClientActor.GetById(npc_data.client_actor_id)
             if IsValid(actor) then
                 local pos = actor:GetPosition()
-                table.insert( sorted_actors, { actor = actor, npc_data = npc_data, dist = local_pos:Distance(pos) } )
+                table.insert( self.sorted_actors, { actor = actor, npc_data = npc_data, dist = local_pos:Distance(pos) } )
             end
         end
     end
 
     -- Sort by distance, descending
-    table.sort( sorted_actors, 
+    table.sort( self.sorted_actors, 
         function( a, b ) 
             return (a.dist > b.dist) 
         end )
+end
 
-    for _, actor_data in ipairs( sorted_actors ) do
-        if actor_data.dist < 100 then
+function Nametags:DrawNPCs()
+    for _, actor_data in ipairs( self.sorted_actors ) do
+        if actor_data.dist < 15 then
             self:DrawNPC( actor_data )
         end
     end 
 end
 
-function Nametags:Render()
+function Nametags:Render(args)
     -- If we're not supposed to draw now, then take us out
     if not self.enabled or Game:GetState() ~= GUIState.Game or LocalPlayer:GetValue("MapOpen") then
         return
@@ -564,6 +569,12 @@ function Nametags:Render()
                 self.highlighted_vehicle = vehicle
             end
         end
+    end
+    
+    self.sorted_actor_delta = self.sorted_actor_delta + args.delta
+    if self.sorted_actor_delta > 1 then
+        self.sorted_actor_delta = 0
+        self:UpdateSortedActorsList(local_pos)
     end
     
     self:DrawNPCs(local_pos)

@@ -164,7 +164,7 @@ function sLandclaim:PressBuildObjectMenuButton(args, player)
 
     local player_id = tostring(player:GetSteamId())
 
-    if args.name:find("Access") and object.name == "Door" and self.owner_id == player_id then
+    if args.name:find("Access") and (object.name == "Door" or object.name == "Garage Door") and self.owner_id == player_id then
         -- Changing door access mode
         if args.name == "Access: Only Me" then
             object.custom_data.access_mode = LandclaimAccessModeEnum.OnlyMe
@@ -371,7 +371,7 @@ function sLandclaim:ActivateLight(args, player)
     local object = self.objects[args.id]
     if not object then return end
 
-    if object.name ~= "Light" then return end
+    if object.name ~= "Light" and object.name ~= "Stadium Light" then return end
     object.custom_data.enabled = not object.custom_data.enabled
     
     self:UpdateToDB()
@@ -386,7 +386,7 @@ function sLandclaim:ActivateDoor(args, player)
     local object = self.objects[args.id]
     if not object then return end
 
-    if object.name ~= "Door" then return end
+    if object.name ~= "Door" and object.name ~= "Garage Door" then return end
     if not self:CanPlayerAccess(player, object.custom_data.access_mode) then return end
 
     object.custom_data.open = not object.custom_data.open

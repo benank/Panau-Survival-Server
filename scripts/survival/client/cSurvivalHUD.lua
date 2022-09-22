@@ -180,8 +180,6 @@ function cSurvivalHUD:Render(args)
         end
     end
 
-    collectgarbage()
-
 end
 
 function cSurvivalHUD:DrawBorder(pos1, pos2)

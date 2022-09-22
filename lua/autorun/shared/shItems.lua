@@ -704,6 +704,54 @@ Items =
         can_use = true
     },
     {
+        name = "Airdrop Crate",
+        category = "Survival",
+        stacklimit = 3,
+        max_durability = 1000,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Wooden Slab",
+        category = "Survival",
+        stacklimit = 15,
+        max_durability = 400,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Wooden Deck",
+        category = "Survival",
+        stacklimit = 10,
+        max_durability = 400,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Metal Crate",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 400,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Stadium Light",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Garage Door",
+        category = "Survival",
+        stacklimit = 5,
+        max_durability = 600,
+        can_use = true,
+        durable = true
+    },
+    {
         name = "Wall",
         category = "Survival",
         stacklimit = 15,

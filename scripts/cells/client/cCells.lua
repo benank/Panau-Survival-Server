@@ -1,5 +1,5 @@
 class 'cCells'
-
+MeasureMemory("cells")
 local CellSyncRequestEvent = var("Cells/NewCellSyncRequest")
 local LocalPlayerCellUpdateEvent = var("Cells/LocalPlayerCellUpdate")
 

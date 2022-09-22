@@ -1,5 +1,5 @@
 class 'cBeringBombsight'
-
+MeasureMemory("vehicles")
 function cBeringBombsight:__init()
     
     self.bering_id = 85

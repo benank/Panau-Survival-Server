@@ -88,6 +88,7 @@ Exp =
     {
         ["Wall"] = 15,
         ["Door"] = 25,
+        ["Garage Door"] = 25,
         ["Teleporter"] = 500,
         ["Bed"] = 40
     },

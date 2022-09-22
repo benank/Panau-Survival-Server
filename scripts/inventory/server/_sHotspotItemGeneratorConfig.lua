@@ -23,13 +23,11 @@ HotspotLootItems =
                 rarity = 0.5,
                 items = 
                 {
-                    ["Wall"] = {rarity = 0.1, min = 1, max = 1, min_dura = 1, max_dura = 1},
-                    ["Barrel Stash"] = {rarity = 0.4, min = 1, max = 1},
-                    ["Garbage Stash"] = {rarity = 0.3, min = 1, max = 1},
-                    ["Light"] = {rarity = 0.05, min = 1, max = 1},
-                    ["Chair"] = {rarity = 0.05, min = 1, max = 1},
-                    ["Umbrella"] = {rarity = 0.05, min = 1, max = 1},
-                    ["Potted Plant"] = {rarity = 0.05, min = 1, max = 1},
+                    ["Wall"] = {rarity = 0.4, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                    ["Light"] = {rarity = 0.2, min = 1, max = 1},
+                    ["Chair"] = {rarity = 0.2, min = 1, max = 1},
+                    ["Umbrella"] = {rarity = 0.1, min = 1, max = 1},
+                    ["Potted Plant"] = {rarity = 0.1, min = 1, max = 1},
                 }
             },
             ["EXPLOSIVE"] = 
@@ -236,26 +234,48 @@ HotspotLootItems =
             },
             ["BUILD"] = 
             {
-                rarity = 0.6,
+                rarity = 0.20,
                 items = 
                 {
-                    ["Wall"] = {rarity = 0.68, min = 1, max = 3, min_dura = 1, max_dura = 1},
-                    ["Door"] = {rarity = 0.06, min = 1, max = 2, min_dura = 1, max_dura = 1},
-                    ["Proximity Alarm"] = {rarity = 0.05, min = 1, max = 2},
-                    ["Table"] = {rarity = 0.02, min = 1, max = 2},
+                    ["Wall"] = {rarity = 0.67, min = 1, max = 3, min_dura = 1, max_dura = 2},
+                    ["Door"] = {rarity = 0.1, min = 1, max = 2, min_dura = 1, max_dura = 2},
+                    
+                    ["Table"] = {rarity = 0.03, min = 1, max = 2},
+                    ["Sign"] = {rarity = 0.03, min = 1, max = 3},
+                    ["Bed"] = {rarity = 0.03, min = 1, max = 1},
+                    
                     ["Glass"] = {rarity = 0.02, min = 1, max = 2},
-                    ["Hedgehog"] = {rarity = 0.015, min = 1, max = 3},
-                    ["Sign"] = {rarity = 0.015, min = 1, max = 3},
-                    ["Chair"] = {rarity = 0.015, min = 1, max = 3},
-                    ["Bed"] = {rarity = 0.015, min = 1, max = 1},
-                    ["Helipad"] = {rarity = 0.01, min = 1, max = 2},
-                    ["LandClaim"] = {rarity = 0.010, min = 1, max = 1},
-                    ["Locked Stash"] = {rarity = 0.015, min = 1, max = 1},
-                    ["Cone"] = {rarity = 0.015, min = 1, max = 3},
+                    ["Hedgehog"] = {rarity = 0.02, min = 1, max = 3},
+                    ["Chair"] = {rarity = 0.02, min = 1, max = 3},
+                    ["Cone"] = {rarity = 0.02, min = 1, max = 3},
                     ["Stop Sign"] = {rarity = 0.02, min = 1, max = 3},
-                    ["Light"] = {rarity = 0.015, min = 1, max = 2},
-                    ["Metal Stairs"] = {rarity = 0.015, min = 1, max = 1},
-                    ["Phone Booth"] = {rarity = 0.01, min = 1, max = 1},
+                    ["Light"] = {rarity = 0.02, min = 1, max = 2},
+                    ["Metal Stairs"] = {rarity = 0.02, min = 1, max = 1},
+                }
+            },
+            ["BUILD_SPECIAL"] = 
+            {
+                rarity = 0.25,
+                items = 
+                {
+                    ["Airdrop Crate"] = {rarity = 0.1, min = 1, max = 1},
+                    ["Wooden Slab"] = {rarity = 0.65, min = 1, max = 1},
+                    ["Metal Stairs"] = {rarity = 0.05, min = 1, max = 1},
+                    ["Wooden Deck"] = {rarity = 0.05, min = 1, max = 1},
+                    ["Metal Crate"] = {rarity = 0.05, min = 1, max = 2},
+                    ["Stadium Light"] = {rarity = 0.05, min = 1, max = 1},
+                    ["Garage Door"] = {rarity = 0.05, min = 1, max = 1},
+                }
+            },
+            ["BUILD_RARE"] = 
+            {
+                rarity = 0.15,
+                items = 
+                {
+                    ["Helipad"] = {rarity = 0.5, min = 1, max = 2},
+                    ["LandClaim"] = {rarity = 0.1, min = 1, max = 1},
+                    ["Locked Stash"] = {rarity = 0.2, min = 1, max = 1},
+                    ["Phone Booth"] = {rarity = 0.2, min = 1, max = 1},
                 }
             },
             ["EXPLOSIVE"] = 
@@ -788,7 +808,8 @@ HotspotLootItems =
                     ["Locked Stash"] = {rarity = 0.15, min = 1, max = 2},
                     ["LandClaim"] = {rarity = 0.2, min = 1, max = 1},
                     ["Jump Pad"] = {rarity = 0.15, min_dura = 5, max_dura = 5, min = 1, max = 1},
-                    ["Helipad"] = {rarity = 0.1, min_dura = 5, max_dura = 5, min = 3, max = 3},
+                    ["Helipad"] = {rarity = 0.05, min_dura = 5, max_dura = 5, min = 3, max = 3},
+                    ["Airdrop Crate"] = {rarity = 0.05, min_dura = 5, max_dura = 5, min = 2, max = 3},
                 }
             },
             ["EXPLOSIVE"] = 
@@ -834,4 +855,4 @@ HotspotLootItems =
 }
 
 HotspotLootItems["PekanKesumaSouthBuildHotspot"] = HotspotLootItems["NorthEastBuildHotspot"]
-HotspotLootItems["PekanKesumaSouthBuildHotspot"] = HotspotLootItems["NorthEastBuildHotspot"]
+HotspotLootItems["Top3CitiesBuildHotspot"] = HotspotLootItems["NorthEastBuildHotspot"]

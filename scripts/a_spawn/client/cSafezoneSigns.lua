@@ -118,7 +118,7 @@ function cSafezoneSigns:__init()
         ["HelpText"] = {
             text = "Press F5 for help",
             value = 0,
-            position = Vector3(-10276.071, 205.5, -3000),
+            position = Vector3(-10311, 205, -2998),
             angle = Angle(0.523597 + math.pi, math.pi, 0),
             color = Color.Yellow,
             fontsize = 70,
@@ -150,15 +150,15 @@ function cSafezoneSigns:LoadImages()
             angle = Angle(0.523599 + math.pi, 0, 0)
         }
 
-        Timer.Sleep(1000)
-        self.signs["ServerBasics"] = 
-        {
-            image = Image.Create(AssetLocation.Resource, "Safezone_ServerBasics"),
-            size = Vector2(1200, 500),
-            scale = 9,
-            position = Vector3(-10284.602539, 207.755768, -2967.457031),
-            angle = Angle(0.523599 + math.pi, 0, 0)
-        }
+        -- Timer.Sleep(1000)
+        -- self.signs["ServerBasics"] = 
+        -- {
+        --     image = Image.Create(AssetLocation.Resource, "Safezone_ServerBasics"),
+        --     size = Vector2(1200, 500),
+        --     scale = 9,
+        --     position = Vector3(-10284.602539, 207.755768, -2967.457031),
+        --     angle = Angle(0.523599 + math.pi, 0, 0)
+        -- }
 
         Timer.Sleep(1000)
         self.signs["Keybinds"] = 
@@ -170,27 +170,27 @@ function cSafezoneSigns:LoadImages()
             angle = Angle(0.523599 + math.pi, 0, 0)
         }
 
-        Timer.Sleep(1000)
-        self.signs["Rules"] = 
-        {
-            image = Image.Create(AssetLocation.Resource, "Safezone_Rules"),
-            size = Vector2(1200, 500),
-            scale = 9,
-            position = Vector3(-10259.183594, 209.923981, -3052.387451),
-            angle = Angle(2.277459 + math.pi, 0, 0)
-        }
+        -- Timer.Sleep(1000)
+        -- self.signs["Rules"] = 
+        -- {
+        --     image = Image.Create(AssetLocation.Resource, "Safezone_Rules"),
+        --     size = Vector2(1200, 500),
+        --     scale = 9,
+        --     position = Vector3(-10259.183594, 209.923981, -3052.387451),
+        --     angle = Angle(2.277459 + math.pi, 0, 0)
+        -- }
 
-        Timer.Sleep(1000)
-        self.signs["Team"] = 
-        {
-            image = Image.Create(AssetLocation.Resource, "Safezone_Team"),
-            size = Vector2(1200, 500),
-            scale = 7,
-            position = Vector3(-10303.698242, 207.763489, -2956.489014),
-            angle = Angle(0.523599 + math.pi, 0, 0)
-        }
+        -- Timer.Sleep(1000)
+        -- self.signs["Team"] = 
+        -- {
+        --     image = Image.Create(AssetLocation.Resource, "Safezone_Team"),
+        --     size = Vector2(1200, 500),
+        --     scale = 7,
+        --     position = Vector3(-10303.698242, 207.763489, -2956.489014),
+        --     angle = Angle(0.523599 + math.pi, 0, 0)
+        -- }
 
-        Timer.Sleep(1000)
+        -- Timer.Sleep(1000)
         self.signs["Welcome"] = 
         {
             image = Image.Create(AssetLocation.Resource, "Safezone_Welcome"),
@@ -200,7 +200,7 @@ function cSafezoneSigns:LoadImages()
             angle = Angle(0.523599 + math.pi, 0, 0)
         }
 
-        Timer.Sleep(1000)
+        -- Timer.Sleep(1000)
         -- self.signs["GetConnected"] = 
         -- {
         --     image = Image.Create(AssetLocation.Resource, "Safezone_GetConnected"),

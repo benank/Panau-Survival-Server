@@ -32,7 +32,7 @@ end
 function cLandclaim:StartObjectStreamingThread()
     Thread(function()
         while self.loaded do
-
+                
             local player_pos = Camera:GetPosition()
             local sleep_count = 0
             local collision_sleep_count = 0
@@ -44,7 +44,7 @@ function cLandclaim:StartObjectStreamingThread()
                 if is_in_collision_range and not has_collision then
                     object:ToggleCollision(true)
                     collision_sleep_count = collision_sleep_count + 1
-                    if collision_sleep_count % 20 == 0 then
+                    if collision_sleep_count % 40 == 0 then
                         Timer.Sleep(1)
                     end
                 elseif not is_in_collision_range and has_collision then
@@ -53,7 +53,7 @@ function cLandclaim:StartObjectStreamingThread()
 
                 sleep_count = sleep_count + 1
                 -- Adjust this number to speed up checks at the cost of performance
-                if sleep_count % 200 == 0 then
+                if sleep_count % 250 == 0 then
                     Timer.Sleep(1)
                 end
             end
@@ -104,8 +104,9 @@ end
 
 function cLandclaim:Unload()
 
-    if self.loaded or self.loading then return end
+    if self.loading then return end
 
+    self.loaded = false
     self.loading = true
 
     local sleep_count = 0
@@ -117,9 +118,10 @@ function cLandclaim:Unload()
             Timer.Sleep(1)
         end
     end
-
+    
+    collectgarbage("collect")
+    
     self.loading = false
-    self.loaded = false
 
 end
 
@@ -133,6 +135,7 @@ function cLandclaim:Remove()
     for id, object in pairs(self.objects) do
         object:Remove()
     end
+    self.objects = {}
 end
 
 -- Loads in the objects in the landclaim. Assumes player is close enough.
@@ -147,7 +150,7 @@ function cLandclaim:Load()
         object:Create(true)
 
         sleep_count = sleep_count + 1
-        if sleep_count % 100 == 0 then
+        if sleep_count % 200 == 0 then
             Timer.Sleep(1)
         end
     end

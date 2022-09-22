@@ -170,7 +170,7 @@ function sSpawnManager:ClientModuleLoad(args)
 
 	else -- if first join
 		
-		local spawn_pos = self:GetRespawnPosition(args.player)
+		local spawn_pos = Vector3(-10321.879883, 203.063507, -3046.096924)
 
 		args.player:SetValue("IsOkToSavePosition", 1)
 		args.player:SetValue("RespawnPosition", spawn_pos)
@@ -203,16 +203,16 @@ function sSpawnManager:ClientModuleLoad(args)
 			args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, s_pos.x, s_pos.y, s_pos.z)
 	})
 
-	Timer.SetTimeout(15 * 1000, function()
-		if not IsValid(args.player) then return end
-		pos = args.player:GetPosition()
+	-- Timer.SetTimeout(15 * 1000, function()
+	-- 	if not IsValid(args.player) then return end
+	-- 	pos = args.player:GetPosition()
 
-		Events:Fire("Discord", {
-			channel = "Positions",
-			content = string.format("%s [%s] position 15s after joining X: %.4f Y: %.4f Z: %.4f\nSpawn pos: X: %.4f Y: %.4f Z: %.4f",
-				args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, s_pos.x, s_pos.y, s_pos.z)
-		})
-	end)
+	-- 	Events:Fire("Discord", {
+	-- 		channel = "Positions",
+	-- 		content = string.format("%s [%s] position 15s after joining X: %.4f Y: %.4f Z: %.4f\nSpawn pos: X: %.4f Y: %.4f Z: %.4f",
+	-- 			args.player:GetName(), tostring(args.player:GetSteamId()), pos.x, pos.y, pos.z, s_pos.x, s_pos.y, s_pos.z)
+	-- 	})
+	-- end)
 
 end
 
@@ -223,7 +223,7 @@ end
 
 function sSpawnManager:GetPositionInSafezone()
 
-	return config.safezone.position + 
+	return Vector3(-10300, 204, -3004) + 
 		Vector3(
 			randy(-15, 15, os.time() + math.random()), 
 			0, 
