@@ -128,9 +128,9 @@ HotspotLootItems =
                 rarity = 0.55,
                 items = 
                 {
-                    ["Wall"] = {rarity = 0.38, min = 1, max = 1, min_dura = 1, max_dura = 1},
-                    ["Door"] = {rarity = 0.15, min = 1, max = 1, min_dura = 1, max_dura = 1},
-                    ["Barrel Stash"] = {rarity = 0.15, min = 1, max = 1},
+                    ["Wall"] = {rarity = 0.44, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                    ["Door"] = {rarity = 0.12, min = 1, max = 1, min_dura = 1, max_dura = 1},
+                    ["Barrel Stash"] = {rarity = 0.12, min = 1, max = 1},
                     ["Light"] = {rarity = 0.05, min = 1, max = 1},
                     ["Chair"] = {rarity = 0.05, min = 1, max = 1},
                     ["Umbrella"] = {rarity = 0.05, min = 1, max = 1},
@@ -212,7 +212,7 @@ HotspotLootItems =
             },
             ["AMMO"] = 
             {
-                rarity = 0.2,
+                rarity = 0.25,
                 items = 
                 {
                     ["Shotgun Ammo"] = {rarity = 0.213, min = 5, max = 10},
@@ -234,7 +234,7 @@ HotspotLootItems =
             },
             ["BUILD"] = 
             {
-                rarity = 0.20,
+                rarity = 0.30,
                 items = 
                 {
                     ["Wall"] = {rarity = 0.67, min = 1, max = 3, min_dura = 1, max_dura = 2},
@@ -255,7 +255,7 @@ HotspotLootItems =
             },
             ["BUILD_SPECIAL"] = 
             {
-                rarity = 0.25,
+                rarity = 0.20,
                 items = 
                 {
                     ["Airdrop Crate"] = {rarity = 0.1, min = 1, max = 1},
@@ -269,13 +269,13 @@ HotspotLootItems =
             },
             ["BUILD_RARE"] = 
             {
-                rarity = 0.15,
+                rarity = 0.05,
                 items = 
                 {
-                    ["Helipad"] = {rarity = 0.5, min = 1, max = 2},
+                    ["Helipad"] = {rarity = 0.6, min = 1, max = 2},
                     ["LandClaim"] = {rarity = 0.1, min = 1, max = 1},
                     ["Locked Stash"] = {rarity = 0.2, min = 1, max = 1},
-                    ["Phone Booth"] = {rarity = 0.2, min = 1, max = 1},
+                    ["Phone Booth"] = {rarity = 0.1, min = 1, max = 1},
                 }
             },
             ["EXPLOSIVE"] = 
