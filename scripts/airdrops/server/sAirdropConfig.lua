@@ -1,6 +1,6 @@
 AirdropConfig = 
 {
-    RemoveTime = 1000 * 60 * 30, -- After the first box has been opened, it will be removed in 30 minutes
+    RemoveTime = 1000 * 60 * 60, -- After the first box has been opened, it will be removed in 60 minutes
     Messages = 
     {
         Incoming = 
