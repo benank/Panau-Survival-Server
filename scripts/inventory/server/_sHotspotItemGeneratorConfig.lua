@@ -272,10 +272,10 @@ HotspotLootItems =
                 rarity = 0.05,
                 items = 
                 {
-                    ["Helipad"] = {rarity = 0.6, min = 1, max = 2},
+                    ["Helipad"] = {rarity = 0.55, min = 1, max = 2},
                     ["LandClaim"] = {rarity = 0.1, min = 1, max = 1},
                     ["Locked Stash"] = {rarity = 0.2, min = 1, max = 1},
-                    ["Phone Booth"] = {rarity = 0.1, min = 1, max = 1},
+                    ["Phone Booth"] = {rarity = 0.15, min = 1, max = 1},
                 }
             },
             ["EXPLOSIVE"] = 
