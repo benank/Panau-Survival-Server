@@ -158,7 +158,7 @@ function sSpawnManager:ClientModuleLoad(args)
 
 		local home = Vector3(tonumber(postable[1].homeX),tonumber(postable[1].homeY),tonumber(postable[1].homeZ))
 
-		if home.x ~= 0 and home.y ~= 0 and home.z ~= 0 then
+		if not self:IsPositionDefaultSpawn(home) then
 			args.player:SetNetworkValue("HomePosition", home)
 		end
 			
@@ -216,9 +216,18 @@ function sSpawnManager:ClientModuleLoad(args)
 
 end
 
+function sSpawnManager:IsPositionDefaultSpawn(pos)
+	return not pos or pos:Length() < 1
+end
+
 -- Gets the position where a player should respawn when they die. Returns safezone if they do not have a bed set.
 function sSpawnManager:GetRespawnPosition(player)
-	return player:GetValue("HomePosition") and player:GetValue("HomePosition") or self:GetPositionInSafezone()
+	local home_pos = player:GetValue("HomePosition")
+	if self:IsPositionDefaultSpawn(home_pos) then
+		return self:GetPositionInSafezone()
+	else
+		return home_pos
+	end
 end
 
 function sSpawnManager:GetPositionInSafezone()

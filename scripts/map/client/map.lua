@@ -801,13 +801,15 @@ function Map:Draw()
 
     for k, location in pairs(Map.Locations) do
         if location.position then
-            local position = Map:WorldToScreen(location.position)
-
+            local should_render = true
             if k == "Home" then
                 location.position = LocalPlayer:GetValue("HomePosition")
+                should_render = location.position:Length() > 1
             end
+            
+            local position = Map:WorldToScreen(location.position)
 
-            if position.x > 0 and position.y > 0 and position.x < Render.Width and position.y < Render.Height then
+            if should_render and position.x > 0 and position.y > 0 and position.x < Render.Width and position.y < Render.Height then
                 if location:IsActive(position, scale * (PDA:IsUsingGamepad() and 2 or 1)) then
                     Map.ActiveLocation = location
                 end
