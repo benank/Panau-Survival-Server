@@ -802,7 +802,7 @@ Items =
     {
         name = "Bed",
         category = "Survival",
-        stacklimit = 1,
+        stacklimit = 3,
         max_durability = 100,
         can_use = true,
         durable = true
