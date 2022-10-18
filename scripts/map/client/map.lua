@@ -803,8 +803,13 @@ function Map:Draw()
         if location.position then
             local should_render = true
             if k == "Home" then
-                location.position = LocalPlayer:GetValue("HomePosition")
-                should_render = location and location.position:Length() > 1
+                local home_pos = LocalPlayer:GetValue("HomePosition")
+                if home_pos then
+                    location.position = home_pos
+                    should_render = location.position:Length() > 1
+                else
+                    should_render = false
+                end
             end
             
             local position = Map:WorldToScreen(location.position)
