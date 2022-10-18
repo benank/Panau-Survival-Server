@@ -7,12 +7,13 @@ end
 
 function cDoorExtension:CanPlayerOpenDoor(player)
     local access_mode = self.object.custom_data.access_mode
-    local is_owner = self.object.landclaim.owner_id == tostring(player:GetSteamId())
+    local player_id = tostring(player:GetSteamId())
+    local is_owner = self.object.landclaim.owner_id == player_id or self.object.owner_id == player_id
 
     if access_mode == LandclaimAccessModeEnum.OnlyMe then
         return is_owner
     elseif access_mode == LandclaimAccessModeEnum.Friends then
-        return AreFriends(player, self.object.landclaim.owner_id) or is_owner
+        return is_owner or AreFriends(player, self.object.owner_id)
     elseif access_mode == LandclaimAccessModeEnum.Clan then
         -- TODO: add clan check logic here
         return is_owner
