@@ -84,7 +84,7 @@ function cLandclaimObjectMenu:TryToOpenMenu()
         options.remove = true
     end
 
-    if owner_id == my_id and (landclaim_object.name == "Door" or landclaim_object.name == "Garage Door") then
+    if (owner_id == my_id or landclaim_object.owner_id == my_id) and (landclaim_object.name == "Door" or landclaim_object.name == "Garage Door") then
         options.access = true
     end
 
