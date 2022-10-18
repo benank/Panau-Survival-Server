@@ -153,6 +153,13 @@ function sLandclaim:ClaimNearbyUnclaimedObjects(player, callback)
     end)
 end
 
+function sLandclaim:CanChangeDoorAccessMode(player, object)
+    local door_owner = object.owner_id
+    local player_id = tostring(player:GetSteamId())
+    
+    return door_owner == player_id or self.owner_id == player_id
+end
+
 function sLandclaim:PressBuildObjectMenuButton(args, player)
 
     if not self:IsActive() then return end
@@ -164,7 +171,9 @@ function sLandclaim:PressBuildObjectMenuButton(args, player)
 
     local player_id = tostring(player:GetSteamId())
 
-    if args.name:find("Access") and (object.name == "Door" or object.name == "Garage Door") and self.owner_id == player_id then
+    if args.name:find("Access") 
+    and (object.name == "Door" or object.name == "Garage Door") 
+    and self:CanChangeDoorAccessMode(player, object) then
         -- Changing door access mode
         if args.name == "Access: Only Me" then
             object.custom_data.access_mode = LandclaimAccessModeEnum.OnlyMe
