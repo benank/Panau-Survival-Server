@@ -280,16 +280,19 @@ function sLandclaim:IsPlayerOwner(player)
     return self.owner_id == tostring(player:GetSteamId())
 end
 
-function sLandclaim:CanPlayerAccess(player, access_mode)
+function sLandclaim:CanPlayerAccess(player, access_mode, object)
 
     if not self:IsActive() then return end
 
-    local is_owner = self:IsPlayerOwner(player)
+    local player_id = tostring(player:GetSteamId())
+    local object_owner_id = object and object.owner_id or nil
+    -- Owner of landclaim OR door object
+    local is_owner = self:IsPlayerOwner(player) or player_id == object_owner_id
 
     if access_mode == LandclaimAccessModeEnum.OnlyMe then
         return is_owner
     elseif access_mode == LandclaimAccessModeEnum.Friends then
-        return AreFriends(player, self.owner_id) or is_owner
+        return is_owner or AreFriends(player, object_owner_id)
     elseif access_mode == LandclaimAccessModeEnum.Clan then
         -- TODO: add clan check logic here
         return is_owner
@@ -396,7 +399,7 @@ function sLandclaim:ActivateDoor(args, player)
     if not object then return end
 
     if object.name ~= "Door" and object.name ~= "Garage Door" then return end
-    if not self:CanPlayerAccess(player, object.custom_data.access_mode) then return end
+    if not self:CanPlayerAccess(player, object.custom_data.access_mode, object) then return end
 
     object.custom_data.open = not object.custom_data.open
     
