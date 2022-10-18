@@ -288,11 +288,16 @@ function sLandclaim:CanPlayerAccess(player, access_mode, object)
     local object_owner_id = object and object.owner_id or nil
     -- Owner of landclaim OR door object
     local is_owner = self:IsPlayerOwner(player) or player_id == object_owner_id
+    local are_friends = AreFriends(player, self.owner_id)
+    
+    if object then
+        are_friends = AreFriends(player, object_owner_id)
+    end
 
     if access_mode == LandclaimAccessModeEnum.OnlyMe then
         return is_owner
     elseif access_mode == LandclaimAccessModeEnum.Friends then
-        return is_owner or AreFriends(player, object_owner_id)
+        return is_owner or are_friends
     elseif access_mode == LandclaimAccessModeEnum.Clan then
         -- TODO: add clan check logic here
         return is_owner
