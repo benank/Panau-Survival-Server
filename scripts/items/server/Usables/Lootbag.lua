@@ -2,6 +2,7 @@ local lootbag_config =
 {
     ["Halloween Lootbag"] = 
     {
+        ["Stick Disguise"] =     {amount = 1, chance = 0.001},
         ["Palm Costume"] =     {amount = 1, chance = 0.01},
         ["Umbrella Costume"] =     {amount = 1, chance = 0.01},
         ["Plant Costume"] =    {amount = 1, chance = 0.01},
@@ -14,7 +15,7 @@ local lootbag_config =
         ["Meathead Hat"] = {amount = 1, chance = 0.05},
         ["Sun Costume"] =      {amount = 1, chance = 0.04},
         ["Cone Hat"] =     {amount = 1, chance = 0.05},
-        ["Candy Corn"] =       {amount = 6, chance = 0.2},
+        ["Candy Corn"] =       {amount = 6, chance = 0.199},
         ["Marshmallow"] =      {amount = 3, chance = 0.1},
         ["Kit Kat"] =          {amount = 2, chance = 0.1},
         ["Starburst"] =        {amount = 4, chance = 0.1},
