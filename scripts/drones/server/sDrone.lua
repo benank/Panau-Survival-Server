@@ -379,7 +379,9 @@ function sDrone:Damage(args)
     self.health = math.max(0, self.health - args.damage)
     self:PursueTarget(args.player, new_attacker)
     
-    self:TryToFireAirstrike(args.player:GetPosition())
+    if self:IsPlayerAValidTarget(args.player, 200) then
+        self:TryToFireAirstrike(args.player:GetPosition())
+    end
 
     if self.health == 0 then
         self:Destroyed(args)
