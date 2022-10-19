@@ -662,6 +662,7 @@ function sHitDetection:HitDetectionSyncExplosionDrone(args, player)
     
     if not IsValid(player) then return end
     if args.attacker_id == "Drone" then return end
+    if args.attacker_id == args.owner_id then return end
 
     local explosive_data = WeaponDamage.ExplosiveBaseDamage[args.type]
 
@@ -853,7 +854,8 @@ function sHitDetection:DetectDroneHitLocalPlayer(args, player)
         player = player,
         damage = damage,
         source = DamageEntity.DroneMachineGun,
-        weapon_enum = args.weapon_enum
+        weapon_enum = args.weapon_enum,
+        attacker_id = args.owner_id
     })
 
     Events:Fire("HitDetection/PlayerBulletHit", {

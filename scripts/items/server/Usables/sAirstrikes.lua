@@ -44,8 +44,8 @@ function sAirStrikes:CreateAirstrikeDrone(args)
         name = airstrike_name,
         timer = Timer(),
         position = args.position,
-        attacker_id = "Drone",
-        seed = math.random(9999999999)
+        seed = math.random(9999999999),
+        attacker_id = args.owner_id or "Drone"
     }
     if airstrike_name == "Area Bombing" then
         airstrike_data.num_bombs = ItemsConfig.airstrikes["Area Bombing"].num_bombs

@@ -20,7 +20,8 @@ function cDroneBody:HealthUpdated()
             health = self.parent.health, 
             max_health = self.parent.max_health, 
             level = self.parent.level,
-            cso = object
+            cso = object,
+            config = self.parent.config
         })
     end
 
@@ -257,7 +258,8 @@ function cDroneBody:CreateBody()
             health = self.parent.health, 
             max_health = self.parent.max_health, 
             level = self.parent.level, 
-            cso = self.objects[piece_enum]
+            cso = self.objects[piece_enum],
+            config = self.parent.config
         })
 
     end

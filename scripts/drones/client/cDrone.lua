@@ -217,6 +217,10 @@ function cDrone:PostTick(args)
 
 end
 
+function cDrone:IsPlayerFriendly(player)
+    return self.config.owner_id == tostring(player:GetSteamId()) or AreFriends(player, self.config.owner_id)
+end
+
 function cDrone:IsPlayerAValidTarget(player, distance)
     return IsValid(player) and
         not player:GetValue("Invisible") and 
@@ -224,6 +228,7 @@ function cDrone:IsPlayerAValidTarget(player, distance)
         not player:GetValue("Loading") and
         not player:GetValue("dead") and
         not player:GetValue("InSafezone") and
+        not self:IsPlayerFriendly(player) and
         Distance2D(self.position, player:GetPosition()) < (distance or 500)
 end
 
@@ -543,7 +548,8 @@ function cDrone:Shoot()
             Events:Fire("HitDetection/DroneShootMachineGun", {
                 position = self.body:GetGunPosition(gun_to_fire),
                 angle = self.body:GetGunAngle(gun_to_fire),
-                damage_modifier = self.config.damage_modifier
+                damage_modifier = self.config.damage_modifier,
+                owner_id = self.config.owner_id
             })
             Timer.Sleep(fire_interval)
         end

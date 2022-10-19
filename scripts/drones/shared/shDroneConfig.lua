@@ -3,6 +3,7 @@ Cell_Size = 512
 DRONE_PATH_RADIUS = 500
 DRONE_TARGET_DIST_STOP = 100
 DRONE_CATCH_UP_SPEED = 50
+DRONE_DAMAGE_PER_MINUTE_OWNED = 4
 
 Drone_Follow_Offsets = 
 {
@@ -42,7 +43,8 @@ Drone_Configuration =
     attack_range = {base = 6, per_level = 0.75},
     airstrike = {base = 0.0005, per_level = 0.0008},
     grenade = {base = 0.001, per_level = 0.00025},
-    grenade_fire_rate = {base = 12, per_level = -0.035}
+    grenade_fire_rate = {base = 12, per_level = -0.035},
+    owner_id = "Drone"
 }
 
 DroneState = 

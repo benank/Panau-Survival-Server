@@ -75,7 +75,8 @@ function cDroneManager:RefreshDroneCSOs()
                             health = drone.health, 
                             max_health = drone.max_health, 
                             level = drone.level,
-                            cso = cso
+                            cso = cso,
+                            config = drone.config
                         })
                         Timer.Sleep(1)
                     end
@@ -147,6 +148,7 @@ function cDroneManager:HitDetectionExplosion(args)
                 args.drone_position = drone.position
                 args.drone_distance = distance
                 args.drone_id = id
+                args.owner_id = drone.config.owner_id
                 Events:Fire("HitDetection/ExplosionHitDrone", args)
             end
             Timer.Sleep(1)

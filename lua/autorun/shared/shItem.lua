@@ -139,6 +139,12 @@ function shItem:GetCustomData()
         self.custom_data.level = 1
     elseif self.name == "SAM Key" and self.custom_data.level == nil then
         self.custom_data.level = 1
+    elseif self.name == "Drone" and self.custom_data.level == nil then
+        self.custom_data.level = 1
+    elseif self.name == "Drone AI" and self.custom_data.level == nil then
+        self.custom_data.level = 1
+    elseif self.name == "Drone Chip" and self.custom_data.level == nil then
+        self.custom_data.level = 1
     end
 	
 	-- Additional custom data will be added here

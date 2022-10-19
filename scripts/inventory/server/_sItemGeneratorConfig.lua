@@ -988,7 +988,7 @@ LootItems =
     {
         ["AMMO"] = 
         {
-            rarity = 0.4,
+            rarity = 0.35,
             items = 
             {
                 ["Machine Gun Ammo"] = {rarity = 1, min = 20, max = 50},
@@ -1017,7 +1017,7 @@ LootItems =
         },
         ["BATTERIES"] = 
         {
-            rarity = 0.2,
+            rarity = 0.18,
             items = 
             {
                 ["Battery"] = {rarity = 1, min = 3, max = 5},
@@ -1029,6 +1029,14 @@ LootItems =
             items = 
             {
                 ["Lock-On Module"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+        ["DRONE CHIP"] = 
+        {
+            rarity = 0.07,
+            items = 
+            {
+                ["Drone Chip"] = {rarity = 1, min = 1, max = 1},
             }
         },
     },
@@ -1044,7 +1052,7 @@ LootItems =
         },
         ["AIRSTRIKE"] = 
         {
-            rarity = 0.25,
+            rarity = 0.22,
             items = 
             {
                 ["Cruise Missile"] = {rarity = 0.4, min = 1, max = 2},
@@ -1064,7 +1072,7 @@ LootItems =
         },
         ["BATTERIES"] = 
         {
-            rarity = 0.15,
+            rarity = 0.13,
             items = 
             {
                 ["Battery"] = {rarity = 1, min = 3, max = 5},
@@ -1078,12 +1086,20 @@ LootItems =
                 ["Lock-On Module"] = {rarity = 1, min = 1, max = 1},
             }
         },
+        ["DRONE CHIP"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Drone Chip"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
     },
     [Lootbox.Types.Drone60to100] = 
     {
         ["AMMO"] = 
         {
-            rarity = 0.25,
+            rarity = 0.22,
             items = 
             {
                 ["Machine Gun Ammo"] = {rarity = 1, min = 50, max = 70},
@@ -1111,7 +1127,7 @@ LootItems =
         },
         ["BATTERIES"] = 
         {
-            rarity = 0.1,
+            rarity = 0.08,
             items = 
             {
                 ["Battery"] = {rarity = 0.25, min = 3, max = 5},
@@ -1131,6 +1147,14 @@ LootItems =
             items = 
             {
                 ["Lock-On Module"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
+        ["DRONE CHIP"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Drone Chip"] = {rarity = 1, min = 1, max = 1},
             }
         },
     },
@@ -1156,7 +1180,7 @@ LootItems =
         },
         ["EXPLOSIVE"] = 
         {
-            rarity = 0.2,
+            rarity = 0.18,
             items = 
             {
                 ["Toxic Grenade"] = {rarity = 0.25, min = 3, max = 5},
@@ -1166,7 +1190,7 @@ LootItems =
         },
         ["BATTERIES"] = 
         {
-            rarity = 0.1,
+            rarity = 0.08,
             items = 
             {
                 ["Battery"] = {rarity = 0.25, min = 3, max = 5},
@@ -1186,6 +1210,14 @@ LootItems =
             items = 
             {
                 ["Lock-On Module"] = {rarity = 1, min = 1, max = 2, min_dura = 1, max_dura = 2},
+            }
+        },
+        ["DRONE CHIP"] = 
+        {
+            rarity = 0.04,
+            items = 
+            {
+                ["Drone Chip"] = {rarity = 1, min = 1, max = 1},
             }
         },
     }

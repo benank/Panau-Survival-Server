@@ -329,10 +329,20 @@ function Nametags:CanDraw(p)
 
 end
 
+function Nametags:IsDroneFriendly(drone)
+    return drone.config.owner_id == tostring(LocalPlayer:GetSteamId()) or AreFriends(LocalPlayer, drone.config.owner_id)
+end
+
 function Nametags:DrawDrone(args)
     local drone = args.drone
     local pos = args.position + Vector3.Up * 0.5
-    self:DrawFullTag( pos, "Drone", 5, self:GetEnemyNameColor(args.drone.level), drone.health / drone.max_health, nil, drone.level )
+    local friendly = self:IsDroneFriendly(drone)
+    
+    if friendly then
+        self:DrawFullTag( pos, "Drone [Friendly]", 5, Color(0, 220, 0), drone.health / drone.max_health, nil, drone.level )
+    else
+        self:DrawFullTag( pos, "Drone", 5, self:GetEnemyNameColor(drone.level), drone.health / drone.max_health, nil, drone.level )
+    end
 end
 
 function Nametags:DrawNPC(args)

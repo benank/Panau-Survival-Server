@@ -68,7 +68,7 @@ function Grenades:CreateGrenadeDrone(args)
         velocity = (args.position - args.drone_position):Normalized() * args.distance,
         type = grenade_type,
         fusetime = math.random() * 3 + 2,
-        owner_id = "Drone"
+        owner_id = args.owner_id or "Drone"
     })
 end
 

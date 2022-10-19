@@ -1198,6 +1198,35 @@ Items =
         can_equip = true,
         equip_type = "boombox"
     },
+    {
+        name = "Drone AI",
+        category = "Supplies",
+        stacklimit = 5,
+        can_stack = true
+    },
+    {
+        name = "Drone Body",
+        category = "Supplies",
+        stacklimit = 5,
+    },
+    {
+        name = "Drone Weapons",
+        category = "Supplies",
+        stacklimit = 5,
+    },
+    {
+        name = "Drone",
+        category = "Supplies",
+        stacklimit = 1,
+        can_use = true,
+        can_stack = true
+    },
+    {
+        name = "Drone Chip",
+        category = "Supplies",
+        stacklimit = 3,
+        can_stack = true
+    },
 }
 
 Items_ammo_types = 

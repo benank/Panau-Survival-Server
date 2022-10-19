@@ -26,6 +26,7 @@ ItemsConfig =
         ["Airdrop"] = {use_time = 30},
         ["Burst Ping"] = {range = 12, knockback = 25},
         ["Secret"] = {use_time = 5},
+        ["Drone"] = {use_time = 7},
     },
     build = 
     {

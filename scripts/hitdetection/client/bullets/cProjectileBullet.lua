@@ -5,6 +5,7 @@ function ProjectileBullet:__init(args)
     self:SetActive(true)
     getter_setter(self, "id")
     self.id = args.id
+    self.owner_id = args.owner_id
     self.weapon_enum = args.weapon_enum
     self.velocity = args.velocity
     self.bloom = args.bloom or 0
@@ -140,7 +141,8 @@ function ProjectileBullet:HitSomething(raycast)
                 damage_mod = self.damage_mod,
                 weapon_enum = self.weapon_enum,
                 hit_position = raycast.position,
-                distance_travelled = self.total_distance_covered
+                distance_travelled = self.total_distance_covered,
+                owner_id = self.owner_id
             })
 
             if WeaponHitDetection.debug_enabled then

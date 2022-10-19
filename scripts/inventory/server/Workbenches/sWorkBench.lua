@@ -119,6 +119,10 @@ function sWorkBench:CraftItems(player, recipe)
             durability = durability
         })
         
+        if recipe.result_item.custom_data then
+            new_item.custom_data = recipe.result_item.custom_data(new_item.custom_data, self.lootbox.contents)
+        end
+            
         -- Durability over 500%
         if new_item.durability and new_item.durability < durability then
              new_item.durability = new_item.max_durability * WorkBenchConfig.maximum_durability

@@ -87,7 +87,8 @@ function sLootManager:DroneDestroyed(args)
             tier = lootbox_tier,
             position = ground_args.position,
             angle = ground_args.angle,
-            remove_time = 1000 * 60 * 10
+            remove_time = 1000 * 60 * 10,
+            drone_level = args.drone_level
         })
         
     end)
@@ -295,6 +296,12 @@ function sLootManager:CreateLootboxExternal(args)
             for _, stack in pairs(args.contents) do
                 if stack:GetProperty("name") == "SAM Key" then
                     stack.contents[1].custom_data.level = args.sam_level
+                end
+            end
+        elseif args.drone_level then
+            for _, stack in pairs(args.contents) do
+                if stack:GetProperty("name") == "Drone Chip" then
+                    stack.contents[1].custom_data.level = args.drone_level
                 end
             end
         end

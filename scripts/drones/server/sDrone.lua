@@ -43,6 +43,7 @@ function sDrone:__init(args)
     self.static = args.static
     self.airstrike_timer = Timer()
     self.grenade_timer = Timer()
+    self.hp_remove_timer = Timer()
 
     if self.static then
         self.state = DroneState.Static
@@ -85,6 +86,26 @@ function sDrone:ReconsiderLoop()
             state = self.state
         })
     end
+    
+    self:DamageOwnedDroneLoop()
+end
+
+function sDrone:DamageOwnedDroneLoop()
+    if not self.config.player_owned then return end
+    if self.hp_remove_timer:GetSeconds() < 60 then return end
+    
+    self.hp_remove_timer:Restart()
+    self.health = math.max(0, self.health - DRONE_DAMAGE_PER_MINUTE_OWNED)
+    if self.health == 0 then
+        self:Destroyed()
+    end
+
+    self:Sync({
+        state = self.state,
+        health = self.health,
+        target = self.target
+    })
+
 end
 
 function sDrone:PursueTarget(target, new_attacker)
@@ -147,6 +168,10 @@ function sDrone:ReconsiderTarget()
 
 end
 
+function sDrone:IsPlayerFriendly(player)
+    return self.config.owner_id == tostring(player:GetSteamId()) or AreFriends(player, self.config.owner_id)
+end
+
 function sDrone:IsPlayerAValidTarget(player, distance)
     local out_of_range = Distance2D(self.position, self.tether_position) > self.tether_range
 
@@ -156,6 +181,7 @@ function sDrone:IsPlayerAValidTarget(player, distance)
         not player:GetValue("Loading") and
         not player:GetValue("dead") and
         not player:GetValue("InSafezone") and
+        not self:IsPlayerFriendly(player) and
         Distance2D(self.position, player:GetPosition()) < (distance or 500)
         and not out_of_range
 end
@@ -275,17 +301,32 @@ function sDrone:Destroyed(args)
     
     self.state = DroneState.Destroyed
 
+    args = args or {}
     local exp_split = {}
     for steam_id, damage_dealt in pairs(self.players_who_damaged) do
         exp_split[steam_id] = math.clamp(damage_dealt / self.max_health, 0, 1)
         sDroneManager:AddDroneKillToPlayer(sDroneManager.players[steam_id])
+    end
+    
+    if self.config.owner_id then
+        local message = string.format("Your Drone (Lv %d) was destroyed.", self.level)
+        if IsValid(args.player) then
+            message = string.format("Your Drone (Lv %s) was destroyed by %s.", 
+                self.level, tostring(args.player:GetName()))
+        end
+        
+        Events:Fire("SendPlayerPersistentMessage", {
+            steam_id = self.config.owner_id,
+            message = message,
+            color = Color(200, 0, 0)
+        }) 
     end
 
     Events:Fire("drones/DroneDestroyed", {
         player = args.player,
         exp_split = exp_split,
         drone_level = self.level,
-        damage_entity = args.type,
+        damage_entity = args.type or DamageEntity.None,
         position = self.position
     })
     
@@ -302,7 +343,8 @@ function sDrone:TryToFireAirstrike(position)
     
     if math.random() < self.config.airstrike then
         Events:Fire("drones/CreateAirstrike", {
-            position = position
+            position = position,
+            owner_id = self.config.owner_id
         })
         self.airstrike_timer:Restart()
     end
@@ -318,7 +360,8 @@ function sDrone:TryToFireGrenade(grenade_position)
     Events:Fire("drones/CreateGrenade", {
         drone_position = grenade_position,
         position = position,
-        distance = distance
+        distance = distance,
+        owner_id = self.config.owner_id
     })
 
 end

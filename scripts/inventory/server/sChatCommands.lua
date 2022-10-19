@@ -53,6 +53,32 @@ Events:Subscribe("PlayerChat", function(args)
             Chat:Send(args.player, "Added " .. name .. " [x" .. tostring(amount) .. "]", Color.Green)
         end)
 
+    elseif args.text:sub(1, 11) == "/itemdrone " then
+
+            local level = string.gsub(args.text, "/itemdrone ", "")
+            level = tonumber(level)
+            if not level then level = 1 end
+            
+            local name = 'Drone'
+    
+            if level > 500 then
+                Chat:Send(args.player, "Woah! Slow down there cowboy. You're trying to add TOO MUCH SAUCE.", Color.Red)
+                return
+            end
+    
+            local items = {}
+    
+            Inventory.AddItem({
+                player = args.player,
+                item = CreateItem({
+                    name = name,
+                    amount = 1,
+                    custom_data = {level = level}
+                }):GetSyncObject()
+            })
+
+            Chat:Send(args.player, "Added " .. name .. " [Lv " .. tostring(level) .. "]", Color.Green)
+    
     elseif args.text:sub(1, 7) == "/itemd " then
 
             local text = string.gsub(args.text, "/itemd ", "")

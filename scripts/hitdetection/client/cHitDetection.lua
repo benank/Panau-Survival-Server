@@ -99,10 +99,11 @@ function cHitDetection:ExplosionHitDrone(args)
         if percent_modifier == 0 then return end
 
         local knockback_effect = explosive_data.knockback * percent_modifier
-
+        
         Network:Send(var("HitDetectionSyncExplosionDrone"):get(), {
             position = args.position,
             drone_position = args.drone_position,
+            owner_id = args.owner_id,
             drone_id = args.drone_id,
             type = args.type,
             in_fov = in_fov,

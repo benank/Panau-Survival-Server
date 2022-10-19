@@ -23,12 +23,19 @@ function sDroneManager:__init()
     Events:Subscribe("PlayerChat", self, self.PlayerChat)
     Events:Subscribe("Drones/SpawnDrone", self, self.SpawnDrone)
     Events:Subscribe("Drones/RemoveDronesInGroup", self, self.RemoveDronesInGroup)
+    Events:Subscribe("items/SpawnDrone", self, self.PlayerSpawnDrone)
 
     Network:Subscribe("drones/sync/batch", self, self.DroneBatchSync)
 end
 
 function sDroneManager:ModulesLoad()
     self:UpdateDronesCountsInSZ() 
+end
+
+function sDroneManager:PlayerSpawnDrone(args)
+    args.level = tonumber(args.level)
+    args.config.attack_on_sight = true
+    sDrone(args)
 end
 
 --[[

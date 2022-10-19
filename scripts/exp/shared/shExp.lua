@@ -76,6 +76,7 @@ Exp =
         [DamageEntity.AreaBombing] =    180,
         [DamageEntity.TacticalNuke] =   180,
         [DamageEntity.BeringBombsight] =   180,
+        [DamageEntity.None] =   50,
         AdditionalPercentPerPlayer = 0.25 -- X% more total exp for each player who damages a drone
     },
     DestroyExplosive = 

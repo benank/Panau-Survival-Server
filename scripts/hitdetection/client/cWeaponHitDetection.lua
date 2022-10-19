@@ -310,7 +310,8 @@ function WeaponHitDetection:DroneShootMachineGun(args)
             is_splash = bullet_config.splash ~= nil,
             damage_mod = args.damage_modifier,
             bloom = 0,
-            bullet_size = bullet_config.bullet_size
+            bullet_size = bullet_config.bullet_size,
+            owner_id = args.owner_id
         }
 
         local bullet = bullet_config.type(bullet_data)
@@ -509,7 +510,8 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
                 bone_enum = bone,
                 distance_travelled = args.distance_travelled,
                 hit_position = args.hit_position,
-                token = TOKEN:get()
+                token = TOKEN:get(),
+                owner_id = args.owner_id
             })
 
         elseif args.entity_type == "Vehicle" then
@@ -529,7 +531,8 @@ function WeaponHitDetection:LocalPlayerBulletDirectHitEntity(args)
                 vehicle_id = args.entity:GetId(),
                 weapon_enum = args.weapon_enum,
                 distance_travelled = args.distance_travelled,
-                token = TOKEN:get()
+                token = TOKEN:get(),
+                owner_id = args.owner_id
             })
         end
 
