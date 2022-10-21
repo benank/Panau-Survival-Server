@@ -170,7 +170,7 @@ function sSpawnManager:ClientModuleLoad(args)
 
 	else -- if first join
 		
-		local spawn_pos = Vector3(-10321.879883, 203.063507, -3046.096924)
+		local spawn_pos = Vector3(-10273, 203.163507, -2994)
 
 		args.player:SetValue("IsOkToSavePosition", 1)
 		args.player:SetValue("RespawnPosition", spawn_pos)
