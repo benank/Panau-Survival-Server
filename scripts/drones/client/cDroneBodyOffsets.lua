@@ -3,7 +3,8 @@ DroneBodyPiece =
     Base = 1,
     LeftGun = 3,
     RightGun = 4,
-    TopGun = 5
+    TopGun = 5,
+    Extra = 6
 }
 
 -- Offets for the actual positions of where the bullets come out
@@ -27,6 +28,11 @@ DroneBodyObjects =
         model = "lave.v023_customcar.eez/v023-base.lod",
         collision = "lave.v023_customcar.eez/v023_lod1-base_col.pfx"
     },
+    [DroneBodyPiece.Extra] = 
+    {
+        model = "bwc.nlz/v320-mt02.lod",
+        collision = ""
+    },
     [DroneBodyPiece.LeftGun] = 
     {
         model = "lave.v023_customcar.eez/v023-vhlmgl.lod",
@@ -47,6 +53,7 @@ DroneBodyObjects =
 DroneBodyOffsets = 
 {
     [DroneBodyPiece.Base] = {position = Vector3(), angle = Angle()},
+    [DroneBodyPiece.Extra] = {position = Vector3(0, 0.25, 0), angle = Angle()},
     [DroneBodyPiece.LeftGun] = {position = Vector3(-0.25, 0.35, 0), angle = Angle()},
     [DroneBodyPiece.RightGun] = {position = Vector3(0.25, 0.35, 0), angle = Angle()},
     [DroneBodyPiece.TopGun] = {position = Vector3(0, 0.2, 0), angle = Angle()}
