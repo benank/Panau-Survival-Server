@@ -178,7 +178,9 @@ function cInventoryUI:GetItemNameWithAmount(stack, index)
     elseif item_name == "SAM Key" and stack.contents[1].custom_data.level then
         return string.format("%s (Lv %d)", localized_item_name, stack.contents[1].custom_data.level)
     elseif (item_name == "Drone" or item_name == "Drone Chip" or item_name == "Drone AI") and stack.contents[1].custom_data.level then
-        return string.format("%s (Lv %d)", localized_item_name, stack.contents[1].custom_data.level)
+        return stack:GetAmount() > 1 and 
+            string.format("%s (Lv %d) (%s)", localized_item_name, stack.contents[1].custom_data.level, tostring(self:GetItemButtonStackAmount(stack, index))) or
+            string.format("%s (Lv %d)", localized_item_name, stack.contents[1].custom_data.level)
     else
         return stack:GetAmount() > 1 and 
             string.format("%s (%s)", localized_item_name, tostring(self:GetItemButtonStackAmount(stack, index))) or
