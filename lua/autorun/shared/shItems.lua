@@ -830,22 +830,6 @@ Items =
         durable = true
     },
     {
-        name = "Grill",
-        category = "Survival",
-        stacklimit = 3,
-        max_durability = 200,
-        can_use = true,
-        durable = true
-    },
-    {
-        name = "Charcoal Grill",
-        category = "Survival",
-        stacklimit = 3,
-        max_durability = 200,
-        can_use = true,
-        durable = true
-    },
-    {
         name = "Sign",
         category = "Survival",
         stacklimit = 3,
