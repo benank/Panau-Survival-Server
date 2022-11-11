@@ -321,7 +321,7 @@ function sStashes:DismountStash(args, player)
     self.stashes_by_uid[stash_instance.lootbox.uid] = nil
     stash_instance:Remove()
 
-    if type ~= Lootbox.Types.ProximityAlarm then
+    if type ~= Lootbox.Types.ProximityAlarm and type ~= Lootbox.Types.BoxStash then
         local player_stashes = player:GetValue("Stashes")
         player_stashes[args.id] = nil
 
@@ -371,7 +371,7 @@ function sStashes:ClientModuleLoad(args)
 
     for id, stash in pairs(self.stashes) do
 
-        if stash.owner_id == steam_id and stash.lootbox.tier ~= Lootbox.Types.ProximityAlarm then
+        if stash.owner_id == steam_id and stash.lootbox.tier ~= Lootbox.Types.ProximityAlarm and stash.lootbox.tier ~= Lootbox.Types.BoxStash then
             -- Player owns this stash
             player_stashes[id] = stash:GetSyncData()
         end
@@ -532,7 +532,7 @@ function sStashes:PlaceStash(position, angle, type, player)
 
     lootbox:Sync()
 
-    if type ~= Lootbox.Types.ProximityAlarm then
+    if type ~= Lootbox.Types.ProximityAlarm and type ~= Lootbox.Types.BoxStash then
 
         local player_stashes = player:GetValue("Stashes")
         player_stashes[lootbox.stash.id] = lootbox.stash:GetSyncData()

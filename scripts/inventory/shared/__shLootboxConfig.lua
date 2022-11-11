@@ -26,7 +26,8 @@ Lootbox.Types =
     DroneUnder30 = 23,
     Drone30to60 = 24,
     Drone60to100 = 25,
-    Drone100Plus = 26
+    Drone100Plus = 26,
+    BoxStash = 27,
 }
 
 StashAccessMode = 
@@ -51,6 +52,7 @@ ExplosiveDamage =
 
 Lootbox.Stashes = 
 {
+    [Lootbox.Types.BoxStash] = {capacity = 5, name = "Box Stash", health = 20, default_access = StashAccessMode.Everyone, can_change_access = false},
     [Lootbox.Types.BarrelStash] = {capacity = 10, name = "Barrel Stash", health = 100, default_access = StashAccessMode.Everyone, can_change_access = false},
     [Lootbox.Types.GarbageStash] = {capacity = 12, name = "Garbage Stash", health = 200, default_access = StashAccessMode.Everyone, can_change_access = false},
     [Lootbox.Types.LockedStash] = {capacity = 12, name = "Locked Stash", health = 400, default_access = StashAccessMode.OnlyMe, can_change_access = true},
@@ -257,6 +259,13 @@ Lootbox.Models =
         model = "geo.cbb.eez/go152-a.lod",
         col = "km05.hotelbuilding01.flz/key030_01_lod1-n_col.pfx",
         offset = Vector3(0, -0.025, 0)
+    },
+    [Lootbox.Types.BoxStash] = 
+    {
+        model = "22x19.nlz/go222-h.lod",
+        col = "22x19.nlz/go222_lod1-h_col.pfx",
+        offset = Vector3(0, 0, 0),
+        look_offset = Vector3(0, 0.2, 0)
     },
     [Lootbox.Types.BarrelStash] = 
     {

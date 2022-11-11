@@ -25,9 +25,10 @@ HotspotLootItems =
                 {
                     ["Wall"] = {rarity = 0.4, min = 1, max = 1, min_dura = 1, max_dura = 1},
                     ["Light"] = {rarity = 0.2, min = 1, max = 1},
-                    ["Chair"] = {rarity = 0.2, min = 1, max = 1},
+                    ["Chair"] = {rarity = 0.1, min = 1, max = 1},
                     ["Umbrella"] = {rarity = 0.1, min = 1, max = 1},
                     ["Potted Plant"] = {rarity = 0.1, min = 1, max = 1},
+                    ["Box Stash"] = {rarity = 0.1, min = 1, max = 1},
                 }
             },
             ["EXPLOSIVE"] = 

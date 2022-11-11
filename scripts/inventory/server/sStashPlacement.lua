@@ -2,6 +2,7 @@ class 'sStashPlacement'
 
 local StashNameToType = 
 {
+    ["Box Stash"] = Lootbox.Types.BoxStash,
     ["Barrel Stash"] = Lootbox.Types.BarrelStash,
     ["Garbage Stash"] = Lootbox.Types.GarbageStash,
     ["Locked Stash"] = Lootbox.Types.LockedStash
@@ -63,7 +64,7 @@ function sStashPlacement:PlaceStash(args, player)
 
     local player_iu = player:GetValue("StashUsingItem")
     local type = self:GetStashTypeFromName(player_iu.item.name)
-    if type and args.position.y < 200 and (type == Lootbox.Types.BarrelStash or type == Lootbox.Types.GarbageStash) then
+    if type and args.position.y < 200 and (type == Lootbox.Types.BarrelStash or type == Lootbox.Types.GarbageStash or type == Lootbox.Types.BoxStash) then
         Chat:Send(player, "You cannot place this stash underwater!", Color.Red)
         return
     end
@@ -91,7 +92,7 @@ function sStashPlacement:PlaceStash(args, player)
         return
     end
 
-    if count_table(player:GetValue("Stashes")) >= player:GetValue("MaxStashes") then
+    if count_table(player:GetValue("Stashes")) >= player:GetValue("MaxStashes") and type ~= Lootbox.Types.BoxStash then
         Chat:Send(player, "You already have the maximum amount of stashes!", Color.Red)
         return
     end

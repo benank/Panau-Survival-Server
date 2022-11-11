@@ -13,13 +13,21 @@ LootItems =
         -- },
         ["AMMO"] = 
         {
-            rarity = 0.41,
+            rarity = 0.38,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 10, max = 20},
                 ["Revolver Ammo"] = {rarity = 0.32, min = 8, max = 16},
                 ["Handgun Ammo"] = {rarity = 0.32, min = 7, max = 18},
                 ["Sawn-Off Ammo"] = {rarity = 0.25, min = 3, max = 6},
+            }
+        },
+        ["BUILD"] = 
+        {
+            rarity = 0.03,
+            items = 
+            {
+                ["Box Stash"] = {rarity = 1, min = 1, max = 1},
             }
         },
         ["EXPLOSIVE"] = 

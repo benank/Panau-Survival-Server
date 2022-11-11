@@ -274,6 +274,12 @@ Items =
         can_use = true
     },
     {
+        name = "Box Stash",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true
+    },
+    {
         name = "Tactical Nuke",
         category = "Explosives",
         stacklimit = 3,
@@ -820,6 +826,22 @@ Items =
         category = "Survival",
         stacklimit = 5,
         max_durability = 100,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Grill",
+        category = "Survival",
+        stacklimit = 3,
+        max_durability = 200,
+        can_use = true,
+        durable = true
+    },
+    {
+        name = "Charcoal Grill",
+        category = "Survival",
+        stacklimit = 3,
+        max_durability = 200,
         can_use = true,
         durable = true
     },
