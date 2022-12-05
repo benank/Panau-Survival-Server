@@ -62,33 +62,34 @@ Events:Subscribe("NetworkObjectValueChange", function(args)
 end)
 
 function UpdateHelpEntries(player)
-    local locale = player:GetValue("Locale")
-    if not locale or locale == 'en' then return end
+    -- Disabled due to cost
+    -- local locale = player:GetValue("Locale")
+    -- if not locale or locale == 'en' then return end
     
-    if shHelpEntries[locale] and count_table_deep(shHelpEntries[locale]) == total_help_entries then
-        Network:Send(player, "help/LocalizedHelpEntries", {entries = shHelpEntries[locale], locale = locale})
-    else
-        local steam_id = tostring(player:GetSteamId())
-        if not players_awaiting_translation[locale] then
-            players_awaiting_translation[locale] = {}
-        end
+    -- if shHelpEntries[locale] and count_table_deep(shHelpEntries[locale]) == total_help_entries then
+    --     Network:Send(player, "help/LocalizedHelpEntries", {entries = shHelpEntries[locale], locale = locale})
+    -- else
+    --     local steam_id = tostring(player:GetSteamId())
+    --     if not players_awaiting_translation[locale] then
+    --         players_awaiting_translation[locale] = {}
+    --     end
         
-        players_awaiting_translation[locale][steam_id] = player
+    --     players_awaiting_translation[locale][steam_id] = player
         
-        if locales_awaiting_translation[locale] then return end
-        locales_awaiting_translation[locale] = true
+    --     if locales_awaiting_translation[locale] then return end
+    --     locales_awaiting_translation[locale] = true
         
-        Thread(function()
-            for key, text_table in pairs(shHelpEntries['en']) do
-                for key2, text in pairs(text_table) do
-                    Events:Fire("TranslateText", {
-                        text = text,
-                        id = string.format("help-%s-%s", key, key2),
-                        origin_locale = 'en'
-                    })
-                    Timer.Sleep(5)
-                end
-            end
-        end)
-    end 
+    --     Thread(function()
+    --         for key, text_table in pairs(shHelpEntries['en']) do
+    --             for key2, text in pairs(text_table) do
+    --                 Events:Fire("TranslateText", {
+    --                     text = text,
+    --                     id = string.format("help-%s-%s", key, key2),
+    --                     origin_locale = 'en'
+    --                 })
+    --                 Timer.Sleep(5)
+    --             end
+    --         end
+    --     end)
+    -- end 
 end
