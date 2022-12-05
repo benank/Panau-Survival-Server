@@ -3,14 +3,14 @@ LootItems =
     -- {Item,Rarity,MinQuantity,MaxQuantity}
     [Lootbox.Types.Level1] = 
     {
-        -- ["EVENT"] = 
-        -- {
-        --     rarity = 0.05,
-        --     items = 
-        --     {
-        --         ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
-        --     }
-        -- },
+        ["EVENT"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Holiday Lootbag"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
         ["AMMO"] = 
         {
             rarity = 0.38,
@@ -106,14 +106,14 @@ LootItems =
     },
     [Lootbox.Types.Level2] = 
     {
-        -- ["EVENT"] = 
-        -- {
-        --     rarity = 0.05,
-        --     items = 
-        --     {
-        --         ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
-        --     }
-        -- },
+        ["EVENT"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Holiday Lootbag"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
         ["AMMO"] = 
         {
             rarity = 0.413,
@@ -224,14 +224,14 @@ LootItems =
     },
     [Lootbox.Types.Level3] = 
     {
-        -- ["EVENT"] = 
-        -- {
-        --     rarity = 0.05,
-        --     items = 
-        --     {
-        --         ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
-        --     }
-        -- },
+        ["EVENT"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Holiday Lootbag"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
         ["AIRSTRIKE"] = 
         {
             rarity = 0.04,
@@ -340,14 +340,14 @@ LootItems =
     },
     [Lootbox.Types.Level4] = 
     {
-        -- ["EVENT"] = 
-        -- {
-        --     rarity = 0.05,
-        --     items = 
-        --     {
-        --         ["Halloween Lootbag"] = {rarity = 1, min = 1, max = 1},
-        --     }
-        -- },
+        ["EVENT"] = 
+        {
+            rarity = 0.05,
+            items = 
+            {
+                ["Holiday Lootbag"] = {rarity = 1, min = 1, max = 1},
+            }
+        },
         ["AIRSTRIKE"] = 
         {
             rarity = 0.067,
