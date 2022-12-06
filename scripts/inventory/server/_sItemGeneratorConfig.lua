@@ -13,7 +13,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.38,
+            rarity = 0.33,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 10, max = 20},
@@ -116,7 +116,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.413,
+            rarity = 0.463,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.01, min = 15, max = 30},
@@ -242,7 +242,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.38,
+            rarity = 0.33,
             items = 
             {
                 ["Sawn-Off Ammo"] = {rarity = 0.1, min = 6, max = 10},
@@ -368,7 +368,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.4087,
+            rarity = 0.3587,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 5, max = 10},
