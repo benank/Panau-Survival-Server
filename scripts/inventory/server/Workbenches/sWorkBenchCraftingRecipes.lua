@@ -103,6 +103,22 @@ WorkbenchCraftingRecpies =
         }
     },
     {
+        craft_time = 15,
+        result_item = {
+            name = "Hot Chocolate"
+        },
+        recipe = {
+            {
+                name = "Chocolate",
+                amount = 3
+            },
+            {
+                name = "Milk",
+                amount = 1
+            }
+        }
+    },
+    {
         craft_time = 60,
         result_item = {
             name = "Drone Body"
