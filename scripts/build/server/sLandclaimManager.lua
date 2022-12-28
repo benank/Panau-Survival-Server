@@ -493,6 +493,12 @@ function sLandclaimManager:UpdateLandclaimExpiry(size, landclaim, player)
     if not IsInSquare(landclaim.position, landclaim.size, player:GetPosition()) then return end
 
     local old_expiry_date = landclaim.expiry_date
+    
+    if tonumber(old_expiry_date:split("-")[1]) == 2037 then
+        Chat:Send(player, "Your landclaim was not extended because it is already at the maximum duration.", Color.Orange)
+        return
+    end
+    
     local new_expiry_date, days_to_add = GetLandclaimExpireDate({
         size = landclaim.size,
         new_size = size,
@@ -500,7 +506,12 @@ function sLandclaimManager:UpdateLandclaimExpiry(size, landclaim, player)
     })
     
     landclaim:UpdateExpiryDate(new_expiry_date)
-    Chat:Send(player, string.format("Extended %s duration to %d days.", landclaim.name, days_to_add), Color.Green)
+    
+    if tonumber(new_expiry_date:split("-")[1]) == 2037 then
+        Chat:Send(player, string.format("Extended %s duration to %d days. Your landclaim is now at the maximum duration.", landclaim.name, days_to_add), Color.Green)
+    else
+        Chat:Send(player, string.format("Extended %s duration to %d days.", landclaim.name, days_to_add), Color.Green)
+    end
     
     Events:Fire("Discord", {
         channel = "Build",

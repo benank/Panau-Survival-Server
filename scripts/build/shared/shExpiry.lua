@@ -30,13 +30,14 @@ end
 -- returns date of expiry in format YYYY-MM-DD
 function GetLandclaimExpireDateFromTime(time)
     local time_table = os.date("*t", time)
-    return string.format("%s-%s-%s", time_table.year, time_table.month, time_table.day)
+    -- https://en.wikipedia.org/wiki/Year_2038_problem
+    return string.format("%s-%s-%s", math.min(2037, time_table.year), time_table.month, time_table.day)
 end
 
 -- Gets the number of days until a landclaim expires
 function GetLandclaimDaysTillExpiry(expiry_date)
     local split = expiry_date:split("-")
-    if split[1] == nil or split[2] == nil or split[3] == nil then return 0 end
-    local seconds = os.time{year = split[1], month = split[2], day = split[3]} - os.time()
+    -- https://en.wikipedia.org/wiki/Year_2038_problem
+    local seconds = os.time{year = math.min(2037, tonumber(split[1])), month = split[2], day = split[3]} - os.time()
     return math.ceil(SecondsToDays(seconds))
 end
