@@ -36,6 +36,7 @@ end
 -- Gets the number of days until a landclaim expires
 function GetLandclaimDaysTillExpiry(expiry_date)
     local split = expiry_date:split("-")
+    if split[1] == nil or split[2] == nil or split[3] == nil then return 0 end
     local seconds = os.time{year = split[1], month = split[2], day = split[3]} - os.time()
     return math.ceil(SecondsToDays(seconds))
 end
