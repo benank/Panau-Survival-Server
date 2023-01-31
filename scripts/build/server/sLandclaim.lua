@@ -517,6 +517,8 @@ function sLandclaim:DamageObject(args, player)
 
     local perks = player:GetValue("Perks")
     local possible_perks = Config.damage_perks[args.type]
+    
+    if not perks then return end
 
     for perk_id, perk_mod_data in pairs(possible_perks) do
         local choice = perks.unlocked_perks[perk_id]
