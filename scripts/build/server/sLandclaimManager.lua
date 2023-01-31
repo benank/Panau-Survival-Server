@@ -33,6 +33,7 @@ function sLandclaimManager:__init()
     Events:Subscribe("items/PlaceLandclaim", self, self.TryPlaceLandclaim)
     Events:Subscribe("PlayerPerksUpdated", self, self.PlayerPerksUpdated)
     Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
+    Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
     Events:Subscribe("Stats/GetBuildObjectsCount", self, self.TotalBuildObjectsUpdate)
     Events:Subscribe("PlayerQuit", self, self.PlayerQuit)
     Events:Subscribe("items/PlaceObjectInLandclaim", self, self.PlaceObjectInLandclaim)
@@ -40,7 +41,6 @@ function sLandclaimManager:__init()
     Events:Subscribe("build/ObjectDestroyed", self, self.ObjectDestroyed)
     Events:Subscribe("build/ObjectPlaced", self, self.ObjectPlaced)
     
-
     -- Check for expired landclaims every 3 hours and on load
     Timer.SetInterval(1000 * 60 * 60 * 3, function()
         self:CheckForExpiredLandclaims()
@@ -51,6 +51,12 @@ function sLandclaimManager:__init()
     Timer.SetInterval(1000 * 60 * 60 * 2, function()
         self:DecayExpiredLandclaims()
     end)
+    
+    self.modules_loaded = false
+    
+    Timer.SetTimeout(1000 * 30, function()
+        self.modules_loaded = true
+    end)
 
     if IsTest then
         Events:Subscribe("PlayerChat", function(args)
@@ -60,6 +66,13 @@ function sLandclaimManager:__init()
         end)
     end
 
+end
+
+function sLandclaimManager:ModuleUnload(args)
+    if self.modules_loaded and Server:GetElapsedSeconds() > 120 then
+        print("Detected build unloaded, shutting down server...")
+        Console:Run("x")
+    end
 end
 
 function sLandclaimManager:DecayExpiredLandclaims()
