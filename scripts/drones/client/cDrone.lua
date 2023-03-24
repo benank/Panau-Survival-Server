@@ -224,6 +224,7 @@ end
 function cDrone:IsPlayerAValidTarget(player, distance)
     return IsValid(player) and
         not player:GetValue("Invisible") and 
+        not LocalPlayer:GetValue("StealthEnabled") and
         player:GetHealth() > 0 and
         not player:GetValue("Loading") and
         not player:GetValue("dead") and
@@ -423,7 +424,7 @@ end
 
 function cDrone:LookForTargets()
     if self.config.attack_on_sight and self.attack_on_sight_timer:GetSeconds() > 0.5 
-    and not LocalPlayer:GetValue("Invisible") and self:IsPlayerAValidTarget(LocalPlayer, 500) then
+    and not LocalPlayer:GetValue("Invisible") and not LocalPlayer:GetValue("StealthEnabled") and self:IsPlayerAValidTarget(LocalPlayer, 500) then
         self.attack_on_sight_timer:Restart()
         local is_visible, ray = self:IsTargetInSight(LocalPlayer)
         self.attack_on_sight_count = is_visible and self.attack_on_sight_count + 1 or math.max(0, self.attack_on_sight_count - 1)

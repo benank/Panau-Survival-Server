@@ -177,6 +177,7 @@ function sDrone:IsPlayerAValidTarget(player, distance)
 
     return IsValid(player) and
         not player:GetValue("Invisible") and 
+        not player:GetValue("StealthEnabled") and
         player:GetHealth() > 0 and
         not player:GetValue("Loading") and
         not player:GetValue("dead") and
