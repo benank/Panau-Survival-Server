@@ -439,7 +439,7 @@ end
 
 function cDrone:WanderingSounds()
     if self.sound_timer:GetSeconds() >= self.sound_timer_interval then
-        if self.position:Distance(LocalPlayer:GetPosition()) < 80 then
+        if self.position:Distance(LocalPlayer:GetPosition()) < 80 and not LocalPlayer:GetValue("StealthEnabled") and not LocalPlayer:GetValue("Invisible") then
             self.body:PlaySound(math.random() > 0.5 and "enemy_presence_in_the_area" or "trespasser_in_the_area")
         else
             self.body:PlaySound("be_on_the_lookout")
