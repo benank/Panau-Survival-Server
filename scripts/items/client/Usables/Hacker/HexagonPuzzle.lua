@@ -17,6 +17,14 @@ function HexagonPuzzle:__init(difficulty, time)
 		[4] = {chance = 1, hide_clicked = false, hide_initially = true},
 		[5] = {chance = 0.4, hide_clicked = true, hide_initially = true}
 	}
+	
+	self.cancel_actions = 
+	{
+		[Action.MoveForward] = true,
+		[Action.MoveBackward] = true,
+		[Action.MoveLeft] = true,
+		[Action.MoveRight] = true,
+	}
 
     self.difficulty = difficulty
 	self.active = true
@@ -71,8 +79,14 @@ function HexagonPuzzle:GenerateEndsForAll()
 
 end
 
-function HexagonPuzzle:LPI()
-	if self.active then return false end
+function HexagonPuzzle:LPI(args)
+	if self.active then
+		if self.cancel_actions[args.input] then
+			self:FailHack()
+			return
+		end
+		return false
+	end
 end
 
 function HexagonPuzzle:RightPressHexagon()
@@ -218,25 +232,29 @@ function HexagonPuzzle:Render(window)
         end
         
     else
-        
-        for k, event in pairs(self.subs) do
-            Events:Unsubscribe(event)
-        end
-
-        self.window:Remove()
-
-        if not self.complete then
-            Network:Send(var("items/FailHack"):get())
-			
-            ClientEffect.Play(AssetLocation.Game, {
-                position = LocalPlayer:GetPosition() + Vector3(0, 0.5, 0),
-                angle = LocalPlayer:GetAngle(),
-                effect_id = 92
-            })
-        end
+        self:FailHack()
     end
 		
 
+end
+
+function HexagonPuzzle:FailHack()
+	for k, event in pairs(self.subs) do
+		Events:Unsubscribe(event)
+	end
+
+	self.window:Remove()
+
+	if not self.complete then
+		Network:Send(var("items/FailHack"):get())
+		
+		ClientEffect.Play(AssetLocation.Game, {
+			position = LocalPlayer:GetPosition() + Vector3(0, 0.5, 0),
+			angle = LocalPlayer:GetAngle(),
+			effect_id = 92
+		})
+        Mouse:SetVisible(false)
+	end
 end
 
 Network:Subscribe(var("items/StartHack"):get(), function(args)
