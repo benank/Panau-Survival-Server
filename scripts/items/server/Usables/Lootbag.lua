@@ -34,6 +34,10 @@ local lootbag_config =
     ["Two Year Lootbag"] = 
     {
         ["Two Year Party Hat"] =     {amount = 1, chance = 1},
+    },
+    ["Three Year Lootbag"] = 
+    {
+        ["Three Year Party Hat"] =     {amount = 1, chance = 1},
     }
 }
 

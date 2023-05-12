@@ -1198,6 +1198,15 @@ Items =
         equip_type = "costume_hat"
     },
     {
+        name = "Three Year Party Hat",
+        category = "Survival",
+        stacklimit = 5,
+        can_equip = true,
+        durable = true,
+        max_durability = 300,
+        equip_type = "costume_hat"
+    },
+    {
         name = "Boombox",
         category = "Supplies",
         stacklimit = 3,
