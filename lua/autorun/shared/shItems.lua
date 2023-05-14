@@ -1040,6 +1040,18 @@ Items =
         max_durability = 1000,
     },
     {
+        name = "Two Year Lootbag",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true
+    },
+    {
+        name = "Three Year Lootbag",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true
+    },
+    {
         name = "Holiday Lootbag",
         category = "Survival",
         stacklimit = 1,
