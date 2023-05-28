@@ -3,17 +3,17 @@ LootItems =
     -- {Item,Rarity,MinQuantity,MaxQuantity}
     [Lootbox.Types.Level1] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Three Year Lootbag"] = {rarity = 1, min = 1, max = 1},
-            }
-        },
+        -- ["EVENT"] = 
+        -- {
+        --     rarity = 0.05,
+        --     items = 
+        --     {
+        --         ["Three Year Lootbag"] = {rarity = 1, min = 1, max = 1},
+        --     }
+        -- },
         ["AMMO"] = 
         {
-            rarity = 0.33,
+            rarity = 0.38,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.11, min = 10, max = 20},
@@ -106,17 +106,17 @@ LootItems =
     },
     [Lootbox.Types.Level2] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Three Year Lootbag"] = {rarity = 1, min = 1, max = 1},
-            }
-        },
+        -- ["EVENT"] = 
+        -- {
+        --     rarity = 0.05,
+        --     items = 
+        --     {
+        --         ["Three Year Lootbag"] = {rarity = 1, min = 1, max = 1},
+        --     }
+        -- },
         ["AMMO"] = 
         {
-            rarity = 0.363,
+            rarity = 0.413,
             items = 
             {
                 ["Bubbles"] = {rarity = 0.01, min = 15, max = 30},
@@ -224,14 +224,14 @@ LootItems =
     },
     [Lootbox.Types.Level3] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Three Year Lootbag"] = {rarity = 1, min = 1, max = 1},
-            }
-        },
+        -- ["EVENT"] = 
+        -- {
+        --     rarity = 0.05,
+        --     items = 
+        --     {
+        --         ["Three Year Lootbag"] = {rarity = 1, min = 1, max = 1},
+        --     }
+        -- },
         ["AIRSTRIKE"] = 
         {
             rarity = 0.04,
@@ -242,7 +242,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.33,
+            rarity = 0.38,
             items = 
             {
                 ["Sawn-Off Ammo"] = {rarity = 0.1, min = 6, max = 10},
@@ -340,14 +340,14 @@ LootItems =
     },
     [Lootbox.Types.Level4] = 
     {
-        ["EVENT"] = 
-        {
-            rarity = 0.05,
-            items = 
-            {
-                ["Three Year Lootbag"] = {rarity = 1, min = 1, max = 1},
-            }
-        },
+        -- ["EVENT"] = 
+        -- {
+        --     rarity = 0.05,
+        --     items = 
+        --     {
+        --         ["Three Year Lootbag"] = {rarity = 1, min = 1, max = 1},
+        --     }
+        -- },
         ["AIRSTRIKE"] = 
         {
             rarity = 0.067,
@@ -368,7 +368,7 @@ LootItems =
         },
         ["AMMO"] = 
         {
-            rarity = 0.3587,
+            rarity = 0.4087,
             items = 
             {
                 ["Shotgun Ammo"] = {rarity = 0.213, min = 5, max = 10},
