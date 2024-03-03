@@ -9,14 +9,16 @@ function sSecret:__init()
         [22] = 2500
     }
     
-    self.secret_random_spawn_chance = 0.1 -- % per day to spawn a secret randomly
+    self.secret_random_spawn_chance = 0.2 -- % per day to spawn a secret randomly
+    self.secret_frenzy_random_chance = 0.025
     self.max_secrets_for_random_spawn = 3
     self.random_secret_x_chance = 0.05
     
-    local interval = Timer.SetInterval(1000 * 60 * 60 * 9, function()
+    local interval = Timer.SetInterval(1000 * 60 * 60 * 6, function()
         self:TrySpawnRandomSecret()
+        self:TryStartSecretFrenzy()
     end)
-
+    
     self.secret_timeout = 1000 * 60 * 60 * 24 * 3
     
     Network:Subscribe("items/CompleteItemUsage", self, self.UseItem)
@@ -24,6 +26,24 @@ function sSecret:__init()
     Events:Subscribe("ClientModuleLoad", self, self.ClientModuleLoad)
     Events:Subscribe("PlayerOpenLootbox", self, self.PlayerOpenLootbox)
 
+end
+
+function sSecret:TryStartSecretFrenzy()
+    if math.random() < self.secret_frenzy_random_chance and count_table(self.active_secrets) < self.max_secrets_for_random_spawn then
+        local num_secrets = 20 + math.ceil(math.random() * 20)
+        for i = 1, num_secrets do
+            Events:Fire("items/CreateSecretLockbox", {
+                x = math.random() < self.random_secret_x_chance
+            })
+        end
+        
+        Events:Fire("Discord", {
+            channel = "Airdrops",
+            content = "**SECRET FRENZY STARTED!**\n\nJoin the server now to find all the secrets."
+        })
+        
+        Chat:Broadcast("SECRET FRENZY STARTED! View the map for secrets.", Color.Yellow)
+    end
 end
 
 function sSecret:TrySpawnRandomSecret()
