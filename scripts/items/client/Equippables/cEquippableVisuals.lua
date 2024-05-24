@@ -166,4 +166,17 @@ EquippableVisuals =
             return Color.FromHSV(total_delta * 360 * 0.2, 1, 1) 
         end
     },
+    ["Four Year Party Hat"] = 
+    {
+        render = true,
+        bone = "ragdoll_Head",
+        offset = Vector3(-0.11,-0.55,0),
+        angle = Angle(math.pi, math.pi, 0),
+        text = "4",
+        fontsize = 200,
+        scale = 0.0025,
+        color = function(total_delta)
+            return Color.FromHSV(total_delta * 360 * 0.2, 1, 1) 
+        end
+    },
 }

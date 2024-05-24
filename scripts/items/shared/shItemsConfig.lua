@@ -141,6 +141,7 @@ ItemsConfig =
             ["Snowman Outfit"] = {dura_per_hit = 5},
             ["Two Year Party Hat"] = {dura_per_hit = 5},
             ["Three Year Party Hat"] = {dura_per_hit = 5},
+            ["Four Year Party Hat"] = {dura_per_hit = 5},
         }
     },
     use_time_perks = 
