@@ -24,6 +24,7 @@ ItemsConfig =
         ["Halloween Lootbag"] = {use_time = 3},
         ["Three Year Lootbag"] = {use_time = 3},
         ["Four Year Lootbag"] = {use_time = 3},
+        ["Five Year Lootbag"] = {use_time = 3},
         ["Holiday Lootbag"] = {use_time = 3},
         ["Airdrop"] = {use_time = 30},
         ["Burst Ping"] = {range = 12, knockback = 25},
@@ -143,7 +144,7 @@ ItemsConfig =
             ["Two Year Party Hat"] = {dura_per_hit = 5},
             ["Three Year Party Hat"] = {dura_per_hit = 5},
             ["Four Year Party Hat"] = {dura_per_hit = 5},
-        }
+            ["Five Year Party Hat"] = {dura_per_hit = 5},
     },
     use_time_perks = 
     {

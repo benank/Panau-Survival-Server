@@ -1058,6 +1058,12 @@ Items =
         can_use = true
     },
     {
+        name = "Five Year Lootbag",
+        category = "Survival",
+        stacklimit = 5,
+        can_use = true
+    },
+    {
         name = "Holiday Lootbag",
         category = "Survival",
         stacklimit = 1,
@@ -1226,6 +1232,15 @@ Items =
     },
     {
         name = "Four Year Party Hat",
+        category = "Survival",
+        stacklimit = 5,
+        can_equip = true,
+        durable = true,
+        max_durability = 300,
+        equip_type = "costume_hat"
+    },
+    {
+        name = "Five Year Party Hat",
         category = "Survival",
         stacklimit = 5,
         can_equip = true,
